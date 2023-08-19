@@ -616,7 +616,7 @@ class m150101_185401_create_news_table extends Migration
 
 Notez que, généralement, si vous effectuez de multiples opérations de base de données dans `safeUp()`, vous devriez les défaire dans `safeDown()`. Dans l'exemple ci-dessus, dans `safeUp()`, nous créons d'abord la table puis nous insérons une ligne, tandis que, dans `safeDown`, nous commençons par supprimer la ligne, puis nous supprimons la table. 
 
-> Note: tous les systèmes de gestion de bases de données NE prennent PAS en charge les transactions. De plus, quelques requêtes de base de données ne peuvent être placées dans une transaction. Pour quelques exemples, reportez-vous à [entérinement implicite](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). Si c'est le cas, vous devez simplement mettre en œuvre `up()` et`down()`, à la place.
+> Note: tous les systèmes de gestion de bases de données NE prennent PAS en charge les transactions. De plus, quelques requêtes de base de données ne peuvent être placées dans une transaction. Pour quelques exemples, reportez-vous à [entérinement implicite](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). Si c'est le cas, vous devez simplement mettre en œuvre `up()` et`down()`, à la place.
 
 
 ### Méthodes d'accès aux bases de données <span id="db-accessing-methods"></span>

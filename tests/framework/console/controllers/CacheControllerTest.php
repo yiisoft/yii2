@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
@@ -32,11 +32,6 @@ class CacheControllerTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-
-        $this->_cacheController = Yii::createObject([
-            'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
-            'interactive' => false,
-        ], [null, null]); //id and module are null
 
         $databases = self::getParam('databases');
         $config = $databases[$this->driverName];
@@ -72,6 +67,11 @@ class CacheControllerTest extends TestCase
                 ]
             ],
         ]);
+
+        $this->_cacheController = Yii::createObject([
+            'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
+            'interactive' => false,
+        ], [null, null]); //id and module are null
 
         if (isset($config['fixture'])) {
             Yii::$app->db->open();

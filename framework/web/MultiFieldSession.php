@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -22,7 +22,7 @@ namespace yii\web;
  * While extending this class you should use [[composeFields()]] method - while writing the session data into the storage and
  * [[extractData()]] - while reading session data from the storage.
  *
- * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property-read bool $useCustomStorage Whether to use custom storage.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.6
@@ -89,8 +89,8 @@ abstract class MultiFieldSession extends Session
 
     /**
      * Composes storage field set for session writing.
-     * @param string $id Optional session id
-     * @param string $data Optional session data
+     * @param string|null $id Optional session id
+     * @param string|null $data Optional session data
      * @return array storage fields
      */
     protected function composeFields($id = null, $data = null)

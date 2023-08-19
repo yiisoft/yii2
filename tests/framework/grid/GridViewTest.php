@@ -1,16 +1,18 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\grid;
 
+use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yii\web\View;
+use yiiunit\data\ar\NoAutoLabels;
 
 /**
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
@@ -149,5 +151,54 @@ class GridViewTest extends \yiiunit\TestCase
 		$html = preg_replace("/\r|\n/", '', $html);
 
 		$this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
+	}
+
+    public function testHeaderLabels()
+    {
+        // Ensure GridView does not call Model::generateAttributeLabel() to generate labels unless the labels are explicitly used.
+
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => \yii\db\Connection::className(),
+                    'dsn' => 'sqlite::memory:',
+                ],
+            ],
+        ]);
+
+        NoAutoLabels::$db = Yii::$app->getDb();
+        Yii::$app->getDb()->createCommand()->createTable(NoAutoLabels::tableName(), ['attr1' => 'int', 'attr2' => 'int'])->execute();
+
+        $urlManager = new \yii\web\UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+        ]);
+
+        $grid = new GridView([
+            'dataProvider' => new \yii\data\ActiveDataProvider([
+                'query' => NoAutoLabels::find(),
+            ]),
+            'columns' => [
+                'attr1',
+                'attr2:text:Label for attr2',
+            ],
+        ]);
+
+        // NoAutoLabels::generateAttributeLabel() should not be called.
+        $grid->dataProvider->setSort([
+            'route' => '/',
+            'urlManager' => $urlManager,
+        ]);
+        $grid->renderTableHeader();
+
+        // NoAutoLabels::generateAttributeLabel() should not be called.
+        $grid->dataProvider->setSort([
+            'route' => '/',
+            'urlManager' => $urlManager,
+            'attributes' => ['attr1', 'attr2'],
+        ]);
+        $grid->renderTableHeader();
+
+        // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
 	}
 }

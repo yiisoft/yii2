@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecordInterface;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
@@ -34,6 +35,7 @@ use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
+use yiiunit\data\ar\CroppedType;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\TestCase;
@@ -785,6 +787,28 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotEmpty($rows);
     }
 
+    /**
+     * Test joinWith eager loads via relation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19507
+     */
+    public function testJoinWithEager()
+    {
+        $eagerCustomers = Customer::find()->joinWith(['items'])->all();
+        $eagerItemsCount = 0;
+        foreach ($eagerCustomers as $customer) {
+            $eagerItemsCount += count($customer->items);
+        }
+
+        $lazyCustomers = Customer::find()->all();
+        $lazyItemsCount = 0;
+        foreach ($lazyCustomers as $customer) {
+            $lazyItemsCount += count($customer->items);
+        }
+
+        $this->assertEquals($eagerItemsCount, $lazyItemsCount);
+    }
+
     public function aliasMethodProvider()
     {
         return [
@@ -940,7 +964,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         /** @var $query ActiveQuery */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
-            $count = $query->count('c.id');
+            $count = $query->count('[[c.id]]');
         } elseif ($aliasMethod === 'querysyntax') {
             $count = $query->count('{{@customer}}.id');
         } elseif ($aliasMethod === 'applyAlias') {
@@ -1020,12 +1044,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], false)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], false)
             ->where(['movies.name' => 'Toy Story']);
@@ -1037,12 +1061,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], false)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], true)
             ->where(['movies.name' => 'Toy Story']);
@@ -1055,15 +1079,15 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $query = Order::find()
             ->joinWith([
                 'itemsIndexed books' => function ($q) {
-                    $q->onCondition('books.category_id = 1');
+                    $q->onCondition('[[books.category_id]] = 1');
                 },
             ], true)
             ->joinWith([
                 'itemsIndexed movies' => function ($q) {
-                    $q->onCondition('movies.category_id = 2');
+                    $q->onCondition('[[movies.category_id]] = 2');
                 },
             ], false)
-            ->where(['movies.name' => 'Toy Story']);
+            ->where(['[[movies.name]]' => 'Toy Story']);
         $orders = $query->all();
         $this->assertCount(1, $orders, $query->createCommand()->rawSql . print_r($orders, true));
         $this->assertEquals(2, $orders[0]->id);
@@ -1343,7 +1367,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1.23, $model->float_col2);
         $this->assertEquals(33.22, $model->numeric_col);
         $this->assertEquals(true, $model->bool_col2);
-
         if ($this instanceof CubridActiveRecordTest) {
             // cubrid has non-standard timestamp representation
             $this->assertEquals('12:00:00 AM 01/01/2002', $model->time);
@@ -1353,26 +1376,29 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $model = new Type();
         $model->char_col2 = 'not something';
-
         $model->loadDefaultValues();
         $this->assertEquals('not something', $model->char_col2);
 
         $model = new Type();
         $model->char_col2 = 'not something';
-
         $model->loadDefaultValues(false);
         $this->assertEquals('something', $model->char_col2);
+
+        // Cropped model with 2 attributes/columns
+        $model = new CroppedType();
+        $model->loadDefaultValues();
+        $this->assertEquals(['int_col2' => 1], $model->toArray());
     }
 
     public function testUnlinkAllViaTable()
     {
-        /* @var $orderClass \yii\db\ActiveRecordInterface */
+        /* @var $orderClass ActiveRecordInterface */
         $orderClass = $this->getOrderClass();
-        /* @var $orderItemClass \yii\db\ActiveRecordInterface */
+        /* @var $orderItemClass ActiveRecordInterface */
         $orderItemClass = $this->getOrderItemClass();
-        /* @var $itemClass \yii\db\ActiveRecordInterface */
+        /* @var $itemClass ActiveRecordInterface */
         $itemClass = $this->getItemClass();
-        /* @var $orderItemsWithNullFKClass \yii\db\ActiveRecordInterface */
+        /* @var $orderItemsWithNullFKClass ActiveRecordInterface */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         // via table with delete
@@ -1521,6 +1547,29 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             [
                 'status' => 2,
                 'sumtotal' => 0,
+            ],
+        ];
+        $this->assertEquals($expected, $aggregation);
+
+        // tests with single pk asArray with eager loading
+        $aggregation = Customer::find()
+            ->select(['{{customer}}.[[status]]', 'SUM({{order}}.[[total]]) AS [[sumtotal]]'])
+            ->joinWith('ordersPlain')
+            ->groupBy('{{customer}}.[[status]]')
+            ->orderBy('status')
+            ->asArray()
+            ->all();
+
+        $expected = [
+            [
+                'status' => 1,
+                'sumtotal' => 183,
+                'ordersPlain' => [],
+            ],
+            [
+                'status' => 2,
+                'sumtotal' => 0,
+                'ordersPlain' => [],
             ],
         ];
         $this->assertEquals($expected, $aggregation);
@@ -1893,24 +1942,24 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function illegalValuesForFindByCondition()
     {
         return [
-            [Customer::className(), ['id' => ['`id`=`id` and 1' => 1]]],
-            [Customer::className(), ['id' => [
+            [Customer::className(), [['`id`=`id` and 1' => 1]]],
+            [Customer::className(), [[
                 'legal' => 1,
                 '`id`=`id` and 1' => 1,
             ]]],
-            [Customer::className(), ['id' => [
+            [Customer::className(), [[
                 'nested_illegal' => [
                     'false or 1=' => 1
                 ]
             ]]],
             [Customer::className(), [['true--' => 1]]],
 
-            [CustomerWithAlias::className(), ['csr.id' => ['`csr`.`id`=`csr`.`id` and 1' => 1]]],
-            [CustomerWithAlias::className(), ['csr.id' => [
+            [CustomerWithAlias::className(), [['`csr`.`id`=`csr`.`id` and 1' => 1]]],
+            [CustomerWithAlias::className(), [[
                 'legal' => 1,
                 '`csr`.`id`=`csr`.`id` and 1' => 1,
             ]]],
-            [CustomerWithAlias::className(), ['csr.id' => [
+            [CustomerWithAlias::className(), [[
                 'nested_illegal' => [
                     'false or 1=' => 1
                 ]
@@ -2080,4 +2129,67 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals(['1', '01', '001', '001', '2', '2b', '2b', '02'], $alphaIdentifiers);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/16492
+     */
+    public function testEagerLoadingWithTypeCastedCompositeIdentifier()
+    {
+        $aggregation = Order::find()->joinWith('quantityOrderItems', true)->all();
+        foreach ($aggregation as $item) {
+            if ($item->id == 1) {
+                $this->assertEquals(1, $item->quantityOrderItems[0]->order_id);
+            } elseif ($item->id != 1) {
+                $this->assertCount(0, $item->quantityOrderItems);
+            }
+        }
+    }
+
+    public function providerForUnlinkDelete()
+    {
+        return [
+            'with delete' => [true, 0],
+            'without delete' => [false, 1],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForUnlinkDelete
+     * @see https://github.com/yiisoft/yii2/issues/17174
+     */
+    public function testUnlinkWithViaOnCondition($delete, $count)
+    {
+        /* @var $orderClass ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+
+        $order = $orderClass::findOne(2);
+        $this->assertCount(1, $order->itemsFor8);
+        $order->unlink('itemsFor8', $order->itemsFor8[0], $delete);
+
+        $order = $orderClass::findOne(2);
+        $this->assertCount(0, $order->itemsFor8);
+        $this->assertCount(2, $order->orderItemsWithNullFK);
+
+        /* @var $orderItemClass ActiveRecordInterface */
+        $orderItemClass = $this->getOrderItemWithNullFKmClass();
+        $this->assertCount(1, $orderItemClass::findAll([
+            'order_id' => 2,
+            'item_id' => 5,
+        ]));
+        $this->assertCount($count, $orderItemClass::findAll([
+            'order_id' => null,
+            'item_id' => null,
+        ]));
+    }
+
+    public function testVirtualRelation()
+    {
+        /* @var $orderClass ActiveRecordInterface */
+        $orderClass = $this->getOrderClass();
+        $order = $orderClass::findOne(2);
+        $order->virtualCustomerId = $order->customer_id;
+
+        $this->assertNotNull($order->virtualCustomer);
+    }
+
 }

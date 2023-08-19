@@ -1,18 +1,17 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\console\controllers\FixtureController;
+use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\console\controllers\fixtures\DependentActiveFixture;
-use yiiunit\data\console\controllers\fixtures\FirstIndependentActiveFixture;
 use yiiunit\data\console\controllers\fixtures\FixtureStorage;
-use yiiunit\data\console\controllers\fixtures\SecondIndependentActiveFixture;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
@@ -37,6 +36,7 @@ class FixtureControllerTest extends DatabaseTestCase
 
         $db = $this->getConnection();
         \Yii::$app->set('db', $db);
+        ActiveRecord::$db = $db;
 
         $this->_fixtureController = Yii::createObject([
             'class' => 'yiiunit\framework\console\controllers\FixtureConsoledController',

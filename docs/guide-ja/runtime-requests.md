@@ -76,13 +76,13 @@ if ($request->isPut)  { /* リクエスト・メソッドは PUT */ }
 
 `request` コンポーネントは現在リクエストされている URL を調べるための方法を数多く提供しています。
 
-リクエストされた URL が `http://example.com/admin/index.php/product?id=100` であると仮定したとき、
+リクエストされた URL が `https://example.com/admin/index.php/product?id=100` であると仮定したとき、
 次にまとめたように、この URL のさまざまな部分を取得することが出来ます。
 
 * [[yii\web\Request::url|url]]: `/admin/index.php/product?id=100` を返します。ホスト情報の部分を省略した URL です。
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: `http://example.com/admin/index.php/product?id=100` を返します。
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: `https://example.com/admin/index.php/product?id=100` を返します。
   ホスト情報の部分を含んだ URL です。
-* [[yii\web\Request::hostInfo|hostInfo]]: `http://example.com` を返します。URL のホスト情報の部分です。
+* [[yii\web\Request::hostInfo|hostInfo]]: `https://example.com` を返します。URL のホスト情報の部分です。
 * [[yii\web\Request::pathInfo|pathInfo]]: `/product` を返します。
   エントリ・スクリプトの後、疑問符 (クエリ文字列) の前の部分です。
 * [[yii\web\Request::queryString|queryString]]: `id=100` を返します。疑問符の後の部分です。
@@ -201,7 +201,7 @@ Yii アプリケーションに渡されるからです。
 その場合、前者は `ipHeaders` で構成されているようにユーザの IP を読み出すために使用され、
 後者は [[yii\web\Request::getIsSecureConnection()]] の結果を決定するために使用されます。
 
-2.0.31 以降、[RFC 7239](https://tools.ietf.org/html/rfc7239) の `Forwarded` ヘッダがサポートされています。
+2.0.31 以降、[RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239) の `Forwarded` ヘッダがサポートされています。
 有効にするためには、ヘッダ名を `secureHeaders` に追加する必要があります。
 あなたのプロキシにそれを設定させることを忘れないで下さい。さもないと、エンド・ユーザが IP とプロトコルを盗み見ることが可能になります。
 

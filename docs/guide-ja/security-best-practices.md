@@ -33,7 +33,7 @@ Yii においては、たいていの場合、同様のチェックを行うた�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
@@ -46,9 +46,9 @@ JavaScript や SQL のコンテキストでは、対象となる文字は別の�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Command_Injection>
-- <https://www.owasp.org/index.php/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/Command_Injection>
+- <https://owasp.org/www-community/attacks/Code_Injection>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 SQL インジェクションを回避する
@@ -117,7 +117,7 @@ $rowCount = $connection->createCommand($sql)->queryScalar();
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 XSS を回避する
@@ -151,7 +151,7 @@ HtmlPurifier の処理は非常に重いので、キャッシュを追加する�
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 CSRF を回避する
@@ -162,13 +162,13 @@ CSRF は、クロス・サイト・リクエスト・フォージェリ (cross-s
 
 例えば、`an.example.com` というウェブ・サイトが `/logout` という URL を持っており、
 この URL を単純な GET でアクセスするとユーザをログアウトさせるようになっているとします。
-ユーザ自身によってこの URL がリクエストされる限りは何も問題はありませんが、ある日、悪い奴が、ユーザが頻繁に訪れるフォーラムに `<img src="http://an.example.com/logout">` というリンクを含むコンテントを何らかの方法で投稿します。
+ユーザ自身によってこの URL がリクエストされる限りは何も問題はありませんが、ある日、悪い奴が、ユーザが頻繁に訪れるフォーラムに `<img src="https://an.example.com/logout">` というリンクを含むコンテントを何らかの方法で投稿します。
 ブラウザは画像のリクエストとページのリクエストの間に何ら区別を付けませんので、ユーザがそのような `img` タグを含むページを開くとブラウザはその URL に対して GET リクエストを送信します。
 そして、ユーザが `an.example.com` からログアウトされてしまうことになる訳です。
 
 これは CSRF 攻撃がどのように動作するかという基本的な考え方です。ユーザがログアウトされるぐらいは大したことではない、と言うことも出来るでしょう。
 しかしこれは例に過ぎません。この考え方を使って、支払いを開始させたり、データを変更したりというような、もっとひどいことをすることも出来ます。
-`http://an.example.com/purse/transfer?to=anotherUser&amount=2000` という URL を持つウェブ・サイトがあると考えて見てください。この URL に GET リクエストを使ってアクセスすると、権限を持つユーザ・アカウントから `anotherUser` に $2000 が送金されるのです。
+`https://an.example.com/purse/transfer?to=anotherUser&amount=2000` という URL を持つウェブ・サイトがあると考えて見てください。この URL に GET リクエストを使ってアクセスすると、権限を持つユーザ・アカウントから `anotherUser` に $2000 が送金されるのです。
 私たちは、ブラウザは画像をロードするのに常に GET リクエストを使う、ということを知っていますから、
 この URL が POST リクエストだけを受け入れるようにコードを修正することは出来ます。
 しかし残念なことに、それで問題が解決する訳ではありません。攻撃者は `<img>` タグの代りに何らかの JavaScript コードを書いて、
@@ -179,7 +179,7 @@ CSRF は、クロス・サイト・リクエスト・フォージェリ (cross-s
 CSRF を回避するためには、常に次のことを守らなければなりません。
 
 1. HTTP の規格、すなわち、GET はアプリケーションの状態を変更すべきではない、という規則に従うこと。
-   詳細は [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) を参照して下さい。
+   詳細は [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) を参照して下さい。
 2. Yii の CSRF 保護を有効にしておくこと。
 
 場合によっては、コントローラやアクションの単位で CSRF 検証を無効化する必要があることがあるでしょう。これは、そのプロパティを設定することによって達成することが出来ます。
@@ -259,8 +259,8 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/CSRF>
-- <https://www.owasp.org/index.php/SameSite>
+- <https://owasp.org/www-community/attacks/csrf>
+- <https://owasp.org/www-community/SameSite>
 
 
 ファイルの曝露を回避する
@@ -288,8 +288,8 @@ class ContactAction extends Action
 
 このトピックについて更に読むべき文書:
 
-- <https://www.owasp.org/index.php/Exception_Handling>
-- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
+- <https://owasp.org/www-pdf-archive/OWASP_Top_10_2007.pdf> (A6 - Information Leakage and Improper Error Handling)
 
 
 TLS によるセキュアな接続を使う
@@ -330,7 +330,7 @@ H5BP プロジェクトが提供する構成例を参考にすることも出来
 
 サーバの構成についての詳細な情報は、ウェブ・サーバのドキュメントを参照して下さい。
 
-- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Apache 2: <https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
 サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、[[yii\filters\HostControl]]
@@ -353,3 +353,29 @@ return [
 
 > Note: 「ホスト・ヘッダ攻撃」に対する保護のためには、常に、フィルタの使用よりもウェブ・サーバの構成を優先すべきです。
   [[yii\filters\HostControl]] は、サーバの構成が出来ない場合にだけ使うべきものです。
+
+### SSL ピア検証を構成する
+
+SSL 証明書検証の問題、例えば :
+
+```
+cURL error 60: SSL certificate problem: unable to get local issuer certificate
+```
+
+または
+
+```
+stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
+```
+
+を解決する方法については、典型的な誤解があります。SSL ピア検証を無効化するよう示唆する間違った情報が数多くありますが、決して従ってはいけません。
+そんなことをすれば、マン・イン・ザ・ミドル型の攻撃を可能にします。そうするのではなく、PHP を適切に構成すべきです。
+
+1. [https://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem) をダウンロードする。
+2. php.ini に以下を追加する。
+  ```
+  openssl.cafile="/path/to/cacert.pem"
+  curl.cainfo="/path/to/cacert.pem".
+  ```
+
+`cacert.pem` ファイルを最新に保つ必要があることに注意して下さい。

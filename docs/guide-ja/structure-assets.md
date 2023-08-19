@@ -79,7 +79,7 @@ class AppAsset extends AssetBundle
     実際のファイルのパスは、この相対パスの前に [[yii\web\AssetManager::basePath]] を付けることによって決定されます。
     また、実際の URL は、この相対パスの前に [[yii\web\AssetManager::baseUrl]] を付けることによって決定されます。
   - 外部の JavaScript ファイルを表す絶対 URL。
-    例えば、`http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や
+    例えば、`https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` や
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` など。
 * [[yii\web\AssetBundle::depends|depends]]: このバンドルが依存しているアセット・バンドルの名前をリストする配列です
    (バンドルの依存関係については、すぐ後で説明します)。
@@ -201,13 +201,13 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-上記の例は、["fontawesome" パッケージ](http://fontawesome.io/) のためのアセット・バンドルを定義するものです。
+上記の例は、["fontawesome" パッケージ](https://fontawesome.com/) のためのアセット・バンドルを定義するものです。
 発行オプション `only` を指定して、`fonts` と `css` サブ・ディレクトリだけが発行されるようにしています。
 
 
 ### Bower と NPM のアセットのインストール <span id="bower-npm-assets"></span>
 
-ほとんどの JavaScript/CSS パッケージは、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) によって管理されています。
+ほとんどの JavaScript/CSS パッケージは、[Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) によって管理されています。
 PHP の世界には PHP の依存を管理する Composer がありますが、PHP のパッケージと全く同じように
 `composer.json` を使って Bower のパッケージも NPM のパッケージもロードすることが可能です。
 
@@ -257,7 +257,7 @@ asset-packagist と異なって、composer-asset-plugin はアプリケーショ
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-このコマンドによって [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) がグローバルにインストールされ、
+このコマンドによって [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) がグローバルにインストールされ、
 Bower と NPM パッケージの依存関係を Composer によって管理することが出来るようになります。
 プラグインがインストールされた後は、あなたのコンピュータ上の全てのプロジェクトが `composer.json` を通じて Bower と NPM パッケージをサポートすることが出来ます。
 
@@ -461,10 +461,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // 効力を持たない!
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // 効力を持たない!
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // 効力を持たない!
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // 効力を持たない!
                 ],
             ],
         ],
@@ -579,8 +579,8 @@ return [
 ## アセット変換 <span id="asset-conversion"></span>
 
 直接に CSS および/または JavaScript のコードを書く代りに、何らかの拡張構文を使って書いたものを特別なツールを使って CSS/JavaScript に変換する、ということを開発者はしばしば行います。
-例えば、CSS コードのためには、[LESS](http://lesscss.org/) や [SCSS](http://sass-lang.com/) を使うことが出来ます。
-また、JavaScript のためには、[TypeScript](http://www.typescriptlang.org/) を使うことが出来ます。
+例えば、CSS コードのためには、[LESS](https://lesscss.org/) や [SCSS](https://sass-lang.com/) を使うことが出来ます。
+また、JavaScript のためには、[TypeScript](https://www.typescriptlang.org/) を使うことが出来ます。
 
 拡張構文を使ったアセット・ファイルをアセット・バンドルの中の [[yii\web\AssetBundle::css|css]] と [[yii\web\AssetBundle::js|js]] のリストに挙げることが出来ます。例えば、
 
@@ -610,14 +610,14 @@ class AppAsset extends AssetBundle
 Yii はファイル名の拡張子を使って、アセットが使っている拡張構文を識別します。
 デフォルトでは、下記の構文とファイル名拡張子を認識します。
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
 Yii はインストールされたプリ・プロセッサ・ツールに頼ってアセットを変換します。
-例えば、[LESS](http://lesscss.org/) を使うためには、`lessc` プリ・プロセッサ・コマンドをインストールしなければなりません。
+例えば、[LESS](https://lesscss.org/) を使うためには、`lessc` プリ・プロセッサ・コマンドをインストールしなければなりません。
 
 下記のように [[yii\web\AssetManager::converter]] を構成することで、
 プリ・プロセッサ・コマンドとサポートされる拡張構文をカスタマイズすることが出来ます。
@@ -644,7 +644,7 @@ return [
 コマンドの中の `{from}` と `{to}` のトークンは、ソースのアセット・ファイルのパスとターゲットのアセット・ファイルのパスに置き換えられます。
 
 > Info: 上記で説明した方法の他にも、拡張構文のアセットを扱う方法はあります。
-  例えば、[grunt](http://gruntjs.com/) のようなビルド・ツールを使って、拡張構文のアセットをモニターし、
+  例えば、[grunt](https://gruntjs.com/) のようなビルド・ツールを使って、拡張構文のアセットをモニターし、
   自動的に変換することが出来ます。
   この場合は、元のファイルではなく、結果として作られる CSS/JavaScript ファイルをアセット・バンドルのリストに挙げなければなりません。
 
@@ -840,7 +840,7 @@ yii asset assets.php config/assets-prod.php
 
 
 > Info: `asset` コマンドを使うことは、アセットの結合・圧縮のプロセスを自動化する唯一の選択肢ではありません。
-  優秀なタスク実行ツールである [grunt](http://gruntjs.com/) を使っても、同じ目的を達することが出来ます。
+  優秀なタスク実行ツールである [grunt](https://gruntjs.com/) を使っても、同じ目的を達することが出来ます。
 
 
 ### アセット・バンドルをグループ化する <span id="grouping-asset-bundles"></span>

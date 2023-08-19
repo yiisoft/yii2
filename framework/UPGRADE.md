@@ -12,7 +12,7 @@ Upgrading in general is as simple as updating your dependency in your composer.j
 running `composer update`. In a big application however there may be more things to consider,
 which are explained in the following.
 
-> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
+> Note: This document assumes you have composer [installed globally](https://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
 so that you can run the `composer` command. If you have a `composer.phar` file inside of your project you need to
 replace `composer` with `php composer.phar` in the following.
 
@@ -50,6 +50,252 @@ See the following notes on which changes to consider when upgrading from one ver
 if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
+
+
+Upgrade from Yii 2.0.48
+-----------------------
+
+* Since Yii 2.0.49 the `yii\console\Controller::select()` function supports a default value and respects
+  the `yii\console\Controller::$interactive` setting. Before the user was always prompted to select an option
+  regardless of the `$interactive` setting. Now the `$default` value is automatically returned when `$interactive` is 
+  `false`.
+* The function signature for `yii\console\Controller::select()` and `yii\helpers\BaseConsole::select()` have changed.
+  They now have an additional `$default = null` parameter. In case those methods are overwritten you will need to
+  update your child classes accordingly.
+
+Upgrade from Yii 2.0.46
+-----------------------
+
+* The default "scope" of the `yii\mutex\MysqlMutex` has changed, the name of the mutex now includes the name of the
+  database by default. Before this change the "scope" of the `MysqlMutex` was "server wide".
+  No matter which database was used, the mutex lock was acquired for the entire server, since version 2.0.47 
+  the "scope" of the mutex will be limited to the database being used. 
+  This might impact your application if …
+    * The database name of the database connection specified in the `MysqlMutex::$db` property is set dynamically
+      (or changes in any other way during your application execution):  
+      Depending on your application you might want to set the `MysqlMutex::$keyPrefix` property (see below).
+    * The database connection specified in the `MysqlMutex::$db` does not include a database name:  
+      You must specify the `MysqlMutex::$keyPrefix` property (see below).
+  
+  If you need to specify/lock the "scope" of the `MysqlMutex` you can specify the `$keyPrefix` property.  
+  For example in your application config:   
+    ```php
+    'mutex' => [
+        'class' => 'yii\mutex\MysqlMutex',
+        'db' => 'db',
+        'keyPrefix' => 'myPrefix' // Your custom prefix which determines the "scope" of the mutex.
+    ],
+    ```
+  > Warning: Even if you're not impacted by the aforementioned conditions and even if you specify the `$keyPrefix`,
+    if you rely on a locked mutex during and/or across your application deployment
+    (e.g. switching over in a live environment from an old version to a new version of your application)
+    you will have to make sure any running process that acquired a lock finishes before switching over to the new 
+    version of your application. A lock acquired before the deployment will *not* be mutually exclusive with a 
+    lock acquired after the deployment (even if they have the same name). 
+
+Upgrade from Yii 2.0.45
+-----------------------
+
+* Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted, so it works as in pre-2.0.45. If you need
+  2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
+* `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
+  the files is done only by copy.
+
+Upgrade from Yii 2.0.44
+-----------------------
+
+* `yii\filters\PageCache::$cacheHeaders` now takes a case-sensitive list of header names since PageCache is no longer 
+  storing the normalized (lowercase) versions of them so make sure this list is properly updated and your page cache 
+  is recreated.
+
+Upgrade from Yii 2.0.43
+-----------------------
+
+* `Json::encode()` can now handle zero-indexed objects in same way as `json_encode()` and keep them as objects. In order 
+  to avoid breaking backwards compatibility this behavior could be enabled by a new option flag but is disabled by default.
+  * Set `yii/helpers/Json::$keepObjectType = true` anywhere in your application code
+  * Or configure json response formatter to enable it for all JSON responses:
+      ```php
+      'response' => [
+        'formatters' => [
+          \yii\web\Response::FORMAT_JSON => [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+            'keepObjectType' => true, // keep object type for zero-indexed objects
+          ],
+        ],
+      ],
+      ```
+* `yii\caching\Cache::multiSet()` now uses the default cache duration (`yii\caching\Cache::$defaultDuration`) when no 
+  duration is provided. A duration of 0 should be explicitly passed if items should not expire.
+* Default value of `yii\console\controllers\MessageController::$translator` is updated to `['Yii::t', '\Yii::t']`, since 
+  old value of `'Yii::t'` didn't match `\Yii::t` calls on PHP 8. If configuration file for "extract" command overrides 
+  default value, update config file accordingly. See [issue #18941](https://github.com/yiisoft/yii2/issues/18941)
+
+Upgrade from Yii 2.0.42
+-----------------------
+
+* `yii\base\ErrorHandler` does not expose the `$_SERVER` information implicitly anymore.
+* The methods `phpTypecast()` and `dbTypecast()` of `yii\db\ColumnSchema` will no longer convert `$value` from `int` to 
+  `string`, if database column type is `INTEGER UNSIGNED` or `BIGINT UNSIGNED`.
+  * I.e. it affects update and insert queries. For example:
+  ```php
+  \Yii::$app->db->createCommand()->insert('{{some_table}}', ['int_unsigned_col' => 22])->execute();
+  ```
+  will execute next SQL:
+  ```sql
+  INSERT INTO `some_table` (`int_unsigned_col`) VALUES (22)
+  ```
+* Property `yii\db\ColumnSchemaBuilder::$categoryMap` has been removed in favor of getter/setter methods `getCategoryMap()` 
+  and `setCategoryMap()`.
+
+Upgrade from Yii 2.0.41
+-----------------------
+
+* `NumberValidator` (`number`, `double`, `integer`) does not allow values with leading or terminating (non-trimmed) 
+  white spaces anymore. If your application expects non-trimmed values provided to this validator make sure to trim 
+  them first (i.e. by using `trim` / `filter` "validators").
+
+Upgrade from Yii 2.0.40
+-----------------------
+
+* The methods `getAuthKey()` and `validateAuthKey()` of `yii\web\IdentityInterface` are now also used to validate active
+  sessions (previously these methods were only used for cookie-based login). If your identity class does not properly
+  implement these methods yet, you should update it accordingly (an example can be found in the guide under
+  `Security` -> `Authentication`). Alternatively, you can simply return `null` in the `getAuthKey()` method to keep
+  the old behavior (that is, no validation of active sessions). Applications that change the underlying `authKey` of
+  an authenticated identity, should now call `yii\web\User::switchIdentity()`, `yii\web\User::login()`
+  or `yii\web\User::logout()` to recreate the active session with the new `authKey`.
+
+Upgrade from Yii 2.0.39.3
+-------------------------
+
+* Priority of processing `yii\base\Arrayable`, and `JsonSerializable` data has been reversed (`Arrayable` data is checked
+  first now) in `yii\base\Model`, and `yii\rest\Serializer`. If your application relies on the previous priority you need 
+  to fix it manually based on the complexity of desired (de)serialization result.
+
+Upgrade from Yii 2.0.38
+-----------------------
+
+* The storage structure of the file cache has been changed when you use `\yii\caching\FileCache::$keyPrefix`.
+It is worth warming up the cache again if there is a logical dependency when working with the file cache.
+
+* `yii\web\Session` now respects the 'session.use_strict_mode' ini directive.
+  In case you use a custom `Session` class and have overwritten the `Session::openSession()` and/or 
+  `Session::writeSession()` functions changes might be required:
+  * When in strict mode the `openSession()` function should check if the requested session id exists
+    (and mark it for forced regeneration if not).
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode()) {
+        $id = $this->getId();
+        if (!$this->getReadQuery($id)->exists()) {
+            //This session id does not exist, mark it for forced regeneration
+            $this->_forceRegenerateId = $id;
+        }
+    }
+    // ... normal function continues ...
+    ``` 
+  * When in strict mode the `writeSession()` function should ignore writing the session under the old id.
+    For example, the `DbSession` does this at the beginning of the function as follows:
+    ```php
+    if ($this->getUseStrictMode() && $id === $this->_forceRegenerateId) {
+        //Ignore write when forceRegenerate is active for this id
+        return true;
+    }
+    // ... normal function continues ...
+    ```
+  > Note: The sample code above is specific for the `yii\web\DbSession` class.
+    Make sure you use the correct implementation based on your parent class,
+    e.g. `yii\web\CacheSession`, `yii\redis\Session`, `yii\mongodb\Session`, etc.
+  
+  > Note: In case your custom functions call their `parent` functions, there are probably no changes needed to your 
+    code if those parents implement the `useStrictMode` checks.
+
+  > Warning: in case `openSession()` and/or `writeSession()` functions do not implement the `useStrictMode` code
+    the session could be stored under a malicious id without warning even if `useStrictMode` is enabled.
+
+Upgrade from Yii 2.0.37
+-----------------------
+
+* Resolving DI references inside of arrays in dependencies was made optional and turned off by default. In order
+  to turn it on, set `resolveArrays` of container instance to `true`.
+
+Upgrade from Yii 2.0.36
+-----------------------
+
+* `yii\db\Exception::getCode()` now returns full PDO code that is SQLSTATE string. If you have relied on comparing code
+  with an integer value, adjust your code.
+
+Upgrade from Yii 2.0.35
+-----------------------
+
+* Inline validator signature has been updated with 4th parameter `current`:
+
+  ```php
+  /**
+   * @param mixed $current the currently validated value of attribute
+   */
+  function ($attribute, $params, $validator, $current)
+  ```
+
+* Behavior of inline validator used as a rule of `EachValidator` has been changed - `$attribute` now refers to original
+  model's attribute and not its temporary counterpart:
+  
+  ```php
+  public $array_attribute = ['first', 'second'];
+
+  public function rules()
+  {
+      return [
+          ['array_attribute', 'each', 'rule' => ['customValidatingMethod']],
+      ];
+  }
+  
+  public function customValidatingMethod($attribute, $params, $validator, $current)
+  {
+      // $attribute === 'array_attribute' (as before)
+  
+      // now: $this->$attribute === ['first', 'second'] (on every iteration)
+      // previously:
+      // $this->$attribute === 'first' (on first iteration)
+      // $this->$attribute === 'second' (on second iteration)
+  
+      // use now $current instead
+      // $current === 'first' (on first iteration)
+      // $current === 'second' (on second iteration)
+  }
+  ```
+  
+* `$this` in an inline validator defined as closure now refers to model instance. If you need to access the object registering
+  the validator, pass its instance through use statement:
+  
+  ```php
+  $registrar = $this;
+  $validator = function($attribute, $params, $validator, $current) use ($registrar) {
+      // ...
+  }
+  ```
+  
+* Validator closure callbacks should not be declared as static.
+
+* If you have any controllers that override the `init()` method, make sure they are calling `parent::init()` at
+  the beginning, as demonstrated in the [component guide](https://www.yiiframework.com/doc/guide/2.0/en/concept-components).
+
+Upgrade from Yii 2.0.34
+-----------------------
+
+* `ExistValidator` used as a rule of `EachValidator` now requires providing `targetClass` explicitely and it's not possible to use it with `targetRelation` in
+  that configuration.
+  
+  ```php
+  public function rules()
+  {
+      return [
+          ['attribute', 'each', 'rule' => ['exist', 'targetClass' => static::className(), 'targetAttribute' => 'id']],
+      ];
+  }
+  ```
 
 Upgrade from Yii 2.0.32
 -----------------------
@@ -266,7 +512,7 @@ Upgrade from Yii 2.0.13
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
   Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
   space to customization. In case you rely on that property or override any of default condition builders, follow the 
-  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  special [guide article](https://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
   to update your code.
 
 * Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
@@ -297,7 +543,7 @@ Upgrade from Yii 2.0.12
   was insecure as the header could have been set by a malicious client on a non-HTTPS connection.
   With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
   `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
-  this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+  this in the Request configuration. See the [guide](https://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
 
   This setting also affects you when Yii is running on IIS webserver, which sets the `X-Rewrite-Url` header.
   This header is now filtered by default and must be listed in trusted hosts to be detected by Yii:
@@ -490,7 +736,7 @@ Upgrade from Yii 2.0.6
   initialization to support wider range of allowed characters. Because of this change:
 
   - You are required to flush your application cache to remove outdated `UrlRule` serialized objects.
-    See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
+    See the [Cache Flushing Guide](https://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
   - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
     in order to replace temporary IDs with parameter names after doing matching.
 
@@ -566,7 +812,7 @@ If you've extended `yii\base\Security` to override any of the config constants y
 Upgrade from Yii 2.0.0
 ----------------------
 
-* Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
+* Upgraded Twitter Bootstrap to [version 3.3.x](https://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
   If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
   adding the following line in the `require` section:
 
@@ -666,7 +912,7 @@ Upgrade from Yii 2.0 Beta
   You can add it with `ALTER TABLE log ADD COLUMN prefix TEXT AFTER log_time;`.
 
 * The `fileinfo` PHP extension is now required by Yii. If you use  `yii\helpers\FileHelper::getMimeType()`, make sure
-  you have enabled this extension. This extension is [builtin](https://secure.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
+  you have enabled this extension. This extension is [builtin](https://www.php.net/manual/en/fileinfo.installation.php) in php above `5.3`.
 
 * Please update your main layout file by adding this line in the `<head>` section: `<?= Html::csrfMetaTags() ?>`.
   This change is needed because `yii\web\View` no longer automatically generates CSRF meta tags due to issue #3358.

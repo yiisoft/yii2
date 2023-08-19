@@ -8,11 +8,11 @@ pełną wsteczną kompatybilność (BC = backward compatibility), kiedy to tylko
 może nie spełniać BC, należy wprowadzić ją w nowej wersji API, z kolejnym numerem. Istniejące klienty mogą wciąż używać starej, 
 działającej wersji API, a nowe lub uaktualnione klienty mogą otrzymać nową funkcjonalność oferowaną przez kolejną wersję API. 
 
-> Tip: Zapoznaj się z [Wersjonowaniem semantycznym](http://semver.org/lang/pl/), aby uzyskać więcej informacji na temat nazewnictwa 
+> Tip: Zapoznaj się z [Wersjonowaniem semantycznym](https://semver.org/lang/pl/), aby uzyskać więcej informacji na temat nazewnictwa 
   numerów wersji.
 
 Jedną z często spotykanych implementacji wersjonowania API jest dodawanie numeru wersji w adresach URL API.
-Dla przykładu `http://example.com/v1/users` oznacza punkt końcowy `/users` API w wersji 1. 
+Dla przykładu `https://example.com/v1/users` oznacza punkt końcowy `/users` API w wersji 1. 
 
 Inną metodą wersjonowania API, która zyskuje ostatnio popularność, jest umieszczanie numeru wersji w nagłówkach HTTP żądania. Zwykle 
 używa się do tego nagłówka `Accept`:
@@ -92,8 +92,8 @@ return [
 ];
 ```
 
-Rezultatem powyższego kodu będzie skierowanie pod adresem `http://example.com/v1/users` do listy użytkowników w wersji 1, podczas gdy 
-`http://example.com/v2/users` pokaże użytkowników w wersji 2.
+Rezultatem powyższego kodu będzie skierowanie pod adresem `https://example.com/v1/users` do listy użytkowników w wersji 1, podczas gdy 
+`https://example.com/v2/users` pokaże użytkowników w wersji 2.
 
 Dzięki podziałowi na moduły, kod różnych głównych wersji może być dobrze izolowany, ale jednocześnie wciąż możliwe jest ponowne 
 wykorzystanie wspólnego kodu poprzez wspólną bazę klas i dzielonych zasobów.

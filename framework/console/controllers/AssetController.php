@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -515,7 +515,7 @@ EOD;
         if (is_string($this->jsCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineJsFiles($inputFiles, $tmpFile);
-            $this->stdout(shell_exec(strtr($this->jsCompressor, [
+            $this->stdout((string)shell_exec(strtr($this->jsCompressor, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
             ])));
@@ -544,7 +544,7 @@ EOD;
         if (is_string($this->cssCompressor)) {
             $tmpFile = $outputFile . '.tmp';
             $this->combineCssFiles($inputFiles, $tmpFile);
-            $this->stdout(shell_exec(strtr($this->cssCompressor, [
+            $this->stdout((string)shell_exec(strtr($this->cssCompressor, [
                 '{from}' => escapeshellarg($tmpFile),
                 '{to}' => escapeshellarg($outputFile),
             ])));
@@ -677,7 +677,7 @@ EOD;
             return str_replace($inputUrl, $outputUrl, $fullMatch);
         };
 
-        $cssContent = preg_replace_callback('/url\(["\']?([^)^"^\']*)["\']?\)/i', $callback, $cssContent);
+        $cssContent = preg_replace_callback('/url\(["\']?([^)^"\']*)["\']?\)/i', $callback, $cssContent);
 
         return $cssContent;
     }

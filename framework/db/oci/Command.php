@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\oci;
@@ -21,10 +21,11 @@ class Command extends \yii\db\Command
      */
     protected function bindPendingParams()
     {
+        $paramsPassedByReference = [];
         foreach ($this->pendingParams as $name => $value) {
             if (\PDO::PARAM_STR === $value[1]) {
-                $passedByRef = $value[0];
-                $this->pdoStatement->bindParam($name, $passedByRef, $value[1], strlen($value[0]));
+                $paramsPassedByReference[$name] = $value[0];
+                $this->pdoStatement->bindParam($name, $paramsPassedByReference[$name], $value[1], strlen($value[0]));
             } else {
                 $this->pdoStatement->bindValue($name, $value[0], $value[1]);
             }

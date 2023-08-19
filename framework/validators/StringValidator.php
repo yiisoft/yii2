@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Json;
 
 /**
  * StringValidator validates that the attribute value is of certain length.
@@ -34,12 +35,12 @@ class StringValidator extends Validator
      */
     public $length;
     /**
-     * @var int maximum length. If not set, it means no maximum length limit.
+     * @var int|null maximum length. If not set, it means no maximum length limit.
      * @see tooLong for the customized message for a too long string.
      */
     public $max;
     /**
-     * @var int minimum length. If not set, it means no minimum length limit.
+     * @var int|null minimum length. If not set, it means no minimum length limit.
      * @see tooShort for the customized message for a too short string.
      */
     public $min;
@@ -60,10 +61,16 @@ class StringValidator extends Validator
      */
     public $notEqual;
     /**
-     * @var string the encoding of the string value to be validated (e.g. 'UTF-8').
+     * @var string|null the encoding of the string value to be validated (e.g. 'UTF-8').
      * If this property is not set, [[\yii\base\Application::charset]] will be used.
      */
     public $encoding;
+    /**
+     * @var boolean whether to require the value to be a string data type.
+     * If false any scalar value will be treated as it's string equivalent.
+     * @since 2.0.33
+     */
+    public $strict = true;
 
 
     /**
@@ -104,7 +111,9 @@ class StringValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-
+        if (!$this->strict && is_scalar($value) && !is_string($value)) {
+            $value = (string)$value;
+        }
         if (!is_string($value)) {
             $this->addError($model, $attribute, $this->message);
 
@@ -129,6 +138,10 @@ class StringValidator extends Validator
      */
     protected function validateValue($value)
     {
+        if (!$this->strict && is_scalar($value) && !is_string($value)) {
+            $value = (string)$value;
+        }
+
         if (!is_string($value)) {
             return [$this->message, []];
         }
@@ -156,7 +169,7 @@ class StringValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.string(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**

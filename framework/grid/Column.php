@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\grid;
@@ -26,7 +26,7 @@ class Column extends BaseObject
      */
     public $grid;
     /**
-     * @var string the header cell content. Note that it will not be HTML-encoded.
+     * @var string|null the header cell content. Note that it will not be HTML-encoded.
      */
     public $header;
     /**
@@ -127,7 +127,7 @@ class Column extends BaseObject
      */
     protected function renderHeaderCellContent()
     {
-        return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
+        return $this->header !== null && trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
     }
 
     /**
@@ -149,7 +149,7 @@ class Column extends BaseObject
      */
     protected function renderFooterCellContent()
     {
-        return trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
+        return $this->footer !== null && trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
     }
 
     /**

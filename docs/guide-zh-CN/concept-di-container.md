@@ -2,7 +2,7 @@
 ===========================================
 
 依赖注入（Dependency Injection，DI）容器就是一个对象，它知道怎样初始化并配置对象及其依赖的所有对象。
-[Martin 的文章](http://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。
+[Martin 的文章](https://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。
 这里我们主要讲解 Yii 提供的 DI 容器的使用方法。
 
 
@@ -427,7 +427,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 将按照配置中的描述创建 DocumentReader 对象及其依赖关系
 ```
 
@@ -465,7 +465,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 将与前面示例中的行为完全相同。
 ```
 
@@ -525,7 +525,7 @@ $reader = $container->get('app\storage\DocumentsReader');
 
 依赖注入和[服务定位器](concept-service-locator.md)都是流行的设计模式，
 它们使你可以用充分解耦且更利于测试的风格构建软件。
-强烈推荐你阅读 [Martin 的文章](http://martinfowler.com/articles/injection.html) ，
+强烈推荐你阅读 [Martin 的文章](https://martinfowler.com/articles/injection.html) ，
 对依赖注入和服务定位器有个更深入的理解。
 
 Yii 在依赖住入（DI）容器之上实现了它的[服务定位器](concept-service-locator.md)。

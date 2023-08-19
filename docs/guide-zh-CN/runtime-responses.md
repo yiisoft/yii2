@@ -169,7 +169,7 @@ Yii提供对它提供了特别的支持。
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -180,7 +180,7 @@ public function actionOld()
 [[yii\web\Response::send()]] 方法来确保没有其他内容追加到响应中。
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: [[yii\web\Response::redirect()]] 方法默认会设置响应状态码为 302，该状态码会告诉浏览器请求的资源
@@ -230,11 +230,11 @@ Web 应用可在服务器发送文件前结束，为使用该功能，
 可调用 [[yii\web\Response::xSendFile()]]，
 如下简要列出一些常用 Web 服务器如何启用 `X-Sendfile` 功能：
 
-- Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
-- Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
-- Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+- Apache: [X-Sendfile](https://tn123.org/mod_xsendfile)
+- Lighttpd v1.4: [X-LIGHTTPD-send-file](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Lighttpd v1.5: [X-Sendfile](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+- Cherokee: [X-Sendfile and X-Accel-Redirect](https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
 ## 发送响应 <span id="sending-response"></span>

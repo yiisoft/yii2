@@ -16,7 +16,7 @@ thông qua dòng lệnh `./yii <route> [arguments] [options]`.
 Entry scripts có chức năng chính như sau:
 
 * Khai báo các hằng số ở phạm vi toàn cục;
-* Đăng ký [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Đăng ký [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Tải các file class của [[Yii]];
 * Tải cấu hình ứng dụng;
 * Tạo và cấu hình các phiên bản [application](structure-applications.md);
@@ -57,9 +57,9 @@ Tương tự, Mã nguồn dưới đây là các dòng lệnh trong mục script
 /**
  * Yii console bootstrap file.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);

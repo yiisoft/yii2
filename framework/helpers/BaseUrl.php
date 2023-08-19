@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -71,7 +71,7 @@ class BaseUrl
      * // /index.php?r=site%2Findex&src=ref1#name
      * echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
      *
-     * // http://www.example.com/index.php?r=site%2Findex
+     * // https://www.example.com/index.php?r=site%2Findex
      * echo Url::toRoute('site/index', true);
      *
      * // https://www.example.com/index.php?r=site%2Findex
@@ -186,7 +186,7 @@ class BaseUrl
      * // images/logo.gif
      * echo Url::to('images/logo.gif');
      *
-     * // http://www.example.com/images/logo.gif
+     * // https://www.example.com/images/logo.gif
      * echo Url::to('@web/images/logo.gif', true);
      *
      * // https://www.example.com/images/logo.gif
@@ -232,12 +232,12 @@ class BaseUrl
     }
 
     /**
-     * Normalize URL by ensuring that it use specified scheme.
+     * Normalize the URL by ensuring it uses specified scheme.
      *
-     * If URL is relative or scheme is not string, normalization is skipped.
+     * If the URL is relative or the scheme is not a string, normalization is skipped.
      *
      * @param string $url the URL to process
-     * @param string $scheme the URI scheme used in URL (e.g. `http` or `https`). Use empty string to
+     * @param string $scheme the URI scheme used in the URL (e.g. `http` or `https`). Use an empty string to
      * create protocol-relative URL (e.g. `//example.com/path`)
      * @return string the processed URL
      * @since 2.0.11
@@ -248,7 +248,7 @@ class BaseUrl
             return $url;
         }
 
-        if (substr($url, 0, 2) === '//') {
+        if (strncmp($url, '//', 2) === 0) {
             // e.g. //example.com/path/to/resource
             return $scheme === '' ? $url : "$scheme:$url";
         }
@@ -290,7 +290,7 @@ class BaseUrl
      *
      * @param string|array $url the URL to remember. Please refer to [[to()]] for acceptable formats.
      * If this parameter is not specified, the currently requested URL will be used.
-     * @param string $name the name associated with the URL to be remembered. This can be used
+     * @param string|null $name the name associated with the URL to be remembered. This can be used
      * later by [[previous()]]. If not set, [[\yii\web\User::setReturnUrl()]] will be used with passed URL.
      * @see previous()
      * @see \yii\web\User::setReturnUrl()
@@ -309,7 +309,7 @@ class BaseUrl
     /**
      * Returns the URL previously [[remember()|remembered]].
      *
-     * @param string $name the named associated with the URL that was remembered previously.
+     * @param string|null $name the named associated with the URL that was remembered previously.
      * If not set, [[\yii\web\User::getReturnUrl()]] will be used to obtain remembered URL.
      * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name
      * and `$name` is not specified.

@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\test;
 
 use yii\base\InvalidConfigException;
+use yii\db\ActiveRecord;
 use yii\db\TableSchema;
 
 /**
@@ -24,8 +25,8 @@ use yii\db\TableSchema;
  *
  * For more details and usage information on ActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
  *
- * @property TableSchema $tableSchema The schema information of the database table associated with this
- * fixture. This property is read-only.
+ * @property-read TableSchema $tableSchema The schema information of the database table associated with this
+ * fixture.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -33,13 +34,13 @@ use yii\db\TableSchema;
 class ActiveFixture extends BaseActiveFixture
 {
     /**
-     * @var string the name of the database table that this fixture is about. If this property is not set,
+     * @var string|null the name of the database table that this fixture is about. If this property is not set,
      * the table name will be determined via [[modelClass]].
      * @see modelClass
      */
     public $tableName;
     /**
-     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
+     * @var string|bool|null the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
      * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
@@ -58,8 +59,13 @@ class ActiveFixture extends BaseActiveFixture
     public function init()
     {
         parent::init();
-        if ($this->modelClass === null && $this->tableName === null) {
-            throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
+        if ($this->tableName === null) {
+            if ($this->modelClass === null) {
+                throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
+            }
+            /** @var ActiveRecord $modelClass */
+            $modelClass = $this->modelClass;
+            $this->db = $modelClass::getDb();
         }
     }
 

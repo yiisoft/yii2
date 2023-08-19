@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -14,7 +14,7 @@ use yii\web\Request;
 use yii\web\Response;
 
 /**
- * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+ * Cors filter implements [Cross Origin Resource Sharing](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
  *
  * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
  * but allow the developer to grant access to third party code (ajax calls from external domain).
@@ -26,7 +26,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::className(),
+ *             'class' => \yii\filters\Cors::class,
  *         ],
  *     ];
  * }
@@ -40,7 +40,7 @@ use yii\web\Response;
  * {
  *     return [
  *         'corsFilter' => [
- *             'class' => \yii\filters\Cors::className(),
+ *             'class' => \yii\filters\Cors::class,
  *             'cors' => [
  *                 // restrict access to
  *                 'Origin' => ['http://www.myserver.com', 'https://www.myserver.com'],
@@ -70,11 +70,11 @@ use yii\web\Response;
 class Cors extends ActionFilter
 {
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request|null the current request. If not set, the `request` application component will be used.
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response|null the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
     /**
@@ -197,7 +197,7 @@ class Cors extends ActionFilter
         if (isset($this->cors['Access-Control-Expose-Headers'])) {
             $responseHeaders['Access-Control-Expose-Headers'] = implode(', ', $this->cors['Access-Control-Expose-Headers']);
         }
-        
+
         if (isset($this->cors['Access-Control-Allow-Headers'])) {
             $responseHeaders['Access-Control-Allow-Headers'] = implode(', ', $this->cors['Access-Control-Allow-Headers']);
         }

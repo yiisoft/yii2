@@ -1,18 +1,20 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\grid;
 
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;
+use yiiunit\data\base\Singer;
 
 /**
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
@@ -88,6 +90,43 @@ class DataColumnTest extends \yiiunit\TestCase
             ],
         ]);
         //print_r($grid->columns);exit();
+        $dataColumn = $grid->columns[0];
+        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
+        $method->setAccessible(true);
+        $result = $method->invoke($dataColumn);
+        $this->assertEquals($result, $filterInput);
+    }
+
+    /**
+     * @see DataColumn::$filter
+     * @see DataColumn::renderFilterCellContent()
+     */
+    public function testFilterHasMaxLengthWhenIsAnActiveTextInput()
+    {
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => '\yii\db\Connection',
+                    'dsn' => 'sqlite::memory:',
+                ],
+            ],
+        ]);
+
+        ActiveRecord::$db = Yii::$app->getDb();
+        Yii::$app->getDb()->createCommand()->createTable(Singer::tableName(), [
+            'firstName' => 'string',
+            'lastName' => 'string'
+        ])->execute();
+
+        $filterInput = '<input type="text" class="form-control" name="Singer[lastName]" maxlength="25">';
+        $grid = new GridView([
+            'dataProvider' => new ActiveDataProvider(),
+            'filterModel' => new Singer(),
+            'columns' => [
+                0 => 'lastName'
+            ],
+        ]);
+
         $dataColumn = $grid->columns[0];
         $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
         $method->setAccessible(true);
@@ -195,5 +234,34 @@ HTML
 </select>
 HTML
             , $result);
+    }
+
+    /**
+     * @see DataColumn::$filterAttribute
+     * @see DataColumn::renderFilterCellContent()
+     */
+    public function testFilterInputWithFilterAttribute()
+    {
+        $this->mockApplication();
+
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [],
+            ]),
+            'columns' => [
+                0 => [
+                    'attribute' => 'username',
+                    'filterAttribute' => 'user_id',
+                ],
+            ],
+            'filterModel' => new \yiiunit\data\base\RulesModel(['rules' => [['user_id', 'safe']]]),
+        ]);
+
+        $dataColumn = $grid->columns[0];
+        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
+        $method->setAccessible(true);
+        $result = $method->invoke($dataColumn);
+
+        $this->assertEquals('<input type="text" class="form-control" name="RulesModel[user_id]">', $result);
     }
 }

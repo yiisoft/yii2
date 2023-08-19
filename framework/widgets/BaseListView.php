@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -227,14 +227,18 @@ abstract class BaseListView extends Widget
             }
         }
 
-        return Yii::$app->getI18n()->format($summaryContent, [
+        if ($summaryContent === '') {
+            return '';
+        }
+
+        return Html::tag($tag, Yii::$app->getI18n()->format($summaryContent, [
             'begin' => $begin,
             'end' => $end,
             'count' => $count,
             'totalCount' => $totalCount,
             'page' => $page,
             'pageCount' => $pageCount,
-        ], Yii::$app->language);
+        ], Yii::$app->language), $summaryOptions);
     }
 
     /**

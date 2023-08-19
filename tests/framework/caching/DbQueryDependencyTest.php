@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\caching;
@@ -97,6 +97,32 @@ class DbQueryDependencyTest extends DatabaseTestCase
             ->from('dependency_item')
             ->andWhere(['value' => 'not exist']);
         $dependency->reusable = false;
+        $dependency->method = function (Query $query, $db) {
+            return $query->orWhere(['value' => 'initial'])->exists($db);
+        };
+
+        $dependency->evaluateDependency($cache);
+        $this->assertFalse($dependency->isChanged($cache));
+
+        $db->createCommand()->delete('dependency_item')->execute();
+
+        $this->assertTrue($dependency->isChanged($cache));
+    }
+
+    /**
+     * @depends testCustomMethod
+     */
+    public function testReusableAndCustomMethodCallback()
+    {
+        $db = $this->getConnection(false);
+        $cache = new ArrayCache();
+
+        $dependency = new DbQueryDependency();
+        $dependency->db = $db;
+        $dependency->query = (new Query())
+            ->from('dependency_item')
+            ->andWhere(['value' => 'not exist']);
+        $dependency->reusable = true;
         $dependency->method = function (Query $query, $db) {
             return $query->orWhere(['value' => 'initial'])->exists($db);
         };

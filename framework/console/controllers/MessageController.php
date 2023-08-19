@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -58,12 +58,11 @@ class MessageController extends \yii\console\Controller
      */
     public $languages = [];
     /**
-     * @var string the name of the function for translating messages.
-     * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
-     * translated. You may use a string for single function name or an array for
-     * multiple function names.
+     * @var string|string[] the name of the function for translating messages.
+     * This is used as a mark to find the messages to be translated.
+     * You may use a string for single function name or an array for multiple function names.
      */
-    public $translator = 'Yii::t';
+    public $translator = ['Yii::t', '\Yii::t'];
     /**
      * @var bool whether to sort messages by keys when merging new messages
      * with the existing ones. Defaults to false, which means the new (untranslated)
@@ -85,23 +84,22 @@ class MessageController extends \yii\console\Controller
      */
     public $markUnused = true;
     /**
-     * @var array list of patterns that specify which files/directories should NOT be processed.
+     * @var array|null list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
      */
     public $except = [
-        '.svn',
-        '.git',
-        '.gitignore',
-        '.gitkeep',
-        '.hgignore',
-        '.hgkeep',
+        '.*',
+        '/.*',
         '/messages',
+        '/tests',
+        '/runtime',
+        '/vendor',
         '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
-     * @var array list of patterns that specify which files (not directories) should be processed.
+     * @var array|null list of patterns that specify which files (not directories) should be processed.
      * If empty or not set, all files will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
@@ -288,7 +286,7 @@ EOD;
      * This command will search through source code files and extract
      * messages that need to be translated in different languages.
      *
-     * @param string $configFile the path or alias of the configuration file.
+     * @param string|null $configFile the path or alias of the configuration file.
      * You may use the "yii message/config" command to generate
      * this file and then customize it for your needs.
      * @throws Exception on failure.
@@ -386,7 +384,7 @@ EOD;
 
         if (!$removeUnused) {
             foreach ($obsolete as $pk => $msg) {
-                if (mb_substr($msg, 0, 2) === '@@' && mb_substr($msg, -2) === '@@') {
+                if (strncmp($msg, '@@', 2) === 0 && substr($msg, -2) === '@@') {
                     unset($obsolete[$pk]);
                 }
             }

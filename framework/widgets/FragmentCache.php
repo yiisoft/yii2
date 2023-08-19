@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -18,8 +18,8 @@ use yii\di\Instance;
 /**
  * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
  *
- * @property string|false $cachedContent The cached content. False is returned if valid content is not found
- * in the cache. This property is read-only.
+ * @property-read string|false $cachedContent The cached content. False is returned if valid content is not
+ * found in the cache.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

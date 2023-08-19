@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\tests\unit\framework\db\pgsql;
@@ -75,6 +75,17 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $command = $db->createCommand($sql);
         $command->execute();
         $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
+    }
+
+    public function dataProviderGetRawSql()
+    {
+        return array_merge(parent::dataProviderGetRawSql(), [
+            [
+                'SELECT * FROM customer WHERE id::integer IN (:in, :out)',
+                [':in' => 1, ':out' => 2],
+                'SELECT * FROM customer WHERE id::integer IN (1, 2)',
+            ],
+        ]);
     }
 
     /**

@@ -42,15 +42,16 @@ return [
   指定されたアクセス・トークンを使ってユーザ識別情報クラスのインスタンスを探します。
   単一の秘密のトークンでユーザを認証する必要がある場合 (ステートレスな RESTful アプリケーションなどの場合) に、このメソッドが使用されます。
 * [[yii\web\IdentityInterface::getId()|getId()]]: ユーザ識別情報クラスのインスタンスによって表されるユーザの ID を返します。
-* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: クッキー・ベースのログインを検証するのに使用されるキーを返します。
-  このキーがログイン・クッキーに保存され、後でサーバ・サイドのキーと比較されて、
-  ログイン・クッキーが有効であることが確認されます。
+* [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: 自動ログインが有効にされている場合に、
+  セッションと自動ログインを検証するキーを返します。
 * [[yii\web\IdentityInterface::validateAuthKey()|validateAuthKey()]]: 
   クッキー・ベースのログイン・キーを検証するロジックを実装します。
 
 特定のメソッドが必要でない場合は、中身を空にして実装しても構いません。例えば、あなたのアプリケーションが純粋なステート・レス RESTful アプリケーションであるなら、
 実装する必要があるのは [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] と
 [[yii\web\IdentityInterface::getId()|getId()]] だけであり、他のメソッドは全て中身を空にしておくことが出来ます。
+逆にあなたのアプリケーションがセッションのみの認証を使用する場合は、
+[[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]] 以外の全てのメソッドを実装する必要があります。
 
 次の例では、[[yii\web\User::identityClass|ユーザ識別情報クラス]] は、`user` データベース・テーブルと関連付けられた
 [アクティブ・レコード](db-active-record.md) クラスとして実装されています。
@@ -99,7 +100,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return string 現在のユーザの認証キー
+     * @return string|null 現在のユーザの認証キー
      */
     public function getAuthKey()
     {
@@ -108,7 +109,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $authKey
-     * @return bool 認証キーが現在のユーザに対して有効か否か
+     * @return bool|null 認証キーが現在のユーザに対して有効か否か
      */
     public function validateAuthKey($authKey)
     {
@@ -117,9 +118,8 @@ class User extends ActiveRecord implements IdentityInterface
 }
 ```
 
-前述のように、`getAuthKey()` と `validateAuthKey()` は、
-あなたのアプリケーションがクッキー・ベースのログイン機能を使用する場合にのみ実装する必要があります。
-この場合、次のコードを使って、各ユーザに対して認証キーを生成して、`user` テーブルに保存しておくことが出来ます。
+次のコードを使って、各ユーザに対して認証キーを生成して、
+`user` テーブルに保存しておくことが出来ます。
 
 ```php
 class User extends ActiveRecord implements IdentityInterface

@@ -1,7 +1,7 @@
 Views
 =====
 
-Views are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+Views are part of the [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are code responsible for presenting data to end users. In a Web application, views are usually created
 in terms of *view templates* which are PHP script files containing mainly HTML code and presentational PHP code.
 They are managed by the [[yii\web\View|view]] [application component](structure-application-components.md) which provides commonly used methods
@@ -52,7 +52,7 @@ or other objects which trigger the [view rendering](#rendering-views).
 
 When creating views that generate HTML pages, it is important that you encode and/or filter the data coming
 from end users before presenting them. Otherwise, your application may be subject to
-[cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
+[cross-site scripting](https://en.wikipedia.org/wiki/Cross-site_scripting) attacks.
 
 To display a plain text, encode it first by calling [[yii\helpers\Html::encode()]]. For example, the following code
 encodes the user name before displaying it:
@@ -545,7 +545,7 @@ View components provide the following useful view-related features, each describ
 * [client script handling](output-client-scripts.md): supports CSS and JavaScript registration and rendering.
 * [asset bundle handling](structure-assets.md): supports registering and rendering of [asset bundles](structure-assets.md).
 * [alternative template engines](tutorial-template-engines.md): allows you to use other template engines, such as
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 You may also frequently use the following minor yet useful features when you are developing Web pages.
 
@@ -616,14 +616,14 @@ $this->registerLinkTag([
     'title' => 'Live News for Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 The code above will result in
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Similar as [[yii\web\View::registerMetaTag()|registerMetaTag()]], you can specify a key when calling

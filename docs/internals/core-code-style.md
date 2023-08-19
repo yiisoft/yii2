@@ -46,7 +46,7 @@ Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`
 
 The term "class" refers to all classes and interfaces here.
 
-- Classes should be named using `CamelCase`.
+- Classes should be named using `StudlyCase`.
 - The brace should always be written on the line underneath the class name.
 - Every class must have a documentation block that conforms to the PHPDoc.
 - All code in a class must be indented with 4 spaces.
@@ -152,7 +152,7 @@ class Foo
  * Checks whether the IP is in subnet range
  *
  * @param string $ip an IPv4 or IPv6 address
- * @param int $cidr the CIDR lendth
+ * @param int $cidr the CIDR length
  * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
  * @return bool whether the IP is in subnet range
  */
@@ -281,7 +281,7 @@ if (!$model && null === $event)
 ```
 
 Prefer avoiding `else` after `return` where it makes sense.
-Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+Use [guard conditions](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
 
 ```php
 $result = $this->getResult();
@@ -362,7 +362,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Documentation
 -------------
 
-- Refer to [phpDoc](http://phpdoc.org/) for documentation syntax.
+- Refer to [phpDoc](https://phpdoc.org/) for documentation syntax.
 - Code without documentation is not allowed.
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
@@ -395,9 +395,9 @@ Documentation
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

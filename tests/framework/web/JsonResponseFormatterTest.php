@@ -1,12 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
 
+use yii\helpers\Json;
 use yii\web\JsonResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
 
@@ -206,5 +207,47 @@ class JsonResponseFormatterTest extends FormatterTest
         $this->response->content = $content;
         $this->formatter->format($this->response);
         $this->assertEquals($content, $this->response->content);
+    }
+
+    /**
+     * Formatter configuration keepObjectType affects how zero-indexed objects are encoded
+     */
+    public function testFormatZeroIndexedObjectKeepObject()
+    {
+        $formatter = $this->getFormatterInstance([
+            'keepObjectType' => true,
+        ]);
+        $this->response->data = (object)['test'];
+        $formatter->format($this->response);
+        $this->assertEquals('{"0":"test"}', $this->response->content);
+    }
+
+    /**
+     * Formatter configuration keepObjectType affects how zero-indexed objects are encoded
+     */
+    public function testFormatZeroIndexedObjectAllowArray()
+    {
+        $formatter = $this->getFormatterInstance([
+            'keepObjectType' => false,
+        ]);
+        $this->response->data = (object)['test'];
+        $formatter->format($this->response);
+        $this->assertEquals('["test"]', $this->response->content);
+    }
+
+    /**
+     * Formatter configuration keepObjectType reverts Json::$keepObjectType to its previous value
+     */
+    public function testFormatCleanupKeepObjectType()
+    {
+        $default = Json::$keepObjectType;
+        Json::$keepObjectType = false;
+        $formatter = $this->getFormatterInstance([
+            'keepObjectType' => true,
+        ]);
+        $this->response->data = (object)['test'];
+        $formatter->format($this->response);
+        $this->assertFalse(Json::$keepObjectType);
+        Json::$keepObjectType = $default;
     }
 }

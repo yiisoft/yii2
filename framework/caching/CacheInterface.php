@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -97,9 +97,9 @@ interface CacheInterface extends \ArrayAccess
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * default [[defaultDuration]] value is used.
-     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
@@ -112,13 +112,14 @@ interface CacheInterface extends \ArrayAccess
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
+     * @param Dependency|null $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      */
-    public function multiSet($items, $duration = 0, $dependency = null);
+    public function multiSet($items, $duration = null, $dependency = null);
 
     /**
      * Stores a value identified by a key into cache if the cache does not contain this key.
@@ -127,7 +128,7 @@ interface CacheInterface extends \ArrayAccess
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
@@ -140,7 +141,7 @@ interface CacheInterface extends \ArrayAccess
      *
      * @param array $items the items to be cached, as key-value pairs.
      * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
@@ -181,9 +182,9 @@ interface CacheInterface extends \ArrayAccess
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
      * In case $callable returns `false`, the value will not be cached.
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
-     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.
      * @return mixed result of $callable execution

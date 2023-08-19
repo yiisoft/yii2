@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session;
@@ -16,6 +16,8 @@ use yii\web\CacheSession;
  */
 class CacheSessionTest extends \yiiunit\TestCase
 {
+    use SessionTestTrait;
+
     protected function setUp()
     {
         parent::setUp();
@@ -50,5 +52,15 @@ class CacheSessionTest extends \yiiunit\TestCase
         $this->assertEquals('bar', $session->get('foo'));
 
         $this->assertTrue($session->destroySession($session->getId()));
+    }
+
+    public function testInitUseStrictMode()
+    {
+        $this->initStrictModeTest(CacheSession::className());
+    }
+
+    public function testUseStrictMode()
+    {
+        $this->useStrictModeTest(CacheSession::className());
     }
 }

@@ -1,11 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\ar;
+
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Class OrderItem.
@@ -22,6 +24,22 @@ class OrderItem extends ActiveRecord
     public static function tableName()
     {
         return static::$tableName ?: 'order_item';
+    }
+
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'order_id' => AttributeTypecastBehavior::TYPE_STRING,
+                ],
+                'typecastAfterValidate' => false,
+                'typecastAfterFind' => true,
+                'typecastAfterSave' => false,
+                'typecastBeforeSave' => false,
+            ],
+        ];
     }
 
     public function getOrder()

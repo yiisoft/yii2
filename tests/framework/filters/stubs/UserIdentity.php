@@ -1,14 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters\stubs;
 
 use yii\base\Component;
-use yii\base\NotSupportedException;
 use yii\web\IdentityInterface;
 
 /**
@@ -61,11 +60,11 @@ class UserIdentity extends Component implements IdentityInterface
 
     public function getAuthKey()
     {
-        throw new NotSupportedException();
+        return null;
     }
 
     public function validateAuthKey($authKey)
     {
-        throw new NotSupportedException();
+        return true;
     }
 }

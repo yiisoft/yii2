@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\pgsql;
@@ -10,6 +10,7 @@ namespace yiiunit\framework\db\pgsql;
 use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
 
 /**
@@ -75,7 +76,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bool_col2']['precision'] = null;
         $columns['bool_col2']['scale'] = null;
         $columns['bool_col2']['defaultValue'] = true;
-        $columns['ts_default']['defaultValue'] = new Expression('now()');
+        if (version_compare($this->getConnection(false)->getServerVersion(), '10', '<')) {
+            $columns['ts_default']['defaultValue'] = new Expression('now()');
+        }
         $columns['bit_col']['dbType'] = 'bit';
         $columns['bit_col']['size'] = 8;
         $columns['bit_col']['precision'] = null;
@@ -346,5 +349,21 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['3: foreign key'][2][0]->foreignSchemaName = 'public';
         $result['3: index'][2] = [];
         return $result;
+    }
+
+    public function testCustomTypeInNonDefaultSchema()
+    {
+        $connection = $this->getConnection();
+        ActiveRecord::$db = $this->getConnection();
+
+        $schema = $connection->schema->getTableSchema('schema2.custom_type_test_table');
+        $model = EnumTypeInCustomSchema::find()->one();
+        $this->assertSame(['VAL2'], $model->test_type->getValue());
+
+        $model->test_type = ['VAL1'];
+        $model->save();
+
+        $modelAfterUpdate = EnumTypeInCustomSchema::find()->one();
+        $this->assertSame(['VAL1'], $modelAfterUpdate->test_type->getValue());
     }
 }

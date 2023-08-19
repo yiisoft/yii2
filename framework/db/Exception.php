@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -17,7 +17,7 @@ class Exception extends \yii\base\Exception
 {
     /**
      * @var array the error info provided by a PDO exception. This is the same as returned
-     * by [PDO::errorInfo](https://secure.php.net/manual/en/pdo.errorinfo.php).
+     * by [PDO::errorInfo](https://www.php.net/manual/en/pdo.errorinfo.php).
      */
     public $errorInfo = [];
 
@@ -26,13 +26,14 @@ class Exception extends \yii\base\Exception
      * Constructor.
      * @param string $message PDO error message
      * @param array $errorInfo PDO error info
-     * @param int $code PDO error code
-     * @param \Exception $previous The previous exception used for the exception chaining.
+     * @param string $code PDO error code
+     * @param \Throwable|null $previous The previous exception used for the exception chaining.
      */
-    public function __construct($message, $errorInfo = [], $code = 0, \Exception $previous = null)
+    public function __construct($message, $errorInfo = [], $code = '', $previous = null)
     {
+        parent::__construct($message, 0, $previous);
         $this->errorInfo = $errorInfo;
-        parent::__construct($message, $code, $previous);
+        $this->code = $code;
     }
 
     /**

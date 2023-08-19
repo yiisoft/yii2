@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -37,7 +37,7 @@ abstract class BaseMigrateController extends Controller
      */
     public $defaultAction = 'up';
     /**
-     * @var string|array the directory containing the migration classes. This can be either
+     * @var string|array|null the directory containing the migration classes. This can be either
      * a [path alias](guide:concept-aliases) or a directory path.
      *
      * Migration classes located at this path should be declared without a namespace.
@@ -54,7 +54,7 @@ abstract class BaseMigrateController extends Controller
      * as the migration name contains the origin of the migration in the history, which is not the case when
      * using multiple migration paths.
      *
-     * @see $migrationNamespaces
+     * @see migrationNamespaces
      */
     public $migrationPath = ['@app/migrations'];
     /**
@@ -75,7 +75,7 @@ abstract class BaseMigrateController extends Controller
      * ```
      *
      * @since 2.0.10
-     * @see $migrationPath
+     * @see migrationPath
      */
     public $migrationNamespaces = [];
     /**
@@ -84,6 +84,20 @@ abstract class BaseMigrateController extends Controller
      * or a file path.
      */
     public $templateFile;
+    /**
+     * @var int|null the permission to be set for newly generated migration files.
+     * This value will be used by PHP chmod() function. No umask will be applied.
+     * If not set, the permission will be determined by the current environment.
+     * @since 2.0.43
+     */
+    public $newFileMode;
+    /**
+     * @var string|int|null the user and/or group ownership to be set for newly generated migration files.
+     * If not set, the ownership will be determined by the current environment.
+     * @since 2.0.43
+     * @see FileHelper::changeOwnership()
+     */
+    public $newFileOwnership;
     /**
      * @var bool indicates whether the console output should be compacted.
      * If this is set to true, the individual commands ran within the migration will not be output to the console.
@@ -118,6 +132,8 @@ abstract class BaseMigrateController extends Controller
             if (empty($this->migrationNamespaces) && empty($this->migrationPath)) {
                 throw new InvalidConfigException('At least one of `migrationPath` or `migrationNamespaces` should be specified.');
             }
+
+            $this->migrationNamespaces = (array) $this->migrationNamespaces;
 
             foreach ($this->migrationNamespaces as $key => $value) {
                 $this->migrationNamespaces[$key] = trim($value, '\\');
@@ -209,6 +225,8 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated up successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -270,6 +288,8 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated down successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -336,6 +356,8 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " redone.\n", Console::FG_GREEN);
             $this->stdout("\nMigration redone successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -365,13 +387,13 @@ abstract class BaseMigrateController extends Controller
     public function actionTo($version)
     {
         if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
-            $this->migrateToVersion($namespaceVersion);
+            return $this->migrateToVersion($namespaceVersion);
         } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
-            $this->migrateToVersion($migrationName);
+            return $this->migrateToVersion($migrationName);
         } elseif ((string) (int) $version == $version) {
-            $this->migrateToTime($version);
+            return $this->migrateToTime($version);
         } elseif (($time = strtotime($version)) !== false) {
-            $this->migrateToTime($time);
+            return $this->migrateToTime($time);
         } else {
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n the full namespaced name of a migration (e.g. app\\migrations\\M101129185401CreateUserTable),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
         }
@@ -429,13 +451,11 @@ abstract class BaseMigrateController extends Controller
             if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
-                } else {
-                    if ($this->confirm("Set migration history at $originalVersion?")) {
-                        for ($j = 0; $j < $i; ++$j) {
-                            $this->removeMigrationHistory($migrations[$j]);
-                        }
-                        $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
+                } elseif ($this->confirm("Set migration history at $originalVersion?")) {
+                    for ($j = 0; $j < $i; ++$j) {
+                        $this->removeMigrationHistory($migrations[$j]);
                     }
+                    $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
                 }
 
                 return ExitCode::OK;
@@ -446,7 +466,7 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
-     * Truncates the whole database and starts the migration from the beginning.
+     * Drops all tables and related constraints. Starts the migration from the beginning.
      *
      * ```
      * yii migrate/fresh
@@ -458,16 +478,18 @@ abstract class BaseMigrateController extends Controller
     {
         if (YII_ENV_PROD) {
             $this->stdout("YII_ENV is set to 'prod'.\nRefreshing migrations is not possible on production systems.\n");
+
             return ExitCode::OK;
         }
 
-        if ($this->confirm(
-            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+        if ($this->confirm("Are you sure you want to drop all tables and related constraints and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
             $this->truncateDatabase();
+
             return $this->actionUp();
         }
 
         $this->stdout('Action was cancelled by user. Nothing has been performed.');
+
         return ExitCode::OK;
     }
 
@@ -543,6 +565,8 @@ abstract class BaseMigrateController extends Controller
                 $this->stdout("\t(" . date('Y-m-d H:i:s', $time) . ') ' . $version . "\n");
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -563,9 +587,7 @@ abstract class BaseMigrateController extends Controller
      */
     public function actionNew($limit = 10)
     {
-        if ($limit === 'all') {
-            $limit = null;
-        } else {
+        if ($limit !== 'all') {
             $limit = (int) $limit;
             if ($limit < 1) {
                 throw new Exception('The limit must be greater than 0.');
@@ -578,7 +600,7 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("No new migrations found. Your system is up-to-date.\n", Console::FG_GREEN);
         } else {
             $n = count($migrations);
-            if ($limit && $n > $limit) {
+            if ($limit !== 'all' && $n > $limit) {
                 $migrations = array_slice($migrations, 0, $limit);
                 $this->stdout("Showing $limit out of $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n", Console::FG_YELLOW);
             } else {
@@ -589,6 +611,8 @@ abstract class BaseMigrateController extends Controller
                 $this->stdout("\t" . $migration . "\n");
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -608,7 +632,7 @@ abstract class BaseMigrateController extends Controller
      * For example:
      *
      * ```
-     * yii migrate/create 'app\\migrations\\createUserTable'
+     * yii migrate/create app\\migrations\\createUserTable
      * ```
      *
      * In case [[migrationPath]] is not set and no namespace is provided, the first entry of [[migrationNamespaces]] will be used.
@@ -645,9 +669,18 @@ abstract class BaseMigrateController extends Controller
                 'namespace' => $namespace,
             ]);
             FileHelper::createDirectory($migrationPath);
-            file_put_contents($file, $content, LOCK_EX);
+            if (file_put_contents($file, $content, LOCK_EX) === false) {
+                $this->stdout("Failed to create new migration.\n", Console::FG_RED);
+
+                return ExitCode::IOERR;
+            }
+
+            FileHelper::changeOwnership($file, $this->newFileOwnership, $this->newFileMode);
+
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -824,8 +857,10 @@ abstract class BaseMigrateController extends Controller
         if ($count === 0) {
             $this->stdout("Nothing needs to be done.\n", Console::FG_GREEN);
         } else {
-            $this->actionDown($count);
+            return $this->actionDown($count);
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -842,9 +877,7 @@ abstract class BaseMigrateController extends Controller
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
-                $this->actionUp($i + 1);
-
-                return ExitCode::OK;
+                return $this->actionUp($i + 1);
             }
         }
 
@@ -855,7 +888,7 @@ abstract class BaseMigrateController extends Controller
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
-                    $this->actionDown($i);
+                    return $this->actionDown($i);
                 }
 
                 return ExitCode::OK;
@@ -959,7 +992,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Returns the migration history.
-     * @param int $limit the maximum number of records in the history to be returned. `null` for "no limit".
+     * @param int|null $limit the maximum number of records in the history to be returned. `null` for "no limit".
      * @return array the migration history
      */
     abstract protected function getMigrationHistory($limit);

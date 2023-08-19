@@ -46,7 +46,7 @@ class AppAsset extends AssetBundle
 * [[yii\web\AssetBundle::js|js]]: массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте. Заметьте, что только прямая косая черта (forward slash - "/") может быть использована, как разделитель директорий. Каждый JavaScript файл может быть задан в одном из следующих форматов:
   - относительный путь, представленный локальным JavaScript файлом (например `js/main.js`). Актуальный путь файла может быть определён путём добавления [[yii\web\AssetManager::basePath]] к относительному пути, и актуальный URL файла может быть определён путём добавления [[yii\web\AssetManager::baseUrl]] к относительному пути.
   - абсолютный URL, представленный внешним JavaScript файлом. Например,
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` или
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::css|css]]: массив, перечисляющий CSS файлы, содержащиеся в данном комплекте. Формат этого массива такой же, как и у [[yii\web\AssetBundle::js|js]].
 * [[yii\web\AssetBundle::depends|depends]]: массив, перечисляющий имена комплектов ресурсов, от которых зависит данный комплект.
@@ -124,23 +124,49 @@ class FontAwesomeAsset extends AssetBundle
     public $css = [ 
         'css/font-awesome.min.css', 
     ]; 
+    public $publishOptions = [
+        'only' => [
+            'fonts/*',
+            'css/*',
+        ]
+    ];
+}  
+```
+
+Более сложную логику можно реализовать с помощью переопределения `init()`. Ниже указан пример публикации поддиректорий этим способом:
+
+```php
+<?php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class FontAwesomeAsset extends AssetBundle 
+{
+    public $sourcePath = '@bower/font-awesome'; 
+    public $css = [ 
+        'css/font-awesome.min.css', 
+    ]; 
     
     public function init()
     {
         parent::init();
         $this->publishOptions['beforeCopy'] = function ($from, $to) {
-            $dirname = basename(dirname($from));
+            if (basename(dirname($from)) !== 'font-awesome') {
+                return true;
+            }
+            $dirname = basename($from);
             return $dirname === 'fonts' || $dirname === 'css';
         };
     }
 }  
 ```
 
-В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
+В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](https://fontawesome.com/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
 
 ### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
-Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.org/).
+Большинство JavaScript/CSS пакетов управляются [Bower](https://bower.io/) и/или [NPM](https://www.npmjs.com/).
 В мире PHP мы испольуем Composer для управления зависимостями, но он не позволяет устанавливать пакеты Bower и NPM, просто указывая их в `composer.json`.
 
 Чтобы получить такую возможность, нужно немного настроить Composer. Существует два варианта:
@@ -189,7 +215,7 @@ $config = [
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-Эта команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) глобально,
+Эта команда устанавливает [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) глобально,
 что позволит устанавливать зависимости из Bower и NPM. После установки все проекты на вашем комьютере будут поддерживать
 установку Bower и NPM пакетов, описанных в `composer.json`.
 
@@ -372,10 +398,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // makes NO effect!
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // makes NO effect!
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // makes NO effect!
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // makes NO effect!
                 ],
             ],
         ],
@@ -459,7 +485,7 @@ return [
 
 ## Преобразование Ресурсов<span id="asset-conversion"></span>
 
-Вместо того, чтобы напрямую писать CSS и/или JavaScript код, разработчики часто пишут его в некотором <b>расширенном синтаксисе</b> и используют специальные инструменты конвертации в CSS/JavaScript. Например, для CSS кода можно использовать [LESS](http://lesscss.org/) или [SCSS](http://sass-lang.com/); а для JavaScript можно использовать [TypeScript](http://www.typescriptlang.org/).
+Вместо того, чтобы напрямую писать CSS и/или JavaScript код, разработчики часто пишут его в некотором <b>расширенном синтаксисе</b> и используют специальные инструменты конвертации в CSS/JavaScript. Например, для CSS кода можно использовать [LESS](https://lesscss.org/) или [SCSS](https://sass-lang.com/); а для JavaScript можно использовать [TypeScript](https://www.typescriptlang.org/).
 
 Можно перечислить файлы ресурсов в <b>расширенном синтаксисе</b> в [[yii\web\AssetBundle::css|css]] и [[yii\web\AssetBundle::js|js]] свойствах из комплекта ресурсов. Например,
 
@@ -485,13 +511,13 @@ class AppAsset extends AssetBundle
 
 Yii использует имена расширений файлов для идентификации расширенного синтаксиса внутри ресурса. По умолчанию признаны следующие синтаксисы и имена расширений файлов:
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](http://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
+Yii ориентируется на установленные инструменты конвертации ресурсов препроцессора. Например, используя [LESS](https://lesscss.org/), Вы должны установить команду `lessc` препроцессора.
 
 Вы можете настроить команды препроцессора и поддерживать расширенный синтаксис сконфигурировав [[yii\web\AssetManager::converter]] следующим образом:
 
@@ -515,7 +541,7 @@ return [
 Ключи массива - это имена расширений файлов (без ведущей точки), а значения массива - это образующийся файл ресурса имён расширений и команд для выполнения конвертации ресурса. Маркеры `{from}` и `{to}` в командах будут заменены соответственно исходным путём файла ресурсов и путём назначения файла ресурсов.
 
 > Note: Существуют другие способы работы с ресурсами расширенного синтаксиса, кроме того, который указан выше.
-Например, Вы можете использовать инструменты построения, такие как [grunt](http://gruntjs.com/) для отслеживания и автоматической конвертации ресурсов расширенного синтаксиса. В этом случае, Вы должны перечислить конечные CSS/JavaScript файлы в комплекте ресурсов вместо исходных файлов.
+Например, Вы можете использовать инструменты построения, такие как [grunt](https://gruntjs.com/) для отслеживания и автоматической конвертации ресурсов расширенного синтаксиса. В этом случае, Вы должны перечислить конечные CSS/JavaScript файлы в комплекте ресурсов вместо исходных файлов.
 
 ## Объединение и Сжатие Ресурсов<span id="combining-compressing-assets"></span>
 
@@ -671,7 +697,7 @@ yii asset assets.php config/assets-prod.php
 
 
 > Для справки: Команда `asset` является не единственной опцией для автоматического процесса объединения и сжатия ресурсов.
-  Вы можете также использовать такой замечательный инструмент запуска приложений как [grunt](http://gruntjs.com/) для достижения той же цели.
+  Вы можете также использовать такой замечательный инструмент запуска приложений как [grunt](https://gruntjs.com/) для достижения той же цели.
 
 
 ### Группировка Комплектов Ресурсов <span id="grouping-asset-bundles"></span>

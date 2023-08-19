@@ -143,7 +143,7 @@ Vous pouvez rediriger le navigateur sur une URL en appelant la méthode [[yii\we
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -152,7 +152,7 @@ Dans le code précédent, la méthode d'action retourne le résultat de la méth
 Dans des endroits autres que les méthodes d'action, vous devez appeler la méthode [[yii\web\Response::redirect()]] directement, suivi d'un appel chaîné à la méthode [[yii\web\Response::send()]] pour garantir qu'aucun contenu supplémentaire ne sera ajouté à la réponse. 
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: par défaut la méthode [[yii\web\Response::redirect()]] définit le code d'état à 302 pour indiquer au navigateur que la ressource requise est *temporairement* située sous un URI différent. Vous pouvez passer un code 301 pour dire au navigateur que la ressource a été déplacée *de manière permanente*.
@@ -187,11 +187,11 @@ Si vous appelez la méthode d'envoi de fichiers dans des endroits autres qu'une 
 
 Quelques serveurs Web assurent une prise en charge spéciale de l'envoi de fichiers appelée *X-Sendfile*. L'idée est de rediriger la requête d'un fichier sur le serveur Web qui sert directement le fichier. En conséquence, l'application Web peut terminer plus rapidement tandis que le serveur Web est en train d'envoyer le fichier. Pour utiliser cette fonctionnalité, vous pouvez appeler la méthode [[yii\web\Response::xSendFile()]]. La liste suivante résume, comment activer la fonctionnalité `X-Sendfile` pour quelques serveurs Web populaires :
 
-- Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
-- Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-- Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
-- Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+- Apache: [X-Sendfile](https://tn123.org/mod_xsendfile)
+- Lighttpd v1.4: [X-LIGHTTPD-send-file](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Lighttpd v1.5: [X-Sendfile](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+- Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+- Cherokee: [X-Sendfile and X-Accel-Redirect](https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
 ## Envoi de la réponse <span id="sending-response"></span>

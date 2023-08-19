@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rest;
@@ -10,6 +10,9 @@ namespace yii\rest;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\DataFilter;
+use yii\data\Pagination;
+use yii\data\Sort;
+use yii\helpers\ArrayHelper;
 
 /**
  * IndexAction implements the API endpoint for listing multiple models.
@@ -22,7 +25,7 @@ use yii\data\DataFilter;
 class IndexAction extends Action
 {
     /**
-     * @var callable a PHP callable that will be called to prepare a data provider that
+     * @var callable|null a PHP callable that will be called to prepare a data provider that
      * should return a collection of the models. If not set, [[prepareDataProvider()]] will be used instead.
      * The signature of the callable should be:
      *
@@ -46,8 +49,24 @@ class IndexAction extends Action
      */
     public $prepareDataProvider;
     /**
+     * @var callable a PHP callable that will be called to prepare query in prepareDataProvider.
+     * Should return $query.
+     * For example:
+     *
+     * ```php
+     * function ($query, $requestParams) {
+     *     $query->andFilterWhere(['id' => 1]);
+     *     ...
+     *     return $query;
+     * }
+     * ```
+     *
+     * @since 2.0.42
+     */
+    public $prepareSearchQuery;
+    /**
      * @var DataFilter|null data filter to be used for the search filter composition.
-     * You must setup this field explicitly in order to enable filter processing.
+     * You must set up this field explicitly in order to enable filter processing.
      * For example:
      *
      * ```php
@@ -68,6 +87,22 @@ class IndexAction extends Action
      * @since 2.0.13
      */
     public $dataFilter;
+    /**
+     * @var array|Pagination|false The pagination to be used by [[prepareDataProvider()]].
+     * If this is `false`, it means pagination is disabled.
+     * Note: if a Pagination object is passed, it's `params` will be set to the request parameters.
+     * @see Pagination
+     * @since 2.0.45
+     */
+    public $pagination = [];
+    /**
+     * @var array|Sort|false The sorting to be used by [[prepareDataProvider()]].
+     * If this is `false`, it means sorting is disabled.
+     * Note: if a Sort object is passed, it's `params` will be set to the request parameters.
+     * @see Sort
+     * @since 2.0.45
+     */
+    public $sort = [];
 
 
     /**
@@ -115,16 +150,43 @@ class IndexAction extends Action
         if (!empty($filter)) {
             $query->andWhere($filter);
         }
+        if (is_callable($this->prepareSearchQuery)) {
+            $query = call_user_func($this->prepareSearchQuery, $query, $requestParams);
+        }
+
+        if (is_array($this->pagination)) {
+            $pagination = ArrayHelper::merge(
+                [
+                    'params' => $requestParams,
+                ],
+                $this->pagination
+            );
+        } else {
+            $pagination = $this->pagination;
+            if ($this->pagination instanceof Pagination) {
+                $pagination->params = $requestParams;
+            }
+        }
+
+        if (is_array($this->sort)) {
+            $sort = ArrayHelper::merge(
+                [
+                    'params' => $requestParams,
+                ],
+                $this->sort
+            );
+        } else {
+            $sort = $this->sort;
+            if ($this->sort instanceof Sort) {
+                $sort->params = $requestParams;
+            }
+        }
 
         return Yii::createObject([
             'class' => ActiveDataProvider::className(),
             'query' => $query,
-            'pagination' => [
-                'params' => $requestParams,
-            ],
-            'sort' => [
-                'params' => $requestParams,
-            ],
+            'pagination' => $pagination,
+            'sort' => $sort,
         ]);
     }
 }

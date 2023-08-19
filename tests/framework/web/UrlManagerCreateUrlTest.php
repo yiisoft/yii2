@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -202,6 +202,7 @@ class UrlManagerCreateUrlTest extends TestCase
             'post/<id:\d+>' => 'post/view',
             'posts' => 'post/index',
             'book/<id:\d+>/<title>' => 'book/view',
+            'POST posts' => 'post/create',
         ];
         $manager = $this->getUrlManager($config, $showScriptName);
 
@@ -235,6 +236,10 @@ class UrlManagerCreateUrlTest extends TestCase
         // match third rule, ensure encoding of params
         $url = $manager->$method(['book/view', 'id' => 1, 'title' => 'sample post']);
         $this->assertEquals("$prefix/book/1/sample+post", $url);
+
+        // match fourth rule, since 2.0.41 non-GET verbs are allowed
+        $url = $manager->$method(['post/create']);
+        $this->assertEquals("$prefix/posts", $url);
     }
 
     /**
@@ -831,5 +836,26 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);
         $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
         $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
+    }
+
+    public function testNotEnsuringCacheForEmptyRuleset()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'cache' => ArrayCache::className(),
+            ],
+        ]);
+        // no rules - don't ensure cache
+        $urlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'rules' => [],
+        ]);
+        $this->assertSame('cache', $urlManager->cache);
+        // with rules - ensure cache
+        $urlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'rules' => ['/' => 'site/index'],
+        ]);
+        $this->assertInstanceOf(ArrayCache::className(), $urlManager->cache);
     }
 }

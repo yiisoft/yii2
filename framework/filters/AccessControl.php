@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -31,7 +31,7 @@ use yii\web\User;
  * {
  *     return [
  *         'access' => [
- *             'class' => \yii\filters\AccessControl::className(),
+ *             'class' => \yii\filters\AccessControl::class,
  *             'only' => ['create', 'update'],
  *             'rules' => [
  *                 // deny all POST requests
@@ -63,7 +63,7 @@ class AccessControl extends ActionFilter
      */
     public $user = 'user';
     /**
-     * @var callable a callback that will be called if the access should be denied
+     * @var callable|null a callback that will be called if the access should be denied
      * to the current user. This is the case when either no rule matches, or a rule with
      * [[AccessRule::$allow|$allow]] set to `false` matches.
      * If not set, [[denyAccess()]] will be called.

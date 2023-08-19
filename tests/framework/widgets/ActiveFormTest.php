@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -158,6 +158,7 @@ HTML
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/15476
+     * @see https://github.com/yiisoft/yii2/issues/16892
      */
     public function testValidationStateOnInput()
     {
@@ -182,5 +183,25 @@ HTML
 EOF
         , (string) $form->field($model, 'name'));
 
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+
+<input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+            , (string) $form->field($model, 'name')->checkbox());
+
+        $this->assertEqualsWithoutLE(<<<'EOF'
+<div class="form-group field-dynamicmodel-name">
+
+<input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
+
+<div class="help-block">I have an error!</div>
+</div>
+EOF
+            , (string) $form->field($model, 'name')->radio());
     }
 }

@@ -2,7 +2,7 @@
 ==========
 
 ビヘイビアは [[yii\base\Behavior]] またその子クラスのインスタンスです。ビヘイビアは
-[ミックスイン](http://en.wikipedia.org/wiki/Mixin) としても知られ、既存の [[yii\base\Component|component]] クラスの
+[ミックスイン](https://ja.wikipedia.org/wiki/Mixin) としても知られ、既存の [[yii\base\Component|component]] クラスの
 機能を、クラスの継承を変更せずに拡張することができます。コンポーネントにビヘイビアをアタッチすると、その
 コンポーネントにはビヘイビアのメソッドとプロパティが "注入" され、それらのメソッドとプロパティは、
 コンポーネント・クラス自体に定義されているかのようにアクセスできるようになります。また、ビヘイビアは、
@@ -120,21 +120,21 @@ class User extends ActiveRecord
     {
         return [
             // 無名ビヘイビア ビヘイビア・クラス名のみ
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // 名前付きビヘイビア ビヘイビア・クラス名のみ
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // 無名ビヘイビア 構成情報配列
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // 名前付きビヘイビア 構成情報配列
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -153,14 +153,14 @@ class User extends ActiveRecord
 use app\components\MyBehavior;
 
 // ビヘイビア・オブジェクトをアタッチ
-$component->attachBehavior('myBehavior1', new MyBehavior);
+$component->attachBehavior('myBehavior1', new MyBehavior());
 
 // ビヘイビア・クラスをアタッチ
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // 構成情報配列をアタッチ
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -170,8 +170,8 @@ $component->attachBehavior('myBehavior3', [
 
 ```php
 $component->attachBehaviors([
-    'myBehavior1' => new MyBehavior,  // 名前付きビヘイビア
-    MyBehavior::className(),          // 無名ビヘイビア
+    'myBehavior1' => new MyBehavior(), // 名前付きビヘイビア
+    MyBehavior::class,                 // 無名ビヘイビア
 ]);
 ```
 
@@ -179,10 +179,10 @@ $component->attachBehaviors([
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -272,7 +272,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
@@ -329,7 +329,7 @@ $user->touch('login_time');
 ビヘイビアとトレイトの比較 <span id="comparison-with-traits"></span>
 --------------------------
 
-ビヘイビアは、主となるクラスにそのプロパティやメソッドを「注入する」という点で [トレイト](https://secure.php.net/traits)
+ビヘイビアは、主となるクラスにそのプロパティやメソッドを「注入する」という点で [トレイト](https://www.php.net/manual/ja/language.oop5.traits.php)
 に似ていますが、これらは多くの面で異なります。以下に説明するように、それらは互いに長所と短所を持っています。
 それらは代替手段というよりも、むしろ相互補完関係のようなものです。
 

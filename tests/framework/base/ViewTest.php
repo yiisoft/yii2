@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\base;
@@ -79,8 +79,8 @@ PHP
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
         file_put_contents($baseView, <<<'PHP'
-<?php 
-    echo $this->render("sub"); 
+<?php
+    echo $this->render("sub");
 ?>
 PHP
         );
@@ -96,5 +96,23 @@ PHP
         ]);
 
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
+    }
+
+    public function testAfterRender()
+    {
+        $view = new View();
+        $filename = 'path/to/file';
+        $params = ['search' => 'simple', 'replace' => 'new'];
+        $output = 'This is a simple rendered output. (filename)';
+        $expectedOutput = 'This is a new rendered output. (path/to/file)';
+
+        $view->on(View::EVENT_AFTER_RENDER, function (ViewEvent $event) {
+            $event->output = str_replace($event->params['search'], $event->params['replace'], $event->output);
+            $event->output = str_replace('filename', $event->viewFile, $event->output);
+        });
+
+        $view->afterRender($filename, $params, $output);
+
+        $this->assertSame($expectedOutput, $output);
     }
 }

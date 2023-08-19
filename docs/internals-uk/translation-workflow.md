@@ -57,7 +57,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 
 ### Переклад зображень
 
-Зображення до документації знаходяться у вкладеній директорії `images`. Усі вони створенні програмою [yED](http://www.yworks.com/en/products/yfiles/yed/).
+Зображення до документації знаходяться у вкладеній директорії `images`. Усі вони створенні програмою [yED](https://www.yworks.com/en/products/yfiles/yed/).
 При необхідності перекладу оригінальний файл копіюється в директорію `images` перекладу, перекладається та зберігається у форматі png.
 
 Перелік зображень, що потребують перекладу, можна знайти за нижченаведеним посиланням:
@@ -73,7 +73,7 @@ php build translation "../docs/guide" "../docs/guide-uk" "Ukrainian guide transl
 
 ### Список термінів
 
-[Англійсько-українські словники](http://e2u.org.ua)
+[Англійсько-українські словники](https://e2u.org.ua)
 
 - action — дія;
 - Active Record — (не перекладається);

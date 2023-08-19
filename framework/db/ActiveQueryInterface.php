@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -31,7 +31,7 @@ interface ActiveQueryInterface extends QueryInterface
 
     /**
      * Executes query and returns a single row of result.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If `null`, the DB connection returned by [[ActiveQueryTrait::$modelClass|modelClass]] will be used.
      * @return ActiveRecordInterface|array|null a single row of query result. Depending on the setting of [[asArray]],
      * the query result may be either an array or an ActiveRecord object. `null` will be returned
@@ -92,7 +92,7 @@ interface ActiveQueryInterface extends QueryInterface
     /**
      * Specifies the relation associated with the junction table for use in relational query.
      * @param string $relationName the relation name. This refers to a relation declared in the [[ActiveRelationTrait::primaryModel|primaryModel]] of the relation.
-     * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
+     * @param callable|null $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the relation object itself.
      */

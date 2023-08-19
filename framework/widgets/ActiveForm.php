@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -133,7 +133,7 @@ class ActiveForm extends Widget
      */
     public $enableClientScript = true;
     /**
-     * @var array|string the URL for performing AJAX-based validation. This property will be processed by
+     * @var array|string|null the URL for performing AJAX-based validation. This property will be processed by
      * [[Url::to()]]. Please refer to [[Url::to()]] for more details on how to configure this property.
      * If this property is not set, it will take the value of the form's action attribute.
      */

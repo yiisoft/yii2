@@ -75,7 +75,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 2. もし有れば、エクステンションによって提供されているクラス・オートローダをインストールする。
 3. 指示に従って、依存するエクステンションを全てダウンロードしインストールする。
 
-エクステンションがクラス・オートローダを持っていなくても、[PSR-4 標準](http://www.php-fig.org/psr/psr-4/) に従っている場合は、Yii によって提供されているクラス・オートローダを使ってエクステンションのクラスをオートロードすることが出来ます。
+エクステンションがクラス・オートローダを持っていなくても、[PSR-4 標準](https://www.php-fig.org/psr/psr-4/) に従っている場合は、Yii によって提供されているクラス・オートローダを使ってエクステンションのクラスをオートロードすることが出来ます。
 必要なことは、エクステンションのルート・ディレクトリのための [ルート・エイリアス](concept-aliases.md#defining-aliases) を宣言することだけです。
 例えば、エクステンションを `vendor/mycompany/myext` というディレクトリにインストールしたと仮定します。
 そして、エクステンションのクラスは `myext` 名前空間の下にあるとします。
@@ -127,9 +127,9 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -184,8 +184,8 @@ Yii のアプリケーションは、このファイルによって、どんな�
 それぞれの依存パッケージについて、適切なバージョン制約 (例えば `1.*` や `@stable`) を指定することも忘れてはなりません。
 あなたのエクステンションを安定バージョンとしてリリースする場合は、安定した依存パッケージを使ってください。
 
-たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](http://bower.io/) および/または [NPM](https://www.npmjs.org/) を使って管理されています。
-Yii は [Composer アセット・プラグイン](https://github.com/francoispluchino/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
+たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) を使って管理されています。
+Yii は [Composer アセット・プラグイン](https://github.com/fxpio/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
 あなたのエクステンションが Bower パッケージに依存している場合でも、次のように、
 `composer.json` に依存パッケージをリストアップすることが簡単に出来ます。
 
@@ -240,7 +240,7 @@ Composer が Bower または NPM のパッケージをインストールする�
 #### 名前空間 <span id="namespaces"></span>
 
 名前の衝突を避けて、エクステンションの中のクラスをオートロード可能にするために、名前空間を使うべきであり、
-エクステンションの中のクラスには [PSR-4 標準](http://www.php-fig.org/psr/psr-4/) または [PSR-0 標準](http://www.php-fig.org/psr/psr-0/)
+エクステンションの中のクラスには [PSR-4 標準](https://www.php-fig.org/psr/psr-4/) または [PSR-0 標準](https://www.php-fig.org/psr/psr-0/)
 に従った名前を付けるべきです。
 
 あなたのクラスの名前空間は `vendorName\extensionName` で始まるべきです。
@@ -351,7 +351,7 @@ Yii はテストのサポートを提供しており、それよって、単体�
 #### バージョン管理 <span id="versioning"></span>
 
 エクステンションのリリースごとにバージョン番号 (例えば `1.0.1`) を付けるべきです。
-どのようなバージョン番号を付けるべきかを決定するときは、[セマンティック・バージョニング](http://semver.org) のプラクティスに従うことを推奨します。
+どのようなバージョン番号を付けるべきかを決定するときは、[セマンティック・バージョニング](https://semver.org) のプラクティスに従うことを推奨します。
 
 
 #### リリース(公開) <span id="releasing"></span>
@@ -368,7 +368,7 @@ Composer レポジトリに新しいリリースについて通知するだけ�
 
 * パッケージのルート・ディレクトリに readme ファイル: あなたのエクステンションが何をするものか、
   そして、どのようにインストールして使うものかを説明するものです。
-  [Markdown](http://daringfireball.net/projects/markdown/) 形式で書いて、`readme.md` という名前にすることを推奨します。
+  [Markdown](https://daringfireball.net/projects/markdown/) 形式で書いて、`readme.md` という名前にすることを推奨します。
 * パッケージのルート・ディレクトリに changelog ファイル: それぞれのリリースで何が変ったかを一覧表示するものです。
   このファイルは Markdown 形式で書いて `changelog.md` と名付けることが出来ます。
 * パッケージのルート・ディレクトリに upgrade ファイル: エクステンションの古いリリースからのアップグレード方法について説明するものです。
@@ -383,7 +383,7 @@ Composer レポジトリに新しいリリースについて通知するだけ�
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
 
 > Info: これは要求ではありませんが、あなたのエクステンションも一定のコーディング・スタイルを守るのが良いと思います。
-  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
+  [コア・フレームワーク・コード・スタイル](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md) を参照してください。
 
 
 ## コア・エクステンション <span id="core-extensions"></span>
@@ -398,15 +398,13 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-authclient](https://github.com/yiisoft/yii2-authclient):
   Facebook OAuth2 クライアント、GitHub OAuth2 クライアントなど、よく使われる一連の auth クライアントを提供します。
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
-  [Bootstrap](http://getbootstrap.com/) のコンポーネントとプラグインをカプセル化した一連のウィジェットを提供します。
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception) (非推奨):
-  [Codeception](http://codeception.com/) に基づくテストのサポートを提供します。
+  [Bootstrap](https://getbootstrap.com/) のコンポーネントとプラグインをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
   Yii アプリケーションのデバッグのサポートを提供します。
   このエクステンションが使われると、全てのページの末尾にデバッガ・ツールバーが表示されます。
   このエクステンションは、より詳細なデバッグ情報を表示する一連のスタンドアロン・ページも提供します。
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  [Elasticsearch](http://www.elasticsearch.org/) の使用に対するサポートを提供します。
+  [Elasticsearch](https://www.elastic.co/) の使用に対するサポートを提供します。
   基本的なクエリ/サーチのサポートを含むだけでなく、Elasticsearch にアクティブ・レコードを保存することを可能にする
   [アクティブ・レコード](db-active-record.md) パターンをも実装しています。
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker):
@@ -417,29 +415,29 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
   HTTP クライアントを提供します。
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
-  [Imagine](http://imagine.readthedocs.org/) に基づいて、使われることの多い画像操作機能を提供します。
+  [Imagine](https://imagine.readthedocs.org/) に基づいて、使われることの多い画像操作機能を提供します。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
-  [JQuery UI](http://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
+  [JQuery UI](https://jqueryui.com/) のインタラクションとウィジェットをカプセル化した一連のウィジェットを提供します。
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  [MongoDB](http://www.mongodb.org/) の使用に対するサポートを提供します。
+  [MongoDB](https://www.mongodb.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、マイグレーション、キャッシュ、コード生成などの機能を含みます。
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   キューによるタスクの非同期実行のサポートを提供します。
   データベース、Redis、RabbitMQ、AMQP、Beanstalk および Gearman によるキューをサポートしています。
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
-  [redis](http://redis.io/) の使用に対するサポートを提供します。
+  [redis](https://redis.io/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、キャッシュなどの機能を含みます。
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
-  [psysh](http://psysh.org/) に基づくイタラクティブなシェルを提供します。
+  [psysh](https://psysh.org/) に基づくイタラクティブなシェルを提供します。
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
-  [Smarty](http://www.smarty.net/) に基づいたテンプレート・エンジンを提供します。
+  [Smarty](https://www.smarty.net/) に基づいたテンプレート・エンジンを提供します。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  [Sphinx](http://sphinxsearch.com) の使用に対するサポートを提供します。
+  [Sphinx](https://sphinxsearch.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、コード生成などの機能を含みます。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
+  [swiftmailer](https://swiftmailer.symfony.com/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  [Twig](http://twig.sensiolabs.org/) に基づいたテンプレート・エンジンを提供します。
+  [Twig](https://twig.symfony.com/) に基づいたテンプレート・エンジンを提供します。
 
 下記の公式エクステンションは Yii 2.1 以上のためのものです。
 これらは、Yii 2.0 ではコア・フレームワークに含まれていますので、インストールする必要はありません。.
@@ -449,7 +447,7 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
   [jQuery](https://jquery.com/) のサポートを提供します。
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
-  [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/) に基づいて、マスクト・インプットを提供します。
+  [jQuery Input Mask plugin](https://robinherbots.github.io/Inputmask/) に基づいて、マスクト・インプットを提供します。
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
   [MSSQL](https://www.microsoft.com/sql-server/) を使うためのサポートを提供します。
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):

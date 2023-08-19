@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /* @var $this YiiRequirementChecker */
@@ -23,7 +23,6 @@ echo str_pad('', strlen($header), '-') . "\n\n";
 foreach ($requirements as $key => $requirement) {
     if ($requirement['condition']) {
         echo $requirement['name'] . ": OK\n";
-        echo "\n";
     } else {
         echo $requirement['name'] . ': ' . ($requirement['mandatory'] ? 'FAILED!!!' : 'WARNING!!!') . "\n";
         echo 'Required by: ' . strip_tags($requirement['by']) . "\n";
@@ -31,8 +30,8 @@ foreach ($requirements as $key => $requirement) {
         if (!empty($memo)) {
             echo 'Memo: ' . strip_tags($requirement['memo']) . "\n";
         }
-        echo "\n";
     }
+    echo "\n";
 }
 
 $summaryString = 'Errors: ' . $summary['errors'] . '   Warnings: ' . $summary['warnings'] . '   Total checks: ' . $summary['total'];

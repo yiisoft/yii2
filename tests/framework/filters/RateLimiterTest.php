@@ -1,19 +1,18 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters;
 
-use Prophecy\Argument;
 use Yii;
 use yii\filters\RateLimiter;
-use yii\log\Logger;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
+use yiiunit\framework\filters\stubs\ExposedLogger;
 use yiiunit\framework\filters\stubs\RateLimit;
 use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
@@ -27,15 +26,7 @@ class RateLimiterTest extends TestCase
     {
         parent::setUp();
 
-        /* @var $logger Logger|\Prophecy\ObjectProphecy */
-        $logger = $this->prophesize(Logger::className());
-        $logger
-            ->log(Argument::any(), Argument::any(), Argument::any())
-            ->will(function ($parameters, $logger) {
-                $logger->messages = $parameters;
-            });
-
-        Yii::setLogger($logger->reveal());
+        Yii::setLogger(new ExposedLogger());
 
         $this->mockWebApplication();
     }
@@ -157,5 +148,22 @@ class RateLimiterTest extends TestCase
 
         $rateLimiter->addRateLimitHeaders($response, 1, 0, 0);
         $this->assertCount(3, $response->getHeaders());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18236
+     */
+    public function testUserWithClosureFunction()
+    {
+        $rateLimiter = new RateLimiter();
+        $rateLimiter->user = function($action) {
+            return new User(['identityClass' => RateLimit::className()]);
+        };
+        $rateLimiter->beforeAction('test');
+
+        // testing the evaluation of user closure, which in this case returns not the expect object and therefore
+        // the log message "does not implement RateLimitInterface" is expected.
+        $this->assertInstanceOf(User::className(), $rateLimiter->user);
+        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
     }
 }

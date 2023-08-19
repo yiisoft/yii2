@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -22,7 +22,7 @@ class Cookie extends \yii\base\BaseObject
      * during CSRF-prone request methods (e.g. POST, PUT, PATCH etc).
      * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will not include the cookie, however a GET request will.
      * When a user follows a link from https://otherdomain.com to https://yourdomain.com it will include the cookie
-     * @see $sameSite
+     * @see sameSite
      */
     const SAME_SITE_LAX = 'Lax';
     /**
@@ -30,9 +30,19 @@ class Cookie extends \yii\base\BaseObject
      * regardless of the request method and even when following a regular link.
      * E.g. a GET request from https://otherdomain.com to https://yourdomain.com or a user following a link from
      * https://otherdomain.com to https://yourdomain.com will not include the cookie.
-     * @see $sameSite
+     * @see sameSite
      */
     const SAME_SITE_STRICT = 'Strict';
+    /**
+     * SameSite policy None disables the SameSite policy so cookies will be sent in all contexts,
+     * i.e in responses to both first-party and cross-origin requests.
+     * E.g. a POST request from https://otherdomain.com to https://yourdomain.com will include the cookie.
+     * Note: If `sameSite` is set to None, the `secure` attribute must be set to `true` (otherwise the cookie will be blocked by the browser).
+     * @see sameSite
+     * @see secure
+     * @since 2.0.43
+     */
+    const SAME_SITE_NONE = 'None';
 
     /**
      * @var string name of the cookie
@@ -47,8 +57,8 @@ class Cookie extends \yii\base\BaseObject
      */
     public $domain = '';
     /**
-     * @var int the timestamp at which the cookie expires. This is the server timestamp.
-     * Defaults to 0, meaning "until the browser is closed".
+     * @var int|string|\DateTimeInterface|null the timestamp or date at which the cookie expires. This is the server timestamp.
+     * Defaults to 0, meaning "until the browser is closed" (the same applies to `null`).
      */
     public $expire = 0;
     /**
@@ -67,17 +77,12 @@ class Cookie extends \yii\base\BaseObject
     public $httpOnly = true;
     /**
      * @var string SameSite prevents the browser from sending this cookie along with cross-site requests.
-     * Please note that this feature is only supported since PHP 7.3.0
-     * For better security, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
-     * To use this feature across different PHP versions check the version first. E.g.
-     * ```php
-     * $cookie->sameSite = PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
-     * ```
-     * See https://www.owasp.org/index.php/SameSite for more information about sameSite.
+     *
+     * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite for more information about sameSite.
      *
      * @since 2.0.21
      */
-    public $sameSite;
+    public $sameSite = self::SAME_SITE_LAX;
 
 
     /**

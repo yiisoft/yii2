@@ -1,7 +1,7 @@
 Повний посібник з Yii 2.0
 =========================
 
-Даний посібник випущено відповідно до [положень про документацію Yii](http://www.yiiframework.com/doc/terms/).
+Даний посібник випущено відповідно до [положень про документацію Yii](https://www.yiiframework.com/doc/terms/).
 
 All Rights Reserved.
 
@@ -129,7 +129,7 @@ All Rights Reserved.
 Веб-сервіси RESTful
 -------------------
 
-* **TBD** [Швидкий старт](rest-quick-start.md)
+* [Швидкий старт](rest-quick-start.md)
 * **TBD** [Ресурси](rest-resources.md)
 * **TBD** [Контролери](rest-controllers.md)
 * **TBD** [Маршрутизація](rest-routing.md)

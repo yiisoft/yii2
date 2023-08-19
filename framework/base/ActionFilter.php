@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -36,7 +36,7 @@ class ActionFilter extends Behavior
      *
      * @see except
      */
-    public $only;
+    public $only = [];
     /**
      * @var array list of action IDs that this filter should not apply to.
      * @see only

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -25,6 +25,7 @@
 return [
     '(not set)' => '(לא הוגדר)',
     'An internal server error occurred.' => 'שגיאת שרת פנימית',
+    'Are you sure you want to delete this item?' => 'האם אתה בטוח שברצונך למחוק פריט זה?',
     'Delete' => 'מחק',
     'Error' => 'שגיאה',
     'File upload failed.' => 'העלאת קובץ נכשלה',

@@ -1,7 +1,7 @@
 Przewodnik po Yii 2.0
 =====================
 
-Ten poradnik udostępniony jest na [Warunkach dokumentacji Yii](http://www.yiiframework.com/doc/terms/).
+Ten poradnik udostępniony jest na [Warunkach dokumentacji Yii](https://www.yiiframework.com/doc/terms/).
 
 Wszelkie prawa zastrzeżone.
 
@@ -18,6 +18,7 @@ Wstęp
 Pierwsze kroki
 --------------
 
+* [Co musisz wiedzieć](start-prerequisites.md)
 * [Instalacja Yii](start-installation.md)
 * [Uruchamianie aplikacji](start-workflow.md)
 * [Witaj świecie](start-hello.md)
@@ -40,7 +41,7 @@ Struktura aplikacji
 * [Moduły](structure-modules.md)
 * [Filtry](structure-filters.md)
 * [Widżety](structure-widgets.md)
-* [Assety (Assets)](structure-assets.md)
+* [Zasoby (Assets)](structure-assets.md)
 * [Rozszerzenia](structure-extensions.md)
 
 
@@ -62,12 +63,12 @@ Kluczowe koncepcje
 
 * [Komponenty](concept-components.md)
 * [Właściwości](concept-properties.md)
-* [Eventy](concept-events.md)
-* [Behaviory](concept-behaviors.md)
+* [Zdarzenia (Events)](concept-events.md)
+* [Zachowania (Behaviors)](concept-behaviors.md)
 * [Konfiguracje](concept-configurations.md)
 * [Aliasy](concept-aliases.md)
 * [Autoładowanie klas](concept-autoloading.md)
-* [Lokator usług](concept-service-locator.md)
+* [Lokator usług (Service Locator)](concept-service-locator.md)
 * [Kontener wstrzykiwania zależności (DI Container)](concept-di-container.md)
 
 
@@ -78,10 +79,10 @@ Praca z bazami danych
 * [Konstruktor kwerend](db-query-builder.md): Zapytania do bazy danych z użyciem warstwy abstrakcyjnej.
 * [Active Record](db-active-record.md): Active Record ORM, otrzymywanie i manipulacja rekordami oraz definiowanie relacji.
 * [Migracje](db-migrations.md): Użycie systemu kontroli wersji bazy danych do pracy z wieloma środowiskami.
-* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
-* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
-* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
-* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
+* [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx/doc/guide)
+* [Redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis/doc/guide)
+* [MongoDB](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb/doc/guide)
+* [ElasticSearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch/doc/guide)
 
 
 Odbieranie danych od użytkowników
@@ -115,7 +116,7 @@ Bezpieczeństwo
 * [Autoryzacja](security-authorization.md)
 * [Praca z hasłami](security-passwords.md)
 * [Kryptografia](security-cryptography.md)
-* [Klienty autoryzacji](security-auth-clients.md)
+* [Klienty autoryzacji](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
 * [Bezpieczeństwo w praktyce](security-best-practices.md)
 
 
@@ -146,9 +147,9 @@ Webserwisy z wykorzystaniem REST
 Narzędzia wspomagające tworzenie aplikacji
 ------------------------------------------
 
-* [Pasek debugowania i debuger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
-* [Generowanie kodu przy użyciu Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* [Generowanie dokumentacji API](https://github.com/yiisoft/yii2-apidoc)
+* [Pasek debugowania i debuger](https://www.yiiframework.com/extension/yiisoft/yii2-debug/doc/guide)
+* [Generowanie kodu przy użyciu Gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii/doc/guide)
+* [Generowanie dokumentacji API](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc)
 
 
 Testowanie
@@ -165,10 +166,11 @@ Testowanie
 Tematy specjalne
 ----------------
 
-* [Szablon zaawansowanej aplikacji](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
+* [Szablon zaawansowanej aplikacji](https://www.yiiframework.com/extension/yiisoft/yii2-app-advanced/doc/guide)
 * [Tworzenie aplikacji od podstaw](tutorial-start-from-scratch.md)
 * [Komendy konsolowe](tutorial-console.md)
-* [Podstawowe walidatory](tutorial-core-validators.md)
+* [Wbudowane walidatory](tutorial-core-validators.md)
+* [Docker](tutorial-docker.md)
 * [Internacjonalizacja](tutorial-i18n.md)
 * [Wysyłanie poczty](tutorial-mailing.md)
 * [Poprawianie wydajności](tutorial-performance-tuning.md)
@@ -181,16 +183,16 @@ Tematy specjalne
 Widżety
 -------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
-* [Widżety Bootstrapowe](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
-* [Widżety jQuery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [Widżety Bootstrapowe](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap/doc/guide)
+* [Widżety jQuery UI](https://www.yiiframework.com/extension/yiisoft/yii2-jui/doc/guide)
 
 
 Klasy pomocnicze
@@ -199,6 +201,7 @@ Klasy pomocnicze
 * [Przegląd](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
+* [Json](helper-json.md)
 * [Url](helper-url.md)
 
 

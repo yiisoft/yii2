@@ -31,7 +31,7 @@ Yii 和其他框架相比呢？
   坚实可靠的扩展架构，使用、再开发或再发布扩展。
 - 高性能始终是 Yii 的首要目标之一。
 
-Yii 不是一场独角戏，它由一个[强大的开发者团队](http://www.yiiframework.com/about/)提供支持，
+Yii 不是一场独角戏，它由一个[强大的开发者团队](https://www.yiiframework.com/team)提供支持，
 也有一个庞大的专家社区，持续不断地对 Yii 的开发作出贡献。
 Yii 开发者团队始终对 Web 开发趋势和其他框架及项目中的最佳实践和特性保持密切关注，
 那些有意义的最佳实践及特性会被不定期的整合进核心框架中，
@@ -54,7 +54,7 @@ Yii 2.0 需要 PHP 5.4.0 或以上版本支持。你可以通过运行任何
 Yii 发行包中附带的系统要求检查器查看每个具体特性所需的 PHP 配置。
 
 使用 Yii 需要对面向对象编程（OOP）有基本了解，因为 Yii 是一个纯面向对象的框架。Yii 2.0 还使用了 PHP 的最新特性，
-例如[命名空间](https://secure.php.net/manual/en/language.namespaces.php)
-和[Trait（特质）](https://secure.php.net/manual/en/language.oop5.traits.php)。
+例如[命名空间](https://www.php.net/manual/zh/language.namespaces.php)
+和[Trait（特质）](https://www.php.net/manual/zh/language.oop5.traits.php)。
 理解这些概念将有助于你更快地掌握 Yii 2.0。
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -30,7 +30,7 @@ use yii\helpers\Inflector;
  * In the above, if the command name is not provided, all
  * available commands will be displayed.
  *
- * @property array $commands All available command names. This property is read-only.
+ * @property-read array $commands All available command names.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -41,7 +41,7 @@ class HelpController extends Controller
      * Displays available commands or the detailed information
      * about a particular command.
      *
-     * @param string $command The name of the command to show help about.
+     * @param string|null $command The name of the command to show help about.
      * If not provided, all available commands will be displayed.
      * @return int the exit status
      * @throws Exception if the command for help is unknown
@@ -473,8 +473,8 @@ class HelpController extends Controller
      */
     protected function formatOptionHelp($name, $required, $type, $defaultValue, $comment)
     {
-        $comment = trim($comment);
-        $type = trim($type);
+        $comment = trim((string)$comment);
+        $type = trim((string)$type);
         if (strncmp($type, 'bool', 4) === 0) {
             $type = 'boolean, 0 or 1';
         }
@@ -485,7 +485,7 @@ class HelpController extends Controller
             }
             if (is_bool($defaultValue)) {
                 // show as integer to avoid confusion
-                $defaultValue = (int)$defaultValue;
+                $defaultValue = (int) $defaultValue;
             }
             if (is_string($defaultValue)) {
                 $defaultValue = "'" . $defaultValue . "'";

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -31,7 +31,7 @@ class BaseHtml
     public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
-     * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
+     * @see https://html.spec.whatwg.org/multipage/syntax.html#void-element
      */
     public static $voidElements = [
         'area' => 1,
@@ -94,6 +94,13 @@ class BaseHtml
      * @since 2.0.3
      */
     public static $dataAttributes = ['aria', 'data', 'data-ng', 'ng'];
+    /**
+     * @var bool whether to removes duplicate class names in tag attribute `class`
+     * @see mergeCssClasses()
+     * @see renderTagAttributes()
+     * @since 2.0.44
+     */
+    public static $normalizeClassAttribute = false;
 
 
     /**
@@ -104,11 +111,11 @@ class BaseHtml
      * HTML entities in `$content` will not be further encoded.
      * @return string the encoded content
      * @see decode()
-     * @see https://secure.php.net/manual/en/function.htmlspecialchars.php
+     * @see https://www.php.net/manual/en/function.htmlspecialchars.php
      */
     public static function encode($content, $doubleEncode = true)
     {
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
+        return htmlspecialchars((string)$content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
     }
 
     /**
@@ -117,7 +124,7 @@ class BaseHtml
      * @param string $content the content to be decoded
      * @return string the decoded content
      * @see encode()
-     * @see https://secure.php.net/manual/en/function.htmlspecialchars-decode.php
+     * @see https://www.php.net/manual/en/function.htmlspecialchars-decode.php
      */
     public static function decode($content)
     {
@@ -420,7 +427,7 @@ class BaseHtml
      * @param string $text link body. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is coming from end users, you should consider [[encode()]]
      * it to prevent XSS attacks.
-     * @param string $email email address. If this is null, the first parameter (link body) will be treated
+     * @param string|null $email email address. If this is null, the first parameter (link body) will be treated
      * as the email address and used.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -470,7 +477,7 @@ class BaseHtml
      * @param string $content label text. It will NOT be HTML-encoded. Therefore you can pass in HTML code
      * such as an image tag. If this is is coming from end users, you should [[encode()]]
      * it to prevent XSS attacks.
-     * @param string $for the ID of the HTML element that this label is associated with.
+     * @param string|null $for the ID of the HTML element that this label is associated with.
      * If this is null, the "for" attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
@@ -545,8 +552,8 @@ class BaseHtml
     /**
      * Generates an input type of the given type.
      * @param string $type the type attribute.
-     * @param string $name the name attribute. If it is null, the name attribute will not be generated.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $name the name attribute. If it is null, the name attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -565,7 +572,7 @@ class BaseHtml
 
     /**
      * Generates an input button.
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -585,7 +592,7 @@ class BaseHtml
      * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
      * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
      *
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -601,7 +608,7 @@ class BaseHtml
 
     /**
      * Generates a reset input button.
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
      * Attributes whose value is null will be ignored and not put in the tag returned.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -617,7 +624,7 @@ class BaseHtml
     /**
      * Generates a text input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -632,7 +639,7 @@ class BaseHtml
     /**
      * Generates a hidden input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -647,7 +654,7 @@ class BaseHtml
     /**
      * Generates a password input field.
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -665,7 +672,7 @@ class BaseHtml
      * be "multipart/form-data". After the form is submitted, the uploaded file information
      * can be obtained via $_FILES[$name] (see PHP documentation).
      * @param string $name the name attribute.
-     * @param string $value the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $value the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -785,7 +792,8 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|bool|array|null $selection the selected value(s). String/boolean for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -819,6 +827,8 @@ class BaseHtml
      *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
      *   Defaults to `true`. This option is available since 2.0.3.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -840,7 +850,8 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|bool|array|null $selection the selected value(s). String for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -877,6 +888,8 @@ class BaseHtml
      *   Defaults to false.
      * - encode: bool, whether to encode option prompt and option value characters.
      *   Defaults to `true`. This option is available since 2.0.3.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
@@ -931,6 +944,8 @@ class BaseHtml
      *   This option is available since version 2.0.16.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
      *   This option is ignored if `item` option is set.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the checkbox tag using [[checkbox()]].
      * - item: callable, a callback that can be used to customize the generation of the HTML code
@@ -954,7 +969,7 @@ class BaseHtml
             $name .= '[]';
         }
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -962,13 +977,14 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $strict = ArrayHelper::remove($options, 'strict', false);
 
         $lines = [];
         $index = 0;
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection, $strict));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1021,6 +1037,8 @@ class BaseHtml
      *   This option is available since version 2.0.16.
      * - encode: boolean, whether to HTML-encode the checkbox labels. Defaults to true.
      *   This option is ignored if `item` option is set.
+     * - strict: boolean, if `$selection` is an array and this value is true a strict comparison will be performed on `$items` keys. Defaults to false.
+     *   This option is available since 2.0.37.
      * - separator: string, the HTML code that separates items.
      * - itemOptions: array, the options for generating the radio button tag using [[radio()]].
      * - item: callable, a callback that can be used to customize the generation of the HTML code
@@ -1041,7 +1059,7 @@ class BaseHtml
     public static function radioList($name, $selection = null, $items = [], $options = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $selection = array_map('strval', ArrayHelper::toArray($selection));
         }
 
         $formatter = ArrayHelper::remove($options, 'item');
@@ -1049,6 +1067,7 @@ class BaseHtml
         $encode = ArrayHelper::remove($options, 'encode', true);
         $separator = ArrayHelper::remove($options, 'separator', "\n");
         $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $strict = ArrayHelper::remove($options, 'strict', false);
 
         $hidden = '';
         if (isset($options['unselect'])) {
@@ -1067,7 +1086,7 @@ class BaseHtml
         foreach ($items as $value => $label) {
             $checked = $selection !== null &&
                 (!ArrayHelper::isTraversable($selection) && !strcmp($value, $selection)
-                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection));
+                    || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$value, $selection, $strict));
             if ($formatter !== null) {
                 $lines[] = call_user_func($formatter, $index, $label, $name, $checked, $value);
             } else {
@@ -1363,7 +1382,8 @@ class BaseHtml
 
     /**
      * If `maxlength` option is set true and the model attribute is validated by a string validator,
-     * the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
+     * the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]] and
+     * [[\yii\validators\StringValidator::length]].
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression.
      * @param array $options the tag options in terms of name-value pairs.
@@ -1374,8 +1394,8 @@ class BaseHtml
             unset($options['maxlength']);
             $attrName = static::getAttributeName($attribute);
             foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
+                if ($validator instanceof StringValidator && ($validator->max !== null || $validator->length !== null)) {
+                    $options['maxlength'] = max($validator->max, $validator->length);
                     break;
                 }
             }
@@ -1395,8 +1415,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This is available since version 2.0.3.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.3 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1455,8 +1476,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This option is available since version 2.0.6.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1516,8 +1538,9 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - maxlength: integer|boolean, when `maxlength` is set true and the model attribute is validated
-     *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
-     *   This option is available since version 2.0.6.
+     *   by a string validator, the `maxlength` option will take the max value of [[\yii\validators\StringValidator::max]]
+     *   and [[\yii\validators\StringValidator::length].
+     *   This is available since version 2.0.6 and improved taking `length` into account since version 2.0.42.
      * - placeholder: string|boolean, when `placeholder` equals `true`, the attribute label from the $model will be used
      *   as a placeholder (this behavior is available since version 2.0.14).
      *
@@ -1731,7 +1754,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the checkboxes.
      * The array keys are the checkbox values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the checkbox list container tag.
      * The following options are specially handled:
      *
@@ -1773,7 +1795,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the radio buttons.
      * The array keys are the radio values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the radio button list container tag.
      * The following options are specially handled:
      *
@@ -1815,7 +1836,6 @@ class BaseHtml
      * about attribute expression.
      * @param array $items the data item used to generate the input fields.
      * The array keys are the input values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
      * @param array $options options (name => config) for the input list. The supported special options
      * depend on the input type specified by `$type`.
      * @return string the generated input list
@@ -1836,7 +1856,8 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|bool|null $selection the selected value(s). String/boolean for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1854,12 +1875,23 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', (array)$selection);
+            $normalizedSelection = [];
+            foreach (ArrayHelper::toArray($selection) as $selectionItem) {
+                if (is_bool($selectionItem)) {
+                    $normalizedSelection[] = $selectionItem ? '1' : '0';
+                } else {
+                    $normalizedSelection[] = (string)$selectionItem;
+                }
+            }
+            $selection = $normalizedSelection;
+        } elseif (is_bool($selection)) {
+            $selection = $selection ? '1' : '0';
         }
 
         $lines = [];
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
+        $strict = ArrayHelper::remove($tagOptions, 'strict', false);
         if (isset($tagOptions['prompt'])) {
             $promptOptions = ['value' => ''];
             if (is_string($tagOptions['prompt'])) {
@@ -1887,16 +1919,27 @@ class BaseHtml
                 if (!isset($groupAttrs['label'])) {
                     $groupAttrs['label'] = $key;
                 }
-                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
+                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode, 'strict' => $strict];
                 $content = static::renderSelectOptions($selection, $value, $attrs);
                 $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
             } else {
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
-                    $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection));
+                    $selected = false;
+                    if ($selection !== null) {
+                        if (ArrayHelper::isTraversable($selection)) {
+                            $selected = ArrayHelper::isIn((string)$key, $selection, $strict);
+                        } elseif ($key === '' || $selection === '') {
+                            $selected = $selection === $key;
+                        } elseif ($strict) {
+                            $selected = !strcmp((string)$key, (string)$selection);
+                        } else {
+                            $selected = $selection == $key;
+                        }
+                    }
+
+                    $attrs['selected'] = $selected;
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
@@ -1913,7 +1956,7 @@ class BaseHtml
      * Renders the HTML tag attributes.
      *
      * Attributes whose values are of boolean type will be treated as
-     * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+     * [boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
      *
      * Attributes whose values are null will not be rendered.
      *
@@ -1931,7 +1974,7 @@ class BaseHtml
      * @param array $attributes attributes to be rendered. The attribute values will be HTML-encoded using [[encode()]].
      * @return string the rendering result. If the attributes are not empty, they will be rendered
      * into a string with a leading white space (so that it can be directly appended to the tag name
-     * in a tag. If there is no attribute, an empty string will be returned.
+     * in a tag). If there is no attribute, an empty string will be returned.
      * @see addCssClass()
      */
     public static function renderTagAttributes($attributes)
@@ -1969,7 +2012,12 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
-                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                    if (static::$normalizeClassAttribute === true && count($value) > 1) {
+                        // removes duplicate classes
+                        $value = explode(' ', implode(' ', $value));
+                        $value = array_unique($value);
+                    }
+                    $html .= " $name=\"" . static::encode(implode(' ', array_filter($value))) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
                         continue;
@@ -2001,7 +2049,6 @@ class BaseHtml
      *
      * @param array $options the options to be modified.
      * @param string|array $class the CSS class(es) to be added
-     * @see mergeCssClasses()
      * @see removeCssClass()
      */
     public static function addCssClass(&$options, $class)
@@ -2036,7 +2083,7 @@ class BaseHtml
             }
         }
 
-        return array_unique($existingClasses);
+        return static::$normalizeClassAttribute ? array_unique($existingClasses) : $existingClasses;
     }
 
     /**
@@ -2292,20 +2339,33 @@ class BaseHtml
     }
 
     /**
+     * Converts input name to ID.
+     *
+     * For example, if `$name` is `Post[content]`, this method will return `post-content`.
+     *
+     * @param string $name the input name
+     * @return string the generated input ID
+     * @since 2.0.43
+     */
+    public static function getInputIdByName($name)
+    {
+        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        $name = mb_strtolower($name, $charset);
+        return str_replace(['[]', '][', '[', ']', ' ', '.', '--'], ['', '-', '-', '', '-', '-', '-'], $name);
+    }
+
+    /**
      * Generates an appropriate input ID for the specified attribute name or expression.
      *
-     * This method converts the result [[getInputName()]] into a valid input ID.
-     * For example, if [[getInputName()]] returns `Post[content]`, this method will return `post-content`.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for explanation of attribute expression.
-     * @return string the generated input ID
+     * @return string the generated input ID.
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getInputId($model, $attribute)
     {
-        $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
-        $name = mb_strtolower(static::getInputName($model, $attribute), $charset);
-        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+        $name = static::getInputName($model, $attribute);
+        return static::getInputIdByName($name);
     }
 
     /**

@@ -661,7 +661,7 @@ w `safeDown()` najpierw kasujemy wiersz, a potem usuwamy tabelę.
 
 > Note: Nie wszystkie silniki baz danych wspierają transakcje i nie wszystkie rodzaje komend bazodanowych można umieszczać
   w transakcjach. Dla przykładu, zapoznaj się z rozdziałem dokumentacji MySQL 
-  [Statements That Cause an Implicit Commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). W przypadku 
+  [Statements That Cause an Implicit Commit](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). W przypadku 
   braku możliwości skorzystania z transakcji, powinieneś użyć `up()` i `down()`.
 
 

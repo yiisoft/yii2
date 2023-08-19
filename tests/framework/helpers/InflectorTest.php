@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -44,6 +44,8 @@ class InflectorTest extends TestCase
             'car' => 'cars',
             'netherlands' => 'netherlands',
             'currency' => 'currencies',
+            'software' => 'software',
+            'hardware' => 'hardware',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -73,6 +75,8 @@ class InflectorTest extends TestCase
             'cars' => 'car',
             'Netherlands' => 'Netherlands',
             'currencies' => 'currency',
+            'software' => 'software',
+            'hardware' => 'hardware',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));
@@ -113,6 +117,10 @@ class InflectorTest extends TestCase
         $this->assertEquals('Generate Csrf', Inflector::camel2words('generateCSRF'));
         $this->assertEquals('Generate Csrf Token', Inflector::camel2words('generateCSRFToken'));
         $this->assertEquals('Csrf Token Generator', Inflector::camel2words('CSRFTokenGenerator'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('foo bar'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('foo BAR'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('Foo Bar'));
+        $this->assertEquals('Foo Bar', Inflector::camel2words('FOO BAR'));
     }
 
     public function testCamel2id()
@@ -311,7 +319,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['¿Espanol?'],
+            '¿Español?' => ['¿Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];
@@ -354,7 +362,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['Espanol?'],
+            '¿Español?' => ['Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];

@@ -1,16 +1,16 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session;
 
 use Yii;
 use yii\db\Connection;
-use yii\db\Query;
 use yii\db\Migration;
+use yii\db\Query;
 use yii\web\DbSession;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
@@ -20,6 +20,8 @@ use yiiunit\TestCase;
  */
 abstract class AbstractDbSessionTest extends TestCase
 {
+    use SessionTestTrait;
+
     /**
      * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
      */
@@ -159,6 +161,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
         // add mapped custom column
         $migration = new Migration;
+        $migration->compact = true;
         $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
 
         $session->writeCallback = function ($session) {
@@ -264,5 +267,15 @@ abstract class AbstractDbSessionTest extends TestCase
         Yii::$app->set('db', Yii::$app->sessionDb);
         Yii::$app->set('sessionDb', null);
         ini_set('session.gc_maxlifetime', $oldTimeout);
+    }
+
+    public function testInitUseStrictMode()
+    {
+        $this->initStrictModeTest(DbSession::className());
+    }
+
+    public function testUseStrictMode()
+    {
+        $this->useStrictModeTest(DbSession::className());
     }
 }

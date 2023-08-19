@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
@@ -235,6 +235,110 @@ class TargetTest extends TestCase
         $this->assertCount(2, static::$messages);
         $this->assertCount(6, static::$messages[0]);
         $this->assertCount(6, static::$messages[1]);
+    }
+
+    public function testBreakProfilingWithFlushWithProfilingDisabled()
+    {
+        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
+        $dispatcher->expects($this->once())->method('dispatch')->with($this->callback(function ($messages) {
+            return count($messages) === 2
+                && $messages[0][0] === 'token.a'
+                && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                && $messages[1][0] === 'info';
+        }), false);
+
+        $logger = new Logger([
+            'dispatcher' => $dispatcher,
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('info', Logger::LEVEL_INFO, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
+    }
+
+    public function testNotBreakProfilingWithFlushWithProfilingEnabled()
+    {
+        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
+        $dispatcher->expects($this->exactly(2))->method('dispatch')->withConsecutive(
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 1 && $messages[0][0] === 'info';
+                }),
+                false
+            ],
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 2
+                        && $messages[0][0] === 'token.a'
+                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                        && $messages[1][0] === 'token.a'
+                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
+                }),
+                false
+            ]
+        );
+
+        $logger = new Logger([
+            'profilingAware' => true,
+            'dispatcher' => $dispatcher,
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('info', Logger::LEVEL_INFO, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
+    }
+
+    public function testFlushingWithProfilingEnabledAndOverflow()
+    {
+        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
+            ->setMethods(['dispatch'])
+            ->getMock();
+        $dispatcher->expects($this->exactly(3))->method('dispatch')->withConsecutive(
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 2
+                        && $messages[0][0] === 'token.a'
+                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                        && $messages[1][0] === 'token.b'
+                        && $messages[1][1] == Logger::LEVEL_PROFILE_BEGIN;
+                }),
+                false
+            ],
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 1
+                        && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
+                }),
+                false
+            ],
+            [
+                $this->callback(function ($messages) {
+                    return count($messages) === 2
+                        && $messages[0][0] === 'token.b'
+                        && $messages[0][1] == Logger::LEVEL_PROFILE_END
+                        && $messages[1][0] === 'token.a'
+                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
+                }),
+                false
+            ]
+        );
+
+        $logger = new Logger([
+            'profilingAware' => true,
+            'dispatcher' => $dispatcher,
+            'flushInterval' => 2,
+        ]);
+
+        $logger->log('token.a', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('token.b', Logger::LEVEL_PROFILE_BEGIN, 'category');
+        $logger->log('token.b', Logger::LEVEL_PROFILE_END, 'category');
+        $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
     }
 }
 

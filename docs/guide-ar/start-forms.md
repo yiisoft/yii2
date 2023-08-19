@@ -135,7 +135,7 @@ class SiteController extends Controller
 </p>
 
 <blockquote class="note"><p dir="rtl">
-ملاحظة: في هذا المثال البسيط، نعرض صفحة التأكيد فقط عند إرسال البيانات بشكل صحيح. عند الممارسة العملية، يجب عليك استخدام [[yii\web\Controller::refresh()|refresh()]] أو [[yii\web\Controller::redirect()|redirect()]] لتجنب أي مشكلة تحصل عن طريق ال resubmission والتي تندرج تحت العنوان <a href="http://en.wikipedia.org/wiki/Post/Redirect/Get">form resubmission problems</a>.
+ملاحظة: في هذا المثال البسيط، نعرض صفحة التأكيد فقط عند إرسال البيانات بشكل صحيح. عند الممارسة العملية، يجب عليك استخدام [[yii\web\Controller::refresh()|refresh()]] أو [[yii\web\Controller::redirect()|redirect()]] لتجنب أي مشكلة تحصل عن طريق ال resubmission والتي تندرج تحت العنوان <a href="https://en.wikipedia.org/wiki/Post/Redirect/Get">form resubmission problems</a>.
 </p></blockquote>
 
 ## <div dir="rtl">إنشاء ال views</div> <span id="creating-views"></span>
@@ -191,7 +191,7 @@ use yii\widgets\ActiveForm;
 </p>
 
 ```
-http://hostname/index.php?r=site%2Fentry
+https://hostname/index.php?r=site%2Fentry
 ```
 
 <p dir="rtl">

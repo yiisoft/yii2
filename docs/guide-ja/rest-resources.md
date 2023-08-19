@@ -81,8 +81,8 @@ public function fields()
     ];
 }
 
-// いくつかのフィールドを除去する方法。親の実装を継承しつつ、公開すべきでないフィールドを
-// 除外したいときに適している。
+// いくつかのフィールドを除去する方法。親の実装を継承しつつ、
+// 公開すべきでないフィールドを除外したいときに適している。
 public function fields()
 {
     $fields = parent::fields();
@@ -140,7 +140,7 @@ public function extraFields()
 
 ## リンク <span id="links"></span>
 
-[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) は、Hypermedia as the Engine of Application State (アプリケーション状態のエンジンとしてのハイパーメディア) の略称です。
+[HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) は、Hypermedia as the Engine of Application State (アプリケーション状態のエンジンとしてのハイパーメディア) の略称です。
 HATEOAS は、RESTful API は自分が返すリソースについて、どのようなアクションがサポートされているかをクライアントが発見できるような情報を返すべきである、という概念です。
 HATEOAS のキーポイントは、リソース・データが API によって提供されるときには、
 関連する情報を一群のハイパーリンクによって返すべきである、ということです。

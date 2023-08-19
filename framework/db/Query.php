@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -42,7 +42,7 @@ use yii\base\InvalidConfigException;
  *
  * A more detailed usage guide on how to work with Query can be found in the [guide article on Query Builder](guide:db-query-builder).
  *
- * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ * @property-read string[] $tablesUsedInFrom Table names indexed by aliases.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -53,13 +53,13 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     use QueryTrait;
 
     /**
-     * @var array the columns being selected. For example, `['id', 'name']`.
+     * @var array|null the columns being selected. For example, `['id', 'name']`.
      * This is used to construct the SELECT clause in a SQL statement. If not set, it means selecting all columns.
      * @see select()
      */
     public $select;
     /**
-     * @var string additional option that should be appended to the 'SELECT' keyword. For example,
+     * @var string|null additional option that should be appended to the 'SELECT' keyword. For example,
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
      */
     public $selectOption;
@@ -67,20 +67,20 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * @var bool whether to select distinct rows of data only. If this is set true,
      * the SELECT clause would be changed to SELECT DISTINCT.
      */
-    public $distinct;
+    public $distinct = false;
     /**
-     * @var array the table(s) to be selected from. For example, `['user', 'post']`.
+     * @var array|null the table(s) to be selected from. For example, `['user', 'post']`.
      * This is used to construct the FROM clause in a SQL statement.
      * @see from()
      */
     public $from;
     /**
-     * @var array how to group the query results. For example, `['company', 'department']`.
+     * @var array|null how to group the query results. For example, `['company', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
     public $groupBy;
     /**
-     * @var array how to join with other tables. Each array element represents the specification
+     * @var array|null how to join with other tables. Each array element represents the specification
      * of one join which has the following structure:
      *
      * ```php
@@ -98,12 +98,12 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $join;
     /**
-     * @var string|array|ExpressionInterface the condition to be applied in the GROUP BY clause.
+     * @var string|array|ExpressionInterface|null the condition to be applied in the GROUP BY clause.
      * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
      */
     public $having;
     /**
-     * @var array this is used to construct the UNION clause(s) in a SQL statement.
+     * @var array|null this is used to construct the UNION clause(s) in a SQL statement.
      * Each array element is an array of the following structure:
      *
      * - `query`: either a string or a [[Query]] object representing a query
@@ -111,12 +111,23 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $union;
     /**
-     * @var array list of query parameter values indexed by parameter placeholders.
+     * @var array|null this is used to construct the WITH section in a SQL query.
+     * Each array element is an array of the following structure:
+     *
+     * - `query`: either a string or a [[Query]] object representing a query
+     * - `alias`: string, alias of query for further usage
+     * - `recursive`: boolean, whether it should be `WITH RECURSIVE` or `WITH`
+     * @see withQuery()
+     * @since 2.0.35
+     */
+    public $withQueries;
+    /**
+     * @var array|null list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
     public $params = [];
     /**
-     * @var int|true the default number of seconds that query results can remain valid in cache.
+     * @var int|bool|null the default number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      * Use a negative number to indicate that query cache should not be used.
      * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
@@ -125,7 +136,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $queryCacheDuration;
     /**
-     * @var \yii\caching\Dependency the dependency to be associated with the cached query result for this query
+     * @var \yii\caching\Dependency|null the dependency to be associated with the cached query result for this query
      * @see cache()
      * @since 2.0.14
      */
@@ -134,7 +145,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return Command the created DB command instance.
      */
@@ -180,7 +191,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * ```
      *
      * @param int $batchSize the number of records to be fetched in each batch.
-     * @param Connection $db the database connection. If not set, the "db" application component will be used.
+     * @param Connection|null $db the database connection. If not set, the "db" application component will be used.
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
@@ -208,7 +219,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * ```
      *
      * @param int $batchSize the number of records to be fetched in each batch.
-     * @param Connection $db the database connection. If not set, the "db" application component will be used.
+     * @param Connection|null $db the database connection. If not set, the "db" application component will be used.
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
@@ -225,7 +236,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Executes the query and returns all results as an array.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
@@ -234,7 +245,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
         if ($this->emulateExecution) {
             return [];
         }
+
         $rows = $this->createCommand($db)->queryAll();
+
         return $this->populate($rows);
     }
 
@@ -260,7 +273,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Executes the query and returns a single row of result.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -277,9 +290,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     /**
      * Returns the query result as a scalar value.
      * The value returned will be the first column in the first row of the query results.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return string|null|false the value of the first column in the first row of the query result.
+     * @return string|int|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
     public function scalar($db = null)
@@ -293,7 +306,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Executes the query and returns the first column of the result.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return array the first column of the query result. An empty array is returned if the query results in nothing.
      */
@@ -341,9 +354,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
-     * @return int|string number of records. The result may be a string depending on the
+     * @return int|string|null number of records. The result may be a string depending on the
      * underlying database engine and to support integer values higher than a 32bit PHP integer can handle.
      */
     public function count($q = '*', $db = null)
@@ -359,7 +372,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the sum of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the sum of the specified column values.
      */
@@ -376,7 +389,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the average of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
      */
@@ -393,7 +406,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the minimum of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
      */
@@ -406,7 +419,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Returns the maximum of the specified column values.
      * @param string $q the column name or expression.
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
      */
@@ -417,7 +430,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Returns a value indicating whether the query result contains any row of data.
-     * @param Connection $db the database connection used to generate the SQL statement.
+     * @param Connection|null $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
      * @return bool whether the query result contains any row of data.
      */
@@ -437,8 +450,9 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * Queries a scalar value by setting [[select]] first.
      * Restores the value of select to make this query reusable.
      * @param string|ExpressionInterface $selectExpression
-     * @param Connection|null $db
-     * @return bool|string
+     * @param Connection|null $db the database connection used to execute the query.
+     * @return bool|string|null
+     * @throws \Throwable if can't create command
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -466,7 +480,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             try {
                 $command = $this->createCommand($db);
             } catch (\Exception $e) {
-                // throw it later
+                // throw it later (for PHP < 7.0)
             } catch (\Throwable $e) {
                 // throw it later
             }
@@ -619,7 +633,7 @@ PATTERN;
      * Starting from version 2.0.1, you may also select sub-queries as columns by specifying each such column
      * as a `Query` instance representing the sub-query.
      *
-     * @param string $option additional option that should be appended to the 'SELECT' keyword. For example,
+     * @param string|null $option additional option that should be appended to the 'SELECT' keyword. For example,
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
      * @return $this the query object itself
      */
@@ -670,7 +684,7 @@ PATTERN;
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+            $columns = preg_split('/\s*,\s*/', trim((string)$columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $select = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
@@ -907,7 +921,7 @@ PATTERN;
      */
     public function andFilterCompare($name, $value, $defaultOperator = '=')
     {
-        if (preg_match('/^(<>|>=|>|<=|<|=)/', $value, $matches)) {
+        if (preg_match('/^(<>|>=|>|<=|<|=)/', (string)$value, $matches)) {
             $operator = $matches[1];
             $value = substr($value, strlen($operator));
         } else {
@@ -921,16 +935,18 @@ PATTERN;
      * Appends a JOIN part to the query.
      * The first parameter specifies what type of join it is.
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
@@ -955,16 +971,18 @@ PATTERN;
 
     /**
      * Appends an INNER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -979,16 +997,18 @@ PATTERN;
 
     /**
      * Appends a LEFT OUTER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -1003,16 +1023,18 @@ PATTERN;
 
     /**
      * Appends a RIGHT OUTER JOIN part to the query.
-     * @param string|array $table the table to be joined.
+     * @param string|array $table the table or sub-query to be joined.
      *
      * Use a string to represent the name of the table to be joined.
      * The table name can contain a schema prefix (e.g. 'public.user') and/or table alias (e.g. 'user u').
      * The method will automatically quote the table name unless it contains some parenthesis
      * (which means the table is given as a sub-query or DB expression).
      *
-     * Use an array to represent joining with a sub-query. The array must contain only one element.
-     * The value must be a [[Query]] object representing the sub-query while the corresponding key
-     * represents the alias for the sub-query.
+     * You may also specify the table as an array with one element, using the array key as the table alias
+     * (e.g. ['u' => 'user']).
+     *
+     * To join a sub-query, use an array with one element, with the value set to a [[Query]] object
+     * representing the sub-query, and the corresponding key representing the alias.
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[join()]] on how to specify this parameter.
@@ -1243,6 +1265,20 @@ PATTERN;
     }
 
     /**
+     * Prepends a SQL statement using WITH syntax.
+     * @param string|Query $query the SQL statement to be prepended using WITH
+     * @param string $alias query alias in WITH construction
+     * @param bool $recursive TRUE if using WITH RECURSIVE and FALSE if using WITH
+     * @return $this the query object itself
+     * @since 2.0.35
+     */
+    public function withQuery($query, $alias, $recursive = false)
+    {
+        $this->withQueries[] = ['query' => $query, 'alias' => $alias, 'recursive' => $recursive];
+        return $this;
+    }
+
+    /**
      * Sets the parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
@@ -1288,7 +1324,7 @@ PATTERN;
      * Use a negative number to indicate that query cache should not be used.
      * Use boolean `true` to indicate that [[Connection::queryCacheDuration]] should be used.
      * Defaults to `true`.
-     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached result.
+     * @param \yii\caching\Dependency|null $dependency the cache dependency associated with the cached result.
      * @return $this the Query object itself
      * @since 2.0.14
      */
@@ -1350,6 +1386,7 @@ PATTERN;
             'having' => $from->having,
             'union' => $from->union,
             'params' => $from->params,
+            'withQueries' => $from->withQueries,
         ]);
     }
 

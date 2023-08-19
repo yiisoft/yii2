@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -43,15 +43,15 @@ class InputWidget extends Widget
      */
     public $field;
     /**
-     * @var Model the data model that this widget is associated with.
+     * @var Model|null the data model that this widget is associated with.
      */
     public $model;
     /**
-     * @var string the model attribute that this widget is associated with.
+     * @var string|null the model attribute that this widget is associated with.
      */
     public $attribute;
     /**
-     * @var string the input name. This must be set if [[model]] and [[attribute]] are not set.
+     * @var string|null the input name. This must be set if [[model]] and [[attribute]] are not set.
      */
     public $name;
     /**

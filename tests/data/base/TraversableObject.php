@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\base;
@@ -28,6 +28,7 @@ class TraversableObject implements \Iterator, \Countable
      * @throws \Exception
      * @since 5.1.0
      */
+    #[\ReturnTypeWillChange]
     public function count()
     {
         throw new \Exception('Count called on object that should only be traversed.');
@@ -36,6 +37,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->data[$this->position];
@@ -44,6 +46,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         $this->position++;
@@ -52,6 +55,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->position;
@@ -60,6 +64,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return array_key_exists($this->position, $this->data);
@@ -68,6 +73,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->position = 0;

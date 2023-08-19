@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rest;
@@ -127,7 +127,7 @@ class ActiveController extends Controller
      * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
      *
      * @param string $action the ID of the action to be executed
-     * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
+     * @param object|null $model the model to be accessed. If null, it means no specific model is being accessed.
      * @param array $params additional parameters
      * @throws ForbiddenHttpException if the user does not have access
      */

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidRouteException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -37,23 +38,22 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Response, see the [guide article on responses](guide:runtime-responses).
  *
- * @property CookieCollection $cookies The cookie collection. This property is read-only.
- * @property string $downloadHeaders The attachment file name. This property is write-only.
- * @property HeaderCollection $headers The header collection. This property is read-only.
- * @property bool $isClientError Whether this response indicates a client error. This property is read-only.
- * @property bool $isEmpty Whether this response is empty. This property is read-only.
- * @property bool $isForbidden Whether this response indicates the current request is forbidden. This property
- * is read-only.
- * @property bool $isInformational Whether this response is informational. This property is read-only.
- * @property bool $isInvalid Whether this response has a valid [[statusCode]]. This property is read-only.
- * @property bool $isNotFound Whether this response indicates the currently requested resource is not found.
- * This property is read-only.
- * @property bool $isOk Whether this response is OK. This property is read-only.
- * @property bool $isRedirection Whether this response is a redirection. This property is read-only.
- * @property bool $isServerError Whether this response indicates a server error. This property is read-only.
- * @property bool $isSuccessful Whether this response is successful. This property is read-only.
+ * @property-read CookieCollection $cookies The cookie collection.
+ * @property-write string $downloadHeaders The attachment file name.
+ * @property-read HeaderCollection $headers The header collection.
+ * @property-read bool $isClientError Whether this response indicates a client error.
+ * @property-read bool $isEmpty Whether this response is empty.
+ * @property-read bool $isForbidden Whether this response indicates the current request is forbidden.
+ * @property-read bool $isInformational Whether this response is informational.
+ * @property-read bool $isInvalid Whether this response has a valid [[statusCode]].
+ * @property-read bool $isNotFound Whether this response indicates the currently requested resource is not
+ * found.
+ * @property-read bool $isOk Whether this response is OK.
+ * @property-read bool $isRedirection Whether this response is a redirection.
+ * @property-read bool $isServerError Whether this response indicates a server error.
+ * @property-read bool $isSuccessful Whether this response is successful.
  * @property int $statusCode The HTTP status code to send with the response.
- * @property \Exception|\Error $statusCodeByException The exception object. This property is write-only.
+ * @property-write \Throwable $statusCodeByException The exception object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -62,15 +62,15 @@ use yii\helpers\Url;
 class Response extends \yii\base\Response
 {
     /**
-     * @event ResponseEvent an event that is triggered at the beginning of [[send()]].
+     * @event \yii\base\Event an event that is triggered at the beginning of [[send()]].
      */
     const EVENT_BEFORE_SEND = 'beforeSend';
     /**
-     * @event ResponseEvent an event that is triggered at the end of [[send()]].
+     * @event \yii\base\Event an event that is triggered at the end of [[send()]].
      */
     const EVENT_AFTER_SEND = 'afterSend';
     /**
-     * @event ResponseEvent an event that is triggered right after [[prepare()]] is called in [[send()]].
+     * @event \yii\base\Event an event that is triggered right after [[prepare()]] is called in [[send()]].
      * You may respond to this event to filter the response content before it is sent to the client.
      */
     const EVENT_AFTER_PREPARE = 'afterPrepare';
@@ -128,19 +128,22 @@ class Response extends \yii\base\Response
      */
     public $data;
     /**
-     * @var string the response content. When [[data]] is not null, it will be converted into [[content]]
+     * @var string|null the response content. When [[data]] is not null, it will be converted into [[content]]
      * according to [[format]] when the response is being sent out.
      * @see data
      */
     public $content;
     /**
-     * @var resource|array the stream to be sent. This can be a stream handle or an array of stream handle,
-     * the begin position and the end position. Note that when this property is set, the [[data]] and [[content]]
-     * properties will be ignored by [[send()]].
+     * @var resource|array|callable the stream to be sent. This can be a stream handle or an array of stream handle,
+     * the begin position and the end position. Alternatively it can be set to a callable, which returns
+     * (or [yields](https://www.php.net/manual/en/language.generators.syntax.php)) an array of strings that should
+     * be echoed and flushed out one by one.
+     *
+     * Note that when this property is set, the [[data]] and [[content]] properties will be ignored by [[send()]].
      */
     public $stream;
     /**
-     * @var string the charset of the text response. If not set, it will use
+     * @var string|null the charset of the text response. If not set, it will use
      * the value of [[Application::charset]].
      */
     public $charset;
@@ -150,7 +153,7 @@ class Response extends \yii\base\Response
      */
     public $statusText = 'OK';
     /**
-     * @var string the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
+     * @var string|null the version of the HTTP protocol to use. If not set, it will be determined via `$_SERVER['SERVER_PROTOCOL']`,
      * or '1.1' if that is not available.
      */
     public $version;
@@ -271,7 +274,7 @@ class Response extends \yii\base\Response
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
      * @param int $value the status code
-     * @param string $text the status text. If not set, it will be set automatically based on the status code.
+     * @param string|null $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
@@ -295,7 +298,7 @@ class Response extends \yii\base\Response
 
     /**
      * Sets the response status code based on the exception.
-     * @param \Exception|\Error $e the exception object.
+     * @param \Throwable $e the exception object.
      * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
@@ -398,12 +401,21 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1 && isset($validationKey)) {
+            $expire = $cookie->expire;
+            if (is_string($expire)) {
+                $expire = strtotime($expire);
+            } elseif (interface_exists('\\DateTimeInterface') && $expire instanceof \DateTimeInterface) {
+                $expire = $expire->getTimestamp();
+            }
+            if ($expire === null || $expire === false) {
+                $expire = 0;
+            }
+            if ($expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             if (PHP_VERSION_ID >= 70300) {
                 setcookie($cookie->name, $value, [
-                    'expires' => $cookie->expire,
+                    'expires' => $expire,
                     'path' => $cookie->path,
                     'domain' => $cookie->domain,
                     'secure' => $cookie->secure,
@@ -411,10 +423,13 @@ class Response extends \yii\base\Response
                     'sameSite' => !empty($cookie->sameSite) ? $cookie->sameSite : null,
                 ]);
             } else {
+                // Work around for setting sameSite cookie prior PHP 7.3
+                // https://stackoverflow.com/questions/39750906/php-setcookie-samesite-strict/46971326#46971326
+                $cookiePath = $cookie->path;
                 if (!is_null($cookie->sameSite)) {
-                    throw new InvalidConfigException(get_class($cookie) . '::sameSite is not supported by PHP versions < 7.3.0 (set it to null in this environment)');
+                    $cookiePath .= '; samesite=' . $cookie->sameSite;
                 }
-                setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+                setcookie($cookie->name, $value, $expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
         }
     }
@@ -430,17 +445,30 @@ class Response extends \yii\base\Response
             return;
         }
 
-        if (function_exists('set_time_limit')) {
-            set_time_limit(0); // Reset time limit for big files
-        } else {
+        // Try to reset time limit for big files
+        if (!function_exists('set_time_limit') || !@set_time_limit(0)) {
             Yii::warning('set_time_limit() is not available', __METHOD__);
+        }
+
+        if (is_callable($this->stream)) {
+            $data = call_user_func($this->stream);
+            foreach ($data as $datum) {
+                echo $datum;
+                flush();
+            }
+            return;
         }
 
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
             list($handle, $begin, $end) = $this->stream;
-            fseek($handle, $begin);
+
+            // only seek if stream is seekable
+            if ($this->isSeekable($handle)) {
+                fseek($handle, $begin);
+            }
+
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
                     $chunkSize = $end - $pos + 1;
@@ -481,7 +509,7 @@ class Response extends \yii\base\Response
      * ```
      *
      * @param string $filePath the path of the file to be sent.
-     * @param string $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string|null $attachmentName the file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
@@ -582,8 +610,12 @@ class Response extends \yii\base\Response
         if (isset($options['fileSize'])) {
             $fileSize = $options['fileSize'];
         } else {
-            fseek($handle, 0, SEEK_END);
-            $fileSize = ftell($handle);
+            if ($this->isSeekable($handle)) {
+                fseek($handle, 0, SEEK_END);
+                $fileSize = ftell($handle);
+            } else {
+                $fileSize = 0;
+            }
         }
 
         $range = $this->getHttpRange($fileSize);
@@ -612,10 +644,10 @@ class Response extends \yii\base\Response
     /**
      * Sets a default set of HTTP headers for file downloading purpose.
      * @param string $attachmentName the attachment file name
-     * @param string $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
+     * @param string|null $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
      * @param bool $inline whether the browser should open the file within the browser window. Defaults to false,
      * meaning a download dialog will pop up.
-     * @param int $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
+     * @param int|null $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
      * @return $this the response object itself
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
@@ -689,11 +721,11 @@ class Response extends \yii\base\Response
      *
      * As this header directive is non-standard different directives exists for different web servers applications:
      *
-     * - Apache: [X-Sendfile](http://tn123.org/mod_xsendfile)
-     * - Lighttpd v1.4: [X-LIGHTTPD-send-file](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-     * - Lighttpd v1.5: [X-Sendfile](http://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
-     * - Nginx: [X-Accel-Redirect](http://wiki.nginx.org/XSendfile)
-     * - Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+     * - Apache: [X-Sendfile](https://tn123.org/mod_xsendfile/)
+     * - Lighttpd v1.4: [X-LIGHTTPD-send-file](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+     * - Lighttpd v1.5: [X-Sendfile](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
+     * - Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/XSendfile)
+     * - Cherokee: [X-Sendfile and X-Accel-Redirect](https://cherokee-project.com/doc/other_goodies.html#x-sendfile)
      *
      * So for this method to work the X-SENDFILE option/module should be enabled by the web server and
      * a proper xHeader should be sent.
@@ -721,7 +753,7 @@ class Response extends \yii\base\Response
      * ```
      *
      * @param string $filePath file name with full path
-     * @param string $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
+     * @param string|null $attachmentName file name shown to the user. If null, it will be determined from `$filePath`.
      * @param array $options additional options for sending the file. The following options are supported:
      *
      *  - `mimeType`: the MIME type of the content. If not set, it will be guessed based on `$filePath`
@@ -837,7 +869,7 @@ class Response extends \yii\base\Response
      *
      * @param string|array $url the URL to be redirected to. This can be in one of the following formats:
      *
-     * - a string representing a URL (e.g. "http://example.com")
+     * - a string representing a URL (e.g. "https://example.com")
      * - a string representing a URL alias (e.g. "@example.com")
      * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`).
      *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
@@ -863,26 +895,30 @@ class Response extends \yii\base\Response
             $url[0] = '/' . ltrim($url[0], '/');
         }
         $request = Yii::$app->getRequest();
-        $url = Url::to($url);
-        if (strncmp($url, '/', 1) === 0 && strncmp($url, '//', 2) !== 0) {
-            $url = $request->getHostInfo() . $url;
+        $normalizedUrl = Url::to($url);
+        if ($normalizedUrl !== null) {
+            if (preg_match('/\n/', $normalizedUrl)) {
+                throw new InvalidRouteException('Route with new line character detected "' . $normalizedUrl . '".');
+            }
+            if (strncmp($normalizedUrl, '/', 1) === 0 && strncmp($normalizedUrl, '//', 2) !== 0) {
+                $normalizedUrl = $request->getHostInfo() . $normalizedUrl;
+            }
         }
 
-        if ($checkAjax) {
-            if ($request->getIsAjax()) {
-                if (in_array($statusCode, [301, 302]) && preg_match('/Trident\/|MSIE[ ]/', $request->userAgent)) {
-                    $statusCode = 200;
-                }
-                if ($request->getIsPjax()) {
-                    $this->getHeaders()->set('X-Pjax-Url', $url);
-                } else {
-                    $this->getHeaders()->set('X-Redirect', $url);
-                }
+        if ($checkAjax && $request->getIsAjax()) {
+            if (
+                in_array($statusCode, [301, 302])
+                && preg_match('/Trident\/|MSIE /', (string)$request->userAgent)
+            ) {
+                $statusCode = 200;
+            }
+            if ($request->getIsPjax()) {
+                $this->getHeaders()->set('X-Pjax-Url', $normalizedUrl);
             } else {
-                $this->getHeaders()->set('Location', $url);
+                $this->getHeaders()->set('X-Redirect', $normalizedUrl);
             }
         } else {
-            $this->getHeaders()->set('Location', $url);
+            $this->getHeaders()->set('Location', $normalizedUrl);
         }
 
         $this->setStatusCode($statusCode);
@@ -1047,10 +1083,14 @@ class Response extends \yii\base\Response
      * Prepares for sending the response.
      * The default implementation will convert [[data]] into [[content]] and set headers accordingly.
      * @throws InvalidConfigException if the formatter for the specified format is invalid or [[format]] is not supported
+     *
+     * @see https://tools.ietf.org/html/rfc7231#page-53
+     * @see https://tools.ietf.org/html/rfc7232#page-18
      */
     protected function prepare()
     {
-        if ($this->statusCode === 204) {
+        if (in_array($this->getStatusCode(), [204, 304])) {
+            // A 204/304 response cannot contain a message body according to rfc7231/rfc7232
             $this->content = '';
             $this->stream = null;
             return;
@@ -1087,5 +1127,21 @@ class Response extends \yii\base\Response
                 throw new InvalidArgumentException('Response content must be a string or an object implementing __toString().');
             }
         }
+    }
+
+    /**
+     * Checks if a stream is seekable
+     *
+     * @param $handle
+     * @return bool
+     */
+    private function isSeekable($handle)
+    {
+        if (!is_resource($handle)) {
+            return true;
+        }
+
+        $metaData = stream_get_meta_data($handle);
+        return isset($metaData['seekable']) && $metaData['seekable'] === true;
     }
 }

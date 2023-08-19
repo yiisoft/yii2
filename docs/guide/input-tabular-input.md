@@ -30,8 +30,6 @@ Let's start with the controller action:
 
 namespace app\controllers;
 
-use Yii;
-use yii\base\Model;
 use yii\web\Controller;
 use app\models\Setting;
 
@@ -43,11 +41,13 @@ class SettingsController extends Controller
     {
         $settings = Setting::find()->indexBy('id')->all();
 
-        if (Model::loadMultiple($settings, Yii::$app->request->post()) && Model::validateMultiple($settings)) {
-            foreach ($settings as $setting) {
-                $setting->save(false);
+        if ($this->request->isPost) {
+            if (Setting::loadMultiple($settings, $this->request->post()) && Setting::validateMultiple($settings)) {
+                foreach ($settings as $setting) {
+                    $setting->save(false);
+                }
+                return $this->redirect('index');
             }
-            return $this->redirect('index');
         }
 
         return $this->render('update', ['settings' => $settings]);
@@ -71,9 +71,11 @@ use yii\widgets\ActiveForm;
 
 $form = ActiveForm::begin();
 
-foreach ($settings as $index => $setting) {
-    echo $form->field($setting, "[$index]value")->label($setting->name);
+foreach ($settings as $id => $setting) {
+    echo $form->field($setting, "[$id]value")->label($setting->name);
 }
+
+echo Html::submitButton('Save');
 
 ActiveForm::end();
 ```
@@ -88,20 +90,29 @@ Creating new records is similar to updating, except the part, where we instantia
 ```php
 public function actionCreate()
 {
-    $count = count(Yii::$app->request->post('Setting', []));
-    $settings = [new Setting()];
-    for($i = 1; $i < $count; $i++) {
-        $settings[] = new Setting();
+    $settings = [];
+    if ($this->request->isPost) {
+        $count = count($this->request->post($setting->tableName()));
+        for ($i = 0; $i < $count; $i++) {
+            $settings[$i] = new Setting();
+        }
+        if (Setting::loadMultiple($settings, $this->request->post()) && Setting::validateMultiple($settings)) {
+            foreach ($settings as $setting) {
+                $setting->save(false);
+            }
+            return $this->redirect('index');
+        }
     }
+    $settings[] = new Setting();
 
-    // ...
+    return $this->render('create', ['settings' => $settings]);
 }
 ```
 
 Here we create an initial `$settings` array containing one model by default so that always at least one text field will be
 visible in the view. Additionally we add more models for each line of input we may have received.
 
-In the view you can use javascript to add new input lines dynamically.
+In the view you can use JavaScript to add new input lines dynamically.
 
 ### Combining Update, Create and Delete on one page
 

@@ -46,10 +46,10 @@ return [
 ```
 
 Формат для установки языка/локали: `ll-CC`, где `ll` — это двух или трёхбуквенный код языка в нижнем регистре в 
-соответствии со стандартом [ISO-639](http://www.loc.gov/standards/iso639-2/), а `CC` — это код страны в соответствии
+соответствии со стандартом [ISO-639](https://www.loc.gov/standards/iso639-2/), а `CC` — это код страны в соответствии
 со стандартом [ISO-3166](https://ru.wikipedia.org/wiki/ISO_3166-1#Список_кодов_по_ISO_3166).
 
-> Note: больше информации о синтаксисе и концепции локалей можно получить в [документации проекта ICU](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
+> Note: больше информации о синтаксисе и концепции локалей можно получить в [документации проекта ICU](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept).
 
 Перевод сообщений <span id="message-translation"></span>
 --------------------------------------------------------
@@ -134,11 +134,11 @@ echo \Yii::t('app', 'Balance: {0}', $sum);
 
 ### Указатели с расширенным форматированием
 
-Чтобы использовать расширенные возможности, вам необходимо установить и включить [PHP-расширение intl](https://secure.php.net/manual/ru/intro.intl.php).
+Чтобы использовать расширенные возможности, вам необходимо установить и включить [PHP-расширение intl](https://www.php.net/manual/ru/intro.intl.php).
 После этого вам станет доступен расширенный синтаксис указателей, а также сокращённая запись `{placeholderName, argumentType}`,
 эквивалентная форме `{placeholderName, argumentType, argumentStyle}`, позволяющая определять стиль форматирования.
 
-Полная документация доступна на [сайте ICU](http://icu-project.org/apiref/icu4c/classMessageFormat.html), но далее в 
+Полная документация доступна на [сайте ICU](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html), но далее в 
 документации будут приведены примеры использования расширенных возможностей интернационализации.
 
 #### Числа
@@ -162,7 +162,7 @@ $sum = 42;
 echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html).
 
 #### Даты
 
@@ -182,7 +182,7 @@ echo \Yii::t('app', 'Today is {0, date, short}', time());
 echo \Yii::t('app', 'Today is {0, date,yyyy-MM-dd}', time());
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 #### Время
 
@@ -202,7 +202,7 @@ echo \Yii::t('app', 'It is {0, time, short}', time());
 echo \Yii::t('app', 'It is {0, date,HH:mm}', time());
 ```
 
-[Описание форматирования](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[Описание форматирования](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### Числа прописью
@@ -268,7 +268,7 @@ for an argument: U_ARGUMENT_TYPE_MISMATCH":
 ```
 
 Подробная документация о формах склонений для различных языков доступна на сайте 
-[unicode.org](http://cldr.unicode.org/index/cldr-spec/plural-rules).
+[unicode.org](https://cldr.unicode.org/index/cldr-spec/plural-rules).
 
 #### Вариации
 
@@ -497,7 +497,7 @@ class TranslationEventHandler
 
 Переводы могут храниться в [[yii\i18n\PhpMessageSource|PHP-файлах]], [[yii\i18n\GettextMessageSource|файлах .po]] или в [[yii\i18n\DbMessageSource|базе данных]]. См. соответствующие классы для дополнительных опций.
 
-Прежде всего, вам необходимо создать конфигурационный файл. Решите где вы хотите хранить его и затем выполните команду
+Прежде всего, вам необходимо создать конфигурационный файл. Решите, где вы хотите хранить его и затем выполните команду
 
 ```bash
 ./yii message/config-template path/to/config.php
@@ -554,13 +554,13 @@ class TranslationEventHandler
 Настройка PHP-окружения <span id="setup-environment"></span>
 ------------------------------------------------------------
 
-Для работы с большей частью функций интернационализации Yii использует [PHP-расширение intl](https://secure.php.net/manual/ru/book.intl.php).
+Для работы с большей частью функций интернационализации Yii использует [PHP-расширение intl](https://www.php.net/manual/ru/book.intl.php).
 Например, это расширение используют классы, отвечающие за форматирование чисел и дат [[yii\i18n\Formatter]] и за форматирование
 строк [[yii\i18n\MessageFormatter]]. Оба класса поддерживают базовый функционал даже в том случае, если расширение `intl` не
-установлено. Однако, этот запасной вариант более-менее будет работать только для сайтов на английском языке, хотя даже для
+установлено. Однако этот запасной вариант более или менее будет работать только для сайтов на английском языке, хотя даже для
 них большая часть широких возможностей расширения `intl` не будет доступна, поэтому его установка настоятельно рекомендуется.
 
-[PHP-расширение intl](https://secure.php.net/manual/ru/book.intl.php) основано на [библиотеке ICU](http://site.icu-project.org/), которая
+[PHP-расширение intl](https://www.php.net/manual/ru/book.intl.php) основано на [библиотеке ICU](https://icu.unicode.org/), которая
 описывает правила форматирования для различных локалей. Поэтому следует помнить, что форматирование чисел и дат вместе с
 синтаксисом форматирования может отличаться в зависимости от версии библиотеки ICU, которая была скомпилирована в вашем
 дистрибутиве PHP.
@@ -577,7 +577,7 @@ echo "ICU: " . INTL_ICU_VERSION . "\n";
 ```
 
 Чтобы иметь доступ ко всем возможностям, описанным в документации, мы рекомендуем использовать ICU версии 49 или новее.
-В более ранних версиях отсутствует указатель `#` в правилах склонений. На сайте <http://site.icu-project.org/download>
+В более ранних версиях отсутствует указатель `#` в правилах склонений. На сайте <https://icu.unicode.org/download>
 вы можете ознакомиться со списком доступных версий ICU. Обратите внимание, что схема нумерации версий изменилась после
 версии 4.8 и последовательность версий выглядит так: ICU 4.8, ICU 49, ICU 50, ICU 51 и так далее.
 

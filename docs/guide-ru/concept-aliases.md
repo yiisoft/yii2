@@ -17,7 +17,7 @@ Yii framework, а `@web` можно использовать для получе
 Yii::setAlias('@foo', '/path/to/foo');
 
 // псевдоним URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // псевдоним конкретного файла, содержащего класс \foo\Bar
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -46,7 +46,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -60,7 +60,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // выведет: /path/to/foo
-echo Yii::getAlias('@bar');               // выведет: http://www.example.com
+echo Yii::getAlias('@bar');               // выведет: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // выведет: /path/to/foo/bar/file.php
 ```
 
@@ -97,7 +97,7 @@ $cache = new FileCache([
 ]);
 ```
 
-Для того, чтобы узнать поддерживает ли метод или свойство псевдонимы, обратитесь к документации API.
+Для того, чтобы узнать, поддерживает ли метод или свойство псевдонимы, обратитесь к документации API.
 
 
 Заранее определённые псевдонимы <span id="predefined-aliases"></span>

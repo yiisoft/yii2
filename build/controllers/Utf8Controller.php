@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
@@ -59,7 +59,7 @@ class Utf8Controller extends Controller
                     continue;
                 }
 
-                // http://unicode-table.com/en/blocks/general-punctuation/
+                // https://unicode-table.com/en/blocks/general-punctuation/
                 if (0x2000 <= $ord && $ord <= 0x200F
                  || 0x2028 <= $ord && $ord <= 0x202E
                  || 0x205f <= $ord && $ord <= 0x206F
@@ -69,11 +69,11 @@ class Utf8Controller extends Controller
                 }
                 if ($ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
                     0x0080 <= $ord && $ord < 0x009F) {
-                    $this->found('CONTROL CHARARCTER', $c, $line, $pos, $file);
+                    $this->found('CONTROL CHARACTER', $c, $line, $pos, $file);
                     continue;
                 }
 //                if ($ord > 0x009F) {
-//                    $this->found("NON ASCII CHARARCTER", $c, $line, $pos, $file);
+//                    $this->found("NON ASCII CHARACTER", $c, $line, $pos, $file);
 //                    continue;
 //                }
             }
@@ -92,13 +92,13 @@ class Utf8Controller extends Controller
         $hexcode = dechex($this->unicodeOrd($char));
         $hexcode = str_repeat('0', max(4 - \strlen($hexcode), 0)) . $hexcode;
 
-        $this->stdout("  at $line:$pos FOUND $what: 0x$hexcode '$char' http://unicode-table.com/en/$hexcode/\n");
+        $this->stdout("  at $line:$pos FOUND $what: 0x$hexcode '$char' https://unicode-table.com/en/$hexcode/\n");
     }
 
     /**
      * Equivalent for ord() just for unicode.
      *
-     * http://stackoverflow.com/a/10333324/1106908
+     * https://stackoverflow.com/questions/10333098/utf-8-safe-equivalent-of-ord-or-charcodeat-in-php/10333324#10333324
      *
      * @param $c
      * @return bool|int

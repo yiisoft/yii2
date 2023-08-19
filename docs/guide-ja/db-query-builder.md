@@ -155,7 +155,7 @@ $query->from(['u' => $subQuery]);
 
 #### プレフィックス
 また、デフォルトの [[yii\db\Connection::$tablePrefix|tablePrefix]] を適用することも出来ます。
-実装の仕方は ["データベース・アクセス・オブジェクト" ガイドの "テーブル名を引用符で囲む" のセクション](guide-db-dao.html#quoting-table-and-column-names) にあります。
+実装の仕方は ["データベース・アクセス・オブジェクト" ガイドの "テーブル名を引用符で囲む" のセクション](db-dao.md#quoting-table-and-column-names) にあります。
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -230,7 +230,7 @@ $query->where(['id' => $userQuery]);
 ハッシュ形式を使う場合、Yii は内部的にパラメータ・バインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。ただし、Yii はカラム名を決してエスケープしないことに注意して下さい。
 従って、ユーザから取得した変数を何ら追加のチェックをすることなくカラム名として渡すと、SQL インジェクション攻撃に対して脆弱になります。
-アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数をホワイト・リストによってフィルターすることが必要です。
+アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数を許容リストによってフィルターすることが必要です。
 カラム名をユーザから取得する必要がある場合は、ガイドの [データをフィルタリングする](output-data-widgets.md#filtering-data) という記事を読んで下さい。
 例えば、次のコードは脆弱です。
 
@@ -299,7 +299,7 @@ $query->where([$column => $value]);
   値が自動的に一対のパーセント記号によって囲まれることに注意してください。
 
   > Note: PostgreSQL を使っている場合は、`like` の代りに、大文字と小文字を区別しない比較のための
-  > [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
+  > [`ilike`](https://www.postgresql.org/docs/8.3/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
 
 - `or like`: オペランド 2 が配列である場合に `LIKE` 述語が `OR` によって結合される以外は、
   `like` 演算子と同じです。
@@ -321,7 +321,7 @@ $query->where([$column => $value]);
 演算子形式を使う場合、Yii は値に対して内部的にパラメータ・バインディングを使用します。
 従って、[文字列形式](#string-format) とは対照的に、ここでは手動でパラメータを追加する必要はありません。
 ただし、Yii はカラム名を決してエスケープしないことに注意して下さい。従って、変数をカラム名として渡すと、アプリケーションは SQL インジェクション攻撃に対して脆弱になります。
-アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数をホワイト・リストによってフィルターすることが必要です。
+アプリケーションを安全に保つためには、カラム名として変数を使わないこと、または、変数を許容リストによってフィルターすることが必要です。
 カラム名をユーザから取得する必要がある場合は、ガイドの [データをフィルタリングする](output-data-widgets.md#filtering-data) という記事を読んで下さい。
 例えば、次のコードは脆弱です。
 
@@ -540,14 +540,14 @@ $query->limit(10)->offset(20);
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 [[yii\db\Query::join()|join()]] メソッドは SQL クエリの `JOIN` 句を指定します。例えば、
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 [[yii\db\Query::join()|join()]] メソッドは、四つのパラメータを取ります。
- 
+
 - `$type`: 結合のタイプ、例えば、`'INNER JOIN'`、`'LEFT JOIN'`。
 - `$table`: 結合されるテーブルの名前。
 - `$on`: オプション。結合条件、すなわち、`ON` 句。
@@ -602,6 +602,28 @@ $query1->union($query2);
 
 [[yii\db\Query::union()|union()]] を複数回呼んで、`UNION` 句をさらに追加することが出来ます。
 
+### [[yii\db\Query::withQuery()|withQuery()]] <span id="with-query"></span>
+
+[[yii\db\Query::withQuery()|withQuery()]] メソッドは SQL クエリの `WITH` プレフィックスを指定するものです。サブクエリの代りに `WITH` を使うと読みやすさを向上させ、ユニークな機能(再帰 CTE)を利用することが出来ます。詳細は [modern-sql](https://modern-sql.com/feature/with) を参照して下さい。例えば、次のクエリは `admin` の持つ権限をその子も含めて全て再帰的に取得します。
+
+```php
+$initialQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->where(['parent' => 'admin']);
+
+$recursiveQuery = (new \yii\db\Query())
+    ->select(['aic.parent', 'aic.child'])
+    ->from(['aic' => 'auth_item_child'])
+    ->innerJoin('t1', 't1.child = aic.parent');
+
+$mainQuery = (new \yii\db\Query())
+    ->select(['parent', 'child'])
+    ->from('t1')
+    ->withQuery($initialQuery->union($recursiveQuery), 't1', true);
+```
+
+[[yii\db\Query::withQuery()|withQuery()]] を複数回呼び出してさらなる CTE をメイン・クエリに追加することが出来ます。クエリはアタッチされたのと同じ順序でプリペンドされます。クエリのうちの一つが再帰的である場合は CTE 全体が再帰的になります。
 
 ## クエリ・メソッド <span id="query-methods"></span>
 
@@ -694,6 +716,9 @@ $query = (new \yii\db\Query())
     ->all();
 ```
 
+インデックス付けが働くためには、[[yii\db\Query::indexBy()|indexBy()]] メソッドに渡されるカラム名が結果セットに存在する必要があります。
+そのことを保証するのは開発者の責任です。
+
 式の値によってインデックスするためには、[[yii\db\Query::indexBy()|indexBy()]] メソッドに無名関数を渡します。
 
 ```php
@@ -773,7 +798,7 @@ foreach ($query->each() as $username => $user) {
 #### MySQL におけるバッチ・クエリの制約 <span id="batch-query-mysql"></span>
 
 MySQL のバッチ・クエリの実装は PDO ドライバのライブラリに依存しています。デフォルトでは、MySQL のクエリは
-[`バッファ・モード`](https://secure.php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
+[`バッファ・モード`](https://www.php.net/manual/ja/mysqlinfo.concepts.buffering.php) で実行されます。
 このことが、カーソルを使ってデータを取得する目的を挫折させます。というのは、バッファ・モードでは、
 ドライバによって結果セット全体がクライアントのメモリに読み込まれることを防止できないからです。
 

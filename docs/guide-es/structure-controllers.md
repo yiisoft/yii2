@@ -1,7 +1,7 @@
 Controladores
 =============
 
-Los controladores son parte del patrón o arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
+Los controladores son parte del patrón o arquitectura [MVC](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
 Son objetos que extienden de [[yii\base\Controller]] y se encargan de procesar los `requests` (consultas)
 generando `responses` (respuestas). Particularmente, después de tomar el control desde las [aplicaciones](structure-applications.md),
 los controladores analizarán los datos que entran en el `request`, los pasan a los [modelos](structure-models.md), inyectan los
@@ -83,7 +83,7 @@ o el siguiente formato si el controlador pertenece a un módulo:
 ModuleID/ControllerID/ActionID
 ```
 
-Entonces si un usuario solicita la URL `http://hostname/index.php?r=site/index`, la acción `index` del controlador `site`
+Entonces si un usuario solicita la URL `https://hostname/index.php?r=site/index`, la acción `index` del controlador `site`
 será ejecutado. Para más detalles acerca de cómo las son resueltas en acciones, por favor consulta
 la sección [Routing](runtime-routing.md).
 
@@ -178,7 +178,7 @@ Puedes configurar [[yii\base\Application::controllerMap|controller map]] en la
 Cada aplicación tiene un controlador por defecto especificado a través de la propiedad [[yii\base\Application::defaultRoute]].
 Cuando un `request` no especifica una [ruta](#ids-routes), se utilizará la ruta especificada en esta propiedad.
 Para [[yii\web\Application|aplicaciones Web]], el valor es `'site'`, mientras que para [[yii\console\Application|aplicaciones de consola]]
-es `help`. Por lo tanto, si la URL es `http://hostname/index.php`, significa que el `request` será manejado por el controlador `site`.
+es `help`. Por lo tanto, si la URL es `https://hostname/index.php`, significa que el `request` será manejado por el controlador `site`.
 
 Puedes cambiar el controlador por defecto con la siguiente [configuración de la aplicación](structure-applications.md#application-configurations):
 
@@ -323,8 +323,8 @@ un objeto `response`):
 ```php
 public function actionForward()
 {
-    // redirige el navegador del usuario a http://example.com
-    return $this->redirect('http://example.com');
+    // redirige el navegador del usuario a https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -354,13 +354,13 @@ class PostController extends Controller
 
 Los parámetros de acción serán poblados como se muestra a continuación para distintos `requests`:
 
-* `http://hostname/index.php?r=post/view&id=123`: el parámetro `$id` tomará el valor
+* `https://hostname/index.php?r=post/view&id=123`: el parámetro `$id` tomará el valor
   `'123'`,  mientras que `$version` queda como `null` debido a que no hay un parámetro `version` en la URL.
-* `http://hostname/index.php?r=post/view&id=123&version=2`: los parámetros `$id` y `$version` serán llenados con
+* `https://hostname/index.php?r=post/view&id=123&version=2`: los parámetros `$id` y `$version` serán llenados con
   `'123'` y `'2'`, respectivamente.
-* `http://hostname/index.php?r=post/view`: se lanzará una excepción [[yii\web\BadRequestHttpException]]
+* `https://hostname/index.php?r=post/view`: se lanzará una excepción [[yii\web\BadRequestHttpException]]
   dado que el parámetro `$id` es requerido pero no es provisto en el `request`.
-* `http://hostname/index.php?r=post/view&id[]=123`: una excepción [[yii\web\BadRequestHttpException]] será lanzada
+* `https://hostname/index.php?r=post/view&id[]=123`: una excepción [[yii\web\BadRequestHttpException]] será lanzada
   porque el parámetro `$id` está recibiendo un valor inesperado, el array `['123']`.
 
 Si quieres que un parámetro de acción acepte un array como valor, deberías utilizar el `type-hinting` (especificación de tipo) `array`,
@@ -373,8 +373,8 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Ahora si el `request` es `http://hostname/index.php?r=post/view&id[]=123`, el parámetro `$id` tomará el valor
-de `['123']`. Si el `request` es `http://hostname/index.php?r=post/view&id=123`, el parámetro `$id` recibirá aún
+Ahora si el `request` es `https://hostname/index.php?r=post/view&id[]=123`, el parámetro `$id` tomará el valor
+de `['123']`. Si el `request` es `https://hostname/index.php?r=post/view&id=123`, el parámetro `$id` recibirá aún
 el mismo array como valor ya que el valor escalar `'123'` será convertido automáticamente en array.
 
 Los ejemplos de arriba muestran principalmente como funcionan los parámetros de acción de una aplicación Web. Para aplicaciones de consola,

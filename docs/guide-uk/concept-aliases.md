@@ -21,7 +21,7 @@
 Yii::setAlias('@foo', '/path/to/foo');
 
 // псевдонім URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 ```
 
 > Note: псевдонім шляху до файлу або URL *не* обовʼязково вказує на наявний файл або ресурс.
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // виведе: /path/to/foo
-echo Yii::getAlias('@bar');               // виведе: http://www.example.com
+echo Yii::getAlias('@bar');               // виведе: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // виведе: /path/to/foo/bar/file.php
 ```
 
@@ -112,8 +112,8 @@ $cache = new FileCache([
 - `@webroot`, коренева веб-директорія поточного веб-додатку. Визначається на основі директорії розташування [вхідного скрипта](structure-entry-scripts.md).
 - `@web`, базовий URL поточного додатку. Має таке ж значення, як і [[yii\web\Request::baseUrl]].
 - `@vendor`, [[yii\base\Application::vendorPath|директорія vendor Composer]]. За замовчуванням `@app/vendor`.
-- `@bower`, директорія, що містить [пакунки Bower](http://bower.io/). За замовчуванням `@vendor/bower`.
-- `@npm`, директорія, що містить [пакунки NPM](https://www.npmjs.org/). За замовчуванням `@vendor/npm`.
+- `@bower`, директорія, що містить [пакунки Bower](https://bower.io/). За замовчуванням `@vendor/bower`.
+- `@npm`, директорія, що містить [пакунки NPM](https://www.npmjs.com/). За замовчуванням `@vendor/npm`.
 
 Псевдонім `@yii` задається в момент підключення файлу `Yii.php` у [вхідному скрипті](structure-entry-scripts.md).
 Решта псевдонімів задаються в конструкторі додатка в момент застосування [конфигурації](concept-configurations.md).

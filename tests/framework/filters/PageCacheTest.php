@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters;
@@ -114,6 +114,16 @@ class PageCacheTest extends TestCase
                 'headers' => [
                     'test-header-1' => false,
                     'test-header-2' => false,
+                ],
+            ]],
+            [[
+                'name' => 'originalNameHeaders',
+                'properties' => [
+                    'cacheHeaders' => ['Test-Header-1'],
+                ],
+                'headers' => [
+                    'Test-Header-1' => true,
+                    'Test-Header-2' => false,
                 ],
             ]],
 
@@ -233,10 +243,12 @@ class PageCacheTest extends TestCase
         }
         // Headers
         if (isset($testCase['headers'])) {
+            $headersExpected = Yii::$app->response->headers->toOriginalArray();
             foreach ($testCase['headers'] as $name => $expected) {
                 $this->assertSame($expected, Yii::$app->response->headers->has($name), $testCase['name']);
                 if ($expected) {
                     $this->assertSame($headers[$name], Yii::$app->response->headers->get($name), $testCase['name']);
+                    $this->assertArrayHasKey($name, $headersExpected);
                 }
             }
         }
@@ -459,5 +471,25 @@ class PageCacheTest extends TestCase
 
         $keys = $this->invokeMethod(new PageCache(), 'calculateCacheKey');
         $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
+    }
+
+    public function testClosureVariations()
+    {
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function() {
+                return [
+                    'foobar'
+                ];
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobar'], $keys);
+
+        // test type cast of string
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function() {
+                return 'foobarstring';
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobarstring'], $keys);
     }
 }

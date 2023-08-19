@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -154,8 +154,22 @@ class ColumnSchema extends BaseObject
                     // ensure type cast always has . as decimal separator in all locales
                     return StringHelper::floatToString($value);
                 }
+                if (is_numeric($value)
+                    && ColumnSchemaBuilder::CATEGORY_NUMERIC === ColumnSchemaBuilder::$typeCategoryMap[$this->type]
+                ) {
+                    // https://github.com/yiisoft/yii2/issues/14663
+                    return $value;
+                }
+
+                if (PHP_VERSION_ID >= 80100 && is_object($value) && $value instanceof \BackedEnum) {
+                    return (string) $value->value;
+                }
+
                 return (string) $value;
             case 'integer':
+                if (PHP_VERSION_ID >= 80100 && is_object($value) && $value instanceof \BackedEnum) {
+                    return (int) $value->value;
+                }
                 return (int) $value;
             case 'boolean':
                 // treating a 0 bit value as false too

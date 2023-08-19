@@ -73,7 +73,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 Soyez prudent lorsque vous nommez des éléments de formulaire tels que des boutons de soumission. Selon la [documentation de jQuery](https://api.jquery.com/submit/), certains noms sont réservés car ils peuvent créer des conflits :
 
-> Les éléments *forms* et leurs éléments enfants ne devraient par utiliser des noms de champ de saisie, ou des identifiants que entrent en conflit avec les propriétés d'un élément de *form*, tels que `submit`, `length`, ou `method`. Les conflits de noms peuvent créer des échecs troublants. Pour une liste complètes des règles et pour vérifier votre code HTML à propos de ces problèmes, reportez-vous à [DOMLint](http://kangax.github.io/domlint/).
+> Les éléments *forms* et leurs éléments enfants ne devraient par utiliser des noms de champ de saisie, ou des identifiants que entrent en conflit avec les propriétés d'un élément de *form*, tels que `submit`, `length`, ou `method`. Les conflits de noms peuvent créer des échecs troublants. Pour une liste complètes des règles et pour vérifier votre code HTML à propos de ces problèmes, reportez-vous à [DOMLint](https://kangax.github.io/domlint/).
 
 Des balises additionnelles HTML peuvent être ajoutées au formulaire en utilisant du HTML simple ou en utilisant les méthodes de la classe [[yii\helpers\Html|Html]]-helper comme cela est fait dans l'exemple ci-dessus avec le [[yii\helpers\Html::submitButton()|bouton de soumission]].
 
@@ -93,7 +93,7 @@ Des balises additionnelles HTML peuvent être ajoutées au formulaire en utilisa
 Création d'une liste déroulante <span id="creating-activeform-dropdownlist"></span>
 -------------------------------
 
-Vous pouvez utiliser la méthode [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) de ActiveForm pour créer une liste déroulante :
+Vous pouvez utiliser la méthode [dropDownList()](https://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail) de ActiveForm pour créer une liste déroulante :
 
 
 ```php
@@ -141,7 +141,7 @@ Pjax::end();
 
 Il y a des problèmes connus avec l'utilisation de `jQuery.serializeArray()` lorsqu'on manipule des [fichiers](https://github.com/jquery/jquery/issues/2321) et des [valeurs de boutons de soumission](https://github.com/jquery/jquery/issues/2321) qui ne peuvent être résolus et sont plutôt rendus obsolète en faveur de la classe `FormData` introduite en HTML5. 
 
-Cela siginifie que la seule prise en charge officielle pour les fichiers et les valeurs de boutons de soumission avec ajax, ou en utilisant le composant graphique  [[yii\widgets\Pjax|Pjax]], dépend de la [prise en charge par le navigateur](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility) de la classe `FormData`.
+Cela siginifie que la seule prise en charge officielle pour les fichiers et les valeurs de boutons de soumission avec ajax, ou en utilisant le composant graphique  [[yii\widgets\Pjax|Pjax]], dépend de la [prise en charge par le navigateur](https://developer.mozilla.org/fr/docs/Web/API/FormData#compatibilit%C3%A9_des_navigateurs) de la classe `FormData`.
 
 Lectures d'approfondissement <span id="further-reading"></span>
 ----------------------------

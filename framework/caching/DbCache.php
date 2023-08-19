@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -58,12 +58,20 @@ class DbCache extends Cache
      * );
      * ```
      *
+     * For MSSQL:
+     * ```php
+     * CREATE TABLE cache (
+     *     id VARCHAR(128) NOT NULL PRIMARY KEY,
+     *     expire INT(11),
+     *     data VARBINARY(MAX)
+     * );
+     * ```
+     *
      * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
      * that can be used for some popular DBMS:
      *
      * - MySQL: LONGBLOB
      * - PostgreSQL: BYTEA
-     * - MSSQL: BLOB
      *
      * When using DbCache in a production server, we recommend you create a DB index for the 'expire'
      * column in the cache table to improve the performance.
@@ -75,6 +83,8 @@ class DbCache extends Cache
      * This number should be between 0 and 1000000. A value 0 meaning no GC will be performed at all.
      */
     public $gcProbability = 100;
+
+    protected $isVarbinaryDataField;
 
 
     /**
@@ -127,7 +137,7 @@ class DbCache extends Cache
     protected function getValue($key)
     {
         $query = new Query();
-        $query->select(['data'])
+        $query->select([$this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
         if ($this->db->enableQueryCache) {
@@ -153,7 +163,7 @@ class DbCache extends Cache
             return [];
         }
         $query = new Query();
-        $query->select(['id', 'data'])
+        $query->select(['id', $this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
             ->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
@@ -197,7 +207,7 @@ class DbCache extends Cache
                 $db->createCommand()->upsert($this->cacheTable, [
                     'id' => $key,
                     'expire' => $duration > 0 ? $duration + time() : 0,
-                    'data' => new PdoValue($value, \PDO::PARAM_LOB),
+                    'data' => $this->getDataFieldValue($value),
                 ])->execute();
             });
 
@@ -230,7 +240,7 @@ class DbCache extends Cache
                     ->insert($this->cacheTable, [
                         'id' => $key,
                         'expire' => $duration > 0 ? $duration + time() : 0,
-                        'data' => new PdoValue($value, \PDO::PARAM_LOB),
+                        'data' => $this->getDataFieldValue($value),
                     ])->execute();
             });
 
@@ -266,7 +276,8 @@ class DbCache extends Cache
      */
     public function gc($force = false)
     {
-        if ($force || mt_rand(0, 1000000) < $this->gcProbability) {
+
+        if ($force || random_int(0, 1000000) < $this->gcProbability) {
             $this->db->createCommand()
                 ->delete($this->cacheTable, '[[expire]] > 0 AND [[expire]] < ' . time())
                 ->execute();
@@ -285,5 +296,36 @@ class DbCache extends Cache
             ->execute();
 
         return true;
+    }
+
+    /**
+     * @return bool whether field is MSSQL varbinary
+     * @since 2.0.42
+     */
+    protected function isVarbinaryDataField()
+    {
+        if ($this->isVarbinaryDataField === null) {
+            $this->isVarbinaryDataField = in_array($this->db->getDriverName(), ['sqlsrv', 'dblib']) &&
+                $this->db->getTableSchema($this->cacheTable)->columns['data']->dbType === 'varbinary';
+        }
+        return $this->isVarbinaryDataField;
+    }
+
+    /**
+     * @return string `data` field name converted for usage in MSSQL (if needed)
+     * @since 2.0.42
+     */
+    protected function getDataFieldName()
+    {
+        return $this->isVarbinaryDataField() ? 'CONVERT(VARCHAR(MAX), [[data]]) data' : 'data';
+    }
+
+    /**
+     * @return PdoValue PdoValue or direct $value for usage in MSSQL
+     * @since 2.0.42
+     */
+    protected function getDataFieldValue($value)
+    {
+        return $this->isVarbinaryDataField() ? $value : new PdoValue($value, \PDO::PARAM_LOB);
     }
 }

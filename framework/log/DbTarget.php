@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\log;
@@ -78,7 +78,7 @@ class DbTarget extends Target
             list($text, $level, $category, $timestamp) = $message;
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
-                if ($text instanceof \Throwable || $text instanceof \Exception) {
+                if ($text instanceof \Exception || $text instanceof \Throwable) {
                     $text = (string) $text;
                 } else {
                     $text = VarDumper::export($text);

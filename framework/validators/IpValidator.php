@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -32,8 +32,8 @@ use yii\web\JsExpression;
  * ['ip_address', 'ip', 'expandIPv6' => true], // expands IPv6 address to a full notation format
  * ```
  *
- * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. See [[setRanges()]] for
- * detailed description.
+ * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. Note that the type of this
+ * property differs in getter and setter. See [[getRanges()]] and [[setRanges()]] for details.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
@@ -85,7 +85,7 @@ class IpValidator extends Validator
      */
     public $ipv4 = true;
     /**
-     * @var bool whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
+     * @var bool|null whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
      * The following values are possible:
      *
      * - `false` - the address must not have a subnet (default).
@@ -115,11 +115,11 @@ class IpValidator extends Validator
     /**
      * @var string Regexp-pattern to validate IPv4 address
      */
-    public $ipv4Pattern = '/^(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))$/';
+    public $ipv4Pattern = '/^(?:(?:2(?:[0-4]\d|5[0-5])|[0-1]?\d?\d)\.){3}(?:(?:2([0-4]\d|5[0-5])|[0-1]?\d?\d))$/';
     /**
      * @var string Regexp-pattern to validate IPv6 address
      */
-    public $ipv6Pattern = '/^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/';
+    public $ipv6Pattern = '/^(([\da-fA-F]{1,4}:){7}[\da-fA-F]{1,4}|([\da-fA-F]{1,4}:){1,7}:|([\da-fA-F]{1,4}:){1,6}:[\da-fA-F]{1,4}|([\da-fA-F]{1,4}:){1,5}(:[\da-fA-F]{1,4}){1,2}|([\da-fA-F]{1,4}:){1,4}(:[\da-fA-F]{1,4}){1,3}|([\da-fA-F]{1,4}:){1,3}(:[\da-fA-F]{1,4}){1,4}|([\da-fA-F]{1,4}:){1,2}(:[\da-fA-F]{1,4}){1,5}|[\da-fA-F]{1,4}:((:[\da-fA-F]{1,4}){1,6})|:((:[\da-fA-F]{1,4}){1,7}|:)|fe80:(:[\da-fA-F]{0,4}){0,4}%[\da-zA-Z]+|::(ffff(:0{1,4})?:)?((25[0-5]|(2[0-4]|1?\d)?\d)\.){3}(25[0-5]|(2[0-4]|1?\d)?\d)|([\da-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[\d])?\d)\.){3}(25[0-5]|(2[0-4]|1?\d)?\d))$/';
     /**
      * @var string user-defined error message is used when validation fails due to the wrong IP address format.
      *
@@ -162,7 +162,7 @@ class IpValidator extends Validator
      */
     public $wrongCidr;
     /**
-     * @var string user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
+     * @var string|null user-defined error message is used when validation fails due to subnet [[subnet]] set to 'only',
      * but the CIDR prefix is not set.
      *
      * You may use the following placeholders in the message:
@@ -245,9 +245,7 @@ class IpValidator extends Validator
      * - Recursively substitutes aliases (described in [[networks]]) with their values.
      * - Removes duplicates
      *
-     * @property array the IPv4 or IPv6 ranges that are allowed or forbidden.
-     * See [[setRanges()]] for detailed description.
-     * @param array|string $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
+     * @param array|string|null $ranges the IPv4 or IPv6 ranges that are allowed or forbidden.
      *
      * When the array is empty, or the option not set, all IP addresses are allowed.
      *

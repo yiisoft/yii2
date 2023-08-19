@@ -22,7 +22,7 @@ Với nhiệm vụ tạo ra thông điệp "Hello", bạn sẽ tạo một  [act
 sẽ lấy các tham số `message` từ request và hiển thị thông điệp trở lại user. Nếu request không cung cấp tham số `message`, 
 action sẽ mặc định hiển thị thông điệp  "Hello".
 
-> Lưu ý: [Hành động (Actions)](structure-controllers.md#creating-actions) là người dùng cuối có thể truy cập các đối tượng và thực hiện trực tiếp.
+> Info: [Hành động (Actions)](structure-controllers.md#creating-actions) là người dùng cuối có thể truy cập các đối tượng và thực hiện trực tiếp.
  Các Actions được nằm trong [bộ điều khiển (controllers)](structure-controllers.md).
  Các kết quả của một action là người sử dụng cuối cùng nhận được các thông điệp.
 
@@ -86,7 +86,7 @@ Bạn cần lưu trữ view `say` nằm ở đường dẫn `views/site/say.php`
 
 Lưu ý rằng, đoạn code trên, biến `message` đã được phương thức [[yii\helpers\Html::encode()|HTML-encoded]]
 mã hóa trước khi được in ra. Việc mã hóa là cần thiết khi gửi các tham số tới user, các tham số này có thể bị tấn công qua
-[XSS (cross-site scripting)](http://en.wikipedia.org/wiki/Cross-site_scripting) đây là kỹ thuật tấn công bằng cách chèn chèn các 
+[XSS (cross-site scripting)](https://en.wikipedia.org/wiki/Cross-site_scripting) đây là kỹ thuật tấn công bằng cách chèn chèn các 
 thẻ HTML hoặc đoạn mã JavaScript độc hại.
 
 Tất nhiên, bạn có thể thêm các nội dung ở view `say`.Nội dung bao gồm các thẻ HTML, dữ liệu văn bản, và cũng có thể là các câu lệnh PHP.
@@ -101,7 +101,7 @@ Trying it Out <span id="trying-it-out"></span>
 Sau khi đã tạo action và view, bạn có thể truy cập vào trang bởi việc truy cập vào URL sau:
 
 ```
-http://hostname/index.php?r=site/say&message=Hello+World
+https://hostname/index.php?r=site/say&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)
@@ -111,7 +111,7 @@ URL này sẽ trả về một trang và hiển thị lời chào "Hello World".
 Nếu bạn không nhập tham số `message` vào URL, bạn chỉ xem thấy mỗi dòng "Hello" được hiển thị. Bởi vì tham số `message` được thông qua phương thức `actionSay()`, và mỗi khi tham số này không được nhập,
 thì giá trị mặc đinh `"Hello"` sẽ được thay thế.
 
-> Lưu ý: Trang này có cùng phần header và footer như những trang khác là bởi vì phương thức [[yii\web\Controller::render()|render()]]
+> Info: Trang này có cùng phần header và footer như những trang khác là bởi vì phương thức [[yii\web\Controller::render()|render()]]
   sẽ tự động nhúng nội dung của view `say` vào một [layout](structure-views.md#layouts) layout này nằm ở `views/layouts/main.php`.
 
 Tham số `r` ở trên URL sẽ được giải thích thêm. Nó là chuẩn cho bộ định tuyến [route](runtime-routing.md), mỗi ứng dụng sẽ cung cấp ID
@@ -120,7 +120,7 @@ theo cùng request đó, sử dụng `ControllerID` để xác định lớp đi
 xác dịnh `ActionID` cần được khởi tạo để xử lý công việc. Trong ví dụ này, route `site/say`
 sẽ gán (ám chỉ tới) bộ điều khiển `SiteController` và action `say`. Điều này sẽ có kết quả là, phương thức `SiteController::actionSay()` sẽ được gọi để xử lý các request.
 
-> Lưu ý: Giống như actions, ứng dụng sử dụng các định danh ID để nhận diện các controller. Các Controller ID
+> Info: Giống như actions, ứng dụng sử dụng các định danh ID để nhận diện các controller. Các Controller ID
   có quy tắc đặt tên giống với các action IDs. Tên của controller được chuyển đổi từ các controller IDs 
   bằng việc loại bỏ dấu gạch ngang từ đinh danh ID, tận dụng các chữ cái đầu tiên trong mỗi từ,
   và từ đứng trước `Controller`. Ví dụ, bộ điều khiển controller ID có tên là `post-comment` sẽ tương ứng

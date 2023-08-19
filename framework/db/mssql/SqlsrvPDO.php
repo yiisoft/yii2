@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\mssql;
@@ -26,6 +26,7 @@ class SqlsrvPDO extends \PDO
      * @param string|null $sequence the sequence name. Defaults to null.
      * @return int last inserted ID value.
      */
+    #[\ReturnTypeWillChange]
     public function lastInsertId($sequence = null)
     {
         return !$sequence ? parent::lastInsertId() : parent::lastInsertId($sequence);

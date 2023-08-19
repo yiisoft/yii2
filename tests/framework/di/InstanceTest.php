@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\di;
@@ -171,7 +171,7 @@ class InstanceTest extends TestCase
         $instance = Instance::of('something');
         $export = var_export($instance, true);
 
-        $this->assertRegExp('~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\)\)~', $export);
+        $this->assertRegExp('~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~', $export);
 
         $this->assertEquals($instance, Instance::__set_state([
             'id' => 'something',

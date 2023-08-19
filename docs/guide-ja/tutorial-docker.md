@@ -5,14 +5,14 @@ Yii と Docker
 
 コンテナによって、開発用コンピュータと実運用サーバでソフトウェアのバージョンを全く同一にすること、迅速な配備、開発時におけるマルチ・サーバ・アーキテクチャのシミュレーションなど、数多くの問題を解決することが出来ます。
 
-Docker コンテナの詳細については、[docker.com](https://www.docker.com/what-docker) を参照して下さい。
+Docker コンテナの詳細については、[docker.com](https://www.docker.com/why-docker) を参照して下さい。
 
 ## 必要なもの
 
 - `docker`
 - `docker-compose`
 
-[ダウンロード・ページ](https://www.docker.com/community-edition) で Docker のツールを取得して下さい。
+[ダウンロード・ページ](https://www.docker.com/products/container-runtime) で Docker のツールを取得して下さい。
 
 ## インストール
 

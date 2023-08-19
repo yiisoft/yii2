@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\log;
@@ -27,9 +27,9 @@ class SyslogTarget extends Target
      */
     public $facility = LOG_USER;
     /**
-     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](https://secure.php.net/openlog).
+     * @var int|null openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](https://www.php.net/openlog).
      * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
-     * @see https://secure.php.net/openlog for available options.
+     * @see https://www.php.net/openlog for available options.
      * @since 2.0.11
      */
     public $options;
@@ -84,7 +84,7 @@ class SyslogTarget extends Target
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
-            if ($text instanceof \Throwable || $text instanceof \Exception) {
+            if ($text instanceof \Exception || $text instanceof \Throwable) {
                 $text = (string) $text;
             } else {
                 $text = VarDumper::export($text);

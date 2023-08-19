@@ -75,7 +75,7 @@ To do so, you should:
 2. install the class autoloaders provided by the extensions, if any.
 3. download and install all dependent extensions as instructed.
 
-If an extension does not have a class autoloader but follows the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/),
+If an extension does not have a class autoloader but follows the [PSR-4 standard](https://www.php-fig.org/psr/psr-4/),
 you may use the class autoloader provided by Yii to autoload the extension classes. All you need to do is just to
 declare a [root alias](concept-aliases.md#defining-aliases) for the extension root directory. For example,
 assuming you have installed an extension in the directory `vendor/mycompany/myext`, and the extension classes
@@ -127,9 +127,9 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -184,8 +184,8 @@ If your extension also depends on other extensions or third-party libraries, you
 Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
 dependencies when your extension is released in a stable version.
 
-Most JavaScript/CSS packages are managed using [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/),
-instead of Composer. Yii uses the [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin)
+Most JavaScript/CSS packages are managed using [Bower](https://bower.io/) and/or [NPM](https://www.npmjs.com/),
+instead of Composer. Yii uses the [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
 to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
 simply list the dependency in `composer.json` like the following:
 
@@ -240,8 +240,8 @@ we introduce some common and recommended practices in creating high quality exte
 #### Namespaces <span id="namespaces"></span>
 
 To avoid name collisions and make the classes in your extension autoloadable, you should use namespaces and
-name the classes in your extension by following the [PSR-4 standard](http://www.php-fig.org/psr/psr-4/) or
-[PSR-0 standard](http://www.php-fig.org/psr/psr-0/).
+name the classes in your extension by following the [PSR-4 standard](https://www.php-fig.org/psr/psr-4/) or
+[PSR-0 standard](https://www.php-fig.org/psr/psr-0/).
 
 Your class namespaces should start with `vendorName\extensionName`, where `extensionName` is similar to the project name
 in the package name except that it should not contain the `yii2-` prefix. For example, for the `yiisoft/yii2-imagine`
@@ -351,7 +351,7 @@ acceptance tests and functionality tests. For more details, please refer to the 
 #### Versioning <span id="versioning"></span>
 
 You should give each release of your extension a version number (e.g. `1.0.1`). We recommend you follow the
-[semantic versioning](http://semver.org) practice when determining what version numbers should be used.
+[semantic versioning](https://semver.org) practice when determining what version numbers should be used.
 
 
 #### Releasing <span id="releasing"></span>
@@ -367,7 +367,7 @@ In the releases of your extension, in addition to code files, you should also co
 help other people learn about and use your extension:
 
 * A readme file in the package root directory: it describes what your extension does and how to install and use it.
-  We recommend you write it in [Markdown](http://daringfireball.net/projects/markdown/) format and name the file
+  We recommend you write it in [Markdown](https://daringfireball.net/projects/markdown/) format and name the file
   as `readme.md`.
 * A changelog file in the package root directory: it lists what changes are made in each release. The file
   may be written in Markdown format and named as `changelog.md`.
@@ -383,7 +383,7 @@ help other people learn about and use your extension:
   for you to generate pretty API documentation based on your code comments.
 
 > Info: While not a requirement, we suggest your extension adhere to certain coding styles. You may refer to
-  the [core framework code style](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  the [core framework code style](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Core Extensions <span id="core-extensions"></span>
@@ -398,15 +398,13 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient):
   provides a set of commonly used auth clients, such as Facebook OAuth2 client, GitHub OAuth2 client.
 - [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap):
-  provides a set of widgets that encapsulate the [Bootstrap](http://getbootstrap.com/) components and plugins.
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception) (deprecated):
-  provides testing support based on [Codeception](http://codeception.com/).
+  provides a set of widgets that encapsulate the [Bootstrap](https://getbootstrap.com/) components and plugins.
 - [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug):
   provides debugging support for Yii applications. When this extension is used, a debugger toolbar will appear
   at the bottom of every page. The extension also provides a set of standalone pages to display more detailed
   debug information.
 - [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch):
-  provides the support for using [Elasticsearch](http://www.elasticsearch.org/). It includes basic querying/search
+  provides the support for using [Elasticsearch](https://www.elastic.co/). It includes basic querying/search
   support and also implements the [Active Record](db-active-record.md) pattern that allows you to store active records
   in Elasticsearch.
 - [yiisoft/yii2-faker](https://www.yiiframework.com/extension/yiisoft/yii2-faker):
@@ -417,29 +415,29 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-httpclient](https://www.yiiframework.com/extension/yiisoft/yii2-httpclient):
   provides an HTTP client.
 - [yiisoft/yii2-imagine](https://www.yiiframework.com/extension/yiisoft/yii2-imagine):
-  provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
+  provides commonly used image manipulation functions based on [Imagine](https://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui):
-  provides a set of widgets that encapsulate the [JQuery UI](http://jqueryui.com/) interactions and widgets.
+  provides a set of widgets that encapsulate the [JQuery UI](https://jqueryui.com/) interactions and widgets.
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb):
-  provides the support for using [MongoDB](http://www.mongodb.org/). It includes features such as basic query,
+  provides the support for using [MongoDB](https://www.mongodb.com/). It includes features such as basic query,
   Active Record, migrations, caching, code generation, etc.
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue):
   provides the supports for running tasks asynchronously via queues.
   It supports queues based on DB, Redis, RabbitMQ, AMQP, Beanstalk and Gearman.
 - [yiisoft/yii2-redis](https://www.yiiframework.com/extension/yiisoft/yii2-redis):
-  provides the support for using [redis](http://redis.io/). It includes features such as basic query,
+  provides the support for using [redis](https://redis.io/). It includes features such as basic query,
   Active Record, caching, etc.
 - [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell):
-  provides an interactive shell based on [psysh](http://psysh.org/).
+  provides an interactive shell based on [psysh](https://psysh.org/).
 - [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty):
-  provides a template engine based on [Smarty](http://www.smarty.net/).
+  provides a template engine based on [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx):
-  provides the support for using [Sphinx](http://sphinxsearch.com). It includes features such as basic query,
+  provides the support for using [Sphinx](https://sphinxsearch.com/). It includes features such as basic query,
   Active Record, code generation, etc.
-- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer):
-  provides email sending features based on [swiftmailer](http://swiftmailer.org/).
+- [yiisoft/yii2-symfonymailer](https://www.yiiframework.com/extension/yiisoft/yii2-symfonymailer):
+  provides email sending features based on [Symfony Mailer](https://symfony.com/doc/current/mailer.html).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig):
-  provides a template engine based on [Twig](http://twig.sensiolabs.org/).
+  provides a template engine based on [Twig](https://twig.symfony.com/).
 
 The following official extensions are for Yii 2.1 and above.
 You don't need to install them for Yii 2.0, since they are included in the core framework.
@@ -449,7 +447,7 @@ You don't need to install them for Yii 2.0, since they are included in the core 
 - [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
   provides a support for [jQuery](https://jquery.com/).
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
-  provides a masked input widget based on [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
+  provides a masked input widget based on [jQuery Input Mask plugin](https://robinherbots.github.io/Inputmask/).
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
   provides the support for using [MSSQL](https://www.microsoft.com/sql-server/).
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console;
@@ -57,9 +57,13 @@ class FakeController extends Controller
 
     public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$fromParam, $other];
+        return [$fromParam, $other];
     }
 
+    /**
+     * @param string $value the string value
+     * @return array
+     */
     public function actionAksi2(array $values, $value)
     {
         return [$values, $value];
@@ -84,9 +88,9 @@ class FakeController extends Controller
         return $this->testArray;
     }
 
-    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
+    public function actionTrimargs($param1 = null)
     {
-        return $simpleArgument;
+        return func_get_args();
     }
 
     public function actionStatus($status = 0)

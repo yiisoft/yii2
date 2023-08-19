@@ -2,7 +2,7 @@ Html-помощник
 =============
 
 Каждое веб-приложение формирует большое количество HTML-разметки. Если разметка статическая, её можно эффективно
-сформировать [смешиванием PHP и HTML в одном файле](https://secure.php.net/manual/ru/language.basic-syntax.phpmode.php), но
+сформировать [смешиванием PHP и HTML в одном файле](https://www.php.net/manual/ru/language.basic-syntax.phpmode.php), но
 когда разметка динамическая, становится сложно формировать её без дополнительной помощи. Yii предоставляет такую помощь
 в виде Html-помощника, который обеспечивает набор статических методов для обработки часто-используемых HTML тэгов, их
 атрибутов и содержимого.
@@ -45,7 +45,7 @@ Html-помощник
 
 - Если значение равно `null`, соответствующий атрибут не будет выведен.
 - Атрибуты, значения которых имеют тип boolean, будут интерпретированы как
-  [логические атрибуты](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [логические атрибуты](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Значения атрибутов будут экранированы с использованием метода [[yii\helpers\Html::encode()|Html::encode()]].
 - Если в качестве значения атрибута передан массив, он будет обработан следующим образом:
 
@@ -101,7 +101,7 @@ echo Html::tag('div', 'Сохранить', $options);
 // выведет '<div class="btn btn-success btn-lg">Сохранить</div>'
 ```
 
-`Html::addCssClass()` предотвращает дублирование классов, поэтому можно не беспокоиться о том, что какой-либо класс
+`Html::addCssClass()` предотвращает дублирование классов, поэтому можно не беспокоиться, что какой-либо класс
 будет добавлен дважды:
 
 ```php
@@ -155,8 +155,8 @@ Html::removeCssStyle($options, ['width', 'height']);
 ### Экранирование контента <span id="encoding-and-decoding-content"></span>
 
 Для корректного и безопасного отображения контента специальные символы в HTML-коде должны быть экранированы. В чистом
-PHP это осуществляется с помощью функций [htmlspecialchars](https://secure.php.net/manual/ru/function.htmlspecialchars.php)
-и [htmlspecialchars_decode](https://secure.php.net/manual/ru/function.htmlspecialchars-decode.php). Проблема использования
+PHP это осуществляется с помощью функций [htmlspecialchars](https://www.php.net/manual/ru/function.htmlspecialchars.php)
+и [htmlspecialchars_decode](https://www.php.net/manual/ru/function.htmlspecialchars-decode.php). Проблема использования
 этих функций заключается в том, что приходится указывать кодировку и дополнительные флаги во время каждого вызова.
 Поскольку флаги всё время одинаковы, а кодировка остаётся одной и той же в пределах приложения, Yii в целях
 безопасности предоставляет два компактных и простых в использовании метода:
@@ -272,7 +272,7 @@ $decodedUserName = Html::decode($userName);
 <?= Html::activeCheckboxList($user, 'role', ArrayHelper::map($roleModels, 'id', 'name')) ?>
 ```
 
-Если же нет, используйте радио-переключатель:
+Если нет, используйте радио-переключатель:
 
 ```php
 <?= Html::radioList('roles', [16, 42], ArrayHelper::map($roleModels, 'id', 'name')) ?>
@@ -282,7 +282,7 @@ $decodedUserName = Html::decode($userName);
 
 ### Тэги label и отображение ошибок <span id="labels-and-errors"></span>
 
-Также как и для полей ввода, есть два метода формирования тэгов label для форм. Есть "active label", считывающий
+Так же как и для полей ввода, есть два метода формирования тэгов label для форм. Есть "active label", считывающий
 данные из модели и обычный тэг "label", принимающий на вход непосредственно сами данные:
 
 ```php
@@ -369,7 +369,7 @@ echo Html::getAttributeName('dates[0]');
 В результате получится:
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -420,7 +420,7 @@ echo Html::getAttributeName('dates[0]');
 
 в результате получится:
 
-<img src="http://example.com/images/logo.png" alt="Наш логотип" />
+<img src="https://example.com/images/logo.png" alt="Наш логотип" />
 ```
 
 Помимо [псевдонимов](concept-aliases.md) первый аргумент может принимать маршруты, параметры и URL-адреса таким же образом

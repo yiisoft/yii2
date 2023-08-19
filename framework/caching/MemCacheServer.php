@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -10,7 +10,7 @@ namespace yii\caching;
 /**
  * MemCacheServer represents the configuration data for a single memcache or memcached server.
  *
- * See [PHP manual](https://secure.php.net/manual/en/memcache.addserver.php) for detailed explanation
+ * See [PHP manual](https://www.php.net/manual/en/memcache.addserver.php) for detailed explanation
  * of each configuration property.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).

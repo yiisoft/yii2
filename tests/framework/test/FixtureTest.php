@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\test;
@@ -11,9 +11,6 @@ use yii\test\Fixture;
 use yii\test\FixtureTrait;
 use yiiunit\TestCase;
 
-/**
- * @group fixture
- */
 class Fixture1 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture2'];
@@ -55,6 +52,35 @@ class Fixture3 extends Fixture
         MyTestCase::$unload .= '3';
     }
 }
+
+class Fixture4 extends Fixture
+{
+    public $depends = ['yiiunit\framework\test\Fixture5'];
+    public function load()
+    {
+        MyTestCase::$load .= '4';
+    }
+
+    public function unload()
+    {
+        MyTestCase::$unload .= '4';
+    }
+}
+
+class Fixture5 extends Fixture
+{
+    public $depends = ['yiiunit\framework\test\Fixture4'];
+    public function load()
+    {
+        MyTestCase::$load .= '5';
+    }
+
+    public function unload()
+    {
+        MyTestCase::$unload .= '5';
+    }
+}
+
 
 class MyTestCase
 {
@@ -104,16 +130,30 @@ class MyTestCase
                 'fixture1' => Fixture1::className(),
                 'fixture3' => Fixture3::className(),
             ];
-            case 7:
-            default: return [
+            case 7: return [
                 'fixture1' => Fixture1::className(),
                 'fixture2' => Fixture2::className(),
                 'fixture3' => Fixture3::className(),
             ];
+            case 8: return [
+                'fixture4' => Fixture4::className(),
+            ];
+            case 9: return [
+                'fixture5' => Fixture5::className(),
+                'fixture4' => Fixture4::className(),
+            ];
+            case 10: return [
+                'fixture3a' => Fixture3::className(), // duplicate fixtures may occur two fixtures depend on the same fixture.
+                'fixture3b' => Fixture3::className(),
+            ];
+            default: return [];
         }
     }
 }
 
+/**
+ * @group fixture
+ */
 class FixtureTest extends TestCase
 {
     public function testDependencies()
@@ -145,14 +185,16 @@ class FixtureTest extends TestCase
     protected function getDependencyTests()
     {
         return [
-            0 => ['fixture1' => false, 'fixture2' => false, 'fixture3' => false],
-            1 => ['fixture1' => true, 'fixture2' => false, 'fixture3' => false],
-            2 => ['fixture1' => false, 'fixture2' => true, 'fixture3' => false],
-            3 => ['fixture1' => false, 'fixture2' => false, 'fixture3' => true],
-            4 => ['fixture1' => true, 'fixture2' => true, 'fixture3' => false],
-            5 => ['fixture1' => false, 'fixture2' => true, 'fixture3' => true],
-            6 => ['fixture1' => true, 'fixture2' => false, 'fixture3' => true],
-            7 => ['fixture1' => true, 'fixture2' => true, 'fixture3' => true],
+            0 => ['fixture1' => false, 'fixture2' => false, 'fixture3' => false, 'fixture4' => false, 'fixture5' => false],
+            1 => ['fixture1' => true, 'fixture2' => false, 'fixture3' => false, 'fixture4' => false, 'fixture5' => false],
+            2 => ['fixture1' => false, 'fixture2' => true, 'fixture3' => false, 'fixture4' => false, 'fixture5' => false],
+            3 => ['fixture1' => false, 'fixture2' => false, 'fixture3' => true, 'fixture4' => false, 'fixture5' => false],
+            4 => ['fixture1' => true, 'fixture2' => true, 'fixture3' => false, 'fixture4' => false, 'fixture5' => false],
+            5 => ['fixture1' => false, 'fixture2' => true, 'fixture3' => true, 'fixture4' => false, 'fixture5' => false],
+            6 => ['fixture1' => true, 'fixture2' => false, 'fixture3' => true, 'fixture4' => false, 'fixture5' => false],
+            7 => ['fixture1' => true, 'fixture2' => true, 'fixture3' => true, 'fixture4' => false, 'fixture5' => false],
+            8 => ['fixture1' => false, 'fixture2' => false, 'fixture3' => false, 'fixture4' => true, 'fixture5' => false],
+            9 => ['fixture1' => false, 'fixture2' => false, 'fixture3' => false, 'fixture4' => true, 'fixture5' => true],
         ];
     }
 
@@ -167,6 +209,9 @@ class FixtureTest extends TestCase
             5 => ['32', '23'],
             6 => ['321', '123'],
             7 => ['321', '123'],
+            8 => ['54', '45'],
+            9 => ['45', '54'],
+            10 => ['3', '3'],
         ];
     }
 }

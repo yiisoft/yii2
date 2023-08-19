@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\caching;
@@ -51,6 +51,36 @@ class FileCacheTest extends CacheTestCase
         $this->assertEquals('expire_testa', $cache->get('expire_testa'));
         static::$time++;
         $this->assertFalse($cache->get('expire_testa'));
+    }
+
+    public function testKeyPrefix()
+    {
+        $keyPrefix = 'foobar';
+        $key = uniqid('uid-cache_');
+        $cache = $this->getCacheInstance();
+        $cache->flush();
+
+        $cache->directoryLevel = 1;
+        $cache->keyPrefix = $keyPrefix;
+        $normalizeKey = $cache->buildKey($key);
+        $expectedDirectoryName = substr($normalizeKey, 6, 2);
+
+        $value = \time();
+
+        $refClass = new \ReflectionClass($cache);
+
+        $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
+        $refMethodGetCacheFile->setAccessible(true);
+        $refMethodGet = $refClass->getMethod('get');
+        $refMethodSet = $refClass->getMethod('set');
+
+        $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
+
+        $this->assertTrue($refMethodSet->invoke($cache, $key, $value));
+        $this->assertContains($keyPrefix, basename($cacheFile));
+        $this->assertEquals($expectedDirectoryName, basename(dirname($cacheFile)), $cacheFile);
+        $this->assertTrue(is_dir(dirname($cacheFile)), 'File not found ' . $cacheFile);
+        $this->assertEquals($value, $refMethodGet->invoke($cache, $key));
     }
 
     public function testCacheRenewalOnDifferentOwnership()

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\behaviors;
@@ -29,7 +29,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::className(),
+ *             'class' => SluggableBehavior::class,
  *             'attribute' => 'title',
  *             // 'slugAttribute' => 'slug',
  *         ],
@@ -50,7 +50,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::className(),
+ *             'class' => SluggableBehavior::class,
  *             'slugAttribute' => 'alias',
  *         ],
  *     ];
@@ -111,7 +111,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $uniqueValidator = [];
     /**
-     * @var callable slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
+     * @var callable|null slug unique value generator. It is used in case [[ensureUnique]] enabled and generated
      * slug is not unique. This should be a PHP callable with following signature:
      *
      * ```php

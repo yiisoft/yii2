@@ -91,7 +91,7 @@ Para fazer isto, você deve:
 3. fazer o download e instalar todas as extensões dependentes que foi instruído.
 
 Se uma extensão não tiver uma classe autoloader seguindo a 
-[norma PSR-4](http://www.php-fig.org/psr/psr-4/), você pode usar a classe 
+[norma PSR-4](https://www.php-fig.org/psr/psr-4/), você pode usar a classe 
 autoloader fornecida pelo Yii para carregar automaticamente as classes de 
 extensão. Tudo o que você precisa fazer é declarar uma 
 [alias root](concept-aliases.md#defining-aliases) para o diretório root da 
@@ -153,9 +153,9 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
     "license": "BSD-3-Clause",
     "support": {
         "issues": "https://github.com/yiisoft/yii2/issues?labels=ext%3Aimagine",
-        "forum": "http://www.yiiframework.com/forum/",
-        "wiki": "http://www.yiiframework.com/wiki/",
-        "irc": "irc://irc.freenode.net/yii",
+        "forum": "https://forum.yiiframework.com/",
+        "wiki": "https://www.yiiframework.com/wiki/",
+        "irc": "ircs://irc.libera.chat:6697/yii",
         "source": "https://github.com/yiisoft/yii2"
     },
     "authors": [
@@ -219,9 +219,9 @@ de listar as constantes de versões apropriadas (por exemplo, `1.*`, `@stable`)
 para cada pacote dependente. Utilize dependências estáveis quando sua extensão 
 estiver em uma versão estável.
 
-A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](http://bower.io/) 
-e/ou pelo [NPM](https://www.npmjs.org/), ao invés do Composer. O Yii usa o 
-[plugin de asset do Composer](https://github.com/francoispluchino/composer-asset-plugin) 
+A maioria dos pacotes JavaScript/CSS são gerenciados pelo [Bower](https://bower.io/) 
+e/ou pelo [NPM](https://www.npmjs.com/), ao invés do Composer. O Yii usa o 
+[plugin de asset do Composer](https://github.com/fxpio/composer-asset-plugin) 
 para habilitar a gerência destes tipos de pacotes através do Composer. Se sua 
 extensão depender do pacote do Bower, você pode simplesmente listar a dependência 
 no `composer.json` conforme o exemplo a seguir:
@@ -286,8 +286,8 @@ alta qualidade.
 
 Para evitar conflitos de nomes e criar classes autocarregáveis em sua extensão, 
 você deve usar namespaces e nomear as classes seguindo o 
-[padrão PSR-4](http://www.php-fig.org/psr/psr-4/) ou o 
-[padrão PSR-0](http://www.php-fig.org/psr/psr-0/).
+[padrão PSR-4](https://www.php-fig.org/psr/psr-4/) ou o 
+[padrão PSR-0](https://www.php-fig.org/psr/psr-0/).
 
 Seus namespaces de classes devem iniciar com `vendorName\extensionName`, onde a 
 `extensionName` é semelhante ao nome da extensão, exceto que ele não deve conter 
@@ -422,7 +422,7 @@ por favor, consulte a seção [Testing](test-overview.md).
 #### Versionamento <span id="versioning"></span>
 
 Você deve dar para cada liberação de sua extensão um numero de versão (por exemplo, 
-`1.0.1`). Recomendamos que você siga a prática [versionamento semântico](http://semver.org) 
+`1.0.1`). Recomendamos que você siga a prática [versionamento semântico](https://semver.org) 
 ao determinar qual número de versão será usado.
 
 
@@ -444,7 +444,7 @@ a sua extensão:
 
 * Um arquivo readme no diretório root do pacote: descreve o que sua extensão faz 
   e como faz para instalá-lo e usá-lo. Recomendamos que você escreva no formato 
-  [Markdown](http://daringfireball.net/projects/markdown/) e o nome do arquivo 
+  [Markdown](https://daringfireball.net/projects/markdown/) e o nome do arquivo 
   como `readme.md`.
 * Um arquivo changelog no diretório root do pacote: lista quais mudanças foram 
   feitas em cada versão. O arquivo pode ser escrito no formato Markdown e 
@@ -465,7 +465,7 @@ a sua extensão:
 
 > Informação: Embora não seja um requisito, sugerimos que sua extensão se conforme 
   a determinados estilos de codificação. Você pode consultar o 
-  [estilo de codificação do framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style).
+  [estilo de codificação do framework](https://github.com/yiisoft/yii2/blob/master/docs/internals/core-code-style.md).
 
 
 ## Extensões Nativas <span id="core-extensions"></span>
@@ -482,16 +482,14 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
   client, GitHub OAuth2 client.
 - [yiisoft/yii2-bootstrap](https://github.com/yiisoft/yii2-bootstrap):
   fornece um conjunto de widgets que encapsulam os componentes e plug-ins do 
-  [Bootstrap](http://getbootstrap.com/).
-- [yiisoft/yii2-codeception](https://github.com/yiisoft/yii2-codeception):
-  fornece suporte a testes baseados no [Codeception](http://codeception.com/).
+  [Bootstrap](https://getbootstrap.com/).
 - [yiisoft/yii2-debug](https://github.com/yiisoft/yii2-debug):
   fornece suporte a depuração para aplicações Yii. Quando esta extensão é usada, 
   uma barra de ferramenta de depuração aparecerá na parte inferior de cada página. 
   A extensão também fornece um conjunto de páginas independentes para exibir mais 
   detalhes das informações de depuração.
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch):
-  fornece suporte para o uso de [Elasticsearch](http://www.elasticsearch.org/). 
+  fornece suporte para o uso de [Elasticsearch](https://www.elastic.co/). 
   Este inclui suporte a consultas/pesquisas básicas e também implementa o padrão 
   [Active Record](db-active-record.md) que permite que você armazene os active 
   records no Elasticsearch.
@@ -505,23 +503,23 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
   provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   fornece funções de manipulação de imagens comumente utilizados com base no 
-  [Imagine](http://imagine.readthedocs.org/).
+  [Imagine](https://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):
   fornece um conjunto de widgets que encapsulam as interações e widgets do 
-  [JQuery UI](http://jqueryui.com/).
+  [JQuery UI](https://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb):
-  fornece suporte para o uso do [MongoDB](http://www.mongodb.org/). Este inclui 
+  fornece suporte para o uso do [MongoDB](https://www.mongodb.com/). Este inclui 
   recursos como consultas básicas, Active Record, migrations, cache, geração de 
   códigos, etc.
 - [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis):
-  fornece suporte para o uso do [redis](http://redis.io/). Este inclui recursos 
+  fornece suporte para o uso do [redis](https://redis.io/). Este inclui recursos 
   como consultas básicas, Active Record, cache, etc.
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
-  fornece um motor de template baseado no [Smarty](http://www.smarty.net/).
+  fornece um motor de template baseado no [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  fornece suporte para o uso do [Sphinx](http://sphinxsearch.com). Este inclui 
+  fornece suporte para o uso do [Sphinx](https://sphinxsearch.com). Este inclui 
   recursos como consultas básicas, Active Record, geração de códigos, etc.
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  fornece recursos para envio de e-mails baseados no [swiftmailer](http://swiftmailer.org/).
+  fornece recursos para envio de e-mails baseados no [swiftmailer](https://swiftmailer.org/).
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
-  fornece um motor de template baseado no [Twig](http://twig.sensiolabs.org/).
+  fornece um motor de template baseado no [Twig](https://twig.symfony.com/).

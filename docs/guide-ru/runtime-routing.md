@@ -119,7 +119,7 @@ echo Url::to(['post/view', 'id' => 100]);
 // создает якорный URL: /index.php?r=post/view&id=100#content
 echo Url::to(['post/view', 'id' => 100, '#' => 'content']);
 
-// создает абсолютный URL: http://www.example.com/index.php?r=post/index
+// создает абсолютный URL: https://www.example.com/index.php?r=post/index
 echo Url::to(['post/index'], true);
 
 // создает абсолютный URL с использованием схемы https: https://www.example.com/index.php?r=post/index
@@ -168,11 +168,11 @@ use yii\helpers\Url;
 // запрошенный URL: /index.php?r=admin/post/index
 echo Url::to();
 
-// URL из псевдонима: http://example.com
-Yii::setAlias('@example', 'http://example.com/');
+// URL из псевдонима: https://example.com
+Yii::setAlias('@example', 'https://example.com/');
 echo Url::to('@example');
 
-// абсолютный URL: http://example.com/images/logo.gif
+// абсолютный URL: https://example.com/images/logo.gif
 echo Url::to('/images/logo.gif', true);
 ```
 
@@ -338,16 +338,16 @@ echo Url::previous();
 
 ### Правила с именами серверов <span id="rules-with-server-names"></span>
 
-Существует возможность включать имена серверов в шаблон правил URL. Главным образом, это удобно, когда требуется разное поведение приложения, в зависимости от разных имен веб-серверов. Например, следующее правило позволит разобрать URL `http://admin.example.com/login` в маршрут `admin/user/login` и `http://www.example.com/login` в `site/login`.
+Существует возможность включать имена серверов в шаблон правил URL. Главным образом, это удобно, когда требуется разное поведение приложения, в зависимости от разных имен веб-серверов. Например, следующее правило позволит разобрать URL `https://admin.example.com/login` в маршрут `admin/user/login` и `https://www.example.com/login` в `site/login`.
 
 ```php
 [
-    'http://admin.example.com/login' => 'admin/user/login',
-    'http://www.example.com/login' => 'site/login',
+    'https://admin.example.com/login' => 'admin/user/login',
+    'https://www.example.com/login' => 'site/login',
 ]
 ```
 
-Также возможно комбинирование параметров и имени сервера для динамического извлечения данных из него. Например, следующее правило позволит разобрать URL `http://en.example.com/posts` на маршрут и параметр `language=en`.
+Также возможно комбинирование параметров и имени сервера для динамического извлечения данных из него. Например, следующее правило позволит разобрать URL `https://en.example.com/posts` на маршрут и параметр `language=en`.
 
 ```php
 [
@@ -355,7 +355,7 @@ echo Url::previous();
 ]
 ```
 
-> Note: Правила, содержащие имя сервера, НЕ должны содержать в шаблоне подкаталог пути ко входному скрипту. Например, если приложение расположено в `http://www.example.com/sandbox/blog`, шаблон должен быть `http://www.example.com/posts`, вместо `http://www.example.com/sandbox/blog/posts`. Это позволит изменять расположение приложения без необходимости внесения изменений в его код.
+> Note: Правила, содержащие имя сервера, НЕ должны содержать в шаблоне подкаталог пути ко входному скрипту. Например, если приложение расположено в `https://www.example.com/sandbox/blog`, шаблон должен быть `https://www.example.com/posts`, вместо `https://www.example.com/sandbox/blog/posts`. Это позволит изменять расположение приложения без необходимости внесения изменений в его код.
 
 ### Суффиксы в URL <span id="url-suffixes"></span>
 
@@ -411,7 +411,7 @@ echo Url::previous();
 
 Начиная с версии 2.0.10 [[yii\web\UrlManager|UrlManager]] может быть настроен на использование [[yii\web\UrlNormalizer|UrlNormalizer]],
 что позволяет справиться с вариациями одного и того же URL с присутствующим или отсутствующим слешем в конце.
-Технически `http://example.com/path` и `http://example.com/path/` являются разными URL, отдача одинакового содержимого
+Технически `https://example.com/path` и `https://example.com/path/` являются разными URL, отдача одинакового содержимого
 в обоих вариантах может негативно повлиять на SEO. По умолчанию нормализатор заменяет повторяющиеся слеши на один и либо
 убирает, либо добавляет завершающие слеши в зависимости от суффикса и производит [редирект 301](https://ru.wikipedia.org/wiki/HTTP_301)
 на нормализованный URL. Нормализатор может быть настроен как глобально для менеджера URL, так и индивидуально для
@@ -453,8 +453,8 @@ echo Url::previous();
 ]
 ```
 
-> Note: по умолчанию [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] отключен. Чтобы использовать
-  нормализацию его необходимо сконфигурировать.
+> Note: По умолчанию [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] отключен. Чтобы использовать
+  нормализацию, его необходимо сконфигурировать.
 
 ### Методы HTTP <span id="http-methods"></span>
 

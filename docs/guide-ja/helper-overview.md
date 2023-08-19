@@ -33,7 +33,7 @@ echo Html::encode('Test > test');
 - HtmlPurifier
 - Imagine (yii2-imagine エクステンションによって提供)
 - Inflector
-- Json
+- [Json](helper-json.md)
 - Markdown
 - StringHelper
 - [Url ヘルパ](helper-url.md)

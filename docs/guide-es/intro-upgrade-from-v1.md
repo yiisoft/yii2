@@ -29,15 +29,15 @@ Yii 2.0 requiere PHP 5.4 o mayor, lo que es un gran progreso ya que Yii 1.1 func
 Como resultado, hay muchas diferencias a nivel del lenguaje a las que deberías prestar atención.
 Abajo hay un resumen de los mayores cambios en relación a PHP:
 
-- [Namespaces](https://secure.php.net/manual/es/language.namespaces.php).
-- [Funciones anónimas](https://secure.php.net/manual/es/functions.anonymous.php).
+- [Namespaces](https://www.php.net/manual/es/language.namespaces.php).
+- [Funciones anónimas](https://www.php.net/manual/es/functions.anonymous.php).
 - La sintaxis corta de Arrays `[...elementos...]` es utilizada en vez de `array(...elementos...)`.
 - Etiquetas cortas de `echo`. Ahora en las vistas se usa `<?=`. Esto se puede utilizar desde PHP 5.4.
-- [SPL - Biblioteca estándar de PHP](https://secure.php.net/manual/es/book.spl.php).
-- [Enlace estático en tiempo de ejecución](https://secure.php.net/manual/es/language.oop5.late-static-bindings.php).
-- [Fecha y Hora](https://secure.php.net/manual/es/book.datetime.php).
-- [Traits](https://secure.php.net/manual/es/language.oop5.traits.php).
-- [intl](https://secure.php.net/manual/es/book.intl.php). Yii 2.0 utiliza la extensión `intl` de PHP
+- [SPL - Biblioteca estándar de PHP](https://www.php.net/manual/es/book.spl.php).
+- [Enlace estático en tiempo de ejecución](https://www.php.net/manual/es/language.oop5.late-static-bindings.php).
+- [Fecha y Hora](https://www.php.net/manual/es/book.datetime.php).
+- [Traits](https://www.php.net/manual/es/language.oop5.traits.php).
+- [intl](https://www.php.net/manual/es/book.intl.php). Yii 2.0 utiliza la extensión `intl` de PHP
   como soporte para internacionalización.
 
 

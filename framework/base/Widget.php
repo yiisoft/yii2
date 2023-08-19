@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -15,11 +15,11 @@ use Yii;
  *
  * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
  *
- * @property string $id ID of the widget.
+ * @property string|null $id ID of the widget. Note that the type of this property differs in getter and
+ * setter. See [[getId()]] and [[setId()]] for details.
  * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
  * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.
- * @property string $viewPath The directory containing the view files for this widget. This property is
- * read-only.
+ * @property-read string $viewPath The directory containing the view files for this widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -103,7 +103,13 @@ class Widget extends Component implements ViewContextInterface
     {
         if (!empty(self::$stack)) {
             $widget = array_pop(self::$stack);
-            if (get_class($widget) === get_called_class()) {
+
+            $calledClass = get_called_class();
+            if (Yii::$container->has($calledClass) && isset(Yii::$container->getDefinitions()[$calledClass]['class'])) {
+                $calledClass = Yii::$container->getDefinitions()[$calledClass]['class'];
+            }
+
+            if (get_class($widget) === $calledClass) {
                 /* @var $widget Widget */
                 if ($widget->beforeRun()) {
                     $result = $widget->run();
@@ -125,7 +131,7 @@ class Widget extends Component implements ViewContextInterface
      * The widget rendering result is returned by this method.
      * @param array $config name-value pairs that will be used to initialize the object properties
      * @return string the rendering result of the widget.
-     * @throws \Exception
+     * @throws \Throwable
      */
     public static function widget($config = [])
     {
@@ -146,6 +152,12 @@ class Widget extends Component implements ViewContextInterface
                 ob_end_clean();
             }
             throw $e;
+        } catch (\Throwable $e) {
+            // close the output buffer opened above if it has not been closed already
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            throw $e;
         }
 
         return ob_get_clean() . $out;
@@ -156,7 +168,7 @@ class Widget extends Component implements ViewContextInterface
     /**
      * Returns the ID of the widget.
      * @param bool $autoGenerate whether to generate an ID if it is not set previously
-     * @return string ID of the widget.
+     * @return string|null ID of the widget.
      */
     public function getId($autoGenerate = true)
     {
@@ -205,7 +217,8 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Executes the widget.
-     * @return string the result of widget execution to be outputted.
+     *
+     * @return string|void the rendering result may be directly "echoed" or returned as a string
      */
     public function run()
     {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\conditions;
@@ -18,8 +18,8 @@ use yii\base\InvalidArgumentException;
 class LikeCondition extends SimpleCondition
 {
     /**
-     * @var array|false map of chars to their replacements, false if characters should not be escaped
-     * or either null or empty array if escaping is condition builder responsibility.
+     * @var array|null|false map of chars to their replacements, `false` if characters should not be escaped
+     * or either `null` or empty array if escaping is condition builder responsibility.
      * By default it's set to `null`.
      */
     protected $escapingReplacements;
@@ -40,9 +40,10 @@ class LikeCondition extends SimpleCondition
     /**
      * This method allows to specify how to escape special characters in the value(s).
      *
-     * @param array an array of mappings from the special characters to their escaped counterparts.
-     * You may use `false` or an empty array to indicate the values are already escaped and no escape
-     * should be applied. Note that when using an escape mapping (or the third operand is not provided),
+     * @param array|null|false an array of mappings from the special characters to their escaped counterparts.
+     * You may use `false` to indicate the values are already escaped and no escape should be applied,
+     * or either `null` or empty array if escaping is condition builder responsibility.
+     * Note that when using an escape mapping (or the third operand is not provided),
      * the values will be automatically enclosed within a pair of percentage characters.
      */
     public function setEscapingReplacements($escapingReplacements)
@@ -51,7 +52,7 @@ class LikeCondition extends SimpleCondition
     }
 
     /**
-     * @return array|false
+     * @return array|null|false
      */
     public function getEscapingReplacements()
     {

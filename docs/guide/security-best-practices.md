@@ -33,7 +33,7 @@ In Yii, most probably you'll use [form validation](input-validation.md) to do al
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Data_Validation>
+- <https://owasp.org/www-community/vulnerabilities/Improper_Data_Validation>
 - <https://www.owasp.org/index.php/Input_Validation_Cheat_Sheet>
 
 
@@ -46,9 +46,9 @@ contexts.
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Command_Injection>
-- <https://www.owasp.org/index.php/Code_Injection>
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/Command_Injection>
+- <https://owasp.org/www-community/attacks/Code_Injection>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 Avoiding SQL injections
@@ -71,7 +71,7 @@ SELECT * FROM user WHERE username = ''; DROP TABLE user; --'
 This is valid query that will search for users with empty username and then will drop `user` table most probably
 resulting in broken website and data loss (you've set up regular backups, right?).
 
-In Yii most of database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
+In Yii most database querying happens via [Active Record](db-active-record.md) which properly uses PDO prepared
 statements internally. In case of prepared statements it's not possible to manipulate query as was demonstrated above.
 
 Still, sometimes you need [raw queries](db-dao.md) or [query builder](db-query-builder.md). In this case you should use
@@ -117,7 +117,7 @@ You can get details about the syntax in [Quoting Table and Column Names](db-dao.
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/SQL_Injection>
+- <https://owasp.org/www-community/attacks/SQL_Injection>
 
 
 Avoiding XSS
@@ -151,7 +151,7 @@ Note that HtmlPurifier processing is quite heavy so consider adding caching.
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Cross-site_Scripting_%28XSS%29>
+- <https://owasp.org/www-community/attacks/xss/>
 
 
 Avoiding CSRF
@@ -162,14 +162,14 @@ from a user browser are made by the user themselves. This assumption could be fa
 
 For example, the website `an.example.com` has a `/logout` URL that, when accessed using a simple GET request, logs the user out. As long
 as it's requested by the user themselves everything is OK, but one day bad guys are somehow posting
-`<img src="http://an.example.com/logout">` on a forum the user visits frequently. The browser doesn't make any difference between
+`<img src="https://an.example.com/logout">` on a forum the user visits frequently. The browser doesn't make any difference between
 requesting an image or requesting a page so when the user opens a page with such a manipulated `<img>` tag,
 the browser will send the GET request to that URL and the user will be logged out from `an.example.com`.
 
 That's the basic idea of how a CSRF attack works. One can say that logging out a user is not a serious thing,
 however this was just an example, there are much more things one could do using this approach, for example triggering payments
 or changing data. Imagine that some website has an URL
-`http://an.example.com/purse/transfer?to=anotherUser&amount=2000`. Accessing it using GET request, causes transfer of $2000
+`https://an.example.com/purse/transfer?to=anotherUser&amount=2000`. Accessing it using GET request, causes transfer of $2000
 from authorized user account to user `anotherUser`. We know, that the browser will always send GET request to load an image,
 so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because an attacker
 can put some JavaScript code instead of `<img>` tag, which allows to send POST requests to that URL as well.
@@ -179,7 +179,7 @@ For this reason, Yii applies additional mechanisms to protect against CSRF attac
 In order to avoid CSRF you should always:
 
 1. Follow HTTP specification i.e. GET should not change application state.
-   See [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) for more details.
+   See [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) for more details.
 2. Keep Yii CSRF protection enabled.
 
 Sometimes you need to disable CSRF validation per controller and/or action. It could be achieved by setting its property:
@@ -259,8 +259,8 @@ class ContactAction extends Action
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/CSRF>
-- <https://www.owasp.org/index.php/SameSite>
+- <https://owasp.org/www-community/attacks/csrf>
+- <https://owasp.org/www-community/SameSite>
 
 
 Avoiding file exposure
@@ -288,8 +288,8 @@ details possible. If you absolutely need it check twice that access is properly 
 
 Further reading on the topic:
 
-- <https://www.owasp.org/index.php/Exception_Handling>
-- <https://www.owasp.org/index.php/Top_10_2007-Information_Leakage>
+- <https://owasp.org/www-project-.net/articles/Exception_Handling.md>
+- <https://owasp.org/www-pdf-archive/OWASP_Top_10_2007.pdf> (A6 - Information Leakage and Improper Error Handling)
 
 
 Using secure connection over TLS
@@ -330,7 +330,7 @@ or explicitly set or filter the value by setting the [[yii\web\Request::setHostI
 
 For more information about the server configuration, please refer to the documentation of your webserver:
 
-- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Apache 2: <https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
 If you don't have access to the server configuration, you can setup [[yii\filters\HostControl]] filter at
@@ -353,3 +353,29 @@ return [
 
 > Note: you should always prefer web server configuration for 'host header attack' protection instead of the filter usage.
   [[yii\filters\HostControl]] should be used only if server configuration setup is unavailable.
+
+### Configuring SSL peer validation
+
+There is a typical misconception about how to solve SSL certificate validation issues such as:
+
+```
+cURL error 60: SSL certificate problem: unable to get local issuer certificate
+```
+
+or
+
+```
+stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:1416F086:SSL routines:tls_process_server_certificate:certificate verify failed
+```
+
+Many sources wrongly suggest disabling SSL peer verification. That should not be ever done since it enables
+man-in-the middle type of attacks. Instead, PHP should be configured properly:
+
+1. Download [https://curl.haxx.se/ca/cacert.pem](https://curl.haxx.se/ca/cacert.pem).
+2. Add the following to your php.ini:
+  ```
+  openssl.cafile="/path/to/cacert.pem"
+  curl.cainfo="/path/to/cacert.pem".
+  ```
+
+Note that the `cacert.pem` file should be kept up to date.

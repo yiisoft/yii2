@@ -1,11 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\sqlite;
+
+use yii\db\sqlite\Schema;
 
 /**
  * @group db
@@ -108,5 +110,61 @@ SQL;
         unset($parent['wrongBehavior']); // Produces SQL syntax error: General error: 1 near ".": syntax error
 
         return $parent;
+    }
+
+    public function testResetSequence()
+    {
+        $db = $this->getConnection();
+
+        if ($db->getTableSchema('reset_sequence', true) !== null) {
+            $db->createCommand()->dropTable('reset_sequence')->execute();
+        }
+
+        // create table reset_sequence
+        $db->createCommand()->createTable(
+            'reset_sequence',
+            [
+                'id' => Schema::TYPE_PK,
+                'description' => Schema::TYPE_TEXT,
+            ]
+        )->execute();
+
+        // ensure auto increment is working
+        $db->createCommand()->insert('reset_sequence', ['description' => 'test'])->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT MAX([[id]]) FROM {{reset_sequence}}')->queryScalar());
+
+        // remove all records
+        $db->createCommand()->delete('reset_sequence')->execute();
+        $this->assertEquals(0, $db->createCommand('SELECT COUNT(*) FROM {{reset_sequence}}')->queryScalar());
+
+        // counter should be reset to 1
+        $db->createCommand()->resetSequence('reset_sequence')->execute();
+        $db->createCommand()->insert('reset_sequence', ['description' => 'test'])->execute();
+        $this->assertEquals(1, $db->createCommand('SELECT COUNT(*) FROM {{reset_sequence}}')->queryScalar());
+        $this->assertEquals(1, $db->createCommand('SELECT MAX([[id]]) FROM {{reset_sequence}}')->queryScalar());
+
+        // counter should be reset to 5, so next record gets ID 5
+        $db->createCommand()->resetSequence('reset_sequence', 5)->execute();
+        $db->createCommand()->insert('reset_sequence', ['description' => 'test'])->execute();
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{reset_sequence}}')->queryScalar());
+        $this->assertEquals(5, $db->createCommand('SELECT MAX([[id]]) FROM {{reset_sequence}}')->queryScalar());
+    }
+
+    public function testResetSequenceExceptionTableNoExist()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: no_exist_table');
+
+        $db = $this->getConnection();
+        $db->createCommand()->resetSequence('no_exist_table', 5)->execute();
+    }
+
+    public function testResetSequenceExceptionSquenceNoExist()
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage("There is not sequence associated with table 'type'.");
+
+        $db = $this->getConnection();
+        $db->createCommand()->resetSequence('type', 5)->execute();
     }
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -28,14 +28,14 @@ class AccessRule extends Component
     /**
      * @var bool whether this is an 'allow' rule or 'deny' rule.
      */
-    public $allow;
+    public $allow = false;
     /**
-     * @var array list of action IDs that this rule applies to. The comparison is case-sensitive.
+     * @var array|null list of action IDs that this rule applies to. The comparison is case-sensitive.
      * If not set or empty, it means this rule applies to all actions.
      */
     public $actions;
     /**
-     * @var array list of the controller IDs that this rule applies to.
+     * @var array|null list of the controller IDs that this rule applies to.
      *
      * The comparison uses [[\yii\base\Controller::uniqueId]], so each controller ID is prefixed
      * with the module ID (if any). For a `product` controller in the application, you would specify
@@ -50,7 +50,7 @@ class AccessRule extends Component
      */
     public $controllers;
     /**
-     * @var array list of roles that this rule applies to (requires properly configured User component).
+     * @var array|null list of roles that this rule applies to (requires properly configured User component).
      * Two special roles are recognized, and they are checked via [[User::isGuest]]:
      *
      * - `?`: matches a guest user (not authenticated yet)
@@ -62,18 +62,18 @@ class AccessRule extends Component
      * Note that it is preferred to check for permissions instead.
      *
      * If this property is not set or empty, it means this rule applies regardless of roles.
-     * @see $permissions
-     * @see $roleParams
+     * @see permissions
+     * @see roleParams
      */
     public $roles;
-    /** 
-     * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
+    /**
+     * @var array|null list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
-     * 
+     *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
      * @since 2.0.12
-     * @see $roles
-     * @see $roleParams
+     * @see roles
+     * @see roleParams
      */
     public $permissions;
     /**
@@ -106,20 +106,23 @@ class AccessRule extends Component
      *
      * A reference to the [[AccessRule]] instance will be passed to the closure as the first parameter.
      *
-     * @see $roles
+     * @see roles
      * @since 2.0.12
      */
     public $roleParams = [];
     /**
-     * @var array list of user IP addresses that this rule applies to. An IP address
+     * @var array|null list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
      * For example, '192.168.*' matches all IP addresses in the segment '192.168.'.
+     * It may also contain a pattern/mask like '172.16.0.0/12' which would match all IPs from the
+     * 20-bit private network block in RFC1918.
      * If not set or empty, it means this rule applies to all IP addresses.
      * @see Request::userIP
+     * @see IpHelper::inRange
      */
     public $ips;
     /**
-     * @var array list of request methods (e.g. `GET`, `POST`) that this rule applies to.
+     * @var array|null list of request methods (e.g. `GET`, `POST`) that this rule applies to.
      * If not set or empty, it means this rule applies to all request methods.
      * @see \yii\web\Request::method
      */
@@ -137,7 +140,7 @@ class AccessRule extends Component
      */
     public $matchCallback;
     /**
-     * @var callable a callback that will be called if this rule determines the access to
+     * @var callable|null a callback that will be called if this rule determines the access to
      * the current action should be denied. This is the case when this rule matches
      * and [[$allow]] is set to `false`.
      *
@@ -261,16 +264,17 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' ||
-                $rule === $ip ||
-                (
-                    $ip !== null &&
-                    ($pos = strpos($rule, '*')) !== false &&
-                    strncmp($ip, $rule, $pos) === 0
-                ) ||
-                (
-                    ($pos = strpos($rule, '/')) !== false &&
-                    IpHelper::inRange($ip, $rule) === true
+            if (
+                $rule === '*'
+                || $rule === $ip
+                || (
+                    $ip !== null
+                    && ($pos = strpos($rule, '*')) !== false
+                    && strncmp($ip, $rule, $pos) === 0
+                )
+                || (
+                    strpos($rule, '/') !== false
+                    && IpHelper::inRange($ip, $rule) === true
                 )
             ) {
                 return true;

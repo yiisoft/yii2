@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\base;
@@ -65,6 +65,17 @@ class ApplicationTest extends TestCase
         $this->assertSame('Loading module: moduleX', Yii::getLogger()->messages[2][0]);
         $this->assertSame('Bootstrap with yii\base\Module', Yii::getLogger()->messages[3][0]);
         $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
+    }
+
+    public function testModuleId()
+    {
+        $this->mockApplication(['id' => 'app-basic']);
+        $child = new Module('child');
+        Yii::$app->setModules(['child' => $child]);
+
+        $this->assertEquals('app-basic', Yii::$app->getModule('child')->module->id);
+        $this->assertEquals('', Yii::$app->getModule('child')->module->getUniqueId());
+        $this->assertEquals('child', Yii::$app->getModule('child')->getUniqueId());
     }
 }
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -342,7 +342,7 @@ class UrlManagerParseUrlTest extends TestCase
                 ],
             ],
         ], \yii\web\Application::className());
-        $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
+        $this->assertEquals('/app/post/123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);

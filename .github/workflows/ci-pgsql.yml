@@ -1,0 +1,80 @@
+on:
+  - pull_request
+  - push
+
+name: ci-pgsql
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
+    env:
+      extensions: curl, intl, pdo, pdo_pgsql
+      XDEBUG_MODE: coverage, develop
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+
+        php:
+          - 7.4
+          - 8.0
+          - 8.1
+
+        pgsql:
+          - 10
+          - 11
+          - 12
+          - 13
+          - 14
+          - 15
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.pgsql }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: yiitest
+        ports:
+          - 5432:5432
+        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v3
+
+      - name: Install PHP with extensions
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: xdebug
+          extensions: ${{ env.EXTENSIONS }}
+          ini-values: date.timezone='UTC'
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, pecl
+
+      - name: Update composer.
+        run: composer self-update
+
+      - name: Install dependencies with composer.
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: Run Pgsql tests with PHPUnit and generate coverage.
+        if: matrix.php == '7.4'
+        run: vendor/bin/phpunit --group pgsql --coverage-clover=coverage.xml --colors=always
+
+      - name: Run Pgsql tests with PHPUnit.
+        if: matrix.php > '7.4'
+        run: vendor/bin/phpunit --group pgsql --colors=always
+
+      - name: Upload coverage to Codecov.
+        if: matrix.php == '7.4'
+        uses: codecov/codecov-action@v3
+        with:
+          file: ./coverage.xml

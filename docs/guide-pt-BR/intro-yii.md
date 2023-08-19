@@ -35,7 +35,7 @@ Se já estiver familiarizado com um outro framework, você pode gostar de saber 
   que podem ser redistribuídas.
 - Alta performance é sempre um objetivo principal do Yii.
 
-Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do código central (core)][about_yii]
+Yii não é um show de um homem só, ele é apoiado por uma [forte equipe de desenvolvedores do código central (core)][yii_team]
 bem como por uma ampla comunidade de profissionais constantemente
 contribuindo com o desenvolvimento do Yii. A equipe de desenvolvedores do Yii
 acompanha de perto às últimas tendências do desenvolvimento Web e as
@@ -44,7 +44,7 @@ As mais relevantes e melhores práticas e características encontradas em outros
 são incorporadas regularmente no core do framework e expostas via interfaces
 simples e elegantes.
 
-[about_yii]: http://www.yiiframework.com/about/
+[yii_team]: https://www.yiiframework.com/team
 
 Versões do Yii
 --------------
@@ -65,5 +65,5 @@ detalhados para recursos específicos executando o verificador de requisitos
 
 Utilizar o Yii requer conhecimentos básicos sobre programação orientada a objetos
 (OOP), uma vez que o Yii é um framework puramente OOP.
-O Yii 2.0 também utiliza as funcionalides mais recentes do PHP, tais como [namespaces](https://secure.php.net/manual/en/language.namespaces.php) e [traits](https://secure.php.net/manual/en/language.oop5.traits.php). Compreender esses conceitos lhe ajudará a entender mais facilmente o Yii 2.0.
+O Yii 2.0 também utiliza as funcionalides mais recentes do PHP, tais como [namespaces](https://www.php.net/manual/pt_BR/language.namespaces.php) e [traits](https://www.php.net/manual/pt_BR/language.oop5.traits.php). Compreender esses conceitos lhe ajudará a entender mais facilmente o Yii 2.0.
 

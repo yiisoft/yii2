@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -229,6 +229,21 @@ class GroupUrlRuleTest extends TestCase
             [
                 'no prefix',
                 [
+                    'rules' => [
+                        'login' => 'user/login',
+                        'logout' => 'user/logout',
+                    ],
+                ],
+                [
+                    ['login', 'user/login'],
+                    ['logout', 'user/logout'],
+                    ['create', false],
+                ],
+            ],
+            [
+                'slash prefix',
+                [
+                    'prefix' => '/',
                     'rules' => [
                         'login' => 'user/login',
                         'logout' => 'user/logout',

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\helpers;
@@ -18,7 +18,7 @@ class CustomDebugInfo
     public $unitPrice;
 
     /**
-     * @see https://secure.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
+     * @see https://www.php.net/manual/en/language.oop5.magic.php#language.oop5.magic.debuginfo
      *
      * @return array
      */

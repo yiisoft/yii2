@@ -1,13 +1,12 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\rbac;
 
-use app\models\User;
 use Yii;
 use yii\caching\ArrayCache;
 use yii\console\Application;
@@ -214,6 +213,38 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
     }
 
+    public function testGetCachedRolesByUserId()
+    {
+        $this->auth->removeAll();
+        $this->auth->cache = new ArrayCache();
+
+        $admin = $this->auth->createRole('Admin');
+        $this->auth->add($admin);
+
+        $manager = $this->auth->createRole('Manager');
+        $this->auth->add($manager);
+
+        $adminUserRoles = $this->auth->getRolesByUser(1);
+        $this->assertArrayHasKey('myDefaultRole', $adminUserRoles);
+        $this->assertArrayNotHasKey('Admin', $adminUserRoles);
+        $this->auth->assign($admin, 1);
+
+        $managerUserRoles = $this->auth->getRolesByUser(2);
+        $this->assertArrayHasKey('myDefaultRole', $managerUserRoles);
+        $this->assertArrayNotHasKey('Manager', $managerUserRoles);
+        $this->auth->assign($manager, 2);
+
+        $adminUserRoles = $this->auth->getRolesByUser(1);
+        $this->assertArrayHasKey('myDefaultRole', $adminUserRoles);
+        $this->assertArrayHasKey('Admin', $adminUserRoles);
+        $this->assertEquals($admin->name, $adminUserRoles['Admin']->name);
+
+        $managerUserRoles = $this->auth->getRolesByUser(2);
+        $this->assertArrayHasKey('myDefaultRole', $managerUserRoles);
+        $this->assertArrayHasKey('Manager', $managerUserRoles);
+        $this->assertEquals($manager->name, $managerUserRoles['Manager']->name);
+    }
+
     /**
      * @dataProvider emptyValuesProvider
      * @param mixed $userId
@@ -329,7 +360,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
         $this->assertSingleQueryToAssignmentsTable($logTarget);
 
-        // verify cache is flushed on unassign (createPost is now false again)
+        // verify cache is flushed on revoke (createPost is now false again)
         $this->auth->revoke($this->auth->getRole('admin'), 'reader A');
         foreach (['readPost' => true, 'createPost' => false] as $permission => $result) {
             $this->assertEquals($result, $this->auth->checkAccess('reader A', $permission), "Checking $permission");
@@ -358,8 +389,11 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     private function assertSingleQueryToAssignmentsTable($logTarget)
     {
-        $this->assertCount(1, $logTarget->messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
-        $this->assertContains('auth_assignment', $logTarget->messages[0][0], 'Log message should be a query to auth_assignment table');
+        $messages = array_filter($logTarget->messages, function ($message) {
+            return strpos($message[0], 'auth_assignment') !== false;
+        });
+        $this->assertCount(1, $messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
+        $this->assertContains('auth_assignment', $messages[0][0], 'Log message should be a query to auth_assignment table');
         $logTarget->messages = [];
     }
 }

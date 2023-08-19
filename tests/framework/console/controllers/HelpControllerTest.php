@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
@@ -123,11 +123,12 @@ STRING
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
         $this->assertEqualsWithoutLE(<<<'STRING'
-action:route to action
+action: route to action
 
 --interactive: whether to run the command interactively.
 --color: whether to enable ANSI color in the output.If not set, ANSI color will only be enabled for terminals that support it.
 --help: whether to display help information about current command.
+--silent-exit-on-exception: if true - script finish with `ExitCode\:\:OK` in case of exception.false - `ExitCode\:\:UNSPECIFIED_ERROR`.Default\: `YII_ENV_TEST`
 
 STRING
         , $result);

@@ -19,9 +19,9 @@ Yii は、全ての領域にわたる国際化機能を提供し、メッセー�
 
 Yii アプリケーションで使用される全てのロケール ID は、一貫性のために、
 `ll-CC` の形式に正規化されなければなりません。
-ここで `ll` は [ISO-639](http://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、
-`CC` は [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html) に従った二文字の国コードです。
-ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept)
+ここで `ll` は [ISO-639](https://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、
+`CC` は [ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes) に従った二文字の国コードです。
+ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)
 に述べられています。
 
 ### 言語
@@ -241,7 +241,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note: パラメータのフォーマットには、[intl PHP 拡張](https://secure.php.net/manual/ja/intro.intl.php) のインストールが必要です。
+> Note: パラメータのフォーマットには、[intl PHP 拡張](https://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
 
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 
@@ -256,7 +256,7 @@ echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 +```
 
-このようなプレースホルダを指定する方法についての完全な説明は、[ICU ドキュメント](http://icu-project.org/apiref/icu4c/classMessageFormat.html)を参照してください。以下では、よくある使用方法をいくつか示します。
+このようなプレースホルダを指定する方法についての完全な説明は、[ICU ドキュメント](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classMessageFormat.html)を参照してください。以下では、よくある使用方法をいくつか示します。
 
 
 #### 数値 <span id="number"></span>
@@ -290,7 +290,7 @@ echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
 カスタムフォーマットで使用される文字については、
-[ICU API リファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) の "Special Pattern Characters"
+[ICU API リファレンス](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classDecimalFormat.html) の "Special Pattern Characters"
 のセクションに記述されています。
  
 数値は常に翻訳先のロケールに従ってフォーマットされます。
@@ -326,7 +326,7 @@ echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 // 日本語出力: '今日は 2015-01-07 です。'
 ```
 
-[書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[書式のリファレンス](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 #### 時刻 <span id="time"></span>
 
@@ -357,7 +357,7 @@ echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 // 日本語出力: '現在 22:37 です。'
 ```
 
-[書式のリファレンス](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html#details).
+[書式のリファレンス](https://unicode-org.github.io/icu-docs/apidoc/released/icu4c/classicu_1_1SimpleDateFormat.html#details).
 
 
 #### 綴り <span id="spellout"></span>
@@ -385,7 +385,7 @@ echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 'spellout,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Spellout" を参照してください。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Numbering schemas, Spellout" を参照してください。
 
 
 #### 序数 <span id="ordinal"></span>
@@ -407,7 +407,7 @@ echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 'ordinal,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
 
 > Note: 上記のソース・メッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n,ordinal}の訪問者です' となります。
 > しかし、その出力結果は、'あなたはこのサイトの第42の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
@@ -435,7 +435,7 @@ echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 'duration,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、
-[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
+[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
 
 > Note: このソース・メッセージを 'あなたはこのサイトに既に{n,duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
 > これも、プレースホルダのスタイルも含めて全体を翻訳し直す方が良いでしょう。
@@ -466,8 +466,8 @@ echo \Yii::t('app', 'There {n,plural,=0{are no cats} =1{is one cat} other{are # 
 ```
 
 これら `other`、`few`、`many` などの特別な引数の名前は言語によって異なります。
-特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
-あるいは、その代りに、[unicode.org の規則のリファレンス](http://cldr.unicode.org/index/cldr-spec/plural-rules) を参照することも出来ます。
+特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Cardinal" を参照してください。
+あるいは、その代りに、[unicode.org の規則のリファレンス](https://cldr.unicode.org/index/cldr-spec/plural-rules) を参照することも出来ます。
 
 > Note: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
 > アプリケーションの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru-RU` にしてロシア語から他の言語に翻訳するという設定にしない限り、オリジナルのメッセージとしては使用されることはありません。
@@ -500,7 +500,7 @@ echo Yii::t('app', 'You {likeCount,plural,
 > 横着をして、`{n, plural, ...}` を `{n, number}` に置き換えても、多分、大きな問題は生じないでしょう。
 
 
-#### 序数選択肢 <span id="ordinal-selection">
+#### 序数選択肢 <span id="ordinal-selection"></span>
 
 パラメータのタイプとして `selectordinal` を使うと、翻訳先ロケールの言語規則に基づいて序数のための文字列を選択することが出来ます。
 
@@ -518,8 +518,8 @@ echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} othe
 ```
 
 フォーマットは複数形で使われるものと非常に近いものです。
-特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
-あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
+特定のロケールに対してどんな引数を指定すべきかを学ぶためには、[https://intl.rmcreative.ru/](https://intl.rmcreative.ru/) の "Plural Rules, Ordinal" を参照してください。
+あるいは、その代りに、[unicode.org の規則のリファレンス](https://unicode-org.github.io/cldr-staging/charts/37/supplemental/language_plural_rules.html) を参照することも出来ます。
 
 
 #### 選択肢 <span id="selection"></span>
@@ -794,23 +794,18 @@ class TranslationEventHandler
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>
 
-詳細は [データ・フォーマッタ](output-formatting.md) のセクションを参照してください。
-
-
-## 日付と数値をフォーマットする <span id="date-number"></span>
-
 詳細は [データのフォーマット](output-formatting.md) のセクションを参照して下さい。
 
 
 ## PHP 環境をセットアップする <span id="setup-environment"></span>
 
-Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) を使います。
+Yii は、[[yii\i18n\Formatter]] クラスの数値や日付の書式設定や、[[yii\i18n\MessageFormatter]] を使うメッセージのフォーマッティングなど、ほとんどの国際化機能を提供するために [PHP intl 拡張](https://www.php.net/manual/ja/book.intl.php) を使います。
 この二つのクラスは、`intl` がインストールされていない場合に備えて基本的な機能を提供するフォールバックを実装しています。
 だだし、このフォールバックの実装は、英語がターゲット言語である場合にのみ十分に機能するものす。
 従って、国際化機能が必要とされる場合は、`intl` をインストールすることが強く推奨されます。
 
-[PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
-[ICU ライブラリ](http://site.icu-project.org/) に基礎を置いています。
+[PHP intl 拡張](https://www.php.net/manual/ja/book.intl.php) は、さまざまに異なる全てのロケールについて知識と書式の規則を提供する
+[ICU ライブラリ](https://icu.unicode.org/) に基礎を置いています。
 ICU のバージョンが異なると、日付や数値のフォーマットの結果も異なる場合があります。
 あなたのウェブ・サイトが全ての環境で同じ出力をすることを保証するためには、
 全ての環境において同じバージョンの PHP intl 拡張 (従って同じバージョンの ICU) をインストールすることが推奨されます。
@@ -826,10 +821,10 @@ echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 
 さらに、バージョン 49 以上の ICU を使用する事も推奨されます。そうすることによって、このドキュメントで説明されている全ての機能を使うことが出来るようになります。
 例えば、49 未満の ICU は、複数形規則における `#` プレースホルダをサポートしていません。
-入手できる ICU バージョン については、<http://site.icu-project.org/download> を参照してください。
+入手できる ICU バージョン については、<https://icu.unicode.org/download> を参照してください。
 バージョン番号の採番方式が 4.8 リリースの後に変更されたことに注意してください (すなわち、ICU 4.8、ICU 49、ICU 50、等々となっています)。
 
 これに加えて、ICU ライブラリとともに出荷されるタイム・ゾーン・データベースの情報も古くなっている可能性があります。
-タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) を参照してください。
+タイム・ゾーン・データベースの更新に関する詳細は [ICU マニュアル](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) を参照してください。
 出力の書式設定には ICU タイム・ゾーン・データベースが使用されますが、PHP によって使われるタイム・ゾーン・データベースも影響する可能性があります。
 PHP のタイム・ゾーン・データベースは、[`timezonedb` pecl パッケージ](https://pecl.php.net/package/timezonedb) の最新版をインストールすることによって更新することが出来ます。

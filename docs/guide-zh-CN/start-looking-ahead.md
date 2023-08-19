@@ -22,15 +22,15 @@
       但它们往往覆盖了更广泛的话题，并常常提供解决方案，
       所以它们也很有用。
     - 书籍
-* [扩展](http://www.yiiframework.com/extensions/)：Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，
+* [扩展](https://www.yiiframework.com/extensions/)：Yii 拥有数以千计用户提供的扩展，这些扩展能非常方便的插入到应用中，
   使你的应用开发过程更加方便快捷。
 * 社区
-    - 官方论坛：<http://www.yiiframework.com/forum/>
-    - IRC 聊天室：Freenode 网络上的 #yii 频道 (<irc://irc.freenode.net/yii>)
+    - 官方论坛：<https://forum.yiiframework.com/>
+    - IRC 聊天室：Libera 网络上的 #yii 频道 (<ircs://irc.libera.chat:6697>)
     - Slack chanel：<https://yii.slack.com>
     - Gitter chat：<https://gitter.im/yiisoft/yii2>
     - GitHub：<https://github.com/yiisoft/yii2>
     - Facebook：<https://www.facebook.com/groups/yiitalk/>
     - Twitter：<https://twitter.com/yiiframework>
     - LinkedIn：<https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow：<http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow：<https://stackoverflow.com/questions/tagged/yii2>

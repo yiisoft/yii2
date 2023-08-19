@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters\auth;
@@ -28,10 +28,6 @@ class AuthTest extends \yiiunit\TestCase
     protected function setUp()
     {
         parent::setUp();
-
-        if (defined('HHVM_VERSION') && getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not test reliably with HHVM on travis-ci.');
-        }
 
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -15,6 +15,7 @@ use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\test\Fixture;
 use yii\test\FixtureTrait;
 
 /**
@@ -122,7 +123,7 @@ class FixtureController extends Controller
             $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
 
-            if ($notFoundFixtures) {
+            if ($notFoundFixtures !== []) {
                 $this->notifyNotFound($notFoundFixtures);
             }
         } else {
@@ -138,7 +139,7 @@ class FixtureController extends Controller
             );
         }
 
-        if (!$fixturesToLoad) {
+        if ($fixturesToLoad === []) {
             $this->notifyNothingToLoad($foundFixtures, $except);
             return ExitCode::OK;
         }
@@ -157,7 +158,7 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($fixturesObjects);
         $this->loadFixtures($fixturesObjects);
-        $this->notifyLoaded($fixtures);
+        $this->notifyLoaded($fixturesObjects);
 
         return ExitCode::OK;
     }
@@ -198,23 +199,23 @@ class FixtureController extends Controller
             $foundFixtures = $this->findFixtures($fixtures);
             $notFoundFixtures = array_diff($fixtures, $foundFixtures);
 
-            if ($notFoundFixtures) {
+            if ($notFoundFixtures !== []) {
                 $this->notifyNotFound($notFoundFixtures);
             }
         } else {
             $foundFixtures = $this->findFixtures();
         }
 
-        $fixturesToUnload = array_diff($foundFixtures, $except);
-
-        if (!$foundFixtures) {
+        if ($foundFixtures === []) {
             throw new Exception(
                 'No files were found for: "' . implode(', ', $fixturesInput) . "\".\n" .
                 "Check that files exist under fixtures path: \n\"" . $this->getFixturePath() . '".'
             );
         }
 
-        if (!$fixturesToUnload) {
+        $fixturesToUnload = array_diff($foundFixtures, $except);
+
+        if ($fixturesToUnload === []) {
             $this->notifyNothingToUnload($foundFixtures, $except);
             return ExitCode::OK;
         }
@@ -225,7 +226,7 @@ class FixtureController extends Controller
 
         $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToUnload));
 
-        if (!$fixtures) {
+        if ($fixtures === []) {
             throw new Exception('No fixtures were found in namespace: ' . $this->namespace . '".');
         }
 
@@ -247,13 +248,20 @@ class FixtureController extends Controller
 
     /**
      * Notifies user that fixtures were successfully loaded.
-     * @param array $fixtures
+     * @param Fixture[] $fixtures array of loaded fixtures
      */
     private function notifyLoaded($fixtures)
     {
         $this->stdout("Fixtures were successfully loaded from namespace:\n", Console::FG_YELLOW);
         $this->stdout("\t\"" . Yii::getAlias($this->namespace) . "\"\n\n", Console::FG_GREEN);
-        $this->outputList($fixtures);
+
+        $fixtureClassNames = [];
+
+        foreach ($fixtures as $fixture) {
+            $fixtureClassNames[] = $fixture::className();
+        }
+
+        $this->outputList($fixtureClassNames);
     }
 
     /**

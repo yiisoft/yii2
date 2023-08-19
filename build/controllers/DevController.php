@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
@@ -16,8 +16,8 @@ use yii\helpers\FileHelper;
 /**
  * This command helps to set up a dev environment with all extensions and applications.
  *
- * It will clone an extension or app repo and link the yii2 dev installation to the containted applications/extensions vendor dirs
- * to help working on yii using the application to test it.
+ * It will clone an extension or app repo and link the yii2 dev installation to the contained applications/extensions vendor dirs
+ * to help to work on yii using the application to test it.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -29,7 +29,7 @@ class DevController extends Controller
      */
     public $defaultAction = 'all';
     /**
-     * @var bool whether to use HTTP when cloning github repositories
+     * @var bool whether to use HTTP when cloning GitHub repositories
      */
     public $useHttp = false;
     /**
@@ -51,7 +51,8 @@ class DevController extends Controller
         'apidoc' => 'git@github.com:yiisoft/yii2-apidoc.git',
         'authclient' => 'git@github.com:yiisoft/yii2-authclient.git',
         'bootstrap' => 'git@github.com:yiisoft/yii2-bootstrap.git',
-        'codeception' => 'git@github.com:yiisoft/yii2-codeception.git',
+        'bootstrap4' => 'git@github.com:yiisoft/yii2-bootstrap4.git',
+        'bootstrap5' => 'git@github.com:yiisoft/yii2-bootstrap5.git',
         'composer' => 'git@github.com:yiisoft/yii2-composer.git',
         'debug' => 'git@github.com:yiisoft/yii2-debug.git',
         'elasticsearch' => 'git@github.com:yiisoft/yii2-elasticsearch.git',
@@ -67,6 +68,7 @@ class DevController extends Controller
         'smarty' => 'git@github.com:yiisoft/yii2-smarty.git',
         'sphinx' => 'git@github.com:yiisoft/yii2-sphinx.git',
         'swiftmailer' => 'git@github.com:yiisoft/yii2-swiftmailer.git',
+        'symfonymailer' => 'git@github.com:yiisoft/yii2-symfonymailer.git',
         'twig' => 'git@github.com:yiisoft/yii2-twig.git',
     ];
 
@@ -334,7 +336,7 @@ class DevController extends Controller
                 continue;
             }
             // ignore hidden directories
-            if ($file[0] === '.') {
+            if (strpos($file, '.') === 0) {
                 continue;
             }
             if (is_dir("$dir/$file")) {

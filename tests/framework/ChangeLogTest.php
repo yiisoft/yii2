@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework;
@@ -18,7 +18,7 @@ class ChangeLogTest extends TestCase
     public function changeProvider()
     {
 
-        $lines = explode("\n", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'));
+        $lines = preg_split("~\R~", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'), -1, PREG_SPLIT_NO_EMPTY);
 
         // Don't check last 1500 lines, they are old and often don't obey the standard.
         $lastIndex = count($lines) - 1500;

@@ -1,7 +1,7 @@
 <?php
 
 if (!class_exists('yii\cs\YiisoftConfig', true)) {
-    // @todo change error message
+    // TODO: change error message
     fwrite(STDERR, "Your php-cs-version is outdated: please upgrade it.\n");
     die(16);
 }

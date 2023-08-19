@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -141,24 +141,24 @@ class Menu extends Widget
      */
     public $options = [];
     /**
-     * @var string the CSS class that will be assigned to the first item in the main menu or each submenu.
+     * @var string|null the CSS class that will be assigned to the first item in the main menu or each submenu.
      * Defaults to null, meaning no such CSS class will be assigned.
      */
     public $firstItemCssClass;
     /**
-     * @var string the CSS class that will be assigned to the last item in the main menu or each submenu.
+     * @var string|null the CSS class that will be assigned to the last item in the main menu or each submenu.
      * Defaults to null, meaning no such CSS class will be assigned.
      */
     public $lastItemCssClass;
     /**
-     * @var string the route used to determine if a menu item is active or not.
+     * @var string|null the route used to determine if a menu item is active or not.
      * If not set, it will use the route of the current request.
      * @see params
      * @see isItemActive()
      */
     public $route;
     /**
-     * @var array the parameters used to determine if a menu item is active or not.
+     * @var array|null the parameters used to determine if a menu item is active or not.
      * If not set, it will use `$_GET`.
      * @see route
      * @see isItemActive()
@@ -310,7 +310,7 @@ class Menu extends Widget
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
             $route = Yii::getAlias($item['url'][0]);
-            if ($route[0] !== '/' && Yii::$app->controller) {
+            if (strncmp($route, '/', 1) !== 0 && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
             if (ltrim($route, '/') !== $this->route) {

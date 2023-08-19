@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console;
@@ -34,9 +34,9 @@ class UnknownCommandException extends Exception
      * @param string $route the route of the command that could not be found.
      * @param Application $application the console application instance involved.
      * @param int $code the Exception code.
-     * @param \Exception $previous the previous exception used for the exception chaining.
+     * @param \Throwable|null $previous the previous exception used for the exception chaining.
      */
-    public function __construct($route, $application, $code = 0, \Exception $previous = null)
+    public function __construct($route, $application, $code = 0, $previous = null)
     {
         $this->command = $route;
         $this->application = $application;
@@ -61,7 +61,7 @@ class UnknownCommandException extends Exception
      *   available commands. The Levenshtein distance is defined as the minimal number of
      *   characters you have to replace, insert or delete to transform str1 into str2.
      *
-     * @see https://secure.php.net/manual/en/function.levenshtein.php
+     * @see https://www.php.net/manual/en/function.levenshtein.php
      * @return array a list of suggested alternatives sorted by similarity.
      */
     public function getSuggestedAlternatives()
@@ -104,7 +104,7 @@ class UnknownCommandException extends Exception
      *   available commands. The Levenshtein distance is defined as the minimal number of
      *   characters you have to replace, insert or delete to transform str1 into str2.
      *
-     * @see https://secure.php.net/manual/en/function.levenshtein.php
+     * @see https://www.php.net/manual/en/function.levenshtein.php
      * @param array $actions available command names.
      * @param string $command the command to compare to.
      * @return array a list of suggested alternatives sorted by similarity.

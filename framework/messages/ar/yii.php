@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -30,7 +30,7 @@ return [
     'File upload failed.' => '.فشل في تحميل الملف',
     'Home' => 'الرئيسية',
     'Invalid data received for parameter "{param}".' => 'بيانات غير صالحة قد وردت في "{param}".',
-    'Login Required' => 'تسجبل الدخول مطلوب',
+    'Login Required' => 'تسجيل الدخول مطلوب',
     'Missing required arguments: {params}' => 'البيانات المطلوبة ضرورية: {params}',
     'Missing required parameters: {params}' => 'البيانات المطلوبة ضرورية: {params}',
     'No' => 'لا',

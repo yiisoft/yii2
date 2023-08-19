@@ -56,7 +56,7 @@ Yii はコントローラ・クラスの中で、アクション・メソッド�
 アクション ID は常に小文字で参照されます。
 アクション ID が複数の単語を必要とするときは、単語がダッシュ (-) で連結されます (例えば、`create-comment`)。
 アクション・メソッドの名前は、アクション ID からダッシュを全て削除し、各単語の先頭の文字を大文字にした結果に `action` という接頭辞を付けたものになります。
-例えば、アクション ID `create-comment` に対応するアクション・メソッド名は `actionCreateComment` となります。
+例えば、アクション ID `create-comment` はアクション・メソッド名 `actionCreateComment` に対応します。
 
 私たちの例では、アクション・メソッドは `$message` というパラメータを取り、そのデフォルト値は `"こんにちは"` です
 (PHP で関数やメソッドの引数にデフォルト値を設定するのと全く同じ方法です)。
@@ -88,7 +88,7 @@ use yii\helpers\Html;
 
 上記のコードで `message` パラメータが出力される前に  [[yii\helpers\Html::encode()|HTML-エンコード]] されていることに注意してください。
 パラメータはエンド・ユーザから来るものであり、悪意のある JavaScript コードを埋め込まれて
-[クロス・サイト・スクリプティング (XSS) 攻撃](http://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) に使われうるものですから、
+[クロス・サイト・スクリプティング (XSS) 攻撃](https://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) に使われうるものですから、
 脆弱性を防止するためにこうすることが必要です。
 
 当然ながら、`say` ビューにはもっと多くのコンテントを入れても構いません。コンテントには、HTML タグ、平文テキスト、さらには PHP 文を含めることが出来ます。
@@ -102,7 +102,7 @@ use yii\helpers\Html;
 アクションとビューを作成したら、下記の URL で新しいページにアクセスすることが出来ます。
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

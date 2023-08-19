@@ -43,7 +43,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 Dzięki temu Twoja aplikacja ustawiana jest w tryb rozwojowy, co uaktywnia moduł Gii. Możesz teraz uzyskać dostęp do Gii przez przejście pod podany adres URL:
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Note: Jeśli próbujesz dostać się do Gii z maszyny innej niż localhost, dostęp domyślnie będzie zablokowany ze względów bezpieczeństwa.
@@ -108,7 +108,7 @@ Sprawdzenie w działaniu <span id="trying-it-out"></span>
 Aby zobaczyć, jak działa nowo wygenerowany kod, użyj przeglądarki, aby uzyskać dostęp do podanego adresu URL:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 Zobaczysz tabelę prezentującą kraje z bazy danych. Możesz sortować tabelę, lub filtrować ją przez wpisanie odpowiednich warunków w nagłówkach kolumn.

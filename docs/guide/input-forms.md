@@ -107,7 +107,7 @@ are some reserved names that can cause conflicts:
 
 > Forms and their child elements should not use input names or ids that conflict with properties of a form,
 > such as `submit`, `length`, or `method`. Name conflicts can cause confusing failures.
-> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/).
+> For a complete list of rules and to check your markup for these problems, see [DOMLint](https://kangax.github.io/domlint/).
 
 Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
@@ -241,7 +241,7 @@ introduced in HTML5.
 
 That means the only official support for files and submit button values with
 ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
-[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#browser_compatibility)
 for the `FormData` class.
 
 Further Reading <span id="further-reading"></span>

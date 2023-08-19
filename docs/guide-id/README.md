@@ -1,7 +1,7 @@
 Panduan Definitif Untuk Yii 2.0
 ===============================
 
-Tutorial ini dirilis di bawah [Persyaratan Dokumentasi Yii](http://www.yiiframework.com/doc/terms/).
+Tutorial ini dirilis di bawah [Persyaratan Dokumentasi Yii](https://www.yiiframework.com/doc/terms/).
 
 Seluruh hak cipta dilindungi.
 
@@ -179,14 +179,14 @@ Topik Khusus
 Widget
 -------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
 * [JQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 

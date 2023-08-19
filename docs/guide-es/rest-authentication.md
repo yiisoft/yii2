@@ -17,9 +17,9 @@ Hay muchas maneras de enviar una token (pieza) de acceso:
   `https://example.com/users?access-token=xxxxxxxx`. Debido que muchos servidores dejan los parámetros de consulta en los logs del servidor,
   esta aproximación suele ser usada principalmente para servir peticiones `JSONP`
   que no usen las cabeceras HTTP para enviar piezas de acceso.
-* [OAuth 2](http://oauth.net/2/): la pieza de acceso es obtenida por el consumidor por medio de una autorización del servidor
+* [OAuth 2](https://oauth.net/2/): la pieza de acceso es obtenida por el consumidor por medio de una autorización del servidor
   y enviada al API del servidor según el protocolo
-  OAuth 2 [tokens HTTP del portador](http://tools.ietf.org/html/rfc6750).
+  OAuth 2 [tokens HTTP del portador](https://datatracker.ietf.org/doc/html/rfc6750).
 
 Yii soporta todos los métodos anteriores de autenticación. Puedes crear nuevos métodos de autenticación de una forma fácil.
 
@@ -57,7 +57,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -75,11 +75,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

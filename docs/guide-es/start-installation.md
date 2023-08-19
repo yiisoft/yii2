@@ -44,7 +44,7 @@ composer global require "fxp/composer-asset-plugin:^1.4.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-El primer comando instala [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
+El primer comando instala [composer asset plugin](https://github.com/fxpio/composer-asset-plugin),
 que permite administrar dependencias de paquetes bower y npm a través de Composer. Sólo necesitas ejecutar este comando
 una vez. El segundo comando instala Yii en un directorio llamado `basic`. Puedes elegir un nombre de directorio diferente si así lo deseas.
 
@@ -67,7 +67,7 @@ Instalar desde un Archivo Comprimido <span id="installing-from-archive-file"></s
 
 Instalar Yii desde un archivo comprimido involucra tres pasos:
 
-1. Descargar el archivo desde [yiiframework.com](http://www.yiiframework.com/download/yii2-basic).
+1. Descargar el archivo desde [yiiframework.com](https://www.yiiframework.com/download/yii2-basic).
 2. Descomprimirlo en un directorio accesible vía Web.
 3. Modificar el archivo `config/web.php` introduciendo una clave secreta para el ítem de configuración `cookieValidationKey`
    (esto se realiza automáticamente si estás instalando Yii a través de Composer):
@@ -97,7 +97,7 @@ Verificando las Instalación <span id="verifying-installation"></span>
 ---------------------------
 
 Una vez finalizada la instalación, o bien configura tu servidor web (mira la sección siguiente) o utiliza
-el [servidor web incluido en PHP](https://secure.php.net/manual/en/features.commandline.webserver.php) ejecutando el siguiente
+el [servidor web incluido en PHP](https://www.php.net/manual/es/features.commandline.webserver.php) ejecutando el siguiente
 comando de consola estando parado en el directorio `web` de la aplicación:
  
 ```bash
@@ -131,7 +131,7 @@ de PHP satisfaga los requerimientos de Yii. Esto puedes hacerlo usando cualquier
   ```
   
 Deberías configurar tu instalación de PHP para que satisfaga los requisitos mínimos de Yii. Lo que es más importante,
-debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](https://secure.php.net/manual/es/pdo.installation.php)
+debes tener PHP 5.4 o mayor. También deberías instalar la [Extensión de PHP PDO](https://www.php.net/manual/es/pdo.installation.php)
 y el correspondiente driver de base de datos (como `pdo_mysql` para bases de datos MySQL), si tu aplicación lo necesitara.
 
 
@@ -142,13 +142,13 @@ Configurar Servidores Web <span id="configuring-web-servers"></span>
   de poner la aplicación en un servidor de producción.
 
 La aplicación instalada siguiendo las instrucciones mencionadas debería estar lista para usar tanto
-con un [servidor HTTP Apache](http://httpd.apache.org/) como con un [servidor HTTP Nginx](http://nginx.org/),
-en Windows, Mac OS X, o Linux utilizando PHP 5.4 o mayor. Yii 2.0 también es compatible con [HHVM](http://hhvm.com/)
+con un [servidor HTTP Apache](https://httpd.apache.org/) como con un [servidor HTTP Nginx](https://nginx.org/),
+en Windows, Mac OS X, o Linux utilizando PHP 5.4 o mayor. Yii 2.0 también es compatible con [HHVM](https://hhvm.com/)
 de Facebook. De todos modos, hay algunos casos donde HHVM se comporta diferente del
 PHP oficial, por lo que tendrás que tener cuidados extra al utilizarlo.
 
 En un servidor de producción, podrías querer configurar el servidor Web para que la aplicación sea accedida
-a través de la URL `http://www.example.com/index.php` en vez de `http://www.example.com/basic/web/index.php`. Tal configuración
+a través de la URL `https://www.example.com/index.php` en vez de `https://www.example.com/basic/web/index.php`. Tal configuración
 require apuntar el document root de tu servidor Web a la carpeta `basic/web`. También podrías
 querer ocultar `index.php` de la URL, como se describe en la sección [Parseo y Generación de URLs](runtime-url-handling.md).
 En esta sub-sección, aprenderás a configurar tu servidor Apache o Nginx para alcanzar estos objetivos.
@@ -187,7 +187,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Configuración Recomendada de Nginx <span id="recommended-nginx-configuration"></span>
 
-Para utilizar [Nginx](http://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://secure.php.net/install.fpm).
+Para utilizar [Nginx](https://wiki.nginx.org/), debes instalar PHP como un [FPM SAPI](https://www.php.net/manual/es/install.fpm.php).
 Utiliza la siguiente configuración de Nginx, reemplazando `path/to/basic/web` con la ruta real a
 `basic/web` y `mysite.test` con el hostname real a servir.
 

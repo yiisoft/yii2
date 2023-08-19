@@ -88,7 +88,7 @@ is called in an action, it will look for a PHP file named as `views/ControllerID
 
 Note that in the above code, the `message` parameter is [[yii\helpers\Html::encode()|HTML-encoded]]
 before being printed. This is necessary as the parameter comes from an end user, making it vulnerable to
-[cross-site scripting (XSS) attacks](http://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
+[cross-site scripting (XSS) attacks](https://en.wikipedia.org/wiki/Cross-site_scripting) by embedding
 malicious JavaScript code in the parameter.
 
 Naturally, you may put more content in the `say` view. The content can consist of HTML tags, plain text, and even PHP statements.
@@ -102,7 +102,7 @@ Trying it Out <span id="trying-it-out"></span>
 After creating the action and the view, you may access the new page by accessing the following URL:
 
 ```
-http://hostname/index.php?r=site%2Fsay&message=Hello+World
+https://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

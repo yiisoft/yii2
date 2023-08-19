@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 /**
@@ -119,11 +119,11 @@ return [
     '{delta, plural, =1{a month} other{# months}} ago' => 'преди {delta, plural, =1{месец} other{# месеца}}',
     '{delta, plural, =1{a second} other{# seconds}} ago' => 'преди {delta, plural, =1{секунда} other{# секунди}}',
     '{delta, plural, =1{a year} other{# years}} ago' => 'преди {delta, plural, =1{година} other{# години}}',
-    '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{час} other{# часа}}',
+    '{delta, plural, =1{an hour} other{# hours}} ago' => 'преди {delta, plural, =1{час} other{# часа}}',
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} KB' => '{nFormatted} KB',
+    '{nFormatted} kB' => '{nFormatted} KB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',

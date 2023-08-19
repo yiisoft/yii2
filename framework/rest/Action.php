@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rest;
@@ -29,7 +29,7 @@ class Action extends \yii\base\Action
      */
     public $modelClass;
     /**
-     * @var callable a PHP callable that will be called to return the model corresponding
+     * @var callable|null a PHP callable that will be called to return the model corresponding
      * to the specified primary key value. If not set, [[findModel()]] will be used instead.
      * The signature of the callable should be:
      *
@@ -45,7 +45,7 @@ class Action extends \yii\base\Action
      */
     public $findModel;
     /**
-     * @var callable a PHP callable that will be called when running an action to determine
+     * @var callable|null a PHP callable that will be called when running an action to determine
      * if the current user has the permission to execute the action. If not set, the access
      * check will not be performed. The signature of the callable should be as follows,
      *

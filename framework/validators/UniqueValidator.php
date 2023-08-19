@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -42,13 +42,13 @@ use yii\helpers\Inflector;
 class UniqueValidator extends Validator
 {
     /**
-     * @var string the name of the ActiveRecord class that should be used to validate the uniqueness
+     * @var string|null the name of the ActiveRecord class that should be used to validate the uniqueness
      * of the current attribute value. If not set, it will use the ActiveRecord class of the attribute being validated.
      * @see targetAttribute
      */
     public $targetClass;
     /**
-     * @var string|array the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that should be used to
+     * @var string|array|null the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that should be used to
      * validate the uniqueness of the current attribute value. If not set, it will use the name
      * of the attribute currently being validated. You may use an array to validate the uniqueness
      * of multiple columns at the same time. The array values are the attributes that will be
@@ -122,9 +122,15 @@ class UniqueValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        if ($this->skipOnError) {
+            foreach ((array)$targetAttribute as $k => $v) {
+                if ($model->hasErrors(is_int($k) ? $v : $k)) {
+                    return;
+                }
+            }
+        }
+
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
         $conditions = [$this->targetAttributeJunction === 'or' ? 'or' : 'and'];
 
@@ -136,6 +142,8 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
+        /* @var $targetClass ActiveRecordInterface */
+        $targetClass = $this->getTargetClass($model);
         $db = $targetClass::getDb();
 
         $modelExists = false;
@@ -181,8 +189,8 @@ class UniqueValidator extends Validator
         /** @var ActiveRecordInterface|\yii\base\BaseObject $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
 
-        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
-            // if current $model isn't in the database yet then it's OK just to call exists()
+        if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model::className() !== $targetClass::className()) {
+            // if current $model isn't in the database yet, then it's OK just to call exists()
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
         } else {
@@ -191,10 +199,10 @@ class UniqueValidator extends Validator
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
                 $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
-                
+
                 // any with relation can't be loaded because related fields are not selected
                 $query->with = null;
-    
+
                 if (is_array($query->joinWith)) {
                     // any joinWiths need to have eagerLoading turned off to prevent related fields being loaded
                     foreach ($query->joinWith as &$joinWith) {
@@ -309,7 +317,7 @@ class UniqueValidator extends Validator
      * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
-     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @param string|null $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array
      */
     private function applyTableAlias($query, $conditions, $alias = null)
@@ -320,8 +328,8 @@ class UniqueValidator extends Validator
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             if (strpos($columnName, '(') === false) {
-                $columnName = preg_replace('/^' . preg_quote($alias) . '\.(.*)$/', '$1', $columnName);
-                if (strpos($columnName, '[[') === 0) {
+                $columnName = preg_replace('/^' . preg_quote($alias, '/') . '\.(.*)$/', '$1', $columnName);
+                if (strncmp($columnName, '[[', 2) === 0) {
                     $prefixedColumn = "{$alias}.{$columnName}";
                 } else {
                     $prefixedColumn = "{$alias}.[[{$columnName}]]";

@@ -10,8 +10,8 @@ Testy jednostkowe są zazwyczaj tworzone przez osoby, które piszą klasy poddaw
 
 Testy jednostkowe w Yii są oparte o PHPUnit oraz, opcjonalnie, Codeception, zatem zalecane jest, aby zapoznać się z ich dokumentacją:
 
-- [PHPUnit (dokumentacja zaczyna się w rozdziale 2)](http://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
-- [Testy jednostkowe Codeception](http://codeception.com/docs/05-UnitTests).
+- [PHPUnit (dokumentacja zaczyna się w rozdziale 2)](https://phpunit.de/manual/current/en/writing-tests-for-phpunit.html).
+- [Testy jednostkowe Codeception](https://codeception.com/docs/05-UnitTests).
 
 Uruchamianie testów jednostkowych dla podstawowego i zaawansowanego szablonu projektu
 -------------------------------------------------------------------------------------

@@ -32,12 +32,12 @@ y muchas más.
 como se puede también aprovechar su sólida arquitectura de extensiones para utilizar o desarrollar extensiones distribuibles.
 - El alto rendimiento es siempre la meta principal de Yii.
 
-Yii no es un proyecto de un sola persona, detrás de Yii hay un [sólido equipo de desarrollo](http://www.yiiframework.com/team/), 
+Yii no es un proyecto de un sola persona, detrás de Yii hay un [sólido equipo de desarrollo](https://www.yiiframework.com/team/), 
 así como una gran comunidad en la que numerosos profesionales contribuyen constantemente a su desarrollo.
 El equipo de desarrollo de Yii se mantiene atento a las últimas tendencias de desarrollo web, así como a las mejores prácticas y características de otros frameworks y proyectos.
 Las buenas prácticas y características más relevantes de otros proyectos se incorporan regularmente a la base del framework y se exponen a través de interfaces simples y elegantes.
 
-[about_yii]: http://www.yiiframework.com/about/
+[about_yii]: https://www.yiiframework.com/about/
 
 Versiones de Yii
 ----------------
@@ -51,10 +51,10 @@ Esta guía está basada principalmente en la versión 2.0. del framework.
 Requisitos y Prerequisitos
 --------------------------
 
-Yii 2.0 requiere PHP 5.4.0 o una versión posterior y corre de mejor manera en la última versión de PHP 7. Se pueden encontrar requisitos más detallados de características individuales
+Yii 2.0 requiere PHP 5.4.0 o una versión posterior y corre de mejor manera en la última versión de PHP. Se pueden encontrar requisitos más detallados de características individuales
 ejecutando el script de comprobación incluido en cada lanzamiento de Yii.
 
 Para utilizar Yii se requieren conocimientos básicos de programación orientada a objetos (POO), porque el framework Yii se basa íntegramente en esta tecnología.
-Yii 2.0 hace uso también de las últimas características de PHP, como [namespaces](https://secure.php.net/manual/es/language.namespaces.php)
-y [traits](https://secure.php.net/manual/es/language.oop5.traits.php). Comprender estos conceptos te ayudará a entender mejor Yii 2.0.
+Yii 2.0 hace uso también de las últimas características de PHP, como [namespaces](https://www.php.net/manual/es/language.namespaces.php)
+y [traits](https://www.php.net/manual/es/language.oop5.traits.php). Comprender estos conceptos te ayudará a entender mejor Yii 2.0.
 

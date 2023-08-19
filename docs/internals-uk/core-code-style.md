@@ -251,7 +251,7 @@ if (!$model && null === $event)
 ```
 
 Краще уникайте використання `else` після `return`, де це має сенс.
-Використовуйте [вартові умови](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+Використовуйте [вартові умови](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
 
 ```php
 $result = $this->getResult();
@@ -332,7 +332,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Документація
 ------------
 
-- Див. [PHPDoc](http://phpdoc.org/) для довідки про синтаксис документації.
+- Див. [PHPDoc](https://phpdoc.org/) для довідки про синтаксис документації.
 - Код без документації не допускається.
 - Усі файли класів повинні містити файловий ("file-level") doc-блок на початку
   та класовий ("class-level") doc-блок безпосередньо над кожним класом.
@@ -365,9 +365,9 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

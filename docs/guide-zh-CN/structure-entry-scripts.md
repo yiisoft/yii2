@@ -16,7 +16,7 @@ Web 应用的入口脚本必须放在终端用户能够访问的目录下，
 入口脚本主要完成以下工作：
 
 * 定义全局常量；
-* 注册 [Composer 自动加载器](http://getcomposer.org/doc/01-basic-usage.md#autoloading)；
+* 注册 [Composer 自动加载器](https://getcomposer.org/doc/01-basic-usage.md#autoloading)；
 * 包含 [[Yii]] 类文件；
 * 加载应用配置；
 * 创建一个[应用](structure-applications.md)实例并配置;
@@ -57,9 +57,9 @@ $config = require __DIR__ . '/../config/web.php';
 /**
  * Yii console bootstrap file.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -17,7 +17,7 @@ use yii\helpers\StringHelper;
 /**
  * ActiveRecord is the base class for classes representing relational data in terms of objects.
  *
- * Active Record implements the [Active Record design pattern](http://en.wikipedia.org/wiki/Active_record).
+ * Active Record implements the [Active Record design pattern](https://en.wikipedia.org/wiki/Active_record_pattern).
  * The premise behind Active Record is that an individual [[ActiveRecord]] object is associated with a specific
  * row in a database table. The object's attributes are mapped to the columns of the corresponding table.
  * Referencing an Active Record attribute is equivalent to accessing the corresponding table column for that record.
@@ -70,8 +70,8 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
- * @method ActiveQuery hasMany($class, array $link) see [[BaseActiveRecord::hasMany()]] for more info
- * @method ActiveQuery hasOne($class, array $link) see [[BaseActiveRecord::hasOne()]] for more info
+ * @method ActiveQuery hasMany($class, array $link) See [[BaseActiveRecord::hasMany()]] for more info.
+ * @method ActiveQuery hasOne($class, array $link) See [[BaseActiveRecord::hasOne()]] for more info.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -115,9 +115,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function loadDefaultValues($skipIfSet = true)
     {
-        foreach (static::getTableSchema()->columns as $column) {
-            if ($column->defaultValue !== null && (!$skipIfSet || $this->{$column->name} === null)) {
-                $this->{$column->name} = $column->defaultValue;
+        $columns = static::getTableSchema()->columns;
+        foreach ($this->attributes() as $name) {
+            if (isset($columns[$name])) {
+                $defaultValue = $columns[$name]->defaultValue;
+                if ($defaultValue !== null && (!$skipIfSet || $this->getAttribute($name) === null)) {
+                    $this->setAttribute($name, $defaultValue);
+                }
             }
         }
 
@@ -173,7 +177,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!ArrayHelper::isAssociative($condition) && !$condition instanceof ExpressionInterface) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
@@ -210,7 +214,7 @@ class ActiveRecord extends BaseActiveRecord
         $aliases = array_diff(array_keys($tables), $tables);
 
         return array_map(function ($alias) {
-            return preg_replace('/{{([\w]+)}}/', '$1', $alias);
+            return preg_replace('/{{(\w+)}}/', '$1', $alias);
         }, array_values($aliases));
     }
 
@@ -289,7 +293,7 @@ class ActiveRecord extends BaseActiveRecord
         $query->where($pk);
 
         /* @var $record BaseActiveRecord */
-        $record = $query->one();
+        $record = $query->noCache()->one();
         return $this->refreshInternal($record);
     }
 
@@ -388,7 +392,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For a large set of models you might consider using [[ActiveQuery::each()]] to keep memory usage within limits.
      *
-     * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
+     * @param string|array|null $condition the conditions that will be put in the WHERE part of the DELETE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows deleted
@@ -466,7 +470,7 @@ class ActiveRecord extends BaseActiveRecord
      */
     public function attributes()
     {
-        return array_keys(static::getTableSchema()->columns);
+        return static::getTableSchema()->getColumnNames();
     }
 
     /**
@@ -550,10 +554,10 @@ class ActiveRecord extends BaseActiveRecord
      * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception|\Throwable in case insert failed.
+     * @throws \Throwable in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -587,7 +591,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Inserts an ActiveRecord into DB without considering transaction.
-     * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the record is inserted successfully.
      */
@@ -657,13 +661,13 @@ class ActiveRecord extends BaseActiveRecord
      * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before saving the record. Defaults to `true`. If the validation fails, the record
      * will not be saved to the database and this method will return `false`.
-     * @param array $attributeNames list of attributes that need to be saved. Defaults to `null`,
+     * @param array|null $attributeNames list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return int|false the number of rows affected, or false if validation fails
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
-     * @throws \Exception|\Throwable in case update failed.
+     * @throws \Throwable in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -712,7 +716,7 @@ class ActiveRecord extends BaseActiveRecord
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
-     * @throws \Exception|\Throwable in case delete failed.
+     * @throws \Throwable in case delete failed.
      */
     public function delete()
     {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -54,7 +54,7 @@ class UnsetArrayValue
      *
      * @param array $state
      * @return UnsetArrayValue
-     * @see var_export()
+     * @see https://www.php.net/manual/en/function.var-export.php
      * @since 2.0.16
      */
     public static function __set_state($state)

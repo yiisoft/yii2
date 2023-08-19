@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\ar;
@@ -19,10 +19,13 @@ use yii\db\ActiveQuery;
  *
  * @property-read Item[] $expensiveItemsUsingViaWithCallable
  * @property-read Item[] $cheapItemsUsingViaWithCallable
+ * @property-read Item[] $itemsFor8
  */
 class Order extends ActiveRecord
 {
     public static $tableName;
+
+    public $virtualCustomerId = null;
 
     public static function tableName()
     {
@@ -169,26 +172,12 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
-//    public function getBooksQuerysyntax()
-//    {
-//        return $this->hasMany(Item::className(), ['id' => 'item_id'])
-//            ->onCondition(['{{@item}}.category_id' => 1])
-//            ->viaTable('order_item', ['order_id' => 'id']);
-//    }
-
     public function getBooksExplicitA()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
             ->onCondition(['bo.category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
-
-//    public function getBooksQuerysyntaxA()
-//    {
-//        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
-//            ->onCondition(['{{@item}}.category_id' => 1])
-//            ->viaTable('order_item', ['order_id' => 'id']);
-//    }
 
     public function getBookItems()
     {
@@ -236,4 +225,25 @@ class Order extends ActiveRecord
             0 => 'customer_id',
         ];
     }
+
+    public function getQuantityOrderItems()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+    }
+
+    public function getOrderItemsFor8()
+    {
+        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id'])->andOnCondition(['subtotal' => 8.0]);
+    }
+
+    public function getItemsFor8()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItemsFor8');
+    }
+
+    public function getVirtualCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'virtualCustomerId']);
+    }
+
 }

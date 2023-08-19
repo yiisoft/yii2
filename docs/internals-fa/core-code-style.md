@@ -331,7 +331,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 مستند نویسی 
 -------------
 
-<p dir='rtl' align='right'> [phpDoc](http://phpdoc.org/) رو بخونید و موارد اونُ رعایت کنید.</p>
+<p dir='rtl' align='right'> [phpDoc](https://phpdoc.org/) رو بخونید و موارد اونُ رعایت کنید.</p>
 <p dir='rtl' align='right'> کد بدون مستندات مجاز نیست.</p>
 <p dir='rtl' align='right'> تمام کلاس ها باید شامل بلاک مستندات در ابتدای فایل باشند.</p>
 <p dir='rtl' align='right'> نیازی به نوشتن return@ ندارید اگر متد شما اگر چیزی را برنمیگرداند.</p>
@@ -356,9 +356,9 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

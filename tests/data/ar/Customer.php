@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\ar;
@@ -47,7 +47,7 @@ class Customer extends ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('id');
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->orderBy('[[id]]');
     }
 
     public function getExpensiveOrders()
@@ -85,6 +85,18 @@ class Customer extends ActiveRecord
             /* @var $q ActiveQuery */
             $q->viaTable('order', ['customer_id' => 'id']);
         })->orderBy('id');
+    }
+
+    public function getOrderItems2()
+    {
+        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+            ->via('orders');
+    }
+
+    public function getItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->via('orderItems2');
     }
 
     public function afterSave($insert, $changedAttributes)

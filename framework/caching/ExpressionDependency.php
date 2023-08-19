@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -15,7 +15,7 @@ namespace yii\caching;
  * the same as the one evaluated when storing the data to cache.
  *
  * A PHP expression can be any PHP code that has a value. To learn more about what an expression is,
- * please refer to the [php manual](https://secure.php.net/manual/en/language.expressions.php).
+ * please refer to the [php manual](https://www.php.net/manual/en/language.expressions.php).
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
@@ -27,7 +27,7 @@ class ExpressionDependency extends Dependency
     /**
      * @var string the string representation of a PHP expression whose result is used to determine the dependency.
      * A PHP expression can be any PHP code that evaluates to a value. To learn more about what an expression is,
-     * please refer to the [php manual](https://secure.php.net/manual/en/language.expressions.php).
+     * please refer to the [php manual](https://www.php.net/manual/en/language.expressions.php).
      */
     public $expression = 'true';
     /**

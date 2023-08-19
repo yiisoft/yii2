@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\mail;
@@ -87,7 +87,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     public $fileTransportPath = '@runtime/mail';
     /**
-     * @var callable a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
+     * @var callable|null a PHP callback that will be called by [[send()]] when [[useFileTransport]] is true.
      * The callback should return a file name which will be used to save the email message.
      * If not set, the file name will be generated based on the current timestamp.
      *
@@ -342,8 +342,9 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     public function generateMessageFileName()
     {
         $time = microtime(true);
+        $timeInt = (int) $time;
 
-        return date('Ymd-His-', $time) . sprintf('%04d', (int) (($time - (int) $time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
+        return date('Ymd-His-', $timeInt) . sprintf('%04d', (int) (($time - $timeInt) * 10000)) . '-' . sprintf('%04d', random_int(0, 10000)) . '.eml';
     }
 
     /**

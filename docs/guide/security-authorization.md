@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ You may customize this behavior by configuring the [[yii\filters\AccessControl::
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -129,7 +129,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -156,10 +156,10 @@ class SiteController extends Controller
 ## Role Based Access Control (RBAC) <span id="rbac"></span>
 
 Role-Based Access Control (RBAC) provides a simple yet powerful centralized access control. Please refer to
-the [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
+the [Wikipedia](https://en.wikipedia.org/wiki/Role-based_access_control) for details about comparing RBAC
 with other more traditional access control schemes.
 
-Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii implements a General Hierarchical RBAC, following the [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 It provides the RBAC functionality through the [[yii\rbac\ManagerInterface|authManager]] [application component](structure-application-components.md).
 
 Using RBAC involves two parts of work. The first part is to build up the RBAC authorization data, and the second
@@ -281,7 +281,7 @@ build the hierarchy itself won't be different.
 You can use [migrations](db-migrations.md)
 to initialize and modify hierarchy via APIs offered by `authManager`.
 
-Create new migration using `./yii migrate/create init_rbac` then impement creating a hierarchy:
+Create new migration using `./yii migrate/create init_rbac` then implement creating a hierarchy:
 
 ```php
 <?php
@@ -538,7 +538,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

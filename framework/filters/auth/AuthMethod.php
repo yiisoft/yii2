@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters\auth;
@@ -25,15 +25,15 @@ use yii\web\User;
 abstract class AuthMethod extends ActionFilter implements AuthInterface
 {
     /**
-     * @var User the user object representing the user authentication status. If not set, the `user` application component will be used.
+     * @var User|null the user object representing the user authentication status. If not set, the `user` application component will be used.
      */
     public $user;
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request|null the current request. If not set, the `request` application component will be used.
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response|null the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
     /**

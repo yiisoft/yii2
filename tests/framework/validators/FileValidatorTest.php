@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\validators;
@@ -324,7 +324,7 @@ class FileValidatorTest extends TestCase
             $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $randomString = '';
             for ($i = 0; $i < $len; $i++) {
-                $randomString .= $characters[rand(0, strlen($characters) - 1)];
+                $randomString .= $characters[random_int(0, strlen($characters) - 1)];
             }
 
             return $randomString;
@@ -340,7 +340,7 @@ class FileValidatorTest extends TestCase
             if (is_readable($tempName)) {
                 $size = filesize($tempName);
             } else {
-                $size = isset($param['size']) ? $param['size'] : rand(
+                $size = isset($param['size']) ? $param['size'] : random_int(
                     1,
                     $this->sizeToBytes(ini_get('upload_max_filesize'))
                 );
@@ -452,6 +452,53 @@ class FileValidatorTest extends TestCase
         $this->assertNotFalse(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions '));
     }
 
+    public function testValidateEmptyExtension()
+    {
+        $val = new FileValidator([
+            'extensions' => ['txt', ''],
+            'checkExtensionByMimeType' => false,
+        ]);
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_txt' => $this->createTestFiles([['name' => 'one.txt']]),
+                'attr_empty' => $this->createTestFiles([['name' => 'bad.']]),
+                'attr_empty2' => $this->createTestFiles([['name' => 'bad']]),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_txt');
+        $this->assertFalse($m->hasErrors('attr_txt'));
+        $val->validateAttribute($m, 'attr_empty');
+        $this->assertFalse($m->hasErrors('attr_empty'));
+        $val->validateAttribute($m, 'attr_empty2');
+        $this->assertFalse($m->hasErrors('attr_empty2'));
+    }
+
+    public function testValidateAttributeDoubleType()
+    {
+        $val = new FileValidator([
+            'extensions' => 'tar.gz, tar.xz',
+            'checkExtensionByMimeType' => false,
+        ]);
+
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_tar' => $this->createTestFiles([['name' => 'one.tar.gz']]),
+                'attr_bar' => $this->createTestFiles([['name' => 'bad.bar.xz']]),
+                'attr_badtar' => $this->createTestFiles([['name' => 'badtar.xz']]),
+            ]
+        );
+        $val->validateAttribute($m, 'attr_tar');
+        $this->assertFalse($m->hasErrors('attr_tar'));
+
+        $val->validateAttribute($m, 'attr_bar');
+        $this->assertTrue($m->hasErrors('attr_bar'));
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_bar')), 'Only files with these extensions '));
+
+        $val->validateAttribute($m, 'attr_badtar');
+        $this->assertTrue($m->hasErrors('attr_badtar'));
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_badtar')), 'Only files with these extensions '));
+    }
+
     public function testIssue11012()
     {
         $baseName = '飛兒樂團光茫';
@@ -488,7 +535,7 @@ class FileValidatorTest extends TestCase
 
     public function validMimeTypes()
     {
-        return array_filter([
+        $validMimeTypes = array_filter([
             ['test.svg', 'image/*', 'svg'],
             ['test.jpg', 'image/*', 'jpg'],
             ['test.png', 'image/*', 'png'],
@@ -496,7 +543,16 @@ class FileValidatorTest extends TestCase
             ['test.txt', 'text/*', 'txt'],
             ['test.xml', '*/xml', 'xml'],
             ['test.odt', 'application/vnd*', 'odt'],
+            ['test.tar.xz', 'application/x-xz', 'tar.xz'],
         ]);
+
+        if (PHP_VERSION_ID >= 80100) {
+            $v81_zx = ['test.tar.xz', 'application/octet-stream', 'tar.xz'];
+            array_pop($validMimeTypes);
+            $validMimeTypes[] = $v81_zx;
+        }
+
+        return $validMimeTypes;
     }
 
     public function invalidMimeTypes()

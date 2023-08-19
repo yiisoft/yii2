@@ -2,7 +2,7 @@ Dependency Injection Container
 ==============================
 
 A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
-all their dependent objects. [Martin Fowler's article](http://martinfowler.com/articles/injection.html) has well
+all their dependent objects. [Martin Fowler's article](https://martinfowler.com/articles/injection.html) has well
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
@@ -42,7 +42,7 @@ $foo = new Foo($bar);
 
 ### Method Injection <span id="method-injection"></span>
 
-Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
+Usually the dependencies of a class are passed to the constructor and are available inside the class during the whole lifecycle.
 With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
 and passing it to the constructor may not be possible or may cause too much overhead in the majority of use cases.
 
@@ -163,7 +163,7 @@ $container->set('yii\db\Connection');
 // register an interface
 // When a class depends on the interface, the corresponding class
 // will be instantiated as the dependent object
-$container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
+$container->set('yii\mail\MailInterface', 'yii\symfonymailer\Mailer');
 
 // register an alias name. You can use $container->get('foo')
 // to create an instance of Connection
@@ -241,6 +241,9 @@ $db = $container->get('db');
 
 // equivalent to: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
 $engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
+
+// equivalent to: $api = new \app\components\Api($host, $apiKey);
+$api = $container->get('app\components\Api', ['host' => $host, 'apiKey' => $apiKey]);
 ```
 
 Behind the scene, the DI container does much more work than just creating a new object.
@@ -375,6 +378,24 @@ cannot be instantiated. This is because you need to tell the DI container how to
 Now if you access the controller again, an instance of `app\components\BookingService` will be
 created and injected as the 3rd parameter to the controller's constructor.
 
+Since Yii 2.0.36 when using PHP 7 action injection is available for both web and console controllers:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\BookingInterface;
+
+class HotelController extends Controller
+{    
+    public function actionBook($id, BookingInterface $bookingService)
+    {
+        $result = $bookingService->book($id);
+        // ...    
+    }
+}
+``` 
+
 Advanced Practical Usage <span id="advanced-practical-usage"></span>
 ---------------
 
@@ -463,7 +484,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Will behave exactly the same as in the previous example.
 ```
 
@@ -523,7 +544,7 @@ Summary <span id="summary"></span>
 
 Both dependency injection and [service locator](concept-service-locator.md) are popular design patterns
 that allow building software in a loosely-coupled and more testable fashion. We highly recommend you to read
-[Martin's article](http://martinfowler.com/articles/injection.html) to get a deeper understanding of
+[Martin's article](https://martinfowler.com/articles/injection.html) to get a deeper understanding of
 dependency injection and service locator.
 
 Yii implements its [service locator](concept-service-locator.md) on top of the dependency injection (DI) container.

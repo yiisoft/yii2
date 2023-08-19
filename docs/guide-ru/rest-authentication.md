@@ -10,15 +10,15 @@
 
 Есть различные способы отправки токена доступа:
 
-* [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication): токен доступа
+* [HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication): токен доступа
   отправляется как имя пользователя. Такой подход следует использовать только в том случае, когда токен доступа может быть безопасно сохранен
   на стороне пользователя API. Например, если API используется программой, запущенной на сервере.
 * Параметр запроса: токен доступа отправляется как параметр запроса в URL-адресе API, т.е. примерно таким образом:
   `https://example.com/users?access-token=xxxxxxxx`. Так как большинство веб-серверов сохраняют параметры запроса в своих логах,
   такой подход следует применять только при работе с `JSONP`-запросами, которые не могут отправлять токены доступа
  в HTTP-заголовках.
-* [OAuth 2](http://oauth.net/2/): токен доступа выдается пользователю API сервером авторизации
-  и отправляется API-серверу через [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
+* [OAuth 2](https://oauth.net/2/): токен доступа выдается пользователю API сервером авторизации
+  и отправляется API-серверу через [HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750),
   в соответствии с протоколом OAuth2.
 
 Yii поддерживает все выше перечисленные методы аутентификации. Вы также можете легко создавать новые методы аутентификации.
@@ -57,7 +57,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -75,11 +75,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

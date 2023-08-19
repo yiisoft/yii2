@@ -14,7 +14,7 @@ Yii 2 официально поддерживает интеграцию с фр
 [`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) и
 [`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced).
 
-Для того, чтобы запустить тесты необходимо установить [Codeception](https://github.com/Codeception/Codeception).
+Для того, чтобы запустить тесты, необходимо установить [Codeception](https://github.com/Codeception/Codeception).
 Сделать это можно как локально, то есть только для текущего проекта, так и глобально для компьютера разработчика.
 
 Для локальной установки используйте следующие команды:
@@ -51,9 +51,10 @@ Changed current directory to <directory>
 ### Настройка веб-сервера Apache
 
 Если вы используете Apache и настроили его как описано в разделе «[Установка Yii](start-installation.md)», то для тестов вам необходимо создать отдельный виртуальный хост который будет работать с той же папкой, но использовать входной скрипт `index-test.php`:
+
 ```
 <VirtualHost *:80>
-    DocumentRoot "path/to/basic/webb"
+    DocumentRoot "path/to/basic/web"
     ServerName mysite-test
     <Directory "path/to/basic/web">
         Order Allow,Deny
@@ -67,5 +68,6 @@ Changed current directory to <directory>
     </Directory>
 </VirtualHost>
 ```
+
 Так мы укажем веб серверу перенаправлять все запросы на скрипт `index-test.php`.
 > Note: Обратите внимание, что здесь мы указываем параметр `DirectoryIndex`, помимо тех параметров, которые были указаны для первого хоста. Это сделано с той целью, чтобы при обращении к главной странице по адресу `mysite-test` также использовался бы скрипт `index-test.php`.

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\conditions;
@@ -48,7 +48,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $operator = $expression->getOperator();
+        $operator = strtoupper($expression->getOperator());
         $column = $expression->getColumn();
         $values = $expression->getValue();
         $escape = $expression->getEscapingReplacements();
@@ -66,7 +66,9 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             return $not ? '' : '0=1';
         }
 
-        if (strpos($column, '(') === false) {
+        if ($column instanceof ExpressionInterface) {
+            $column = $this->queryBuilder->buildExpression($column, $params);
+        } elseif (is_string($column) && strpos($column, '(') === false) {
             $column = $this->queryBuilder->db->quoteColumnName($column);
         }
 
@@ -76,7 +78,7 @@ class LikeConditionBuilder implements ExpressionBuilderInterface
             if ($value instanceof ExpressionInterface) {
                 $phName = $this->queryBuilder->buildExpression($value, $params);
             } else {
-                $phName = $this->queryBuilder->bindParam(empty($escape) ? $value : ('%' . strtr($value, $escape) . '%'), $params);
+                $phName = $this->queryBuilder->bindParam(empty($escape) ? $value : ('%' . strtr((string)$value, $escape) . '%'), $params);
             }
             $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
         }

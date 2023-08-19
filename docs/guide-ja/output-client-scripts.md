@@ -35,9 +35,9 @@ $this->registerJs(
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] - head セクション。
 - [[yii\web\View::POS_BEGIN|View::POS_BEGIN]] - 開始の `<body>` の直後。
 - [[yii\web\View::POS_END|View::POS_END]] - 終了の `</body>` の直前。
-- [[yii\web\View::POS_READY|View::POS_READY]] - [ドキュメントの `ready` イベント](http://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
+- [[yii\web\View::POS_READY|View::POS_READY]] - [ドキュメントの `ready` イベント](https://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
   これを指定すると、[[yii\web\JqueryAsset|jQuery]] が自動的に登録され、コードは適切な jQuery コードの中に包まれます。これがデフォルトの位置指定です。
-- [[yii\web\View::POS_LOAD|View::POS_LOAD]] - [ドキュメントの `load` イベント](http://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
+- [[yii\web\View::POS_LOAD|View::POS_LOAD]] - [ドキュメントの `load` イベント](https://learn.jquery.com/using-jquery-core/document-ready/) でコードを実行するための指定。
   上記と同じく、これを指定すると、[[yii\web\JqueryAsset|jQuery]] が自動的に登録されます。
 
 最後の引数は、スクリプトのコード・ブロックを一意に特定するために使われるスクリプトのユニークな ID です。同じ ID のスクリプトが既にある場合は、新しいものを追加するのでなく、
@@ -56,7 +56,7 @@ $this->registerJs(
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 
@@ -95,7 +95,7 @@ CSS ファイルは次のようにして登録することが出来ます。
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```
@@ -188,7 +188,7 @@ JS
 );
 ```
 
-上記のサンプル・コードは、可読性を高めるために、PHP の [ヒアドキュメント構文](https://secure.php.net/manual/ja/language.types.string.php#language.types.string.syntax.heredoc) を使っています。
+上記のサンプル・コードは、可読性を高めるために、PHP の [ヒアドキュメント構文](https://www.php.net/manual/ja/language.types.string.php#language.types.string.syntax.heredoc) を使っています。
 また、ヒアドキュメントは、たいていの IDE で、より良い構文ハイライトが可能になるので、
 インライン JavaScript、特に一行に収まらないものを書くときに推奨される方法です。
 変数 `$message` は PHP で生成され、[[yii\helpers\Json::htmlEncode|Json::htmlEncode]] のおかげで、適切な JS 構文の文字列を含むものになります。

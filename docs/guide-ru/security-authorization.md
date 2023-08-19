@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -68,7 +68,7 @@ class SiteController extends Controller
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('У вас нет доступа к этой странице');
     }
@@ -122,7 +122,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -153,7 +153,7 @@ class SiteController extends Controller
 Пожалуйста, обратитесь к [Wikipedia](https://ru.wikipedia.org/wiki/%D0%A3%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5_%D0%B4%D0%BE%D1%81%D1%82%D1%83%D0%BF%D0%BE%D0%BC_%D0%BD%D0%B0_%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B5_%D1%80%D0%BE%D0%BB%D0%B5%D0%B9)
 для получения информации о сравнении RBAC с другими, более традиционными, системами контроля доступа.
 
-Yii реализует общую иерархическую RBAC, следуя [NIST RBAC model](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii реализует общую иерархическую RBAC, следуя [NIST RBAC model](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 Обеспечивается функциональность RBAC через [компонент приложения](structure-application-components.md) [[yii\rbac\ManagerInterface|authManager]].
 
 Использование RBAC состоит из двух частей. Первая часть — это создание RBAC данных авторизации, и вторая часть — это
@@ -223,6 +223,10 @@ return [
     ],
 ];
 ```
+
+> Примечание: Если вы используете шаблон проекта basic, компонент `authManager` необходимо настроить как в `config/web.php`, так и в
+> [конфигурации консольного приложения](tutorial-console.md#configuration) `config/console.php`.
+> При использовании шаблона проекта advanced `authManager` достаточно настроить единожды в `common/config/main.php`.
 
 `DbManager` использует четыре таблицы для хранения данных:
 
@@ -443,7 +447,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -539,7 +543,7 @@ $auth->addChild($admin, $author);
 // ... add permissions as children of $admin ...
 ```
 
-Обратите внимание, так как "author" добавлен как дочерняя роль к "admin", следовательно в реализации метода `execute()`
+Обратите внимание, так как "author" добавлен как дочерняя роль к "admin", следовательно, в реализации метода `execute()`
 класса правила вы должны учитывать эту иерархию. Именно поэтому для роли "author" метод `execute()` вернёт истину,
 если пользователь принадлежит к группам 1 или 2 (это означает, что пользователь находится в группе
 администраторов или авторов)

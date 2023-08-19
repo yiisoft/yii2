@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -28,7 +28,7 @@ use yii\web\MethodNotAllowedHttpException;
  * {
  *     return [
  *         'verbs' => [
- *             'class' => \yii\filters\VerbFilter::className(),
+ *             'class' => \yii\filters\VerbFilter::class,
  *             'actions' => [
  *                 'index'  => ['GET'],
  *                 'view'   => ['GET'],
@@ -57,6 +57,8 @@ class VerbFilter extends Behavior
      * You can use `'*'` to stand for all actions. When an action is explicitly
      * specified, it takes precedence over the specification given by `'*'`.
      *
+     * @see https://www.yiiframework.com/doc/guide/2.0/en/structure-controllers#action-ids
+     *
      * For example,
      *
      * ```php
@@ -64,6 +66,7 @@ class VerbFilter extends Behavior
      *   'create' => ['GET', 'POST'],
      *   'update' => ['GET', 'PUT', 'POST'],
      *   'delete' => ['POST', 'DELETE'],
+     *   'author-comment' => ['POST', 'DELETE'],
      *   '*' => ['GET'],
      * ]
      * ```

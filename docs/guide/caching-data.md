@@ -58,7 +58,7 @@ such as memory, files, databases.
 Cache components are usually registered as [application components](structure-application-components.md) so
 that they can be globally configurable
 and accessible. The following code shows how to configure the `cache` application component to use
-[memcached](http://memcached.org/) with two cache servers:
+[memcached](https://memcached.org/) with two cache servers:
 
 ```php
 'components' => [
@@ -82,6 +82,8 @@ and accessible. The following code shows how to configure the `cache` applicatio
 
 You can then access the above cache component using the expression `Yii::$app->cache`.
 
+If no cache component is specified, then Yii will use [yii\caching\FileCache](https://www.yiiframework.com/doc/api/2.0/yii-caching-filecache) as default.
+
 Because all cache components support the same set of APIs, you can swap the underlying cache component
 with a different one by reconfiguring it in the application configuration without modifying the code that uses the cache.
 For example, you can modify the above configuration to use [[yii\caching\ApcCache|APC cache]]:
@@ -103,7 +105,7 @@ For example, you can modify the above configuration to use [[yii\caching\ApcCach
 
 Yii supports a wide range of cache storage. The following is a summary:
 
-* [[yii\caching\ApcCache]]: uses PHP [APC](https://secure.php.net/manual/en/book.apc.php) extension. This option can be
+* [[yii\caching\ApcCache]]: uses PHP [APC](https://www.php.net/manual/en/book.apcu.php) extension. This option can be
   considered as the fastest one when dealing with cache for a centralized thick application (e.g. one
   server, no dedicated load balancers, etc.).
 * [[yii\caching\DbCache]]: uses a database table to store cached data. To use this cache, you must
@@ -120,17 +122,17 @@ Yii supports a wide range of cache storage. The following is a summary:
   `Yii::$app->cache` might be `null`.
 * [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
-* [[yii\caching\MemCache]]: uses PHP [memcache](https://secure.php.net/manual/en/book.memcache.php)
-  and [memcached](https://secure.php.net/manual/en/book.memcached.php) extensions. This option can be considered as
+* [[yii\caching\MemCache]]: uses PHP [memcache](https://www.php.net/manual/en/book.memcache.php)
+  and [memcached](https://www.php.net/manual/en/book.memcached.php) extensions. This option can be considered as
   the fastest one when dealing with cache in a distributed applications (e.g. with several servers, load
   balancers, etc.)
-* [[yii\redis\Cache]]: implements a cache component based on [Redis](http://redis.io/) key-value store
+* [[yii\redis\Cache]]: implements a cache component based on [Redis](https://redis.io/) key-value store
   (redis version 2.6.12 or higher is required).
-* [[yii\caching\WinCache]]: uses PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
-  ([see also](https://secure.php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](http://xcache.lighttpd.net/) extension.
+* [[yii\caching\WinCache]]: uses PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
+  ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
+* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache) extension.
 * [[yii\caching\ZendDataCache]] _(deprecated)_: uses
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
+  [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
   as the underlying caching medium.
 
 
@@ -310,7 +312,7 @@ $result = Customer::getDb()->cache(function ($db) {
 });
 ```
 
-> Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
+> Info: Some DBMS (e.g. [MySQL](https://dev.mysql.com/doc/refman/5.6/en/query-cache.html))
   also support query caching on the DB server-side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
@@ -418,7 +420,7 @@ of each entry to be 1MB. Therefore, if the size of a query result exceeds this l
 the caching will fail.
 
 
-## Cache Flushing <span id="cache-flushing">
+## Cache Flushing <span id="cache-flushing"></span>
 
 When you need to invalidate all the stored cache data, you can call [[yii\caching\Cache::flush()]].
 

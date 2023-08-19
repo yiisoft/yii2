@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db;
@@ -177,26 +177,30 @@ SQL;
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = str_repeat('abc', 33) . 'x'; // a 100 char string
-        $boolCol = false;
         $command->bindParam(':int_col', $intCol, \PDO::PARAM_INT);
         $command->bindParam(':char_col', $charCol);
-        $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         if ($this->driverName === 'oci') {
             // can't bind floats without support from a custom PDO driver
             $floatCol = 2;
             $numericCol = 3;
             // can't use blobs without support from a custom PDO driver
             $blobCol = null;
+            // You can create a table with a column of datatype CHAR(1) and store either “Y” or “N” in that column
+            // to indicate TRUE or FALSE.
+            $boolCol = '0';
             $command->bindParam(':float_col', $floatCol, \PDO::PARAM_INT);
             $command->bindParam(':numeric_col', $numericCol, \PDO::PARAM_INT);
             $command->bindParam(':blob_col', $blobCol);
+            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         } else {
             $floatCol = 1.23;
             $numericCol = '1.23';
             $blobCol = "\x10\x11\x12";
+            $boolCol = false;
             $command->bindParam(':float_col', $floatCol);
             $command->bindParam(':numeric_col', $numericCol);
             $command->bindParam(':blob_col', $blobCol);
+            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         }
         $this->assertEquals(1, $command->execute());
 
@@ -217,7 +221,7 @@ SQL;
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (\defined('HHVM_VERSION') && \in_array($this->driverName, ['sqlite', 'pgsql']))) {
-            $this->assertEquals($boolCol, (int)$row['bool_col']);
+            $this->assertEquals($boolCol, (int) $row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
         }
@@ -654,6 +658,9 @@ SQL;
                 break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
+                break;
+            case 'oci':
+                $expression = 'EXTRACT(YEAR FROM sysdate)';
         }
 
         $command = $db->createCommand();
@@ -1360,10 +1367,15 @@ SQL;
                 'SELECT * FROM customer WHERE id IN (\'1, 2\')',
             ],
             [
+                'SELECT * FROM customer WHERE id  = ? AND active = ?',
+                [1 => 1, 2 => false],
+                'SELECT * FROM customer WHERE id  = 1 AND active = FALSE',
+            ],
+            [
                 'SELECT NOW() = :now',
                 [':now' => new Expression('NOW()')],
                 'SELECT NOW() = \'NOW()\'',
-            ]
+            ],
         ];
     }
 
@@ -1513,4 +1525,23 @@ SQL;
         $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
         $this->assertTrue(true);
     }
+
+    public function testBindValuesSupportsEnums()
+	{
+		if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+		    $db = $this->getConnection();
+		    $command = $db->createCommand();
+
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::ACTIVE]);
+		    $this->assertSame('ACTIVE', $command->params[':p1']);
+
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::ACTIVE]);
+		    $this->assertSame('active', $command->params[':p1']);
+
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
+		    $this->assertSame(1, $command->params[':p1']);
+		} else {
+            $this->markTestSkipped('Enums are not supported in PHP < 8.1');
+        }
+	}
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\mail;
@@ -204,7 +204,7 @@ interface MessageInterface
 
     /**
      * Sends this email message.
-     * @param MailerInterface $mailer the mailer that should be used to send this message.
+     * @param MailerInterface|null $mailer the mailer that should be used to send this message.
      * If null, the "mailer" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */

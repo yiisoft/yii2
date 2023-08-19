@@ -86,7 +86,7 @@ Instalando a partir de um Arquivo Compactado <span id="installing-from-archive-f
 
 A instalação do Yii a partir de um arquivo compactado envolve três passos:
 
-1. Baixe o arquivo compactado em [yiiframework.com](http://www.yiiframework.com/download/).
+1. Baixe o arquivo compactado em [yiiframework.com](https://www.yiiframework.com/download/).
 2. Descompacte o arquivo baixado em um diretório acessível pela Web.
 3. Modifique o arquivo `config/web.php` informando uma chave secreta no item de
 configuração `cookieValidationKey` (isto é feito automaticamente se você instalar
@@ -120,9 +120,9 @@ No entanto, existem outras opções de instalação disponíveis:
 Instalando Recursos Estáticos (Assets) <span id="installing-assets"></span>
 -----------------
 
-Yii utiliza os pacotes [Bower](http://bower.io/) e/ou [NPM](https://www.npmjs.org/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
+Yii utiliza os pacotes [Bower](https://bower.io/) e/ou [NPM](https://www.npmjs.com/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
 Ele usa composer para obter essa bibliotecas, permitindo que versões de pacotes PHP, CSS e Javascrtip possam ser definidas/instaladas ao mesmo tempo.
-Isto é possível por usar ou [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/).
+Isto é possível por usar ou [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
 Por favor, consulta a [documentação sobre Assets](structure-assets.md) para mais detalhes.
 
 Você pode querer gerenciar assets através de clientes nativos do Bower ou NPM, pode querer utilizar CDNs ou até evitar completamente a instalação de recursos estáticos.
@@ -145,7 +145,7 @@ Verificando a Instalação <span id="verifying-installation"></span>
 ------------------------
 
 Após a instalação ser concluída, você pode tanto configurar seu servidor web (veja na próxima seção) como usar o
-[servidor web embutido do PHP](https://secure.php.net/manual/pt_BR/features.commandline.webserver.php) executando o seguinte comando de console no diretório `web`:
+[servidor web embutido do PHP](https://www.php.net/manual/pt_BR/features.commandline.webserver.php) executando o seguinte comando de console no diretório `web`:
 
 ```bash
 php yii serve
@@ -177,7 +177,7 @@ Você deverá ver a página de parabenização acima em seu navegador. Se não a
   ```
 
 Você deve configurar sua instalação PHP de forma a atingir os requisitos mínimos do Yii. A versão mínima do PHP que você deve ter é a 5.4. Mas o ideal seria utilizar a versão mais recente, PHP 7.
-Se sua aplicação precisa de um banco de dados, você também deve instalar a [Extensão PDO PHP](https://secure.php.net/manual/pt_BR/pdo.installation.php) e o driver de banco de dados correspondente (tal como `pdo_mysql` para bancos de dados MySQL).
+Se sua aplicação precisa de um banco de dados, você também deve instalar a [Extensão PDO PHP](https://www.php.net/manual/pt_BR/pdo.installation.php) e o driver de banco de dados correspondente (tal como `pdo_mysql` para bancos de dados MySQL).
 
 
 Configurando Servidores Web <span id="configuring-web-servers"></span>
@@ -186,13 +186,13 @@ Configurando Servidores Web <span id="configuring-web-servers"></span>
 > Info: Você pode pular essa subseção por enquanto se estiver fazendo somente um test drive do Yii sem a intenção de publicá-lo em um servidor de produção.
 
 A aplicação instalada de acordo com as instruções acima deve funcionar imediatamente
-com um [Servidor HTTP Apache](http://httpd.apache.org/) ou um [Servidor HTTP Nginx](http://nginx.org/),
+com um [Servidor HTTP Apache](https://httpd.apache.org/) ou um [Servidor HTTP Nginx](https://nginx.org/),
 no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior. O Yii 2.0 também é compatível
-com o [HHVM](http://hhvm.com/) do Facebook. No entanto, existem alguns casos extremos em que o HHVM se comporta diferentemente do PHP nativo, então você terá que ter um cuidado extra quando usar o HHVM.
+com o [HHVM](https://hhvm.com/) do Facebook. No entanto, existem alguns casos extremos em que o HHVM se comporta diferentemente do PHP nativo, então você terá que ter um cuidado extra quando usar o HHVM.
 
 Em um servidor de produção, você pode querer configurar o seu servidor Web de
-modo que a aplicação possa ser acessada pela URL `http://www.example.com/index.php`
-ao invés de `http://www.example.com/basico/web/index.php`. Tal configuração requer que
+modo que a aplicação possa ser acessada pela URL `https://www.example.com/index.php`
+ao invés de `https://www.example.com/basico/web/index.php`. Tal configuração requer que
 você aponte a raiz dos documentos de seu servidor Web para o diretório `basico/web`.
 Você também pode querer ocultar o `index.php` da URL, conforme descrito na seção
 [Roteamento e Criação de URL](runtime-routing.md). Nessa sub-seção, você
@@ -242,7 +242,7 @@ DocumentRoot "caminho/para/basico/web"
 
 ### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
-Para usar o [Nginx](http://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://secure.php.net/install.fpm). Use a seguinte configuração do Nginx,
+Para usar o [Nginx](https://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/manual/pt_BR/install.fpm.php). Use a seguinte configuração do Nginx,
 substituindo `caminho/para/basico/web` com o caminho real para `basico/web` e `mysite.test` com o nome de host real a servir.
 
 ```nginx

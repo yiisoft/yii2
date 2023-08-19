@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -13,8 +13,8 @@ use yii\base\BaseObject;
 /**
  * CompositeUrlRule is the base class for URL rule classes that consist of multiple simpler rules.
  *
- * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
- * if rule does not provide info about create status. This property is read-only.
+ * @property-read int|null $createUrlStatus Status of the URL creation after the last [[createUrl()]] call.
+ * `null` if rule does not provide info about create status.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -130,10 +130,10 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      * For multiple rules statuses will be combined by bitwise `or` operator
      * (e.g. `UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_PARAMS_MISMATCH`).
      *
-     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * @return int|null Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
-     * @see $createStatus
-     * @see https://secure.php.net/manual/en/language.operators.bitwise.php
+     * @see createStatus
+     * @see https://www.php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */
     public function getCreateUrlStatus()

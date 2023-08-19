@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -45,7 +45,7 @@ class BaseMarkdown
     /**
      * @var string the markdown flavor to use when none is specified explicitly.
      * Defaults to `original`.
-     * @see $flavors
+     * @see flavors
      */
     public static $defaultFlavor = 'original';
 
@@ -54,7 +54,7 @@ class BaseMarkdown
      * Converts markdown into HTML.
      *
      * @param string $markdown the markdown text to parse
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * @param string|null $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
      * @return string the parsed HTML output
      * @throws InvalidArgumentException when an undefined flavor is given.
@@ -72,7 +72,7 @@ class BaseMarkdown
      * This can be useful for parsing small comments or description lines.
      *
      * @param string $markdown the markdown text to parse
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * @param string|null $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
      * @return string the parsed HTML output
      * @throws InvalidArgumentException when an undefined flavor is given.
@@ -85,7 +85,7 @@ class BaseMarkdown
     }
 
     /**
-     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * @param string|null $flavor the markdown flavor to use. See [[$flavors]] for available values.
      * Defaults to [[$defaultFlavor]], if not set.
      * @return \cebe\markdown\Parser
      * @throws InvalidArgumentException when an undefined flavor is given.

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -102,7 +102,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $languageParam = '_lang';
     /**
-     * @var array list of supported response formats. The keys are MIME types (e.g. `application/json`)
+     * @var array|null list of supported response formats. The keys are MIME types (e.g. `application/json`)
      * while the values are the corresponding formats (e.g. `html`, `json`) which must be supported
      * as declared in [[\yii\web\Response::$formatters]].
      *
@@ -110,7 +110,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $formats;
     /**
-     * @var array a list of supported languages. The array keys are the supported language variants (e.g. `en-GB`, `en-US`),
+     * @var array|null a list of supported languages. The array keys are the supported language variants (e.g. `en-GB`, `en-US`),
      * while the array values are the corresponding language codes (e.g. `en`, `de`) recognized by the application.
      *
      * Array keys are not always required. When an array value does not have a key, the matching of the requested language
@@ -124,7 +124,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response|null the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
 

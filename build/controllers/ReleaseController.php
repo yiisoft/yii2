@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
@@ -15,7 +15,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * ReleaseController is there to help preparing releases.
+ * ReleaseController is there to help to prepare releases.
  *
  * Get a version overview:
  *
@@ -53,7 +53,7 @@ class ReleaseController extends Controller
      */
     public $dryRun = false;
     /**
-     * @var bool whether to fetch latest tags.
+     * @var bool whether to fetch the latest tags.
      */
     public $update = false;
     /**
@@ -206,7 +206,7 @@ class ReleaseController extends Controller
                 $newVersions[$k] = $this->version;
             }
         } else {
-            // otherwise get next patch or minor
+            // otherwise, get next patch or minor
             $newVersions = $this->getNextVersions($versions, self::PATCH);
         }
 
@@ -218,10 +218,10 @@ class ReleaseController extends Controller
         $gitDir = reset($what) === 'framework' ? 'framework/' : '';
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. {$gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
-        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. {$gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.com/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
@@ -629,7 +629,7 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion["app-$name"]} and {$nextVersion2["app-$name"]}: https://github.com/yiisoft/yii2-app-$name/milestones\n");
-        $this->stdout("- Create Application packages and upload them to framework releast at github:  ./build/build release/package app-$name\n");
+        $this->stdout("- Create Application packages and upload them to framework release at github:  ./build/build release/package app-$name\n");
 
         $this->stdout("\n");
     }
@@ -803,7 +803,7 @@ class ReleaseController extends Controller
         try {
             chdir($path);
         } catch (\yii\base\ErrorException $e) {
-            throw new Exception('Failed to getch git tags in ' . $path . ': ' . $e->getMessage());
+            throw new Exception('Failed to fetch git tags in ' . $path . ': ' . $e->getMessage());
         }
         exec('git fetch --tags', $output, $ret);
         if ($ret != 0) {
@@ -990,7 +990,7 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
+            '/function getVersion\(\)\R {4}\{\R {8}return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
             $frameworkPath . '/BaseYii.php');
     }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -17,7 +17,11 @@ class FakePhp7Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionAksi1(int $foo, float $bar = null)
+    public function actionAksi1(int $foo, float $bar = null, bool $true, bool $false)
+    {
+    }
+
+    public function actionStringy(string $foo = null)
     {
     }
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -26,11 +26,11 @@ use yii\helpers\Html;
 class LinkSorter extends Widget
 {
     /**
-     * @var Sort the sort definition
+     * @var Sort|null the sort definition
      */
     public $sort;
     /**
-     * @var array list of the attributes that support sorting. If not set, it will be determined
+     * @var array|null list of the attributes that support sorting. If not set, it will be determined
      * using [[Sort::attributes]].
      */
     public $attributes;

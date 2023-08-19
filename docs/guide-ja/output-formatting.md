@@ -45,7 +45,7 @@ echo Yii::$app->formatter->format(0.125, ['percent', 2]);
 > フォーマッタは適切なツールではありません。
 > 日付と数値についてユーザ入力を変換するためには、それぞれ、[[yii\validators\DateValidator]] と [[yii\validators\NumberValidator]]
 > を使うことが出来ます。機械が読み取れる日付と時刻のフォーマットの単純な相互変換には、PHP の 
-> [date()](https://secure.php.net/manual/ja/function.date.php) 関数で十分です。
+> [date()](https://www.php.net/manual/ja/function.date.php) 関数で十分です。
 
 ## フォーマッタを構成する <span id="configuring-formater"></span>
 
@@ -75,7 +75,7 @@ return [
 - [[yii\i18n\Formatter::asDate()|date]] - 値は日付としてフォーマットされます。例えば `January 01, 2014`。
 - [[yii\i18n\Formatter::asTime()|time]] - 値は時刻としてフォーマットされます。例えば `14:23`。
 - [[yii\i18n\Formatter::asDatetime()|datetime]] - 値は日付および時刻としてフォーマットされます。例えば `January 01, 2014 14:23`。
-- [[yii\i18n\Formatter::asTimestamp()|timestamp]] - 値は [unix タイムスタンプ](http://en.wikipedia.org/wiki/Unix_time) としてフォーマットされます。例えば `1412609982`。
+- [[yii\i18n\Formatter::asTimestamp()|timestamp]] - 値は [unix タイムスタンプ](https://ja.wikipedia.org/wiki/UNIX%E6%99%82%E9%96%93) としてフォーマットされます。例えば `1412609982`。
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]] - 値は、その日時と現在との間隔として、人間に分かりやすい言葉でフォーマットされます。
   例えば `1 hour ago`。
 - [[yii\i18n\Formatter::asDuration()|duration]] - 値は継続時間として、人間に分かりやすい言葉でフォーマットされます。例えば `1 day, 2 minutes`。
@@ -85,8 +85,8 @@ return [
 [[yii\i18n\Formatter::$timeFormat|$timeFormat]]、[[yii\i18n\Formatter::$datetimeFormat|$datetimeFormat]] を構成することで、
 グローバルにカスタマイズすることが出来ます。
 
-日付と時刻のフォーマットは、[ICU 構文](http://userguide.icu-project.org/formatparse/datetime) によって指定することが出来ます。
-また、ICU 構文と区別するために `php:` という接頭辞を付けて、[PHP の date() 構文](https://secure.php.net/manual/ja/function.date.php)
+日付と時刻のフォーマットは、[ICU 構文](https://unicode-org.github.io/icu/userguide/format_parse/datetime/) によって指定することが出来ます。
+また、ICU 構文と区別するために `php:` という接頭辞を付けて、[PHP の date() 構文](https://www.php.net/manual/ja/function.date.php)
 を使うことも出来ます。例えば、
 
 ```php
@@ -167,7 +167,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > Note: タイム・ゾーンは世界中のさまざまな政府によって作られる規則に従うものであり、頻繁に変更されるものであるため、
 > あなたのシステムにインストールされたタイム・ゾーンのデータベースが最新の情報を持っていない可能性が大いにあります。
 > タイム・ゾーン・データベースの更新についての詳細は、
-> [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) で参照することが出来ます。
+> [ICU マニュアル](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) で参照することが出来ます。
 > [PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) も参照してください。
 
 
@@ -191,7 +191,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 を使って調整することが出来ます。
 
 更に高度な設定のためには、[[yii\i18n\Formatter::numberFormatterOptions]] と [[yii\i18n\Formatter::numberFormatterTextOptions]]
-を使って、内部的に使用される [NumberFormatter クラス](https://secure.php.net/manual/ja/class.numberformatter.php) を構成することが出来ます。
+を使って、内部的に使用される [NumberFormatter クラス](https://www.php.net/manual/ja/class.numberformatter.php) を構成することが出来ます。
 例えば、小数部の最大桁数と最小桁数を調整するためには、次のように [[yii\i18n\Formatter::numberFormatterOptions]]
 プロパティを構成します。
 
@@ -255,7 +255,7 @@ echo Yii::$app->formatter->asDate('2014-01-01'); // 出力: 2014/01/01
 デフォルトでは、現在のアクティブな [[yii\i18n\Formatter::locale|locale]] は [[yii\base\Application::language]] の値によって決定されます。
 これは [[yii\i18n\Formatter::locale]] プロパティを明示的に指定することによってオーバーライドすることが出来ます。
 
-> Note: Yii のフォーマッタは、[PHP intl 拡張](https://secure.php.net/manual/ja/book.intl.php) に依存してデータのフォーマットの
+> Note: Yii のフォーマッタは、[PHP intl 拡張](https://www.php.net/manual/ja/book.intl.php) に依存してデータのフォーマットの
 > ローカライズをサポートしています。PHP にコンパイルされた ICU ライブラリのバージョンによってフォーマットの結果が異なる場合がありますので、
 > あなたの全ての環境で、同じ ICU バージョンを使うことが推奨されます。
 > 詳細については、[PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) を参照してください。

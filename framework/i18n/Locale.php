@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -14,16 +14,16 @@ use yii\base\InvalidConfigException;
 /**
  * Locale provides various locale information via convenient methods.
  *
- * The class requires [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) to be installed.
+ * The class requires [PHP intl extension](https://www.php.net/manual/en/book.intl.php) to be installed.
  *
- * @property string $currencySymbol This property is read-only.
+ * @property-read string $currencySymbol
  *
  * @since 2.0.14
  */
 class Locale extends Component
 {
     /**
-     * @var string the locale ID.
+     * @var string|null the locale ID.
      * If not set, [[\yii\base\Application::language]] will be used.
      */
     public $locale;
@@ -46,7 +46,7 @@ class Locale extends Component
     /**
      * Returns a currency symbol
      *
-     * @param string $currencyCode the 3-letter ISO 4217 currency code to get symbol for. If null,
+     * @param string|null $currencyCode the 3-letter ISO 4217 currency code to get symbol for. If null,
      * method will attempt using currency code from [[locale]].
      * @return string
      */

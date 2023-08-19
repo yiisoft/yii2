@@ -1,7 +1,7 @@
 Vues
 =====
 
-Les vues font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur).
+Les vues font partie du modèle d'architecture [MVC](https://fr.wikipedia.org/wiki/Mod%C3%A8le-vue-contr%C3%B4leur) (Modèle Vue Contrôleur).
 Elles sont chargées de présenter les données à l'utilisateur final. Dans une application Web, les vues sont ordinairement créées en termes de *modèles de vue* qui sont des script PHP contenant principalement du code HTML et du code PHP relatif à la présentation. 
 
 Elles sont gérées par le [[yii\web\View|view]] [composant application](structure-application-components.md) qui fournit des méthodes d'usage courant pour faciliter la composition des vues et leur rendu. Par souci de simplicité, nous appellerons *vues* les modèles de vue et les fichiers de modèle de vue.
@@ -42,7 +42,7 @@ En plus de `$this`, il peut aussi y avoir d'autres variables prédéfinies dans 
 
 ### Sécurité <span id="security"></span>
 
-Lors de la création de vues qui génèrent des pages HTML, il est important que vous encodiez et/ou filtriez les données en provenance de l'utilisateur final avant des les présenter. Autrement, votre application serait sujette aux [attaques par injection de scripts (*cross-site scripting*)](http://en.wikipedia.org/wiki/Cross-site_scripting).
+Lors de la création de vues qui génèrent des pages HTML, il est important que vous encodiez et/ou filtriez les données en provenance de l'utilisateur final avant des les présenter. Autrement, votre application serait sujette aux [attaques par injection de scripts (*cross-site scripting*)](https://fr.wikipedia.org/wiki/Cross-site_scripting).
 
 Pour afficher du texte simple, commencez par l'encoder en appelant la méthode [[yii\helpers\Html::encode()]]. Par exemple, le code suivant encode le nom d'utilisateur (*username*) avant de l'afficher :
 
@@ -435,7 +435,7 @@ Les composants View fournissent les fonctionnalités utiles suivantes relatives 
 * [mise en cache de fragments](caching-fragment.md): vous permet de mettre en cache un fragment de votre page Web.
 * [gestion des scripts client](output-client-scripts.md): prend en charge l'enregistrement et le rendu de code CSS et JavaScript. 
 * [gestion de paquets de ressources](structure-assets.md): prend en charge l'enregistrement et le rendu de [paquets de ressources](structure-assets.md).
-* [moteurs de modèle alternatif](tutorial-template-engines.md): vous permet d'utiliser d'autres moteur de modèles tels que [Twig](http://twig.sensiolabs.org/) et [Smarty](http://www.smarty.net/).
+* [moteurs de modèle alternatif](tutorial-template-engines.md): vous permet d'utiliser d'autres moteur de modèles tels que [Twig](https://twig.symfony.com/) et [Smarty](https://www.smarty.net/).
 
 Vous pouvez aussi utiliser les fonctionnalités suivantes qui, bien que mineures, sont néanmoins utiles, pour développer vos pages Web. 
 
@@ -497,14 +497,14 @@ $this->registerLinkTag([
     'title' => 'Live News for Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Le code suivant produit le résultat suivant :
 
 ```html
-<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Live News for Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Comme avec  [[yii\web\View::registerMetaTag()|registerMetaTag()]], vous pouvez spécifier un clé lors de l'appel de [[yii\web\View::registerLinkTag()|registerLinkTag()]] pour éviter de générer des liens identiques.

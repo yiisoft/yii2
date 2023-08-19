@@ -1,7 +1,7 @@
 データベース・アクセス・オブジェクト
 ====================================
 
-[PDO](https://secure.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベース・アクセス・オブジェクト) は、
+[PDO](https://www.php.net/manual/ja/book.pdo.php) の上に構築された Yii DAO (データベース・アクセス・オブジェクト) は、
 リレーショナル・データベースにアクセスするためのオブジェクト指向 API を提供するものです。
 これは、データベースにアクセスする他のもっと高度な方法、例えば [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) の基礎でもあります。
 
@@ -11,12 +11,12 @@ Yii DAO を使うときは、主として素の SQL と PHP 配列を扱う必�
 
 Yii 2.0 では、DAO は下記の DBMS のサポートを内蔵しています。
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): バージョン 8.4 以上。
-- [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): バージョン 8.4 以上。
+- [CUBRID](https://www.cubrid.org/): バージョン 9.3 以上。
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
 > Note: PHP 7 用の pdo_oci の新しいバージョンは、現在、ソース・コードとしてのみ存在します。
@@ -62,7 +62,7 @@ return [
 
 DB 接続を構成するときは、つねに [[yii\db\Connection::dsn|dsn]] プロパティによってデータ・ソース名 (DSN) を指定しなければなりません。
 DSN の形式はデータベースによってさまざまに異なります。
-詳細は [PHP マニュアル](https://secure.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。下記にいくつかの例を挙げます。
+詳細は [PHP マニュアル](https://www.php.net/manual/ja/function.PDO-construct.php) を参照して下さい。下記にいくつかの例を挙げます。
 
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
 * SQLite: `sqlite:/path/to/database/file`
@@ -106,6 +106,18 @@ ODBC 経由でデータベースに接続しようとする場合は、[[yii\db\
 >     }
 > ]
 > ```
+
+MS SQL Server でバイナリ・データを正しく処理するためには追加の接続オプションが必要になります。
+
+```php
+'db' => [
+ 'class' => 'yii\db\Connection',
+    'dsn' => 'sqlsrv:Server=localhost;Database=mydatabase',
+    'attributes' => [
+        \PDO::SQLSRV_ATTR_ENCODING => \PDO::SQLSRV_ENCODING_SYSTEM
+    ]
+],
+```
 
 
 ## SQL クエリを実行する <span id="executing-sql-queries"></span>
@@ -178,7 +190,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-パラメータ・バインディングは [プリペアド・ステートメント](https://secure.php.net/manual/ja/mysqli.quickstart.prepared-statements.php) によって実装されています。
+パラメータ・バインディングは [プリペアド・ステートメント](https://www.php.net/manual/ja/mysqli.quickstart.prepared-statements.php) によって実装されています。
 パラメータ・バインディングには、SQL インジェクション攻撃を防止する以外にも、SQL 文を一度だけ準備して異なるパラメータで複数回実行することにより、
 パフォーマンスを向上させる効果もあります。例えば、
 
@@ -263,7 +275,7 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
 ```php
 Yii::$app->db->createCommand()->upsert('pages', [
     'name' => 'フロント・ページ',
-    'url' => 'http://example.com/', // url はユニーク
+    'url' => 'https://example.com/', // url はユニーク
     'visits' => 0,
 ], [
     'visits' => new \yii\db\Expression('visits + 1'),
@@ -372,7 +384,7 @@ try {
 そして、`throw $e` が、まるでそれをキャッチしなかったかのように、例外を再スローしますので、通常のエラー処理プロセスがその例外の面倒を見ることになります。
 
 > Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つのcatch ブロックを持っています。
-> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://secure.php.net/manual/ja/class.throwable.php) を実装しています。
+> `\Exception` は PHP 7.0 以降では、[`\Throwable` インタフェイス](https://www.php.net/manual/ja/class.throwable.php) を実装しています。
 > 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 
@@ -415,7 +427,7 @@ DBMS によっては、接続全体に対してのみ分離レベルの設定を
 すなわち、トランザクションを開始するときに、分離レベルを直接に指定することは出来ません。
 この場合、トランザクションを開始した後に [[yii\db\Transaction::setIsolationLevel()]] を呼び出す必要があります。
 
-[分離レベル]: http://ja.wikipedia.org/wiki/%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB
+[分離レベル]: https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B6%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E5%88%86%E9%9B%A2%E3%83%AC%E3%83%99%E3%83%AB
 
 
 ### トランザクションを入れ子にする <span id="nesting-transactions"></span>
@@ -466,7 +478,7 @@ try {
 ## レプリケーションと読み書きの分離 <span id="read-write-splitting"></span>
 
 多くの DBMS は、データベースの可用性とサーバのレスポンス・タイムを向上させるために、
-[データベース・レプリケーション](http://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3#.E3.83.87.E3.83.BC.E3.82.BF.E3.83.99.E3.83.BC.E3.82.B9) をサポートしています。
+[データベース・レプリケーション](https://ja.wikipedia.org/wiki/%E3%83%AC%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3#.E3.83.87.E3.83.BC.E3.82.BF.E3.83.99.E3.83.BC.E3.82.B9) をサポートしています。
 データベース・レプリケーションによって、データはいわゆる *マスタ・サーバ* から *スレーブ・サーバ* に複製されます。
 データの書き込みと更新はすべてマスタ・サーバ上で実行されなければなりませんが、データの読み出しはスレーブ・サーバ上でも可能です。
 

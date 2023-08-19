@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\i18n;
@@ -125,7 +125,6 @@ class FormatterNumberTest extends TestCase
         $this->formatter->numberFormatterTextOptions = [
             \NumberFormatter::POSITIVE_PREFIX => '+',
         ];
-
         $this->assertSame('+2', $this->formatter->asInteger(2));
         $this->assertSame('+10', $this->formatter->asInteger(10));
         $this->assertSame('+12', $this->formatter->asInteger(12));
@@ -141,19 +140,15 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('+123,456', $this->formatter->asInteger(123456.789));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testAsIntegerException()
     {
+        $this->expectException('\yii\base\InvalidParamException');
         $this->formatter->asInteger('a');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     */
     public function testAsIntegerException2()
     {
+        $this->expectException('\yii\base\InvalidParamException');
         $this->formatter->asInteger('-123abc');
     }
 
@@ -270,6 +265,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('87,654,321,098,765,436.00', $this->formatter->asDecimal('87654321098765436'));
         $this->assertSame('95,836,208,451,783,051.86', $this->formatter->asDecimal('95836208451783051.864'));
         $this->assertSame('95,836,208,451,783,052', $this->formatter->asDecimal('95836208451783051.864', 0));
+        $this->assertSame('95,836,208,451,783,051.9', $this->formatter->asDecimal('95836208451783051.864', 1));
 
         $this->formatter->thousandSeparator = ' ';
         $this->formatter->decimalSeparator = ',';
@@ -412,13 +408,19 @@ class FormatterNumberTest extends TestCase
         $this->formatter->thousandSeparator = ' ';
         $this->formatter->decimalSeparator = ',';
         $this->assertSame('USD 95 836 208 451 783 051,86', $this->formatter->asCurrency('95836208451783051.864', 'USD'));
+
+        // different currency decimal separator
+        $this->formatter->locale = 'ru-RU';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
+        $this->formatter->currencyDecimalSeparator = ',';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123,00\xc2\xa0₽", "123,00\xc2\xa0руб."]);
+        $this->formatter->currencyDecimalSeparator = '.';
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ["123.00\xc2\xa0₽", "123.00\xc2\xa0руб."]);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testAsCurrencyStringFallbackException()
     {
+        $this->expectException('\yii\base\InvalidConfigException');
         $this->formatter->asCurrency('87654321098765436');
     }
 
@@ -547,6 +549,13 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('8.765432E+16', $this->formatter->asScientific('87654321098765436'));
     }
 
+    public function testAsSpellout()
+    {
+        $this->expectException('\yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Format as Spellout is only supported when PHP intl extension is installed.');
+        $this->formatter->asSpellout(123);
+    }
+
     public function testIntlAsSpellout()
     {
         $this->assertSame('one hundred twenty-three', $this->formatter->asSpellout(123));
@@ -603,6 +612,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('999 B', $this->formatter->asShortSize(999));
         $this->assertSame('999 B', $this->formatter->asShortSize('999'));
         $this->assertSame('1.05 MB', $this->formatter->asShortSize(1024 * 1024));
+        $this->assertSame('1.07 GB', $this->formatter->asShortSize(1024 * 1024 * 1024));
+        $this->assertSame('1.1 TB', $this->formatter->asShortSize(1024 * 1024 * 1024 * 1024));
         $this->assertSame('1 kB', $this->formatter->asShortSize(1000));
         $this->assertSame('1.02 kB', $this->formatter->asShortSize(1023));
         $this->assertNotEquals('3 PB', $this->formatter->asShortSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
@@ -619,6 +630,7 @@ class FormatterNumberTest extends TestCase
         // https://github.com/yiisoft/yii2/issues/4960
         $this->assertSame('1023 B', $this->formatter->asShortSize(1023));
         $this->assertSame('5 GiB', $this->formatter->asShortSize(5 * 1024 * 1024 * 1024));
+        $this->assertSame('6 TiB', $this->formatter->asShortSize(6 * 1024 * 1024 * 1024 * 1024));
         $this->assertNotEquals('5 PiB', $this->formatter->asShortSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
         //$this->assertSame("1 YiB", $this->formatter->asShortSize(pow(2, 80)));
         $this->assertSame('2 GiB', $this->formatter->asShortSize(2147483647)); // round 1.999 up to 2
@@ -640,6 +652,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('999 B', $this->formatter->asShortSize(999));
         $this->assertSame('999 B', $this->formatter->asShortSize('999'));
         $this->assertSame('1.05 MB', $this->formatter->asShortSize(1024 * 1024));
+        $this->assertSame('1.07 GB', $this->formatter->asShortSize(1024 * 1024 * 1024));
+        $this->assertSame('1.10 TB', $this->formatter->asShortSize(1024 * 1024 * 1024 * 1024));
         $this->assertSame('1.0486 MB', $this->formatter->asShortSize(1024 * 1024, 4));
         $this->assertSame('1.00 kB', $this->formatter->asShortSize(1000));
         $this->assertSame('1.02 kB', $this->formatter->asShortSize(1023));
@@ -657,6 +671,7 @@ class FormatterNumberTest extends TestCase
         // https://github.com/yiisoft/yii2/issues/4960
         $this->assertSame('1023 B', $this->formatter->asShortSize(1023));
         $this->assertSame('5.00 GiB', $this->formatter->asShortSize(5 * 1024 * 1024 * 1024));
+        $this->assertSame('6.00 TiB', $this->formatter->asShortSize(6 * 1024 * 1024 * 1024 * 1024));
         $this->assertNotEquals('5.00 PiB', $this->formatter->asShortSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
         //$this->assertSame("1 YiB", $this->formatter->asShortSize(pow(2, 80)));
         $this->assertSame('2.00 GiB', $this->formatter->asShortSize(2147483647)); // round 1.999 up to 2
@@ -685,6 +700,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1 kilobyte', $this->formatter->asSize(1000));
         $this->assertSame('1.02 kilobytes', $this->formatter->asSize(1023));
         $this->assertSame('3 gigabytes', $this->formatter->asSize(3 * 1000 * 1000 * 1000));
+        $this->assertSame('4 terabytes', $this->formatter->asSize(4 * 1000 * 1000 * 1000 * 1000));
         $this->assertNotEquals('3 PB', $this->formatter->asSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // tests for base 1024
         $this->formatter->sizeFormatBase = 1024;
@@ -692,6 +708,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1 mebibyte', $this->formatter->asSize(1024 * 1024));
         $this->assertSame('1023 bytes', $this->formatter->asSize(1023));
         $this->assertSame('5 gibibytes', $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        $this->assertSame('6 tebibytes', $this->formatter->asSize(6 * 1024 * 1024 * 1024 * 1024));
         $this->assertNotEquals('5 pibibytes', $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
         $this->assertSame('2 gibibytes', $this->formatter->asSize(2147483647)); // round 1.999 up to 2
         $this->formatter->decimalSeparator = ',';
@@ -742,6 +759,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1.00 kilobyte', $this->formatter->asSize(1000));
         $this->assertSame('1.02 kilobytes', $this->formatter->asSize(1023));
         $this->assertSame('3.00 gigabytes', $this->formatter->asSize(3 * 1000 * 1000 * 1000));
+        $this->assertSame('4.00 terabytes', $this->formatter->asSize(4 * 1000 * 1000 * 1000 * 1000));
         $this->assertNotEquals('3 PB', $this->formatter->asSize(3 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000)); // this is 3 EB not 3 PB
         // tests for base 1024
         $this->formatter->sizeFormatBase = 1024;
@@ -749,6 +767,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1.00 mebibyte', $this->formatter->asSize(1024 * 1024));
         $this->assertSame('1023 bytes', $this->formatter->asSize(1023));
         $this->assertSame('5.00 gibibytes', $this->formatter->asSize(5 * 1024 * 1024 * 1024));
+        $this->assertSame('6.00 tebibytes', $this->formatter->asSize(6 * 1024 * 1024 * 1024 * 1024));
         $this->assertNotEquals('5.00 pibibytes', $this->formatter->asSize(5 * 1024 * 1024 * 1024 * 1024 * 1024 * 1024)); // this is 5 EiB not 5 PiB
         $this->assertSame('2.00 gibibytes', $this->formatter->asSize(2147483647)); // round 1.999 up to 2
         $this->formatter->decimalSeparator = ',';
@@ -803,5 +822,118 @@ class FormatterNumberTest extends TestCase
         $this->formatter->thousandSeparator = '.';
         $this->assertSame('1023 bytes', $this->formatter->asSize(1023));
         $this->assertSame('1023 B', $this->formatter->asShortSize(1023));
+    }
+
+    public function providerForDirectWrongTypeAttributes()
+    {
+        return [
+            'not-int key for int options' => [
+                ['a' => 1],
+                [],
+                'The $options array keys must be integers recognizable by NumberFormatter::setAttribute(). "string" provided instead.'
+            ],
+            'string value for int options' => [
+                [1 => 'a'],
+                [],
+                'The $options array values must be integers. Did you mean to use $textOptions?'
+            ],
+            'non-string-int value for int options' => [
+                [1 => 1.1],
+                [],
+                'The $options array values must be integers. "double" provided instead.'
+            ],
+            'not-int key for text options' => [
+                [],
+                ['a' => 1],
+                'The $textOptions array keys must be integers recognizable by NumberFormatter::setTextAttribute(). "string" provided instead.'
+            ],
+            'int value for text options' => [
+                [],
+                [1 => 1],
+                'The $textOptions array values must be strings. Did you mean to use $options?'
+            ],
+            'non-string-int value for text options' => [
+                [],
+                [1 => 1.1],
+                'The $textOptions array values must be strings. "double" provided instead.'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForDirectWrongTypeAttributes
+     */
+    public function testIntlAsIntegerDirectWrongTypeAttributes($intOptions, $textOptions, $message)
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage($message);
+        $this->formatter->asInteger(1, $intOptions, $textOptions);
+    }
+
+    public function providerForConfiguredWrongTypeAttributes()
+    {
+        return [
+            'not-int key for int options' => [
+                ['a' => 1],
+                [],
+                [],
+                'The numberFormatterOptions array keys must be integers recognizable by NumberFormatter::setAttribute(). "string" provided instead.'
+            ],
+            'string value for int options' => [
+                [1 => 'a'],
+                [],
+                [],
+                'The numberFormatterOptions array values must be integers. Did you mean to use numberFormatterTextOptions?'
+            ],
+            'non-string-int value for int options' => [
+                [1 => 1.1],
+                [],
+                [],
+                'The numberFormatterOptions array values must be integers. "double" provided instead.'
+            ],
+            'not-int key for text options' => [
+                [],
+                ['a' => 1],
+                [],
+                'The numberFormatterTextOptions array keys must be integers recognizable by NumberFormatter::setTextAttribute(). "string" provided instead.'
+            ],
+            'int value for text options' => [
+                [],
+                [1 => 1],
+                [],
+                'The numberFormatterTextOptions array values must be strings. Did you mean to use numberFormatterOptions?'
+            ],
+            'non-string-int value for text options' => [
+                [],
+                [1 => 1.1],
+                [],
+                'The numberFormatterTextOptions array values must be strings. "double" provided instead.'
+            ],
+            'non-int key for symbol' => [
+                [],
+                [],
+                ['a' => 2],
+                'The numberFormatterSymbols array keys must be integers recognizable by NumberFormatter::setSymbol(). "string" provided instead.'
+            ],
+            'non-string value for symbol' => [
+                [],
+                [],
+                [1 => 3],
+                'The numberFormatterSymbols array values must be strings. "integer" provided instead.'
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForConfiguredWrongTypeAttributes
+     */
+    public function testIntlAsIntegerConfiguredWrongTypeAttributes($intOptions, $textOptions, $symbols, $message)
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage($message);
+        $this->formatter->numberFormatterTextOptions = $textOptions;
+        $this->formatter->numberFormatterOptions = $intOptions;
+        $this->formatter->numberFormatterSymbols = $symbols;
+        $this->formatter->asInteger(1);
     }
 }

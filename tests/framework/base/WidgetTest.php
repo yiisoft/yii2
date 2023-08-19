@@ -1,14 +1,16 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\base;
 
+use Yii;
 use yii\base\Widget;
 use yii\base\WidgetEvent;
+use yii\di\Container;
 use yiiunit\TestCase;
 
 /**
@@ -40,6 +42,30 @@ class WidgetTest extends TestCase
         $widget = TestWidget::begin(['id' => 'test']);
         $this->assertTrue($widget instanceof TestWidget);
         TestWidget::end();
+
+        $output = ob_get_clean();
+
+        $this->assertSame('<run-test>', $output);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/19030
+     */
+    public function testDependencyInjection()
+    {
+        Yii::$container = new Container();
+        Yii::$container->setDefinitions([
+            TestWidgetB::className() => [
+                'class' => TestWidget::className()
+            ]
+        ]);
+
+        ob_start();
+        ob_implicit_flush(false);
+
+        $widget = TestWidgetB::begin(['id' => 'test']);
+        $this->assertTrue($widget instanceof TestWidget);
+        TestWidgetB::end();
 
         $output = ob_get_clean();
 

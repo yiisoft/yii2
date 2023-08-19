@@ -20,7 +20,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -57,7 +57,7 @@ Vous pouvez personnaliser ce comportement en configurant la propriété [[yii\fi
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('You are not allowed to access this page');
@@ -99,7 +99,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -125,9 +125,9 @@ class SiteController extends Controller
 
 ## Contrôle d'accès basé sur les rôles <span id="rbac"></span>
 
-Le contrôle d'accès basé sur les rôles (Role-Based Access Control – RBAC) fournit un contrôle d'accès centralisé simple mais puissant. Reportez-vous à [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) pour des détails comparatifs entre le contrôle d'accès basé sur les rôles et d'autres schéma de contrôle d'accès plus traditionnels.
+Le contrôle d'accès basé sur les rôles (Role-Based Access Control – RBAC) fournit un contrôle d'accès centralisé simple mais puissant. Reportez-vous à [Wikipedia](https://fr.wikipedia.org/wiki/Contr%C3%B4le_d%27acc%C3%A8s_%C3%A0_base_de_r%C3%B4les) pour des détails comparatifs entre le contrôle d'accès basé sur les rôles et d'autres schéma de contrôle d'accès plus traditionnels.
 
-Yii met en œuvre un contrôle d'accès basé sur les rôles général hiérarchisé, qui suit le  [modèle NIST RBAC](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf). Il fournit la fonctionnalité de contrôle d'accès basé sur les rôles via le [composant d'application](structure-application-components.md)[[yii\RBAC\ManagerInterface|authManager]].
+Yii met en œuvre un contrôle d'accès basé sur les rôles général hiérarchisé, qui suit le  [modèle NIST RBAC](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf). Il fournit la fonctionnalité de contrôle d'accès basé sur les rôles via le [composant d'application](structure-application-components.md)[[yii\RBAC\ManagerInterface|authManager]].
 
 L'utilisation du contrôle d'accès basé sur les rôles implique deux partie de travail. La première partie est de construire les données d'autorisation du contrôle d'accès basé sur les rôles, et la seconde partie est d'utiliser les données d'autorisation pour effectuer les vérifications d'autorisation d'accès là où elles sont nécessaires.
 
@@ -390,7 +390,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

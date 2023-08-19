@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\validators;
@@ -33,6 +33,7 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('Abc.123@example.com'));
         $this->assertTrue($validator->validate('user+mailbox/department=shipping@example.com'));
         $this->assertTrue($validator->validate('!#$%&\'*+-/=?^_`.{|}~@example.com'));
+        $this->assertTrue($validator->validate('firstName.x.lastName.-nd@example.com'));
         $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
@@ -50,6 +51,7 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertTrue($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
         $this->assertTrue($validator->validate('<mail@cebe.cc>'));
+        $this->assertTrue($validator->validate('"FirstName LastName" <firstName.x.lastName.-nd@example.com>'));
         $this->assertFalse($validator->validate('info@örtliches.de'));
         $this->assertFalse($validator->validate('üñîçøðé@üñîçøðé.com'));
         $this->assertFalse($validator->validate('sam@рмкреатиф.ru'));
@@ -61,6 +63,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('Short Name <localPartMoreThan64Characters-blah-blah-blah-blah-blah-blah-blah-blah@example.com>'));
         $this->assertFalse($validator->validate('Short Name <domainNameIsMoreThan254Characters@example-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah-blah.com>'));
         $this->assertFalse($validator->validate(['developer@yiiframework.com']));
+
     }
 
     public function testValidateValueIdn()
@@ -81,6 +84,7 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('sam@rmcreative.ru'));
         $this->assertTrue($validator->validate('5011@gmail.com'));
         $this->assertTrue($validator->validate('üñîçøðé@üñîçøðé.com'));
+        $this->assertTrue($validator->validate('firstName.x.lastName.-nd@example.com'));
         $this->assertFalse($validator->validate('rmcreative.ru'));
         $this->assertFalse($validator->validate('Carsten Brandt <mail@cebe.cc>'));
         $this->assertFalse($validator->validate('"Carsten Brandt" <mail@cebe.cc>'));
@@ -102,6 +106,7 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('test@example.com'));
         $this->assertTrue($validator->validate('John Smith <john.smith@example.com>'));
         $this->assertTrue($validator->validate('"Такое имя достаточно длинное, но оно все равно может пройти валидацию" <shortmail@example.com>'));
+        $this->assertTrue($validator->validate('"FirstName LastName" <firstName.x.lastName.-nd@example.com>'));
         $this->assertFalse($validator->validate('John Smith <example.com>'));
         $this->assertFalse($validator->validate('Короткое имя <после-преобразования-в-idn-тут-будет-больше-чем-64-символа@пример.com>'));
         $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));

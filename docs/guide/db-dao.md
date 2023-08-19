@@ -1,7 +1,7 @@
 Database Access Objects
 =======================
 
-Built on top of [PDO](https://secure.php.net/manual/en/book.pdo.php), Yii DAO (Database Access Objects) provides an
+Built on top of [PDO](https://www.php.net/manual/en/book.pdo.php), Yii DAO (Database Access Objects) provides an
 object-oriented API for accessing relational databases. It is the foundation for other more advanced database
 access methods, including [query builder](db-query-builder.md) and [active record](db-active-record.md).
 
@@ -11,12 +11,12 @@ you have to take extra effort to create a database-agnostic application.
 
 In Yii 2.0, DAO supports the following databases out of the box:
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
-- [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): version 8.4 or higher
+- [CUBRID](https://www.cubrid.org/): version 9.3 or higher.
+- [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
@@ -61,7 +61,7 @@ You can then access the DB connection via the expression `Yii::$app->db`.
 > Tip: You can configure multiple DB application components if your application needs to access multiple databases.
 
 When configuring a DB connection, you should always specify its Data Source Name (DSN) via the [[yii\db\Connection::dsn|dsn]] 
-property. The format of DSN varies for different databases. Please refer to the [PHP manual](https://secure.php.net/manual/en/function.PDO-construct.php) 
+property. The format of DSN varies for different databases. Please refer to the [PHP manual](https://www.php.net/manual/en/pdo.construct.php) 
 for more details. Below are some examples:
  
 * MySQL, MariaDB: `mysql:host=localhost;dbname=mydatabase`
@@ -190,7 +190,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
            ->queryOne();
 ```
 
-Parameter binding is implemented via [prepared statements](https://secure.php.net/manual/en/mysqli.quickstart.prepared-statements.php).
+Parameter binding is implemented via [prepared statements](https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php).
 Besides preventing SQL injection attacks, it may also improve performance by preparing a SQL statement once and
 executing it multiple times with different parameters. For example,
 
@@ -275,7 +275,7 @@ a database table if they do not already exist (matching unique constraints), or 
 ```php
 Yii::$app->db->createCommand()->upsert('pages', [
     'name' => 'Front page',
-    'url' => 'http://example.com/', // url is unique
+    'url' => 'https://example.com/', // url is unique
     'visits' => 0,
 ], [
     'visits' => new \yii\db\Expression('visits + 1'),
@@ -384,7 +384,7 @@ the changes made by the queries prior to that failed query in the transaction. `
 exception as if we had not caught it, so the normal error handling process will take care of it.
 
 > Note: in the above code we have two catch-blocks for compatibility 
-> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://secure.php.net/manual/en/class.throwable.php)
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](https://www.php.net/manual/en/class.throwable.php)
 > since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 
@@ -427,7 +427,7 @@ Usage of other levels will result in an exception being thrown.
 specify the isolation level directly when starting the transaction.
 You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 ### Nesting Transactions <span id="nesting-transactions"></span>
@@ -477,7 +477,7 @@ try {
 
 ## Replication and Read-Write Splitting <span id="read-write-splitting"></span>
 
-Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
+Many DBMS support [database replication](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 to get better database availability and faster server response time. With database replication, data are replicated
 from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
 while reads may also take place on the slave servers.
@@ -682,5 +682,5 @@ $table = Yii::$app->db->getTableSchema('post');
 ```
 
 The method returns a [[yii\db\TableSchema]] object which contains the information about the table's columns,
-primary keys, foreign keys, etc. All these information are mainly utilized by [query builder](db-query-builder.md) 
+primary keys, foreign keys, etc. All this information is mainly utilized by [query builder](db-query-builder.md) 
 and [active record](db-active-record.md) to help you write database-agnostic code. 

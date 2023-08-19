@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -30,8 +30,7 @@ use Yii;
  *
  * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
  *
- * @property string $uniqueId The unique ID of this action among the whole application. This property is
- * read-only.
+ * @property-read string $uniqueId The unique ID of this action among the whole application.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

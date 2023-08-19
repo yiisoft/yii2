@@ -120,8 +120,8 @@ $session['captcha.lifetime'] = 3600;
 
 * [[yii\web\DbSession]]: сохраняет данные сессии в базе данных.
 * [[yii\web\CacheSession]]: хранение данных сессии в предварительно сконфигурированном компоненте кэша [кэш](caching-data.md#cache-components).
-* [[yii\redis\Session]]: хранение данных сессии в [redis](http://redis.io/).
-* [[yii\mongodb\Session]]: хранение сессии в [MongoDB](http://www.mongodb.org/).
+* [[yii\redis\Session]]: хранение данных сессии в [redis](https://redis.io/).
+* [[yii\mongodb\Session]]: хранение сессии в [MongoDB](https://www.mongodb.com/).
 
 Все эти классы поддерживают одинаковый набор методов API. В результате вы можете переключаться между различными хранилищами сессий без модификации кода приложения.
 
@@ -261,7 +261,7 @@ unset($cookies['language']);
 
 Кроме свойств [[yii\web\Cookie::name|name]] и [[yii\web\Cookie::value|value]], класс [[yii\web\Cookie]] также предоставляет ряд свойств для получения информации о куках: [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. Эти свойства можно сконфигурировать и затем добавить куку в коллекцию для HTTP-ответа.
 
-> Note: Для большей безопасности значение свойства [[yii\web\Cookie::httpOnly]] по умолчанию установлено в `true`. Это уменьшает риски доступа к защищенной куке на клиентской стороне (если браузер поддерживает такую возможность). Вы можете обратиться к [httpOnly wiki](https://www.owasp.org/index.php/HttpOnly) для дополнительной информации.
+> Note: Для большей безопасности значение свойства [[yii\web\Cookie::httpOnly]] по умолчанию установлено в `true`. Это уменьшает риски доступа к защищенной куке на клиентской стороне (если браузер поддерживает такую возможность). Вы можете обратиться к [httpOnly wiki](https://owasp.org/www-community/HttpOnly) для дополнительной информации.
 
 ### Валидация кук <span id="cookie-validation"></span>
 

@@ -234,7 +234,7 @@ La valeur par défaut de cette propriété est  `en`, pour anglais. Vous devez c
 
 La valeur de cette propriété détermine des aspects variés de l'[internationalisation](tutorial-i18n.md) tels que la traduction des messages, le formatage des dates et des nombres, etc. Par exemple, l'objet graphique [[yii\jui\DatePicker]] utilise la valeur de cette propriété pour déterminer dans quelle langue le calendrier doit être affiché et comment les dates doivent être formatées. 
 
-La spécification de la langue par une  [étiquette IETF d'identification de langue ](http://en.wikipedia.org/wiki/IETF_language_tag) est recommandée. Par exemple, `en` signifie anglais, tandis que `en-US` signifie anglais (États-Unis)..
+La spécification de la langue par une  [étiquette IETF d'identification de langue ](https://fr.wikipedia.org/wiki/%C3%89tiquette_d%27identification_de_langues_IETF) est recommandée. Par exemple, `en` signifie anglais, tandis que `en-US` signifie anglais (États-Unis)..
 
 Pour plus d'informations sur cette propriété, reportez-vous à la section [Internationalisation](tutorial-i18n.md).
 
@@ -296,7 +296,7 @@ Plus tard, si vous changez d'avis à propos de la taille de ces vignettes, il vo
 Cette propriété spécifie la langue dans laquelle l'application est écrite. La valeur par défaut est  `'en-US'`,
 pour (anglais — États-Unis). Vous devriez configurer cette propriété si les textes dans votre code ne sont pas en anglais US. 
 
-Comme pour la propriété [language (langue)](#language), vous devez configurer cette propriété à l'aide d'une [étiquette IETF d'identification de langue](http://en.wikipedia.org/wiki/IETF_language_tag). Par exemple, `en` signifie `anglais`,
+Comme pour la propriété [language (langue)](#language), vous devez configurer cette propriété à l'aide d'une [étiquette IETF d'identification de langue](https://fr.wikipedia.org/wiki/%C3%89tiquette_d%27identification_de_langues_IETF). Par exemple, `en` signifie `anglais`,
 tandis que `en-US` signifie for `anglais-États-Unis`).
 
 Pour plus d'informations sur cette propriété, reportez-vous à la section [Internationalisation](tutorial-i18n.md).
@@ -306,7 +306,7 @@ Pour plus d'informations sur cette propriété, reportez-vous à la section [Int
 
 Cette propriété est fournie comme une manière alternative de définir le fuseau horaire par défaut au moment de l'exécution du script PHP. 
 En configurant cette propriété, vous ne faites essentiellement qu'appeler la fonction PHP 
-[date_default_timezone_set()](https://secure.php.net/manual/en/function.date-default-timezone-set.php). Par exemple :
+[date_default_timezone_set()](https://www.php.net/manual/fr/function.date-default-timezone-set.php). Par exemple :
 
 ```php
 [

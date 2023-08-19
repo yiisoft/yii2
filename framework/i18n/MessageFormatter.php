@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -12,7 +12,7 @@ use yii\base\Component;
 use yii\base\NotSupportedException;
 
 /**
- * MessageFormatter allows formatting messages via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
+ * MessageFormatter allows formatting messages via [ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/).
  *
  * This class enhances the message formatter class provided by the PHP intl extension.
  *
@@ -23,7 +23,7 @@ use yii\base\NotSupportedException;
  *   substituted.
  * - Fixes PHP 5.5 weird placeholder replacement in case no arguments are provided at all (https://bugs.php.net/bug.php?id=65920).
  * - Offers limited support for message formatting in case PHP intl extension is not installed.
- *   However it is highly recommended that you install [PHP intl extension](https://secure.php.net/manual/en/book.intl.php) if you want
+ *   However it is highly recommended that you install [PHP intl extension](https://www.php.net/manual/en/book.intl.php) if you want
  *   to use MessageFormatter features.
  *
  *   The fallback implementation only supports the following message formats:
@@ -32,12 +32,12 @@ use yii\base\NotSupportedException;
  *   - simple parameters
  *   - integer number parameters
  *
- *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](https://secure.php.net/manual/en/messageformatter.formatmessage.php).
+ *   The fallback implementation does NOT support the ['apostrophe-friendly' syntax](https://www.php.net/manual/en/messageformatter.formatmessage.php).
  *   Also messages that are working with the fallback implementation are not necessarily compatible with the
  *   PHP intl MessageFormatter so do not rely on the fallback if you are able to install intl extension somehow.
  *
- * @property string $errorCode Code of the last error. This property is read-only.
- * @property string $errorMessage Description of the last error. This property is read-only.
+ * @property-read string $errorCode Code of the last error.
+ * @property-read string $errorMessage Description of the last error.
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -51,7 +51,7 @@ class MessageFormatter extends Component
 
     /**
      * Get the error code from the last operation.
-     * @link https://secure.php.net/manual/en/messageformatter.geterrorcode.php
+     * @link https://www.php.net/manual/en/messageformatter.geterrorcode.php
      * @return string Code of the last error.
      */
     public function getErrorCode()
@@ -61,7 +61,7 @@ class MessageFormatter extends Component
 
     /**
      * Get the error text from the last operation.
-     * @link https://secure.php.net/manual/en/messageformatter.geterrormessage.php
+     * @link https://www.php.net/manual/en/messageformatter.geterrormessage.php
      * @return string Description of the last error.
      */
     public function getErrorMessage()
@@ -70,9 +70,9 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Formats a message via [ICU message format](http://userguide.icu-project.org/formatparse/messages).
+     * Formats a message via [ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/).
      *
-     * It uses the PHP intl extension's [MessageFormatter](https://secure.php.net/manual/en/class.messageformatter.php)
+     * It uses the PHP intl extension's [MessageFormatter](https://www.php.net/manual/en/class.messageformatter.php)
      * and works around some issues.
      * If PHP intl is not installed a fallback will be used that supports a subset of the ICU message format.
      *
@@ -132,9 +132,9 @@ class MessageFormatter extends Component
     }
 
     /**
-     * Parses an input string according to an [ICU message format](http://userguide.icu-project.org/formatparse/messages) pattern.
+     * Parses an input string according to an [ICU message format](https://unicode-org.github.io/icu/userguide/format_parse/messages/) pattern.
      *
-     * It uses the PHP intl extension's [MessageFormatter::parse()](https://secure.php.net/manual/en/messageformatter.parsemessage.php)
+     * It uses the PHP intl extension's [MessageFormatter::parse()](https://www.php.net/manual/en/messageformatter.parsemessage.php)
      * and adds support for named arguments.
      * Usage of this method requires PHP intl extension to be installed.
      *
@@ -341,7 +341,7 @@ class MessageFormatter extends Component
     private function parseToken($token, $args, $locale)
     {
         // parsing pattern based on ICU grammar:
-        // http://icu-project.org/apiref/icu4c/classMessageFormat.html#details
+        // https://unicode-org.github.io/icu-docs/#/icu4c/classMessageFormat.html
         $charset = Yii::$app ? Yii::$app->charset : 'UTF-8';
         $param = trim($token[0]);
         if (isset($args[$param])) {
@@ -374,7 +374,7 @@ class MessageFormatter extends Component
             case 'none':
                 return $arg;
             case 'select':
-                /* http://icu-project.org/apiref/icu4c/classicu_1_1SelectFormat.html
+                /* https://unicode-org.github.io/icu-docs/#/icu4c/classicu_1_1SelectFormat.html
                 selectStyle = (selector '{' message '}')+
                 */
                 if (!isset($token[2])) {
@@ -397,7 +397,7 @@ class MessageFormatter extends Component
                 }
                 break;
             case 'plural':
-                /* http://icu-project.org/apiref/icu4c/classicu_1_1PluralFormat.html
+                /* https://unicode-org.github.io/icu-docs/#/icu4c/classicu_1_1PluralFormat.html
                 pluralStyle = [offsetValue] (selector '{' message '}')+
                 offsetValue = "offset:" number
                 selector = explicitValue | keyword
@@ -423,7 +423,7 @@ class MessageFormatter extends Component
                         $selector = trim(mb_substr($selector, $pos + 1, mb_strlen($selector, $charset), $charset));
                     }
                     if ($message === false && $selector === 'other' ||
-                        $selector[0] === '=' && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
+                        strncmp($selector, '=', 1) === 0 && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {
                         $message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -23,15 +23,14 @@ use yii\di\ServiceLocator;
  *
  * For more details and usage information on Module, see the [guide article on modules](guide:structure-modules).
  *
- * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
- * with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
- * This property is write-only.
+ * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must
+ * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
+ * example.
  * @property string $basePath The root directory of the module.
- * @property string $controllerPath The directory that contains the controller classes. This property is
- * read-only.
+ * @property string $controllerPath The directory that contains the controller classes.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
- * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property-read string $uniqueId The unique ID of the module.
  * @property string $version The version of this module. Note that the type of this property differs in getter
  * and setter. See [[getVersion()]] and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
@@ -60,11 +59,11 @@ class Module extends ServiceLocator
      */
     public $id;
     /**
-     * @var Module the parent module of this module. `null` if this module does not have a parent.
+     * @var Module|null the parent module of this module. `null` if this module does not have a parent.
      */
     public $module;
     /**
-     * @var string|bool the layout that should be applied for views within this module. This refers to a view name
+     * @var string|bool|null the layout that should be applied for views within this module. This refers to a view name
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
      * will be taken. If this is `false`, layout will be disabled within this module.
      */
@@ -90,7 +89,7 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
-     * @var string the namespace that controller classes are in.
+     * @var string|null the namespace that controller classes are in.
      * This namespace will be used to load controller classes by prepending it to the controller
      * class name.
      *
@@ -116,6 +115,10 @@ class Module extends ServiceLocator
      */
     private $_basePath;
     /**
+     * @var string The root directory that contains the controller classes for this module.
+     */
+    private $_controllerPath;
+    /**
      * @var string the root directory that contains view files for this module
      */
     private $_viewPath;
@@ -128,7 +131,7 @@ class Module extends ServiceLocator
      */
     private $_modules = [];
     /**
-     * @var string|callable the version of this module.
+     * @var string|callable|null the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
@@ -148,7 +151,7 @@ class Module extends ServiceLocator
     /**
      * Constructor.
      * @param string $id the ID of this module.
-     * @param Module $parent the parent module (if any).
+     * @param Module|null $parent the parent module (if any).
      * @param array $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($id, $parent = null, $config = [])
@@ -238,7 +241,7 @@ class Module extends ServiceLocator
     {
         $path = Yii::getAlias($path);
         $p = strncmp($path, 'phar://', 7) === 0 ? $path : realpath($path);
-        if ($p !== false && is_dir($p)) {
+        if (is_string($p) && is_dir($p)) {
             $this->_basePath = $p;
         } else {
             throw new InvalidArgumentException("The directory does not exist: $path");
@@ -254,7 +257,22 @@ class Module extends ServiceLocator
      */
     public function getControllerPath()
     {
-        return Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
+        if ($this->_controllerPath === null) {
+            $this->_controllerPath = Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
+        }
+
+        return $this->_controllerPath;
+    }
+
+    /**
+     * Sets the directory that contains the controller classes.
+     * @param string $path the root directory that contains the controller classes.
+     * @throws InvalidArgumentException if the directory is invalid.
+     * @since 2.0.44
+     */
+    public function setControllerPath($path)
+    {
+        $this->_controllerPath = Yii::getAlias($path);
     }
 
     /**
@@ -324,7 +342,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets current module version.
-     * @param string|callable $version the version of this module.
+     * @param string|callable|null $version the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
@@ -425,7 +443,7 @@ class Module extends ServiceLocator
                 Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
-                $module->setInstance($module);
+                $module::setInstance($module);
                 return $this->_modules[$id] = $module;
             }
         }
@@ -450,6 +468,9 @@ class Module extends ServiceLocator
             unset($this->_modules[$id]);
         } else {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 
@@ -504,6 +525,9 @@ class Module extends ServiceLocator
     {
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
+            if ($module instanceof self) {
+                $module->module = $this;
+            }
         }
     }
 

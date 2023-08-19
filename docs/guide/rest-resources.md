@@ -82,7 +82,7 @@ public function fields()
 }
 
 // filter out some fields, best used when you want to inherit the parent implementation
-// and blacklist some sensitive fields.
+// and exclude some sensitive fields.
 public function fields()
 {
     $fields = parent::fields();
@@ -140,7 +140,7 @@ the request with `http://localhost/users?fields=id,email&expand=profile` may ret
 
 ## Links <span id="links"></span>
 
-[HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
+[HATEOAS](https://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
 promotes that RESTful APIs should return information that allows clients to discover actions supported for the returned
 resources. The key of HATEOAS is to return a set of hyperlinks with relation information when resource data are served
 by the APIs.
@@ -251,11 +251,3 @@ will also include the pagination information by the following HTTP headers:
 Since collection in REST APIs is a data provider, it shares all data provider features i.e. pagination and sorting.
 
 An example may be found in the [Quick Start](rest-quick-start.md#trying-it-out) section.
-
-### Filtering collections <span id="filtering-collections"></span>
-
-Since version 2.0.13 Yii provides a facility to filter collections. An example can be found in the
-[Quick Start](rest-quick-start.md#trying-it-out) guide. In case you're implementing an endpoint yourself,
-filtering could be done as described in
-[Filtering Data Providers using Data Filters](output-data-providers.md#filtering-data-providers-using-data-filters)
-section of Data Providers guide.

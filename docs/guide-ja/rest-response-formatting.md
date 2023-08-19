@@ -4,7 +4,7 @@
 RESTful API のリクエストを処理するとき、アプリケーションは、通常、レスポンス形式の設定に関して次のステップを踏みます。
 
 1. レスポンス形式に影響するさまざまな要因、例えば、メディア・タイプ、言語、バージョンなどを決定します。
-   このプロセスは [コンテント・ネゴシエーション](http://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
+   このプロセスは [コンテント・ネゴシエーション](https://en.wikipedia.org/wiki/Content_negotiation) としても知られるものです。
 2. リソース・オブジェクトを配列に変換します。
    [リソース](rest-resources.md) のセクションで説明したように、この作業は [[yii\rest\Serializer]] によって実行されます。
 3. 配列をコンテント・ネゴシエーションのステップで決定された形式の文字列に変換します。
@@ -154,7 +154,7 @@ JSON 形式のレスポンスを生成する [[yii\web\JsonResponseFormatter|Jso
 例えば、[[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]] オプションは、より読みやすいレスポンスのためのもので、開発時に有用なオプションです。
 また、[[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]] によって JSON エンコーディングの出力を制御することが出来ます。
 
-フォーマッタは、以下のように、アプリケーションの [構成情報](concept-configuration.md) の中で、`response` アプリケーション・コンポーネントの [[yii\web\Response::formatters|formatters]] プロパティの中で構成することが出来ます。
+フォーマッタは、以下のように、アプリケーションの [構成情報](concept-configurations.md) の中で、`response` アプリケーション・コンポーネントの [[yii\web\Response::formatters|formatters]] プロパティの中で構成することが出来ます。
 
 ```php
 'response' => [

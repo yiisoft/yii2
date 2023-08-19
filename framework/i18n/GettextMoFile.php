@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -106,7 +106,7 @@ class GettextMoFile extends GettextFile
         $messages = [];
         for ($i = 0; $i < $count; ++$i) {
             $id = $this->readString($fileHandle, $sourceLengths[$i], $sourceOffsets[$i]);
-            $separatorPosition = strpos($id, chr(4));
+            $separatorPosition = strpos((string)$id, chr(4));
 
 
             if ((!$context && $separatorPosition === false) || ($context && $separatorPosition !== false && strncmp($id, $context, $separatorPosition) === 0)) {
@@ -250,7 +250,7 @@ class GettextMoFile extends GettextFile
      * Reads a string.
      * @param resource $fileHandle file handle
      * @param int $length of the string
-     * @param int $offset of the string in the file. If null, it reads from the current position.
+     * @param int|null $offset of the string in the file. If null, it reads from the current position.
      * @return string the result
      */
     protected function readString($fileHandle, $length, $offset = null)

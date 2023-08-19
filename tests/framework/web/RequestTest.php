@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -12,6 +12,7 @@ use yiiunit\TestCase;
 
 /**
  * @group web
+ * @backupGlobals enabled
  */
 class RequestTest extends TestCase
 {
@@ -991,18 +992,21 @@ class RequestTest extends TestCase
      */
     public function testHttpAuthCredentialsFromHttpAuthorizationHeader($secret, $expected)
     {
+        $original = $_SERVER;
+
         $request = new Request();
-
-        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $_SERVER['HTTP_AUTHORIZATION'] = 'Basic ' . $secret;
         $this->assertSame($request->getAuthCredentials(), $expected);
         $this->assertSame($request->getAuthUser(), $expected[0]);
         $this->assertSame($request->getAuthPassword(), $expected[1]);
-        $request->getHeaders()->offsetUnset('HTTP_AUTHORIZATION');
+        $_SERVER = $original;
 
-        $request->getHeaders()->set('REDIRECT_HTTP_AUTHORIZATION', 'Basic ' . $secret);
+        $request = new Request();
+        $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] = 'Basic ' . $secret;
         $this->assertSame($request->getAuthCredentials(), $expected);
         $this->assertSame($request->getAuthUser(), $expected[0]);
         $this->assertSame($request->getAuthPassword(), $expected[1]);
+        $_SERVER = $original;
     }
 
     public function testHttpAuthCredentialsFromServerSuperglobal()
@@ -1013,7 +1017,7 @@ class RequestTest extends TestCase
         $_SERVER['PHP_AUTH_PW'] = $pw;
 
         $request = new Request();
-        $request->getHeaders()->set('HTTP_AUTHORIZATION', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
+        $request->getHeaders()->set('Authorization', 'Basic ' . base64_encode('less-priority:than-PHP_AUTH_*'));
 
         $this->assertSame($request->getAuthCredentials(), [$user, $pw]);
         $this->assertSame($request->getAuthUser(), $user);
@@ -1044,6 +1048,30 @@ class RequestTest extends TestCase
         $this->assertSame('value.dot', $request->getBodyParam('param.dot'));
         $this->assertSame(null, $request->getBodyParam('unexisting'));
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
+    }
+
+    public function getBodyParamsDataProvider()
+    {
+        return [
+            'json' => ['application/json', '{"foo":"bar","baz":1}', ['foo' => 'bar', 'baz' => 1]],
+            'jsonp' => ['application/javascript', 'parseResponse({"foo":"bar","baz":1});', ['foo' => 'bar', 'baz' => 1]],
+            'get' => ['application/x-www-form-urlencoded', 'foo=bar&baz=1', ['foo' => 'bar', 'baz' => '1']],
+        ];
+    }
+
+    /**
+     * @dataProvider getBodyParamsDataProvider
+     */
+    public function testGetBodyParams($contentType, $rawBody, array $expected)
+    {
+        $_SERVER['CONTENT_TYPE'] = $contentType;
+        $request = new Request();
+        $request->parsers = [
+            'application/json' => 'yii\web\JsonParser',
+            'application/javascript' => 'yii\web\JsonParser',
+        ];
+        $request->setRawBody($rawBody);
+        $this->assertSame($expected, $request->getBodyParams());
     }
 
     public function trustedHostAndInjectedXForwardedForDataProvider()
@@ -1081,6 +1109,33 @@ class RequestTest extends TestCase
         }
         $request = new Request($params);
         $this->assertSame($expectedUserIp, $request->getUserIP());
+    }
+
+    public function trustedHostAndXForwardedPortDataProvider()
+    {
+        return [
+            'defaultPlain' => ['1.1.1.1', 80, null, null, 80],
+            'defaultSSL' => ['1.1.1.1', 443, null, null, 443],
+            'untrustedForwardedSSL' => ['1.1.1.1', 80, 443, ['10.0.0.0/8'], 80],
+            'untrustedForwardedPlain' => ['1.1.1.1', 443, 80, ['10.0.0.0/8'], 443],
+            'trustedForwardedSSL' => ['10.10.10.10', 80, 443, ['10.0.0.0/8'], 443],
+            'trustedForwardedPlain' => ['10.10.10.10', 443, 80, ['10.0.0.0/8'], 80],
+        ];
+    }
+
+    /**
+     * @dataProvider trustedHostAndXForwardedPortDataProvider
+     */
+    public function testTrustedHostAndXForwardedPort($remoteAddress, $requestPort, $xForwardedPort, $trustedHosts, $expectedPort)
+    {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['SERVER_PORT'] = $requestPort;
+        $_SERVER['HTTP_X_FORWARDED_PORT'] = $xForwardedPort;
+        $params = [
+            'trustedHosts' => $trustedHosts,
+        ];
+        $request = new Request($params);
+        $this->assertSame($expectedPort, $request->getServerPort());
     }
 
     /**

@@ -79,7 +79,7 @@ Chaque fichier JavaScript peut être spécifié dans l'un des formats suivants 
 Le chemin réel du fichier peut être déterminé en préfixant le chemin relatif avec le [[yii\web\AssetManager::basePath| chemin de base]], 
 et l'URL réelle du fichier peut être déterminée en préfixant le chemin relatif avec l'[[yii\web\AssetManager::baseUrl|URL de base]].
   - Une URL absolue représentant un fichier JavaScript externe. 
-Par exemple , `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou
+Par exemple , `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` ou
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
 * [[yii\web\AssetBundle::depends|depends (dépendances)]]: 
 un tableau listant les paquets de ressources dont ce paquet dépend (brièvement expliqué).
@@ -201,12 +201,12 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](http://fontawesome.io/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
+L'exemple ci-dessus définit un paquet de ressources pour le [paquet "fontawesome"](https://fontawesome.com/). En spécifiant l'option de publication `only`, seuls les sous-dossiers `fonts` et  `css` sont publiés.
 
 
 ### Installation des ressources Bower et NPM  <span id="bower-npm-assets"></span>
 
-La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](http://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.org/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
+La plupart des paquets JavaScript/CSS sont gérés par le gestionnaire de paquets [Bower](https://bower.io/) et/ou le gestionnaire de paquets [NPM](https://www.npmjs.com/). Dans le monde PHP, nous disposons de Composer, qui gère les dépendances, mais il est possible de charger des paquets Bower et NPM comme des paquets PHP en utilisant `composer.json`.
 
 Pour cela, nous devons configurer quelque peu notre composer. Il y a deux options possibles :
 
@@ -252,7 +252,7 @@ Comparé à asset-packagist, composer-asset-plugin ne nécessite aucun changemen
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-Cette commande installe  [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
+Cette commande installe  [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) globalement, ce qui permet de gérer les dépendances des paquets Bower et NPM via Composer. Après l'installation du greffon, tout projet de votre ordinateur prendra en charge les paquets Bower et NPM via `composer.json`.
 
 Ajoutez les lignes suivantes au fichier `composer.json` de votre projet pour préciser les dossiers où seront installés les paquets, si vous voulez les publier en utilisant Yii :
 
@@ -468,7 +468,7 @@ Si votre code dépend de jQuery, jQuery UI ou Bootstrap, vous devriez utiliser l
 
 ## Conversion de ressources <span id="asset-conversion"></span>
 
-Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](http://lesscss.org/) ou [SCSS](http://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](http://www.typescriptlang.org/).
+Au lieu d'écrire directement leur code CSS et/ou JavaScript, les développeurs l'écrivent souvent dans une syntaxe étendue et utilisent des outils spéciaux pour le convertir en CSS/JavaScript. Par exemple, pour le code CSS vous pouvez utiliser [LESS](https://lesscss.org/) ou [SCSS](https://sass-lang.com/); et pour JavaScript, vous pouvez utiliser [TypeScript](https://www.typescriptlang.org/).
 
 Vous pouvez lister les fichiers de ressources écrits dans une syntaxe  étendue dans les propriétés [[yii\web\AssetBundle::css|css]] et [[yii\web\AssetBundle::js|js]] d'un paquet de ressources. 
 
@@ -494,13 +494,13 @@ Lorsque vous enregistrez une tel paquet de ressources dans une vue, le [[yii\web
 
 Yii utilise l'extension du nom de fichier pour identifier dans quelle syntaxe une ressource est écrite. Par défaut, il reconnaît les syntaxes et les extensions de nom suivants :
 
-- [LESS](http://lesscss.org/): `.less`
-- [SCSS](http://sass-lang.com/): `.scss`
-- [Stylus](http://learnboost.github.io/stylus/): `.styl`
-- [CoffeeScript](http://coffeescript.org/): `.coffee`
-- [TypeScript](http://www.typescriptlang.org/): `.ts`
+- [LESS](https://lesscss.org/): `.less`
+- [SCSS](https://sass-lang.com/): `.scss`
+- [Stylus](https://stylus-lang.com/): `.styl`
+- [CoffeeScript](https://coffeescript.org/): `.coffee`
+- [TypeScript](https://www.typescriptlang.org/): `.ts`
 
-Yii se fie aux outils de pré-traitement installés pour convertir les ressources. Par exemple, pour utiliser [LESS](http://lesscss.org/), vous devriez utiliser la commande de pré-traitement `lessc`.
+Yii se fie aux outils de pré-traitement installés pour convertir les ressources. Par exemple, pour utiliser [LESS](https://lesscss.org/), vous devriez utiliser la commande de pré-traitement `lessc`.
 
 Vous pouvez personnaliser les commandes de pré-traitement et la syntaxe étendue prise en charge en configurant [[yii\web\AssetManager::converter]] comme ci-après :
 
@@ -522,7 +522,7 @@ return [
 
 Dans la syntaxe précédente, nous spécifions les syntaxes étendues prises en charge via la propriété [[yii\web\AssetConverter::commands]]. Les clés du tableau sont les extensions de nom de fichier (sans le point de tête), et les valeurs sont les extensions des fichiers de ressources résultants ainsi que les commandes pour effectuer les conversions. Les valeurs à remplacer `{from}` et `{to}` dans les commandes doivent être remplacées par les chemins de fichiers de ressources sources et les chemins de fichiers de ressources cibles.
 
-> Info: il y a d'autres manières de travailler avec les ressources en syntaxe étendue, en plus de celle décrite ci-dessus. Par exemple, vous pouvez utiliser des outils de compilation comme [grunt](http://gruntjs.com/) pour surveiller et convertir automatiquement des ressources écrites en syntaxe étendue. Dans ce cas, vous devez lister les fichiers CSS/JavaScript résultants dans des paquets de ressources plutôt que les fichiers originaux. 
+> Info: il y a d'autres manières de travailler avec les ressources en syntaxe étendue, en plus de celle décrite ci-dessus. Par exemple, vous pouvez utiliser des outils de compilation comme [grunt](https://gruntjs.com/) pour surveiller et convertir automatiquement des ressources écrites en syntaxe étendue. Dans ce cas, vous devez lister les fichiers CSS/JavaScript résultants dans des paquets de ressources plutôt que les fichiers originaux. 
 
 
 ## Combinaison et compression de ressources <span id="combining-compressing-assets"></span>
@@ -664,7 +664,7 @@ yii asset assets.php config/assets-prod.php
 Le fichier de configuration peut être inclus dans la configuration de l'application comme décrit dans la dernière sous-section . 
 
 
-> Info: l'utilisation de la commande `asset` n'est pas la seule option pour automatiser la combinaison et la compression des ressources. Vous pouvez utiliser l'excellent outil d'exécution de tâches [grunt](http://gruntjs.com/) pour arriver au même résultat. 
+> Info: l'utilisation de la commande `asset` n'est pas la seule option pour automatiser la combinaison et la compression des ressources. Vous pouvez utiliser l'excellent outil d'exécution de tâches [grunt](https://gruntjs.com/) pour arriver au même résultat. 
 
 
 ### Regroupement des paquets de ressources  <span id="grouping-asset-bundles"></span>

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -58,15 +58,15 @@ use yii\web\Request;
  *
  * For more details and usage information on Pagination, see the [guide article on pagination](guide:output-pagination).
  *
- * @property int $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement for
- * fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned. This
- * property is read-only.
- * @property array $links The links for navigational purpose. The array keys specify the purpose of the links
- * (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs. This property is read-only.
- * @property int $offset The offset of the data. This may be used to set the OFFSET value for a SQL statement
- * for fetching the current page of data. This property is read-only.
+ * @property-read int $limit The limit of the data. This may be used to set the LIMIT value for a SQL
+ * statement for fetching the current page of data. Note that if the page size is infinite, a value -1 will be
+ * returned.
+ * @property-read array $links The links for navigational purpose. The array keys specify the purpose of the
+ * links (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs.
+ * @property-read int $offset The offset of the data. This may be used to set the OFFSET value for a SQL
+ * statement for fetching the current page of data.
  * @property int $page The zero-based current page number.
- * @property int $pageCount Number of pages. This property is read-only.
+ * @property-read int $pageCount Number of pages.
  * @property int $pageSize The number of items per page. If it is less than 1, it means the page size is
  * infinite, and thus a single page contains all items.
  *
@@ -96,12 +96,12 @@ class Pagination extends BaseObject implements Linkable
      */
     public $forcePageParam = true;
     /**
-     * @var string the route of the controller action for displaying the paged contents.
+     * @var string|null the route of the controller action for displaying the paged contents.
      * If not set, it means using the currently requested route.
      */
     public $route;
     /**
-     * @var array parameters (name => value) that should be used to obtain the current page number
+     * @var array|null parameters (name => value) that should be used to obtain the current page number
      * and to create new pagination URLs. If not set, all parameters from $_GET will be used instead.
      *
      * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
@@ -111,7 +111,7 @@ class Pagination extends BaseObject implements Linkable
      */
     public $params;
     /**
-     * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
+     * @var \yii\web\UrlManager|null the URL manager used for creating pagination URLs. If not set,
      * the "urlManager" application component will be used.
      */
     public $urlManager;
@@ -133,8 +133,8 @@ class Pagination extends BaseObject implements Linkable
      */
     public $defaultPageSize = 20;
     /**
-     * @var array|false the page size limits. The first array element stands for the minimal page size, and the second
-     * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
+     * @var array|false the page size limits. The first array element defines the minimum page size, and the second
+     * the maximum page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];
 
@@ -213,7 +213,7 @@ class Pagination extends BaseObject implements Linkable
     public function getPageSize()
     {
         if ($this->_pageSize === null) {
-            if (empty($this->pageSizeLimit)) {
+            if (empty($this->pageSizeLimit) || !isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
                 $pageSize = $this->defaultPageSize;
                 $this->setPageSize($pageSize);
             } else {
@@ -235,7 +235,7 @@ class Pagination extends BaseObject implements Linkable
             $this->_pageSize = null;
         } else {
             $value = (int) $value;
-            if ($validatePageSize && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1]) && count($this->pageSizeLimit) === 2) {
+            if ($validatePageSize && isset($this->pageSizeLimit[0], $this->pageSizeLimit[1])) {
                 if ($value < $this->pageSizeLimit[0]) {
                     $value = $this->pageSizeLimit[0];
                 } elseif ($value > $this->pageSizeLimit[1]) {
@@ -250,7 +250,7 @@ class Pagination extends BaseObject implements Linkable
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
      * @param int $page the zero-based page number that the URL should point to.
-     * @param int $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
+     * @param int|null $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
      * @param bool $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the created URL
      * @see params
@@ -319,16 +319,17 @@ class Pagination extends BaseObject implements Linkable
     {
         $currentPage = $this->getPage();
         $pageCount = $this->getPageCount();
-        $links = [
-            Link::REL_SELF => $this->createUrl($currentPage, null, $absolute),
-        ];
-        if ($currentPage > 0) {
+
+        $links = [Link::REL_SELF => $this->createUrl($currentPage, null, $absolute)];
+        if ($pageCount > 0) {
             $links[self::LINK_FIRST] = $this->createUrl(0, null, $absolute);
-            $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, null, $absolute);
-        }
-        if ($currentPage < $pageCount - 1) {
-            $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
             $links[self::LINK_LAST] = $this->createUrl($pageCount - 1, null, $absolute);
+            if ($currentPage > 0) {
+                $links[self::LINK_PREV] = $this->createUrl($currentPage - 1, null, $absolute);
+            }
+            if ($currentPage < $pageCount - 1) {
+                $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
+            }
         }
 
         return $links;
@@ -338,8 +339,8 @@ class Pagination extends BaseObject implements Linkable
      * Returns the value of the specified query parameter.
      * This method returns the named parameter value from [[params]]. Null is returned if the value does not exist.
      * @param string $name the parameter name
-     * @param string $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
-     * @return string the parameter value
+     * @param string|null $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
+     * @return string|null the parameter value
      */
     protected function getQueryParam($name, $defaultValue = null)
     {

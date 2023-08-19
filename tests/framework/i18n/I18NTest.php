@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\i18n;
@@ -129,6 +129,11 @@ class I18NTest extends TestCase
         // target is a different language than source
         $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru-RU'));
         $this->assertEquals('Собака бегает быстро.', $i18n->translate('test', $msg, [], 'ru'));
+        $this->assertEquals('The dog runs fast (en-150).', $i18n->translate('test', $msg, [], 'en-150'));
+        $this->assertEquals('The dog runs fast.', $i18n->translate('test', $msg, [], 'en'));
+
+        // language is set to null
+        $this->assertEquals($msg, $i18n->translate('test', $msg, [], null));
     }
 
     public function testTranslateParams()
@@ -147,7 +152,7 @@ class I18NTest extends TestCase
         $msg = 'His name is {name} and his speed is about {n, number} km/h.';
         $params = [
             'n' => 42,
-            'name' => 'DA VINCI', // http://petrix.com/dognames/d.html
+            'name' => 'DA VINCI', // https://petrix.com/dognames/d.html
         ];
         $this->assertEquals('His name is DA VINCI and his speed is about 42 km/h.', $this->i18n->translate('test', $msg, $params, 'en-US'));
         $this->assertEquals('Er heißt DA VINCI und ist 42 km/h schnell.', $this->i18n->translate('test', $msg, $params, 'de-DE'));

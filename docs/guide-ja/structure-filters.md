@@ -121,7 +121,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'only' => ['create', 'update'],
             'rules' => [
                 // 認証されたユーザに許可する
@@ -141,8 +141,8 @@ public function behaviors()
 
 ### 認証メソッド・フィルタ <span id="auth-method-filters"></span>
 
-認証メソッド・フィルタは、[HTTP Basic 認証](http://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC)、
-[OAuth 2](http://oauth.net/2/) など、様々なメソッドを使ってユーザを認証するために使われるものです。
+認証メソッド・フィルタは、[HTTP Basic 認証](https://ja.wikipedia.org/wiki/Basic%E8%AA%8D%E8%A8%BC)、
+[OAuth 2](https://oauth.net/2/) など、様々なメソッドを使ってユーザを認証するために使われるものです。
 これらのフィルタ・クラスはすべて `yii\filters\auth` 名前空間の下にあります。
 
 次の例は、[[yii\filters\auth\HttpBasicAuth]] の使い方を示すもので、HTTP Basic 認証に基づくアクセス・トークンを使ってユーザを認証しています。
@@ -157,7 +157,7 @@ public function behaviors()
 {
     return [
         'basicAuth' => [
-            'class' => HttpBasicAuth::className(),
+            'class' => HttpBasicAuth::class,
         ],
     ];
 }
@@ -183,7 +183,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -210,7 +210,7 @@ use yii\web\Response;
 [
     'bootstrap' => [
         [
-            'class' => ContentNegotiator::className(),
+            'class' => ContentNegotiator::class,
             'formats' => [
                 'application/json' => Response::FORMAT_JSON,
                 'application/xml' => Response::FORMAT_XML,
@@ -241,7 +241,7 @@ public function behaviors()
 {
     return [
         [
-            'class' => HttpCache::className(),
+            'class' => HttpCache::class,
             'only' => ['index'],
             'lastModified' => function ($action, $params) {
                 $q = new \yii\db\Query();
@@ -269,11 +269,11 @@ public function behaviors()
 {
     return [
         'pageCache' => [
-            'class' => PageCache::className(),
+            'class' => PageCache::class,
             'only' => ['index'],
             'duration' => 60,
             'dependency' => [
-                'class' => DbDependency::className(),
+                'class' => DbDependency::class,
                 'sql' => 'SELECT COUNT(*) FROM post',
             ],
             'variations' => [
@@ -289,7 +289,7 @@ PageCache の使用に関する詳細は [ページ・キャッシュ](caching-p
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-RateLimiter は [リーキー・バケット・アルゴリズム](http://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88) に基づいてレート制限のアルゴリズムを実装するものです。
+RateLimiter は [リーキー・バケット・アルゴリズム](https://ja.wikipedia.org/wiki/%E3%83%AA%E3%83%BC%E3%82%AD%E3%83%BC%E3%83%90%E3%82%B1%E3%83%83%E3%83%88) に基づいてレート制限のアルゴリズムを実装するものです。
 主として RESTful API を実装するときに使用されます。
 このフィルタの使用に関する詳細は [レート制限](rest-rate-limiting.md) のセクションを参照してください。
 
@@ -307,7 +307,7 @@ public function behaviors()
 {
     return [
         'verbs' => [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'index'  => ['get'],
                 'view'   => ['get'],
@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-クロス・オリジン・リソース共有 [CORS](https://developer.mozilla.org/ja/docs/HTTP_access_control) とは、ウェブ・ページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
+クロス・オリジン・リソース共有 [CORS](https://developer.mozilla.org/ja/docs/Web/HTTP/CORS) とは、ウェブ・ページにおいて、さまざまなリソース (例えば、フォントや JavaScript など) を、それを生成するドメイン以外のドメインからリクエストすることを可能にするメカニズムです。
 特に言えば、JavaScript の AJAX 呼出しが使用することが出来る XMLHttpRequest メカニズムです。
 このような「クロス・ドメイン｣のリクエストは、このメカニズムに拠らなければ、
 同一生成元のセキュリティ・ポリシーによって、ウェブ・ブラウザから禁止されるはずのものです。
@@ -339,7 +339,7 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
         ],
     ], parent::behaviors());
 }
@@ -350,13 +350,13 @@ public function behaviors()
 
 Cors のフィルタリングは [[yii\filters\Cors::$cors|$cors]] プロパティを使ってチューニングすることが出来ます。
 
-* `cors['Origin']`: 許可される生成元を定義するのに使われる配列。`['*']` (すべて) または `['http://www.myserver.net'、'http://www.myotherserver.com']` などが設定可能。デフォルトは `['*']`。
+* `cors['Origin']`: 許可される生成元を定義するのに使われる配列。`['*']` (すべて) または `['https://www.myserver.net'、'https://www.myotherserver.com']` などが設定可能。デフォルトは `['*']`。
 * `cors['Access-Control-Request-Method']`: 許可される HTTP 動詞の配列。たとえば、`['GET', 'OPTIONS', 'HEAD']`。デフォルトは `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`。
 * `cors['Access-Control-Request-Headers']`: 許可されるヘッダの配列。全てのヘッダを意味する `['*']` または特定のヘッダを示す `['X-Request-With']` が設定可能。デフォルトは `['*']`。
 * `cors['Access-Control-Allow-Credentials']`: 現在のリクエストをクレデンシャルを使ってすることが出来るかどうかを定義。`true`、`false` または `null` (設定なし) が設定可能。デフォルトは `null`。
 * `cors['Access-Control-Max-Age']`: プリフライト・リクエストの寿命を定義。デフォルトは `86400`。
 
-次の例は、生成元 `http://www.myserver.net` に対する `GET`、`HEAD` および `OPTIONS` のメソッドによる CORS を許可するものです。
+次の例は、生成元 `https://www.myserver.net` に対する `GET`、`HEAD` および `OPTIONS` のメソッドによる CORS を許可するものです。
 
 ```php
 use yii\filters\Cors;
@@ -366,9 +366,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -387,9 +387,9 @@ public function behaviors()
 {
     return ArrayHelper::merge([
         [
-            'class' => Cors::className(),
+            'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

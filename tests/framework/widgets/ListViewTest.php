@@ -1,12 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
 
+use yii\web\Request;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
 use yii\widgets\ListView;
@@ -79,15 +80,15 @@ HTML
     /**
      * @return DataProviderInterface
      */
-    private function getDataProvider()
+    private function getDataProvider($additionalConfig = [])
     {
-        return new ArrayDataProvider([
+        return new ArrayDataProvider(array_merge([
             'allModels' => [
                 ['id' => 1, 'login' => 'silverfire'],
                 ['id' => 2, 'login' => 'samdark'],
                 ['id' => 3, 'login' => 'cebe'],
             ],
-        ]);
+        ], $additionalConfig));
     }
 
     public function testSimplyListView()
@@ -262,5 +263,107 @@ HTML
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
         ]);
         $this->assertTrue($initTriggered);
+    }
+
+    public function testNoDataProvider()
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "dataProvider" property must be set.');
+        (new ListView())->run();
+    }
+
+    public function providerForNoSorter()
+    {
+        return [
+            'no sort attributes' => [[]],
+            'sorter false' => [['dataProvider' => $this->getDataProvider(['sort' => false])]],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForNoSorter
+     */
+    public function testRenderNoSorter($additionalConfig)
+    {
+        $config = array_merge(['layout' => '{sorter}'], $additionalConfig);
+
+        ob_start();
+        $this->getListView($config)->run();
+        $out = ob_get_clean();
+
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $out);
+    }
+
+    public function testRenderSorterOnlyWithNoItems()
+    {
+        // by default sorter is skipped when there are no items during run()
+        $out = (new ListView([
+            'id' => 'w0',
+            'dataProvider' => $this->getDataProvider(['allModels' => [], 'sort' => ['attributes' => ['id']]]),
+        ]))->renderSorter();
+
+        $this->assertEquals('', $out);
+    }
+
+    public function testRenderSorter()
+    {
+        \Yii::$app->set('request', new Request(['scriptUrl' => '/']));
+
+        ob_start();
+        $this->getListView([
+            'layout' => '{sorter}',
+            'dataProvider' => $this->getDataProvider([
+                'sort' => [
+                    'attributes' => ['id'],
+                    'route' => 'list/view',
+                ]
+            ])
+        ])->run();
+        $out = ob_get_clean();
+
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><ul class="sorter">
+<li><a href="/?r=list%2Fview&amp;sort=id" data-sort="id">Id</a></li>
+</ul></div>', $out);
+    }
+
+    public function testRenderSummaryWhenPaginationIsFalseAndSummaryIsNull()
+    {
+        ob_start();
+        $this->getListView(['dataProvider' => $this->getDataProvider(['pagination' => false])])->run();
+        $out = ob_get_clean();
+
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="summary">Total <b>3</b> items.</div>
+<div data-key="0">0</div>
+<div data-key="1">1</div>
+<div data-key="2">2</div>
+</div>', $out);
+    }
+
+    public function providerForSummary()
+    {
+        return [
+            'empty' => ['', '<div id="w0" class="list-view">
+<div data-key="0">0</div>
+<div data-key="1">1</div>
+<div data-key="2">2</div>
+</div>'],
+            'all tokens' => ['{begin}-{end}-{count}-{totalCount}-{page}-{pageCount}', '<div id="w0" class="list-view"><div class="summary">1-3-3-3-1-1</div>
+<div data-key="0">0</div>
+<div data-key="1">1</div>
+<div data-key="2">2</div>
+</div>'],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForSummary
+     */
+    public function testRenderSummaryWhenSummaryIsCustom($summary, $result)
+    {
+        ob_start();
+        $this->getListView(['summary' => $summary])->run();
+        $out = ob_get_clean();
+
+        $this->assertEqualsWithoutLE($result, $out);
     }
 }

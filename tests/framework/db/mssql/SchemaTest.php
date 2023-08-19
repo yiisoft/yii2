@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\mssql;
 
 use yii\db\DefaultValueConstraint;
+use yii\db\mssql\Schema;
 use yiiunit\framework\db\AnyValue;
 
 /**
@@ -179,5 +180,24 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         });
 
         return $columns;
+    }
+
+    public function testGetPrimaryKey()
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema('testPKTable') !== null) {
+            $db->createCommand()->dropTable('testPKTable')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'testPKTable',
+            ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER]
+        )->execute();
+
+        $insertResult = $db->getSchema()->insert('testPKTable', ['bar' => 1]);
+        $selectResult = $db->createCommand('select [id] from [testPKTable] where [bar]=1')->queryOne();
+
+        $this->assertEquals($selectResult['id'], $insertResult['id']);
     }
 }

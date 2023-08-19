@@ -1,11 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\mssql;
+
+use yii\db\Query;
 
 /**
  * @group db
@@ -126,5 +128,25 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         unset($data['batchIsert empty rows represented by ArrayObject']);
 
         return $data;
+    }
+
+    public function testUpsertVarbinary()
+    {
+        $db = $this->getConnection();
+
+        $qb = $db->getQueryBuilder();
+        $testData = json_encode(['test' => 'string', 'test2' => 'integer'], JSON_THROW_ON_ERROR);
+
+        $params = [];
+
+        $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData], ['blob_col' => $testData], $params);
+        $result = $db->createCommand($sql, $params)->execute();
+
+        $this->assertSame(1, $result);
+
+        $query = (new Query())->select(['blob_col'])->from('T_upsert_varbinary')->where(['id' => 1]);
+        $resultData = $query->createCommand($db)->queryOne();
+
+        $this->assertSame($testData, $resultData['blob_col']);
     }
 }

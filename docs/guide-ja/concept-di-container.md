@@ -2,7 +2,7 @@
 ================
 
 依存注入 (DI) コンテナは、オブジェクトとそれが依存するすべてのオブジェクトを、インスタンス化し、設定する方法を知っているオブジェクトです。
-なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
+なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](https://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
 ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
@@ -375,6 +375,24 @@ class HotelController extends Controller
 これで、あなたが再びコントローラにアクセスするときは、`app\components\BookingService`
 のインスタンスが作成され、コントローラのコンストラクタに3番目のパラメータとして注入されるようになります。
 
+Yii 2.0.36 以降は、PHP 7 を使う場合に、ウェブおよびコンソール両方のコントローラでアクション・インジェクションを利用することが出来ます。
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\BookingInterface;
+
+class HotelController extends Controller
+{    
+    public function actionBook($id, BookingInterface $bookingService)
+    {
+        $result = $bookingService->book($id);
+        // ...    
+    }
+}
+``` 
+
 高度な実際の使用方法 <span id="advanced-practical-usage"></span>
 --------------------
 
@@ -430,7 +448,7 @@ $container->setDefinitions([
     }
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 構成情報に書かれている依存とともに DocumentReader オブジェクトが生成されます
 ```
 
@@ -463,7 +481,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // 前の例と全く同じオブジェクトが生成されます
 ```
 
@@ -523,7 +541,7 @@ $reader = $container->get('app\storage\DocumentsReader');
 
 依存注入と [サービス・ロケータ](concept-service-locator.md) はともに、疎結合でよりテストしやすい方法でのソフトウェア構築を可能にする、
 定番のデザインパターンです。
-依存注入とサービス・ロケータへのより深い理解を得るために、 [Martin の記事](http://martinfowler.com/articles/injection.html)
+依存注入とサービス・ロケータへのより深い理解を得るために、 [Martin の記事](https://martinfowler.com/articles/injection.html)
 を読むことを強くお勧めします。
 
 Yii はその [サービス・ロケータ](concept-service-locator.md) を、依存注入 (DI) コンテナの上に実装しています。

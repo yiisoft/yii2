@@ -130,7 +130,7 @@ be rendered, wherein the HTML form will be shown, along with any validation erro
 
 > Note: In this very simple example we just render the confirmation page upon valid data submission. In practice,
   you should consider using [[yii\web\Controller::refresh()|refresh()]] or [[yii\web\Controller::redirect()|redirect()]]
-  to avoid [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+  to avoid [form resubmission problems](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Creating Views <span id="creating-views"></span>
@@ -187,7 +187,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how it works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=site%2Fentry
+https://hostname/index.php?r=site%2Fentry
 ```
 
 You will see a page displaying a form with two input fields. In front of each input field, a label indicates what data is to be entered. If you click the submit button without

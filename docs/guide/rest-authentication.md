@@ -10,15 +10,15 @@ via HTTPS to prevent man-in-the-middle (MitM) attacks**.
 
 There are different ways to send an access token:
 
-* [HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication): the access token
+* [HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication): the access token
   is sent as the username. This should only be used when an access token can be safely stored
   on the API consumer side. For example, the API consumer is a program running on a server.
 * Query parameter: the access token is sent as a query parameter in the API URL, e.g.,
   `https://example.com/users?access-token=xxxxxxxx`. Because most Web servers will keep query
   parameters in server logs, this approach should be mainly used to serve `JSONP` requests which
   cannot use HTTP headers to send access tokens.
-* [OAuth 2](http://oauth.net/2/): the access token is obtained by the consumer from an authorization
-  server and sent to the API server via [HTTP Bearer Tokens](http://tools.ietf.org/html/rfc6750),
+* [OAuth 2](https://oauth.net/2/): the access token is obtained by the consumer from an authorization
+  server and sent to the API server via [HTTP Bearer Tokens](https://datatracker.ietf.org/doc/html/rfc6750),
   according to the OAuth2 protocol.
 
 Yii supports all of the above authentication methods. You can also easily create new authentication methods.
@@ -27,7 +27,7 @@ To enable authentication for your APIs, do the following steps:
 
 1. Configure the `user` [application component](structure-application-components.md):
    - Set the [[yii\web\User::enableSession|enableSession]] property to be `false`.
-   - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show a HTTP 403 error instead of redirecting to the login page. 
+   - Set the [[yii\web\User::loginUrl|loginUrl]] property to be `null` to show an HTTP 403 error instead of redirecting to the login page. 
 2. Specify which authentication methods you plan to use by configuring the `authenticator` behavior
    in your REST controller classes.
 3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
@@ -57,7 +57,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -75,11 +75,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

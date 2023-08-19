@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\base;
@@ -19,7 +19,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
     /**
      * Whether a offset exists
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetexists.php
+     * @link https://www.php.net/manual/en/arrayaccess.offsetexists.php
      * @param mixed $offset <p>
      * An offset to check for.
      * </p>
@@ -29,6 +29,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -37,13 +38,14 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
     /**
      * Offset to retrieve
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetget.php
+     * @link https://www.php.net/manual/en/arrayaccess.offsetget.php
      * @param mixed $offset <p>
      * The offset to retrieve.
      * </p>
      * @return mixed Can return all value types.
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data[$offset];
@@ -52,7 +54,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
     /**
      * Offset to set
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetset.php
+     * @link https://www.php.net/manual/en/arrayaccess.offsetset.php
      * @param mixed $offset <p>
      * The offset to assign the value to.
      * </p>
@@ -62,6 +64,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return void
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->data[$offset] = $value;
@@ -70,13 +73,14 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
     /**
      * Offset to unset
      *
-     * @link https://secure.php.net/manual/en/arrayaccess.offsetunset.php
+     * @link https://www.php.net/manual/en/arrayaccess.offsetunset.php
      * @param mixed $offset <p>
      * The offset to unset.
      * </p>
      * @return void
      * @since 2.0.14.1
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
