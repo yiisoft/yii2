@@ -162,7 +162,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => \yii\db\Connection::className(),
+                    'class' => \yii\db\Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
