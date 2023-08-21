@@ -380,21 +380,116 @@ class ResponseTest extends \yiiunit\TestCase
         );
     }
 
-    public function testSameSiteCookie()
+    /**
+     * @dataProvider cookiesTestProvider
+     */
+    public function testCookies($cookieConfig, $expected)
     {
         $response = new Response();
-        $response->cookies->add(new Cookie([
-            'name'     => 'test',
-            'value'    => 'testValue',
-            'sameSite' => Cookie::SAME_SITE_STRICT,
-        ]));
+        $response->cookies->add(new Cookie(array_merge(
+            [
+                'name'     => 'test',
+                'value'    => 'testValue',
+            ],
+            $cookieConfig
+        )));
 
         ob_start();
         $response->send();
         $content = ob_get_clean();
 
-        // Only way to test is that it doesn't create any errors
-        $this->assertEquals('', $content);
+        $cookies = $this->parseHeaderCookies();
+        if ($cookies === false) {
+            // Unable to resolve cookies, only way to test is that it doesn't create any errors
+            $this->assertEquals('', $content);
+        } else {
+            $testCookie = $cookies['test'];
+            $actual = array_intersect_key($testCookie, $expected);
+            ksort($actual);
+            ksort($expected);
+            $this->assertEquals($expected, $actual);
+        }
+    }
+
+    public function cookiesTestProvider()
+    {
+        $expireInt = time() + 3600;
+        $expireString = date('D, d-M-Y H:i:s', $expireInt) . ' GMT';
+
+        $testCases = [
+            'same-site' => [
+                ['sameSite' => Cookie::SAME_SITE_STRICT],
+                ['samesite' => Cookie::SAME_SITE_STRICT],
+            ],
+            'expire-as-int' => [
+                ['expire' => $expireInt],
+                ['expires' => $expireString],
+            ],
+            'expire-as-string' => [
+                ['expire' => $expireString],
+                ['expires' => $expireString],
+            ],
+        ];
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $testCases = array_merge($testCases, [
+                'expire-as-date_time' => [
+                    ['expire' => new \DateTime('@' . $expireInt)],
+                    ['expires' => $expireString],
+                ],
+                'expire-as-date_time_immutable' => [
+                    ['expire' => new \DateTimeImmutable('@' . $expireInt)],
+                    ['expires' => $expireString],
+                ],
+            ]);
+        }
+
+        return $testCases;
+    }
+
+    /**
+     * Tries to parse cookies set in the response headers.
+     * When running PHP on the CLI headers are not available (the `headers_list()` function always returns an
+     * empty array). If possible use xDebug: http://xdebug.org/docs/all_functions#xdebug_get_headers
+     * @param $name
+     * @return array|false
+     */
+    protected function parseHeaderCookies() {
+
+        if (!function_exists('xdebug_get_headers')) {
+            return false;
+        }
+
+        $cookies = [];
+        foreach(xdebug_get_headers() as $header) {
+            if (strpos($header, 'Set-Cookie: ') !== 0) {
+                continue;
+            }
+
+            $name = null;
+            $params = [];
+            $pairs = explode(';', substr($header, 12));
+            foreach ($pairs as  $index => $pair) {
+                $pair = trim($pair);
+                if (strpos($pair, '=') === false) {
+                    $params[strtolower($pair)] = true;
+                } else {
+                    list($paramName, $paramValue) = explode('=', $pair, 2);
+                    if ($index === 0) {
+                        $name = $paramName;
+                        $params['value'] = urldecode($paramValue);
+                    } else {
+                        $params[strtolower($paramName)] = urldecode($paramValue);
+                    }
+                }
+            }
+            if ($name === null) {
+                throw new \Exception('Could not determine cookie name for header "' . $header . '".');
+            }
+            $cookies[$name] = $params;
+        }
+
+        return $cookies;
     }
 
     /**
