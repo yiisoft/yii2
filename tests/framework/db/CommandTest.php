@@ -1548,7 +1548,7 @@ SQL;
     }
 
     public function testBindValuesSupportsEnums()
-    {
+  	{
         if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
             $db = $this->getConnection();
             $command = $db->createCommand();
@@ -1564,5 +1564,5 @@ SQL;
         } else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');
         }
-    }
+	  }
 }

@@ -317,7 +317,7 @@ class DbCache extends Cache
      */
     protected function getDataFieldName()
     {
-        return $this->isVarbinaryDataField() ? 'convert(nvarchar(max),[data]) data' : 'data';
+        return $this->isVarbinaryDataField() ? 'CONVERT(VARCHAR(MAX), [[data]]) data' : 'data';
     }
 
     /**

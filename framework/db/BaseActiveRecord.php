@@ -281,7 +281,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __get($name)
     {
-        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+        if (array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
         }
 
@@ -289,7 +289,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return null;
         }
 
-        if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+        if (array_key_exists($name, $this->_related)) {
             return $this->_related[$name];
         }
         $value = parent::__get($name);
@@ -1773,7 +1773,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private function isValueDifferent($newValue, $oldValue)
     {
-        if (is_array($newValue) && is_array($oldValue) && !ArrayHelper::isAssociative($oldValue)) {
+        if (is_array($newValue) && is_array($oldValue) && ArrayHelper::isAssociative($oldValue)) {
             $newValue = ArrayHelper::recursiveSort($newValue);
             $oldValue = ArrayHelper::recursiveSort($oldValue);
         }

@@ -12,6 +12,7 @@ use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
 use yii\log\FileTarget;
 use yii\log\Logger;
+use yiiunit\framework\log\mocks\CustomLogger;
 use yiiunit\TestCase;
 
 /**
@@ -109,5 +110,42 @@ class FileTargetTest extends TestCase
         $this->assertFileDoesNotExist($logFile . '.2');
         $this->assertFileDoesNotExist($logFile . '.3');
         $this->assertFileDoesNotExist($logFile . '.4');
+    }
+
+    public function testLogEmptyStrings()
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        $this->clearLogFile($logFile);
+
+        $logger = new CustomLogger();
+        $logger->logFile = $logFile;
+        $logger->messages = array_fill(0, 1, 'xxx');
+        $logger->export();
+
+        $test = file($logFile);
+        $this->assertEquals("xxx", $test[0]);
+
+        $this->clearLogFile($logFile);
+
+        $logger->messages = array_fill(0, 1, 'yyy');
+        $logger->export();
+
+        $this->assertFileDoesNotExist($logFile);
+
+        $logger->messages = array_fill(0, 10, '');
+        $logger->export();
+
+        $this->assertFileDoesNotExist($logFile);
+
+        $logger->messages = array_fill(0, 10, null);
+        $logger->export();
+
+        $this->assertFileDoesNotExist($logFile);
+    }
+
+    private function clearLogFile($logFile)
+    {
+        FileHelper::removeDirectory(dirname($logFile));
+        mkdir(dirname($logFile), 0777, true);
     }
 }
