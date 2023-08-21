@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Enh #19884: Added support Enums in Query Builder (sk1t0n)
 - Bug #19908: Fix associative array cell content rendering in Table widget (rhertogh)
 - Bug #19906: Fixed multiline strings in the `\yii\console\widgets\Table` widget (rhertogh)
+- Bug #19924: Fix `yii\i18n\Formatter` to not throw error `Unknown named parameter` under PHP 8 (arollmann)
 
 
 2.0.48.1 May 24, 2023
