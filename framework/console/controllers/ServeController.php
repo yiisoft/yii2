@@ -47,7 +47,7 @@ class ServeController extends Controller
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
-     * @return int
+     * @return void|int
      */
     public function actionIndex($address = 'localhost')
     {
