@@ -1721,6 +1721,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `unset($model[$offset])`.
      * @param mixed $offset the offset to unset element
+     * @return null
      */
     public function offsetUnset($offset)
     {
