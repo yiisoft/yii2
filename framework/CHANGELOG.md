@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.49 under development
 ------------------------
 
+- Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
 - Bug #19872: Fixed the definition of dirty attributes in AR properties for a non-associative array in case of changing the order of elements (eegusakov)
 - Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
 - Bug #9899: Fix caching a MSSQL query with BLOB data type (terabytesoftw)
