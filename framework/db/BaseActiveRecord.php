@@ -1610,40 +1610,46 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the text label for the specified attribute.
-     * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+     * The attribute may be specified in a dot format to retrieve the label from related model or allow this model to override the label defined in related model.
+     * For example, if the attribute is specified as 'relatedModel1.relatedModel2.attr' the function will return the first label definition it can find
+     * in the following order:
+     * - the label for 'relatedModel1.relatedModel2.attr' defined in [[attributeLabels()]] of this model;
+     * - the label for 'relatedModel2.attr' defined in related model represented by relation 'relatedModel1' of this model;
+     * - the label for 'attr' defined in related model represented by relation 'relatedModel2' of relation 'relatedModel1'.
+     * If no label definition was found then the value of $this->generateAttributeLabel('relatedModel1.relatedModel2.attr') will be returned.
      * @param string $attribute the attribute name
      * @return string the attribute label
-     * @see generateAttributeLabel()
      * @see attributeLabels()
+     * @see generateAttributeLabel()
      */
     public function getAttributeLabel($attribute)
     {
-        $labels = $this->attributeLabels();
-        if (isset($labels[$attribute])) {
-            return $labels[$attribute];
-        } elseif (strpos($attribute, '.')) {
-            $attributeParts = explode('.', $attribute);
-            $neededAttribute = array_pop($attributeParts);
-
-            $relatedModel = $this;
-            foreach ($attributeParts as $relationName) {
-                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
-                    $relatedModel = $relatedModel->$relationName;
-                } else {
-                    try {
-                        $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
-                        return $this->generateAttributeLabel($attribute);
-                    }
-                    /* @var $modelClass ActiveRecordInterface */
-                    $modelClass = $relation->modelClass;
-                    $relatedModel = $modelClass::instance();
-                }
+        $model = $this;
+        $modelAttribute = $attribute;
+        for (;;) {
+            $labels = $model->attributeLabels();
+            if (isset($labels[$modelAttribute])) {
+                return $labels[$modelAttribute];
             }
 
-            $labels = $relatedModel->attributeLabels();
-            if (isset($labels[$neededAttribute])) {
-                return $labels[$neededAttribute];
+            $parts = explode('.', $modelAttribute, 2);
+            if (count($parts) < 2) {
+                break;
+            }
+
+            list ($relationName, $modelAttribute) = $parts;
+
+            if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
+                $model = $model->$relationName;
+            } else {
+                try {
+                    $relation = $model->getRelation($relationName);
+                } catch (InvalidArgumentException $e) {
+                    break;
+                }
+                /* @var $modelClass ActiveRecordInterface */
+                $modelClass = $relation->modelClass;
+                $model = $modelClass::instance();
             }
         }
 
