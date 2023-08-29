@@ -127,6 +127,18 @@ class FileTargetTest extends TestCase
 
         $this->clearLogFile($logFile);
 
+        $logger = new CustomLogger();
+        $logger->logFile = $logFile;
+        $logger->messages = array_fill(0, 3, 'xxx');
+        $logger->export();
+
+        $test = file($logFile);
+        $this->assertEquals("xxx\n", $test[0]);
+        $this->assertEquals("xxx\n", $test[1]);
+        $this->assertEquals("xxx\n", $test[2]);
+
+        $this->clearLogFile($logFile);
+
         $logger->messages = array_fill(0, 1, 'yyy');
         $logger->export();
 
