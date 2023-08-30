@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
-- no changes in this release.
+- Bug #19940: File Log writer without newline (terabytesoftw)
 
 
 2.0.49 August 29, 2023
