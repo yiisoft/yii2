@@ -1616,7 +1616,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * - the label for 'relatedModel1.relatedModel2.attr' defined in [[attributeLabels()]] of this model;
      * - the label for 'relatedModel2.attr' defined in related model represented by relation 'relatedModel1' of this model;
      * - the label for 'attr' defined in related model represented by relation 'relatedModel2' of relation 'relatedModel1'.
-     * If no label definition was found then the value of $this->generateAttributeLabel('relatedModel1.relatedModel2.attr') will be returned.
+     *   If no label definition was found then the value of $this->generateAttributeLabel('relatedModel1.relatedModel2.attr') will be returned.
      * @param string $attribute the attribute name
      * @return string the attribute label
      * @see attributeLabels()
