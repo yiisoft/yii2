@@ -77,6 +77,10 @@ class FilterValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
+        if ($this->filter === 'trim') {
+            $value = (string)$model->$attribute;
+        }
+
         if (!$this->skipOnArray || !is_array($value)) {
             $model->$attribute = call_user_func($this->filter, $value);
         }
