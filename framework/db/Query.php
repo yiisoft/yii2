@@ -75,6 +75,12 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $from;
     /**
+     * @var string|null force to use specific index. For example, `'userTimeCreated'`.
+     * This is used to construct the FROM clause in a SQL statement.
+     * @see forceIndex()
+     */
+    public $forceIndex;
+    /**
      * @var array|null how to group the query results. For example, `['company', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
@@ -826,6 +832,25 @@ PATTERN;
     }
 
     /**
+     * Sets the FORCE INDEX part of the query.
+     * @param string $forceIndex
+     *
+     * Here are some examples:
+     *
+     * ```php
+     * // SELECT * FROM  `user` FORCE INDEX (userTimeCreated);
+     * $query = (new \yii\db\Query)->from('user')->forceIndex('userTimeCreated');
+     * ```
+     *
+     * @return $this the query object itself
+     */
+    public function forceIndex($forceIndex)
+    {
+        $this->forceIndex = $forceIndex;
+        return $this;
+    }
+
+    /**
      * Sets the WHERE part of the query.
      *
      * The method requires a `$condition` parameter, and optionally a `$params` parameter
@@ -1381,6 +1406,7 @@ PATTERN;
             'selectOption' => $from->selectOption,
             'distinct' => $from->distinct,
             'from' => $from->from,
+            'forceIndex' => $from->forceIndex,
             'groupBy' => $from->groupBy,
             'join' => $from->join,
             'having' => $from->having,
