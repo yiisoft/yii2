@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
+- Bug #19940: File Log writer without newline (terabytesoftw)
 
 
 2.0.49 August 29, 2023
