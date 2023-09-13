@@ -2250,7 +2250,7 @@ class LabelTestModel1 extends \yii\db\ActiveRecord
 
     public function getModel2()
     {
-        return $this->hasOne(LabelTestModel2::className(), []);
+        return $this->hasOne(LabelTestModel2::class, []);
     }
 }
 
@@ -2263,7 +2263,7 @@ class LabelTestModel2 extends \yii\db\ActiveRecord
 
     public function getModel3()
     {
-        return $this->hasOne(LabelTestModel3::className(), []);
+        return $this->hasOne(LabelTestModel3::class, []);
     }
 
     public function attributeLabels()
