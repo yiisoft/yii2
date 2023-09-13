@@ -100,6 +100,11 @@ Upgrade from Yii 2.0.45
   2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
 * `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
   the files is done only by copy.
+* `yii\validators\UniqueValidator` and `yii\validators\ExistValidator`, when used on multiple attributes, now only
+  generate an error on a single attribute. Previously, they would report a separate error on each attribute.
+  Old behavior can be achieved by setting `'skipOnError' => false`, but this might have undesired side effects with
+  additional validators on one of the target attributes.
+  See [issue #19407](https://github.com/yiisoft/yii2/issues/19407)
 
 Upgrade from Yii 2.0.44
 -----------------------
