@@ -130,12 +130,12 @@ class FileTarget extends Target
         if ($this->enableRotation && @filesize($this->logFile) > $this->maxFileSize * 1024) {
             $this->rotateFiles();
         }
-        $writeResult = @fwrite($fp, $trimmedText);
+        $writeResult = @fwrite($fp, $text);
         if ($writeResult === false) {
             $error = error_get_last();
             throw new LogRuntimeException("Unable to export log through file ({$this->logFile})!: {$error['message']}");
         }
-        $textSize = strlen($trimmedText);
+        $textSize = strlen($text);
         if ($writeResult < $textSize) {
             throw new LogRuntimeException("Unable to export whole log through file ({$this->logFile})! Wrote $writeResult out of $textSize bytes.");
         }
