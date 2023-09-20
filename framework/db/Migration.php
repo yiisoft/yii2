@@ -311,7 +311,7 @@ class Migration extends Component implements MigrationInterface
      *
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
      * put into the generated SQL.
-     * 
+     *
      * Example usage:
      * ```php
      * class m200000_000000_create_table_fruits extends \yii\db\Migration
@@ -319,10 +319,10 @@ class Migration extends Component implements MigrationInterface
      *     public function safeUp()
      *     {
      *          $this->createTable('{{%fruits}}', [
-     *              // ...              
+     *              // ...
      *              'column_name double precision null default null',
      * ```
-
+     *
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.

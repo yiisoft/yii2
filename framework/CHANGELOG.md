@@ -1,25 +1,34 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.49 under development
+2.0.50 under development
 ------------------------
 
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
-- Bug #19911: Resolved inconsistency in `ActiveRecord::getAttributeLabel()` with regard of overriding in primary model labels for attributes of related model in favor of allowing such overriding for all levels of relation nesting (PowerGamer1)
-- Bug #19872: Fixed the definition of dirty attributes in AR properties for a non-associative array in case of changing the order of elements (eegusakov)
-- Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
+- Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
+- Bug #19940: File Log writer without newline (terabytesoftw)
+- Bug #19951: Removed unneeded MIME file tests (schmunk42)
+- Bug #19950: Fix `Query::groupBy(null)` causes error for PHP 8.1: `trim(): Passing null to parameter #1 ($string) of type string is deprecated` (uaoleg)
+
+
+2.0.49 August 29, 2023
+----------------------
+
 - Bug #9899: Fix caching a MSSQL query with BLOB data type (terabytesoftw)
 - Bug #16208: Fix `yii\log\FileTarget` to not export empty messages (terabytesoftw)
-- Bug #19857: Fix AttributeTypecastBehavior::resetOldAttributes() causes "class has no attribute named" InvalidArgumentException (uaoleg)
 - Bug #18859: Fix `yii\web\Controller::bindInjectedParams()` to not throw error when argument of `ReflectionUnionType` type is passed (bizley)
+- Bug #19857: Fix AttributeTypecastBehavior::resetOldAttributes() causes "class has no attribute named" InvalidArgumentException (uaoleg)
+- Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
+- Bug #19872: Fixed the definition of dirty attributes in AR properties for a non-associative array in case of changing the order of elements (eegusakov)
+- Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
+- Bug #19906: Fixed multiline strings in the `\yii\console\widgets\Table` widget (rhertogh)
+- Bug #19908: Fix associative array cell content rendering in Table widget (rhertogh)
+- Bug #19911: Resolved inconsistency in `ActiveRecord::getAttributeLabel()` with regard of overriding in primary model labels for attributes of related model in favor of allowing such overriding for all levels of relation nesting (PowerGamer1)
+- Bug #19914: Fixed `ArrayHelper::keyExists()` and  `::remove()` functions when the key is a float and the value is `null` (rhertogh)
+- Bug #19924: Fix `yii\i18n\Formatter` to not throw error `Unknown named parameter` under PHP 8 (arollmann)
 - Enh #19841: Allow jQuery 3.7 to be installed (wouter90)
 - Enh #19853: Added support for default value for `\yii\helpers\Console::select()` (rhertogh)
-- Bug #19868: Added whitespace sanitation for tests, due to updates in ICU 72 (schmunk42)
 - Enh #19884: Added support Enums in Query Builder (sk1t0n)
-- Bug #19908: Fix associative array cell content rendering in Table widget (rhertogh)
-- Bug #19906: Fixed multiline strings in the `\yii\console\widgets\Table` widget (rhertogh)
-- Bug #19924: Fix `yii\i18n\Formatter` to not throw error `Unknown named parameter` under PHP 8 (arollmann)
-- Bug #19914: Fixed `ArrayHelper::keyExists()` and  `::remove()` functions when the key is a float and the value is `null` (rhertogh)
 - Enh #19920: Broadened the accepted type of `Cookie::$expire` from `int` to `int|string|\DateTimeInterface|null` (rhertogh)
 
 
