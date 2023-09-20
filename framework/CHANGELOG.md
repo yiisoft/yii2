@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
 - Bug #19940: File Log writer without newline (terabytesoftw)
 - Bug #19951: Removed unneeded MIME file tests (schmunk42)
+- Bug #19950: Fix `Query::groupBy(null)` causes error for PHP 8.1: `trim(): Passing null to parameter #1 ($string) of type string is deprecated`
 
 
 2.0.49 August 29, 2023
