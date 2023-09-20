@@ -219,9 +219,10 @@ abstract class ConnectionTest extends DatabaseTestCase
         $transaction->commit();
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
-        $transaction->commit();
 
-        $this->assertTrue(true); // should not be any exception so far
+        $this->expectNotToPerformAssertions();
+
+        $transaction->commit();
     }
 
     public function testTransactionShortcutException()
