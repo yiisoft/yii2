@@ -68,7 +68,7 @@
         "yiisoft/yii2": "self.version"
     },
     "require": {
-        "php": ">=7.4.0",
+        "php": ">=7.3.0",
         "ext-mbstring": "*",
         "ext-ctype": "*",
         "lib-pcre": "*",

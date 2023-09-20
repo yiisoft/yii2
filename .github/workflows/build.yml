@@ -21,6 +21,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          - php: 7.3
+            coverage: xdebug
+            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+            os: ubuntu-latest
           - php: 7.4
             coverage: xdebug
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
