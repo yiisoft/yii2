@@ -34,6 +34,7 @@ install:
 
 before_test:
     - cd C:\projects\yii2
+    - php C:\tools\composer.phar selfupdate --2
     - php C:\tools\composer.phar update --no-interaction --no-progress --prefer-stable --no-ansi
 
 test_script:
