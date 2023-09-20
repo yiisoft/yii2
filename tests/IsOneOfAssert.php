@@ -14,10 +14,12 @@ use yii\helpers\VarDumper;
  */
 class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
 {
-    private array $allowedValues = [];
+    /**
+     * @var array the expected values
+     */
+    private $allowedValues = [];
 
-    /** @psalm-param string[] $allowedValues */
-    public function __construct(array $allowedValues)
+    public function __construct($allowedValues)
     {
         $this->allowedValues = $allowedValues;
     }
