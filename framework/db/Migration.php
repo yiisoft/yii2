@@ -322,7 +322,7 @@ class Migration extends Component implements MigrationInterface
      *              // ...
      *              'column_name double precision null default null',
      * ```
-
+     *
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
