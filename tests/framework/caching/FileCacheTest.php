@@ -77,7 +77,7 @@ class FileCacheTest extends CacheTestCase
         $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
         $this->assertTrue($refMethodSet->invoke($cache, $key, $value));
-        $this->assertContains($keyPrefix, basename($cacheFile));
+        $this->assertStringContainsString($keyPrefix, basename($cacheFile));
         $this->assertEquals($expectedDirectoryName, basename(dirname($cacheFile)), $cacheFile);
         $this->assertTrue(is_dir(dirname($cacheFile)), 'File not found ' . $cacheFile);
         $this->assertEquals($value, $refMethodGet->invoke($cache, $key));

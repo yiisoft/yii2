@@ -22,7 +22,7 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -1331,6 +1331,8 @@ class UrlRuleTest extends TestCase
      */
     public function testGetCreateUrlStatusProvider()
     {
+        $this->expectNotToPerformAssertions();
+
         return [
             'route' => [
                 // rule properties

@@ -38,7 +38,7 @@ class UserTest extends TestCase
      */
     public static $time;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->session->removeAll();
         static::$time = null;
@@ -404,14 +404,14 @@ class UserTest extends TestCase
 
     public function testGetIdentityException()
     {
-        $session = $this->getMock('yii\web\Session');
+        $session = $this->getMockBuilder(\yii\web\Session::class)->getMock();
         $session->method('getHasSessionId')->willReturn(true);
         $session->method('get')->with($this->equalTo('__id'))->willReturn('1');
 
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => ExceptionIdentity::className(),
+                    'identityClass' => ExceptionIdentity::class,
                 ],
                 'session' => $session,
             ],

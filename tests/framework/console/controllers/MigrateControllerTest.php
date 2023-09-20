@@ -26,7 +26,7 @@ class MigrateControllerTest extends TestCase
 {
     use MigrateControllerTestTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->migrateControllerClass = EchoMigrateController::className();
         $this->migrationBaseClass = Migration::className();
@@ -44,7 +44,7 @@ class MigrateControllerTest extends TestCase
         parent::setUp();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->tearDownMigrationPath();
         parent::tearDown();

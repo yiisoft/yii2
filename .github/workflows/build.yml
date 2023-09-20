@@ -21,34 +21,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: 5.4
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.5
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.6
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.0
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.1
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.2
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.3
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
           - php: 7.4
             coverage: xdebug
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
@@ -62,6 +34,10 @@ jobs:
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             os: ubuntu-latest
           - php: 8.2
+            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+            coverage: none
+            os: ubuntu-latest
+          - php: 8.3
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             coverage: none
             os: ubuntu-latest

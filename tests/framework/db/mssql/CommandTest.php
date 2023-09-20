@@ -55,7 +55,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = 'abc';
-        $floatCol = 1.23;
+        $floatCol = 1.230;
         $blobCol = "\x10\x11\x12";
         $numericCol = '1.23';
         $boolCol = false;
@@ -71,7 +71,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $row = $db->createCommand($sql)->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, trim($row['char_col']));
-        $this->assertEquals($floatCol, $row['float_col']);
+        $this->assertEquals($floatCol, (float) $row['float_col']);
         $this->assertEquals($blobCol, $row['blob_col']);
         $this->assertEquals($numericCol, $row['numeric_col']);
 
@@ -101,7 +101,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db = $this->getConnection(false);
         $tableName = 'test_def';
         $name = 'test_def_constraint';
-        /** @var \yii\db\pgsql\Schema $schema */
+        /** @var \yii\db\mssql\Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {
@@ -113,7 +113,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
         $db->createCommand()->addDefaultValue($name, $tableName, 'int1', 41)->execute();
-        $this->assertRegExp('/^.*41.*$/', $schema->getTableDefaultValues($tableName, true)[0]->value);
+        $this->assertMatchesRegularExpression('/^.*41.*$/', $schema->getTableDefaultValues($tableName, true)[0]->value);
 
         $db->createCommand()->dropDefaultValue($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableDefaultValues($tableName, true));

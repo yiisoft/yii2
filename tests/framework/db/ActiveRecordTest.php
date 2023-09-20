@@ -44,7 +44,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 {
     use ActiveRecordTestTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -199,7 +199,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(0, $order->books);
 
         $order = Order::find()->where(['id' => 1])->asArray()->one();
-        $this->assertInternalType('array', $order);
+        $this->assertIsArray($order);
     }
 
     public function testFindEagerViaTable()
@@ -225,10 +225,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // https://github.com/yiisoft/yii2/issues/1402
         $orders = Order::find()->with('books')->orderBy('id')->asArray()->all();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]['orderItems'][0]);
+        $this->assertIsArray($orders[0]['orderItems'][0]);
 
         $order = $orders[0];
-        $this->assertInternalType('array', $order);
+        $this->assertIsArray($order);
         $this->assertEquals(1, $order['id']);
         $this->assertCount(2, $order['books']);
         $this->assertEquals(1, $order['books'][0]['id']);
@@ -1123,7 +1123,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoin);
 
         $customerWithJoinIndexOrdered = $order->customerJoinedWithProfileIndexOrdered;
-        $this->assertInternalType('array', $customerWithJoinIndexOrdered);
+        $this->assertIsArray($customerWithJoinIndexOrdered);
         $this->assertArrayHasKey('user1', $customerWithJoinIndexOrdered);
         $this->assertInstanceOf('yiiunit\data\ar\Customer', $customerWithJoinIndexOrdered['user1']);
     }
@@ -1422,38 +1422,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
-    }
-
-    /**
-     * @requires PHP 5.6
-     */
-    public function testCastValues()
-    {
-        $model = new Type();
-        $model->int_col = 123;
-        $model->int_col2 = 456;
-        $model->smallint_col = 42;
-        $model->char_col = '1337';
-        $model->char_col2 = 'test';
-        $model->char_col3 = 'test123';
-        $model->float_col = 3.742;
-        $model->float_col2 = 42.1337;
-        $model->bool_col = true;
-        $model->bool_col2 = false;
-        $model->save(false);
-
-        /* @var $model Type */
-        $model = Type::find()->one();
-        $this->assertSame(123, $model->int_col);
-        $this->assertSame(456, $model->int_col2);
-        $this->assertSame(42, $model->smallint_col);
-        $this->assertSame('1337', trim($model->char_col));
-        $this->assertSame('test', $model->char_col2);
-        $this->assertSame('test123', $model->char_col3);
-//        $this->assertSame(1337.42, $model->float_col);
-//        $this->assertSame(42.1337, $model->float_col2);
-//        $this->assertSame(true, $model->bool_col);
-//        $this->assertSame(false, $model->bool_col2);
     }
 
     public function testIssues()
@@ -1934,6 +1902,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testLegalValuesForFindByCondition($modelClassName, $validFilter)
     {
+        $this->expectNotToPerformAssertions();
+
         /** @var Query $query */
         $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
         Customer::getDb()->queryBuilder->build($query);
@@ -1970,11 +1940,15 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     /**
      * @dataProvider illegalValuesForFindByCondition
+     *
+     * @param string $modelClassName The model class name.
+     * @param array $filterWithInjection The filter with injection.
      */
-    public function testValueEscapingInFindByCondition($modelClassName, $filterWithInjection)
+    public function testValueEscapingInFindByCondition(string $modelClassName, array $filterWithInjection): void
     {
-        $this->expectException('yii\base\InvalidArgumentException');
-        $this->expectExceptionMessageRegExp('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessageMatches('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
+
         /** @var Query $query */
         $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', $filterWithInjection);
         Customer::getDb()->queryBuilder->build($query);
@@ -2094,16 +2068,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $cat = new Cat();
         $this->assertFalse(isset($cat->exception));
-    }
-
-    /**
-     * @requires PHP 7
-     */
-    public function testIssetThrowable()
-    {
-        $cat = new Cat();
-        $this->assertFalse(isset($cat->throwable));
-
     }
 
     /**

@@ -22,7 +22,7 @@ use yiiunit\data\ar\Profile;
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();

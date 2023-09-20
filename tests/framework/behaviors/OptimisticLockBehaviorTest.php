@@ -29,14 +29,14 @@ class OptimisticLockBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -60,7 +60,7 @@ class OptimisticLockBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_auto_lock_version_string', $columns)->execute();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -127,14 +127,13 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(8, $model->version, 'init version should equal 8');
     }
 
-
     public function testUpdateRecord()
     {
         $request = new Request();
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
@@ -152,7 +151,7 @@ class OptimisticLockBehaviorTest extends TestCase
         try {
             $model->save(false);
         } catch (\yii\db\StaleObjectException $e) {
-            $this->assertContains('The object being updated is outdated.', $e->getMessage());
+            $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
 
@@ -168,7 +167,7 @@ class OptimisticLockBehaviorTest extends TestCase
         try {
             $model->save(false);
         } catch (\yii\db\StaleObjectException $e) {
-            $this->assertContains('The object being updated is outdated.', $e->getMessage());
+            $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
 
@@ -184,7 +183,7 @@ class OptimisticLockBehaviorTest extends TestCase
         try {
             $model->save(false);
         } catch (\yii\db\StaleObjectException $e) {
-            $this->assertContains('The object being updated is outdated.', $e->getMessage());
+            $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
 
@@ -211,13 +210,13 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(3, $model->version, 'updated version should equal 3');
     }
 
-     public function testDeleteRecord()
+    public function testDeleteRecord()
     {
         $request = new Request();
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
@@ -233,7 +232,7 @@ class OptimisticLockBehaviorTest extends TestCase
         try {
             $model->delete();
         } catch (\yii\db\StaleObjectException $e) {
-            $this->assertContains('The object being deleted is outdated.', $e->getMessage());
+            $this->assertStringContainsString('The object being deleted is outdated.', $e->getMessage());
             $thrown = true;
         }
 
@@ -249,7 +248,7 @@ class OptimisticLockBehaviorTest extends TestCase
         try {
             $model->delete();
         } catch (\yii\db\StaleObjectException $e) {
-            $this->assertContains('The object being deleted is outdated.', $e->getMessage());
+            $this->assertStringContainsString('The object being deleted is outdated.', $e->getMessage());
             $thrown = true;
         }
 

@@ -18,7 +18,7 @@ use yii\base\DynamicModel;
  */
 class ConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
