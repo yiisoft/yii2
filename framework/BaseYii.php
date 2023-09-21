@@ -409,18 +409,6 @@ class BaseYii
     }
 
     /**
-     * Alias of [[debug()]].
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as an array.
-     * @param string $category the category of the message.
-     * @deprecated since 2.0.14. Use [[debug()]] instead.
-     */
-    public static function trace($message, $category = 'application')
-    {
-        static::debug($message, $category);
-    }
-
-    /**
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
@@ -492,19 +480,6 @@ class BaseYii
     public static function endProfile($token, $category = 'application')
     {
         static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
-    }
-
-    /**
-     * Returns an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information.
-     * @return string an HTML hyperlink that can be displayed on your Web page showing "Powered by Yii Framework" information
-     * @deprecated since 2.0.14, this method will be removed in 2.1.0.
-     */
-    public static function powered()
-    {
-        return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="https://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>',
-        ]);
     }
 
     /**
