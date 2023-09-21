@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidRouteException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
@@ -400,12 +401,21 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1 && isset($validationKey)) {
+            $expire = $cookie->expire;
+            if (is_string($expire)) {
+                $expire = strtotime($expire);
+            } elseif (interface_exists('\\DateTimeInterface') && $expire instanceof \DateTimeInterface) {
+                $expire = $expire->getTimestamp();
+            }
+            if ($expire === null || $expire === false) {
+                $expire = 0;
+            }
+            if ($expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             if (PHP_VERSION_ID >= 70300) {
                 setcookie($cookie->name, $value, [
-                    'expires' => $cookie->expire,
+                    'expires' => $expire,
                     'path' => $cookie->path,
                     'domain' => $cookie->domain,
                     'secure' => $cookie->secure,
@@ -419,7 +429,7 @@ class Response extends \yii\base\Response
                 if (!is_null($cookie->sameSite)) {
                     $cookiePath .= '; samesite=' . $cookie->sameSite;
                 }
-                setcookie($cookie->name, $value, $cookie->expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+                setcookie($cookie->name, $value, $expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
         }
     }
@@ -886,12 +896,13 @@ class Response extends \yii\base\Response
         }
         $request = Yii::$app->getRequest();
         $normalizedUrl = Url::to($url);
-        if (
-            $normalizedUrl !== null
-            && strncmp($normalizedUrl, '/', 1) === 0
-            && strncmp($normalizedUrl, '//', 2) !== 0
-        ) {
-            $normalizedUrl = $request->getHostInfo() . $normalizedUrl;
+        if ($normalizedUrl !== null) {
+            if (preg_match('/\n/', $normalizedUrl)) {
+                throw new InvalidRouteException('Route with new line character detected "' . $normalizedUrl . '".');
+            }
+            if (strncmp($normalizedUrl, '/', 1) === 0 && strncmp($normalizedUrl, '//', 2) !== 0) {
+                $normalizedUrl = $request->getHostInfo() . $normalizedUrl;
+            }
         }
 
         if ($checkAjax && $request->getIsAjax()) {

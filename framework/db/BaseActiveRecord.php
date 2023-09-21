@@ -282,7 +282,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function __get($name)
     {
-        if (isset($this->_attributes[$name]) || array_key_exists($name, $this->_attributes)) {
+        if (array_key_exists($name, $this->_attributes)) {
             return $this->_attributes[$name];
         }
 
@@ -290,7 +290,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return null;
         }
 
-        if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+        if (array_key_exists($name, $this->_related)) {
             return $this->_related[$name];
         }
         $value = parent::__get($name);
@@ -576,11 +576,22 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function setOldAttribute($name, $value)
     {
-        if (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name)) {
+        if ($this->canSetOldAttribute($name)) {
             $this->_oldAttributes[$name] = $value;
         } else {
             throw new InvalidArgumentException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
+    }
+
+    /**
+     * Returns if the old named attribute can be set.
+     * @param string $name the attribute name
+     * @return bool whether the old attribute can be set
+     * @see setOldAttribute()
+     */
+    public function canSetOldAttribute($name)
+    {
+        return (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name));
     }
 
     /**
@@ -639,7 +650,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isAttributeDirty($name, $value))) {
+                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $this->isValueDifferent($value, $this->_oldAttributes[$name]))) {
                     $attributes[$name] = $value;
                 }
             }
@@ -1599,40 +1610,46 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the text label for the specified attribute.
-     * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+     * The attribute may be specified in a dot format to retrieve the label from related model or allow this model to override the label defined in related model.
+     * For example, if the attribute is specified as 'relatedModel1.relatedModel2.attr' the function will return the first label definition it can find
+     * in the following order:
+     * - the label for 'relatedModel1.relatedModel2.attr' defined in [[attributeLabels()]] of this model;
+     * - the label for 'relatedModel2.attr' defined in related model represented by relation 'relatedModel1' of this model;
+     * - the label for 'attr' defined in related model represented by relation 'relatedModel2' of relation 'relatedModel1'.
+     *   If no label definition was found then the value of $this->generateAttributeLabel('relatedModel1.relatedModel2.attr') will be returned.
      * @param string $attribute the attribute name
      * @return string the attribute label
-     * @see generateAttributeLabel()
      * @see attributeLabels()
+     * @see generateAttributeLabel()
      */
     public function getAttributeLabel($attribute)
     {
-        $labels = $this->attributeLabels();
-        if (isset($labels[$attribute])) {
-            return $labels[$attribute];
-        } elseif (strpos($attribute, '.')) {
-            $attributeParts = explode('.', $attribute);
-            $neededAttribute = array_pop($attributeParts);
-
-            $relatedModel = $this;
-            foreach ($attributeParts as $relationName) {
-                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
-                    $relatedModel = $relatedModel->$relationName;
-                } else {
-                    try {
-                        $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
-                        return $this->generateAttributeLabel($attribute);
-                    }
-                    /* @var $modelClass ActiveRecordInterface */
-                    $modelClass = $relation->modelClass;
-                    $relatedModel = $modelClass::instance();
-                }
+        $model = $this;
+        $modelAttribute = $attribute;
+        for (;;) {
+            $labels = $model->attributeLabels();
+            if (isset($labels[$modelAttribute])) {
+                return $labels[$modelAttribute];
             }
 
-            $labels = $relatedModel->attributeLabels();
-            if (isset($labels[$neededAttribute])) {
-                return $labels[$neededAttribute];
+            $parts = explode('.', $modelAttribute, 2);
+            if (count($parts) < 2) {
+                break;
+            }
+
+            list ($relationName, $modelAttribute) = $parts;
+
+            if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
+                $model = $model->$relationName;
+            } else {
+                try {
+                    $relation = $model->getRelation($relationName);
+                } catch (InvalidArgumentException $e) {
+                    break;
+                }
+                /* @var $modelClass ActiveRecordInterface */
+                $modelClass = $relation->modelClass;
+                $model = $modelClass::instance();
             }
         }
 
@@ -1756,18 +1773,18 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     }
 
     /**
-     * @param string $attribute
-     * @param mixed $value
+     * @param mixed $newValue
+     * @param mixed $oldValue
      * @return bool
+     * @since 2.0.48
      */
-    private function isAttributeDirty($attribute, $value)
+    private function isValueDifferent($newValue, $oldValue)
     {
-        $old_attribute = $this->oldAttributes[$attribute];
-        if (is_array($value) && is_array($this->oldAttributes[$attribute])) {
-            $value = ArrayHelper::recursiveSort($value);
-            $old_attribute = ArrayHelper::recursiveSort($old_attribute);
+        if (is_array($newValue) && is_array($oldValue) && ArrayHelper::isAssociative($oldValue)) {
+            $newValue = ArrayHelper::recursiveSort($newValue);
+            $oldValue = ArrayHelper::recursiveSort($oldValue);
         }
 
-        return $value !== $old_attribute;
+        return $newValue !== $oldValue;
     }
 }

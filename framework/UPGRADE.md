@@ -52,6 +52,17 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
+Upgrade from Yii 2.0.48
+-----------------------
+
+* Since Yii 2.0.49 the `yii\console\Controller::select()` function supports a default value and respects
+  the `yii\console\Controller::$interactive` setting. Before the user was always prompted to select an option
+  regardless of the `$interactive` setting. Now the `$default` value is automatically returned when `$interactive` is 
+  `false`.
+* The function signature for `yii\console\Controller::select()` and `yii\helpers\BaseConsole::select()` have changed.
+  They now have an additional `$default = null` parameter. In case those methods are overwritten you will need to
+  update your child classes accordingly.
+
 Upgrade from Yii 2.0.46
 -----------------------
 
@@ -89,6 +100,11 @@ Upgrade from Yii 2.0.45
   2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
 * `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
   the files is done only by copy.
+* `yii\validators\UniqueValidator` and `yii\validators\ExistValidator`, when used on multiple attributes, now only
+  generate an error on a single attribute. Previously, they would report a separate error on each attribute.
+  Old behavior can be achieved by setting `'skipOnError' => false`, but this might have undesired side effects with
+  additional validators on one of the target attributes.
+  See [issue #19407](https://github.com/yiisoft/yii2/issues/19407)
 
 Upgrade from Yii 2.0.44
 -----------------------

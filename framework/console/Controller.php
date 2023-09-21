@@ -28,8 +28,8 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property-read string $help The help information for this controller.
- * @property-read string $helpSummary The one-line short summary describing this controller.
+ * @property-read string $help
+ * @property-read string $helpSummary
  * @property-read array $passedOptionValues The properties corresponding to the passed options.
  * @property-read array $passedOptions The names of the options passed during execution.
  *
@@ -400,12 +400,19 @@ class Controller extends \yii\base\Controller
      *
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from
+     * @param string|null $default value to use when the user doesn't provide an option.
+     * If the default is `null`, the user is required to select an option.
      *
      * @return string An option character the user chose
+     * @since 2.0.49 Added the $default argument
      */
-    public function select($prompt, $options = [])
+    public function select($prompt, $options = [], $default = null)
     {
-        return Console::select($prompt, $options);
+        if ($this->interactive) {
+            return Console::select($prompt, $options, $default);
+        }
+
+        return $default;
     }
 
     /**
