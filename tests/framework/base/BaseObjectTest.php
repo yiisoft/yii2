@@ -159,6 +159,11 @@ class BaseObjectTest extends TestCase
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
         $this->object->writeOnly;
     }
+
+    public function testClassName(): void
+    {
+        $this->assertSame(NewObject::class, $this->object::className());
+    }
 }
 
 

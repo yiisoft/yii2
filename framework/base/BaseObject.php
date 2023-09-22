@@ -282,4 +282,14 @@ class BaseObject implements Configurable
     {
         return method_exists($this, $name);
     }
+
+    /**
+     * Returns the fully qualified name of this class.
+     *
+     * @return string the fully qualified name of this class.
+     */
+    public static function className(): string
+    {
+        return static::class;
+    }
 }
