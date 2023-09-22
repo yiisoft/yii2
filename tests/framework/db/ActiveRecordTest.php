@@ -2192,4 +2192,87 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotNull($order->virtualCustomer);
     }
 
+    public function labelTestModelProvider()
+    {
+        $data = [];
+
+        // Model 2 and 3 are represented by objects.
+        $model1 = new LabelTestModel1();
+        $model2 = new LabelTestModel2();
+        $model3 = new LabelTestModel3();
+        $model2->populateRelation('model3', $model3);
+        $model1->populateRelation('model2', $model2);
+        $data[] = [$model1];
+
+        // Model 2 and 3 are represented by arrays instead of objects.
+        $model1 = new LabelTestModel1();
+        $model2 = ['model3' => []];
+        $model1->populateRelation('model2', $model2);
+        $data[] = [$model1];
+
+        return $data;
+    }
+
+    /**
+     * @dataProvider labelTestModelProvider
+     * @param \yii\db\ActiveRecord $model
+     */
+    public function testGetAttributeLabel($model)
+    {
+        $this->assertEquals('model3.attr1 from model2', $model->getAttributeLabel('model2.model3.attr1'));
+        $this->assertEquals('attr2 from model3', $model->getAttributeLabel('model2.model3.attr2'));
+        $this->assertEquals('model3.attr3 from model2', $model->getAttributeLabel('model2.model3.attr3'));
+        $attr = 'model2.doesNotExist.attr1';
+        $this->assertEquals($model->generateAttributeLabel($attr), $model->getAttributeLabel($attr));
+    }
+}
+
+class LabelTestModel1 extends \yii\db\ActiveRecord
+{
+    public function attributes()
+    {
+        return [];
+    }
+
+    public function getModel2()
+    {
+        return $this->hasOne(LabelTestModel2::className(), []);
+    }
+}
+
+class LabelTestModel2 extends \yii\db\ActiveRecord
+{
+    public function attributes()
+    {
+        return [];
+    }
+
+    public function getModel3()
+    {
+        return $this->hasOne(LabelTestModel3::className(), []);
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'model3.attr1' => 'model3.attr1 from model2', // Override label defined in model3.
+            'model3.attr3' => 'model3.attr3 from model2', // Define label not defined in model3.
+        ];
+    }
+}
+
+class LabelTestModel3 extends \yii\db\ActiveRecord
+{
+    public function attributes()
+    {
+        return ['attr1', 'attr2', 'attr3'];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'attr1' => 'attr1 from model3',
+            'attr2' => 'attr2 from model3',
+        ];
+    }
 }
