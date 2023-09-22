@@ -558,7 +558,7 @@ class Migration extends Component implements MigrationInterface
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        $time = $this->beginCommand("add comment on column $column");
+        $time = $this->beginCommand("drop comment on column $column");
         $this->db->createCommand()->addCommentOnColumn($table, $column, $comment)->execute();
         $this->endCommand($time);
     }
