@@ -8,6 +8,7 @@
 namespace yiiunit\framework\log;
 
 use Yii;
+use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\log\Logger;
@@ -57,7 +58,7 @@ abstract class DbTargetTest extends TestCase
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== ExitCode::OK) {
             ob_end_flush();
         } else {
             ob_end_clean();
