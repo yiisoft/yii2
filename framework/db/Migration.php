@@ -544,7 +544,7 @@ class Migration extends Component implements MigrationInterface
      */
     public function dropCheck($name, $table)
     {
-        $time = $this->beginCommand("add check $name in table $table");
+        $time = $this->beginCommand("drop check $name in table $table");
         $this->db->createCommand()->dropCheck($name, $table)->execute();
         $this->endCommand($time);
     }
