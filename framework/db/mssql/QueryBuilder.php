@@ -429,17 +429,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @return bool whether the version of the MSSQL being used is older than 2012.
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
-     * @deprecated 2.0.14 Use [[Schema::getServerVersion]] with [[\version_compare()]].
-     */
-    protected function isOldMssql()
-    {
-        return version_compare($this->db->getSchema()->getServerVersion(), '11', '<');
-    }
-
-    /**
      * {@inheritdoc}
      * @since 2.0.8
      */
