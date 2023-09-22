@@ -716,59 +716,6 @@ PATTERN;
     }
 
     /**
-     * Returns unique column names excluding duplicates.
-     * Columns to be removed:
-     * - if column definition already present in SELECT part with same alias
-     * - if column definition without alias already present in SELECT part without alias too
-     * @param array $columns the columns to be merged to the select.
-     * @since 2.0.14
-     * @deprecated in 2.0.21
-     */
-    protected function getUniqueColumns($columns)
-    {
-        $unaliasedColumns = $this->getUnaliasedColumnsFromSelect();
-
-        $result = [];
-        foreach ($columns as $columnAlias => $columnDefinition) {
-            if (!$columnDefinition instanceof Query) {
-                if (is_string($columnAlias)) {
-                    $existsInSelect = isset($this->select[$columnAlias]) && $this->select[$columnAlias] === $columnDefinition;
-                    if ($existsInSelect) {
-                        continue;
-                    }
-                } elseif (is_int($columnAlias)) {
-                    $existsInSelect = in_array($columnDefinition, $unaliasedColumns, true);
-                    $existsInResultSet = in_array($columnDefinition, $result, true);
-                    if ($existsInSelect || $existsInResultSet) {
-                        continue;
-                    }
-                }
-            }
-
-            $result[$columnAlias] = $columnDefinition;
-        }
-        return $result;
-    }
-
-    /**
-     * @return array List of columns without aliases from SELECT statement.
-     * @since 2.0.14
-     * @deprecated in 2.0.21
-     */
-    protected function getUnaliasedColumnsFromSelect()
-    {
-        $result = [];
-        if (is_array($this->select)) {
-            foreach ($this->select as $name => $value) {
-                if (is_int($name)) {
-                    $result[] = $value;
-                }
-            }
-        }
-        return array_unique($result);
-    }
-
-    /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
      * @param bool $value whether to SELECT DISTINCT or not.
      * @return $this the query object itself
