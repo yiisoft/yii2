@@ -20,9 +20,6 @@ use yii\helpers\FileHelper;
  * files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
  * The property [[maxLogFiles]] specifies how many history files to keep.
  *
- * Since 2.0.46 rotation of the files is done only by copy and the
- * `rotateByCopy` property is deprecated.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -61,22 +58,6 @@ class FileTarget extends Target
      * but read-only for other users.
      */
     public $dirMode = 0775;
-    /**
-     * @var bool Whether to rotate log files by copy and truncate in contrast to rotation by
-     * renaming files. Defaults to `true` to be more compatible with log tailers and windows
-     * systems which do not play well with rename on open files. Rotation by renaming however is
-     * a bit faster.
-     *
-     * The problem with windows systems where the [rename()](https://www.php.net/manual/en/function.rename.php)
-     * function does not work with files that are opened by some process is described in a
-     * [comment by Martin Pelletier](https://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation. By setting rotateByCopy to `true` you can work
-     * around this.
-     * @deprecated since 2.0.46 and setting it to false has no effect anymore
-     * since rotating is now always done by copy.
-     */
-    public $rotateByCopy = true;
-
 
     /**
      * Initializes the route.
