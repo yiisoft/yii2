@@ -290,15 +290,6 @@ class Connection extends Component
      */
     public $pdoClass;
     /**
-     * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
-     * you may configure this property to use your extended version of the class.
-     * Since version 2.0.14 [[$commandMap]] is used if this property is set to its default value.
-     * @see createCommand
-     * @since 2.0.7
-     * @deprecated since 2.0.14. Use [[$commandMap]] for precise configuration.
-     */
-    public $commandClass = 'yii\db\Command';
-    /**
      * @var array mapping between PDO driver names and [[Command]] classes.
      * The keys of the array are PDO driver names while the values are either the corresponding
      * command class names or configurations. Please refer to [[Yii::createObject()]] for
@@ -760,9 +751,7 @@ class Connection extends Component
     {
         $driver = $this->getDriverName();
         $config = ['class' => 'yii\db\Command'];
-        if ($this->commandClass !== $config['class']) {
-            $config['class'] = $this->commandClass;
-        } elseif (isset($this->commandMap[$driver])) {
+        if (isset($this->commandMap[$driver])) {
             $config = !is_array($this->commandMap[$driver]) ? ['class' => $this->commandMap[$driver]] : $this->commandMap[$driver];
         }
         $config['db'] = $this;
