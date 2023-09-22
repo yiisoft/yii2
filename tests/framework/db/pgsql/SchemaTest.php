@@ -359,12 +359,13 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $schema = $connection->schema->getTableSchema('schema2.custom_type_test_table');
         $model = EnumTypeInCustomSchema::find()->one();
-        $this->assertSame(['VAL2'], $model->test_type->getValue());
+
+        $this->assertSame(['VAL2'], $model->test_type);
 
         $model->test_type = ['VAL1'];
         $model->save();
 
         $modelAfterUpdate = EnumTypeInCustomSchema::find()->one();
-        $this->assertSame(['VAL1'], $modelAfterUpdate->test_type->getValue());
+        $this->assertSame(['VAL1'], $modelAfterUpdate->test_type);
     }
 }
