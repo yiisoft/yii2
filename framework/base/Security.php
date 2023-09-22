@@ -74,16 +74,6 @@ class Security extends Component
      */
     public $derivationIterations = 100000;
     /**
-     * @var string strategy, which should be used to generate password hash.
-     * Available strategies:
-     * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm.
-     *   This option is recommended, but it requires PHP version >= 5.5.0
-     * - 'crypt' - use PHP `crypt()` function.
-     * @deprecated since version 2.0.7, [[generatePasswordHash()]] ignores [[passwordHashStrategy]] and
-     * uses `password_hash()` when available or `crypt()` when not.
-     */
-    public $passwordHashStrategy;
-    /**
      * @var int Default cost used for password hashing.
      * Allowed value is between 4 and 31.
      * @see generatePasswordHash()
