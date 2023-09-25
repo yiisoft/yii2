@@ -79,7 +79,8 @@
         "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
         "bower-asset/punycode": "1.3.*",
         "bower-asset/yii2-pjax": "~2.0.1",
-        "paragonie/random_compat": ">=1"
+        "paragonie/random_compat": ">=1",
+        "yiisoft/cache": "^3.0"
     },
     "require-dev": {
         "dms/phpunit-arraysubset-asserts": "^0.5",

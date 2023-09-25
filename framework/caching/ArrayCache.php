@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,15 @@ namespace yii\caching;
  */
 class ArrayCache extends Cache
 {
-    private $_cache = [];
+    /**
+     * @var \Yiisoft\Cache\ArrayCache $_cache 
+     */
+    private $_cache;
+
+    function init()
+    {
+        $this->_cache = new \Yiisoft\Cache\ArrayCache();
+    }
 
 
     /**
@@ -32,8 +41,7 @@ class ArrayCache extends Cache
      */
     public function exists($key)
     {
-        $key = $this->buildKey($key);
-        return isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true));
+        return $this->_cache->get($key, null) != null;
     }
 
     /**
@@ -41,11 +49,7 @@ class ArrayCache extends Cache
      */
     protected function getValue($key)
     {
-        if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
-            return $this->_cache[$key][0];
-        }
-
-        return false;
+        return $this->_cache->get($key, false);
     }
 
     /**
@@ -53,8 +57,7 @@ class ArrayCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
-        $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
-        return true;
+        return $this->_cache->set($key, $value, $duration);
     }
 
     /**
@@ -62,10 +65,11 @@ class ArrayCache extends Cache
      */
     protected function addValue($key, $value, $duration)
     {
-        if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
+        if ($this->_cache->get($key, null) != null) {
             return false;
         }
-        $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
+
+        $this->_cache->set($key, $value, $duration);
         return true;
     }
 
@@ -74,8 +78,7 @@ class ArrayCache extends Cache
      */
     protected function deleteValue($key)
     {
-        unset($this->_cache[$key]);
-        return true;
+        return $this->_cache->delete($key);
     }
 
     /**
@@ -83,7 +86,6 @@ class ArrayCache extends Cache
      */
     protected function flushValues()
     {
-        $this->_cache = [];
-        return true;
+        return $this->_cache->clear();
     }
 }
