@@ -41,6 +41,7 @@ class ArrayCache extends Cache
      */
     public function exists($key)
     {
+        $key = $this->buildKey($key);
         return $this->_cache->get($key, null) != null;
     }
 
