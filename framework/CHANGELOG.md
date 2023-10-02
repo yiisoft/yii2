@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Bug #19984: Do not duplicate log messages in memory (lubosdz)
 - Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
 - Bug #19940: File Log writer without newline (terabytesoftw)
 - Bug #19951: Removed unneeded MIME file tests (schmunk42)
