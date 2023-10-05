@@ -8,7 +8,6 @@ on:
       - '.gitattributes'
 
   push:
-    branches: ['master']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
@@ -26,7 +25,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  ci-node:
+    # This workflow file runs actions for forked repositories, pull requests, and pushes to the master branch.
+    if: github.event.repository.fork == true || github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+
     name: NPM 6 on ubuntu-latest
 
     runs-on: ubuntu-latest

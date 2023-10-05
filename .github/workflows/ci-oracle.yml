@@ -8,7 +8,6 @@ on:
       - '.gitattributes'
 
   push:
-    branches: ['master']
     paths-ignore:
       - 'docs/**'
       - 'README.md'
@@ -23,7 +22,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests:
+  ci-oracle:
+    # This workflow file runs actions for forked repositories, pull requests, and pushes to the master branch.
+    if: github.event.repository.fork == true || github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/master')
+
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     env:
