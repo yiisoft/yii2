@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.50 under development
+2.0.49.1 under development
 ------------------------
 
 - Bug #19984: Do not duplicate log messages in memory (lubosdz)
