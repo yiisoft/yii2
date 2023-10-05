@@ -113,11 +113,6 @@ class Table extends Widget
      */
     protected $listPrefix = '• ';
 
-    public function getColumnWidths()
-    {
-        return $this->columnWidths;
-    }
-
     /**
      * Set table headers.
      *

@@ -502,7 +502,7 @@ EXPECTED;
             ->setScreenWidth(200)
             ->run();
 
-        $columnWidths = $table->getColumnWidths();
+        $columnWidths = $this->getInaccessibleProperty($table, 'columnWidths');
 
         $this->assertArrayHasKey(1, $columnWidths);
         $this->assertEquals(4+2, $columnWidths[1]);
