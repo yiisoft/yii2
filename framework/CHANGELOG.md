@@ -4,13 +4,12 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
-- no changes in this release.
+- Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
 
 
 2.0.49.1 October 05, 2023
 -------------------------
 
-- Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
 - Bug #19940: File Log writer without newline (terabytesoftw)
 - Bug #19950: Fix `Query::groupBy(null)` causes error for PHP 8.1: `trim(): Passing null to parameter #1 ($string) of type string is deprecated` (uaoleg)
 - Bug #19951: Removed unneeded MIME file tests (schmunk42)
