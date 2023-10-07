@@ -143,4 +143,5 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}',
+    '{compareAttribute} is invalid.' => '',
 ];
