@@ -121,6 +121,9 @@ class MimeTypeController extends Controller
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 \$mimeTypes = $array;
 
@@ -149,6 +152,9 @@ EOD;
  * MIME aliases.
  *
  * This file contains aliases for MIME types.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 return $array;
 
@@ -210,6 +216,9 @@ EOD;
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 return $array;
 
