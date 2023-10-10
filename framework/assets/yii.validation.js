@@ -238,6 +238,13 @@ yii.validation = (function ($) {
 
         trim: function ($form, attribute, options, value) {
             var $input = $form.find(attribute.input);
+
+            // custom-control field in bs4 has `id` on `div` element (copied from `yii.activeForm:findInput`)
+            if ($input.length && $input[0].tagName.toLowerCase() === 'div') {
+                // checkbox list or radio list
+                $input = $input.find('input');
+            }
+
             if ($input.is(':checkbox, :radio')) {
                 return value;
             }
