@@ -159,4 +159,16 @@ class UrlValidator extends Validator
 
         return $options;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmpty($value)
+    {
+        if ($this->isEmpty !== null) {
+            return call_user_func($this->isEmpty, $value);
+        }
+
+        return $value === null || $value === '';
+    }
 }
