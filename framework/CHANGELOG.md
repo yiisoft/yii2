@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Enh #20001: Improve `View` to allow ld+json and noscript tags (pgaultier)
 - Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
 
 

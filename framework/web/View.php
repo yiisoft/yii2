@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
@@ -130,6 +131,16 @@ class View extends \yii\base\View
      * @see registerJsFile()
      */
     public $jsFiles = [];
+    /**
+     * @var array list of registered json+ld blocks
+     * @see registerLdJson()
+     */
+    public $ldJson = [];
+    /**
+     * @var array list of registered noscript tags
+     * @see registerNoscriptTag()
+     */
+    public $noscriptTags = [];
 
     private $_assetManager;
 
@@ -256,6 +267,8 @@ class View extends \yii\base\View
         $this->js = [];
         $this->jsFiles = [];
         $this->assetBundles = [];
+        $this->ldJson = [];
+        $this->noscriptTags = [];
     }
 
     /**
@@ -398,6 +411,74 @@ class View extends \yii\base\View
             $this->linkTags[] = Html::tag('link', '', $options);
         } else {
             $this->linkTags[$key] = Html::tag('link', '', $options);
+        }
+    }
+
+    /**
+     * Registers a noscript tag.
+     *
+     * For example, a noscript tag for a tracking pixel
+     * can be added like the following:
+     *
+     * ```php
+     * $view->registerNoscriptTag('<img src="https://www.google-analytics.com/collect?v=1&amp;tid=UA-12345678-1&amp;cid=555&amp;t=event&amp;ec=pageview&amp;ea=noscript&amp;dp=%2Fnoscript&amp;dt=No%20Script%20Test" alt="">');
+     * ```
+     *
+     * which will result in the following HTML: `<noscript><img src="https://www.google-analytics.com/collect?v=1&amp;tid=UA-12345678-1&amp;cid=555&amp;t=event&amp;ec=pageview&amp;ea=noscript&amp;dp=%2Fnoscript&amp;dt=No%20Script%20Test" alt=""></noscript>`.
+     *
+     * @param array $options the HTML attributes for the link tag.
+     * @param int $position the position at which the noscript tag should be inserted
+     * @param string|null $key the key that identifies the link tag. If two link tags are registered
+     * with the same key, the latter will overwrite the former. If this is null, the new link tag
+     * will be appended to the existing ones.
+     */
+    public function registerNoscriptTag($content, $options, $position = self::POS_HEAD, $key = null)
+    {
+        if ($key === null) {
+            $this->noscriptTags[$position][] = Html::tag('noscript', $content, $options);
+        } else {
+            $this->noscriptTags[$position][$key] = Html::tag('noscript', $content, $options);
+        }
+    }
+
+    /**
+     * Registers a ld+json script tag.
+     *
+     * For example, a ld+json script tag for a custom video object
+     * can be added like the following:
+     *
+     * ```php
+     * $ldJson = [
+     *    '@context' => 'https://schema.org',
+     *    '@type' => 'VideoObject',
+     *    'name' => $name,
+     *    'description' => $description,
+     *    'url' => $url
+     * ];
+     * $view->registerLdJson($ldJson);
+     * ```
+     *
+     * which will result in the following HTML:
+     * ```html
+     *      <script type="application/ld+json">
+     *          [{"@context":"https:\/\/schema.org","@type":"VideoObject","name":"$name","description":"$description","url":"$url"}]
+     *      </script>
+     * ```.
+     *
+     * **Note:** All registered ld+json script tags which should be rendered in the head section will be merged into one script tag in an array.
+     *
+     * @param array $ldJson the LD+JSON object to be registered
+     * @param int $position the position at which the LD+JSON object should be inserted
+     * @param string|null $key the key that identifies the LD+JSON tag. If two objects are registered
+     * with the same key, the latter will overwrite the former. If this is null, the new link tag
+     * will be appended to the existing ones.
+     */
+    public function registerLdJson($ldJson, $position = self::POS_HEAD, $key = null)
+    {
+        if ($key === null) {
+            $this->ldJson[$position][] = Html::script(Json::encode($ldJson), ['type' => 'application/ld+json']);
+        } else {
+            $this->ldJson[$position][$key] = Html::script(Json::encode($ldJson), ['type' => 'application/ld+json']);
         }
     }
 
@@ -599,9 +680,14 @@ class View extends \yii\base\View
         if (!empty($this->metaTags)) {
             $lines[] = implode("\n", $this->metaTags);
         }
-
         if (!empty($this->linkTags)) {
             $lines[] = implode("\n", $this->linkTags);
+        }
+        if (!empty($this->noscriptTags[self::POS_HEAD])) {
+            $lines[] = implode("\n", $this->noscriptTags[self::POS_HEAD]);
+        }
+        if (!empty($this->ldJson[self::POS_HEAD])) {
+            $lines[] = implode("\n", $this->ldJson[self::POS_HEAD]);
         }
         if (!empty($this->cssFiles)) {
             $lines[] = implode("\n", $this->cssFiles);
@@ -627,6 +713,12 @@ class View extends \yii\base\View
     protected function renderBodyBeginHtml()
     {
         $lines = [];
+        if (!empty($this->ldJson[self::POS_BEGIN])) {
+            $lines[] = implode("\n", $this->ldJson[self::POS_BEGIN]);
+        }
+        if (!empty($this->noscriptTags[self::POS_BEGIN])) {
+            $lines[] = implode("\n", $this->noscriptTags[self::POS_BEGIN]);
+        }
         if (!empty($this->jsFiles[self::POS_BEGIN])) {
             $lines[] = implode("\n", $this->jsFiles[self::POS_BEGIN]);
         }
@@ -652,7 +744,12 @@ class View extends \yii\base\View
         if (!empty($this->jsFiles[self::POS_END])) {
             $lines[] = implode("\n", $this->jsFiles[self::POS_END]);
         }
-
+        if (!empty($this->ldJson[self::POS_END])) {
+            $lines[] = implode("\n", $this->ldJson[self::POS_END]);
+        }
+        if (!empty($this->noscriptTags[self::POS_END])) {
+            $lines[] = implode("\n", $this->noscriptTags[self::POS_END]);
+        }
         if ($ajaxMode) {
             $scripts = [];
             if (!empty($this->js[self::POS_END])) {
