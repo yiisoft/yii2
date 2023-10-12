@@ -360,7 +360,7 @@ EOD;
         
         $new = [];
         $obsolete = [];
-        
+
         foreach ($messages as $category => $msgs) {
             $msgs = array_unique($msgs);
 
@@ -377,7 +377,7 @@ EOD;
         foreach (array_diff(array_keys($currentMessages), array_keys($messages)) as $category) {
             $obsolete += $currentMessages[$category];
         }
-        
+
         if (!$removeUnused) {
             foreach ($obsolete as $pk => $msg) {
                 // skip already marked unused
@@ -400,35 +400,37 @@ EOD;
         $this->stdout($insertCount ? "{$insertCount} saved.\n" : "Nothing to save.\n");
         
         $this->stdout($removeUnused ? 'Deleting obsoleted messages...' : 'Updating obsoleted messages...');
-        
+
         if (empty($obsolete)) {
             $this->stdout("Nothing obsoleted...skipped.\n");
         }
-        
-        if ($obsolete && $removeUnused) {
-            $affected=$db->createCommand()
-               ->delete($sourceMessageTable, ['in', 'id', array_keys($obsolete)])
-               ->execute();
-            $this->stdout("{$affected} deleted.\n");
-        } elseif ($obsolete && $markUnused) {
-            $marked=0;
-            $rows = (new Query())
-                ->select(['id', 'message'])
-                ->from($sourceMessageTable)
-                ->where(['in', 'id', array_keys($obsolete)])
-                ->all($db);
 
-            foreach ($rows as $row) {
-                $marked++;
-                $db->createCommand()->update(
-                    $sourceMessageTable,
-                    ['message' => '@@' . $row['message'] . '@@'],
-                    ['id' => $row['id']]
-                )->execute();
+        if ($obsolete) {
+            if ($removeUnused) {
+                $affected = $db->createCommand()
+                   ->delete($sourceMessageTable, ['in', 'id', array_keys($obsolete)])
+                   ->execute();
+                $this->stdout("{$affected} deleted.\n");
+            } elseif ($markUnused) {
+                $marked=0;
+                $rows = (new Query())
+                    ->select(['id', 'message'])
+                    ->from($sourceMessageTable)
+                    ->where(['in', 'id', array_keys($obsolete)])
+                    ->all($db);
+    
+                foreach ($rows as $row) {
+                    $marked++;
+                    $db->createCommand()->update(
+                        $sourceMessageTable,
+                        ['message' => '@@' . $row['message'] . '@@'],
+                        ['id' => $row['id']]
+                    )->execute();
+                }
+                $this->stdout("{$marked} updated.\n");
+            } else {
+                $this->stdout("kept untouched.\n");
             }
-            $this->stdout("{$marked} updated.\n");
-        } elseif ($obsolete) {
-            $this->stdout("kept untouched.\n");
         }
          
         $this->stdout("\n\nMESSAGE TABLE\n\n");
@@ -441,10 +443,10 @@ EOD;
         }
             
         $this->stdout("Generating missing rows...");
-        $generatedMissingRows=[];
+        $generatedMissingRows = [];
         
         foreach ($languages as $language) {
-          $count=0;
+          $count = 0;
           
           // get list of ids of translations for this language
           $msgRowsIds = [];
@@ -465,7 +467,7 @@ EOD;
             }
           }
           if ($count) {
-            $generatedMissingRows[]="{$count} for {$language}";
+            $generatedMissingRows[] = "{$count} for {$language}";
           }
         }
         
@@ -485,7 +487,7 @@ EOD;
             $deleted=$db->createCommand()->delete($messageTable, "language=:language", [
                 'language'=>$currentLanguage,
             ])->execute();
-            $droppedLanguages[]="removed {$deleted} rows for $currentLanguage";
+            $droppedLanguages[] = "removed {$deleted} rows for $currentLanguage";
           }
         }
         
