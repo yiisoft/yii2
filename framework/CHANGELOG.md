@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
-- no changes in this release.
+- Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 
 
 2.0.49.2 October 12, 2023
