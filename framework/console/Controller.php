@@ -28,6 +28,7 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
+ * @property Response|array|string response The response.
  * @property-read string $help
  * @property-read string $helpSummary
  * @property-read array $passedOptionValues The properties corresponding to the passed options.
