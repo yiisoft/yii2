@@ -5,8 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
-- Bug #19872: Fixed the definition of dirty attributes in AR properties for a non-associative array in case of changing the order of elements (eegusakov)
-- Bug #19899: Fixed `GridView` in some cases calling `Model::generateAttributeLabel()` to generate label values that are never used (PowerGamer1)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 
 
