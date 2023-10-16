@@ -348,10 +348,6 @@ EOD;
      */
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)
     {
-        $this->stdout("UPDATING DB\n\n");
-        
-        $this->stdout("SOURCE MESSAGE TABLE\n\n");
-        
         $currentMessages = [];
         $rows = (new Query())->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
         foreach ($rows as $row) {
@@ -366,7 +362,7 @@ EOD;
 
             if (isset($currentMessages[$category])) {
                 $new[$category] = array_diff($msgs, $currentMessages[$category]);
-                // obsolete msgs per category
+                // obsolete messages per category
                 $obsolete += array_diff($currentMessages[$category], $msgs);
             } else {
                 $new[$category] = $msgs;
@@ -432,8 +428,6 @@ EOD;
                 $this->stdout("kept untouched.\n");
             }
         }
-         
-        $this->stdout("\n\nMESSAGE TABLE\n\n");
         
         // get fresh message id list
         $freshMessagesIds = [];
