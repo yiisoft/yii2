@@ -2225,6 +2225,53 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $attr = 'model2.doesNotExist.attr1';
         $this->assertEquals($model->generateAttributeLabel($attr), $model->getAttributeLabel($attr));
     }
+
+    public function testLoadRelations()
+    {
+        // Test eager loading relations for multiple primary models using loadRelationsFor().
+        /** @var Customer[] $customers */
+        $customers = Customer::find()->all();
+        Customer::loadRelationsFor($customers, ['orders.items']);
+        foreach ($customers as $customer) {
+            $this->assertTrue($customer->isRelationPopulated('orders'));
+            foreach ($customer->orders as $order) {
+                $this->assertTrue($order->isRelationPopulated('items'));
+            }
+        }
+
+        // Test eager loading relations as arrays.
+        /** @var array $customers */
+        $customers = Customer::find()->asArray(true)->all();
+        Customer::loadRelationsFor($customers, ['orders.items' => function ($query) { $query->asArray(false); }], true);
+        foreach ($customers as $customer) {
+            $this->assertTrue(isset($customer['orders']));
+            $this->assertTrue(is_array($customer['orders']));
+            foreach ($customer['orders'] as $order) {
+                $this->assertTrue(is_array($order));
+                $this->assertTrue(isset($order['items']));
+                $this->assertTrue(is_array($order['items']));
+                foreach ($order['items'] as $item) {
+                    $this->assertFalse(is_array($item));
+                }
+            }
+        }
+
+        // Test eager loading relations for a single primary model using loadRelations().
+        /** @var Customer $customer */
+        $customer = Customer::find()->where(['id' => 1])->one();
+        $customer->loadRelations('orders.items');
+        $this->assertTrue($customer->isRelationPopulated('orders'));
+        foreach ($customer->orders as $order) {
+            $this->assertTrue($order->isRelationPopulated('items'));
+        }
+
+        // Test eager loading previously loaded relation (relation value should be replaced with a new value loaded from database).
+        /** @var Customer $customer */
+        $customer = Customer::find()->where(['id' => 2])->with(['orders' => function ($query) { $query->orderBy(['id' => SORT_ASC]); }])->one();
+        $this->assertTrue($customer->orders[0]->id < $customer->orders[1]->id, 'Related models should be sorted by ID in ascending order.');
+        $customer->loadRelations(['orders' => function ($query) { $query->orderBy(['id' => SORT_DESC]); }]);
+        $this->assertTrue($customer->orders[0]->id > $customer->orders[1]->id, 'Related models should be sorted by ID in descending order.');
+    }
 }
 
 class LabelTestModel1 extends \yii\db\ActiveRecord
