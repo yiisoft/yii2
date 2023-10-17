@@ -193,7 +193,7 @@ SQL;
             $command->bindParam(':blob_col', $blobCol);
             $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         } else {
-            $floatCol = 1.23;
+            $floatCol = 1.230;
             $numericCol = '1.23';
             $blobCol = "\x10\x11\x12";
             $boolCol = false;
@@ -205,18 +205,18 @@ SQL;
         $this->assertEquals(1, $command->execute());
 
         $command = $db->createCommand('SELECT [[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]] FROM {{type}}');
-//        $command->prepare();
-//        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
+        // $command->prepare();
+        // $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
         $row = $command->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
-        $this->assertEquals($floatCol, $row['float_col']);
+        $this->assertEquals($floatCol, (float) $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
         } elseif (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
-            $this->assertInternalType('resource', $row['blob_col']);
+            $this->assertIsResource($row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
@@ -281,7 +281,7 @@ SQL;
         $command = $db->createCommand($sql);
         $command->fetchMode = \PDO::FETCH_OBJ;
         $result = $command->queryOne();
-        $this->assertInternalType('object', $result);
+        $this->assertIsObject($result);
 
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';
@@ -623,9 +623,8 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
-     * @param mixed $invalidSelectColumns
+     *
+     * @param array|string $invalidSelectColumns Invalid select columns.
      */
     public function testInsertSelectFailed($invalidSelectColumns)
     {
@@ -634,10 +633,11 @@ SQL;
 
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->insert(
-            '{{customer}}',
-            $query
-        )->execute();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
+
+        $command->insert('{{customer}}', $query)->execute();
     }
 
     public function testInsertExpression()
@@ -1222,7 +1222,7 @@ SQL;
 
         $this->assertEmpty($schema->getTableChecks($tableName, true));
         $db->createCommand()->addCheck($name, $tableName, '[[int1]] > 1')->execute();
-        $this->assertRegExp('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
+        $this->assertMatchesRegularExpression('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
 
         $db->createCommand()->dropCheck($name, $tableName)->execute();
         $this->assertEmpty($schema->getTableChecks($tableName, true));

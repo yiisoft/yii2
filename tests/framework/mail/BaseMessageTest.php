@@ -17,7 +17,7 @@ use yiiunit\TestCase;
  */
 class BaseMessageTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -173,7 +173,7 @@ class TestMessage extends BaseMessage
     {
     }
 
-    public function toString()
+    public function toString(): string
     {
         return get_class($this);
     }

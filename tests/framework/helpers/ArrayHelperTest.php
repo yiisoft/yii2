@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class ArrayHelperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -876,13 +876,12 @@ class ArrayHelperTest extends TestCase
 
     public function testGetValueNonexistingProperties1()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->expectException('PHPUnit_Framework_Error_Notice');
-        } else {
-            $this->expectException('PHPUnit_Framework_Error_Warning');
+        try {
+            $object = new Post1();
+            ArrayHelper::getValue($object, 'nonExisting');
+        } catch (\Throwable $th) {
+            $this->assertEquals('Undefined property: yiiunit\framework\helpers\Post1::$nonExisting', $th->getMessage());
         }
-        $object = new Post1();
-        ArrayHelper::getValue($object, 'nonExisting');
     }
 
     public function testGetValueNonexistingPropertiesForArrayObject()

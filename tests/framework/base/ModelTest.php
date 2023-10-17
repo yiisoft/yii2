@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class ModelTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ErrorActionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication();
@@ -104,8 +104,9 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
         // Unset view name. Class should try to load view that matches action name by default
         $action->view = null;
         $ds = preg_quote(DIRECTORY_SEPARATOR, '\\');
-        $this->expectException('yii\base\ViewNotFoundException');
-        $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'test' . $ds . 'error.php#');
+        $this->expectException(\yii\base\ViewNotFoundException::class);
+        $this->expectExceptionMessageMatches('#The view file does not exist: .*?views' . $ds . 'test' . $ds . 'error.php#');
+
         $this->invokeMethod($action, 'renderHtmlResponse');
     }
 

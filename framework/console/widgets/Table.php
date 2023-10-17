@@ -113,7 +113,6 @@ class Table extends Widget
      */
     protected $listPrefix = '• ';
 
-
     /**
      * Set table headers.
      *

@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
  */
 class ActiveFormTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -132,6 +132,9 @@ HTML
         $form = ActiveForm::begin(['view' => $view, 'enableClientScript' => false]);
         $form->field($model, 'name');
         $form::end();
+
+        $this->expectNotToPerformAssertions();
+
         ob_get_clean();
     }
 

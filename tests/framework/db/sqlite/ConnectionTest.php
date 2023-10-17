@@ -44,9 +44,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $transaction->rollBack();
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
-        $transaction->rollBack();
 
-        $this->assertTrue(true); // No exceptions means test is passed.
+        $this->expectNotToPerformAssertions();
+
+        $transaction->rollBack();
     }
 
     public function testMasterSlave()

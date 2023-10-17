@@ -17,10 +17,24 @@ class BaseDataProviderTest extends TestCase
 {
     public function testGenerateId()
     {
-        $rc = new \ReflectionClass(BaseDataProvider::className());
-        $rp = $rc->getProperty('counter');
-        $rp->setAccessible(true);
-        $rp->setValue(null);
+        $baseDataProvider = new class extends BaseDataProvider {
+            protected function prepareModels()
+            {
+                return [];
+            }
+
+            protected function prepareKeys($models)
+            {
+                return [];
+            }
+
+            protected function prepareTotalCount()
+            {
+                return 0;
+            }
+        };
+
+        $this->setInaccessibleProperty($baseDataProvider, 'counter', null);
 
         $this->assertNull((new ConcreteDataProvider())->id);
         $this->assertNotNull((new ConcreteDataProvider())->id);

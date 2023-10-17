@@ -19,7 +19,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testConnection()
     {
-        $this->assertInternalType('object', $this->getConnection(true));
+        $this->assertIsObject($this->getConnection(true));
     }
 
     public function testQuoteValue()
@@ -99,8 +99,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction();
         $transaction->setIsolationLevel(Transaction::SERIALIZABLE . ' READ ONLY DEFERRABLE');
-        $transaction->commit();
 
-        $this->assertTrue(true); // No error occurred – assert passed.
+        $this->expectNotToPerformAssertions();
+
+        $transaction->commit();
     }
 }

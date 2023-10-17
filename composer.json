@@ -68,7 +68,7 @@
         "yiisoft/yii2": "self.version"
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=7.3.0",
         "ext-mbstring": "*",
         "ext-ctype": "*",
         "lib-pcre": "*",
@@ -82,11 +82,10 @@
         "paragonie/random_compat": ">=1"
     },
     "require-dev": {
-        "cweagans/composer-patches": "^1.7",
-        "phpunit/phpunit": "4.8.34",
+        "dms/phpunit-arraysubset-asserts": "^0.5",
+        "phpunit/phpunit": "^9.6.0",
         "cebe/indent": "~1.0.2",
-        "friendsofphp/php-cs-fixer": "~2.2.3 | ^3.0",
-        "johnkary/phpunit-speedtrap": "^1.0"
+        "friendsofphp/php-cs-fixer": "~2.2.3 | ^3.0"
     },
     "repositories": [
         {
@@ -111,7 +110,6 @@
     },
     "config": {
         "allow-plugins": {
-            "cweagans/composer-patches": true,
             "yiisoft/yii2-composer": true
         }
     },
@@ -121,20 +119,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
-        },
-        "composer-exit-on-patch-failure": true,
-        "patches": {
-            "phpunit/phpunit-mock-objects": {
-                "Fix PHP 7 and 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_mock_objects.patch"
-            },
-            "phpunit/php-file-iterator": {
-                "Fix PHP 8.1 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_path_file_iterator.patch"
-            },
-            "phpunit/phpunit": {
-                "Fix PHP 7 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php7.patch",
-                "Fix PHP 8 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php8.patch",
-                "Fix PHP 8.1 compatibility": "https://yiisoft.github.io/phpunit-patches/phpunit_php81.patch"
-            }
         }
     }
 }
