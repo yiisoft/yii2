@@ -416,6 +416,12 @@ class SerializerTest extends TestCase
 
         $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
 
+        $serializer = new Serializer();
+        $serializer->preserveKeys = $saveKeys;
+        $serializer->collectionEnvelope = 'data';
+
+        $this->assertEquals($expectedResult, $serializer->serialize($dataProvider)['data']);
+
         $_SERVER['REQUEST_METHOD'] = 'HEAD';
         $request = new Request();
         $_POST[$request->methodParam] = 'HEAD';
