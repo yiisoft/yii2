@@ -9,7 +9,9 @@ namespace yiiunit\framework\rest;
 
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
+use yii\data\DataProviderInterface;
 use yii\rest\Serializer;
+use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
@@ -413,6 +415,16 @@ class SerializerTest extends TestCase
         $serializer->preserveKeys = $saveKeys;
 
         $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
+
+        $_SERVER['REQUEST_METHOD'] = 'HEAD';
+        $request = new Request();
+        $_POST[$request->methodParam] = 'HEAD';
+        $serializer = new Serializer([
+            'request' => $request
+        ]);
+        $serializer->preserveKeys = $saveKeys;
+        $this->assertEmpty($serializer->serialize($dataProvider));
+        unset($_POST[$request->methodParam], $_SERVER['REQUEST_METHOD']);
     }
 
     /**
