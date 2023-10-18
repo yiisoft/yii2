@@ -11,6 +11,8 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
+- Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 
 

@@ -80,7 +80,7 @@ class ServeController extends Controller
         }
         $this->stdout("Quit the server with CTRL-C or COMMAND-C.\n");
 
-        passthru('"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\" $router");
+        passthru('"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\" \"$router\"");
     }
 
     /**
