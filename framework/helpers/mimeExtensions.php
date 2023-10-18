@@ -8,6 +8,9 @@
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 return [
     'application/andrew-inset' => 'ez',

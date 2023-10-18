@@ -263,6 +263,12 @@ Further reading on the topic:
 - <https://owasp.org/www-community/SameSite>
 
 
+Avoiding arbitrary object instantiations
+----------------------------------------
+
+Yii [configurations](concept-configurations.md) are associative arrays used by the framework to instantiate new objects through `Yii::createObject($config)`. These arrays specify the class name for instantiation, and it is important to ensure that this class name does not originate from untrusted sources. Otherwise, it can lead to Unsafe Reflection, a vulnerability that allows the execution of malicious code by exploiting the loading of specific classes. Additionally, when you need to dynamically add keys to an object derived from a framework class, such as the base `Component` class, it's essential to validate these dynamic properties using a whitelist approach. This precaution is necessary because the framework might employ `Yii::createObject($config)` within the `__set()` magic method.
+
+
 Avoiding file exposure
 ----------------------
 
