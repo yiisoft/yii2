@@ -539,12 +539,8 @@ class BaseFormatConverter
      *
      * @throws \Exception If the 'intl' extension is not loaded.
      */
-    public static function createFormatter($locale, $type, $pattern)
+    private static function createFormatter($locale, $type, $pattern)
     {
-        if (!extension_loaded('intl')) {
-            throw new \Exception("The 'intl' extension is required but not loaded.");
-        }
-
         if ($locale === null) {
             $locale = Yii::$app->language;
         }
