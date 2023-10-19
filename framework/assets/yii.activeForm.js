@@ -395,9 +395,11 @@
                         data: $form.serialize() + extData,
                         dataType: data.settings.ajaxDataType,
                         complete: function (jqXHR, textStatus) {
+                            currentAjaxRequest = null;
                             $form.trigger(events.ajaxComplete, [jqXHR, textStatus]);
                         },
                         beforeSend: function (jqXHR, settings) {
+                            currentAjaxRequest = jqXHR;
                             $form.trigger(events.ajaxBeforeSend, [jqXHR, settings]);
                         },
                         success: function (msgs) {
@@ -563,6 +565,9 @@
             return;
         }
 
+        if (currentAjaxRequest !== null) {
+            currentAjaxRequest.abort();
+        }
         if (data.settings.timer !== undefined) {
             clearTimeout(data.settings.timer);
         }
@@ -929,4 +934,7 @@
             $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
         }
     }
+
+    var currentAjaxRequest = null;
+
 })(window.jQuery);

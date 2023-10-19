@@ -111,5 +111,12 @@ return array(
         'memo' => 'When <a href="https://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html#$expandIPv6-detail">IpValidator::expandIPv6</a>
         property is set to <code>true</code>, PHP must support IPv6 protocol stack. Currently PHP constant <code>AF_INET6</code> is not defined
         and IPv6 is probably unsupported.'
+    ),
+    array(
+        'name' => 'pcntl',
+        'mandatory' => false,
+        'condition' => extension_loaded('pcntl'),
+        'by' => '<a href="https://www.php.net/manual/de/book.pcntl.php">Process Control</a>',
+        'memo' => 'Recommended for yii2-queue CLI operations'
     )
 );

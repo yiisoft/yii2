@@ -1610,40 +1610,46 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Returns the text label for the specified attribute.
-     * If the attribute looks like `relatedModel.attribute`, then the attribute will be received from the related model.
+     * The attribute may be specified in a dot format to retrieve the label from related model or allow this model to override the label defined in related model.
+     * For example, if the attribute is specified as 'relatedModel1.relatedModel2.attr' the function will return the first label definition it can find
+     * in the following order:
+     * - the label for 'relatedModel1.relatedModel2.attr' defined in [[attributeLabels()]] of this model;
+     * - the label for 'relatedModel2.attr' defined in related model represented by relation 'relatedModel1' of this model;
+     * - the label for 'attr' defined in related model represented by relation 'relatedModel2' of relation 'relatedModel1'.
+     *   If no label definition was found then the value of $this->generateAttributeLabel('relatedModel1.relatedModel2.attr') will be returned.
      * @param string $attribute the attribute name
      * @return string the attribute label
-     * @see generateAttributeLabel()
      * @see attributeLabels()
+     * @see generateAttributeLabel()
      */
     public function getAttributeLabel($attribute)
     {
-        $labels = $this->attributeLabels();
-        if (isset($labels[$attribute])) {
-            return $labels[$attribute];
-        } elseif (strpos($attribute, '.')) {
-            $attributeParts = explode('.', $attribute);
-            $neededAttribute = array_pop($attributeParts);
-
-            $relatedModel = $this;
-            foreach ($attributeParts as $relationName) {
-                if ($relatedModel->isRelationPopulated($relationName) && $relatedModel->$relationName instanceof self) {
-                    $relatedModel = $relatedModel->$relationName;
-                } else {
-                    try {
-                        $relation = $relatedModel->getRelation($relationName);
-                    } catch (InvalidParamException $e) {
-                        return $this->generateAttributeLabel($attribute);
-                    }
-                    /* @var $modelClass ActiveRecordInterface */
-                    $modelClass = $relation->modelClass;
-                    $relatedModel = $modelClass::instance();
-                }
+        $model = $this;
+        $modelAttribute = $attribute;
+        for (;;) {
+            $labels = $model->attributeLabels();
+            if (isset($labels[$modelAttribute])) {
+                return $labels[$modelAttribute];
             }
 
-            $labels = $relatedModel->attributeLabels();
-            if (isset($labels[$neededAttribute])) {
-                return $labels[$neededAttribute];
+            $parts = explode('.', $modelAttribute, 2);
+            if (count($parts) < 2) {
+                break;
+            }
+
+            list ($relationName, $modelAttribute) = $parts;
+
+            if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
+                $model = $model->$relationName;
+            } else {
+                try {
+                    $relation = $model->getRelation($relationName);
+                } catch (InvalidArgumentException $e) {
+                    break;
+                }
+                /* @var $modelClass ActiveRecordInterface */
+                $modelClass = $relation->modelClass;
+                $model = $modelClass::instance();
             }
         }
 
@@ -1780,5 +1786,58 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
 
         return $newValue !== $oldValue;
+    }
+
+    /**
+     * Eager loads related models for the already loaded primary models.
+     *
+     * Helps to reduce the number of queries performed against database if some related models are only used
+     * when a specific condition is met. For example:
+     *
+     * ```php
+     * $customers = Customer::find()->where(['country_id' => 123])->all();
+     * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
+     *     Customer::loadRelationsFor($customers, 'orders.items');
+     * }
+     * ```
+     *
+     * @param array|ActiveRecordInterface[] $models array of primary models. Each model should have the same type and can be:
+     * - an active record instance;
+     * - active record instance represented by array (i.e. active record was loaded using [[ActiveQuery::asArray()]]).
+     * @param string|array $relationNames the names of the relations of primary models to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
+     * @param bool $asArray whether to load each related model as an array or an object (if the relation itself does not specify that).
+     * @since 2.0.49
+     */
+    public static function loadRelationsFor(&$models, $relationNames, $asArray = false)
+    {
+        // ActiveQueryTrait::findWith() called below assumes $models array is non-empty.
+        if (empty($models)) {
+            return;
+        }
+
+        static::find()->asArray($asArray)->findWith((array)$relationNames, $models);
+    }
+
+    /**
+     * Eager loads related models for the already loaded primary model.
+     *
+     * Helps to reduce the number of queries performed against database if some related models are only used
+     * when a specific condition is met. For example:
+     *
+     * ```php
+     * $customer = Customer::find()->where(['id' => 123])->one();
+     * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
+     *     $customer->loadRelations('orders.items');
+     * }
+     * ```
+     *
+     * @param string|array $relationNames the names of the relations of this model to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
+     * @param bool $asArray whether to load each relation as an array or an object (if the relation itself does not specify that).
+     * @since 2.0.49
+     */
+    public function loadRelations($relationNames, $asArray = false)
+    {
+        $models = [$this];
+        static::loadRelationsFor($models, $relationNames, $asArray);
     }
 }

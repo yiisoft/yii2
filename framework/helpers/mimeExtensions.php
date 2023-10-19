@@ -8,6 +8,9 @@
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 return [
     'application/andrew-inset' => 'ez',
@@ -299,6 +302,7 @@ return [
     'application/vnd.fuzzysheet' => 'fzs',
     'application/vnd.genomatix.tuxedo' => 'txd',
     'application/vnd.geogebra.file' => 'ggb',
+    'application/vnd.geogebra.slides' => 'ggs',
     'application/vnd.geogebra.tool' => 'ggt',
     'application/vnd.geometry-explorer' => [
         'gex',
@@ -655,6 +659,7 @@ return [
     ],
     'application/vnd.zzazz.deck+xml' => 'zaz',
     'application/voicexml+xml' => 'vxml',
+    'application/wasm' => 'wasm',
     'application/widget' => 'wgt',
     'application/winhlp' => 'hlp',
     'application/wsdl+xml' => 'wsdl',
