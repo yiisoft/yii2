@@ -71,7 +71,7 @@ jobs:
         run: sudo locale-gen fr_FR.UTF-8
 
       - name: Checkout.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
