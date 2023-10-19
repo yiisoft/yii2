@@ -11,9 +11,25 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
+- Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
+- Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
+
+
+2.0.49.2 October 12, 2023
+-------------------------
+
 - Bug #19925: Improved PHP version check when handling MIME types (schmunk42)
+
+
+2.0.49.1 October 05, 2023
+-------------------------
+
 - Bug #19940: File Log writer without newline (terabytesoftw)
+- Bug #19950: Fix `Query::groupBy(null)` causes error for PHP 8.1: `trim(): Passing null to parameter #1 ($string) of type string is deprecated` (uaoleg)
 - Bug #19951: Removed unneeded MIME file tests (schmunk42)
+- Bug #19984: Do not duplicate log messages in memory (lubosdz)
+- Enh #19780: added pcntl to requirements check (schmunk42)
 
 
 2.0.49 August 29, 2023
