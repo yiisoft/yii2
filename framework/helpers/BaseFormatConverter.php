@@ -103,7 +103,7 @@ class BaseFormatConverter
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
             if (extension_loaded('intl')) {
-                $pattern = static::createFormatter($locale, $type, $pattern);
+                $pattern = self::createFormatter($locale, $type, $pattern);
             } else {
                 return static::$phpFallbackDatePatterns[$pattern][$type];
             }
@@ -347,7 +347,7 @@ class BaseFormatConverter
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
             if (extension_loaded('intl')) {
-                $pattern = static::createFormatter($locale, $type, $pattern);
+                $pattern = self::createFormatter($locale, $type, $pattern);
             } else {
                 return static::$juiFallbackDatePatterns[$pattern][$type];
             }
