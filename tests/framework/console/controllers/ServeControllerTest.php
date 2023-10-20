@@ -29,7 +29,7 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
 
         /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMock::class)
+        $serveController = $this->getMockBuilder('yii\console\controllers\ServeController')
             ->setConstructorArgs(['serve', Yii::$app])
             ->setMethods(['isAddressTaken'])
             ->getMock();
