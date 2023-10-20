@@ -78,7 +78,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute}는 "{max}" 보다 클 수 없습니다.',
     '{attribute} must be no less than {min}.' => '{attribute}는 "{min}" 보다 작을 수 없습니다.',
     '{attribute} must be repeated exactly.' => '{attribute}는 정확하게 반복합니다.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute}는 "{compareValue}"와 같을 수 없습니다.',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute}는 "{compareValueOrAttribute}"와 같을 수 없습니다.',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute}는 최소 {min}자 이어야합니다.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute}는 최대 {max}자 이어야합니다.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}는 {length}자 이어야합니다.',

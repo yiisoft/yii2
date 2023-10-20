@@ -85,7 +85,7 @@ return [
     '{attribute} must be no greater than {max}.' => 'მნიშვნელობა «{attribute}» არ უნდა აღემატებოდეს {max}.',
     '{attribute} must be no less than {min}.' => 'მნიშვნელობა «{attribute}» უნდა იყოს არანაკლები {min}.',
     '{attribute} must be repeated exactly.' => 'მნიშვნელობა «{attribute}» უნდა განმეორდეს ზუსტად.',
-    '{attribute} must not be equal to "{compareValue}".' => 'მნიშვნელობა «{attribute}» არ უნდა იყოს «{compareValue}»-ს ტოლი.',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => 'მნიშვნელობა «{attribute}» არ უნდა იყოს «{compareValueOrAttribute}»-ს ტოლი.',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'მნიშვნელობა «{attribute}» უნდა შეიცავდეს მინიმუმ {min, number} {min, plural, one{სიმბოლს} few{სიმბოლს} many{სიმბოლს} other{სიმბოლს}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'მნიშვნელობა «{attribute}» უნდა შეიცავდეს მაქსიმუმ {max, number} {max, plural, one{სიმბოლს} few{სიმბოლს} many{სიმბოლს} other{სიმბოლს}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'მნიშვნელობა «{attribute}» უნდა შეიცავდეს {length, number} {length, plural, one{სიმბოლს} few{სიმბოლს} many{სიმბოლს} other{სიმბოლს}}.',

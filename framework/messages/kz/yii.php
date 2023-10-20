@@ -104,7 +104,7 @@ return [
     '{attribute} must be no greater than {max}.' => '«{attribute}» мәні {max} аспауы керек.',
     '{attribute} must be no less than {min}.' => '«{attribute}» мәні кем дегенде {min} болуы керек.',
     '{attribute} must be repeated exactly.' => '«{attribute}» мәні дәл қайталануы керек.',
-    '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» мәні «{compareValue}» тең болмауы керек.',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» мәні «{compareValueOrAttribute}» тең болмауы керек.',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '«{attribute}» мәні минималды {min, number} болуы керек {min, number} {min, plural, one{таңба} few{таңба} many{таңбалар} other{таңба}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '«{attribute}» мәні ең көп {max, number} {max, plural, one{таңба} few{таңба} many{таңбалар} other{таңба}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '«{attribute}» мәні {length, number} болуы керек {length, plural, one{таңба} few{таңба} many{таңбалар} other{таңба}}.',

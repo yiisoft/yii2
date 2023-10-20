@@ -85,7 +85,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} ne smije biti veći od "{max}"',
     '{attribute} must be no less than {min}.' => '{attribute} ne smije biti manji od {min}.',
     '{attribute} must be repeated exactly.' => '{attribute} mora biti ponovljen ispravno.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} ne smije biti jednak"{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} ne smije biti jednak"{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} treba sadržavati najmanje {min, number} {min, plural, one{znak} other{znakova}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} treba sadržavati najviše {max, number} {max, plural, one{znak} other{znakova}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} treba sadržavati {length, number} {length, plural, one{znak} other{znakova}}.',

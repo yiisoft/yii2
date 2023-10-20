@@ -86,7 +86,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} no pot ser major que {max}.',
     '{attribute} must be no less than {min}.' => '{attribute} no pot ser menor que {min}.',
     '{attribute} must be repeated exactly.' => '{attribute} ha de ser repetit exactament igual.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} no pot ser igual que "{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} no pot ser igual que "{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} hauria de contenir com a mínim {min, number} {min, plural, one{lletra} other{lletres}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} hauria de contenir com a màxim {max, number} {max, plural, one{lletra} other{lletres}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} hauria contenir {length, number} {length, plural, one{lletra} other{lletres}}.',

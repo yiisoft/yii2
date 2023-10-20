@@ -80,7 +80,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} {max} dən böyük olmamalıdır.',
     '{attribute} must be no less than {min}.' => '{attribute} {min} dən kiçik olmamalıdır.',
     '{attribute} must be repeated exactly.' => '{attribute} dəqiqliklə təkrar olunmalıdir.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute}, "{compareValue}" ilə eyni olmamalıdır',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute}, "{compareValueOrAttribute}" ilə eyni olmamalıdır',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} ən az {min, number} simvol olmalıdır.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} ən çox {max, number} simvol olmalıdır.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} {length, number} simvol olmalıdır.',

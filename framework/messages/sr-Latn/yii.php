@@ -106,7 +106,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} ne sme biti veći od "{max}".',
     '{attribute} must be no less than {min}.' => '{attribute} ne sme biti manji od {min}.',
     '{attribute} must be repeated exactly.' => '{attribute} mora biti ispravno ponovljen.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} ne sme biti jednak "{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} ne sme biti jednak "{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} treba da sadrži bar {min, number} {min, plural, one{karakter} other{karaktera}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} treba da sadrži najviše {max, number} {max, plural, one{karakter} other{karaktera}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} treba da sadrži {length, number} {length, plural, one{karakter} other{karaktera}}.',

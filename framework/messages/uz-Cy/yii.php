@@ -110,7 +110,6 @@
         '{attribute} must be no greater than {max}.' => '«{attribute}» қиймати {max} дан ошмаслиги керак.',
         '{attribute} must be no less than {min}.' => '«{attribute}» қиймати {min} дан катта бўлиши керак.',
         '{attribute} must be repeated exactly.' => '«{attribute}» қиймати бир хил тарзда такрорланиши керак.',
-        '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» қиймати «{compareValue}» га тенг бўлмаслиги керак.',
         '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» қиймати «{compareValueOrAttribute}» қийматига тенг бўлмаслиги лозим.',
         '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '«{attribute}» қиймати минимум {min, number} {min, plural, one{белгидан} few{белгидан} many{белгидан} other{белгидан}} ташкил топиши керак.',
         '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '«{attribute}» қиймати максимум {max, number} {max, plural, one{белгидан} few{белгидан} many{белгидан} other{белгидан}} ошмаслиги керак.',
@@ -122,4 +121,3 @@
         '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{йил} one{# йил} few{# йил} many{# йил} other{# йил}} аввал',
         '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{соат} one{# соат} few{# соат} many{# соат} other{# соат}} аввал',
     ];
-

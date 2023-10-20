@@ -48,7 +48,6 @@ return [
     '{attribute} must be less than "{compareValue}".' => '@@{attribute} deve essere minore di "{compareValue}".@@',
     '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} deve essere minore o uguale a "{compareValue}".@@',
     '{attribute} must be repeated exactly.' => '@@{attribute} deve essere ripetuto esattamente.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} non deve essere uguale a "{compareValue}".@@',
     '(not set)' => '(nessun valore)',
     'An internal server error occurred.' => 'Si è verificato un errore interno',
     'Are you sure you want to delete this item?' => 'Sei sicuro di voler eliminare questo elemento?',

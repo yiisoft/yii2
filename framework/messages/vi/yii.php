@@ -89,7 +89,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} không được lớn hơn {max}.',
     '{attribute} must be no less than {min}.' => '{attribute} không được nhỏ hơn {min}',
     '{attribute} must be repeated exactly.' => '{attribute} phải lặp lại chính xác.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} không được phép bằng "{compareValue}"',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} không được phép bằng "{compareValueOrAttribute}"',
     '{attribute} must be equal to "{compareValue}".' => '{attribute} phải bằng "{compareValue}"',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} phải chứa ít nhất {min, number} ký tự.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} phải chứa nhiều nhất {max, number} ký tự.',

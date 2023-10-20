@@ -88,7 +88,7 @@ return [
     '{attribute} must be no greater than {max}.' => 'Atribut {attribute} ne sme biti večji od {max}',
     '{attribute} must be no less than {min}.' => 'Atribut {attribute} ne sme biti manjši od {min}.',
     '{attribute} must be repeated exactly.' => 'Atribut {attribute} mora biti točno ponovljen.',
-    '{attribute} must not be equal to "{compareValue}".' => 'Atribut {attribute} ne sme biti enak "{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => 'Atribut {attribute} ne sme biti enak "{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Atribut {attribute} mora vsebovati vsaj {min, number} {min, plural, one{znak} two{znaka} few{znake} other{znakov}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Atribut {attribute} mora vsebovati največ {max, number} {max, plural, one{znak} two{znaka} few{znake} other{znakov}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Atribut {attribute} mora vsebovati {length, number} {length, plural, one{znak} two{znaka} few{znake} other{znakov}}.',

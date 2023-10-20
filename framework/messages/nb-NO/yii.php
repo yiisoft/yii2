@@ -85,7 +85,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} kan ikke være større enn {max}.',
     '{attribute} must be no less than {min}.' => '{attribute} kan ikke være mindre enn {min}.',
     '{attribute} must be repeated exactly.' => '{attribute} må gjentas nøyaktig.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} kan ikke være lik "{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} kan ikke være lik "{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} må inneholde minst {min, number} {min, plural, one{tegn} other{tegn}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} kan inneholde maks {max, number} {max, plural, one{tegn} other{tegn}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} må inneholde {length, number} {length, plural, one{tegn} other{tegn}}.',

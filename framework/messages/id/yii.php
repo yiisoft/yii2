@@ -89,7 +89,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} harus tidak boleh lebih besar dari {max}.',
     '{attribute} must be no less than {min}.' => '{attribute} harus tidak boleh lebih kecil dari {min}.',
     '{attribute} must be repeated exactly.' => '{attribute} harus diulang sama persis.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} harus tidak boleh sama dengan "{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} harus tidak boleh sama dengan "{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} harus memiliki paling sedikit {min, number} {min, plural, one{karakter} other{karakter}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} harus memiliki paling banyak {max, number} {max, plural, one{karakter} other{karakter}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} harus memiliki {length, number} {length, plural, one{karakter} other{karakter}}.',

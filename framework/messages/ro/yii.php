@@ -78,7 +78,7 @@ return [
     '{attribute} must be no greater than {max}.' => '«{attribute}» nu trebuie să fie mai mare ca {max}.',
     '{attribute} must be no less than {min}.' => '«{attribute}» nu trebuie să fie mai mic ca {min}.',
     '{attribute} must be repeated exactly.' => '«{attribute}» trebuie să fie repetat exact.',
-    '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» nu trebuie să fie egală cu «{compareValue}».',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» nu trebuie să fie egală cu «{compareValueOrAttribute}».',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '«{attribute}» trebuie să conțină minim {min, number} {min, plural, one{caracter} other{caractere}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '«{attribute}» trebuie să conțină maxim {max, number} {max, plural, one{caracter} other{caractere}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '«{attribute}» trebuie să conțină {length, number} {length, plural, one{caracter} other{caractere}}.',

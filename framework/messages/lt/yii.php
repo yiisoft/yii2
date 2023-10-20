@@ -107,7 +107,7 @@ return [
     '{attribute} must be no greater than {max}.' => 'Laukelio „{attribute}“ reikšmė privalo būti ne didesnė nei {max}.',
     '{attribute} must be no less than {min}.' => 'Laukelio „{attribute}“  reikšmė privalo būti ne mažesnė nei {min}.',
     '{attribute} must be repeated exactly.' => 'Laukelio „{attribute}“ reikšmė privalo būti pakartota tiksliai.',
-    '{attribute} must not be equal to "{compareValue}".' => 'Laukelio „{attribute}“ reikšmė negali būti lygi „{compareValue}“.',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => 'Laukelio „{attribute}“ reikšmė negali būti lygi „{compareValueOrAttribute}“.',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Laukelio „{attribute}“ reikšmę privalo sudaryti mažiausiai {min, number} {min, plural, one{ženklas} few{ženklai} other{ženklų}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Laukelio „{attribute}“ reikšmę privalo sudaryti daugiausiai {max, number} {max, plural, one{ženklas} few{ženklai} other{ženklų}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Laukelio „{attribute}“ reikšmę privalo sudaryti {length, number} {length, plural, one{ženklas} few{ženklai} other{ženklų}}.',

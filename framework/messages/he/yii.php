@@ -79,7 +79,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} חייב להיות לא יותר מ "{max}".',
     '{attribute} must be no less than {min}.' => '{attribute} חייב להיות לא פחות מ "{min}".',
     '{attribute} must be repeated exactly.' => '{attribute} חייב להיות מוחזר בדיוק.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} חייב להיות שווה ל "{compareValue}"',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} חייב להיות שווה ל "{compareValueOrAttribute}"',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} אמור לכלול לפחות {min, number} {min, plural, one{תו} other{תוים}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} אמור לא לכלול יותר מ{max, number} {max, plural, one{תו} other{תוים}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  אמור לכלול {length, number} {length, plural, one{תו} other{תוים}}.',

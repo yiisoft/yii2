@@ -110,7 +110,6 @@ return [
     '{attribute} must be no greater than {max}.' => '«{attribute}» qiymati {max} dan oshmasligi kerak.',
     '{attribute} must be no less than {min}.' => '«{attribute}» qiymati {min} dan kichkina bo`lmasligi kerak.',
     '{attribute} must be repeated exactly.' => '«{attribute}» qiymati bir xil tarzda takrorlanishi kerak.',
-    '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» qiymati «{compareValue}» ga teng bo`lmasligi kerak.',
     '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» qiymati «{compareValueOrAttribute}» qiymatiga teng bo`lmasligi lozim.',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '«{attribute}» qiymati minimum {min, number} {min, plural, one{belgidan} few{belgidan} many{belgidan} other{belgidan}} tashkil topishi kerak.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '«{attribute}» qiymati maksimum {max, number} {max, plural, one{belgidan} few{belgidan} many{belgidan} other{belgidan}} oshmasligi kerak.',

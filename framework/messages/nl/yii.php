@@ -85,7 +85,7 @@ return [
     '{attribute} must be no greater than {max}.' => '{attribute} mag niet groter zijn dan {max}.',
     '{attribute} must be no less than {min}.' => '{attribute} mag niet kleiner zijn dan {min}.',
     '{attribute} must be repeated exactly.' => '{attribute} moet exact herhaald worden.',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} mag niet gelijk zijn aan "{compareValue}".',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} mag niet gelijk zijn aan "{compareValueOrAttribute}".',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} moet minstens {min, number} {min, plural, one{karakter} other{karakters}} bevatten.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} mag maximaal {max, number} {max, plural, one{karakter} other{karakters}} bevatten.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} moet precies {min, number} {min, plural, one{karakter} other{karakters}} bevatten.',

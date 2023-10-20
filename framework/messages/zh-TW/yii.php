@@ -94,7 +94,7 @@ return [
     '{attribute} must not be an IPv4 address.' => '{attribute} 必須不是一個IPv4地址。',
     '{attribute} must not be an IPv6 address.' => '{attribute} 必須不是一個IPv6地址。',
     '{attribute} must be repeated exactly.' => '{attribute} 必須重複一致。',
-    '{attribute} must not be equal to "{compareValue}".' => '{attribute} 不可以等於 "{compareValue}"。',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '{attribute} 不可以等於 "{compareValueOrAttribute}"。',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} 應該包含至少 {min, number} 個字符。',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} 只能包含最多 {max, number} 個字符。',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} 應該包含 {length, number} 個字符。',

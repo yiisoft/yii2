@@ -79,7 +79,7 @@ return [
     '{attribute} must be no greater than {max}.' => '«{attribute}» мәні мынадан аспауы керек: {max}.',
     '{attribute} must be no less than {min}.' => '«{attribute}» мәні мынадан кем болмауы керек: {min}.',
     '{attribute} must be repeated exactly.' => '«{attribute}» мәні дәлме-дәл қайталану керек.',
-    '{attribute} must not be equal to "{compareValue}".' => '«{attribute}» мәні мынаған тең болмауы керек: «{compareValue}».',
+    '{attribute} must not be equal to "{compareValueOrAttribute}".' => '«{attribute}» мәні мынаған тең болмауы керек: «{compareValueOrAttribute}».',
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '«{attribute}» мәні кемінде {min} таңбадан тұруы керек.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '«{attribute}» мәні {max} таңбадан аспауы қажет.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '«{attribute}» {length} таңбадан тұруы керек.',
