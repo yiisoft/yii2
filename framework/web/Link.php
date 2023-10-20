@@ -66,7 +66,11 @@ class Link extends BaseObject
                     $link[$i] = $l instanceof self ? array_filter((array) $l) : ['href' => $l];
                 }
                 $links[$rel] = $link;
-            } elseif (!$link instanceof self) {
+            }
+            if ($link instanceof self) {
+                $l = array_filter((array)$link);
+                $links[$rel] = $l;
+            } else {
                 $links[$rel] = ['href' => $link];
             }
         }

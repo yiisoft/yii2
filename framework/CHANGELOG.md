@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Bug #18469: Fixed `Link::serialize(array $links)` method in `yii\web\Link` 
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
 - Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
 - Bug #20002: Fixed superfluous query on HEAD request in serializer (xicond)
