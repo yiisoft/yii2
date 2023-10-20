@@ -9,7 +9,6 @@ namespace yiiunit\framework\rest;
 
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
-use yii\data\DataProviderInterface;
 use yii\rest\Serializer;
 use yii\web\Request;
 use yiiunit\TestCase;
@@ -402,11 +401,6 @@ class SerializerTest extends TestCase
         ];
     }
 
-    public function dataProviderHeadSerializeDataProvider()
-    {
-        return $this->dataProviderSerializeDataProvider();
-    }
-
     /**
      * @dataProvider dataProviderSerializeDataProvider
      *
@@ -423,7 +417,7 @@ class SerializerTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderHeadSerializeDataProvider
+     * @dataProvider dataProviderSerializeDataProvider
      *
      * @param \yii\data\DataProviderInterface $dataProvider
      * @param array $expectedResult
