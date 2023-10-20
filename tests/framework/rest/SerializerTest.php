@@ -402,6 +402,11 @@ class SerializerTest extends TestCase
         ];
     }
 
+    public function dataProviderHeadSerializeDataProvider()
+    {
+        return $this->dataProviderSerializeDataProvider();
+    }
+
     /**
      * @dataProvider dataProviderSerializeDataProvider
      *
@@ -415,7 +420,17 @@ class SerializerTest extends TestCase
         $serializer->preserveKeys = $saveKeys;
 
         $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
+    }
 
+    /**
+     * @dataProvider dataProviderHeadSerializeDataProvider
+     *
+     * @param \yii\data\DataProviderInterface $dataProvider
+     * @param array $expectedResult
+     * @param bool $saveKeys
+     */
+    public function testHeadSerializeDataProvider($dataProvider, $expectedResult, $saveKeys = false)
+    {
         $serializer = new Serializer();
         $serializer->preserveKeys = $saveKeys;
         $serializer->collectionEnvelope = 'data';
