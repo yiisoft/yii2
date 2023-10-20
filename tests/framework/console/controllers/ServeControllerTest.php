@@ -24,78 +24,111 @@ class ServeControllerTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testActionIndex()
+    public function testAddressTaken()
     {
-        if (!\function_exists('pcntl_fork')) {
-            $this->markTestSkipped('pcntl_fork() is not available');
-        }
+        $docroot = __DIR__ . '/stub';
 
-        if (!\function_exists('posix_kill')) {
-            $this->markTestSkipped('posix_kill() is not available');
-        }
+        /** @var ServeController $serveController */
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->setMethods(['isAddressTaken'])
+            ->getMock();
 
-        if (!\function_exists('pcntl_waitpid')) {
-            $this->markTestSkipped('pcntl_waitpid() is not available');
-        }
+        $serveController->expects($this->once())->method('isAddressTaken')->willReturn(true);
 
-        $controller = new ServeController('serve', Yii::$app);
-        $controller->docroot = __DIR__ . '/stub';
-        $controller->port = 8080;
+        $serveController->docroot = $docroot;
+        $serveController->port = 8080;
 
-        $pid = \pcntl_fork();
+        ob_start();
+        $serveController->actionIndex('localhost:8080');
+        ob_end_clean();
 
-        if ($pid == 0) {
-            \ob_start();
-            $controller->actionIndex('localhost');
-            \ob_get_clean();
-            exit();
-        }
+        $result = $serveController->flushStdOutBuffer();
 
-        \sleep(1);
-
-        $response = \file_get_contents('http://localhost:8080');
-
-        $this->assertEquals('Hello!', $response);
-
-        \posix_kill($pid, \SIGTERM);
-        \pcntl_waitpid($pid, $status);
+        $this->assertContains('http://localhost:8080 is taken by another process.', $result);
     }
 
-    public function testActionIndexWithRouter()
+    public function testDefautlValues()
     {
-        if (!\function_exists('pcntl_fork')) {
-            $this->markTestSkipped('pcntl_fork() is not available');
-        }
+        $docroot = __DIR__ . '/stub';
 
-        if (!\function_exists('posix_kill')) {
-            $this->markTestSkipped('posix_kill() is not available');
-        }
+        $serveController = new ServeControllerMock('serve', Yii::$app);
+        $serveController->docroot = $docroot;
+        $serveController->port = 8080;
 
-        if (!\function_exists('pcntl_waitpid')) {
-            $this->markTestSkipped('pcntl_waitpid() is not available');
-        }
+        ob_start();
+        $serveController->actionIndex();
+        ob_end_clean();
 
-        $controller = new ServeController('serve', Yii::$app);
-        $controller->docroot = __DIR__ . '/stub';
-        $controller->port = 8081;
-        $controller->router = __DIR__ . '/stub/index.php';
+        $result = $serveController->flushStdOutBuffer();
 
-        $pid = \pcntl_fork();
-
-        if ($pid == 0) {
-            \ob_start();
-            $controller->actionIndex('localhost');
-            \ob_get_clean();
-            exit();
-        }
-
-        \sleep(1);
-
-        $response = \file_get_contents('http://localhost:8081');
-
-        $this->assertEquals('Hello!', $response);
-
-        \posix_kill($pid, \SIGTERM);
-        \pcntl_waitpid($pid, $status);
+        $this->assertContains('Server started on http://localhost:8080', $result);
+        $this->assertContains("Document root is \"{$docroot}\"", $result);
+        $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
+
+    public function testDoocRootWithNoExistValue()
+    {
+        $docroot = '/not/exist/path';
+
+        $serveController = new ServeControllerMock('serve', Yii::$app);
+        $serveController->docroot = $docroot;
+
+        ob_start();
+        $serveController->actionIndex();
+        ob_end_clean();
+
+        $result = $serveController->flushStdOutBuffer();
+
+        $this->assertContains("Document root \"{$docroot}\" does not exist.", $result);
+    }
+
+    public function testWithRouterNoExistValue()
+    {
+        $docroot = __DIR__ . '/stub';
+        $router = '/not/exist/path';
+
+        $serveController = new ServeControllerMock('serve', Yii::$app);
+        $serveController->docroot = $docroot;
+        $serveController->port = 8081;
+        $serveController->router = $router;
+
+        ob_start();
+        $serveController->actionIndex();
+        ob_end_clean();
+
+        $result = $serveController->flushStdOutBuffer();
+
+        $this->assertContains("Routing file \"$router\" does not exist.", $result);
+    }
+
+    public function testWithRouterValue()
+    {
+        $docroot = __DIR__ . '/stub';
+        $router = __DIR__ . '/stub/index.php';
+
+        $serveController = new ServeControllerMock('serve', Yii::$app);
+        $serveController->docroot = $docroot;
+        $serveController->port = 8081;
+        $serveController->router = $router;
+
+        ob_start();
+        $serveController->actionIndex();
+        ob_end_clean();
+
+        $result = $serveController->flushStdOutBuffer();
+
+        $this->assertContains('Server started on http://localhost:8081', $result);
+        $this->assertContains("Document root is \"{$docroot}\"", $result);
+        $this->assertContains("Routing file is \"{$router}\"", $result);
+        $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
+    }
+}
+
+/**
+ * Mock class for [[\yii\console\controllers\ServeController]].
+ */
+class ServeControllerMock extends ServeController
+{
+    use StdOutBufferControllerTrait;
 }

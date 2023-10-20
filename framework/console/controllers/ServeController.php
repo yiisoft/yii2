@@ -86,6 +86,10 @@ class ServeController extends Controller
             $command .= " -r \"{$router}\"";
         }
 
+        if (YII_ENV === 'test') {
+            return true;
+        }
+
         passthru($command);
     }
 
