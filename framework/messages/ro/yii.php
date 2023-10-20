@@ -144,13 +144,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '',
-    'No help for unknown command "{command}".' => '@@Nu sunt referințe pentru comanda necunoscută "{command}".@@',
-    'No help for unknown sub-command "{command}".' => '@@Nu sunt referințe pentru sub-comanda necunoscută "{command}".@@',
-    'Unknown command "{command}".' => '@@Comandă necunoscută "{command}".@@',
-    '{attribute} must be greater than "{compareValue}".' => '@@«{attribute}» trebuie să fie mai mare ca «{compareValue}».@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@«{attribute}» trebuie să fie mai mare sau egal cu «{compareValue}».@@',
-    '{attribute} must be less than "{compareValue}".' => '@@«{attribute}» trebuie să fie mai mic ca «{compareValue}».@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@«{attribute}» trebuie să fie mai mic sau egal cu «{compareValue}».@@',
-    '{attribute} must be repeated exactly.' => '@@«{attribute}» trebuie să fie repetat exact.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@«{attribute}» nu trebuie să fie egală cu «{compareValue}».@@',
 ];

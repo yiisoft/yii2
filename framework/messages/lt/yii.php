@@ -144,10 +144,4 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '',
     '{delta, plural, =1{1 second} other{# seconds}}' => '',
     '{delta, plural, =1{1 year} other{# years}}' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@Laukelio „{attribute}“ reikšmė privalo būti didesnė nei „{compareValue}“.@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@Laukelio „{attribute}“ reikšmė privalo būti didesnė arba lygi „{compareValue}“.@@',
-    '{attribute} must be less than "{compareValue}".' => '@@Laukelio „{attribute}“ reikšmė privalo būti mažesnė nei „{compareValue}“.@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@Laukelio „{attribute}“ reikšmė privalo būti mažesnė arba lygi „{compareValue}“.@@',
-    '{attribute} must be repeated exactly.' => '@@Laukelio „{attribute}“ reikšmė privalo būti pakartota tiksliai.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@Laukelio „{attribute}“ reikšmė negali būti lygi „{compareValue}“.@@',
 ];

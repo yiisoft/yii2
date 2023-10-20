@@ -144,6 +144,4 @@ return [
     'Options available: {options}' => '',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => '',
     '{compareAttribute} is invalid.' => '',
-    'Powered by {yii}' => '@@Basiert auf {yii}@@',
-    'Yii Framework' => '@@Yii Framework@@',
 ];

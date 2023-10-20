@@ -144,10 +144,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} mestilah lebih besar daripada "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} mestilah lebih besar atau sama dengan "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} mestilah kurang daripada "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} mestilah kurang daripada atau sama dengan "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} mestilah diulang dengan tepat.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} mestilah tidak sama dengan "{compareValue}".@@',
 ];

@@ -144,13 +144,4 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '',
     '{delta, plural, =1{1 second} other{# seconds}}' => '',
     '{delta, plural, =1{1 year} other{# years}}' => '',
-    'No help for unknown command "{command}".' => '@@"{command}" noaniq komanda uchun ma`lumotnoma mavjud emas.@@',
-    'No help for unknown sub-command "{command}".' => '@@"{command}" noaniq qism komanda uchun ma`lumotnoma mavjud emas.@@',
-    'Unknown command "{command}".' => '@@"{command}" noaniq komanda.@@',
-    '{attribute} must be greater than "{compareValue}".' => '@@«{attribute}» qiymati «{compareValue}» dan katta bo`lishi kerak.@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@«{attribute}» qiymati «{compareValue}» dan katta yoki teng bo`lishi kerak.@@',
-    '{attribute} must be less than "{compareValue}".' => '@@«{attribute}» qiymati «{compareValue}» dan kichkina bo`lishi kerak.@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@«{attribute}» qiymati «{compareValue}» dan kichik yoki teng bo`lishi kerak.@@',
-    '{attribute} must be repeated exactly.' => '@@«{attribute}» qiymati bir xil tarzda takrorlanishi kerak.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@«{attribute}» qiymati «{compareValue}» ga teng bo`lmasligi kerak.@@',
 ];

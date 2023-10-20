@@ -144,13 +144,4 @@ return [
     '{delta, plural, =1{a second} other{# seconds}} ago' => '',
     '{delta, plural, =1{a year} other{# years}} ago' => '',
     '{delta, plural, =1{an hour} other{# hours}} ago' => '',
-    'No help for unknown command "{command}".' => '@@ليس هناك مساعدة لأمر غير معروف "{command}".@@',
-    'No help for unknown sub-command "{command}".' => '@@ليس هناك مساعدة لأمر فرعي غير معروف "{command}".@@',
-    'Unknown command "{command}".' => '@@أمر غير معروف. "{command}"@@',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} يجب أن يكون أكبر من "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} يجب أن يكون أكبر من أو يساوي  "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} يجب أن يكون أصغر من "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} يجب أن يكون أصغر من أو يساوي "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} يجب أن يكون متطابق.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} يجب ان لا يساوي "{compareValue}"@@',
 ];

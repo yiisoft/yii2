@@ -144,13 +144,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '',
-    'No help for unknown command "{command}".' => '@@Белгісіз "{command}" командасы үшін көмек табылмады.@@',
-    'No help for unknown sub-command "{command}".' => '@@Белгісіз "{command}" ішкі командасы үшін көмек табылмады.@@',
-    'Unknown command "{command}".' => '@@"{command}" командасы белгісіз.@@',
-    '{attribute} must be greater than "{compareValue}".' => '@@«{attribute}» мәні мынадан үлкен болуы керек: «{compareValue}».@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@«{attribute}» мәні мынадан үлкен немесе тең болуы керек: «{compareValue}».@@',
-    '{attribute} must be less than "{compareValue}".' => '@@«{attribute}» мәні мынадан кіші болуы керек: «{compareValue}».@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@«{attribute}» мәні мынадан кіші немесе тең болуы керек: «{compareValue}».@@',
-    '{attribute} must be repeated exactly.' => '@@«{attribute}» мәні дәлме-дәл қайталану керек.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@«{attribute}» мәні мынаған тең болмауы керек: «{compareValue}».@@',
 ];

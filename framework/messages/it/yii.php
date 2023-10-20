@@ -144,10 +144,4 @@ return [
     'Unknown filter attribute "{attribute}"' => '',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => '',
     '{compareAttribute} is invalid.' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} deve essere maggiore di "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} deve essere maggiore o uguale a "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} deve essere minore di "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} deve essere minore o uguale a "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} deve essere ripetuto esattamente.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} non deve essere uguale a "{compareValue}".@@',
 ];

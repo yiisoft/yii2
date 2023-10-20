@@ -144,6 +144,4 @@ return [
     'Unknown filter attribute "{attribute}"' => '',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => '',
     '{compareAttribute} is invalid.' => '',
-    'Powered by {yii}' => '@@Дар {yii} кор мекунад@@',
-    'Yii Framework' => '@@Yii Framework@@',
 ];

@@ -144,6 +144,4 @@ return [
     'Aliases available: {aliases}' => '',
     'Options available: {options}' => '',
     '{compareAttribute} is invalid.' => '',
-    'Powered by {yii}' => '@@技术支持 {yii}@@',
-    'Yii Framework' => '@@Yii 框架@@',
 ];

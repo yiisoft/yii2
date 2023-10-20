@@ -144,13 +144,4 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '',
     '{delta, plural, =1{1 second} other{# seconds}}' => '',
     '{delta, plural, =1{1 year} other{# years}}' => '',
-    'No help for unknown command "{command}".' => '@@Pomoči za neznani ukaz "{command}" ni mogoče najti.@@',
-    'No help for unknown sub-command "{command}".' => '@@Pomoči za neznani pod-ukaz "{command}" ni mogoče najti.@@',
-    'Unknown command "{command}".' => '@@Neznani ukaz "{command}".@@',
-    '{attribute} must be greater than "{compareValue}".' => '@@Atribut {attribute} mora biti večji od "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@Atribut {attribute} mora biti večji ali enak "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@Atribut {attribute} mora biti manjši od "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@Atribut {attribute} mora biti manjši ali enak "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@Atribut {attribute} mora biti točno ponovljen.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@Atribut {attribute} ne sme biti enak "{compareValue}".@@',
 ];

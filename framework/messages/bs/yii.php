@@ -144,10 +144,4 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '',
     '{delta, plural, =1{1 second} other{# seconds}}' => '',
     '{delta, plural, =1{1 year} other{# years}}' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} mora biti veći od "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} mora biti veći ili jednak od "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} mora biti manji od "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} mora biti manji ili jednak od "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} mora biti ponovljen ispravno.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} ne smije biti jednak"{compareValue}".@@',
 ];

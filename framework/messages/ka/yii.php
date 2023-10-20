@@ -144,10 +144,4 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '',
     '{delta, plural, =1{1 second} other{# seconds}}' => '',
     '{delta, plural, =1{1 year} other{# years}}' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@მნიშვნელობა «{attribute}» უნდა იყოს «{compareValue}» მნიშვნელობაზე მეტი.@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@მნიშვნელობა «{attribute}» უნდა იყოს «{compareValue}» მნიშვნელობაზე მეტი ან ტოლი.@@',
-    '{attribute} must be less than "{compareValue}".' => '@@მნიშვნელობა «{attribute}» უნდა იყოს «{compareValue}» მნიშვნელობაზე ნაკლები.@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@მნიშვნელობა «{attribute}» უნდა იყოს «{compareValue}» მნიშვნელობაზე ნაკლები ან ტოლი.@@',
-    '{attribute} must be repeated exactly.' => '@@მნიშვნელობა «{attribute}» უნდა განმეორდეს ზუსტად.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@მნიშვნელობა «{attribute}» არ უნდა იყოს «{compareValue}»-ს ტოლი.@@',
 ];

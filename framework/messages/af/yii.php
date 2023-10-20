@@ -144,6 +144,4 @@ return [
     'Options available: {options}' => '',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '',
     '{compareAttribute} is invalid.' => '',
-    'Powered by {yii}' => '@@Aangedryf deur {yii}@@',
-    'Yii Framework' => '@@Yii Raamwerk@@',
 ];

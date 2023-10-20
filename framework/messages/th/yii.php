@@ -144,5 +144,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '',
-    'Powered by {yii}' => '@@ขับเคลื่อนโดย {yii}@@',
 ];

@@ -144,6 +144,4 @@ return [
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} tebi{n, plural, zero{baitu} one{baits} other{baiti}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} tera{n, plural, zero{baitu} one{baits} other{baiti}}',
     '{compareAttribute} is invalid.' => '',
-    'Powered by {yii}' => '@@Darbojas ar {yii}@@',
-    'Yii Framework' => '@@Yii ietvars@@',
 ];

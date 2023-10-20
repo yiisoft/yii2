@@ -144,10 +144,4 @@ return [
     '{attribute} must not be an IPv6 address.' => '',
     '{attribute} must not be equal to "{compareValueOrAttribute}".' => '',
     '{compareAttribute} is invalid.' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} moet groter zijn dan "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} moet groter dan of gelijk aan "{compareValue}" zijn.@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} moet minder zijn dan "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} moet minder dan of gelijk aan "{compareValue}" zijn.@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} moet exact herhaald worden.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} mag niet gelijk zijn aan "{compareValue}".@@',
 ];

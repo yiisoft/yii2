@@ -144,10 +144,4 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '',
     '{delta, plural, =1{1 second} other{# seconds}}' => '',
     '{delta, plural, =1{1 year} other{# years}}' => '',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} måste vara större än "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} måste vara större än eller lika med "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} måste vara mindre än "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} måste vara mindre än eller lika med "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} måste upprepas exakt.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} får inte vara satt till "{compareValue}".@@',
 ];

@@ -144,13 +144,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '',
-    'No help for unknown command "{command}".' => '@@פקודה "{command}" לא מוכרת ואין לה עזרה@@',
-    'No help for unknown sub-command "{command}".' => '@@תת-פקודה "{command}" לא מוכרת ואין לה עזרה@@',
-    'Unknown command "{command}".' => '@@Unknown command "{command}".@@',
-    '{attribute} must be greater than "{compareValue}".' => '@@{attribute} חייב להיות גדול מ "{compareValue}".@@',
-    '{attribute} must be greater than or equal to "{compareValue}".' => '@@{attribute} חייב להיות גדול מ או שווה  "{compareValue}".@@',
-    '{attribute} must be less than "{compareValue}".' => '@@{attribute} חייב להיות פחות מ "{compareValue}".@@',
-    '{attribute} must be less than or equal to "{compareValue}".' => '@@{attribute} חייב להיות פחות מ או שווה "{compareValue}".@@',
-    '{attribute} must be repeated exactly.' => '@@{attribute} חייב להיות מוחזר בדיוק.@@',
-    '{attribute} must not be equal to "{compareValue}".' => '@@{attribute} חייב להיות שווה ל "{compareValue}"@@',
 ];
