@@ -221,7 +221,7 @@ HTML;
                     'url' => 'test/logic',
                     'template' => 'label: {label}; url: {url}',
                     'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                        return $widget->route==='test/logic';
+                        return $widget->route === 'test/logic';
                     },
                 ],
                 [
@@ -267,7 +267,7 @@ HTML;
                             'url' => 'test/logic',
                             'template' => 'label: {label}; url: {url}',
                             'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                                return $widget->route==='test/logic';
+                                return $widget->route === 'test/logic';
                             },
                         ],
                         [
@@ -328,7 +328,7 @@ HTML;
                             'url' => 'test/logic',
                             'template' => 'label: {label}; url: {url}',
                             'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                                return $widget->route==='test/logic';
+                                return $widget->route === 'test/logic';
                             },
                         ],
                         
