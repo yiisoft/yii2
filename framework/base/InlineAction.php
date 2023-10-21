@@ -27,7 +27,6 @@ class InlineAction extends Action
      */
     public $actionMethod;
 
-
     /**
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
@@ -37,23 +36,23 @@ class InlineAction extends Action
     public function __construct($id, $controller, $actionMethod, $config = [])
     {
         $this->actionMethod = $actionMethod;
+        $this->actionHandler = (new \ReflectionClass($controller))->getMethod($actionMethod);
         parent::__construct($id, $controller, $config);
     }
 
     /**
-     * Runs this action with the specified parameters.
-     * This method is mainly invoked by the controller.
-     * @param array $params action parameters
-     * @return mixed the result of the action
+     * @inheritdoc
      */
-    public function runWithParams($params)
+    public function getActionObject()
     {
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
+        return $this->controller;
+    }
 
-        return call_user_func_array([$this->controller, $this->actionMethod], $args);
+    /**
+     * @inheritdoc
+     */
+    public function getActionMethodName()
+    {
+        return $this->actionMethod;
     }
 }

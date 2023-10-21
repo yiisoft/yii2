@@ -7,6 +7,7 @@
 
 namespace yii\base;
 
+use ReflectionMethod;
 use Yii;
 
 /**
@@ -41,11 +42,31 @@ class Action extends Component
      * @var string ID of the action
      */
     public $id;
+
     /**
      * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
      */
     public $controller;
 
+    /**
+     * @var ReflectionMethod the action handler used to define this action
+     */
+    protected $actionHandler = null;
+
+    /**
+     * @var array the action handler arguments, the derived class may access resolved action arguments in the beforeRun or the afterRun methods
+     */
+    protected $arguments = [];
+
+    /**
+     * @var mixed the result of the action, derived class my set or get action result in the afterRun method
+     */
+    protected $result = null;
+
+    /**
+     * @var mixed the params used to run this action
+     */
+    protected $params = null;
 
     /**
      * Constructor.
@@ -58,6 +79,13 @@ class Action extends Component
     {
         $this->id = $id;
         $this->controller = $controller;
+
+        if ($this->actionHandler === null) {
+            $reflection = new \ReflectionClass($this);
+            if ($reflection->hasMethod("run")) {
+                $this->actionHandler = $reflection->getMethod("run");
+            }
+        }
         parent::__construct($config);
     }
 
@@ -81,22 +109,21 @@ class Action extends Component
      */
     public function runWithParams($params)
     {
-        if (!method_exists($this, 'run')) {
-            throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
-        }
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by '  . get_class($this->controller), __METHOD__);
-        if (Yii::$app->requestedParams === null) {
-            Yii::$app->requestedParams = $args;
-        }
+        $this->params = $params;
+        $methodName = $this->getActionMethodName();
+        $instance = $this->getActionObject();
+
+        Yii::debug('Running action: ' . get_class($instance) . "::{$methodName}(), invoked by "  . get_class($this->controller), __METHOD__);
+
+        $this->arguments = $this->resolveActionArguments($params);
+        $this->result = null;
+
         if ($this->beforeRun()) {
-            $result = call_user_func_array([$this, 'run'], $args);
+            $this->result = $this->executeAction($this->arguments);
             $this->afterRun();
-
-            return $result;
         }
 
-        return null;
+        return $this->result;
     }
 
     /**
@@ -117,5 +144,76 @@ class Action extends Component
      */
     protected function afterRun()
     {
+    }
+
+    /**
+     * Resolves action arguments, derived class my override this method to provide custom argument resolver
+     *
+     * @return array
+     */
+    public function resolveActionArguments(array $params)
+    {
+        $args = $this->controller->bindActionParams($this, $params);
+        if (Yii::$app->requestedParams === null) {
+            Yii::$app->requestedParams = $args;
+        }
+        return $args;
+    }
+
+    /**
+     * Returns handler for this action
+     *
+     * @return ReflectionMethod
+     */
+    public function getActionHandler()
+    {
+        if ($this->actionHandler === null) {
+            $methodName = $this->getActionMethodName();
+            $instance = $this->getActionObject();
+            throw new InvalidConfigException(get_class($instance) . " must define a \"{$methodName}()\" method.");
+        }
+        return $this->actionHandler;
+    }
+
+    /**
+     * Gets params used to run action
+     *
+     * @return mixed the params used to run action using runWithParams method
+     */
+    public function getParams()
+    {
+        return $this->params;
+    }
+
+    /**
+     * Gets object that contains a method for this action, for InlineAction it's controller instance, otherwise, it's the action itself
+     *
+     * @return object the object that contains method for this action
+     */
+    public function getActionObject()
+    {
+        return $this;
+    }
+
+    /**
+     * Returns action method name
+     *
+     * @return string the action method name
+     */
+    public function getActionMethodName()
+    {
+        return "run";
+    }
+
+    /**
+     * Executes action handler using resolved action arguments
+     *
+     * @param array $args the action handler arguments
+     * @return mixed the result of action handler invocation
+     */
+    public function executeAction($args)
+    {
+        $instance = $this->getActionObject();
+        return $this->getActionHandler()->invokeArgs($instance, $args);
     }
 }
