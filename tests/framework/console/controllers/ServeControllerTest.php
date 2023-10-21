@@ -19,12 +19,12 @@ use yiiunit\TestCase;
  */
 class ServeControllerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication();
     }
 
-    public function testAddressTaken()
+    public function testAddressTaken(): void
     {
         $docroot = __DIR__ . '/stub';
 
@@ -49,7 +49,7 @@ class ServeControllerTest extends TestCase
         $this->assertContains('http://localhost:8080 is taken by another process.', $result);
     }
 
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         $docroot = __DIR__ . '/stub';
 
@@ -75,7 +75,7 @@ class ServeControllerTest extends TestCase
         $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
 
-    public function testDoocRootWithNoExistValue()
+    public function testDoocRootWithNoExistValue(): void
     {
         $docroot = '/not/exist/path';
 
@@ -98,7 +98,7 @@ class ServeControllerTest extends TestCase
         $this->assertContains("Document root \"{$docroot}\" does not exist.", $result);
     }
 
-    public function testWithRouterNoExistValue()
+    public function testWithRouterNoExistValue(): void
     {
         $docroot = __DIR__ . '/stub';
         $router = '/not/exist/path';
@@ -124,7 +124,7 @@ class ServeControllerTest extends TestCase
         $this->assertContains("Routing file \"$router\" does not exist.", $result);
     }
 
-    public function testWithRouterValue()
+    public function testWithRouterValue(): void
     {
         $docroot = __DIR__ . '/stub';
         $router = __DIR__ . '/stub/index.php';
