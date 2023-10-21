@@ -31,10 +31,11 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMocK::className())
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['isAddressTaken'])
+            ->setMethods(['isAddressTaken', 'runCommand'])
             ->getMock();
 
         $serveController->expects($this->once())->method('isAddressTaken')->willReturn(true);
+        $serveController->expects($this->never())->method('runCommand');
 
         $serveController->docroot = $docroot;
         $serveController->port = 8080;
@@ -48,13 +49,20 @@ class ServeControllerTest extends TestCase
         $this->assertContains('http://localhost:8080 is taken by another process.', $result);
     }
 
-    public function testDefautlValues()
+    public function testDefaultValues()
     {
         $docroot = __DIR__ . '/stub';
 
-        $serveController = new ServeControllerMock('serve', Yii::$app);
+        /** @var ServeController $serveController */
+        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->setMethods(['runCommand'])
+            ->getMock();
+
         $serveController->docroot = $docroot;
         $serveController->port = 8080;
+
+        $serveController->expects($this->once())->method('runCommand')->willReturn(true);
 
         ob_start();
         $serveController->actionIndex();
@@ -71,8 +79,15 @@ class ServeControllerTest extends TestCase
     {
         $docroot = '/not/exist/path';
 
-        $serveController = new ServeControllerMock('serve', Yii::$app);
+        /** @var ServeController $serveController */
+        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->setMethods(['runCommand'])
+            ->getMock();
+
         $serveController->docroot = $docroot;
+
+        $serveController->expects($this->any())->method('runCommand')->willReturn(true);
 
         ob_start();
         $serveController->actionIndex();
@@ -88,10 +103,17 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
         $router = '/not/exist/path';
 
-        $serveController = new ServeControllerMock('serve', Yii::$app);
+        /** @var ServeController $serveController */
+        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->setMethods(['runCommand'])
+            ->getMock();
+
         $serveController->docroot = $docroot;
         $serveController->port = 8081;
         $serveController->router = $router;
+
+        $serveController->expects($this->any())->method('runCommand')->willReturn(true);
 
         ob_start();
         $serveController->actionIndex();
@@ -107,10 +129,17 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
         $router = __DIR__ . '/stub/index.php';
 
-        $serveController = new ServeControllerMock('serve', Yii::$app);
+        /** @var ServeController $serveController */
+        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->setMethods(['runCommand'])
+            ->getMock();
+
         $serveController->docroot = $docroot;
         $serveController->port = 8081;
         $serveController->router = $router;
+
+        $serveController->expects($this->once())->method('runCommand')->willReturn(true);
 
         ob_start();
         $serveController->actionIndex();
