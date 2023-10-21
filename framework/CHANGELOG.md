@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
 - Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
