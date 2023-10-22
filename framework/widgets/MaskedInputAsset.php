@@ -21,7 +21,7 @@ class MaskedInputAsset extends AssetBundle
 {
     public $sourcePath = '@bower/inputmask/dist';
     public $js = [
-        'jquery.inputmask.js',
+        'jquery.inputmask.bundle.js',
     ];
     public $depends = [
         'yii\web\YiiAsset',

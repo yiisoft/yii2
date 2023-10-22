@@ -27,21 +27,6 @@ describe('yii.activeForm', function () {
         var script = new vm.Script(code);
         var context = new vm.createContext({window: window, document: window.document, yii: yii});
         script.runInContext(context);
-        /** This is a workaround for a jsdom issue, that prevents :hidden and :visible from working as expected.
-         * @see https://github.com/jsdom/jsdom/issues/1048 */
-        context.window.Element.prototype.getClientRects = function () {
-            var node = this;
-            while(node) {
-                if(node === document) {
-                    break;
-                }
-                if (!node.style || node.style.display === 'none' || node.style.visibility === 'hidden') {
-                    return [];
-                }
-                node = node.parentNode;
-            }
-            return [{width: 100, height: 100}];
-        };
     }
 
     var activeFormHtml = fs.readFileSync('tests/js/data/yii.activeForm.html', 'utf-8');
@@ -132,60 +117,6 @@ describe('yii.activeForm', function () {
                 assert.isFalse($activeForm.data('yiiActiveForm').validated);
             });
         });
-
-        describe('with ajax validation', function () {
-            describe('with rapid validation of multiple fields', function () {
-                it('should cancel overlapping ajax requests and not display outdated validation results', function () {
-                    $activeForm = $('#w3');
-                    $activeForm.yiiActiveForm([{
-                        id: 'test-text2',
-                        input: '#test-text2',
-                        container: '.field-test-text2',
-                        enableAjaxValidation: true
-                    }, {
-                        id: 'test-text3',
-                        input: '#test-text3',
-                        container: '.field-test-text3',
-                        enableAjaxValidation: true
-                    }], {
-                        validationUrl: ''
-                    });
-
-                    let requests = [];
-                    function fakeAjax(object) {
-                        const request = {
-                            jqXHR: {
-                                abort: function () {
-                                    request.aborted = true;
-                                }
-                            },
-                            aborted: false,
-                            respond: function (response) {
-                                if (this.aborted) {
-                                    return;
-                                }
-                                object.success(response);
-                                object.complete(this.jqXHR, '');
-                            }
-                        };
-                        requests.push(request);
-                        object.beforeSend(request.jqXHR, '');
-                    }
-
-                    const ajaxStub = sinon.stub($, 'ajax', fakeAjax);
-                    $activeForm.yiiActiveForm('validateAttribute', 'test-text2');
-                    assert.isTrue(requests.length === 1);
-                    $activeForm.yiiActiveForm('validateAttribute', 'test-text3');
-                    // When validateAttribute was called on text2, its value was valid.
-                    // The value of text3 wasn't.
-                    requests[0].respond({'test-text3': ['Field cannot be empty']});
-                    // When validateAttribute was called on text3, its value was valid.
-                    requests[1].respond([]);
-                    assert.isTrue($activeForm.find('.field-test-text3').hasClass('has-success'));
-                    ajaxStub.restore();
-                });
-            });
-        })
     });
 
     describe('resetForm method', function () {

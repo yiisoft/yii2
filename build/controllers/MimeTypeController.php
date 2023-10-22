@@ -121,14 +121,10 @@ class MimeTypeController extends Controller
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
- *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
- * otherwise they will be lost on next build.
  */
 \$mimeTypes = $array;
 
-# fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
-if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
+if (PHP_VERSION_ID >= 80100) {
     \$mimeTypes = array_replace(\$mimeTypes, array('xz' => 'application/octet-stream'));
 }
 
@@ -152,9 +148,6 @@ EOD;
  * MIME aliases.
  *
  * This file contains aliases for MIME types.
- *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
- * otherwise they will be lost on next build.
  */
 return $array;
 
@@ -216,9 +209,6 @@ EOD;
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
- *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
- * otherwise they will be lost on next build.
  */
 return $array;
 

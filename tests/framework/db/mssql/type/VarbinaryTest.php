@@ -5,7 +5,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db\mssql\type;
+namespace yiiunit\framework\db\mssql\Type;
 
 use yii\db\Query;
 use yiiunit\framework\db\DatabaseTestCase;
