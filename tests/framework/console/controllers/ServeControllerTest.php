@@ -19,19 +19,19 @@ use yiiunit\TestCase;
  */
 class ServeControllerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         $this->mockApplication();
     }
 
-    public function testAddressTaken()
+    public function testAddressTaken(): void
     {
         $docroot = __DIR__ . '/stub';
 
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMocK::className())
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['isAddressTaken', 'runCommand'])
+            ->onlyMethods(['isAddressTaken', 'runCommand'])
             ->getMock();
 
         $serveController->expects($this->once())->method('isAddressTaken')->willReturn(true);
@@ -46,17 +46,17 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains('http://localhost:8080 is taken by another process.', $result);
+        $this->assertStringContainsString('http://localhost:8080 is taken by another process.', $result);
     }
 
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         $docroot = __DIR__ . '/stub';
 
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::className())
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -70,19 +70,19 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains('Server started on http://localhost:8080', $result);
-        $this->assertContains("Document root is \"{$docroot}\"", $result);
-        $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
+        $this->assertStringContainsString('Server started on http://localhost:8080', $result);
+        $this->assertStringContainsString("Document root is \"{$docroot}\"", $result);
+        $this->assertStringContainsString('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
 
-    public function testDoocRootWithNoExistValue()
+    public function testDoocRootWithNoExistValue(): void
     {
         $docroot = '/not/exist/path';
 
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::className())
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -95,10 +95,10 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains("Document root \"{$docroot}\" does not exist.", $result);
+        $this->assertStringContainsString("Document root \"{$docroot}\" does not exist.", $result);
     }
 
-    public function testWithRouterNoExistValue()
+    public function testWithRouterNoExistValue(): void
     {
         $docroot = __DIR__ . '/stub';
         $router = '/not/exist/path';
@@ -106,7 +106,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::className())
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -121,10 +121,10 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains("Routing file \"$router\" does not exist.", $result);
+        $this->assertStringContainsString("Routing file \"$router\" does not exist.", $result);
     }
 
-    public function testWithRouterValue()
+    public function testWithRouterValue(): void
     {
         $docroot = __DIR__ . '/stub';
         $router = __DIR__ . '/stub/index.php';
@@ -132,7 +132,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::className())
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -147,10 +147,10 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains('Server started on http://localhost:8081', $result);
-        $this->assertContains("Document root is \"{$docroot}\"", $result);
-        $this->assertContains("Routing file is \"{$router}\"", $result);
-        $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
+        $this->assertStringContainsString('Server started on http://localhost:8081', $result);
+        $this->assertStringContainsString("Document root is \"{$docroot}\"", $result);
+        $this->assertStringContainsString("Routing file is \"{$router}\"", $result);
+        $this->assertStringContainsString('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
 }
 
