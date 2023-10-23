@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
 - Bug #20002: Fixed superfluous query on HEAD request in serializer (xicond)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
+- Enh #20030: Improve performance of handling `ErrorHandler::$memoryReserveSize` (antonshevelev, rob006)
 
 2.0.49.2 October 12, 2023
 -------------------------
