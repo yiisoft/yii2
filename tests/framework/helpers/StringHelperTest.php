@@ -506,4 +506,30 @@ class StringHelperTest extends TestCase
         $this->assertSame('em**l@email.com', StringHelper::mask('email@email.com', 2, 2));
         $this->assertSame('******email.com', StringHelper::mask('email@email.com', 0, 6));
     }
+
+    /**
+     * @param string $string
+     * @param string $start
+     * @param string $end
+     * @param string $expectedResult
+     * @dataProvider dataProviderFindBetween
+     */
+    public function testFindBetween($string, $start, $end, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::findBetween($string, $start, $end));
+    }
+
+    public function dataProviderFindBetween()
+    {
+        return [
+            ['hello world hello', 'hello ', ' world', ''],  // end before start
+            ['This is a sample string', 'is ', ' string', 'is a sample'],  // normal case
+            ['startendstart', 'start', 'end', ''],  // end before start
+            ['startmiddleend', 'start', 'end', 'middle'],  // normal case
+            ['startend', 'start', 'end', ''],  // end immediately follows start
+            ['multiple start start end end', 'start ', ' end', 'start end'],  // multiple starts and ends
+            ['', 'start', 'end', ''],  // empty string
+            ['no delimiters here', 'start', 'end', ''],  // no start and end
+        ];
+    }
 }
