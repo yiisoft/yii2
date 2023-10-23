@@ -474,4 +474,29 @@ class StringHelperTest extends TestCase
             ['', ''],
         ];
     }
+
+    /**
+     * @param string $string
+     * @param int $start
+     * @param int $end
+     * @param string $maskChar
+     * @param string $expectedResult
+     * @dataProvider dataProviderMask
+     */
+    public function testMask($string, $start, $end, $maskChar, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::mask($string, $start, $end, $maskChar));
+    }
+
+    public function dataProviderMask()
+    {
+        return [
+            ['1234567890', 2, -2, '*', '12******90'],
+            ['abcdefghij', 1, -1, '*', 'a********j'],
+            ['Hello, World!', 0, 0, '*', '*************'],
+            ['Hello, World!', 0, -1, '*', '************!'],
+            ['Hello, World!', 7, -5, '*', 'Hello, *orld!'],
+            ['1234567890', 0, 0, '#', '##########'],
+        ];
+    }
 }
