@@ -59,7 +59,7 @@ class VarDumperTest extends TestCase
      * Data provider for [[testExport()]].
      * @return array test data
      */
-    public static function dataProviderExport()
+    public static function dataProviderExport(): array
     {
         // Regular :
 
@@ -147,7 +147,7 @@ RESULT;
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
 
-        $var = fn() => 2;
+        $var = function () {return 2;};
         $expectedResult = 'function () {return 2;}';
         $data[] = [$var, $expectedResult];
 
@@ -157,13 +157,14 @@ RESULT;
     /**
      * @dataProvider dataProviderExport
      *
+     * @param mixed $var
      * @param string $expectedResult
      */
-    public function testExport(mixed $var, $expectedResult): void
+    public function testExport(mixed $var, string $expectedResult): void
     {
         $exportResult = VarDumper::export($var);
         $this->assertEqualsWithoutLE($expectedResult, $exportResult);
-        //$this->assertEquals($var, eval('return ' . $exportResult . ';'));
+        $this->assertEquals($var, eval('return ' . $exportResult . ';'));
     }
 
     /**
@@ -172,7 +173,7 @@ RESULT;
     public function testExportObjectFallback(): void
     {
         $var = new \StdClass();
-        $var->testFunction = fn() => 2;
+        $var->testFunction = function () {return 2;};
         $exportResult = VarDumper::export($var);
         $this->assertNotEmpty($exportResult);
 
@@ -180,7 +181,7 @@ RESULT;
         $slave = new \StdClass();
         $master->slave = $slave;
         $slave->master = $master;
-        $master->function = fn() => true;
+        $master->function = function () {return true;};
 
         $exportResult = VarDumper::export($master);
         $this->assertNotEmpty($exportResult);
@@ -200,3 +201,4 @@ RESULT;
         $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
 }
+
