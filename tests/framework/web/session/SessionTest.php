@@ -20,7 +20,7 @@ class SessionTest extends TestCase
     /**
      * Test to prove that after Session::destroy session id set to old value.
      */
-    public function testDestroySessionId()
+    public function testDestroySessionId(): void
     {
         $session = new Session();
         $session->open();
@@ -39,7 +39,7 @@ class SessionTest extends TestCase
      * Test to prove that after Session::open changing session parameters will not throw exceptions
      * and its values will be changed as expected.
      */
-    public function testParamsAfterSessionStart()
+    public function testParamsAfterSessionStart(): void
     {
         $session = new Session();
         $session->open();
@@ -77,7 +77,7 @@ class SessionTest extends TestCase
     /**
      * Test set name. Also check set name twice and after open
      */
-    public function testSetName()
+    public function testSetName(): void
     {
         $session = new Session();
         $session->setName('oldName');
@@ -92,18 +92,18 @@ class SessionTest extends TestCase
         $session->destroy();
     }
 
-    public function testInitUseStrictMode()
+    public function testInitUseStrictMode(): void
     {
         $this->initStrictModeTest(Session::class);
     }
 
-    public function testUseStrictMode()
+    public function testUseStrictMode(): void
     {
         //Manual garbage collection since native storage module might not support removing data via Session::destroySession()
         $sessionSavePath = session_save_path() ?: sys_get_temp_dir();
         // Only perform garbage collection if "N argument" is not used,
         // see https://www.php.net/manual/en/session.configuration.php#ini.session.save-path
-        if (strpos($sessionSavePath, ';') === false) {
+        if (!str_contains($sessionSavePath, ';')) {
             foreach (['non-existing-non-strict', 'non-existing-strict'] as $sessionId) {
                 @unlink($sessionSavePath . '/sess_' . $sessionId);
             }

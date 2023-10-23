@@ -37,7 +37,7 @@ class LocaleTest extends TestCase
         $this->locale = null;
     }
 
-    public function testGetCurrencyCode()
+    public function testGetCurrencyCode(): void
     {
         $this->locale->locale = 'de-DE';
         $this->assertSame('€', $this->locale->getCurrencySymbol('EUR'));

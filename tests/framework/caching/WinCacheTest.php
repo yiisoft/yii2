@@ -16,7 +16,7 @@ use yii\caching\WinCache;
  */
 class WinCacheTest extends CacheTestCase
 {
-    private $_cacheInstance = null;
+    private ?\yii\caching\WinCache $_cacheInstance = null;
 
     /**
      * @return WinCache

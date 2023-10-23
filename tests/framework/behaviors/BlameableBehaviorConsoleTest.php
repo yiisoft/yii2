@@ -55,7 +55,7 @@ class BlameableBehaviorConsoleTest extends TestCase
         gc_collect_cycles();
     }
 
-    public function testDefaultValue()
+    public function testDefaultValue(): void
     {
         $model = new ActiveRecordBlameableConsole([
             'as blameable' => [
@@ -71,7 +71,7 @@ class BlameableBehaviorConsoleTest extends TestCase
         $this->assertEquals(2, $model->updated_by);
     }
 
-    public function testDefaultValueWithClosure()
+    public function testDefaultValueWithClosure(): void
     {
         $model = new ActiveRecordBlameableConsoleWithDefaultValueClosure();
         $model->name = __METHOD__;
@@ -89,9 +89,7 @@ class ActiveRecordBlameableConsoleWithDefaultValueClosure extends ActiveRecordBl
         return [
             'blameable' => [
                 'class' => BlameableBehavior::class,
-                'defaultValue' => function () {
-                    return 10 + 1;
-                }
+                'defaultValue' => fn() => 10 + 1
             ],
         ];
     }

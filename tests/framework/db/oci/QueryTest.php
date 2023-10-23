@@ -15,7 +15,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
 {
     protected $driverName = 'oci';
 
-    public function testUnion()
+    public function testUnion(): void
     {
         $this->markTestSkipped('Unsupported use of WITH clause in Oracle.');
     }

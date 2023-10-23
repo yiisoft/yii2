@@ -17,10 +17,7 @@ use yii\base\BaseObject;
  */
 class BarSetter extends BaseObject
 {
-    /**
-     * @var QuxInterface
-     */
-    private $qux;
+    private ?\yiiunit\framework\di\stubs\QuxInterface $qux = null;
 
     /**
      * @return QuxInterface
@@ -33,7 +30,7 @@ class BarSetter extends BaseObject
     /**
      * @param mixed $qux
      */
-    public function setQux(QuxInterface $qux)
+    public function setQux(QuxInterface $qux): void
     {
         $this->qux = $qux;
     }

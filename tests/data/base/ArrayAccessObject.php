@@ -30,7 +30,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @since 2.0.14.1
      */
     #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset)
     {
         return isset($this->data[$offset]);
     }
@@ -46,7 +46,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @since 2.0.14.1
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset)
     {
         return $this->data[$offset];
     }
@@ -65,7 +65,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @since 2.0.14.1
      */
     #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->data[$offset] = $value;
     }
@@ -81,7 +81,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @since 2.0.14.1
      */
     #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->data[$offset]);
     }

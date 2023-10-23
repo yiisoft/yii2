@@ -21,7 +21,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     /** @var string Shared log filename for children */
     private $logFile;
 
-    const CHILD_EXIT_CODE_DEADLOCK = 15;
+    final public const CHILD_EXIT_CODE_DEADLOCK = 15;
 
     /**
      * Test deadlock exception.
@@ -30,7 +30,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * @link https://github.com/yiisoft/yii2/issues/12715
      * @link https://github.com/yiisoft/yii2/pull/13346
      */
-    public function testDeadlockException()
+    public function testDeadlockException(): void
     {
         if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
@@ -78,14 +78,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
 
             // PARENT
             // nothing to do
-        } catch (\Exception $e) {
-            // wait all children
-            while (-1 !== pcntl_wait($status)) {
-                // nothing to do
-            }
-            $this->deleteLog();
-            throw $e;
-        } catch (\Throwable $e) {
+        } catch (\Exception|\Throwable $e) {
             // wait all children
             while (-1 !== pcntl_wait($status)) {
                 // nothing to do
@@ -133,11 +126,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * 2. Send signal to SECOND child identified by PID [[$pidSecond]].
      * 3. Waits few seconds.
      * 4. `UPDATE` the test row.
-     * @param int $pidSecond
      * @return int Exit code. In case of deadlock exit code is [[CHILD_EXIT_CODE_DEADLOCK]].
      * In case of success exit code is 0. Other codes means an error.
      */
-    private function childrenSelectAndAccidentUpdate($pidSecond)
+    private function childrenSelectAndAccidentUpdate(int $pidSecond)
     {
         try {
             $this->log('child 1: connect');
@@ -161,8 +153,8 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 ->execute();
 
             $this->log('child 1: transaction');
-            $first->transaction(function (Connection $first) use ($pidSecond) {
-                $first->transaction(function (Connection $first) use ($pidSecond) {
+            $first->transaction(function (Connection $first) use ($pidSecond): void {
+                $first->transaction(function (Connection $first) use ($pidSecond): void {
                     $this->log('child 1: select');
                     // SELECT with shared lock
                     $first->createCommand('SELECT id FROM {{customer}} WHERE id = 97 LOCK IN SHARE MODE')
@@ -188,18 +180,15 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 });
             }, Transaction::REPEATABLE_READ);
         } catch (Exception $e) {
-            list($sqlError, $driverError, $driverMessage) = $e->errorInfo;
+            [$sqlError, $driverError, $driverMessage] = $e->errorInfo;
             // Deadlock found when trying to get lock; try restarting transaction
             if ('40001' === $sqlError && 1213 === $driverError) {
                 return self::CHILD_EXIT_CODE_DEADLOCK;
             }
             $this->log("child 1: ! sql error $sqlError: $driverError: $driverMessage");
             return 1;
-        } catch (\Exception $e) {
-            $this->log('child 1: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
-            return 1;
-        } catch (\Throwable $e) {
-            $this->log('child 1: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+        } catch (\Exception|\Throwable $e) {
+            $this->log('child 1: ! exit <<' . $e::class . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
         $this->log('child 1: exit');
@@ -217,7 +206,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     private function childrenUpdateLocked()
     {
         // install no-op signal handler to prevent termination
-        if (!pcntl_signal(SIGUSR1, function () {}, false)) {
+        if (!pcntl_signal(SIGUSR1, function (): void {}, false)) {
             $this->log('child 2: cannot install signal handler');
             return 1;
         }
@@ -236,8 +225,8 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             $second->open();
             //sleep(1);
             $this->log('child 2: transaction');
-            $second->transaction(function (Connection $second) {
-                $second->transaction(function (Connection $second) {
+            $second->transaction(function (Connection $second): void {
+                $second->transaction(function (Connection $second): void {
                     $this->log('child 2: update');
                     // do the 2nd update
                     $second->createCommand()
@@ -248,18 +237,15 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 });
             }, Transaction::REPEATABLE_READ);
         } catch (Exception $e) {
-            list($sqlError, $driverError, $driverMessage) = $e->errorInfo;
+            [$sqlError, $driverError, $driverMessage] = $e->errorInfo;
             // Deadlock found when trying to get lock; try restarting transaction
             if ('40001' === $sqlError && 1213 === $driverError) {
                 return self::CHILD_EXIT_CODE_DEADLOCK;
             }
             $this->log("child 2: ! sql error $sqlError: $driverError: $driverMessage");
             return 1;
-        } catch (\Exception $e) {
-            $this->log('child 2: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
-            return 1;
-        } catch (\Throwable $e) {
-            $this->log('child 2: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+        } catch (\Exception|\Throwable $e) {
+            $this->log('child 2: ! exit <<' . $e::class . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
         $this->log('child 2: exit');
@@ -272,10 +258,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * all the rest tests. So, all the rest tests in this case will run both in the child
      * and parent processes. Such mess must be prevented with child's own error handler.
      */
-    private function setErrorHandler()
+    private function setErrorHandler(): void
     {
         if (PHP_VERSION_ID < 70000) {
-            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+            set_error_handler(function ($errno, $errstr, $errfile, $errline): never {
                 throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
             });
         }
@@ -283,9 +269,8 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
 
     /**
      * Sets filename for log file shared between children processes.
-     * @param string $filename
      */
-    private function setLogFile($filename)
+    private function setLogFile(string $filename): void
     {
         $this->logFile = $filename;
     }
@@ -294,7 +279,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * Deletes shared log file.
      * Deletes the file [[logFile]] if it exists.
      */
-    private function deleteLog()
+    private function deleteLog(): void
     {
         if (null !== $this->logFile && is_file($this->logFile)) {
             unlink($this->logFile);
@@ -324,7 +309,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * @param string $message Message to append to the log. The message will be prepended
      * with timestamp and appended with new line.
      */
-    private function log($message)
+    private function log(string $message): void
     {
         if (null !== $this->logFile) {
             $time = microtime(true);

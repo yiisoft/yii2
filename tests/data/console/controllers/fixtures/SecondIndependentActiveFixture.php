@@ -13,7 +13,7 @@ class SecondIndependentActiveFixture extends ActiveFixture
 {
     public $modelClass = 'yiiunit\data\ar\Animal';
 
-    public function load()
+    public function load(): void
     {
         FixtureStorage::$activeFixtureSequence[] = self::class;
         parent::load();

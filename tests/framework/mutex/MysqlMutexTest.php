@@ -42,7 +42,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesString($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesString($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => 'a']);
         $mutexTwo = $this->createMutex(['keyPrefix' => 'b']);
@@ -58,7 +58,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesLongString($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesLongString($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => str_repeat('a', 40)]);
         $mutexTwo = $this->createMutex(['keyPrefix' => str_repeat('b', 40)]);
@@ -74,7 +74,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesExpression($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesExpression($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $mutexTwo = $this->createMutex(['keyPrefix' => new Expression('1+2')]);
@@ -90,7 +90,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesExpressionCalculatedValue($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesExpressionCalculatedValue($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $mutexTwo = $this->createMutex(['keyPrefix' => new Expression('1*2')]);
@@ -100,7 +100,7 @@ class MysqlMutexTest extends DatabaseTestCase
         $this->assertTrue($mutexOne->release($mutexName));
     }
 
-    public function testCreateMutex()
+    public function testCreateMutex(): void
     {
         $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $this->assertInstanceOf(MysqlMutex::class, $mutex);

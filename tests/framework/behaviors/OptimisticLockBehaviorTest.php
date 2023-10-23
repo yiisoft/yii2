@@ -70,7 +70,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testUpdateRecordWithinConsoleRequest()
+    public function testUpdateRecordWithinConsoleRequest(): void
     {
         ActiveRecordLockVersion::$behaviors = [
             OptimisticLockBehavior::class,
@@ -94,7 +94,7 @@ class OptimisticLockBehaviorTest extends TestCase
     }
 
 
-    public function testNewRecord()
+    public function testNewRecord(): void
     {
         // create a record without any version
 
@@ -128,7 +128,7 @@ class OptimisticLockBehaviorTest extends TestCase
     }
 
 
-    public function testUpdateRecord()
+    public function testUpdateRecord(): void
     {
         $request = new Request();
         Yii::$app->set('request', $request);
@@ -211,7 +211,7 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(3, $model->version, 'updated version should equal 3');
     }
 
-     public function testDeleteRecord()
+     public function testDeleteRecord(): void
     {
         $request = new Request();
         Yii::$app->set('request', $request);

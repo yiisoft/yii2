@@ -17,17 +17,17 @@ use yiiunit\TestCase;
  */
 class FallbackMessageFormatterTest extends TestCase
 {
-    const N = 'n';
-    const N_VALUE = 42;
-    const F = 'f';
-    const F_VALUE = 2e+8;
-    const F_VALUE_FORMATTED = '200,000,000';
-    const D = 'd';
-    const D_VALUE = 200000000.101;
-    const D_VALUE_FORMATTED = '200,000,000.101';
-    const D_VALUE_FORMATTED_INTEGER = '200,000,000';
-    const SUBJECT = 'сабж';
-    const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
+    final public const N = 'n';
+    final public const N_VALUE = 42;
+    final public const F = 'f';
+    final public const F_VALUE = 2e+8;
+    final public const F_VALUE_FORMATTED = '200,000,000';
+    final public const D = 'd';
+    final public const D_VALUE = 200_000_000.101;
+    final public const D_VALUE_FORMATTED = '200,000,000.101';
+    final public const D_VALUE_FORMATTED_INTEGER = '200,000,000';
+    final public const SUBJECT = 'сабж';
+    final public const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
     public static function patterns()
     {
@@ -178,18 +178,15 @@ _MSG_
 
     /**
      * @dataProvider patterns
-     * @param string $pattern
-     * @param string $expected
-     * @param array $args
      */
-    public function testNamedArguments($pattern, $expected, $args)
+    public function testNamedArguments(string $pattern, string $expected, array $args): void
     {
         $formatter = new FallbackMessageFormatter();
         $result = $formatter->fallbackFormat($pattern, $args, 'en-US');
         $this->assertEquals($expected, $result, $formatter->getErrorMessage());
     }
 
-    public function testInsufficientArguments()
+    public function testInsufficientArguments(): void
     {
         $expected = '{' . self::SUBJECT . '} is ' . self::N_VALUE;
 
@@ -201,7 +198,7 @@ _MSG_
         $this->assertEquals($expected, $result);
     }
 
-    public function testNoParams()
+    public function testNoParams(): void
     {
         $pattern = '{' . self::SUBJECT . '} is ' . self::N;
 
@@ -210,7 +207,7 @@ _MSG_
         $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
     }
 
-    public function testGridViewMessage()
+    public function testGridViewMessage(): void
     {
         $pattern = 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.';
         $formatter = new FallbackMessageFormatter();
@@ -218,7 +215,7 @@ _MSG_
         $this->assertEquals('Showing <b>1-5</b> of <b>10</b> items.', $result);
     }
 
-    public function testUnsupportedPercentException()
+    public function testUnsupportedPercentException(): void
     {
         $pattern = 'Number {' . self::N . ', number, percent}';
         $formatter = new FallbackMessageFormatter();
@@ -226,7 +223,7 @@ _MSG_
         $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
     }
 
-    public function testUnsupportedCurrencyException()
+    public function testUnsupportedCurrencyException(): void
     {
         $pattern = 'Number {' . self::N . ', number, currency}';
         $formatter = new FallbackMessageFormatter();

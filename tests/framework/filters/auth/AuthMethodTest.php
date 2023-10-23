@@ -57,25 +57,25 @@ class AuthMethodTest extends TestCase
 
     // Tests :
 
-    public function testBeforeAction()
+    public function testBeforeAction(): void
     {
         $action = $this->createAction();
 
-        $filter = $this->createFilter(function () {return new \stdClass();});
+        $filter = $this->createFilter(fn() => new \stdClass());
         $this->assertTrue($filter->beforeAction($action));
 
-        $filter = $this->createFilter(function () {return null;});
+        $filter = $this->createFilter(fn() => null);
         $this->expectException('yii\web\UnauthorizedHttpException');
         $this->assertTrue($filter->beforeAction($action));
     }
 
-    public function testIsOptional()
+    public function testIsOptional(): void
     {
         $reflection = new \ReflectionClass(AuthMethod::class);
         $method = $reflection->getMethod('isOptional');
         $method->setAccessible(true);
 
-        $filter = $this->createFilter(function () {return new \stdClass();});
+        $filter = $this->createFilter(fn() => new \stdClass());
 
         $filter->optional = ['some'];
         $this->assertFalse($method->invokeArgs($filter, [$this->createAction(['id' => 'index'])]));

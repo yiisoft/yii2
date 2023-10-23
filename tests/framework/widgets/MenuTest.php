@@ -28,7 +28,7 @@ class MenuTest extends \yiiunit\TestCase
         ]);
     }
 
-    public function testEncodeLabel()
+    public function testEncodeLabel(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -82,7 +82,7 @@ HTML;
     /**
      * @see https://github.com/yiisoft/yii2/issues/8064
      */
-    public function testTagOption()
+    public function testTagOption(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -139,7 +139,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testItemTemplate()
+    public function testItemTemplate(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -171,7 +171,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosure()
+    public function testActiveItemClosure(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -183,9 +183,7 @@ HTML;
                     'label' => 'item1',
                     'url' => '#',
                     'template' => 'label: {label}; url: {url}',
-                    'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                        return isset($item, $hasActiveChild, $isItemActive, $widget);
-                    },
+                    'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => isset($item, $hasActiveChild, $isItemActive, $widget),
                 ],
                 [
                     'label' => 'item2',
@@ -208,7 +206,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosureWithLogic()
+    public function testActiveItemClosureWithLogic(): void
     {
         $output = Menu::widget([
             'route' => 'test/logic',
@@ -220,9 +218,7 @@ HTML;
                     'label' => 'logic item',
                     'url' => 'test/logic',
                     'template' => 'label: {label}; url: {url}',
-                    'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                        return $widget->route === 'test/logic';
-                    },
+                    'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
                 ],
                 [
                     'label' => 'another item',
@@ -240,7 +236,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosureWithLogicParent()
+    public function testActiveItemClosureWithLogicParent(): void
     {
         $output = Menu::widget([
             'route' => 'test/logic',
@@ -266,9 +262,7 @@ HTML;
                             'label' => 'logic item',
                             'url' => 'test/logic',
                             'template' => 'label: {label}; url: {url}',
-                            'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                                return $widget->route === 'test/logic';
-                            },
+                            'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
                         ],
                         [
                             'label' => 'another item',
@@ -294,7 +288,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosureParentAnotherItem()
+    public function testActiveItemClosureParentAnotherItem(): void
     {
         /** @see https://github.com/yiisoft/yii2/issues/19060 */
         $output = Menu::widget([
@@ -327,9 +321,7 @@ HTML;
                             'label' => 'logic item',
                             'url' => 'test/logic',
                             'template' => 'label: {label}; url: {url}',
-                            'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
-                                return $widget->route === 'test/logic';
-                            },
+                            'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
                         ],
                         
                     ],
@@ -351,7 +343,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testItemClassAsArray()
+    public function testItemClassAsArray(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -406,7 +398,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testItemClassAsString()
+    public function testItemClassAsString(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -452,7 +444,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testIsItemActive()
+    public function testIsItemActive(): void
     {
         $output = Menu::widget([
             'route' => 'test/item2',

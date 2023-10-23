@@ -26,7 +26,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         ]);
     }
 
-    public function testCacheEnabled()
+    public function testCacheEnabled(): void
     {
         $expectedLevel = ob_get_level();
         ob_start();
@@ -46,7 +46,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
-    public function testCacheDisabled1()
+    public function testCacheDisabled1(): void
     {
         $expectedLevel = ob_get_level();
         ob_start();
@@ -68,7 +68,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
-    public function testCacheDisabled2()
+    public function testCacheDisabled2(): void
     {
         $expectedLevel = ob_get_level();
         ob_start();
@@ -90,7 +90,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
-    public function testSingleDynamicFragment()
+    public function testSingleDynamicFragment(): void
     {
         Yii::$app->params['counter'] = 0;
 
@@ -121,7 +121,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
-    public function testMultipleDynamicFragments()
+    public function testMultipleDynamicFragments(): void
     {
         Yii::$app->params['counter'] = 0;
 
@@ -154,7 +154,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
-    public function testNestedDynamicFragments()
+    public function testNestedDynamicFragments(): void
     {
         Yii::$app->params['counter'] = 0;
 
@@ -194,11 +194,9 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
-    public function testVariations()
+    public function testVariations(): void
     {
-        $this->setOutputCallback(function($output) {
-            return null;
-        });
+        $this->setOutputCallback(fn($output) => null);
 
         ob_start();
         ob_implicit_flush(false);

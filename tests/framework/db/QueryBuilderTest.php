@@ -55,20 +55,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $connection = $this->getConnection($reset, $open);
 
         \Yii::$container->set('db', $connection);
-
-        switch ($this->driverName) {
-            case 'mysql':
-                return new MysqlQueryBuilder($connection);
-            case 'sqlite':
-                return new SqliteQueryBuilder($connection);
-            case 'sqlsrv':
-                return new MssqlQueryBuilder($connection);
-            case 'pgsql':
-                return new PgsqlQueryBuilder($connection);
-            case 'oci':
-                return new OracleQueryBuilder($connection);
-        }
-        throw new \Exception('Test is not implemented for ' . $this->driverName);
+        return match ($this->driverName) {
+            'mysql' => new MysqlQueryBuilder($connection),
+            'sqlite' => new SqliteQueryBuilder($connection),
+            'sqlsrv' => new MssqlQueryBuilder($connection),
+            'pgsql' => new PgsqlQueryBuilder($connection),
+            'oci' => new OracleQueryBuilder($connection),
+            default => throw new \Exception('Test is not implemented for ' . $this->driverName),
+        };
     }
 
     /**
@@ -982,13 +976,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return array_values($items);
     }
 
-    public function testGetColumnType()
+    public function testGetColumnType(): void
     {
         $qb = $this->getQueryBuilder();
 
         foreach ($this->columnTypes() as $item) {
             /** @var ColumnSchemaBuilder $builder */
-            list($column, $builder, $expected) = $item;
+            [$column, $builder, $expected] = $item;
             if (isset($item[3][$this->driverName])) {
                 $expectedColumnSchemaBuilder = $item[3][$this->driverName];
             } elseif (isset($item[3]) && !is_array($item[3])) {
@@ -1003,7 +997,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
     }
 
-    public function testCreateTableColumnTypes()
+    public function testCreateTableColumnTypes(): void
     {
         $qb = $this->getQueryBuilder();
         if ($qb->db->getTableSchema('column_type_table', true) !== null) {
@@ -1012,14 +1006,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $columns = [];
         $i = 0;
         foreach ($this->columnTypes() as $item) {
-            list($column, $builder, $expected) = $item;
-            if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
-                strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
-                strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
-                strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
-                strncmp(substr($column, -5), 'FIRST', 5) === 0
+            [$column, $builder, $expected] = $item;
+            if (!(strncmp((string) $column, Schema::TYPE_PK, 2) === 0 ||
+                strncmp((string) $column, Schema::TYPE_UPK, 3) === 0 ||
+                strncmp((string) $column, Schema::TYPE_BIGPK, 5) === 0 ||
+                strncmp((string) $column, Schema::TYPE_UBIGPK, 6) === 0 ||
+                str_starts_with(substr((string) $column, -5), 'FIRST')
             )) {
-                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
+                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', (string) $column);
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
@@ -1157,27 +1151,22 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['not', new Expression('any_expression(:a)', [':a' => 1])], 'NOT (any_expression(:a))', [':a' => 1]],
             [new Expression('NOT (any_expression(:a))', [':a' => 1]), 'NOT (any_expression(:a))', [':a' => 1]],
         ];
-        switch (static::$driverNameStatic) {
-            case 'sqlsrv':
-            case 'sqlite':
-                $conditions = array_merge($conditions, [
-                    [['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                    [['in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                    [['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] != :qp0 OR [[name]] != :qp1) AND ([[id]] != :qp2 OR [[name]] != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                    //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id AND a.]]name[[ = ]]name`)', [':qp0' => 1] ],
-                    //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id]] AND a.[[name = ]]name`)', [':qp0' => 1] ],
-                ]);
-                break;
-            default:
-                $conditions = array_merge($conditions, [
-                    [['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                    [['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                    [['not in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                    [['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
-                    [['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
-                ]);
-                break;
-        }
+        $conditions = match (static::$driverNameStatic) {
+            'sqlsrv', 'sqlite' => array_merge($conditions, [
+                [['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
+                [['in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
+                [['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] != :qp0 OR [[name]] != :qp1) AND ([[id]] != :qp2 OR [[name]] != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
+                //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id AND a.]]name[[ = ]]name`)', [':qp0' => 1] ],
+                //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id]] AND a.[[name = ]]name`)', [':qp0' => 1] ],
+            ]),
+            default => array_merge($conditions, [
+                [['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
+                [['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
+                [['not in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
+                [['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
+                [['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
+            ]),
+        };
 
         // adjust dbms specific escaping
         foreach ($conditions as $i => $condition) {
@@ -1275,7 +1264,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         array $expectedParams
     ): void {
         $query = (new Query())->where($condition);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . static::replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
     }
@@ -1290,7 +1279,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testBuildFilterCondition(array $condition, string $expected, array $expectedParams): void
     {
         $query = (new Query())->filterWhere($condition);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . static::replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
     }
@@ -1302,21 +1291,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->dropPrimaryKey($name, $tableName);
-                },
+                fn(QueryBuilder $qb) => $qb->dropPrimaryKey($name, $tableName),
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] PRIMARY KEY ([[C_id_1]])",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->addPrimaryKey($name, $tableName, 'C_id_1');
-                },
+                fn(QueryBuilder $qb) => $qb->addPrimaryKey($name, $tableName, 'C_id_1'),
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] PRIMARY KEY ([[C_id_1]], [[C_id_2]])",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->addPrimaryKey($name, $tableName, 'C_id_1, C_id_2');
-                },
+                fn(QueryBuilder $qb) => $qb->addPrimaryKey($name, $tableName, 'C_id_1, C_id_2'),
             ],
         ];
     }
@@ -1339,21 +1322,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->dropForeignKey($name, $tableName);
-                },
+                fn(QueryBuilder $qb) => $qb->dropForeignKey($name, $tableName),
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]]) ON DELETE CASCADE ON UPDATE CASCADE",
-                function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
-                    return $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE', 'CASCADE');
-                },
+                fn(QueryBuilder $qb) => $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE', 'CASCADE'),
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]], [[C_fk_id_2]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]], [[C_id_2]]) ON DELETE CASCADE ON UPDATE CASCADE",
-                function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
-                    return $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE', 'CASCADE');
-                },
+                fn(QueryBuilder $qb) => $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE', 'CASCADE'),
             ],
         ];
     }
@@ -1363,7 +1340,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      *
      * @param string $sql The SQL.
      */
-    public function testAddDropForeignKey(string $sql, \Closure $builder)
+    public function testAddDropForeignKey(string $sql, \Closure $builder): void
     {
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
@@ -1376,33 +1353,23 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return [
             'drop' => [
                 "DROP INDEX [[$name1]] ON {{{$tableName}}}",
-                function (QueryBuilder $qb) use ($tableName, $name1) {
-                    return $qb->dropIndex($name1, $tableName);
-                },
+                fn(QueryBuilder $qb) => $qb->dropIndex($name1, $tableName),
             ],
             'create' => [
                 "CREATE INDEX [[$name1]] ON {{{$tableName}}} ([[C_index_1]])",
-                function (QueryBuilder $qb) use ($tableName, $name1) {
-                    return $qb->createIndex($name1, $tableName, 'C_index_1');
-                },
+                fn(QueryBuilder $qb) => $qb->createIndex($name1, $tableName, 'C_index_1'),
             ],
             'create (2 columns)' => [
                 "CREATE INDEX [[$name2]] ON {{{$tableName}}} ([[C_index_2_1]], [[C_index_2_2]])",
-                function (QueryBuilder $qb) use ($tableName, $name2) {
-                    return $qb->createIndex($name2, $tableName, 'C_index_2_1, C_index_2_2');
-                },
+                fn(QueryBuilder $qb) => $qb->createIndex($name2, $tableName, 'C_index_2_1, C_index_2_2'),
             ],
             'create unique' => [
                 "CREATE UNIQUE INDEX [[$name1]] ON {{{$tableName}}} ([[C_index_1]])",
-                function (QueryBuilder $qb) use ($tableName, $name1) {
-                    return $qb->createIndex($name1, $tableName, 'C_index_1', true);
-                },
+                fn(QueryBuilder $qb) => $qb->createIndex($name1, $tableName, 'C_index_1', true),
             ],
             'create unique (2 columns)' => [
                 "CREATE UNIQUE INDEX [[$name2]] ON {{{$tableName}}} ([[C_index_2_1]], [[C_index_2_2]])",
-                function (QueryBuilder $qb) use ($tableName, $name2) {
-                    return $qb->createIndex($name2, $tableName, 'C_index_2_1, C_index_2_2', true);
-                },
+                fn(QueryBuilder $qb) => $qb->createIndex($name2, $tableName, 'C_index_2_1, C_index_2_2', true),
             ],
         ];
     }
@@ -1426,21 +1393,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName1}}} DROP CONSTRAINT [[$name1]]",
-                function (QueryBuilder $qb) use ($tableName1, $name1) {
-                    return $qb->dropUnique($name1, $tableName1);
-                },
+                fn(QueryBuilder $qb) => $qb->dropUnique($name1, $tableName1),
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName1}}} ADD CONSTRAINT [[$name1]] UNIQUE ([[C_unique]])",
-                function (QueryBuilder $qb) use ($tableName1, $name1) {
-                    return $qb->addUnique($name1, $tableName1, 'C_unique');
-                },
+                fn(QueryBuilder $qb) => $qb->addUnique($name1, $tableName1, 'C_unique'),
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName2}}} ADD CONSTRAINT [[$name2]] UNIQUE ([[C_index_2_1]], [[C_index_2_2]])",
-                function (QueryBuilder $qb) use ($tableName2, $name2) {
-                    return $qb->addUnique($name2, $tableName2, 'C_index_2_1, C_index_2_2');
-                },
+                fn(QueryBuilder $qb) => $qb->addUnique($name2, $tableName2, 'C_index_2_1, C_index_2_2'),
             ],
         ];
     }
@@ -1462,15 +1423,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->dropCheck($name, $tableName);
-                },
+                fn(QueryBuilder $qb) => $qb->dropCheck($name, $tableName),
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] CHECK ([[C_not_null]] > 100)",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->addCheck($name, $tableName, '[[C_not_null]] > 100');
-                },
+                fn(QueryBuilder $qb) => $qb->addCheck($name, $tableName, '[[C_not_null]] > 100'),
             ],
         ];
     }
@@ -1492,15 +1449,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->dropDefaultValue($name, $tableName);
-                },
+                fn(QueryBuilder $qb) => $qb->dropDefaultValue($name, $tableName),
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] DEFAULT 0 FOR [[C_default]]",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->addDefaultValue($name, $tableName, 'C_default', 0);
-                },
+                fn(QueryBuilder $qb) => $qb->addDefaultValue($name, $tableName, 'C_default', 0),
             ],
         ];
     }
@@ -1542,13 +1495,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->from('TotalExample t')
             ->where([$cond, $subQuery]);
 
-        list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
     }
 
 
-    public function testBuildWhereExistsWithParameters()
+    public function testBuildWhereExistsWithParameters(): void
     {
         $expectedQuerySql = static::replaceQuotes(
             'SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE (EXISTS (SELECT [[1]] FROM [[Website]] [[w]] WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)'
@@ -1567,12 +1520,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where(['exists', $subQuery])
             ->andWhere('t.some_column = :some_value', [':some_value' => 'asd']);
 
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $queryParams);
     }
 
-    public function testBuildWhereExistsWithArrayParameters()
+    public function testBuildWhereExistsWithArrayParameters(): void
     {
         $expectedQuerySql = static::replaceQuotes(
             'SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE (EXISTS (SELECT [[1]] FROM [[Website]] [[w]] WHERE (w.id = t.website_id) AND (([[w]].[[merchant_id]]=:qp0) AND ([[w]].[[user_id]]=:qp1)))) AND ([[t]].[[some_column]]=:qp2)'
@@ -1591,7 +1544,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where(['exists', $subQuery])
             ->andWhere(['t.some_column' => 'asd']);
 
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $queryParams);
     }
@@ -1600,7 +1553,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * This test contains three select queries connected with UNION and UNION ALL constructions.
      * It could be useful to use "phpunit --group=db --filter testBuildUnion" command for run it.
      */
-    public function testBuildUnion()
+    public function testBuildUnion(): void
     {
         $expectedQuerySql = static::replaceQuotes(
             '(SELECT [[id]] FROM [[TotalExample]] [[t1]] WHERE (w > 0) AND (x < 2)) UNION ( SELECT [[id]] FROM [[TotalTotalExample]] [[t2]] WHERE w > 5 ) UNION ALL ( SELECT [[id]] FROM [[TotalTotalExample]] [[t3]] WHERE w = 3 )'
@@ -1619,12 +1572,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
             ->union($thirdQuery, true);
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }
 
-    public function testBuildWithQuery()
+    public function testBuildWithQuery(): void
     {
         $expectedQuerySql = static::replaceQuotes(
             'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS ((SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2) UNION ( SELECT [[id]] FROM [[t3]] WHERE expr = 3 )) SELECT * FROM [[a2]]'
@@ -1650,12 +1603,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->withQuery($with2Query->union($with3Query), 'a2')
             ->from('a2');
 
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }
 
-    public function testBuildWithQueryRecursive()
+    public function testBuildWithQueryRecursive(): void
     {
         $expectedQuerySql = static::replaceQuotes(
             'WITH RECURSIVE a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1) SELECT * FROM [[a1]]'
@@ -1669,12 +1622,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->withQuery($with1Query, 'a1', true)
             ->from('a1');
 
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }
 
-    public function testSelectSubquery()
+    public function testSelectSubquery(): void
     {
         $subquery = (new Query())
             ->select('COUNT(*)')
@@ -1684,13 +1637,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select('*')
             ->from('accounts')
             ->addSelect(['operations_count' => $subquery]);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT *, (SELECT COUNT(*) FROM [[operations]] WHERE account_id = accounts.id) AS [[operations_count]] FROM [[accounts]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
 
-    public function testComplexSelect()
+    public function testComplexSelect(): void
     {
         $query = (new Query())
             ->select([
@@ -1702,7 +1655,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 new Expression(static::replaceQuotes("case t.Status_Id when 1 then 'Acknowledge' when 2 then 'No Action' else 'Unknown Action' END as [[Next Action]]")),
             ])
             ->from('tablename');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes(
             'SELECT [[t]].[[id]] AS [[ID]], [[gsm]].[[username]] AS [[GSM]], [[part]].[[Part]], [[t]].[[Part_Cost]] AS [[Part Cost]], st_x(location::geometry) AS [[lon]],'
                 . ' case t.Status_Id when 1 then \'Acknowledge\' when 2 then \'No Action\' else \'Unknown Action\' END as [[Next Action]] FROM [[tablename]]'
@@ -1711,12 +1664,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEmpty($params);
     }
 
-    public function testSelectExpression()
+    public function testSelectExpression(): void
     {
         $query = (new Query())
             ->select(new Expression('1 AS ab'))
             ->from('tablename');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT 1 AS ab FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1726,7 +1679,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->addSelect(new Expression('2 AS cd'))
             ->addSelect(['ef' => new Expression('3')])
             ->from('tablename');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT 1 AS ab, 2 AS cd, 3 AS [[ef]] FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1734,7 +1687,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $query = (new Query())
             ->select(new Expression('SUBSTR(name, 0, :len)', [':len' => 4]))
             ->from('tablename');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT SUBSTR(name, 0, :len) FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':len' => 4], $params);
@@ -1743,10 +1696,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/10869
      */
-    public function testFromIndexHint()
+    public function testFromIndexHint(): void
     {
         $query = (new Query())->from([new Expression('{{%user}} USE INDEX (primary)')]);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM {{%user}} USE INDEX (primary)');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1754,19 +1707,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $query = (new Query())
             ->from([new Expression('{{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
             ->leftJoin(['p' => 'profile'], 'user.id = profile.user_id USE INDEX (i2)');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM {{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] ON user.id = profile.user_id USE INDEX (i2)');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
 
-    public function testFromSubquery()
+    public function testFromSubquery(): void
     {
         // query subquery
         $subquery = (new Query())->from('user')->where('account_id = accounts.id');
         $query = (new Query())->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM (SELECT * FROM [[user]] WHERE account_id = accounts.id) [[activeusers]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1775,7 +1728,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $subquery = (new Query())->from('user')->where('account_id = :id', ['id' => 1]);
         $query = (new Query())->from(['activeusers' => $subquery])->where('abc = :abc', ['abc' => 'abc']);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM (SELECT * FROM [[user]] WHERE account_id = :id) [[activeusers]] WHERE abc = :abc');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([
@@ -1787,20 +1740,20 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $subquery = '(SELECT * FROM user WHERE account_id = accounts.id)';
         $query = (new Query())->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM (SELECT * FROM user WHERE account_id = accounts.id) [[activeusers]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }
 
-    public function testOrderBy()
+    public function testOrderBy(): void
     {
         // simple string
         $query = (new Query())
             ->select('*')
             ->from('operations')
             ->orderBy('name ASC, date DESC');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] ORDER BY [[name]], [[date]] DESC');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1810,7 +1763,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select('*')
             ->from('operations')
             ->orderBy(['name' => SORT_ASC, 'date' => SORT_DESC]);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] ORDER BY [[name]], [[date]] DESC');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1821,7 +1774,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->from('operations')
             ->where('account_id = accounts.id')
             ->orderBy(new Expression('SUBSTR(name, 3, 4) DESC, x ASC'));
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] WHERE account_id = accounts.id ORDER BY SUBSTR(name, 3, 4) DESC, x ASC');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1831,20 +1784,20 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select('*')
             ->from('operations')
             ->orderBy(new Expression('SUBSTR(name, 3, :to) DESC, x ASC', [':to' => 4]));
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] ORDER BY SUBSTR(name, 3, :to) DESC, x ASC');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':to' => 4], $params);
     }
 
-    public function testGroupBy()
+    public function testGroupBy(): void
     {
         // simple string
         $query = (new Query())
             ->select('*')
             ->from('operations')
             ->groupBy('name, date');
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] GROUP BY [[name]], [[date]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1854,7 +1807,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select('*')
             ->from('operations')
             ->groupBy(['name', 'date']);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] GROUP BY [[name]], [[date]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1865,7 +1818,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->from('operations')
             ->where('account_id = accounts.id')
             ->groupBy(new Expression('SUBSTR(name, 0, 1), x'));
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] WHERE account_id = accounts.id GROUP BY SUBSTR(name, 0, 1), x');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
@@ -1875,7 +1828,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->select('*')
             ->from('operations')
             ->groupBy(new Expression('SUBSTR(name, 0, :to), x', [':to' => 4]));
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $expected = static::replaceQuotes('SELECT * FROM [[operations]] GROUP BY SUBSTR(name, 0, :to), x');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':to' => 4], $params);
@@ -1995,7 +1948,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     /**
      * Dummy test to speed up QB's tests which rely on DB schema
      */
-    public function testInitFixtures()
+    public function testInitFixtures(): void
     {
         $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
     }
@@ -2363,12 +2316,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     /**
      * @dataProvider deleteProvider
-     * @param string $table
      * @param array|string $condition
-     * @param string $expectedSQL
-     * @param array $expectedParams
      */
-    public function testDelete($table, $condition, $expectedSQL, $expectedParams)
+    public function testDelete(string $table, array $condition, string $expectedSQL, array $expectedParams): void
     {
         $actualParams = [];
         $actualSQL = $this->getQueryBuilder()->delete($table, $condition, $actualParams);
@@ -2377,7 +2327,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
 
-    public function testCommentColumn()
+    public function testCommentColumn(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -2394,7 +2344,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals(static::replaceQuotes($expected), $sql);
     }
 
-    public function testCommentTable()
+    public function testCommentTable(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -2475,10 +2425,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param string $expected
      * @param array $expectedParams
      */
-    public function testBuildLikeCondition($condition, $expected, $expectedParams)
+    public function testBuildLikeCondition($condition, $expected, $expectedParams): void
     {
         $query = (new Query())->where($condition);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . static::replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
     }
@@ -2486,7 +2436,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15653
      */
-    public function testIssue15653()
+    public function testIssue15653(): void
     {
         $query = (new Query())
             ->from('admin_user')
@@ -2496,7 +2446,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where([])
             ->andWhere(['in', 'id', ['1', '0']]);
 
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        [$sql, $params] = $this->getQueryBuilder()->build($query);
         $this->assertSame(static::replaceQuotes("SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)"), $sql);
         $this->assertSame([':qp0' => '1', ':qp1' => '0'], $params);
     }

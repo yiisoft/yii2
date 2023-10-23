@@ -62,7 +62,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\SyslogTarget::export()
          */
-        public function testExport()
+        public function testExport(): void
         {
             $identity = 'identity string';
             $options = LOG_ODELAY | LOG_PID;
@@ -129,12 +129,12 @@ namespace yiiunit\framework\log {
 
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
-                list($identity, $option, $facility) = $arguments;
+                [$identity, $option, $facility] = $arguments;
                 return $syslogTarget->openlog($identity, $option, $facility);
             };
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
-                list($priority, $message) = $arguments;
+                [$priority, $message] = $arguments;
                 return $syslogTarget->syslog($priority, $message);
             };
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
@@ -150,7 +150,7 @@ namespace yiiunit\framework\log {
          *
          * See https://github.com/yiisoft/yii2/issues/14296
          */
-        public function testFailedExport()
+        public function testFailedExport(): void
         {
             $syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
                 ->setMethods(['openlog', 'syslog', 'formatMessage', 'closelog'])
@@ -166,12 +166,12 @@ namespace yiiunit\framework\log {
 
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
-                list($identity, $option, $facility) = $arguments;
+                [$identity, $option, $facility] = $arguments;
                 return $syslogTarget->openlog($identity, $option, $facility);
             };
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
-                list($priority, $message) = $arguments;
+                [$priority, $message] = $arguments;
                 return $syslogTarget->syslog($priority, $message);
             };
             static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
@@ -191,7 +191,7 @@ namespace yiiunit\framework\log {
         public static function __callStatic($name, $arguments)
         {
             if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
+                $arguments = $arguments[0] ?? $arguments;
                 return forward_static_call(static::$functions[$name], $arguments);
             }
             static::fail("Function '$name' has not implemented yet!");
@@ -200,7 +200,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\SyslogTarget::formatMessage()
          */
-        public function testFormatMessageWhereTextIsString()
+        public function testFormatMessageWhereTextIsString(): void
         {
             $message = ['text', Logger::LEVEL_INFO, 'category', 'timestamp'];
 
@@ -217,7 +217,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\SyslogTarget::formatMessage()
          */
-        public function testFormatMessageWhereTextIsException()
+        public function testFormatMessageWhereTextIsException(): void
         {
             $exception = new \Exception('exception text');
             $message = [$exception, Logger::LEVEL_INFO, 'category', 'timestamp'];
@@ -235,7 +235,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\SyslogTarget::formatMessage()
          */
-        public function testFormatMessageWhereTextIsNotStringAndNotThrowable()
+        public function testFormatMessageWhereTextIsNotStringAndNotThrowable(): void
         {
             $text = new \stdClass();
             $text->var = 'some text';

@@ -15,7 +15,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 {
     protected $driverName = 'sqlsrv';
 
-    public function testQuoteValue()
+    public function testQuoteValue(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals(123, $connection->quoteValue(123));
@@ -23,7 +23,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
     }
 
-    public function testQuoteTableName()
+    public function testQuoteTableName(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('[table]', $connection->quoteTableName('table'));
@@ -35,7 +35,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
     }
 
-    public function testQuoteColumnName()
+    public function testQuoteColumnName(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('[column]', $connection->quoteColumnName('column'));
@@ -48,7 +48,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('[column]', $connection->quoteSql('{{column}}'));
     }
 
-    public function testQuoteFullColumnName()
+    public function testQuoteFullColumnName(): void
     {
         $connection = $this->getConnection(false, false);
         $this->assertEquals('[table].[column]', $connection->quoteColumnName('table.column'));

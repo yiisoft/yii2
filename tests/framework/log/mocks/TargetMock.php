@@ -12,12 +12,12 @@ class TargetMock extends Target
     /**
      * @inheritDoc
      */
-    public function export()
+    public function export(): void
     {
 
     }
 
-    public function collect($messages, $final)
+    public function collect($messages, $final): void
     {
         if($this->collectOverride !== null) {
             call_user_func($this->collectOverride, $messages, $final);

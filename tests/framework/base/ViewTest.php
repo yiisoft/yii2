@@ -29,7 +29,7 @@ class ViewTest extends TestCase
         parent::setUp();
 
         $this->mockApplication();
-        $this->testViewPath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
+        $this->testViewPath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', static::class) . uniqid();
         FileHelper::createDirectory($this->testViewPath);
     }
 
@@ -42,7 +42,7 @@ class ViewTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/13058
      */
-    public function testExceptionOnRenderFile()
+    public function testExceptionOnRenderFile(): void
     {
         $view = new View();
 
@@ -62,7 +62,7 @@ PHP
 
         try {
             $view->renderFile($exceptionViewFile);
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // shutdown exception
         }
         $view->renderFile($normalViewFile);
@@ -70,7 +70,7 @@ PHP
         $this->assertEquals($obInitialLevel, ob_get_level());
     }
 
-    public function testRelativePathInView()
+    public function testRelativePathInView(): void
     {
         $view = new View();
         FileHelper::createDirectory($this->testViewPath . '/theme1');
@@ -98,7 +98,7 @@ PHP
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
 
-    public function testAfterRender()
+    public function testAfterRender(): void
     {
         $view = new View();
         $filename = 'path/to/file';
@@ -106,7 +106,7 @@ PHP
         $output = 'This is a simple rendered output. (filename)';
         $expectedOutput = 'This is a new rendered output. (path/to/file)';
 
-        $view->on(View::EVENT_AFTER_RENDER, function (ViewEvent $event) {
+        $view->on(View::EVENT_AFTER_RENDER, function (ViewEvent $event): void {
             $event->output = str_replace($event->params['search'], $event->params['replace'], $event->output);
             $event->output = str_replace('filename', $event->viewFile, $event->output);
         });

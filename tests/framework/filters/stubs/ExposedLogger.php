@@ -12,7 +12,7 @@ use yii\log\Logger;
 
 class ExposedLogger extends Logger
 {
-    public function log($message, $level, $category = 'application')
+    public function log($message, $level, $category = 'application'): void
     {
         $this->messages[] = $message;
     }

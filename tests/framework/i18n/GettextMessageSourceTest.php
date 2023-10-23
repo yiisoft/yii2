@@ -14,7 +14,7 @@ use yiiunit\TestCase;
  */
 class GettextMessageSourceTest extends TestCase
 {
-    public function testLoadMessages()
+    public function testLoadMessages(): void
     {
         $this->markTestIncomplete();
     }

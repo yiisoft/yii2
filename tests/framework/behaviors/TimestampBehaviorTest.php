@@ -71,7 +71,7 @@ class TimestampBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testNewRecord()
+    public function testNewRecord(): void
     {
         $currentTime = time();
 
@@ -88,7 +88,7 @@ class TimestampBehaviorTest extends TestCase
     /**
      * @depends testNewRecord
      */
-    public function testUpdateRecord()
+    public function testUpdateRecord(): void
     {
         $currentTime = time();
 
@@ -111,7 +111,7 @@ class TimestampBehaviorTest extends TestCase
     /**
      * @depends testNewRecord
      */
-    public function testUpdateCleanRecord()
+    public function testUpdateCleanRecord(): void
     {
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::class,
@@ -121,7 +121,7 @@ class TimestampBehaviorTest extends TestCase
 
         $model->on(
             ActiveRecordTimestamp::EVENT_AFTER_UPDATE,
-            function ($event) {
+            function ($event): void {
                 $this->assertEmpty($event->changedAttributes);
             }
         );
@@ -132,7 +132,7 @@ class TimestampBehaviorTest extends TestCase
     public static function expressionProvider(): array
     {
         return [
-            [function () { return '2015-01-01'; }, '2015-01-01'],
+            [fn() => '2015-01-01', '2015-01-01'],
             [new Expression("strftime('%Y')"), date('Y')],
             ['2015-10-20', '2015-10-20'],
             [time(), time()],
@@ -149,7 +149,7 @@ class TimestampBehaviorTest extends TestCase
     public function testNewRecordExpression(mixed $expression, string|int $expected): void
     {
         if ($expression === []) {
-            $expression = [$this, 'arrayCallable'];
+            $expression = $this->arrayCallable(...);
         }
 
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
@@ -181,7 +181,7 @@ class TimestampBehaviorTest extends TestCase
     /**
      * @depends testNewRecord
      */
-    public function testUpdateRecordExpression()
+    public function testUpdateRecordExpression(): void
     {
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
@@ -205,7 +205,7 @@ class TimestampBehaviorTest extends TestCase
         $this->assertEquals(date('Y'), $model->updated_at);
     }
 
-    public function testTouchingNewRecordGeneratesException()
+    public function testTouchingNewRecordGeneratesException(): void
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
@@ -220,7 +220,7 @@ class TimestampBehaviorTest extends TestCase
         $model->touch('created_at');
     }
 
-    public function testTouchingNotNewRecord()
+    public function testTouchingNotNewRecord(): void
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [

@@ -23,8 +23,7 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    /** @var FakeController */
-    private $controller;
+    private ?\yiiunit\framework\console\FakePhp71Controller $controller = null;
 
     protected function setUp(): void
     {
@@ -37,7 +36,7 @@ class ControllerTest extends TestCase
         ];
     }
 
-    public function testBindArrayToActionParams()
+    public function testBindArrayToActionParams(): void
     {
         $controller = new FakeController('fake', Yii::$app);
 
@@ -46,17 +45,17 @@ class ControllerTest extends TestCase
         $this->assertEquals([], $controller->runAction('aksi4', $params));
     }
 
-    public function testBindActionParams()
+    public function testBindActionParams(): void
     {
         $controller = new FakeController('fake', Yii::$app);
 
         $params = ['from params'];
-        list($fromParam, $other) = $controller->run('aksi1', $params);
+        [$fromParam, $other] = $controller->run('aksi1', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('default', $other);
 
         $params = ['from params', 'notdefault'];
-        list($fromParam, $other) = $controller->run('aksi1', $params);
+        [$fromParam, $other] = $controller->run('aksi1', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
@@ -77,17 +76,17 @@ class ControllerTest extends TestCase
         $this->assertEquals('testAlias', $result);
 
         $params = ['_aliases' => ['ta' => 'from params,notdefault']];
-        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        [$fromParam, $other] = $controller->runAction('aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
         $params = ['test-array' => 'from params,notdefault'];
-        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        [$fromParam, $other] = $controller->runAction('aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
         $params = ['from params', 'notdefault'];
-        list($fromParam, $other) = $controller->run('trimargs', $params);
+        [$fromParam, $other] = $controller->run('trimargs', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
@@ -99,7 +98,7 @@ class ControllerTest extends TestCase
 
     }
 
-    public function testNullableInjectedActionParams()
+    public function testNullableInjectedActionParams(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -115,7 +114,7 @@ class ControllerTest extends TestCase
         $this->assertNull($args[1]);
     }
 
-    public function testInjectionContainerException()
+    public function testInjectionContainerException(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -126,14 +125,14 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::class, function() { throw new \RuntimeException('uh oh'); });
+        \Yii::$container->set(DummyService::class, function(): never { throw new \RuntimeException('uh oh'); });
 
-        $this->expectException(get_class(new RuntimeException()));
+        $this->expectException((new RuntimeException())::class);
         $this->expectExceptionMessage('uh oh');
         $this->controller->bindActionParams($injectionAction, $params);
     }
 
-    public function testUnknownInjection()
+    public function testUnknownInjection(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -145,12 +144,12 @@ class ControllerTest extends TestCase
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         \Yii::$container->clear(DummyService::class);
-        $this->expectException(get_class(new Exception()));
+        $this->expectException((new Exception())::class);
         $this->expectExceptionMessage('Could not load required service: dummyService');
         $this->controller->bindActionParams($injectionAction, $params);
     }
 
-    public function testInjectedActionParams()
+    public function testInjectedActionParams(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -174,7 +173,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($params['after'], $args[5]);
     }
 
-    public function testInjectedActionParamsFromModule()
+    public function testInjectedActionParamsFromModule(): void
     {
         $module = new \yii\base\Module('fake', new Application([
             'id' => 'app',
@@ -193,7 +192,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', \Yii::$app->requestedParams['dataProvider']);
     }
 
-    public function assertResponseStatus($status, $response)
+    public function assertResponseStatus($status, $response): void
     {
         $this->assertInstanceOf('yii\console\Response', $response);
         $this->assertSame($status, $response->exitStatus);
@@ -206,7 +205,7 @@ class ControllerTest extends TestCase
         return Yii::$app->handleRequest($request);
     }
 
-    public function testResponse()
+    public function testResponse(): void
     {
         $status = 123;
 
@@ -226,7 +225,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12028
      */
-    public function testHelpOptionNotSet()
+    public function testHelpOptionNotSet(): void
     {
         $controller = new FakeController('posts', Yii::$app);
         $controller->runAction('index');
@@ -238,7 +237,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12028
      */
-    public function testHelpOption()
+    public function testHelpOption(): void
     {
         $controller = new FakeController('posts', Yii::$app);
         $controller->help = true;
@@ -255,7 +254,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/13071
      */
-    public function testHelpOptionWithModule()
+    public function testHelpOptionWithModule(): void
     {
         $controller = new FakeController('posts', new Module('news'));
         $controller->help = true;
@@ -268,7 +267,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/19028
      */
-    public function testGetActionArgsHelp()
+    public function testGetActionArgsHelp(): void
     {
         $controller = new FakeController('fake', Yii::$app);
         $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
@@ -280,7 +279,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('string', $help['value']['type']);
     }
 
-    public function testGetActionHelpSummaryOnNull()
+    public function testGetActionHelpSummaryOnNull(): void
     {
         $controller = new FakeController('fake', Yii::$app);
 

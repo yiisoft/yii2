@@ -53,10 +53,8 @@ class TargetTest extends TestCase
 
     /**
      * @dataProvider filters
-     * @param array $filter
-     * @param array $expected
      */
-    public function testFilter($filter, $expected)
+    public function testFilter(array $filter, array $expected): void
     {
         static::$messages = [];
 
@@ -83,7 +81,7 @@ class TargetTest extends TestCase
         }
     }
 
-    public function testGetContextMessage()
+    public function testGetContextMessage(): void
     {
         $target = new TestTarget([
             'logVars' => [
@@ -141,7 +139,7 @@ class TargetTest extends TestCase
      * @covers \yii\log\Target::setLevels()
      * @covers \yii\log\Target::getLevels()
      */
-    public function testSetupLevelsThroughArray()
+    public function testSetupLevelsThroughArray(): void
     {
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
@@ -160,7 +158,7 @@ class TargetTest extends TestCase
      * @covers \yii\log\Target::setLevels()
      * @covers \yii\log\Target::getLevels()
      */
-    public function testSetupLevelsThroughBitmap()
+    public function testSetupLevelsThroughBitmap(): void
     {
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
@@ -175,7 +173,7 @@ class TargetTest extends TestCase
         $target->setLevels(128);
     }
 
-    public function testGetEnabled()
+    public function testGetEnabled(): void
     {
         /** @var Target $target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
@@ -186,13 +184,11 @@ class TargetTest extends TestCase
         $target->enabled = false;
         $this->assertFalse($target->enabled);
 
-        $target->enabled = function ($target) {
-            return empty($target->messages);
-        };
+        $target->enabled = fn($target) => empty($target->messages);
         $this->assertTrue($target->enabled);
     }
 
-    public function testFormatMessage()
+    public function testFormatMessage(): void
     {
         /** @var Target $target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
@@ -202,7 +198,7 @@ class TargetTest extends TestCase
         $text = 'message';
         $level = Logger::LEVEL_INFO;
         $category = 'application';
-        $timestamp = 1508160390.6083;
+        $timestamp = 1_508_160_390.6083;
 
         $expectedWithoutMicro = '2017-10-16 13:26:30 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
@@ -214,20 +210,20 @@ class TargetTest extends TestCase
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
 
-        $timestamp = 1508160390;
+        $timestamp = 1_508_160_390;
 
         $expectedWithMicro = '2017-10-16 13:26:30.000000 [info][application] message';
         $formatted = $target->formatMessage([$text, $level, $category, $timestamp]);
         $this->assertSame($expectedWithMicro, $formatted);
     }
 
-    public function testCollectMessageStructure()
+    public function testCollectMessageStructure(): void
     {
         $target = new TestTarget(['logVars' => ['_SERVER']]);
         static::$messages = [];
 
         $messages = [
-            ['test', 1, 'application', 1560428356.212978, [], 1888416]
+            ['test', 1, 'application', 1_560_428_356.212978, [], 1_888_416]
         ];
 
         $target->collect($messages, false);
@@ -237,17 +233,15 @@ class TargetTest extends TestCase
         $this->assertCount(6, static::$messages[1]);
     }
 
-    public function testBreakProfilingWithFlushWithProfilingDisabled()
+    public function testBreakProfilingWithFlushWithProfilingDisabled(): void
     {
         $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
             ->setMethods(['dispatch'])
             ->getMock();
-        $dispatcher->expects($this->once())->method('dispatch')->with($this->callback(function ($messages) {
-            return count($messages) === 2
-                && $messages[0][0] === 'token.a'
-                && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
-                && $messages[1][0] === 'info';
-        }), false);
+        $dispatcher->expects($this->once())->method('dispatch')->with($this->callback(fn($messages) => count($messages) === 2
+            && $messages[0][0] === 'token.a'
+            && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+            && $messages[1][0] === 'info'), false);
 
         $logger = new Logger([
             'dispatcher' => $dispatcher,
@@ -259,26 +253,22 @@ class TargetTest extends TestCase
         $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
     }
 
-    public function testNotBreakProfilingWithFlushWithProfilingEnabled()
+    public function testNotBreakProfilingWithFlushWithProfilingEnabled(): void
     {
         $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
             ->setMethods(['dispatch'])
             ->getMock();
         $dispatcher->expects($this->exactly(2))->method('dispatch')->withConsecutive(
             [
-                $this->callback(function ($messages) {
-                    return count($messages) === 1 && $messages[0][0] === 'info';
-                }),
+                $this->callback(fn($messages) => count($messages) === 1 && $messages[0][0] === 'info'),
                 false
             ],
             [
-                $this->callback(function ($messages) {
-                    return count($messages) === 2
-                        && $messages[0][0] === 'token.a'
-                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
-                        && $messages[1][0] === 'token.a'
-                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
-                }),
+                $this->callback(fn($messages) => count($messages) === 2
+                    && $messages[0][0] === 'token.a'
+                    && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                    && $messages[1][0] === 'token.a'
+                    && $messages[1][1] == Logger::LEVEL_PROFILE_END),
                 false
             ]
         );
@@ -294,37 +284,31 @@ class TargetTest extends TestCase
         $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
     }
 
-    public function testFlushingWithProfilingEnabledAndOverflow()
+    public function testFlushingWithProfilingEnabledAndOverflow(): void
     {
         $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
             ->setMethods(['dispatch'])
             ->getMock();
         $dispatcher->expects($this->exactly(3))->method('dispatch')->withConsecutive(
             [
-                $this->callback(function ($messages) {
-                    return count($messages) === 2
-                        && $messages[0][0] === 'token.a'
-                        && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
-                        && $messages[1][0] === 'token.b'
-                        && $messages[1][1] == Logger::LEVEL_PROFILE_BEGIN;
-                }),
+                $this->callback(fn($messages) => count($messages) === 2
+                    && $messages[0][0] === 'token.a'
+                    && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
+                    && $messages[1][0] === 'token.b'
+                    && $messages[1][1] == Logger::LEVEL_PROFILE_BEGIN),
                 false
             ],
             [
-                $this->callback(function ($messages) {
-                    return count($messages) === 1
-                        && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
-                }),
+                $this->callback(fn($messages) => count($messages) === 1
+                    && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.'),
                 false
             ],
             [
-                $this->callback(function ($messages) {
-                    return count($messages) === 2
-                        && $messages[0][0] === 'token.b'
-                        && $messages[0][1] == Logger::LEVEL_PROFILE_END
-                        && $messages[1][0] === 'token.a'
-                        && $messages[1][1] == Logger::LEVEL_PROFILE_END;
-                }),
+                $this->callback(fn($messages) => count($messages) === 2
+                    && $messages[0][0] === 'token.b'
+                    && $messages[0][1] == Logger::LEVEL_PROFILE_END
+                    && $messages[1][0] === 'token.a'
+                    && $messages[1][1] == Logger::LEVEL_PROFILE_END),
                 false
             ]
         );
@@ -350,7 +334,7 @@ class TestTarget extends Target
      * Exports log [[messages]] to a specific destination.
      * Child classes must implement this method.
      */
-    public function export()
+    public function export(): void
     {
         TargetTest::$messages = array_merge(TargetTest::$messages, $this->messages);
         $this->messages = [];

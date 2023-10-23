@@ -9,10 +9,7 @@ namespace yiiunit\framework\db;
 
 class AnyValue extends CompareValue
 {
-    /**
-     * @var self
-     */
-    private static $_instance;
+    private static ?\yiiunit\framework\db\AnyValue $_instance = null;
 
     public static function getInstance()
     {

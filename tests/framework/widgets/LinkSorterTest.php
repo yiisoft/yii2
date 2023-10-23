@@ -29,7 +29,7 @@ class LinkSorterTest extends DatabaseTestCase
         $this->mockWebApplication();
     }
 
-    public function testLabelsSimple()
+    public function testLabelsSimple(): void
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Order::find(),
@@ -53,7 +53,7 @@ class LinkSorterTest extends DatabaseTestCase
             '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>'));
     }
 
-    public function testLabelsExplicit()
+    public function testLabelsExplicit(): void
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Order::find(),
@@ -81,7 +81,7 @@ class LinkSorterTest extends DatabaseTestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         new LinkSorter(
@@ -90,7 +90,7 @@ class LinkSorterTest extends DatabaseTestCase
                     'attributes' => ['total'],
                     'route' => 'site/index',
                 ],
-                'on init' => function () use (&$initTriggered) {
+                'on init' => function () use (&$initTriggered): void {
                     $initTriggered = true;
                 }
             ]

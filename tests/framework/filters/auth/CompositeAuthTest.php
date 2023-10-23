@@ -124,7 +124,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $this->mockWebApplication($appConfig);
     }
 
-    public function testCallingRunWithCompleteRoute()
+    public function testCallingRunWithCompleteRoute(): void
     {
         /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
@@ -135,7 +135,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/7409
      */
-    public function testRunAction()
+    public function testRunAction(): void
     {
         /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
@@ -143,7 +143,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $this->assertEquals('success', $controller->run('b'));
     }
 
-    public function testRunButWithActionIdOnly()
+    public function testRunButWithActionIdOnly(): void
     {
         /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
@@ -151,7 +151,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $this->assertEquals('success', $controller->run('c'));
     }
 
-    public function testRunWithWrongToken()
+    public function testRunWithWrongToken(): void
     {
         /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'wrong-user');
@@ -160,7 +160,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $controller->run('a');
     }
 
-    public function testRunWithoutAuthHeader()
+    public function testRunWithoutAuthHeader(): void
     {
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
@@ -168,7 +168,7 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $controller->run('a');
     }
 
-    public function testRunWithOptionalAction()
+    public function testRunWithOptionalAction(): void
     {
         /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];

@@ -16,8 +16,8 @@ class FakedValidationModel extends Model
     public $val_attr_c;
     public $val_attr_d;
     public $safe_attr;
-    private $attr = [];
-    private $inlineValArgs;
+    private array $attr = [];
+    private ?array $inlineValArgs = null;
 
     /**
      * @param  array $attributes
@@ -59,7 +59,7 @@ class FakedValidationModel extends Model
     public function __get($name)
     {
         if (strncasecmp($name, 'attr', 4) === 0) {
-            return isset($this->attr[$name]) ? $this->attr[$name] : null;
+            return $this->attr[$name] ?? null;
         }
 
         return parent::__get($name);

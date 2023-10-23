@@ -36,7 +36,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     protected $db;
 
-    public function testGetAssignmentsByRole()
+    public function testGetAssignmentsByRole(): void
     {
         $this->prepareData();
         $reader = $this->auth->getRole('reader');
@@ -45,7 +45,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->auth = $this->createManager();
 
         $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
-        $this->assertEquals(['123', 'reader A'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['123', 'reader A'], $this->auth->getUserIdsByRole('reader'), '');
         $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
         $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
@@ -161,7 +161,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         return new DbManager(['db' => $this->getConnection(), 'defaultRoles' => ['myDefaultRole']]);
     }
 
-    private function prepareRoles($userId)
+    private function prepareRoles(int|string $userId): void
     {
         $this->auth->removeAll();
 
@@ -193,7 +193,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetPermissionsByUserWithEmptyValue($userId, $searchUserId, $isValid)
+    public function testGetPermissionsByUserWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -213,7 +213,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetRolesByUserWithEmptyValue($userId, $searchUserId, $isValid)
+    public function testGetRolesByUserWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -227,7 +227,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         }
     }
 
-    public function testGetCachedRolesByUserId()
+    public function testGetCachedRolesByUserId(): void
     {
         $this->auth->removeAll();
         $this->auth->cache = new ArrayCache();
@@ -265,7 +265,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetAssignmentWithEmptyValue($userId, $searchUserId, $isValid)
+    public function testGetAssignmentWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -285,7 +285,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetAssignmentsWithEmptyValue($userId, $searchUserId, $isValid)
+    public function testGetAssignmentsWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -306,7 +306,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testRevokeWithEmptyValue($userId, $searchUserId, $isValid)
+    public function testRevokeWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
         $role = $this->auth->getRole('Author');
@@ -326,7 +326,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testRevokeAllWithEmptyValue($userId, $searchUserId, $isValid)
+    public function testRevokeAllWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -342,7 +342,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     /**
      * Ensure assignments are read from DB only once on subsequent tests.
      */
-    public function testCheckAccessCache()
+    public function testCheckAccessCache(): void
     {
         $this->mockApplication();
         $this->prepareData();
@@ -401,11 +401,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->assertSingleQueryToAssignmentsTable($logTarget);
     }
 
-    private function assertSingleQueryToAssignmentsTable($logTarget)
+    private function assertSingleQueryToAssignmentsTable(\yiiunit\framework\log\ArrayTarget $logTarget): void
     {
-        $messages = array_filter($logTarget->messages, function ($message) {
-            return strpos($message[0], 'auth_assignment') !== false;
-        });
+        $messages = array_filter($logTarget->messages, fn($message) => str_contains((string) $message[0], 'auth_assignment'));
         $this->assertCount(1, $messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
         $this->assertStringContainsString(
             'auth_assignment',

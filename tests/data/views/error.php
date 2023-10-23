@@ -11,4 +11,4 @@ Code: <?= Yii::$app->response->statusCode ?>
 
 Message: <?= $message ?>
 
-Exception: <?= get_class($exception) ?>
+Exception: <?= $exception::class ?>

@@ -7,7 +7,7 @@ use yii\web\IdentityInterface;
 
 class UserIdentity extends Component implements IdentityInterface
 {
-    private static $ids = [
+    private static array $ids = [
         'user1',
         'user2',
         'user3',
@@ -24,7 +24,7 @@ class UserIdentity extends Component implements IdentityInterface
         }
     }
 
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type = null): never
     {
         throw new NotSupportedException();
     }

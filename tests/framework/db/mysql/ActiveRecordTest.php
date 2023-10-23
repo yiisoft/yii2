@@ -18,7 +18,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     public $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';
 
-    public function testJsonColumn()
+    public function testJsonColumn(): void
     {
         if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
             $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');

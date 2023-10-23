@@ -38,7 +38,7 @@ class FileMutexTest extends TestCase
      * @param string $mutexName
      * @throws InvalidConfigException
      */
-    public function testDeleteLockFile($mutexName)
+    public function testDeleteLockFile($mutexName): void
     {
         $mutex = $this->createMutex();
         $fileName = $mutex->mutexPath . '/' . md5($mutexName) . '.lock';

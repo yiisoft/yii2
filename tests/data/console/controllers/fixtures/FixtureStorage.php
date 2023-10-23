@@ -21,7 +21,7 @@ class FixtureStorage
 
     public static $activeFixtureSequence = [];
 
-    public static function clear()
+    public static function clear(): void
     {
         static::$globalFixturesData = [];
         static::$firstFixtureData = [];

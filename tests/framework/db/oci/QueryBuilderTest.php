@@ -52,21 +52,15 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
-                function (QueryBuilder $qb) use ($tableName, $name) {
-                    return $qb->dropForeignKey($name, $tableName);
-                },
+                fn(QueryBuilder $qb) => $qb->dropForeignKey($name, $tableName),
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]]) ON DELETE CASCADE",
-                function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
-                    return $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE');
-                },
+                fn(QueryBuilder $qb) => $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE'),
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]], [[C_fk_id_2]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]], [[C_id_2]]) ON DELETE CASCADE",
-                function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
-                    return $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE');
-                },
+                fn(QueryBuilder $qb) => $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE'),
             ],
         ];
     }
@@ -78,7 +72,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function testCommentColumn()
+    public function testCommentColumn(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -91,7 +85,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals(self::replaceQuotes($expected), $sql);
     }
 
-    public function testCommentTable()
+    public function testCommentTable(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -104,7 +98,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals(self::replaceQuotes($expected), $sql);
     }
 
-    public function testExecuteResetSequence()
+    public function testExecuteResetSequence(): void
     {
         $db = $this->getConnection();
         $qb = $this->getQueryBuilder();
@@ -126,7 +120,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
          * yii\db\Schema::quoteValue() may or may not quote \.
          */
         try {
-            $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
+            $encodedBackslash = substr((string) $this->getDb()->quoteValue('\\'), 1, -1);
             $this->likeParameterReplacements[$encodedBackslash] = '\\';
         } catch (\Exception $e) {
             $this->markTestSkipped('Could not execute Connection::quoteValue() method: ' . $e->getMessage());
@@ -275,7 +269,7 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
     /**
      * Dummy test to speed up QB's tests which rely on DB schema
      */
-    public function testInitFixtures()
+    public function testInitFixtures(): void
     {
         $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
     }

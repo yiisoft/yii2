@@ -16,7 +16,7 @@ class CustomerQuery extends ActiveQuery
 {
     public static $joinWithProfile = false;
 
-    public function init()
+    public function init(): void
     {
         if (static::$joinWithProfile) {
             $this->innerJoinWith('profile');

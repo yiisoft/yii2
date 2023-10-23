@@ -80,7 +80,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
-    public function testGuessColumns()
+    public function testGuessColumns(): void
     {
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
@@ -102,8 +102,8 @@ class GridViewTest extends \yiiunit\TestCase
             $this->assertArrayHasKey($column->attribute, $row);
         }
 
-        $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName']]);
-        $row = array_merge($row, ['otherRelation' => (object) $row['relation']]);
+        $row = [...$row, 'relation' => ['id' => 1, 'name' => 'RelationName']];
+        $row = [...$row, 'otherRelation' => (object) $row['relation']];
 
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(
@@ -129,7 +129,7 @@ class GridViewTest extends \yiiunit\TestCase
 	/**
 	 * @throws \Exception
 	 */
-	public function testFooter() {
+	public function testFooter(): void {
 		$config = [
 			'id'           => 'grid',
 			'dataProvider' => new ArrayDataProvider(['allModels' => []]),
@@ -155,7 +155,7 @@ class GridViewTest extends \yiiunit\TestCase
 		$this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
 	}
 
-    public function testHeaderLabels()
+    public function testHeaderLabels(): void
     {
         // Ensure GridView does not call Model::generateAttributeLabel() to generate labels unless the labels are explicitly used.
 

@@ -218,10 +218,7 @@ class PageCacheTest extends TestCase
         $this->mockWebApplication();
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
-        $filter = new PageCache(array_merge([
-            'cache' => $cache,
-            'view' => new View(),
-        ]), $testCase['properties']);
+        $filter = new PageCache(['cache' => $cache, 'view' => new View()], $testCase['properties']);
         Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
         $this->assertFalse($filter->beforeAction($action), $testCase['name']);
         // Content
@@ -255,7 +252,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testExpired()
+    public function testExpired(): void
     {
         CacheTestCase::$time = time();
         CacheTestCase::$microtime = microtime(true);
@@ -300,7 +297,7 @@ class PageCacheTest extends TestCase
         ob_end_clean();
     }
 
-    public function testVaryByRoute()
+    public function testVaryByRoute(): void
     {
         $testCases = [
             false,
@@ -351,7 +348,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testVariations()
+    public function testVariations(): void
     {
         $testCases = [
             [true, 'name' => 'value'],
@@ -403,7 +400,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testDependency()
+    public function testDependency(): void
     {
         $testCases = [
             false,
@@ -460,7 +457,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testCalculateCacheKey()
+    public function testCalculateCacheKey(): void
     {
         $expected = ['yii\filters\PageCache', 'test', 'ru'];
         Yii::$app->requestedRoute = 'test';
@@ -474,22 +471,18 @@ class PageCacheTest extends TestCase
         $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
     }
 
-    public function testClosureVariations()
+    public function testClosureVariations(): void
     {
         $keys = $this->invokeMethod(new PageCache([
-            'variations' => function() {
-                return [
-                    'foobar'
-                ];
-            }
+            'variations' => fn() => [
+                'foobar'
+            ]
         ]), 'calculateCacheKey');
         $this->assertEquals(['yii\filters\PageCache', 'test', 'foobar'], $keys);
 
         // test type cast of string
         $keys = $this->invokeMethod(new PageCache([
-            'variations' => function() {
-                return 'foobarstring';
-            }
+            'variations' => fn() => 'foobarstring'
         ]), 'calculateCacheKey');
         $this->assertEquals(['yii\filters\PageCache', 'test', 'foobarstring'], $keys);
     }

@@ -17,7 +17,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
 {
     protected $driverName = 'sqlite';
 
-    public function testUnion()
+    public function testUnion(): void
     {
         $connection = $this->getConnection();
         $query = new Query();

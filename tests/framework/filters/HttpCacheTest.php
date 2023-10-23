@@ -25,7 +25,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->mockWebApplication();
     }
 
-    public function testDisabled()
+    public function testDisabled(): void
     {
         $httpCache = new HttpCache();
         $this->assertTrue($httpCache->beforeAction(null));
@@ -33,12 +33,10 @@ class HttpCacheTest extends \yiiunit\TestCase
         $this->assertTrue($httpCache->beforeAction(null));
     }
 
-    public function testEmptyPragma()
+    public function testEmptyPragma(): void
     {
         $httpCache = new HttpCache();
-        $httpCache->etagSeed = function ($action, $params) {
-            return '';
-        };
+        $httpCache->etagSeed = fn($action, $params) => '';
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
         $this->assertFalse($response->getHeaders()->offsetExists('Pragma'));
@@ -48,7 +46,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     /**
      * @covers \yii\filters\HttpCache::validateCache
      */
-    public function testValidateCache()
+    public function testValidateCache(): void
     {
         $httpCache = new HttpCache();
         $request = Yii::$app->getRequest();
@@ -81,21 +79,17 @@ class HttpCacheTest extends \yiiunit\TestCase
     /**
      * @covers \yii\filters\HttpCache::generateEtag
      */
-    public function testGenerateEtag()
+    public function testGenerateEtag(): void
     {
         $httpCache = new HttpCache();
         $httpCache->weakEtag = false;
 
-        $httpCache->etagSeed = function ($action, $params) {
-            return null;
-        };
+        $httpCache->etagSeed = fn($action, $params) => null;
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
         $this->assertFalse($response->getHeaders()->offsetExists('ETag'));
 
-        $httpCache->etagSeed = function ($action, $params) {
-            return '';
-        };
+        $httpCache->etagSeed = fn($action, $params) => '';
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
 

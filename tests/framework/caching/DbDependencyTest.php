@@ -39,7 +39,7 @@ class DbDependencyTest extends DatabaseTestCase
         $db->createCommand()->insert('dependency_item', ['value' => 'initial'])->execute();
     }
 
-    public function testIsChanged()
+    public function testIsChanged(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();

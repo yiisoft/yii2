@@ -27,7 +27,7 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->mockWebApplication();
     }
 
-    public function testAttributeValue()
+    public function testAttributeValue(): void
     {
         $model = new ModelMock();
         $model->id = 'id';
@@ -51,9 +51,7 @@ class DetailViewTest extends \yiiunit\TestCase
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => function ($model) {
-                        return $model->getDisplayedId();
-                    },
+                    'value' => fn($model) => $model->getDisplayedId(),
                 ],
             ],
         ]);
@@ -69,7 +67,7 @@ class DetailViewTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/13243
      */
-    public function testUnicodeAttributeNames()
+    public function testUnicodeAttributeNames(): void
     {
         $model = new UnicodeAttributesModelMock();
         $model->ИдентификаторТовара = 'A00001';
@@ -94,7 +92,7 @@ class DetailViewTest extends \yiiunit\TestCase
         );
     }
 
-    public function testAttributeVisible()
+    public function testAttributeVisible(): void
     {
         $model = new ModelMock();
         $model->id = 'id';
@@ -119,22 +117,16 @@ class DetailViewTest extends \yiiunit\TestCase
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => function ($model) {
-                        return $model->getDisplayedId();
-                    },
+                    'value' => fn($model) => $model->getDisplayedId(),
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => function ($model) {
-                        return $model->getDisplayedId();
-                    },
+                    'value' => fn($model) => $model->getDisplayedId(),
                     'visible' => false,
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => function ($model) {
-                        return $model->getDisplayedId();
-                    },
+                    'value' => fn($model) => $model->getDisplayedId(),
                     'visible' => true,
                 ],
             ],
@@ -171,7 +163,7 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals(5, $model->getDisplayedIdCallCount());
     }
 
-    public function testRelationAttribute()
+    public function testRelationAttribute(): void
     {
         $model = new ModelMock();
         $model->id = 'model';
@@ -206,7 +198,7 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals('Related Id:<span class="not-set">(not set)</span>', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
     }
 
-    public function testArrayableModel()
+    public function testArrayableModel(): void
     {
         $expectedValue = [
             [
@@ -234,7 +226,7 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals($expectedValue, $this->detailView->attributes);
     }
 
-    public function testObjectModel()
+    public function testObjectModel(): void
     {
         $expectedValue = [
             [
@@ -262,7 +254,7 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals($expectedValue, $this->detailView->attributes);
     }
 
-    public function testArrayModel()
+    public function testArrayModel(): void
     {
         $expectedValue = [
             [
@@ -291,7 +283,7 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals($expectedValue, $this->detailView->attributes);
     }
 
-    public function testOptionsTags()
+    public function testOptionsTags(): void
     {
         $expectedValue = '<tr><th tooltip="Tooltip">Text</th><td class="bg-red">I`m an array</td></tr>';
 
@@ -318,7 +310,7 @@ class DetailViewTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         $model = new ModelMock();
@@ -327,7 +319,7 @@ class DetailViewTest extends \yiiunit\TestCase
 
         $this->detailView = new DetailView([
             'model' => $model,
-            'on init' => function () use (&$initTriggered) {
+            'on init' => function () use (&$initTriggered): void {
                 $initTriggered = true;
             }
         ]);
@@ -357,14 +349,14 @@ class ModelMock extends Model
     public $text;
 
     private $_related;
-    private $_displayedIdCallCount = 0;
+    private int $_displayedIdCallCount = 0;
 
     public function getRelated()
     {
         return $this->_related;
     }
 
-    public function setRelated($related)
+    public function setRelated($related): void
     {
         $this->_related = $related;
     }

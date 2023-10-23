@@ -166,7 +166,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
      * Source is marked instead of translation.
      * @depends testMerge
      */
-    public function testMarkObsoleteMessages()
+    public function testMarkObsoleteMessages(): void
     {
         $category = 'category';
 
@@ -188,7 +188,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $this->assertEquals($obsoleteTranslation, $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
     }
 
-    public function testMessagesSorting()
+    public function testMessagesSorting(): void
     {
         $this->markTestSkipped('There\'s no need to order messages for database');
     }

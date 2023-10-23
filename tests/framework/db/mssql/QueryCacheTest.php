@@ -19,7 +19,7 @@ class QueryCacheTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
-    public function testQueryCacheFileCache()
+    public function testQueryCacheFileCache(): void
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
@@ -35,14 +35,12 @@ class QueryCacheTest extends DatabaseTestCase
             'bool_col' => true,
         ])->execute();
 
-        $function = function($db) use ($key){
-            return (new Query())
-                ->select(['blob_col'])
-                ->from('type')
-                ->where(['int_col' => $key])
-                ->createCommand($db)
-                ->queryScalar();
-        };
+        $function = fn($db) => (new Query())
+            ->select(['blob_col'])
+            ->from('type')
+            ->where(['int_col' => $key])
+            ->createCommand($db)
+            ->queryScalar();
 
         // First run return
         $result = $db->cache($function);

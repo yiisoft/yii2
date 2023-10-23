@@ -23,7 +23,7 @@ class DefaultValueValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         $val = new DefaultValueValidator();
         $val->value = 'test_value';

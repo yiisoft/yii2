@@ -6,12 +6,7 @@ use yii\base\BaseObject;
 
 class Car extends BaseObject
 {
-    public $color;
-    public $name;
-
-    public function __construct($color, $name)
+    public function __construct(public $color, public $name)
     {
-        $this->color = $color;
-        $this->name = $name;
     }
 }

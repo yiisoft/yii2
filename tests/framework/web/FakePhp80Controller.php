@@ -13,7 +13,7 @@ class FakePhp80Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionInjection(int|string $arg, int|string $second)
+    public function actionInjection(int|string $arg, int|string $second): void
     {
 
     }

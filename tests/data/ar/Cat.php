@@ -19,7 +19,7 @@ class Cat extends Animal
      * @param self $record
      * @param array $row
      */
-    public static function populateRecord($record, $row)
+    public static function populateRecord($record, $row): void
     {
         parent::populateRecord($record, $row);
 
@@ -31,7 +31,7 @@ class Cat extends Animal
      * @throw DivisionByZeroError
      * @return float|int
      */
-    public function getException()
+    public function getException(): never
     {
         throw new \Exception('no');
     }

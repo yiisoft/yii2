@@ -98,7 +98,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     // By default phpunit runs inherited test after inline tests, so `testCreateTranslation()` would be run after
     // `testCustomFileHeaderAndDocBlock()` (that would break `@depends` annotation). This ensures that
     // `testCreateTranslation() will be run before `testCustomFileHeaderAndDocBlock()`.
-    public function testCreateTranslation()
+    public function testCreateTranslation(): void
     {
         parent::testCreateTranslation();
     }
@@ -106,7 +106,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     /**
      * @depends testCreateTranslation
      */
-    public function testCustomFileHeaderAndDocBlock()
+    public function testCustomFileHeaderAndDocBlock(): void
     {
         $category = 'test_headers_category';
         $message = 'test message';

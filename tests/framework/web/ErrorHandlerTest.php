@@ -29,7 +29,7 @@ class ErrorHandlerTest extends TestCase
         ]);
     }
 
-    public function testCorrectResponseCodeInErrorView()
+    public function testCorrectResponseCodeInErrorView(): void
     {
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
@@ -42,7 +42,7 @@ Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
     }
 
-    public function testClearAssetFilesInErrorView()
+    public function testClearAssetFilesInErrorView(): void
     {
         Yii::$app->getView()->registerJsFile('somefile.js');
         /** @var ErrorHandler $handler */
@@ -55,7 +55,7 @@ Exception: yii\web\NotFoundHttpException', $out);
 ', $out);
     }
 
-    public function testClearAssetFilesInErrorActionView()
+    public function testClearAssetFilesInErrorActionView(): void
     {
         Yii::$app->getErrorHandler()->errorAction = 'test/error';
         Yii::$app->getView()->registerJs("alert('hide me')", View::POS_END);
@@ -69,7 +69,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertStringNotContainsString('<script', $out);
     }
 
-    public function testRenderCallStackItem()
+    public function testRenderCallStackItem(): void
     {
         $handler = Yii::$app->getErrorHandler();
         $handler->traceLine = '<a href="netbeans://open?file={file}&line={line}">{html}</a>';
@@ -113,14 +113,14 @@ Exception: yii\web\NotFoundHttpException', $out);
     /**
      * @dataProvider dataHtmlEncode
      */
-    public function testHtmlEncode($text, $expected)
+    public function testHtmlEncode(string $text, string $expected): void
     {
         $handler = Yii::$app->getErrorHandler();
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }
 
-    public function testHtmlEncodeWithUnicodeSequence()
+    public function testHtmlEncodeWithUnicodeSequence(): void
     {
         $handler = Yii::$app->getErrorHandler();
 

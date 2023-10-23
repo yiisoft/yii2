@@ -142,19 +142,19 @@ class DbMessageSourceTest extends I18NTest
         return static::$db;
     }
 
-    public function testMissingTranslationEvent()
+    public function testMissingTranslationEvent(): void
     {
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
 
-        Event::on(DbMessageSource::class, DbMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {});
+        Event::on(DbMessageSource::class, DbMessageSource::EVENT_MISSING_TRANSLATION, function ($event): void {});
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         $this->assertEquals('Missing translation message.', $this->i18n->translate('test', 'Missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(DbMessageSource::class, DbMessageSource::EVENT_MISSING_TRANSLATION);
 
-        Event::on(DbMessageSource::class, DbMessageSource::EVENT_MISSING_TRANSLATION, function ($event) {
+        Event::on(DbMessageSource::class, DbMessageSource::EVENT_MISSING_TRANSLATION, function ($event): void {
             if ($event->message == 'New missing translation message.') {
                 $event->translatedMessage = 'TRANSLATION MISSING HERE!';
             }
@@ -168,7 +168,7 @@ class DbMessageSourceTest extends I18NTest
     }
 
 
-    public function testIssue11429($sourceLanguage = null)
+    public function testIssue11429($sourceLanguage = null): void
     {
         $this->markTestSkipped('DbMessageSource does not produce any errors when messages file is missing.');
     }

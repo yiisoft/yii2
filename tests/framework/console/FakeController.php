@@ -22,7 +22,7 @@ class FakeController extends Controller
 
     public $alias;
 
-    private static $_wasActionIndexCalled = false;
+    private static bool $_wasActionIndexCalled = false;
 
     public static function getWasActionIndexCalled()
     {
@@ -50,7 +50,7 @@ class FakeController extends Controller
         ];
     }
 
-    public function actionIndex()
+    public function actionIndex(): void
     {
         self::$_wasActionIndexCalled = true;
     }
@@ -69,7 +69,7 @@ class FakeController extends Controller
         return [$values, $value];
     }
 
-    public function actionAksi3($available, $missing)
+    public function actionAksi3($available, $missing): void
     {
     }
 

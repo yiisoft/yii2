@@ -11,12 +11,12 @@ use yii\test\Fixture;
 
 class SecondFixture extends Fixture
 {
-    public function load()
+    public function load(): void
     {
         FixtureStorage::$secondFixtureData[] = 'some data set for second fixture';
     }
 
-    public function unload()
+    public function unload(): void
     {
         FixtureStorage::$secondFixtureData = [];
     }

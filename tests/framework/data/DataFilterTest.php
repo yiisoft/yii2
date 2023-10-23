@@ -26,7 +26,7 @@ class DataFilterTest extends TestCase
 
     // Tests :
 
-    public function testSetupSearchModel()
+    public function testSetupSearchModel(): void
     {
         $builder = new DataFilter();
 
@@ -46,11 +46,9 @@ class DataFilterTest extends TestCase
         $this->assertTrue($model instanceof Singer);
         $this->assertEquals('search', $model->getScenario());
 
-        $builder->setSearchModel(function () {
-            return (new DynamicModel(['name' => null, 'price' => null]))
-                ->addRule(['name'], 'string', ['max' => 128])
-                ->addRule(['price'], 'number');
-        });
+        $builder->setSearchModel(fn() => (new DynamicModel(['name' => null, 'price' => null]))
+            ->addRule(['name'], 'string', ['max' => 128])
+            ->addRule(['price'], 'number'));
         $model = $builder->getSearchModel();
         $this->assertTrue($model instanceof DynamicModel);
 
@@ -58,7 +56,7 @@ class DataFilterTest extends TestCase
         $builder->setSearchModel(new \stdClass());
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $filterValue = [
             'name' => 'value',
@@ -448,7 +446,7 @@ class DataFilterTest extends TestCase
         $this->assertEquals($expectedResult, $builder->normalize(false));
     }
 
-    public function testNormalizeNonDefaultNull()
+    public function testNormalizeNonDefaultNull(): void
     {
         $builder = new DataFilter();
         $builder->nullValue = 'abcde';
@@ -457,7 +455,7 @@ class DataFilterTest extends TestCase
         $this->assertEquals(['name' => null], $builder->normalize(false));
     }
 
-    public function testSetupErrorMessages()
+    public function testSetupErrorMessages(): void
     {
         $builder = new DataFilter();
         $builder->setErrorMessages([
@@ -468,11 +466,9 @@ class DataFilterTest extends TestCase
         $this->assertEquals('Test message', $errorMessages['unsupportedOperatorType']);
         $this->assertTrue(isset($errorMessages['unknownAttribute']));
 
-        $builder->setErrorMessages(function () {
-            return [
-                'unsupportedOperatorType' => 'Test message callback',
-            ];
-        });
+        $builder->setErrorMessages(fn() => [
+            'unsupportedOperatorType' => 'Test message callback',
+        ]);
         $errorMessages = $builder->getErrorMessages();
         $this->assertEquals('Test message callback', $errorMessages['unsupportedOperatorType']);
         $this->assertTrue(isset($errorMessages['unknownAttribute']));

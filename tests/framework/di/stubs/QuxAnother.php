@@ -11,7 +11,7 @@ use yii\base\BaseObject;
 
 class QuxAnother extends BaseObject implements QuxInterface
 {
-    public function quxMethod()
+    public function quxMethod(): void
     {
     }
 }

@@ -37,7 +37,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::Log()
      */
-    public function testLog()
+    public function testLog(): void
     {
         $memory = memory_get_usage();
         $this->logger->log('test1', Logger::LEVEL_INFO);
@@ -60,7 +60,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::Log()
      */
-    public function testLogWithTraceLevel()
+    public function testLogWithTraceLevel(): void
     {
         $memory = memory_get_usage();
         $this->logger->traceLevel = 3;
@@ -73,7 +73,7 @@ class LoggerTest extends TestCase
             'file' => __FILE__,
             'line' => 67,
             'function' => 'log',
-            'class' => get_class($this->logger),
+            'class' => $this->logger::class,
             'type' => '->',
         ], $this->logger->messages[0][4][0]);
         $this->assertCount(3, $this->logger->messages[0][4]);
@@ -83,7 +83,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::Log()
      */
-    public function testLogWithFlush()
+    public function testLogWithFlush(): void
     {
         /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
         $logger = $this->getMockBuilder('yii\log\Logger')
@@ -97,7 +97,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::Flush()
      */
-    public function testFlushWithoutDispatcher()
+    public function testFlushWithoutDispatcher(): void
     {
         $dispatcher = $this->getMockBuilder('\stdClass')->getMock();
         $dispatcher->expects($this->never())->method($this->anything());
@@ -111,7 +111,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::Flush()
      */
-    public function testFlushWithDispatcherAndDefaultParam()
+    public function testFlushWithDispatcherAndDefaultParam(): void
     {
         $message = ['anything'];
         $this->dispatcher->expects($this->once())
@@ -126,7 +126,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::Flush()
      */
-    public function testFlushWithDispatcherAndDefinedParam()
+    public function testFlushWithDispatcherAndDefinedParam(): void
     {
         $message = ['anything'];
         $this->dispatcher->expects($this->once())
@@ -141,7 +141,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getDbProfiling()
      */
-    public function testGetDbProfiling()
+    public function testGetDbProfiling(): void
     {
         $timings = [
             ['duration' => 5],
@@ -163,7 +163,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::calculateTimings()
      */
-    public function testCalculateTimingsWithEmptyMessages()
+    public function testCalculateTimingsWithEmptyMessages(): void
     {
         $this->assertEmpty($this->logger->calculateTimings([]));
     }
@@ -171,15 +171,15 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::calculateTimings()
      */
-    public function testCalculateTimingsWithProfileNotBeginOrEnd()
+    public function testCalculateTimingsWithProfileNotBeginOrEnd(): void
     {
         $messages = [
-            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1048576],
-            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace', 1048576],
-            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace', 1048576],
-            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace', 1048576],
-            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace', 1048576],
-            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1048576],
+            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1_048_576],
+            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace', 1_048_576],
+            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace', 1_048_576],
+            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace', 1_048_576],
+            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace', 1_048_576],
+            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1_048_576],
         ];
         $this->assertEmpty($this->logger->calculateTimings($messages));
     }
@@ -189,11 +189,11 @@ class LoggerTest extends TestCase
      *
      * See https://github.com/yiisoft/yii2/issues/14264
      */
-    public function testCalculateTimingsWithProfileBeginEnd()
+    public function testCalculateTimingsWithProfileBeginEnd(): void
     {
         $messages = [
-            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
-            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
+            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1_048_576],
+            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2_097_152],
         ];
         $this->assertEquals([
             [
@@ -203,16 +203,16 @@ class LoggerTest extends TestCase
                 'trace' => 'trace',
                 'level' => 0,
                 'duration' => 5,
-                'memory' => 2097152,
-                'memoryDiff' => 1048576,
+                'memory' => 2_097_152,
+                'memoryDiff' => 1_048_576,
             ],
         ],
             $this->logger->calculateTimings($messages)
         );
 
         $messages = [
-            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
-            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
+            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1_048_576],
+            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2_097_152],
         ];
         $this->assertEquals([
             [
@@ -222,8 +222,8 @@ class LoggerTest extends TestCase
                 'trace' => 'trace',
                 'level' => 0,
                 'duration' => 5,
-                'memory' => 2097152,
-                'memoryDiff' => 1048576,
+                'memory' => 2_097_152,
+                'memoryDiff' => 1_048_576,
             ],
         ],
             $this->logger->calculateTimings($messages)
@@ -233,13 +233,13 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::calculateTimings()
      */
-    public function testCalculateTimingsWithProfileBeginEndAndNestedLevels()
+    public function testCalculateTimingsWithProfileBeginEndAndNestedLevels(): void
     {
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1048576],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2097152],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1_048_576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2_097_152],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3_145_728],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4_194_304],
         ];
         $this->assertEquals([
             [
@@ -249,8 +249,8 @@ class LoggerTest extends TestCase
                 'trace' => 'firstTrace',
                 'level' => 0,
                 'duration' => 70,
-                'memory' => 4194304,
-                'memoryDiff' => 3145728,
+                'memory' => 4_194_304,
+                'memoryDiff' => 3_145_728,
             ],
             [
                 'info' => 'secondLevel',
@@ -259,8 +259,8 @@ class LoggerTest extends TestCase
                 'trace' => 'secondTrace',
                 'level' => 1,
                 'duration' => 40,
-                'memory' => 3145728,
-                'memoryDiff' => 1048576,
+                'memory' => 3_145_728,
+                'memoryDiff' => 1_048_576,
             ],
         ],
             $this->logger->calculateTimings($messages)
@@ -272,13 +272,13 @@ class LoggerTest extends TestCase
      *
      * @covers \yii\log\Logger::calculateTimings()
      */
-    public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels()
+    public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels(): void
     {
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1048576],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2097152],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1_048_576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2_097_152],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4_194_304],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3_145_728],
         ];
         $this->assertEquals([
             [
@@ -288,8 +288,8 @@ class LoggerTest extends TestCase
                 'trace' => 'firstTrace',
                 'level' => 1,
                 'duration' => 70,
-                'memory' => 4194304,
-                'memoryDiff' => 3145728,
+                'memory' => 4_194_304,
+                'memoryDiff' => 3_145_728,
             ],
             [
                 'info' => 'secondLevel',
@@ -298,8 +298,8 @@ class LoggerTest extends TestCase
                 'trace' => 'secondTrace',
                 'level' => 0,
                 'duration' => 40,
-                'memory' => 3145728,
-                'memoryDiff' => 1048576,
+                'memory' => 3_145_728,
+                'memoryDiff' => 1_048_576,
             ],
         ],
             $this->logger->calculateTimings($messages)
@@ -309,7 +309,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getElapsedTime()
      */
-    public function testGetElapsedTime()
+    public function testGetElapsedTime(): void
     {
         $timeBefore = \microtime(true) - YII_BEGIN_TIME;
         usleep(1);
@@ -324,7 +324,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getLevelName()
      */
-    public function testGetLevelName()
+    public function testGetLevelName(): void
     {
         $this->assertEquals('info', Logger::getLevelName(Logger::LEVEL_INFO));
         $this->assertEquals('error', Logger::getLevelName(Logger::LEVEL_ERROR));
@@ -339,7 +339,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getProfiling()
      */
-    public function testGetProfilingWithEmptyCategoriesAndExcludeCategories()
+    public function testGetProfilingWithEmptyCategoriesAndExcludeCategories(): void
     {
         $messages = ['anyData'];
         $returnValue = 'return value';
@@ -357,7 +357,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getProfiling()
      */
-    public function testGetProfilingWithNotEmptyCategoriesAndNotMatched()
+    public function testGetProfilingWithNotEmptyCategoriesAndNotMatched(): void
     {
         $messages = ['anyData'];
         $returnValue = [
@@ -384,7 +384,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getProfiling()
      */
-    public function testGetProfilingWithNotEmptyCategoriesAndMatched()
+    public function testGetProfilingWithNotEmptyCategoriesAndMatched(): void
     {
         $messages = ['anyData'];
         $matchedByCategoryName = [
@@ -437,7 +437,7 @@ class LoggerTest extends TestCase
     /**
      * @covers \yii\log\Logger::getProfiling()
      */
-    public function testGetProfilingWithNotEmptyCategoriesMatchedAndExcludeCategories()
+    public function testGetProfilingWithNotEmptyCategoriesMatchedAndExcludeCategories(): void
     {
         $messages = ['anyData'];
         $fistCategory = [
@@ -510,7 +510,7 @@ class LoggerTest extends TestCase
     /**
      * @dataProvider providerForNonProfilingMessages
      */
-    public function testGatheringNonProfilingMessages($level)
+    public function testGatheringNonProfilingMessages(int $level): void
     {
         $logger = new Logger(['flushInterval' => 0]);
         $logger->log('aaa', $level);
@@ -519,7 +519,7 @@ class LoggerTest extends TestCase
         $this->assertCount(2, $logger->messages);
     }
 
-    public function testGatheringProfilingMessages()
+    public function testGatheringProfilingMessages(): void
     {
         $logger = new Logger(['flushInterval' => 0]);
         $logger->log('aaa', Logger::LEVEL_PROFILE_BEGIN);

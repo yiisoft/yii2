@@ -23,8 +23,8 @@ use yiiunit\framework\db\ActiveRecordTest;
  */
 class Customer extends ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 2;
+    final public const STATUS_ACTIVE = 1;
+    final public const STATUS_INACTIVE = 2;
 
     public $status2;
 
@@ -81,7 +81,7 @@ class Customer extends ActiveRecord
         /* @var $rel ActiveQuery */
         $rel = $this->hasMany(Item::class, ['id' => 'item_id']);
 
-        return $rel->viaTable('order_item', ['order_id' => 'id'], function ($q) {
+        return $rel->viaTable('order_item', ['order_id' => 'id'], function ($q): void {
             /* @var $q ActiveQuery */
             $q->viaTable('order', ['customer_id' => 'id']);
         })->orderBy('id');
@@ -99,7 +99,7 @@ class Customer extends ActiveRecord
             ->via('orderItems2');
     }
 
-    public function afterSave($insert, $changedAttributes)
+    public function afterSave($insert, $changedAttributes): void
     {
         ActiveRecordTest::$afterSaveInsert = $insert;
         ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
@@ -112,6 +112,6 @@ class Customer extends ActiveRecord
      */
     public static function find()
     {
-        return new CustomerQuery(\get_called_class());
+        return new CustomerQuery(static::class);
     }
 }

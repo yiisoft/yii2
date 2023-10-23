@@ -40,7 +40,7 @@ class AssetConverterTest extends \yiiunit\TestCase
 
     // Tests :
 
-    public function testConvert()
+    public function testConvert(): void
     {
         $tmpPath = $this->tmpPath;
         file_put_contents($tmpPath . '/test.php', <<<EOF
@@ -62,7 +62,7 @@ EOF
     /**
      * @depends testConvert
      */
-    public function testForceConvert()
+    public function testForceConvert(): void
     {
         $tmpPath = $this->tmpPath;
         file_put_contents($tmpPath . '/test.php', <<<'EOF'
