@@ -170,7 +170,7 @@ class BaseObjectTest extends TestCase
 class NewObject extends BaseObject
 {
     private ?\yiiunit\framework\base\NewObject $_object = null;
-    private string $_text = 'default';
+    private string|null $_text = 'default';
     private array $_items = [];
     public $content;
 
