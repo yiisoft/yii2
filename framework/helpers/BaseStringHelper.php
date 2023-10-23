@@ -497,4 +497,20 @@ class BaseStringHelper
 
         return implode('', $parts);
     }
+
+    /**
+     * Convert a string to snake case.
+     *
+     * @param string $string the input string
+     * @return string snake cased string
+     */
+    public static function snake($string)
+    {
+        if (!ctype_lower($string)) {
+            $string = preg_replace('/\s+/u', '', ucwords($string));
+            $string = mb_strtolower(preg_replace('/(.)(?=[A-Z])/u', '$1_', $string), 'UTF-8');
+        }
+
+        return $string;
+    }
 }

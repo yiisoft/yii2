@@ -474,4 +474,28 @@ class StringHelperTest extends TestCase
             ['', ''],
         ];
     }
+
+    /**
+     * Data provider for testToSnakeCase
+     */
+    public function dataProviderSnake()
+    {
+        return [
+            ['hello_world', 'HelloWorld'],
+            ['hello_world', 'helloWorld'],
+            ['hello_world', 'hello_world'],
+            ['h_e_l_l_o__w_o_r_l_d', 'HELLO_WORLD'],
+            ['hello_world', 'hello world'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderSnake
+     * @param string $expected
+     * @param string $string
+     */
+    public function testToSnakeCase($expected, $string)
+    {
+        $this->assertSame($expected, StringHelper::snake($string));
+    }
 }
