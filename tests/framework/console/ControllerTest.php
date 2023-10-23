@@ -8,14 +8,15 @@
 namespace yiiunit\framework\console;
 
 use RuntimeException;
-use yii\console\Exception;
-use yiiunit\framework\console\stubs\DummyService;
 use Yii;
 use yii\base\InlineAction;
 use yii\base\Module;
 use yii\console\Application;
+use yii\console\Exception;
 use yii\console\Request;
+use yii\console\Response;
 use yii\helpers\Console;
+use yiiunit\framework\console\stubs\DummyService;
 use yiiunit\TestCase;
 
 /**
@@ -23,7 +24,7 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    private ?\yiiunit\framework\console\FakePhp71Controller $controller = null;
+    private FakePhp71Controller|null $controller = null;
 
     protected function setUp(): void
     {
@@ -92,10 +93,9 @@ class ControllerTest extends TestCase
 
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
-        $this->expectException('yii\console\Exception');
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
-
     }
 
     public function testNullableInjectedActionParams(): void
@@ -127,7 +127,7 @@ class ControllerTest extends TestCase
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         \Yii::$container->set(DummyService::class, function(): never { throw new \RuntimeException('uh oh'); });
 
-        $this->expectException((new RuntimeException())::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('uh oh');
         $this->controller->bindActionParams($injectionAction, $params);
     }
@@ -144,7 +144,7 @@ class ControllerTest extends TestCase
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         \Yii::$container->clear(DummyService::class);
-        $this->expectException((new Exception())::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Could not load required service: dummyService');
         $this->controller->bindActionParams($injectionAction, $params);
     }
@@ -198,7 +198,7 @@ class ControllerTest extends TestCase
         $this->assertSame($status, $response->exitStatus);
     }
 
-    public function runRequest($route, $args = 0)
+    public function runRequest($route, $args = 0): Response
     {
         $request = new Request();
         $request->setParams(func_get_args());
