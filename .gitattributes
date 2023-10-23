@@ -1,19 +1,19 @@
 # Autodetect text files
-* text=auto
+* text=auto eol=lf
 
 # ...Unless the name matches the following overriding patterns
 
 # Definitively text files
-*.php  text eol=lf
-*.css  text eol=lf
-*.js   text eol=lf
-*.txt  text eol=lf
-*.md   text eol=lf
-*.xml  text eol=lf
-*.json text eol=lf
-*.bat  text eol=lf
-*.sql  text eol=lf
-*.yml  text eol=lf
+*.php  text
+*.css  text
+*.js   text
+*.txt  text
+*.md   text
+*.xml  text
+*.json text
+*.bat  text
+*.sql  text
+*.yml  text
 
 # Ensure those won't be messed up with
 *.png  binary
