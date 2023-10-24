@@ -47,7 +47,7 @@ class BooleanTest extends DatabaseTestCase
 
         // test php typecast
         $phpTypeCast = $column->phpTypecast($boolValue);
-        $this->assertSame(false, $phpTypeCast);
+        $this->assertFalse($phpTypeCast);
 
         // test value 1
         $db->createCommand()->insert($tableName, ['bool_col' => 1])->execute();
@@ -56,7 +56,7 @@ class BooleanTest extends DatabaseTestCase
 
         // test php typecast
         $phpTypeCast = $column->phpTypecast($boolValue);
-        $this->assertSame(true, $phpTypeCast);
+        $this->assertTrue($phpTypeCast);
 
         // test value `false`
         $db->createCommand()->insert($tableName, ['bool_col' => false])->execute();
@@ -65,7 +65,7 @@ class BooleanTest extends DatabaseTestCase
 
         // test php typecast
         $phpTypeCast = $column->phpTypecast($boolValue);
-        $this->assertSame(false, $phpTypeCast);
+        $this->assertFalse($phpTypeCast);
 
         // test value `true`
         $db->createCommand()->insert($tableName, ['bool_col' => true])->execute();
@@ -74,11 +74,12 @@ class BooleanTest extends DatabaseTestCase
 
         // test php typecast
         $phpTypeCast = $column->phpTypecast($boolValue);
-        $this->assertSame(true, $phpTypeCast);
+        $this->assertTrue($phpTypeCast);
 
         // test value `null`
         $db->createCommand()->insert($tableName, ['bool_col' => null])->execute();
         $boolValue = $db->createCommand("SELECT bool_col FROM $tableName WHERE id = 5")->queryScalar();
+        $this->assertNull($boolValue);
 
         // test php typecast
         $phpTypeCast = $column->phpTypecast($boolValue);
