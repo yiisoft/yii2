@@ -295,9 +295,8 @@ TEXT
     {
         $message = new Message();
 
-        $mailerMock = $this->getMockBuilder('yiiunit\framework\mail\Mailer')
-            ->setMethods(['beforeSend', 'afterSend'])
-            ->getMock();
+        $mailerMock = $this->createPartialMock(Mailer::class, ['beforeSend', 'afterSend']);
+
         $mailerMock->expects($this->once())->method('beforeSend')->with($message)->will($this->returnValue(true));
         $mailerMock->expects($this->once())->method('afterSend')->with($message, true);
         $mailerMock->send($message);

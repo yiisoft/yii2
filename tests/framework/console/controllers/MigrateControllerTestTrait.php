@@ -8,6 +8,7 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\BaseMigrateController;
 use yii\console\ExitCode;
 use yii\helpers\FileHelper;
@@ -78,8 +79,8 @@ trait MigrateControllerTestTrait
      */
     protected function createMigrateController(array $config = [])
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
         $class = $this->migrateControllerClass;

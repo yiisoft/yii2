@@ -8,6 +8,7 @@
 namespace yiiunit\framework;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\BaseYii;
 use yii\di\Container;
 use yii\log\Logger;
@@ -90,20 +91,16 @@ class BaseYiiTest extends TestCase
         // Test passing in of normal params combined with DI params.
         $this->assertTrue(Yii::createObject(fn(Singer $singer, $a) => $a === 'a', ['a']));
 
-
         $singer = new Singer();
         $singer->firstName = 'Bob';
         $this->assertTrue(Yii::createObject(fn(Singer $singer, $a) => $singer->firstName === 'Bob', [$singer, 'a']));
-
-
         $this->assertTrue(Yii::createObject(fn(Singer $singer, $a = 3) => true));
-
         $this->assertTrue(Yii::createObject(new CallableClass()));
     }
 
     public function testCreateObjectEmptyArrayException(): void
     {
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Object configuration must be an array containing a "class" or "__class" element.');
 
         Yii::createObject([]);
@@ -111,7 +108,7 @@ class BaseYiiTest extends TestCase
 
     public function testCreateObjectInvalidConfigException(): void
     {
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
 
         Yii::createObject(null);
@@ -154,9 +151,9 @@ class BaseYiiTest extends TestCase
      */
     public function testLog(): void
     {
-        $logger = $this->getMockBuilder('yii\\log\\Logger')
-            ->setMethods(['log'])
-            ->getMock();
+        $logger = $this->createMock(Logger::class);
+        $logger->onlyMethods(['log']);
+
         BaseYii::setLogger($logger);
 
         $logger->expects($this->exactly(6))

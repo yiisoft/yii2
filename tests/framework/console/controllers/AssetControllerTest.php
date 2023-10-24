@@ -7,8 +7,11 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use Exception;
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\AssetController;
+use yii\console\Exception as ConsoleException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
@@ -26,11 +29,11 @@ class AssetControllerTest extends TestCase
     /**
      * @var string path for the test files.
      */
-    protected $testFilePath = '';
+    protected string $testFilePath = '';
     /**
      * @var string test assets path.
      */
-    protected $testAssetsBasePath = '';
+    protected string $testAssetsBasePath = '';
 
     public function setUp(): void
     {
@@ -72,8 +75,8 @@ class AssetControllerTest extends TestCase
      */
     protected function createAssetController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
         $assetController = new AssetControllerMock('asset', $module);
@@ -456,7 +459,7 @@ EOL;
 
         // Assert :
         $expectedExceptionMessage = ": {$namespace}\AssetA -> {$namespace}\AssetB -> {$namespace}\AssetC -> {$namespace}\AssetA";
-        $this->expectException('yii\console\Exception');
+        $this->expectException(ConsoleException::class);
         $this->expectExceptionMessage($expectedExceptionMessage);
 
         // When :

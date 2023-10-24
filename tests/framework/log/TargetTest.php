@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\log;
 
+use yii\base\InvalidConfigException;
 use yii\log\Dispatcher;
 use yii\log\Logger;
 use yii\log\Target;
@@ -149,7 +150,7 @@ class TargetTest extends TestCase
         $target->setLevels(['trace']);
         $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
 
-        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Unrecognized level: unknown level');
         $target->setLevels(['info', 'unknown level']);
     }
@@ -168,7 +169,7 @@ class TargetTest extends TestCase
         $target->setLevels(Logger::LEVEL_TRACE);
         $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
 
-        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('Incorrect 128 value');
         $target->setLevels(128);
     }
@@ -235,9 +236,8 @@ class TargetTest extends TestCase
 
     public function testBreakProfilingWithFlushWithProfilingDisabled(): void
     {
-        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
-            ->setMethods(['dispatch'])
-            ->getMock();
+        $dispatcher = $this->createPartialMock(Dispatcher::class, ['dispatch']);
+
         $dispatcher->expects($this->once())->method('dispatch')->with($this->callback(fn($messages) => count($messages) === 2
             && $messages[0][0] === 'token.a'
             && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
@@ -255,9 +255,8 @@ class TargetTest extends TestCase
 
     public function testNotBreakProfilingWithFlushWithProfilingEnabled(): void
     {
-        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
-            ->setMethods(['dispatch'])
-            ->getMock();
+        $dispatcher = $this->createPartialMock(Dispatcher::class, ['dispatch']);
+
         $dispatcher->expects($this->exactly(2))->method('dispatch')->withConsecutive(
             [
                 $this->callback(fn($messages) => count($messages) === 1 && $messages[0][0] === 'info'),
@@ -286,9 +285,8 @@ class TargetTest extends TestCase
 
     public function testFlushingWithProfilingEnabledAndOverflow(): void
     {
-        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
-            ->setMethods(['dispatch'])
-            ->getMock();
+        $dispatcher = $this->createPartialMock(Dispatcher::class, ['dispatch']);
+
         $dispatcher->expects($this->exactly(3))->method('dispatch')->withConsecutive(
             [
                 $this->callback(fn($messages) => count($messages) === 2
