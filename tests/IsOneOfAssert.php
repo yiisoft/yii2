@@ -24,11 +24,12 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
      */
     public function toString(): string
     {
-        $allowedValues = [];
-
-        foreach ($this->allowedValues as $value) {
-            $this->allowedValues[] = VarDumper::create($value)->asString();
-        }
+        $allowedValues = array_map(
+            static function ($value): string {
+                return VarDumper::dumpAsString($value);
+            },
+            $this->allowedValues,
+        );
 
         $expectedAsString = implode(', ', $allowedValues);
 
