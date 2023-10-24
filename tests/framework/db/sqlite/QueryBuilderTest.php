@@ -64,20 +64,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $result['with schema'] = [
             "CREATE INDEX {{{$schemaName}}}.[[$indexName]] ON {{{$tableName}}} ([[C_index_1]])",
-            function (QueryBuilder $qb) use ($tableName, $indexName, $schemaName) {
-                return $qb->createIndex($indexName, $schemaName . '.' . $tableName, 'C_index_1');
-            },
+            fn(QueryBuilder $qb) => $qb->createIndex($indexName, $schemaName . '.' . $tableName, 'C_index_1'),
         ];
 
         return $result;
     }
 
-    public function testCommentColumn()
+    public function testCommentColumn(): void
     {
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
-    public function testCommentTable()
+    public function testCommentTable(): void
     {
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
@@ -89,7 +87,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $data;
     }
 
-    public function testBatchInsertOnOlderVersions()
+    public function testBatchInsertOnOlderVersions(): void
     {
         $db = $this->getConnection();
         if (version_compare($db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
@@ -99,7 +97,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
     }
 
-    public function testRenameTable()
+    public function testRenameTable(): void
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
         $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
@@ -108,7 +106,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     /**
      * {@inheritdoc}
      */
-    public function testBuildUnion()
+    public function testBuildUnion(): void
     {
         $expectedQuerySql = self::replaceQuotes(
             'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
@@ -127,12 +125,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
             ->union($thirdQuery, true);
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }
 
-    public function testBuildWithQuery()
+    public function testBuildWithQuery(): void
     {
         $expectedQuerySql = self::replaceQuotes(
             'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS (SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2 UNION  SELECT [[id]] FROM [[t3]] WHERE expr = 3) SELECT * FROM [[a2]]'
@@ -158,12 +156,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ->withQuery($with2Query->union($with3Query), 'a2')
             ->from('a2');
 
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }
 
-    public function testResetSequence()
+    public function testResetSequence(): void
     {
         $qb = $this->getQueryBuilder(true, true);
 
@@ -241,7 +239,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
      *
      * @param string $sql The SQL.
      */
-    public function testAddDropForeignKey(string $sql, \Closure $builder)
+    public function testAddDropForeignKey(string $sql, \Closure $builder): void
     {
         $this->expectException(\yii\base\NotSupportedException::class);
         $this->expectExceptionMessage('is not supported by SQLite.');

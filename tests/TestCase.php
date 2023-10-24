@@ -33,13 +33,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
      */
-    public static function getParam($name, $default = null)
+    public static function getParam($name, mixed $default = null)
     {
         if (static::$params === null) {
             static::$params = require __DIR__ . '/data/config.php';
         }
 
-        return isset(static::$params[$name]) ? static::$params[$name] : $default;
+        return static::$params[$name] ?? $default;
     }
 
     /**
@@ -90,9 +90,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function getVendorPath()
     {
-        $vendor = dirname(dirname(__DIR__)) . '/vendor';
+        $vendor = dirname(__DIR__, 2) . '/vendor';
         if (!is_dir($vendor)) {
-            $vendor = dirname(dirname(dirname(dirname(__DIR__))));
+            $vendor = dirname(__DIR__, 4);
         }
 
         return $vendor;
@@ -141,11 +141,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Used on objects, it asserts that two variables reference
      * the same object.
      *
-     * @param mixed  $expected
-     * @param mixed  $actual
      * @param string $message
      */
-    protected function assertSameAnyWhitespace($expected, $actual, $message = ''){
+    protected function assertSameAnyWhitespace(mixed $expected, mixed $actual, $message = ''){
         if (is_string($expected)) {
             $expected = $this->sanitizeWhitespaces($expected);
         }
@@ -159,14 +157,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Asserts that a haystack contains a needle ignoring line endings.
      *
-     * @param mixed $needle
-     * @param mixed $haystack
      * @param string $message
      */
-    protected function assertContainsWithoutLE($needle, $haystack, $message = '')
+    protected function assertContainsWithoutLE(mixed $needle, mixed $haystack, $message = '')
     {
-        $needle = str_replace("\r\n", "\n", $needle);
-        $haystack = str_replace("\r\n", "\n", $haystack);
+        $needle = str_replace("\r\n", "\n", (string) $needle);
+        $haystack = str_replace("\r\n", "\n", (string) $haystack);
 
         $this->assertStringContainsString($needle, $haystack, $message);
     }
@@ -179,7 +175,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @return string
      */
     protected function sanitizeWhitespaces($string){
-        return preg_replace("/[\pZ\pC]/u", " ", $string);
+        return preg_replace("/[\pZ\pC]/u", " ", (string) $string);
     }
 
     /**
@@ -253,11 +249,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Asserts that value is one of expected values.
      *
-     * @param mixed $actual
-     * @param array $expected
      * @param string $message
      */
-    public function assertIsOneOf($actual, array $expected, $message = '')
+    public function assertIsOneOf(mixed $actual, array $expected, $message = ''): void
     {
         self::assertThat($actual, new IsOneOfAssert($expected), $message);
     }
@@ -272,9 +266,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if (isset($databases[$db])) {
             $database = $databases[$db];
             Yii::$app->db->close();
-            Yii::$app->db->dsn = isset($database['dsn']) ? $database['dsn'] : null;
-            Yii::$app->db->username = isset($database['username']) ? $database['username'] : null;
-            Yii::$app->db->password = isset($database['password']) ? $database['password'] : null;
+            Yii::$app->db->dsn = $database['dsn'] ?? null;
+            Yii::$app->db->username = $database['username'] ?? null;
+            Yii::$app->db->password = $database['password'] ?? null;
         }
     }
 }

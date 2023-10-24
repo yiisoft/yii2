@@ -20,10 +20,10 @@ namespace yiiunit\framework\i18n {
          * Enable it only for tests prefixed with testIntl.
          * @param Testcase $test
          */
-        public static function setIntlStatus($test)
+        public static function setIntlStatus($test): void
         {
             static::$enableIntl = null;
-            if (strncmp($test->getName(false), 'testIntl', 8) === 0) {
+            if (str_starts_with($test->getName(false), 'testIntl')) {
                 static::$enableIntl = true;
                 if (!extension_loaded('intl')) {
                     $test->markTestSkipped('intl extension is not installed.');
@@ -33,7 +33,7 @@ namespace yiiunit\framework\i18n {
             }
         }
 
-        public static function resetIntlStatus()
+        public static function resetIntlStatus(): void
         {
             static::$enableIntl = null;
         }

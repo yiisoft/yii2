@@ -33,7 +33,7 @@ class JsonModel extends DynamicModel implements \JsonSerializable
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
        $this->defineAttribute('name');
     }

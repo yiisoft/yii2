@@ -23,7 +23,7 @@ class ActiveFormTest extends \yiiunit\TestCase
         $this->mockApplication();
     }
 
-    public function testBooleanAttributes()
+    public function testBooleanAttributes(): void
     {
         $o = ['template' => '{input}'];
 
@@ -56,7 +56,7 @@ EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
     }
 
-    public function testIssue5356()
+    public function testIssue5356(): void
     {
         $o = ['template' => '{input}'];
 
@@ -80,7 +80,7 @@ EOF
              , (string) $form->field($model, 'categories', $o)->listBox(['apple', 'banana', 'avocado'], ['multiple' => true]));
     }
 
-    public function testOutputBuffering()
+    public function testOutputBuffering(): void
     {
         $obLevel = ob_get_level();
         ob_start();
@@ -108,7 +108,7 @@ HTML
 , $content);
     }
 
-    public function testRegisterClientScript()
+    public function testRegisterClientScript(): void
     {
         $this->mockWebApplication();
         $_SERVER['REQUEST_URI'] = 'http://example.com/';
@@ -140,7 +140,7 @@ HTML
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         ob_start();
@@ -148,7 +148,7 @@ HTML
             [
                 'action' => '/something',
                 'enableClientScript' => false,
-                'on init' => function () use (&$initTriggered) {
+                'on init' => function () use (&$initTriggered): void {
                     $initTriggered = true;
                 }
             ]
@@ -162,7 +162,7 @@ HTML
      * @see https://github.com/yiisoft/yii2/issues/15476
      * @see https://github.com/yiisoft/yii2/issues/16892
      */
-    public function testValidationStateOnInput()
+    public function testValidationStateOnInput(): void
     {
         $model = new DynamicModel(['name']);
         $model->addError('name', 'I have an error!');

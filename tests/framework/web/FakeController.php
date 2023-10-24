@@ -17,7 +17,7 @@ class FakeController extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionAksi1($fromGet, $other = 'default')
+    public function actionAksi1($fromGet, $other = 'default'): void
     {
     }
 }

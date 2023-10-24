@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public function testParseAcceptHeader()
+    public function testParseAcceptHeader(): void
     {
         $request = new Request();
 
@@ -39,7 +39,7 @@ class RequestTest extends TestCase
             text/x-dvi; q=0.8, text/x-c'));
     }
 
-    public function testPreferredLanguage()
+    public function testPreferredLanguage(): void
     {
         $this->mockApplication([
             'language' => 'en',
@@ -83,7 +83,7 @@ class RequestTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/14542
      */
-    public function testCsrfTokenContainsASCIIOnly()
+    public function testCsrfTokenContainsASCIIOnly(): void
     {
         $this->mockWebApplication();
 
@@ -94,7 +94,7 @@ class RequestTest extends TestCase
         $this->assertMatchesRegularExpression('~[-_=a-z0-9]~i', $token);
     }
 
-    public function testCsrfTokenValidation()
+    public function testCsrfTokenValidation(): void
     {
         $this->mockWebApplication();
 
@@ -138,7 +138,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testIssue15317()
+    public function testIssue15317(): void
     {
         $this->mockWebApplication();
         $_COOKIE[(new Request())->csrfParam] = '';
@@ -157,7 +157,7 @@ class RequestTest extends TestCase
     /**
      * Test CSRF token validation by POST param.
      */
-    public function testCsrfTokenPost()
+    public function testCsrfTokenPost(): void
     {
         $this->mockWebApplication();
 
@@ -185,7 +185,7 @@ class RequestTest extends TestCase
     /**
      * Test CSRF token validation by POST param.
      */
-    public function testCsrfTokenHeader()
+    public function testCsrfTokenHeader(): void
     {
         $this->mockWebApplication();
 
@@ -211,7 +211,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testResolve()
+    public function testResolve(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -375,10 +375,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getHostInfoDataProvider
-     * @param array $server
-     * @param array $expected
      */
-    public function testGetHostInfo($server, $expected)
+    public function testGetHostInfo(array $server, array $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -417,7 +415,7 @@ class RequestTest extends TestCase
     }
 
 
-    public function testSetHostInfo()
+    public function testSetHostInfo(): void
     {
         $request = new Request();
 
@@ -430,7 +428,7 @@ class RequestTest extends TestCase
         $this->assertSame('servername.com', $request->getHostName());
     }
 
-    public function testGetScriptFileWithEmptyServer()
+    public function testGetScriptFileWithEmptyServer(): void
     {
         $request = new Request();
         $_SERVER = [];
@@ -440,7 +438,7 @@ class RequestTest extends TestCase
         $request->getScriptFile();
     }
 
-    public function testGetScriptUrlWithEmptyServer()
+    public function testGetScriptUrlWithEmptyServer(): void
     {
         $request = new Request();
         $_SERVER = [];
@@ -450,7 +448,7 @@ class RequestTest extends TestCase
         $request->getScriptUrl();
     }
 
-    public function testGetServerName()
+    public function testGetServerName(): void
     {
         $request = new Request();
 
@@ -461,7 +459,7 @@ class RequestTest extends TestCase
         $this->assertNull($request->getServerName());
     }
 
-    public function testGetServerPort()
+    public function testGetServerPort(): void
     {
         $request = new Request();
 
@@ -559,10 +557,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider isSecureServerDataProvider
-     * @param array $server
-     * @param bool $expected
      */
-    public function testGetIsSecureConnection($server, $expected)
+    public function testGetIsSecureConnection(array $server, bool $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -613,10 +609,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider isSecureServerWithoutTrustedHostDataProvider
-     * @param array $server
-     * @param bool $expected
      */
-    public function testGetIsSecureConnectionWithoutTrustedHost($server, $expected)
+    public function testGetIsSecureConnectionWithoutTrustedHost(array $server, bool $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -777,10 +771,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getUserIPDataProvider
-     * @param array $server
-     * @param string $expected
      */
-    public function testGetUserIP($server, $expected)
+    public function testGetUserIP(array $server, string $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -833,10 +825,8 @@ class RequestTest extends TestCase
 
     /**
     * @dataProvider getUserIPWithoutTruestHostDataProvider
-    * @param array $server
-    * @param string $expected
     */
-   public function testGetUserIPWithoutTrustedHost($server, $expected)
+   public function testGetUserIPWithoutTrustedHost(array $server, string $expected): void
    {
        $original = $_SERVER;
        $_SERVER = $server;
@@ -880,10 +870,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getMethodDataProvider
-     * @param array $server
-     * @param string $expected
      */
-    public function testGetMethod($server, $expected)
+    public function testGetMethod(array $server, string $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -912,10 +900,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getIsAjaxDataProvider
-     * @param array $server
-     * @param bool $expected
      */
-    public function testGetIsAjax($server, $expected)
+    public function testGetIsAjax(array $server, bool $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -945,10 +931,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getIsPjaxDataProvider
-     * @param array $server
-     * @param bool $expected
      */
-    public function testGetIsPjax($server, $expected)
+    public function testGetIsPjax(array $server, bool $expected): void
     {
         $original = $_SERVER;
         $_SERVER = $server;
@@ -958,7 +942,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function testGetOrigin()
+    public function testGetOrigin(): void
     {
         $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
         $request = new Request();
@@ -985,10 +969,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider httpAuthorizationHeadersProvider
-     * @param string $secret
-     * @param array $expected
      */
-    public function testHttpAuthCredentialsFromHttpAuthorizationHeader($secret, $expected)
+    public function testHttpAuthCredentialsFromHttpAuthorizationHeader(string $secret, array $expected): void
     {
         $original = $_SERVER;
 
@@ -1007,10 +989,10 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function testHttpAuthCredentialsFromServerSuperglobal()
+    public function testHttpAuthCredentialsFromServerSuperglobal(): void
     {
         $original = $_SERVER;
-        list($user, $pw) = ['foo', 'bar'];
+        [$user, $pw] = ['foo', 'bar'];
         $_SERVER['PHP_AUTH_USER'] = $user;
         $_SERVER['PHP_AUTH_PW'] = $pw;
 
@@ -1024,7 +1006,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function testGetBodyParam()
+    public function testGetBodyParam(): void
     {
         $request = new Request();
 
@@ -1060,7 +1042,7 @@ class RequestTest extends TestCase
     /**
      * @dataProvider getBodyParamsDataProvider
      */
-    public function testGetBodyParams($contentType, $rawBody, array $expected)
+    public function testGetBodyParams(string $contentType, string $rawBody, array $expected): void
     {
         $_SERVER['CONTENT_TYPE'] = $contentType;
         $request = new Request();
@@ -1095,7 +1077,7 @@ class RequestTest extends TestCase
     /**
      * @dataProvider trustedHostAndInjectedXForwardedForDataProvider
      */
-    public function testTrustedHostAndInjectedXForwardedFor($remoteAddress, $xForwardedFor, $ipHeaders, $trustedHosts, $expectedUserIp)
+    public function testTrustedHostAndInjectedXForwardedFor(string $remoteAddress, string $xForwardedFor, ?array $ipHeaders, array $trustedHosts, string $expectedUserIp): void
     {
         $_SERVER['REMOTE_ADDR'] = $remoteAddress;
         $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
@@ -1124,7 +1106,7 @@ class RequestTest extends TestCase
     /**
      * @dataProvider trustedHostAndXForwardedPortDataProvider
      */
-    public function testTrustedHostAndXForwardedPort($remoteAddress, $requestPort, $xForwardedPort, $trustedHosts, $expectedPort)
+    public function testTrustedHostAndXForwardedPort(string $remoteAddress, int $requestPort, ?int $xForwardedPort, ?array $trustedHosts, int $expectedPort): void
     {
         $_SERVER['REMOTE_ADDR'] = $remoteAddress;
         $_SERVER['SERVER_PORT'] = $requestPort;
@@ -1143,7 +1125,7 @@ class RequestTest extends TestCase
      *              ["POST", "DELETE", "DELETE"]
      *              ["POST", "CUSTOM", "CUSTOM"]
      */
-    public function testRequestMethodCanNotBeDowngraded($requestMethod, $requestOverrideMethod, $expectedMethod)
+    public function testRequestMethodCanNotBeDowngraded($requestMethod, $requestOverrideMethod, $expectedMethod): void
     {
         $request = new Request();
 
@@ -1181,7 +1163,7 @@ class RequestTest extends TestCase
     /**
      * @dataProvider alreadyResolvedIpDataProvider
      */
-    public function testAlreadyResolvedIp($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $expectedRemoteAddress, $expectedUserIp, $expectedIsSecureConnection) {
+    public function testAlreadyResolvedIp($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $expectedRemoteAddress, $expectedUserIp, $expectedIsSecureConnection): void {
         $_SERVER['REMOTE_ADDR'] = $remoteAddress;
         $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
         $_SERVER['HTTP_X_FORWARDED_PROTO'] = $xForwardedProto;
@@ -1245,7 +1227,7 @@ class RequestTest extends TestCase
     /**
      * @dataProvider parseForwardedHeaderDataProvider
      */
-    public function testParseForwardedHeaderParts($remoteAddress, $forwardedHeader, $expectedHostInfo, $expectedUserIp)
+    public function testParseForwardedHeaderParts($remoteAddress, $forwardedHeader, $expectedHostInfo, $expectedUserIp): void
     {
         $_SERVER['REMOTE_ADDR'] = $remoteAddress;
         $_SERVER['HTTP_HOST'] = 'example.com';
@@ -1268,7 +1250,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedHostInfo, $request->hostInfo, 'Host info fail!');
     }
 
-    public function testForwardedNotTrusted()
+    public function testForwardedNotTrusted(): void
     {
         $_SERVER['REMOTE_ADDR'] = '192.168.10.10';
         $_SERVER['HTTP_HOST'] = 'example.com';

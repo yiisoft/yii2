@@ -12,12 +12,12 @@ use yiiunit\data\console\controllers\fixtures\FixtureStorage;
 
 class FirstFixture extends Fixture
 {
-    public function load()
+    public function load(): void
     {
         FixtureStorage::$subdirFirstFixtureData[] = 'some data set for first fixture in subdir';
     }
 
-    public function unload()
+    public function unload(): void
     {
         FixtureStorage::$subdirFirstFixtureData = [];
     }

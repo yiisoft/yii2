@@ -9,9 +9,9 @@ class TestController extends Controller
 {
     public $layout = '@yiiunit/data/views/layout.php';
 
-    private $actionConfig = [];
+    private array $actionConfig = [];
 
-    public function setActionConfig($config = [])
+    public function setActionConfig($config = []): void
     {
         $this->actionConfig = $config;
     }

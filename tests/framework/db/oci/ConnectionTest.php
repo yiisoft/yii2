@@ -18,7 +18,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 {
     protected $driverName = 'oci';
 
-    public function testSerialize()
+    public function testSerialize(): void
     {
         $connection = $this->getConnection(false, false);
         $connection->open();
@@ -29,7 +29,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals(123, $unserialized->createCommand('SELECT 123 FROM DUAL')->queryScalar());
     }
 
-    public function testQuoteTableName()
+    public function testQuoteTableName(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('"table"', $connection->quoteTableName('table'));
@@ -41,7 +41,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
     }
 
-    public function testQuoteColumnName()
+    public function testQuoteColumnName(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals('"column"', $connection->quoteColumnName('column'));
@@ -54,7 +54,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('"column"', $connection->quoteSql('{{column}}'));
     }
 
-    public function testQuoteFullColumnName()
+    public function testQuoteFullColumnName(): void
     {
         $connection = $this->getConnection(false, false);
         $this->assertEquals('"table"."column"', $connection->quoteColumnName('table.column'));
@@ -76,7 +76,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{%table}}."column"'));
     }
 
-    public function testTransactionIsolation()
+    public function testTransactionIsolation(): void
     {
         $connection = $this->getConnection(true);
 
@@ -100,7 +100,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
      *
      * Change Transaction::READ_UNCOMMITTED => Transaction::READ_COMMITTED.
      */
-    public function testTransactionShortcutCustom()
+    public function testTransactionShortcutCustom(): void
     {
         $connection = $this->getConnection(true);
 
@@ -117,7 +117,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 
-    public function testQuoteValue()
+    public function testQuoteValue(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals(123, $connection->quoteValue(123));

@@ -29,7 +29,7 @@ abstract class ManagerTestCase extends TestCase
      */
     abstract protected function createManager();
 
-    public function testCreateRole()
+    public function testCreateRole(): void
     {
         $role = $this->auth->createRole('admin');
         $this->assertInstanceOf(Role::class, $role);
@@ -37,7 +37,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals('admin', $role->name);
     }
 
-    public function testCreatePermission()
+    public function testCreatePermission(): void
     {
         $permission = $this->auth->createPermission('edit post');
         $this->assertInstanceOf(Permission::class, $permission);
@@ -45,7 +45,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals('edit post', $permission->name);
     }
 
-    public function testAdd()
+    public function testAdd(): void
     {
         $role = $this->auth->createRole('admin');
         $role->description = 'administrator';
@@ -61,7 +61,7 @@ abstract class ManagerTestCase extends TestCase
         // todo: check duplication of name
     }
 
-    public function testGetChildren()
+    public function testGetChildren(): void
     {
         $user = $this->auth->createRole('user');
         $this->auth->add($user);
@@ -73,7 +73,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertCount(1, $this->auth->getChildren($user->name));
     }
 
-    public function testGetRule()
+    public function testGetRule(): void
     {
         $this->prepareData();
 
@@ -85,7 +85,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($rule);
     }
 
-    public function testAddRule()
+    public function testAddRule(): void
     {
         $this->prepareData();
 
@@ -98,7 +98,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertTrue($rule->reallyReally);
     }
 
-    public function testUpdateRule()
+    public function testUpdateRule(): void
     {
         $this->prepareData();
 
@@ -131,7 +131,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals('new createPost', $item->name);
     }
 
-    public function testGetRules()
+    public function testGetRules(): void
     {
         $this->prepareData();
 
@@ -149,7 +149,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertContains('isAuthor', $ruleNames);
     }
 
-    public function testRemoveRule()
+    public function testRemoveRule(): void
     {
         $this->prepareData();
 
@@ -163,7 +163,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNull($item);
     }
 
-    public function testCheckAccess()
+    public function testCheckAccess(): void
     {
         $this->prepareData();
 
@@ -268,7 +268,7 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->assign($admin, 'admin C');
     }
 
-    public function testGetPermissionsByRole()
+    public function testGetPermissionsByRole(): void
     {
         $this->prepareData();
         $permissions = $this->auth->getPermissionsByRole('admin');
@@ -279,7 +279,7 @@ abstract class ManagerTestCase extends TestCase
         }
     }
 
-    public function testGetPermissionsByUser()
+    public function testGetPermissionsByUser(): void
     {
         $this->prepareData();
         $permissions = $this->auth->getPermissionsByUser('author B');
@@ -290,7 +290,7 @@ abstract class ManagerTestCase extends TestCase
         }
     }
 
-    public function testGetRole()
+    public function testGetRole(): void
     {
         $this->prepareData();
         $author = $this->auth->getRole('author');
@@ -299,7 +299,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals('authorData', $author->data);
     }
 
-    public function testGetPermission()
+    public function testGetPermission(): void
     {
         $this->prepareData();
         $createPost = $this->auth->getPermission('createPost');
@@ -308,7 +308,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals('createPostData', $createPost->data);
     }
 
-    public function testGetRolesByUser()
+    public function testGetRolesByUser(): void
     {
         $this->prepareData();
         $reader = $this->auth->getRole('reader');
@@ -330,7 +330,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertContains('myDefaultRole', array_keys($roles));
     }
 
-    public function testGetChildRoles()
+    public function testGetChildRoles(): void
     {
         $this->prepareData();
 
@@ -356,7 +356,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertArrayHasKey('reader', $roles);
     }
 
-    public function testAssignMultipleRoles()
+    public function testAssignMultipleRoles(): void
     {
         $this->prepareData();
 
@@ -377,7 +377,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
     }
 
-    public function testAssignmentsToIntegerId()
+    public function testAssignmentsToIntegerId(): void
     {
         $this->prepareData();
 
@@ -394,7 +394,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertCount(2, $this->auth->getAssignments(1337));
     }
 
-    public function testGetAssignmentsByRole()
+    public function testGetAssignmentsByRole(): void
     {
         $this->prepareData();
         $reader = $this->auth->getRole('reader');
@@ -403,12 +403,12 @@ abstract class ManagerTestCase extends TestCase
         $this->auth = $this->createManager();
 
         $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
-        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '');
         $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
         $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
 
-    public function testCanAddChild()
+    public function testCanAddChild(): void
     {
         $this->prepareData();
 
@@ -420,7 +420,7 @@ abstract class ManagerTestCase extends TestCase
     }
 
 
-    public function testRemoveAllRules()
+    public function testRemoveAllRules(): void
     {
         $this->prepareData();
 
@@ -432,7 +432,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNotEmpty($this->auth->getPermissions());
     }
 
-    public function testRemoveAllRoles()
+    public function testRemoveAllRoles(): void
     {
         $this->prepareData();
 
@@ -444,7 +444,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNotEmpty($this->auth->getPermissions());
     }
 
-    public function testRemoveAllPermissions()
+    public function testRemoveAllPermissions(): void
     {
         $this->prepareData();
 
@@ -468,7 +468,7 @@ abstract class ManagerTestCase extends TestCase
      * @dataProvider RBACItemsProvider
      * @param mixed $RBACItemType
      */
-    public function testAssignRule($RBACItemType)
+    public function testAssignRule(int $RBACItemType): void
     {
         $auth = $this->auth;
         $userId = 3;
@@ -536,7 +536,7 @@ abstract class ManagerTestCase extends TestCase
      * @dataProvider RBACItemsProvider
      * @param mixed $RBACItemType
      */
-    public function testRevokeRule($RBACItemType)
+    public function testRevokeRule(int $RBACItemType): void
     {
         $userId = 3;
         $auth = $this->auth;
@@ -565,10 +565,9 @@ abstract class ManagerTestCase extends TestCase
     /**
      * Create Role or Permission RBAC item.
      * @param int $RBACItemType
-     * @param string $name
      * @return Permission|Role
      */
-    private function createRBACItem($RBACItemType, $name)
+    private function createRBACItem(int $RBACItemType, string $name)
     {
         if ($RBACItemType === Item::TYPE_ROLE) {
             return $this->auth->createRole($name);
@@ -583,10 +582,9 @@ abstract class ManagerTestCase extends TestCase
     /**
      * Get Role or Permission RBAC item.
      * @param int $RBACItemType
-     * @param string $name
      * @return Permission|Role
      */
-    private function getRBACItem($RBACItemType, $name)
+    private function getRBACItem(int $RBACItemType, string $name)
     {
         if ($RBACItemType === Item::TYPE_ROLE) {
             return $this->auth->getRole($name);
@@ -602,7 +600,7 @@ abstract class ManagerTestCase extends TestCase
      * @see https://github.com/yiisoft/yii2/issues/10176
      * @see https://github.com/yiisoft/yii2/issues/12681
      */
-    public function testRuleWithPrivateFields()
+    public function testRuleWithPrivateFields(): void
     {
         $auth = $this->auth;
 
@@ -616,16 +614,14 @@ abstract class ManagerTestCase extends TestCase
         $this->assertInstanceOf(ActionRule::class, $rule);
     }
 
-    public function testDefaultRolesWithClosureReturningNonArrayValue()
+    public function testDefaultRolesWithClosureReturningNonArrayValue(): void
     {
         $this->expectException('yii\base\InvalidValueException');
         $this->expectExceptionMessage('Default roles closure must return an array');
-        $this->auth->defaultRoles = function () {
-            return 'test';
-        };
+        $this->auth->defaultRoles = fn() => 'test';
     }
 
-    public function testDefaultRolesWithNonArrayValue()
+    public function testDefaultRolesWithNonArrayValue(): void
     {
         $this->expectException('yii\base\InvalidArgumentException');
         $this->expectExceptionMessage('Default roles must be either an array or a callable');

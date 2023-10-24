@@ -27,7 +27,7 @@ class JsonTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testEncode()
+    public function testEncode(): void
     {
         // Arrayable data encoding
         $dataArrayable = $this->getMockBuilder('\yii\base\Arrayable')->getMock();
@@ -108,7 +108,7 @@ PHP
         $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
     }
 
-    public function testHtmlEncode()
+    public function testHtmlEncode(): void
     {
         // HTML escaped chars
         $data = '&<>"\'/';
@@ -181,7 +181,7 @@ PHP
         $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
-    public function testDecode()
+    public function testDecode(): void
     {
         // empty value
         $json = '';
@@ -205,7 +205,7 @@ PHP
     /**
      * @covers ::decode
      */
-    public function testDecodeInvalidArgumentException()
+    public function testDecodeInvalidArgumentException(): void
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid JSON data.');
@@ -216,7 +216,7 @@ PHP
     /**
      * @covers ::decode
      */
-    public function testHandleJsonError()
+    public function testHandleJsonError(): void
     {
         // basic syntax error
         try {
@@ -237,7 +237,7 @@ PHP
         }
     }
 
-    public function testErrorSummary()
+    public function testErrorSummary(): void
     {
         $model = new JsonModel();
         $model->name = 'not_an_integer';
@@ -253,7 +253,7 @@ PHP
      * @see https://github.com/yiisoft/yii2/issues/17760
      * @covers ::encode
      */
-    public function testEncodeDateTime()
+    public function testEncodeDateTime(): void
     {
         $input = new \DateTime('October 12, 2014', new \DateTimeZone('UTC'));
         $output = Json::encode($input);
@@ -263,7 +263,7 @@ PHP
     /**
      * @covers ::encode
      */
-    public function testPrettyPrint()
+    public function testPrettyPrint(): void
     {
         $defaultValue = Json::$prettyPrint;
         $input = ['a' => 1, 'b' => 2];

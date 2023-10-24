@@ -15,12 +15,12 @@ use yii\log\Target;
  */
 class ArrayTarget extends Target
 {
-    public $exportInterval = 1000000;
+    public $exportInterval = 1_000_000;
 
     /**
      * Exports log [[messages]] to a specific destination.
      */
-    public function export()
+    public function export(): never
     {
         // throw exception if message limit is reached
         throw new Exception('More than 1000000 messages logged.');

@@ -26,7 +26,7 @@ class MarkdownTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testOriginalFlavor()
+    public function testOriginalFlavor(): void
     {
         $text = <<<'TEXT'
 html
@@ -43,7 +43,7 @@ TEXT;
         $this->assertEquals(Markdown::process($text), Markdown::process($text, 'gfm-comment'));
     }
 
-    public function testProcessInvalidArgumentException()
+    public function testProcessInvalidArgumentException(): void
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage("Markdown flavor 'undefined' is not defined.");
@@ -51,7 +51,7 @@ TEXT;
         Markdown::process('foo', 'undefined');
     }
 
-    public function testProcessParagraph()
+    public function testProcessParagraph(): void
     {
         $actual = Markdown::processParagraph('foo');
         $expected = 'foo';

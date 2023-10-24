@@ -184,14 +184,10 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
                 'class' => AttributesBehavior::class,
                 'attributes' => [
                     'alias' => [
-                        self::EVENT_BEFORE_VALIDATE => function ($event) {
-                            return $event->sender->name;
-                        },
+                        self::EVENT_BEFORE_VALIDATE => fn($event) => $event->sender->name,
                     ],
                     'name' => [
-                        self::EVENT_BEFORE_VALIDATE => function ($event, $attribute) {
-                            return $attribute . ': ' . $event->sender->alias;
-                        },
+                        self::EVENT_BEFORE_VALIDATE => fn($event, $attribute) => $attribute . ': ' . $event->sender->alias,
                     ],
                 ],
             ],

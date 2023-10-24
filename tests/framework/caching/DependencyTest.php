@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class DependencyTest extends TestCase
 {
-    public function testResetReusableData()
+    public function testResetReusableData(): void
     {
         $value = ['dummy'];
         $dependency = new MockDependency();
@@ -32,17 +32,17 @@ class DependencyTest extends TestCase
         $this->assertEquals([], $this->getInaccessibleProperty($dependency, '_reusableData'));
     }
 
-    public function testGenerateReusableHash()
+    public function testGenerateReusableHash(): void
     {
         $dependency = $this->getMockForAbstractClass(Dependency::class);
         $dependency->data = 'dummy';
 
         $result = $this->invokeMethod($dependency, 'generateReusableHash');
         $this->assertEquals(5, strlen($dependency->data));
-        $this->assertEquals(40, strlen($result));
+        $this->assertEquals(40, strlen((string) $result));
     }
 
-    public function testIsChanged()
+    public function testIsChanged(): void
     {
         $dependency = $this->getMockForAbstractClass(Dependency::class);
         $cache = $this->getMockForAbstractClass(Cache::class);

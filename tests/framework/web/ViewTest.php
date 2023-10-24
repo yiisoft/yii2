@@ -21,7 +21,7 @@ class ViewTest extends TestCase
         parent::setUp();
     }
 
-    public function testRegisterJsVar()
+    public function testRegisterJsVar(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -50,7 +50,7 @@ class ViewTest extends TestCase
         );
     }
 
-    public function testRegisterJsFileWithAlias()
+    public function testRegisterJsFileWithAlias(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -83,7 +83,7 @@ class ViewTest extends TestCase
         $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
 
-    public function testRegisterCssFileWithAlias()
+    public function testRegisterCssFileWithAlias(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -107,7 +107,7 @@ class ViewTest extends TestCase
         $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
 
-    public function testRegisterregisterCsrfMetaTags()
+    public function testRegisterregisterCsrfMetaTags(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -155,7 +155,7 @@ class ViewTest extends TestCase
         return $matches[1];
     }
 
-    private function setUpAliases()
+    private function setUpAliases(): void
     {
         \Yii::setAlias('@web', '/');
         \Yii::setAlias('@webroot', '@yiiunit/data/web');
@@ -164,7 +164,7 @@ class ViewTest extends TestCase
         \Yii::setAlias('@testSourcePath', '@webroot/assetSources');
     }
 
-    public function testAppendTimestampForRegisterJsFile()
+    public function testAppendTimestampForRegisterJsFile(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -339,7 +339,7 @@ class ViewTest extends TestCase
         );
     }
 
-    public function testAppendTimestampForRegisterCssFile()
+    public function testAppendTimestampForRegisterCssFile(): void
     {
         $this->mockWebApplication([
             'components' => [

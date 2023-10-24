@@ -18,7 +18,7 @@ class BCObject extends \yii\base\Object
         Object::__construct($config);
     }
 
-    public function init()
+    public function init(): void
     {
         static::$initCalled = true;
     }

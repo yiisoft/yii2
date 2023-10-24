@@ -34,7 +34,7 @@ class AjaxFilterTest extends TestCase
         return $request;
     }
 
-    public function testFilter()
+    public function testFilter(): void
     {
         $this->mockWebApplication();
         $controller = new Controller('id', Yii::$app);

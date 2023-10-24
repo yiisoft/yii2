@@ -17,7 +17,7 @@ class FakeNoDefaultController extends Controller
 {
     public $defaultAction = 'not-exist';
 
-    public function actionIndex()
+    public function actionIndex(): void
     {
     }
 }

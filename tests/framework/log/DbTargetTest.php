@@ -120,11 +120,11 @@ abstract class DbTargetTest extends TestCase
      * Tests that precision isn't lost for log timestamps.
      * @see https://github.com/yiisoft/yii2/issues/7384
      */
-    public function testTimestamp()
+    public function testTimestamp(): void
     {
         $logger = Yii::getLogger();
 
-        $time = 1424865393.0105;
+        $time = 1_424_865_393.0105;
 
         // forming message data manually in order to set time
         $messsageData = [
@@ -143,7 +143,7 @@ abstract class DbTargetTest extends TestCase
         static::assertEquals($time, $loggedTime);
     }
 
-    public function testTransactionRollBack()
+    public function testTransactionRollBack(): void
     {
         $db = self::getConnection();
         $logger = Yii::getLogger();

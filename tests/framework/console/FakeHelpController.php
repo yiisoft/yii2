@@ -11,9 +11,9 @@ use yii\console\controllers\HelpController;
 
 class FakeHelpController extends HelpController
 {
-    private static $_actionIndexLastCallParams;
+    private static ?array $_actionIndexLastCallParams = null;
 
-    public function actionIndex($command = null)
+    public function actionIndex($command = null): void
     {
         self::$_actionIndexLastCallParams = func_get_args();
     }

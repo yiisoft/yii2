@@ -16,7 +16,7 @@ class ValidatorTestEachAndInlineMethodModel extends Model
     public function rules()
     {
         return [
-            ['arrayProperty', 'each', 'rule' => [function ($attribute, $params, $validator) {
+            ['arrayProperty', 'each', 'rule' => [function ($attribute, $params, $validator): void {
                 if (is_array($this->$attribute)) {
                     $this->addError($attribute, 'Each & Inline validators bug');
                 }

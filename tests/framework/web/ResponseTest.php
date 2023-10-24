@@ -118,7 +118,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/7529
      */
-    public function testSendContentAsFile()
+    public function testSendContentAsFile(): void
     {
         ob_start();
         $this->response->sendContentAsFile('test', 'test.txt')->send();
@@ -132,7 +132,7 @@ class ResponseTest extends \yiiunit\TestCase
         static::assertEquals(4, $headers->get('Content-Length'));
     }
 
-    public function testRedirect()
+    public function testRedirect(): void
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $this->assertEquals('/', $this->response->redirect('')->headers->get('location'));
@@ -180,7 +180,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/19795
      */
-    public function testRedirectNewLine()
+    public function testRedirectNewLine(): void
     {
         $this->expectException('yii\base\InvalidRouteException');
 
@@ -257,7 +257,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/pull/18290
      */
-    public function testNonSeekableStream()
+    public function testNonSeekableStream(): void
     {
         $stream = fopen('php://output', 'r+');
         ob_start();
@@ -340,20 +340,20 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/17094
      */
-    public function testEmptyContentOn204()
+    public function testEmptyContentOn204(): void
     {
         $this->assertEmptyContentOn(204);
     }
 
-    public function testSettingContentToNullOn204()
+    public function testSettingContentToNullOn204(): void
     {
-        $this->assertEmptyContentOn(204, function ($response) {
+        $this->assertEmptyContentOn(204, function ($response): void {
             /** @var $response Response */
             $this->assertSame($response->content, '');
         });
     }
 
-    public function testSettingStreamToNullOn204()
+    public function testSettingStreamToNullOn204(): void
     {
         $this->assertSettingStreamToNullOn(204);
     }
@@ -361,7 +361,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18199
      */
-    public function testEmptyContentOn304()
+    public function testEmptyContentOn304(): void
     {
         $this->assertEmptyContentOn(304);
     }
@@ -369,20 +369,20 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18199
      */
-    public function testSettingContentToNullOn304()
+    public function testSettingContentToNullOn304(): void
     {
-        $this->assertEmptyContentOn(304, function ($response) {
+        $this->assertEmptyContentOn(304, function ($response): void {
             /** @var $response Response */
             $this->assertSame($response->content, '');
         });
     }
 
-    public function testSettingStreamToNullOn304()
+    public function testSettingStreamToNullOn304(): void
     {
         $this->assertSettingStreamToNullOn(304);
     }
 
-    public function testSendFileWithInvalidCharactersInFileName()
+    public function testSendFileWithInvalidCharactersInFileName(): void
     {
         $response = new Response();
         $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
@@ -398,7 +398,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @dataProvider cookiesTestProvider
      */
-    public function testCookies($cookieConfig, $expected)
+    public function testCookies($cookieConfig, $expected): void
     {
         $response = new Response();
         $response->cookies->add(new Cookie(array_merge(
@@ -447,16 +447,13 @@ class ResponseTest extends \yiiunit\TestCase
         ];
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $testCases = array_merge($testCases, [
-                'expire-as-date_time' => [
-                    ['expire' => new \DateTime('@' . $expireInt)],
-                    ['expires' => $expireString],
-                ],
-                'expire-as-date_time_immutable' => [
-                    ['expire' => new \DateTimeImmutable('@' . $expireInt)],
-                    ['expires' => $expireString],
-                ],
-            ]);
+            $testCases = [...$testCases, 'expire-as-date_time' => [
+                ['expire' => new \DateTime('@' . $expireInt)],
+                ['expires' => $expireString],
+            ], 'expire-as-date_time_immutable' => [
+                ['expire' => new \DateTimeImmutable('@' . $expireInt)],
+                ['expires' => $expireString],
+            ]];
         }
 
         return $testCases;
@@ -477,19 +474,19 @@ class ResponseTest extends \yiiunit\TestCase
 
         $cookies = [];
         foreach(xdebug_get_headers() as $header) {
-            if (strpos($header, 'Set-Cookie: ') !== 0) {
+            if (!str_starts_with((string) $header, 'Set-Cookie: ')) {
                 continue;
             }
 
             $name = null;
             $params = [];
-            $pairs = explode(';', substr($header, 12));
+            $pairs = explode(';', substr((string) $header, 12));
             foreach ($pairs as  $index => $pair) {
                 $pair = trim($pair);
-                if (strpos($pair, '=') === false) {
+                if (!str_contains($pair, '=')) {
                     $params[strtolower($pair)] = true;
                 } else {
-                    list($paramName, $paramValue) = explode('=', $pair, 2);
+                    [$paramName, $paramValue] = explode('=', $pair, 2);
                     if ($index === 0) {
                         $name = $paramName;
                         $params['value'] = urldecode($paramValue);

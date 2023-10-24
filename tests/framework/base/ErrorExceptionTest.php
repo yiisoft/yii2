@@ -27,10 +27,10 @@ class ErrorExceptionTest extends TestCase
         if (version_compare($version, '3.0.0', '<')) {
             return true;
         }
-        return false !== strpos(ini_get('xdebug.mode'), 'develop');
+        return str_contains(ini_get('xdebug.mode'), 'develop');
     }
 
-    public function testXdebugTrace()
+    public function testXdebugTrace(): void
     {
         if (!$this->isXdebugStackAvailable()) {
             $this->markTestSkipped('Xdebug is required.');

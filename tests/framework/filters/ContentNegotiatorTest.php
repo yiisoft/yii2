@@ -38,9 +38,9 @@ class ContentNegotiatorTest extends TestCase
         return [$action, $filter];
     }
 
-    public function testWhenLanguageGETParamIsArray()
+    public function testWhenLanguageGETParamIsArray(): void
     {
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_GET[$filter->languageParam] = [
@@ -55,9 +55,9 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals($targetLanguage, Yii::$app->language);
     }
 
-    public function testWhenFormatGETParamIsArray()
+    public function testWhenFormatGETParamIsArray(): void
     {
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_GET[$filter->formatParam] = [
@@ -76,21 +76,21 @@ class ContentNegotiatorTest extends TestCase
         $filter->beforeAction($action);
     }
 
-    public function testVaryHeader()
+    public function testVaryHeader(): void
     {
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
         $filter->formats = [];
         $filter->languages = [];
         $filter->beforeAction($action);
         $this->assertFalse($filter->response->getHeaders()->has('Vary'));
 
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
         $filter->formats = ['application/json' => Response::FORMAT_JSON];
         $filter->languages = ['en'];
         $filter->beforeAction($action);
         $this->assertFalse($filter->response->getHeaders()->has('Vary'));  // There is still nothing to vary
 
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
         $filter->formats = [
             'application/json' => Response::FORMAT_JSON,
             'application/xml' => Response::FORMAT_XML,
@@ -99,13 +99,13 @@ class ContentNegotiatorTest extends TestCase
         $filter->beforeAction($action);
         $this->assertContains('Accept', $filter->response->getHeaders()->get('Vary', [], false));
 
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
         $filter->formats = [];
         $filter->languages = ['en', 'de'];
         $filter->beforeAction($action);
         $this->assertContains('Accept-Language', $filter->response->getHeaders()->get('Vary', [], false));
 
-        list($action, $filter) = $this->mockActionAndFilter();
+        [$action, $filter] = $this->mockActionAndFilter();
         $filter->formats = [
             'application/json' => Response::FORMAT_JSON,
             'application/xml' => Response::FORMAT_XML,
@@ -117,7 +117,7 @@ class ContentNegotiatorTest extends TestCase
         $this->assertContains('Accept-Language', $varyHeader);
     }
 
-    public function testNegotiateContentType()
+    public function testNegotiateContentType(): void
     {
         $filter = new ContentNegotiator([
             'formats' => [

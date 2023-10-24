@@ -17,13 +17,13 @@ use yii\web\IdentityInterface;
  */
 class UserIdentity extends Component implements IdentityInterface
 {
-    private static $ids = [
+    private static array $ids = [
         'user1',
         'user2',
         'user3',
     ];
 
-    private static $tokens = [
+    private static array $tokens = [
         'token1' => 'user1',
         'token2' => 'user2',
         'token3' => 'user3',

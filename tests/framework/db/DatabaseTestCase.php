@@ -93,8 +93,8 @@ abstract class DatabaseTestCase extends TestCase
         $db->open();
         if ($fixture !== null) {
             if ($this->driverName === 'oci') {
-                list($drops, $creates) = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
-                list($statements, $triggers, $data) = explode('/* TRIGGERS */', $creates, 3);
+                [$drops, $creates] = explode('/* STATEMENTS */', file_get_contents($fixture), 2);
+                [$statements, $triggers, $data] = explode('/* TRIGGERS */', $creates, 3);
                 $lines = array_merge(explode('--', $drops), explode(';', $statements), explode('/', $triggers), explode(';', $data));
             } else {
                 $lines = explode(';', file_get_contents($fixture));
@@ -118,20 +118,13 @@ abstract class DatabaseTestCase extends TestCase
      */
     protected static function replaceQuotes(string $sql): string
     {
-        switch (static::$driverNameStatic) {
-            case 'mysql':
-            case 'sqlite':
-                return str_replace(['[[', ']]'], '`', $sql);
-            case 'oci':
-                return str_replace(['[[', ']]'], '"', $sql);
-            case 'pgsql':
-                // more complex replacement needed to not conflict with postgres array syntax
-                return str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql));
-            case 'sqlsrv':
-                return str_replace(['[[', ']]'], ['[', ']'], $sql);
-            default:
-                return $sql;
-        }
+        return match (static::$driverNameStatic) {
+            'mysql', 'sqlite' => str_replace(['[[', ']]'], '`', $sql),
+            'oci' => str_replace(['[[', ']]'], '"', $sql),
+            'pgsql' => str_replace(['\\[', '\\]'], ['[', ']'], preg_replace('/(\[\[)|((?<!(\[))\]\])/', '"', $sql)),
+            'sqlsrv' => str_replace(['[[', ']]'], ['[', ']'], $sql),
+            default => $sql,
+        };
     }
 
     /**

@@ -17,11 +17,11 @@ class FakeController extends Controller
 {
     public $defaultAction = 'default';
 
-    public function actionDefault()
+    public function actionDefault(): void
     {
     }
 
-    public function actionSecond()
+    public function actionSecond(): void
     {
     }
 }

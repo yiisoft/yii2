@@ -115,7 +115,7 @@ class BasicAuthTest extends AuthTest
 
         $filter = [
             'class' => HttpBasicAuth::class,
-            'auth' => function ($username, $password) {
+            'auth' => function ($username, $password): void {
                 $this->fail('Authentication closure should not be called when user is already authenticated');
             },
         ];
@@ -142,7 +142,7 @@ class BasicAuthTest extends AuthTest
     public function testAfterLoginEventIsTriggered18031(string|null $token, string|null $login): void
     {
         $triggered = false;
-        Event::on('\yii\web\User', User::EVENT_AFTER_LOGIN, function ($event) use (&$triggered) {
+        Event::on('\yii\web\User', User::EVENT_AFTER_LOGIN, function ($event) use (&$triggered): void {
             $triggered = true;
             $this->assertTrue($triggered);
         });

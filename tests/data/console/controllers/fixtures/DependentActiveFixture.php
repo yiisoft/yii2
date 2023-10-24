@@ -18,7 +18,7 @@ class DependentActiveFixture extends ActiveFixture
         'yiiunit\data\console\controllers\fixtures\SecondIndependentActiveFixture',
     ];
 
-    public function load()
+    public function load(): void
     {
         FixtureStorage::$activeFixtureSequence[] = self::class;
         parent::load();

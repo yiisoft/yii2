@@ -25,14 +25,14 @@ class CompareValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateValueException()
+    public function testValidateValueException(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
         $val = new CompareValidator();
         $val->validate('val');
     }
 
-    public function testValidateValue()
+    public function testValidateValue(): void
     {
         $value = 18449;
         // default config
@@ -42,9 +42,7 @@ class CompareValidatorTest extends TestCase
         $this->assertFalse($val->validate($value + 1));
 
         // Using a closure for compareValue
-        $val = new CompareValidator(['compareValue' => function() use ($value) {
-            return $value;
-        }]);
+        $val = new CompareValidator(['compareValue' => fn() => $value]);
         $this->assertTrue($val->validate($value));
         $this->assertTrue($val->validate((string) $value));
         $this->assertFalse($val->validate($value + 1));
@@ -108,7 +106,7 @@ class CompareValidatorTest extends TestCase
         ];
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         // invalid-array
         $val = new CompareValidator();
@@ -172,7 +170,7 @@ class CompareValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_y'));
     }
 
-    public function testAttributeErrorMessages()
+    public function testAttributeErrorMessages(): void
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr1' => 1,
@@ -217,7 +215,7 @@ class CompareValidatorTest extends TestCase
         ];
     }
 
-    public function testValidateAttributeOperators()
+    public function testValidateAttributeOperators(): void
     {
         $value = 55;
         foreach ($this->getOperationTestData($value) as $operator => $tests) {
@@ -231,7 +229,7 @@ class CompareValidatorTest extends TestCase
         }
     }
 
-    public function testEnsureMessageSetOnInit()
+    public function testEnsureMessageSetOnInit(): void
     {
         foreach ($this->getOperationTestData(1337) as $operator => $tests) {
             $val = new CompareValidator(['operator' => $operator]);
@@ -239,10 +237,10 @@ class CompareValidatorTest extends TestCase
         }
         try {
             new CompareValidator(['operator' => '<>']);
-        } catch (InvalidConfigException $e) {
+        } catch (InvalidConfigException) {
             return;
         } catch (\Exception $e) {
-            $this->fail('InvalidConfigException expected' . get_class($e) . 'received');
+            $this->fail('InvalidConfigException expected' . $e::class . 'received');
 
             return;
         }

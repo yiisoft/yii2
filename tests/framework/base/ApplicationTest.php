@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ApplicationTest extends TestCase
 {
-    public function testContainerSettingsAffectBootstrap()
+    public function testContainerSettingsAffectBootstrap(): void
     {
         $this->mockApplication([
             'container' => [
@@ -33,7 +33,7 @@ class ApplicationTest extends TestCase
         $this->assertInstanceOf(DispatcherMock::class, Yii::$app->log);
     }
 
-    public function testBootstrap()
+    public function testBootstrap(): void
     {
         Yii::getLogger()->flush();
 
@@ -56,7 +56,7 @@ class ApplicationTest extends TestCase
                 'withoutBootstrapInterface',
                 'withBootstrapInterface',
                 'moduleX',
-                function () {
+                function (): void {
                 },
             ],
         ]);
@@ -67,7 +67,7 @@ class ApplicationTest extends TestCase
         $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
     }
 
-    public function testModuleId()
+    public function testModuleId(): void
     {
         $this->mockApplication(['id' => 'app-basic']);
         $child = new Module('child');
@@ -85,7 +85,7 @@ class DispatcherMock extends Dispatcher
 
 class BootstrapComponentMock extends Component implements BootstrapInterface
 {
-    public function bootstrap($app)
+    public function bootstrap($app): void
     {
     }
 }

@@ -66,16 +66,12 @@ class HostControlTest extends TestCase
                 false,
             ],
             [
-                function () {
-                    return ['example.com'];
-                },
+                fn() => ['example.com'],
                 'example.com',
                 true,
             ],
             [
-                function () {
-                    return ['example.com'];
-                },
+                fn() => ['example.com'],
                 'fake.com',
                 false,
             ],
@@ -109,7 +105,7 @@ class HostControlTest extends TestCase
 
             try {
                 $filter->beforeAction($action);
-            } catch (ExitException $e) {
+            } catch (ExitException) {
                 $isExit = true;
             }
 
@@ -122,12 +118,12 @@ class HostControlTest extends TestCase
 
     public $denyCallBackCalled = false;
 
-    public function testDenyCallback()
+    public function testDenyCallback(): void
     {
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $this->denyCallBackCalled = false;
-        $filter->denyCallback = function () {
+        $filter->denyCallback = function (): void {
             $this->denyCallBackCalled = true;
         };
 
@@ -137,12 +133,12 @@ class HostControlTest extends TestCase
         $this->assertTrue($this->denyCallBackCalled, 'denyCallback should have been called.');
     }
 
-    public function testDefaultHost()
+    public function testDefaultHost(): void
     {
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
-        $filter->denyCallback = function () {};
+        $filter->denyCallback = function (): void {};
 
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
@@ -151,7 +147,7 @@ class HostControlTest extends TestCase
         $this->assertSame('yiiframework.com', Yii::$app->getRequest()->getHostName());
     }
 
-    public function testErrorHandlerWithDefaultHost()
+    public function testErrorHandlerWithDefaultHost(): void
     {
         $this->expectException('yii\web\NotFoundHttpException');
         $this->expectExceptionMessage('Page not found.');

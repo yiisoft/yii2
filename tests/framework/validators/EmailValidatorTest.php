@@ -24,7 +24,7 @@ class EmailValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateValue()
+    public function testValidateValue(): void
     {
         $validator = new EmailValidator();
 
@@ -66,7 +66,7 @@ class EmailValidatorTest extends TestCase
 
     }
 
-    public function testValidateValueIdn()
+    public function testValidateValueIdn(): void
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');
@@ -112,7 +112,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));
     }
 
-    public function testValidateValueMx()
+    public function testValidateValueMx(): void
     {
         $validator = new EmailValidator();
 
@@ -135,7 +135,7 @@ class EmailValidatorTest extends TestCase
         }
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         $validator = new EmailValidator();
         $model = new FakedValidationModel();
@@ -176,9 +176,8 @@ class EmailValidatorTest extends TestCase
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
-     * @param string $value
      */
-    public function testMalformedAddressesIdnDisabled($value)
+    public function testMalformedAddressesIdnDisabled(string $value): void
     {
         $validator = new EmailValidator();
         $validator->enableIDN = false;
@@ -190,9 +189,8 @@ class EmailValidatorTest extends TestCase
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
-     * @param string $value
      */
-    public function testMalformedAddressesIdnEnabled($value)
+    public function testMalformedAddressesIdnEnabled(string $value): void
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');

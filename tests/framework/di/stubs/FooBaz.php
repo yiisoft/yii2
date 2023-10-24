@@ -15,7 +15,7 @@ class FooBaz extends \yii\base\BaseObject
 {
     public $fooDependent = [];
 
-    public function init()
+    public function init(): void
     {
         // default config usually used by Yii
         $dependentConfig = array_merge(['class' => FooDependent::class], $this->fooDependent);

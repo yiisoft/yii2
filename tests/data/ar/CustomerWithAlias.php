@@ -15,8 +15,8 @@ namespace yiiunit\data\ar;
  */
 class CustomerWithAlias extends ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 2;
+    final public const STATUS_ACTIVE = 1;
+    final public const STATUS_INACTIVE = 2;
 
     public $status2;
 
@@ -33,7 +33,7 @@ class CustomerWithAlias extends ActiveRecord
      */
     public static function find()
     {
-        $activeQuery = new CustomerQuery(get_called_class());
+        $activeQuery = new CustomerQuery(static::class);
         $activeQuery->alias('csr');
         return $activeQuery;
     }

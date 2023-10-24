@@ -17,7 +17,7 @@ use yii\widgets\Breadcrumbs;
  */
 class BreadcrumbsTest extends \yiiunit\TestCase
 {
-    private $breadcrumbs;
+    private \yii\widgets\Breadcrumbs $breadcrumbs;
 
     protected function setUp(): void
     {
@@ -30,7 +30,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->breadcrumbs = new Breadcrumbs();
     }
 
-    public function testHomeLinkNull()
+    public function testHomeLinkNull(): void
     {
         $this->breadcrumbs->homeLink = null;
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
@@ -48,12 +48,12 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $actualHtml);
     }
 
-    public function testEmptyLinks()
+    public function testEmptyLinks(): void
     {
         $this->assertNull($this->breadcrumbs->run());
     }
 
-    public function testHomeLinkFalse()
+    public function testHomeLinkFalse(): void
     {
         $this->breadcrumbs->homeLink = false;
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
@@ -71,7 +71,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     }
 
 
-    public function testHomeLink()
+    public function testHomeLink(): void
     {
         $this->breadcrumbs->homeLink = ['label' => 'home-link'];
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
@@ -89,7 +89,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $actualHtml);
     }
 
-    public function testRenderItemException()
+    public function testRenderItemException(): void
     {
         $link = ['url' => 'http://localhost/yii2'];
         $method = $this->reflectMethod();
@@ -97,7 +97,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
     }
 
-    public function testRenderItemLabelOnly()
+    public function testRenderItemLabelOnly(): void
     {
         $link = ['label' => 'My-<br>Test-Label'];
         $method = $this->reflectMethod();
@@ -112,7 +112,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals("<li>My-<br>Test-Label</li>\n", $unencodedValue);
     }
 
-    public function testEncodeOverride()
+    public function testEncodeOverride(): void
     {
         $link = ['label' => 'My-<br>Test-Label', 'encode' => false];
         $method = $this->reflectMethod();
@@ -127,7 +127,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals("<li>My-<br>Test-Label</li>\n", $unencodedValue);
     }
 
-    public function testRenderItemWithLabelAndUrl()
+    public function testRenderItemWithLabelAndUrl(): void
     {
         $link = ['label' => 'My-<br>Test-Label', 'url' => 'http://localhost/yii2'];
         $method = $this->reflectMethod();
@@ -141,7 +141,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals("<li><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></li>\n", $unencodedValue);
     }
 
-    public function testRenderItemTemplate()
+    public function testRenderItemTemplate(): void
     {
         $link = ['label' => 'My-<br>Test-Label', 'url' => 'http://localhost/yii2', 'template' => "<td>{link}</td>\n"];
         $method = $this->reflectMethod();
@@ -155,7 +155,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals("<td><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></td>\n", $unencodedValue);
     }
 
-    public function testExtraOptions()
+    public function testExtraOptions(): void
     {
         $link = [
             'label' => 'demo',
@@ -167,7 +167,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
     }
 
-    public function testTag()
+    public function testTag(): void
     {
         $this->breadcrumbs->homeLink = ['label' => 'home-link'];
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];

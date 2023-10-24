@@ -50,9 +50,9 @@ class Speaker extends Model
         ];
     }
 
-    private $_checkedValues = [];
+    private array $_checkedValues = [];
 
-    public function customValidatingMethod($attribute, $params, $validator, $current)
+    public function customValidatingMethod($attribute, $params, $validator, $current): void
     {
         $this->_checkedValues[] = $current;
         $this->addError($attribute, 'Custom method error');

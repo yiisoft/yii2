@@ -27,7 +27,7 @@ class CacheControllerTest extends TestCase
      */
     private $_cacheController;
 
-    private $driverName = 'mysql';
+    private string $driverName = 'mysql';
 
     protected function setUp(): void
     {
@@ -45,16 +45,14 @@ class CacheControllerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'firstCache' => 'yii\caching\ArrayCache',
-                'secondCache' => function () {
-                    return new ArrayCache();
-                },
+                'secondCache' => fn() => new ArrayCache(),
                 'thirdCache' => 'yii\caching\CacheInterface',
                 'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
                 'db' => [
-                    'class' => isset($config['class']) ? $config['class'] : 'yii\db\Connection',
+                    'class' => $config['class'] ?? 'yii\db\Connection',
                     'dsn' => $config['dsn'],
-                    'username' => isset($config['username']) ? $config['username'] : null,
-                    'password' => isset($config['password']) ? $config['password'] : null,
+                    'username' => $config['username'] ?? null,
+                    'password' => $config['password'] ?? null,
                     'enableSchemaCache' => true,
                     'schemaCache' => 'firstCache',
                 ],
@@ -84,7 +82,7 @@ class CacheControllerTest extends TestCase
         }
     }
 
-    public function testFlushOne()
+    public function testFlushOne(): void
     {
         Yii::$app->firstCache->set('firstKey', 'firstValue');
         Yii::$app->firstCache->set('secondKey', 'secondValue');
@@ -97,7 +95,7 @@ class CacheControllerTest extends TestCase
         $this->assertEquals('thirdValue', Yii::$app->secondCache->get('thirdKey'), 'second cache data should not be flushed');
     }
 
-    public function testClearSchema()
+    public function testClearSchema(): void
     {
         $schema = Yii::$app->db->schema;
         Yii::$app->db->createCommand()->createTable('test_schema_cache', ['id' => 'pk'])->execute();
@@ -115,7 +113,7 @@ class CacheControllerTest extends TestCase
         $this->assertEquals($noCacheSchemas, $cacheSchema, 'Schema cache should be flushed.');
     }
 
-    public function testFlushBoth()
+    public function testFlushBoth(): void
     {
         Yii::$app->firstCache->set('firstKey', 'firstValue');
         Yii::$app->firstCache->set('secondKey', 'secondValue');
@@ -128,7 +126,7 @@ class CacheControllerTest extends TestCase
         $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
     }
 
-    public function testNotFoundFlush()
+    public function testNotFoundFlush(): void
     {
         Yii::$app->firstCache->set('firstKey', 'firstValue');
 
@@ -137,14 +135,14 @@ class CacheControllerTest extends TestCase
         $this->assertEquals('firstValue', Yii::$app->firstCache->get('firstKey'), 'first cache data should not be flushed');
     }
 
-    public function testNothingToFlushException()
+    public function testNothingToFlushException(): void
     {
         $this->expectException(\yii\console\Exception::class);
 
         $this->_cacheController->actionFlush();
     }
 
-    public function testFlushAll()
+    public function testFlushAll(): void
     {
         Yii::$app->firstCache->set('firstKey', 'firstValue');
         Yii::$app->secondCache->set('secondKey', 'secondValue');

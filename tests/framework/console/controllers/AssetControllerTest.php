@@ -35,7 +35,7 @@ class AssetControllerTest extends TestCase
     public function setUp(): void
     {
         $this->mockApplication();
-        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
+        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', static::class) . uniqid();
         $this->createDir($this->testFilePath);
         $this->testAssetsBasePath = $this->testFilePath . DIRECTORY_SEPARATOR . 'assets';
         $this->createDir($this->testAssetsBasePath);
@@ -183,7 +183,7 @@ class AssetControllerTest extends TestCase
     protected function invokeAssetControllerMethod($methodName, array $args = [])
     {
         $controller = $this->createAssetController();
-        $controllerClassReflection = new \ReflectionClass(get_class($controller));
+        $controllerClassReflection = new \ReflectionClass($controller::class);
         $methodReflection = $controllerClassReflection->getMethod($methodName);
         $methodReflection->setAccessible(true);
         $result = $methodReflection->invokeArgs($controller, $args);
@@ -201,7 +201,7 @@ class AssetControllerTest extends TestCase
     {
         $config = array_merge(
             [
-                'namespace' => StringHelper::dirname(get_class($this)),
+                'namespace' => StringHelper::dirname(static::class),
                 'class' => 'AppAsset',
                 'sourcePath' => null,
                 'basePath' => $this->testFilePath,
@@ -252,7 +252,7 @@ EOL;
 
     // Tests :
 
-    public function testActionTemplate()
+    public function testActionTemplate(): void
     {
         $configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
         $this->runAssetControllerAction('template', [$configFileName]);
@@ -261,7 +261,7 @@ EOL;
         $this->assertIsArray($config, 'Invalid config created!');
     }
 
-    public function testActionCompress()
+    public function testActionCompress(): void
     {
         // Given :
         $cssFiles = [
@@ -341,7 +341,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/5194
      */
-    public function testCompressExternalAsset()
+    public function testCompressExternalAsset(): void
     {
         // Given :
         $externalAssetConfig = [
@@ -412,7 +412,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/7539
      */
-    public function testDetectCircularDependency()
+    public function testDetectCircularDependency(): void
     {
         // Given :
         $namespace = __NAMESPACE__;
@@ -638,7 +638,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/9708
      */
-    public function testActionCompressDeleteSource()
+    public function testActionCompressDeleteSource(): void
     {
         // Given :
         $cssFiles = [
@@ -708,7 +708,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/10567
      */
-    public function testActionCompressOverrideAsExternal()
+    public function testActionCompressOverrideAsExternal(): void
     {
         // Given :
         $cssFiles = [

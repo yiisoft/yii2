@@ -19,7 +19,7 @@ class ControllerTest extends TestCase
 {
     public static $actionRuns = [];
 
-    public function testRunAction()
+    public function testRunAction(): void
     {
         $this->mockApplication();
 
@@ -126,17 +126,17 @@ class TestController extends Controller
         return 'test2';
     }
 
-    public function actionTest3()
+    public function actionTest3(): void
     {
 
     }
 
-    public function actionTestTest()
+    public function actionTestTest(): void
     {
 
     }
 
-    public function actionTest_test()
+    public function actionTest_test(): void
     {
 
     }
@@ -144,17 +144,17 @@ class TestController extends Controller
 
 class Test1Controller extends Controller
 {
-    public function actionTest_1()
+    public function actionTest_1(): void
     {
 
     }
 
-    public function actionTest_test()
+    public function actionTest_test(): void
     {
 
     }
 
-    public function actionTestTest_test_2()
+    public function actionTestTest_test_2(): void
     {
 
     }

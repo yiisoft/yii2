@@ -45,7 +45,7 @@ class BaseMailerTest extends TestCase
      */
     protected function getTestFilePath()
     {
-        return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(str_replace('\\', DIRECTORY_SEPARATOR, get_class($this))) . '_' . getmypid();
+        return Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . basename(str_replace('\\', DIRECTORY_SEPARATOR, static::class)) . '_' . getmypid();
     }
 
     /**
@@ -69,7 +69,7 @@ class BaseMailerTest extends TestCase
 
     // Tests :
 
-    public function testSetupView()
+    public function testSetupView(): void
     {
         $mailer = new Mailer();
 
@@ -92,25 +92,25 @@ class BaseMailerTest extends TestCase
     /**
      * @depends testSetupView
      */
-    public function testGetDefaultView()
+    public function testGetDefaultView(): void
     {
         $mailer = new Mailer();
         $view = $mailer->getView();
         $this->assertIsObject($view, 'Unable to get default view!');
     }
 
-    public function testCreateMessage()
+    public function testCreateMessage(): void
     {
         $mailer = new Mailer();
         $message = $mailer->compose();
         $this->assertIsObject($message, 'Unable to create message instance!');
-        $this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
+        $this->assertEquals($mailer->messageClass, $message::class, 'Invalid message class!');
     }
 
     /**
      * @depends testCreateMessage
      */
-    public function testDefaultMessageConfig()
+    public function testDefaultMessageConfig(): void
     {
         $mailer = new Mailer();
 
@@ -128,7 +128,7 @@ class BaseMailerTest extends TestCase
             'id' => 'test-id',
             'encoding' => 'test-encoding',
         ];
-        $messageConfig = array_merge($notPropertyConfig, $propertyConfig);
+        $messageConfig = [...$notPropertyConfig, ...$propertyConfig];
         $mailer->messageConfig = $messageConfig;
 
         $message = $mailer->compose();
@@ -144,7 +144,7 @@ class BaseMailerTest extends TestCase
     /**
      * @depends testGetDefaultView
      */
-    public function testRender()
+    public function testRender(): void
     {
         $mailer = $this->getTestMailComponent();
 
@@ -163,7 +163,7 @@ class BaseMailerTest extends TestCase
     /**
      * @depends testRender
      */
-    public function testRenderLayout()
+    public function testRenderLayout(): void
     {
         $mailer = $this->getTestMailComponent();
 
@@ -187,7 +187,7 @@ class BaseMailerTest extends TestCase
      * @depends testCreateMessage
      * @depends testRender
      */
-    public function testCompose()
+    public function testCompose(): void
     {
         $mailer = $this->getTestMailComponent();
         $mailer->htmlLayout = false;
@@ -253,11 +253,8 @@ TEXT
 
     /**
      * @dataProvider htmlAndPlainProvider
-     * @param int $i
-     * @param string $htmlViewFileContent
-     * @param string $expectedTextRendering
      */
-    public function testComposePlainTextFallback($i, $htmlViewFileContent, $expectedTextRendering)
+    public function testComposePlainTextFallback(int $i, string $htmlViewFileContent, string $expectedTextRendering): void
     {
         $mailer = $this->getTestMailComponent();
         $mailer->htmlLayout = false;
@@ -274,7 +271,7 @@ TEXT
         $this->assertEqualsWithoutLE($expectedTextRendering, $message->_textBody, 'Unable to render text!');
     }
 
-    public function testUseFileTransport()
+    public function testUseFileTransport(): void
     {
         $mailer = new Mailer();
         $this->assertFalse($mailer->useFileTransport);
@@ -282,9 +279,7 @@ TEXT
 
         $mailer->fileTransportPath = '@yiiunit/runtime/mail';
         $mailer->useFileTransport = true;
-        $mailer->fileTransportCallback = function () {
-            return 'message.txt';
-        };
+        $mailer->fileTransportCallback = fn() => 'message.txt';
         $message = $mailer->compose()
             ->setTo('to@example.com')
             ->setFrom('from@example.com')
@@ -296,7 +291,7 @@ TEXT
         $this->assertStringEqualsFile($file, $message->toString());
     }
 
-    public function testBeforeSendEvent()
+    public function testBeforeSendEvent(): void
     {
         $message = new Message();
 
@@ -440,19 +435,19 @@ class Message extends BaseMessage
         return $this;
     }
 
-    public function attachContent($content, array $options = [])
+    public function attachContent($content, array $options = []): void
     {
     }
 
-    public function attach($fileName, array $options = [])
+    public function attach($fileName, array $options = []): void
     {
     }
 
-    public function embed($fileName, array $options = [])
+    public function embed($fileName, array $options = []): void
     {
     }
 
-    public function embedContent($content, array $options = [])
+    public function embedContent($content, array $options = []): void
     {
     }
 

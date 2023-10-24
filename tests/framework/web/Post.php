@@ -15,24 +15,12 @@ use yii\base\BaseObject;
 class Post extends BaseObject
 {
     /**
-     * @var int
-     */
-    public $id;
-    /**
-     * @var string
-     */
-    public $title;
-
-    /**
      * @param int $id
      * @param string $title
      * @param array $config
      */
-    public function __construct($id, $title, $config = [])
+    public function __construct(public $id, public $title, $config = [])
     {
-        $this->id = $id;
-        $this->title = $title;
-
         parent::__construct($config);
     }
 }

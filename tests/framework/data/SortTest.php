@@ -25,7 +25,7 @@ class SortTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testGetOrders()
+    public function testGetOrders(): void
     {
         $sort = new Sort([
             'attributes' => [
@@ -53,7 +53,7 @@ class SortTest extends TestCase
         $this->assertEquals(SORT_ASC, $orders['age']);
     }
 
-    public function testGetAttributeOrders()
+    public function testGetAttributeOrders(): void
     {
         $sort = new Sort([
             'attributes' => [
@@ -80,7 +80,7 @@ class SortTest extends TestCase
         $this->assertEquals(SORT_ASC, $orders['age']);
     }
 
-    public function testGetAttributeOrder()
+    public function testGetAttributeOrder(): void
     {
         $sort = new Sort([
             'attributes' => [
@@ -101,7 +101,7 @@ class SortTest extends TestCase
         $this->assertNull($sort->getAttributeOrder('xyz'));
     }
 
-    public function testSetAttributeOrders()
+    public function testSetAttributeOrders(): void
     {
         $sort = new Sort([
             'attributes' => [
@@ -137,7 +137,7 @@ class SortTest extends TestCase
         $this->assertEquals($orders, $sort->getAttributeOrders());
     }
 
-    public function testCreateSortParam()
+    public function testCreateSortParam(): void
     {
         $sort = new Sort([
             'attributes' => [
@@ -180,7 +180,7 @@ class SortTest extends TestCase
         $this->assertEquals('age', $sort->createSortParam('name'));
     }
 
-    public function testCreateUrl()
+    public function testCreateUrl(): void
     {
         $manager = new UrlManager([
             'baseUrl' => '/',
@@ -268,7 +268,7 @@ class SortTest extends TestCase
      *
      * @param array|null $defaultOrder The default order that should be used.
      */
-    public function testLinkWithParamsAndPassedButEmptySort(array|null $defaultOrder)
+    public function testLinkWithParamsAndPassedButEmptySort(array|null $defaultOrder): void
     {
         $this->mockApplication();
         $manager = new UrlManager([
@@ -345,7 +345,7 @@ class SortTest extends TestCase
         $this->assertEquals($link, $sort->link('age'));
     }
 
-    public function testParseSortParam()
+    public function testParseSortParam(): void
     {
         $sort = new CustomSort([
             'attributes' => [
@@ -368,7 +368,7 @@ class SortTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/pull/13260
      */
-    public function testGetExpressionOrders()
+    public function testGetExpressionOrders(): void
     {
         $sort = new Sort([
             'attributes' => [

@@ -17,7 +17,7 @@ namespace yiiunit\data\base;
 class TraversableObject implements \Iterator, \Countable
 {
     protected $data;
-    private $position = 0;
+    private int $position = 0;
 
     public function __construct(array $array)
     {
@@ -29,7 +29,7 @@ class TraversableObject implements \Iterator, \Countable
      * @since 5.1.0
      */
     #[\ReturnTypeWillChange]
-    public function count()
+    public function count(): never
     {
         throw new \Exception('Count called on object that should only be traversed.');
     }
@@ -47,7 +47,7 @@ class TraversableObject implements \Iterator, \Countable
      * {@inheritdoc}
      */
     #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
@@ -74,7 +74,7 @@ class TraversableObject implements \Iterator, \Countable
      * {@inheritdoc}
      */
     #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }

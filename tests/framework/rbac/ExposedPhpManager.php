@@ -31,12 +31,12 @@ class ExposedPhpManager extends PhpManager
      */
     public $rules = []; // ruleName => rule
 
-    public function load()
+    public function load(): void
     {
         parent::load();
     }
 
-    public function save()
+    public function save(): void
     {
         parent::save();
     }

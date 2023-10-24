@@ -59,7 +59,7 @@ namespace yiiunit\framework\log {
             $this->logger = new Logger();
         }
 
-        public function testConfigureLogger()
+        public function testConfigureLogger(): void
         {
             $dispatcher = new Dispatcher();
             $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
@@ -92,7 +92,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::setLogger()
          */
-        public function testSetLogger()
+        public function testSetLogger(): void
         {
             $this->dispatcher->setLogger($this->logger);
             $this->assertSame($this->logger, $this->dispatcher->getLogger());
@@ -112,7 +112,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::getTraceLevel()
          */
-        public function testGetTraceLevel()
+        public function testGetTraceLevel(): void
         {
             $this->logger->traceLevel = 123;
             $this->dispatcher->setLogger($this->logger);
@@ -122,7 +122,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::setTraceLevel()
          */
-        public function testSetTraceLevel()
+        public function testSetTraceLevel(): void
         {
             $this->dispatcher->setLogger($this->logger);
             $this->dispatcher->setTraceLevel(123);
@@ -132,7 +132,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::getFlushInterval()
          */
-        public function testGetFlushInterval()
+        public function testGetFlushInterval(): void
         {
             $this->logger->flushInterval = 99;
             $this->dispatcher->setLogger($this->logger);
@@ -142,7 +142,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::setFlushInterval()
          */
-        public function testSetFlushInterval()
+        public function testSetFlushInterval(): void
         {
             $this->dispatcher->setLogger($this->logger);
             $this->dispatcher->setFlushInterval(99);
@@ -152,7 +152,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::dispatch()
          */
-        public function testDispatchWithDisabledTarget()
+        public function testDispatchWithDisabledTarget(): void
         {
             $target = $this->getMockBuilder('yii\\log\\Target')
                 ->setMethods(['collect'])
@@ -168,7 +168,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::dispatch()
          */
-        public function testDispatchWithSuccessTargetCollect()
+        public function testDispatchWithSuccessTargetCollect(): void
         {
             $target = $this->getMockBuilder('yii\\log\\Target')
                 ->setMethods(['collect'])
@@ -188,7 +188,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::dispatch()
          */
-        public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect()
+        public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect(): void
         {
             static::$microtimeIsMocked = true;
             $target1 = $this->getMockBuilder('yii\\log\\Target')
@@ -209,7 +209,7 @@ namespace yiiunit\framework\log {
                                 return false;
                             }
 
-                            if (strpos($arg[0][0], 'Unable to send log via ' . get_class($target1) . ': Exception (Exception) \'yii\base\UserException\' with message \'some error\'') !== 0) {
+                            if (!str_starts_with((string) $arg[0][0], 'Unable to send log via ' . $target1::class . ': Exception (Exception) \'yii\base\UserException\' with message \'some error\'')) {
                                 return false;
                             }
 
@@ -255,7 +255,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::init()
          */
-        public function testInitWithCreateTargetObject()
+        public function testInitWithCreateTargetObject(): void
         {
             $dispatcher = new Dispatcher(
                 [
@@ -278,28 +278,28 @@ namespace yiiunit\framework\log {
         public static function __callStatic($name, $arguments)
         {
             if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
+                $arguments = $arguments[0] ?? $arguments;
                 return forward_static_call(static::$functions[$name], $arguments);
             }
             static::fail("Function '$name' has not implemented yet!");
         }
 
-        private $targetThrowFirstCount;
-        private $targetThrowSecondOutputs;
+        private ?int $targetThrowFirstCount = null;
+        private ?array $targetThrowSecondOutputs = null;
 
-        public function testTargetThrow()
+        public function testTargetThrow(): void
         {
             $this->targetThrowFirstCount = 0;
             $this->targetThrowSecondOutputs = [];
             $targetFirst = new TargetMock([
-                'collectOverride' => function () {
+                'collectOverride' => function (): void {
                     $this->targetThrowFirstCount++;
                     require_once __DIR__ . DIRECTORY_SEPARATOR . 'mocks' . DIRECTORY_SEPARATOR . 'typed_error.php';
                     typed_error_test_mock([]);
                 }
             ]);
             $targetSecond = new TargetMock([
-                'collectOverride' => function ($message, $final) {
+                'collectOverride' => function ($message, $final): void {
                     $this->targetThrowSecondOutputs[] = array_pop($message);
                 }
             ]);

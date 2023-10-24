@@ -7,16 +7,13 @@
 
 namespace yiiunit\data\rbac;
 
-class UserID
+class UserID implements \Stringable
 {
-    private $id;
-
-    public function __construct($id)
+    public function __construct(private $id)
     {
-        $this->id = $id;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->id;
     }

@@ -94,7 +94,7 @@ class PaginationTest extends TestCase
     /**
      * @depends testCreateUrl
      */
-    public function testForcePageParam()
+    public function testForcePageParam(): void
     {
         $pagination = new Pagination();
         $pagination->route = 'item/list';
@@ -106,7 +106,7 @@ class PaginationTest extends TestCase
         $this->assertEquals('/index.php?r=item%2Flist', $pagination->createUrl(0));
     }
 
-    public function testValidatePage()
+    public function testValidatePage(): void
     {
         $pagination = new Pagination();
         $pagination->validatePage = true;
@@ -152,7 +152,7 @@ class PaginationTest extends TestCase
         $this->assertEquals($pageCount, $pagination->getPageCount());
     }
 
-    public function testGetDefaultPage()
+    public function testGetDefaultPage(): void
     {
         $this->assertEquals(0, (new Pagination())->getPage());
     }
@@ -292,9 +292,6 @@ class PaginationTest extends TestCase
 
     /**
      * @dataProvider dataProviderGetLimit
-     *
-     * @param int $pageSize
-     * @param int $limit
      */
     public function testGetLimit(int $pageSize, int $limit): void
     {

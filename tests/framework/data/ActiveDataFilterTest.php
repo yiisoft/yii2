@@ -185,7 +185,7 @@ class ActiveDataFilterTest extends TestCase
     /**
      * @depends testBuild
      */
-    public function testBuildCallback()
+    public function testBuildCallback(): void
     {
         $builder = new ActiveDataFilter();
         $searchModel = (new DynamicModel(['name' => null]))
@@ -194,12 +194,8 @@ class ActiveDataFilterTest extends TestCase
 
         $builder->setSearchModel($searchModel);
 
-        $builder->conditionBuilders['OR'] = function ($operator, $condition) {
-            return ['CALLBACK-OR', $condition];
-        };
-        $builder->conditionBuilders['LIKE'] = function ($operator, $condition, $attribute) {
-            return ['CALLBACK-LIKE', $operator, $condition, $attribute];
-        };
+        $builder->conditionBuilders['OR'] = fn($operator, $condition) => ['CALLBACK-OR', $condition];
+        $builder->conditionBuilders['LIKE'] = fn($operator, $condition, $attribute) => ['CALLBACK-LIKE', $operator, $condition, $attribute];
 
         $builder->filter = [
             'or' => [

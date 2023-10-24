@@ -17,7 +17,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
 
-    public function testAddDropCheck()
+    public function testAddDropCheck(): void
     {
         $this->markTestSkipped('MySQL does not support adding/dropping check constraints.');
     }

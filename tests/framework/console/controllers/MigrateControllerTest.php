@@ -59,20 +59,20 @@ class MigrateControllerTest extends TestCase
         return $query->from('migration')->all();
     }
 
-    public function assertFileContent($expectedFile, $class, $table, $namespace = null)
+    public function assertFileContent($expectedFile, $class, $table, $namespace = null): void
     {
         if ($namespace) {
             $namespace = "namespace {$namespace};\n\n";
         }
         $expected = include Yii::getAlias("@yiiunit/data/console/migrate_create/$expectedFile.php");
-        $expected = str_replace('{table}', $table, $expected);
+        $expected = str_replace('{table}', $table, (string) $expected);
         $this->assertEqualsWithoutLE($expected, $this->parseNameClassMigration($class));
     }
 
     protected function assertCommandCreatedFile($expectedFile, $migrationName, $table, $params = [])
     {
         $params[0] = $migrationName;
-        list($config, $namespace, $class) = $this->prepareMigrationNameData($migrationName);
+        [$config, $namespace, $class] = $this->prepareMigrationNameData($migrationName);
 
         $this->runMigrateControllerAction('create', $params, $config);
         $this->assertFileContent($expectedFile, $class, $table, $namespace);
@@ -80,21 +80,18 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Check config namespace but without input namespace
-     * @param mixed $expectedFile
-     * @param mixed $migrationName
-     * @param mixed $table
      * @param array $params
      */
-    protected function assertCommandCreatedFileWithoutNamespaceInput($expectedFile, $migrationName, $table, $params = [])
+    protected function assertCommandCreatedFileWithoutNamespaceInput(mixed $expectedFile, mixed $migrationName, mixed $table, $params = [])
     {
         $params[0] = $migrationName;
-        list($config, $namespace, $class) = $this->prepareMigrationNameData($this->migrationNamespace . '\\' . $migrationName);
+        [$config, $namespace, $class] = $this->prepareMigrationNameData($this->migrationNamespace . '\\' . $migrationName);
 
         $this->runMigrateControllerAction('create', $params, $config);
         $this->assertFileContent($expectedFile, $class, $table, $namespace);
     }
 
-    public function assertFileContentJunction($expectedFile, $class, $junctionTable, $firstTable, $secondTable, $namespace = null)
+    public function assertFileContentJunction($expectedFile, $class, $junctionTable, $firstTable, $secondTable, $namespace = null): void
     {
         if ($namespace) {
             $namespace = "namespace {$namespace};\n\n";
@@ -103,14 +100,14 @@ class MigrateControllerTest extends TestCase
         $expected = str_replace(
             ['{junctionTable}', '{firstTable}', '{secondTable}'],
             [$junctionTable, $firstTable, $secondTable],
-            $expected
+            (string) $expected
         );
         $this->assertEqualsWithoutLE($expected, $this->parseNameClassMigration($class));
     }
 
     protected function assertCommandCreatedJunctionFile($expectedFile, $migrationName, $junctionTable, $firstTable, $secondTable)
     {
-        list($config, $namespace, $class) = $this->prepareMigrationNameData($migrationName);
+        [$config, $namespace, $class] = $this->prepareMigrationNameData($migrationName);
 
         $this->runMigrateControllerAction('create', [$migrationName], $config);
         $this->assertSame(ExitCode::OK, $this->getExitCode());
@@ -119,15 +116,10 @@ class MigrateControllerTest extends TestCase
 
     /**
      * Check config namespace but without input namespace
-     * @param mixed $expectedFile
-     * @param mixed $migrationName
-     * @param mixed $junctionTable
-     * @param mixed $firstTable
-     * @param mixed $secondTable
      */
-    protected function assertCommandCreatedJunctionFileWithoutNamespaceInput($expectedFile, $migrationName, $junctionTable, $firstTable, $secondTable)
+    protected function assertCommandCreatedJunctionFileWithoutNamespaceInput(mixed $expectedFile, mixed $migrationName, mixed $junctionTable, mixed $firstTable, mixed $secondTable)
     {
-        list($config, $namespace, $class) = $this->prepareMigrationNameData($this->migrationNamespace . '\\' . $migrationName);
+        [$config, $namespace, $class] = $this->prepareMigrationNameData($this->migrationNamespace . '\\' . $migrationName);
 
         $this->runMigrateControllerAction('create', [$migrationName], $config);
         $this->assertSame(ExitCode::OK, $this->getExitCode());
@@ -139,14 +131,14 @@ class MigrateControllerTest extends TestCase
         $config = [];
         $namespace = null;
 
-        $lastSlashPosition = strrpos($migrationName, '\\');
+        $lastSlashPosition = strrpos((string) $migrationName, '\\');
         if ($lastSlashPosition !== false) {
             $config = [
                 'migrationPath' => null,
                 'migrationNamespaces' => [$this->migrationNamespace],
             ];
-            $class = 'M' . gmdate('ymdHis') . Inflector::camelize(substr($migrationName, $lastSlashPosition + 1));
-            $namespace = substr($migrationName, 0, $lastSlashPosition);
+            $class = 'M' . gmdate('ymdHis') . Inflector::camelize(substr((string) $migrationName, $lastSlashPosition + 1));
+            $namespace = substr((string) $migrationName, 0, $lastSlashPosition);
         } else {
             $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         }
@@ -418,7 +410,7 @@ class MigrateControllerTest extends TestCase
         );
     }
 
-    public function testUpdatingLongNamedMigration()
+    public function testUpdatingLongNamedMigration(): void
     {
         $this->createMigration(str_repeat('a', 180));
 
@@ -429,7 +421,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('is too long. Its not possible to apply this migration.', $result);
     }
 
-    public function testNamedMigrationWithCustomLimit()
+    public function testNamedMigrationWithCustomLimit(): void
     {
         Yii::$app->db->createCommand()->createTable('migration', [
             'version' => 'varchar(255) NOT NULL PRIMARY KEY', // varchar(255) is longer than the default of 180
@@ -445,11 +437,9 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('Migrated up successfully.', $result);
     }
 
-    public function testCreateLongNamedMigration()
+    public function testCreateLongNamedMigration(): void
     {
-        $this->setOutputCallback(function ($output) {
-            return null;
-        });
+        $this->setOutputCallback(fn($output) => null);
 
         $migrationName = str_repeat('a', 180);
 
@@ -467,7 +457,7 @@ class MigrateControllerTest extends TestCase
      * @param $db
      * @throws \yii\db\Exception
      */
-    public function testRefreshMigration($db)
+    public function testRefreshMigration($db): void
     {
         if ($db !== 'default') {
             $this->switchDbConnection($db);
@@ -502,7 +492,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12980
      */
-    public function testGetMigrationHistory()
+    public function testGetMigrationHistory(): void
     {
         $controllerConfig = [
             'migrationPath' => null,

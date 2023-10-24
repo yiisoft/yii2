@@ -15,7 +15,7 @@ use yiiunit\TestCase;
  */
 class SecurityTest extends TestCase
 {
-    const CRYPT_VECTORS = 'old';
+    final public const CRYPT_VECTORS = 'old';
 
     /**
      * @var ExposedSecurity
@@ -31,7 +31,7 @@ class SecurityTest extends TestCase
 
     // Tests :
 
-    public function testHashData()
+    public function testHashData(): void
     {
         $data = 'known data';
         $key = 'secret';
@@ -42,7 +42,7 @@ class SecurityTest extends TestCase
         $this->assertFalse($this->security->validateData($hashedData, $key));
     }
 
-    public function testPasswordHash()
+    public function testPasswordHash(): void
     {
         $this->security->passwordHashCost = 4;  // minimum blowfish's value is enough for tests
 
@@ -52,7 +52,7 @@ class SecurityTest extends TestCase
         $this->assertFalse($this->security->validatePassword('test', $hash));
     }
 
-    public function testEncryptByPassword()
+    public function testEncryptByPassword(): void
     {
         $data = 'known data';
         $key = 'secret';
@@ -68,7 +68,7 @@ class SecurityTest extends TestCase
         $this->assertFalse($decryptedData);
     }
 
-    public function testEncryptByKey()
+    public function testEncryptByKey(): void
     {
         $data = 'known data';
         $key = $this->security->generateRandomKey(80);
@@ -97,7 +97,7 @@ class SecurityTest extends TestCase
      * The output can then be used for testing compatibility of data encrypted in one
      * version of Yii and decrypted in another.
      */
-    public function notestGenerateVectors()
+    public function notestGenerateVectors(): void
     {
         $bin1024 =
             'badec0c7d9ca734e161a1df6ca4daa8cdbf6b3bbb60ec404b47a23226ec266b1
@@ -155,9 +155,9 @@ class SecurityTest extends TestCase
                 $key = $this->security->$keygen(16);
                 $encrypted = $this->security->$encrypt($data, $key);
 
-                $keyHex = $method === 'Key' ? bin2hex($key) : $key;
+                $keyHex = $method === 'Key' ? bin2hex((string) $key) : $key;
                 $dataHex = trim(chunk_split(bin2hex($data), 64, "\n\t"));
-                $encryptedHex = trim(chunk_split(bin2hex($encrypted), 64, "\n\t"));
+                $encryptedHex = trim(chunk_split(bin2hex((string) $encrypted), 64, "\n\t"));
 
                 echo <<<TEXT
 [
@@ -168,7 +168,7 @@ class SecurityTest extends TestCase
 
 TEXT;
 
-                $key2 = $method === 'Key' ? hex2bin(preg_replace('{\s+}', '', $keyHex)) : $key;
+                $key2 = $method === 'Key' ? hex2bin(preg_replace('{\s+}', '', (string) $keyHex)) : $key;
                 $data2 = hex2bin(preg_replace('{\s+}', '', $dataHex));
                 $encrypted2 = hex2bin(preg_replace('{\s+}', '', $encryptedHex));
 
@@ -823,7 +823,7 @@ TEXT;
         $this->security->generateRandomKey($input);
     }
 
-    public function testGenerateRandomKey()
+    public function testGenerateRandomKey(): void
     {
         // test various string lengths
         for ($length = 1; $length < 64; $length++) {
@@ -858,11 +858,11 @@ TEXT;
         $t = microtime(true) - $t;
         $nbytes = number_format($count * $length, 0);
         $milisec = number_format(1000 * ($t), 3);
-        $rate = number_format($count * $length / $t / 1000000, 3);
+        $rate = number_format($count * $length / $t / 1_000_000, 3);
         fwrite(STDERR, "$message: $count x $length B = $nbytes B in $milisec ms => $rate MB/s\n");
     }
 
-    public function testGenerateRandomString()
+    public function testGenerateRandomString(): void
     {
         $length = 21;
         $key = $this->security->generateRandomString($length);
@@ -901,7 +901,7 @@ TEXT;
                 'sha1',
                 'password',
                 'salt',
-                16777216,
+                16_777_216,
                 20,
                 'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984',
             ] : null,
@@ -1103,8 +1103,6 @@ TEXT;
 
     /**
      * @dataProvider maskProvider
-     *
-     * @param string $unmaskedToken
      */
     public function testMasking(string $unmaskedToken): void
     {
@@ -1113,13 +1111,13 @@ TEXT;
         $this->assertEquals($unmaskedToken, $this->security->unmaskToken($maskedToken));
     }
 
-    public function testUnMaskingInvalidStrings()
+    public function testUnMaskingInvalidStrings(): void
     {
         $this->assertEquals('', $this->security->unmaskToken(''));
         $this->assertEquals('', $this->security->unmaskToken('1'));
     }
 
-    public function testMaskingInvalidStrings()
+    public function testMaskingInvalidStrings(): void
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('First parameter ($length) must be greater than 0');

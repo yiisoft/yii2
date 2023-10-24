@@ -500,7 +500,7 @@ class UrlManagerCreateUrlTest extends TestCase
      */
     public function testWithEmptyPattern(string $method, bool $showScriptName, string $prefix, array $config): void
     {
-        $assertations = function ($manager) use ($method, $prefix) {
+        $assertations = function ($manager) use ($method, $prefix): void {
             // match first rule
             $url = $manager->$method(['front/site/index']);
             $this->assertEquals("$prefix/", $url);
@@ -756,7 +756,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals('http://example.fr/search?param1=value1', $url);
     }
 
-    public function testCreateUrlCache()
+    public function testCreateUrlCache(): void
     {
         /* @var $rules CachedUrlRule[] */
         $rules = [
@@ -803,7 +803,7 @@ class UrlManagerCreateUrlTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/pull/1335
      */
-    public function testUrlCreateCacheWithParameterMismatch()
+    public function testUrlCreateCacheWithParameterMismatch(): void
     {
         /* @var $rules CachedUrlRule[] */
         $rules = [
@@ -837,7 +837,7 @@ class UrlManagerCreateUrlTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/14406
      */
-    public function testCreatingRulesWithDifferentRuleConfigAndEnabledCache()
+    public function testCreatingRulesWithDifferentRuleConfigAndEnabledCache(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -866,7 +866,7 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertInstanceOf(CachedUrlRule::class, $cachedUrlManager->rules[0]);
     }
 
-    public function testNotEnsuringCacheForEmptyRuleset()
+    public function testNotEnsuringCacheForEmptyRuleset(): void
     {
         $this->mockWebApplication([
             'components' => [

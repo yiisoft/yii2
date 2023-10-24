@@ -15,7 +15,7 @@ class UnqueryableQueryMock extends Query
     /**
      * {@inheritdoc}
      */
-    public function one($db = null)
+    public function one($db = null): never
     {
         throw new InvalidCallException();
     }
@@ -23,7 +23,7 @@ class UnqueryableQueryMock extends Query
     /**
      * {@inheritdoc}
      */
-    public function all($db = null)
+    public function all($db = null): never
     {
         throw new InvalidCallException();
     }

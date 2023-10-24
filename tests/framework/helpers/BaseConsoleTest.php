@@ -21,7 +21,7 @@ class BaseConsoleTest extends TestCase
     /**
      * @test
      */
-    public function renderColoredString()
+    public function renderColoredString(): void
     {
         $data = '%yfoo';
         $actual = BaseConsole::renderColoredString($data);
@@ -36,7 +36,7 @@ class BaseConsoleTest extends TestCase
     /**
      * @test
      */
-    public function ansiColorizedSubstr_withoutColors()
+    public function ansiColorizedSubstr_withoutColors(): void
     {
         $str = 'FooBar';
 
@@ -61,7 +61,7 @@ class BaseConsoleTest extends TestCase
      * @param $length
      * @param $expected
      */
-    public function ansiColorizedSubstr_withColors($str, $start, $length, $expected)
+    public function ansiColorizedSubstr_withColors(string $str, int $start, int $length, string $expected): void
     {
         $ansiStr = BaseConsole::renderColoredString($str);
 
@@ -81,7 +81,7 @@ class BaseConsoleTest extends TestCase
         ];
     }
 
-    public function testAnsiStrlen()
+    public function testAnsiStrlen(): void
     {
         $this->assertSame(3, BaseConsole::ansiStrlen('Foo'));
         $this->assertSame(3, BaseConsole::ansiStrlen(BaseConsole::renderColoredString('Bar%y')));

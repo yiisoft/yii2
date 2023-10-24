@@ -17,17 +17,17 @@ use yiiunit\TestCase;
  */
 class MessageFormatterTest extends TestCase
 {
-    const N = 'n';
-    const N_VALUE = 42;
-    const F = 'f';
-    const F_VALUE = 2e+8;
-    const F_VALUE_FORMATTED = '200,000,000';
-    const D = 'd';
-    const D_VALUE = 200000000.101;
-    const D_VALUE_FORMATTED = '200,000,000.101';
-    const D_VALUE_FORMATTED_INTEGER = '200,000,000';
-    const SUBJECT = 'сабж';
-    const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
+    final public const N = 'n';
+    final public const N_VALUE = 42;
+    final public const F = 'f';
+    final public const F_VALUE = 2e+8;
+    final public const F_VALUE_FORMATTED = '200,000,000';
+    final public const D = 'd';
+    final public const D_VALUE = 200_000_000.101;
+    final public const D_VALUE_FORMATTED = '200,000,000.101';
+    final public const D_VALUE_FORMATTED_INTEGER = '200,000,000';
+    final public const SUBJECT = 'сабж';
+    final public const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
     public static function patterns()
     {
@@ -350,13 +350,8 @@ _MSG_
 
     /**
      * @dataProvider patterns
-     * @param string $pattern
-     * @param string $expected
-     * @param array $args
-     * @param bool $skip
-     * @param string $skipMessage
      */
-    public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = '')
+    public function testNamedArguments(string $pattern, string|bool $expected, array $args, bool $skip = false, string $skipMessage = ''): void
     {
         if ($skip) {
             $this->markTestSkipped($skipMessage);
@@ -368,12 +363,8 @@ _MSG_
 
     /**
      * @dataProvider parsePatterns
-     * @param string $pattern
-     * @param string $expected
-     * @param array $args
-     * @param string $locale
      */
-    public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US')
+    public function testParseNamedArguments(string $pattern, string $expected, array $args, string $locale = 'en-US'): void
     {
         if (!extension_loaded('intl')) {
             $this->markTestSkipped('intl not installed. Skipping.');
@@ -384,7 +375,7 @@ _MSG_
         $this->assertEquals($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);
     }
 
-    public function testInsufficientArguments()
+    public function testInsufficientArguments(): void
     {
         $expected = '{' . self::SUBJECT . '} is ' . self::N_VALUE;
 
@@ -396,7 +387,7 @@ _MSG_
         $this->assertEquals($expected, $result, $formatter->getErrorMessage());
     }
 
-    public function testNoParams()
+    public function testNoParams(): void
     {
         $pattern = '{' . self::SUBJECT . '} is ' . self::N;
         $formatter = new MessageFormatter();
@@ -404,7 +395,7 @@ _MSG_
         $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
     }
 
-    public function testMalformedFormatter()
+    public function testMalformedFormatter(): void
     {
         $formatter = new MessageFormatter();
         $result = $formatter->format('{word,umber}', ['word' => 'test'], 'en-US'); // typo is intentional, message pattern should be invalid

@@ -20,7 +20,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 {
     protected $driverName = 'sqlite';
 
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $connection = $this->getConnection(false);
         $params = $this->database;
@@ -28,7 +28,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals($params['dsn'], $connection->dsn);
     }
 
-    public function testQuoteValue()
+    public function testQuoteValue(): void
     {
         $connection = $this->getConnection(false);
         $this->assertEquals(123, $connection->quoteValue(123));
@@ -36,7 +36,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals("'It''s interesting'", $connection->quoteValue("It's interesting"));
     }
 
-    public function testTransactionIsolation()
+    public function testTransactionIsolation(): void
     {
         $connection = $this->getConnection(true);
 
@@ -49,12 +49,12 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertTrue(true); // No exceptions means test is passed.
     }
 
-    public function testMasterSlave()
+    public function testMasterSlave(): void
     {
         $counts = [[0, 2], [1, 2], [2, 2]];
 
         foreach ($counts as $count) {
-            list($masterCount, $slaveCount) = $count;
+            [$masterCount, $slaveCount] = $count;
 
             $db = $this->prepareMasterSlave($masterCount, $slaveCount);
 
@@ -76,9 +76,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
                 $this->assertNull($db->getMaster());
             }
             $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
-            $result = $db->useMaster(function (Connection $db) {
-                return $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar();
-            });
+            $result = $db->useMaster(fn(Connection $db) => $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
             $this->assertEquals('test', $result);
 
             // test ActiveRecord read/write split
@@ -96,14 +94,12 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $customer = Customer::findOne(1);
             $this->assertInstanceOf(Customer::class, $customer);
             $this->assertEquals('user1', $customer->name);
-            $result = $db->useMaster(function () {
-                return Customer::findOne(1)->name;
-            });
+            $result = $db->useMaster(fn() => Customer::findOne(1)->name);
             $this->assertEquals('test', $result);
         }
     }
 
-    public function testMastersShuffled()
+    public function testMastersShuffled(): void
     {
         $mastersCount = 2;
         $slavesCount = 2;
@@ -128,7 +124,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertCount($slavesCount, $hit_slaves, 'all slaves hit');
     }
 
-    public function testMastersSequential()
+    public function testMastersSequential(): void
     {
         $mastersCount = 2;
         $slavesCount = 2;
@@ -154,16 +150,16 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertCount($slavesCount, $hit_slaves, 'all slaves hit');
     }
 
-    public function testRestoreMasterAfterException()
+    public function testRestoreMasterAfterException(): void
     {
         $db = $this->prepareMasterSlave(1, 1);
         $this->assertTrue($db->enableSlaves);
         try {
-            $db->useMaster(function (Connection $db) {
+            $db->useMaster(function (Connection $db): never {
                 throw new \Exception('fail');
             });
             $this->fail('Exception was caught somewhere');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // ok
         }
         $this->assertTrue($db->enableSlaves);
@@ -203,7 +199,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         return \Yii::createObject($config);
     }
 
-    public function testAliasDbPath()
+    public function testAliasDbPath(): void
     {
         $config = [
             'dsn' => 'sqlite:@yiiunit/runtime/yii2aliastest.sq3',
@@ -216,7 +212,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $connection->close();
     }
 
-    public function testExceptionContainsRawQuery()
+    public function testExceptionContainsRawQuery(): void
     {
         $this->markTestSkipped('This test does not work on sqlite because preparing the failing query fails');
     }

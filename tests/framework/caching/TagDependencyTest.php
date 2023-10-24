@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class TagDependencyTest extends TestCase
 {
-    public function testInvalidate()
+    public function testInvalidate(): void
     {
         $cache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
 

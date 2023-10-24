@@ -24,7 +24,7 @@ class VarDumperTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testDumpIncompleteObject()
+    public function testDumpIncompleteObject(): void
     {
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
@@ -33,7 +33,7 @@ class VarDumperTest extends TestCase
         $this->assertStringContainsString('nonExistingClass', $dumpResult);
     }
 
-    public function testExportIncompleteObject()
+    public function testExportIncompleteObject(): void
     {
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
@@ -41,7 +41,7 @@ class VarDumperTest extends TestCase
         $this->assertStringContainsString('nonExistingClass', $exportResult);
     }
 
-    public function testDumpObject()
+    public function testDumpObject(): void
     {
         $obj = new \StdClass();
         $this->assertEquals("stdClass#1\n(\n)", VarDumper::dumpAsString($obj));
@@ -59,7 +59,7 @@ class VarDumperTest extends TestCase
      * Data provider for [[testExport()]].
      * @return array test data
      */
-    public static function dataProviderExport()
+    public static function dataProviderExport(): array
     {
         // Regular :
 
@@ -160,17 +160,17 @@ RESULT;
      * @param mixed $var
      * @param string $expectedResult
      */
-    public function testExport($var, $expectedResult)
+    public function testExport(mixed $var, string $expectedResult): void
     {
         $exportResult = VarDumper::export($var);
         $this->assertEqualsWithoutLE($expectedResult, $exportResult);
-        //$this->assertEquals($var, eval('return ' . $exportResult . ';'));
+        $this->assertEquals($var, eval('return ' . $exportResult . ';'));
     }
 
     /**
      * @depends testExport
      */
-    public function testExportObjectFallback()
+    public function testExportObjectFallback(): void
     {
         $var = new \StdClass();
         $var->testFunction = function () {return 2;};
@@ -190,7 +190,7 @@ RESULT;
     /**
      * @depends testDumpObject
      */
-    public function testDumpClassWithCustomDebugInfo()
+    public function testDumpClassWithCustomDebugInfo(): void
     {
         $object = new CustomDebugInfo();
         $object->volume = 10;
@@ -201,3 +201,4 @@ RESULT;
         $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
 }
+

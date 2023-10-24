@@ -20,7 +20,7 @@ class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorT
 {
     public $driverName = 'oci';
 
-    public function testValidateEmptyAttributeInStringField()
+    public function testValidateEmptyAttributeInStringField(): void
     {
         ValidatorTestMainModel::deleteAll();
 

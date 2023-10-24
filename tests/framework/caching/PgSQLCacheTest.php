@@ -18,7 +18,7 @@ use yii\db\Connection;
 class PgSQLCacheTest extends DbCacheTest
 {
     protected static $driverName = 'pgsql';
-    private $_connection;
+    private ?\yii\db\Connection $_connection = null;
 
     protected function setUp(): void
     {
