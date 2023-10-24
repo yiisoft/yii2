@@ -503,23 +503,27 @@ class BaseStringHelper
      * This method is multibyte-safe.
      *
      * @param string $string The input string.
-     * @param int $start The starting position from where to mask.
-     * @param int $end The ending position up to which to mask. Negative value counts from the end.
-     * @param string $maskChar The character to use for masking. Default is '*'.
+     * @param int $start The starting position from where to begin masking.
+     *                   This can be a positive or negative integer.
+     *                   Positive values count from the beginning,
+     *                   negative values count from the end of the string.
+     * @param int $offset The length of the section to be masked.
+     *                    The masking will start from the $start position
+     *                    and continue for $offset characters.
+     * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */
-    public static function mask($string, $start, $end, $maskChar = '*') {
+    public static function mask($string, $start, $offset, $mask = '*') {
         $length = mb_strlen($string, 'UTF-8');
 
-        // If both $start and $end are zero, we want the entire string masked
-        if ($start === 0 && $end === 0) {
-            return str_repeat($maskChar, $length);
+        // Return original string if start position is out of bounds
+        if ($start >= $length || $start < -$length) {
+            return $string;
         }
 
-        // Create the masked string
         $masked = mb_substr($string, 0, $start, 'UTF-8');
-        $masked .= str_repeat($maskChar, $length - ($start + abs($end)));
-        $masked .= mb_substr($string, $end, null, 'UTF-8');
+        $masked .= str_repeat($mask, abs($offset));
+        $masked .= mb_substr($string, $start + abs($offset), null, 'UTF-8');
 
         return $masked;
     }

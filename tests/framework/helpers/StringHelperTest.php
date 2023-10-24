@@ -475,28 +475,35 @@ class StringHelperTest extends TestCase
         ];
     }
 
-    /**
-     * @param string $string
-     * @param int $start
-     * @param int $end
-     * @param string $maskChar
-     * @param string $expectedResult
-     * @dataProvider dataProviderMask
-     */
-    public function testMask($string, $start, $end, $maskChar, $expectedResult)
+    public function testMask()
     {
-        $this->assertSame($expectedResult, StringHelper::mask($string, $start, $end, $maskChar));
-    }
+        // Standard masking
+        $this->assertSame('12******90', StringHelper::mask('1234567890', 2, 6));
+        $this->assertSame('a********j', StringHelper::mask('abcdefghij', 1, 8));
+        $this->assertSame('*************', StringHelper::mask('Hello, World!', 0, 13));
+        $this->assertSame('************!', StringHelper::mask('Hello, World!', 0, 12));
+        $this->assertSame('Hello, *orld!', StringHelper::mask('Hello, World!', 7, 1));
+        $this->assertSame('Saleh Hashemi', StringHelper::mask('Saleh Hashemi', 0, 0));
 
-    public function dataProviderMask()
-    {
-        return [
-            ['1234567890', 2, -2, '*', '12******90'],
-            ['abcdefghij', 1, -1, '*', 'a********j'],
-            ['Hello, World!', 0, 0, '*', '*************'],
-            ['Hello, World!', 0, -1, '*', '************!'],
-            ['Hello, World!', 7, -5, '*', 'Hello, *orld!'],
-            ['1234567890', 0, 0, '#', '##########'],
-        ];
+        // Different Mask Character
+        $this->assertSame('12######90', StringHelper::mask('1234567890', 2, 6, '#'));
+
+        // Positions outside the string
+        $this->assertSame('1234567890', StringHelper::mask('1234567890', 20, 6));
+        $this->assertSame('1234567890', StringHelper::mask('1234567890', -20, 6));
+
+        // Negative values for start
+        $this->assertSame('1234****90', StringHelper::mask('1234567890', -6, 4));
+
+        // type-related edge case
+        $this->assertSame('1234****90', StringHelper::mask(1234567890, -6, 4));
+
+        // Multibyte characters
+        $this->assertSame('你**', StringHelper::mask('你好吗', 1, 2));
+        $this->assertSame('你好吗', StringHelper::mask('你好吗', 4, 2));
+
+        // Special characters
+        $this->assertSame('em**l@email.com', StringHelper::mask('email@email.com', 2, 2));
+        $this->assertSame('******email.com', StringHelper::mask('email@email.com', 0, 6));
     }
 }
