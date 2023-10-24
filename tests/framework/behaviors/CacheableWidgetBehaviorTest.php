@@ -2,9 +2,10 @@
 
 namespace yiiunit\framework\behaviors;
 
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use yii\base\Widget;
 use yii\behaviors\CacheableWidgetBehavior;
+use yii\caching\ArrayCache;
 use yiiunit\TestCase;
 
 /**
@@ -17,17 +18,13 @@ class CacheableWidgetBehaviorTest extends TestCase
 {
     /**
      * Default-initialized simple cacheable widget mock.
-     *
-     * @var PHPUnit_Framework_MockObject_MockObject|SimpleCacheableWidget|CacheableWidgetBehavior
      */
-    private $simpleWidget;
+    private MockObject|SimpleCacheableWidget|CacheableWidgetBehavior|null $simpleWidget = null;
 
     /**
      * Default-initialized dynamic cacheable widget mock.
-     *
-     * @var PHPUnit_Framework_MockObject_MockObject|DynamicCacheableWidget|CacheableWidgetBehavior
      */
-    private $dynamicWidget;
+    private MockObject|SimpleCacheableWidget|CacheableWidgetBehavior|null $dynamicWidget = null;
 
     /**
      * {@inheritdoc}
@@ -91,7 +88,7 @@ class CacheableWidgetBehaviorTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'cache' => [
-                    'class' => '\yii\caching\ArrayCache',
+                    'class' => ArrayCache::class,
                 ],
             ],
             'params' => [
@@ -113,18 +110,14 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Returns a widget mock.
-     * @param $widgetClass
-     * @return PHPUnit_Framework_MockObject_MockObject
      */
-    private function getWidgetMock(string $widgetClass)
+    private function getWidgetMock(string $widgetClass): MockObject
     {
-        $widgetMock = $this->getMockBuilder($widgetClass)
-            ->setMethods(['run'])
+        return $this->getMockBuilder($widgetClass)
+            ->onlyMethods(['run'])
             ->enableOriginalConstructor()
             ->enableProxyingToOriginalMethods()
             ->getMock();
-
-        return $widgetMock;
     }
 }
 
@@ -159,7 +152,7 @@ class BaseCacheableWidget extends Widget
     public function behaviors()
     {
         return [
-            'cacheable' => 'yii\behaviors\CacheableWidgetBehavior',
+            'cacheable' => CacheableWidgetBehavior::class,
         ];
     }
 }

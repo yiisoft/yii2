@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\base\Module;
 use yii\console\controllers\HelpController;
 use yii\helpers\Console;
 use yiiunit\TestCase;
@@ -32,8 +33,8 @@ class HelpControllerTest extends TestCase
      */
     protected function createController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
         return new BufferedHelpController('help', $module);

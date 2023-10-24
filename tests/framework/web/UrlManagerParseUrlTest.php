@@ -416,9 +416,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     public function testRulesCacheIsUsed(): void
     {
-        $arrayCache = $this->getMockBuilder('yii\caching\ArrayCache')
-            ->setMethods(['get', 'set'])
-            ->getMock();
+        $arrayCache = $this->createPartialMock(ArrayCache::class, ['get', 'set']);
 
         $manager = $this->getUrlManager([
             'rules' => ['post/<id:\d+>' => 'post/view'],

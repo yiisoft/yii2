@@ -8,6 +8,8 @@
 namespace yiiunit\framework\log;
 
 use yii\log\EmailTarget;
+use yii\mail\BaseMailer;
+use yii\mail\BaseMessage;
 use yiiunit\TestCase;
 
 /**
@@ -27,9 +29,7 @@ class EmailTargetTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mailer = $this->getMockBuilder('yii\\mail\\BaseMailer')
-            ->setMethods(['compose'])
-            ->getMockForAbstractClass();
+        $this->mailer = $this->createPartialMock(BaseMailer::class, ['compose', 'sendMessage']);
     }
 
     /**
@@ -63,8 +63,8 @@ class EmailTargetTest extends TestCase
         $messages = [$message1, $message2];
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
-        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
-            ->setMethods(['setTextBody', 'send', 'setSubject'])
+        $message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['setTextBody', 'send', 'setSubject'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(true);
 
@@ -75,7 +75,7 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
         $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
-            ->setMethods(['formatMessage'])
+            ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
@@ -108,8 +108,8 @@ class EmailTargetTest extends TestCase
         $messages = [$message1, $message2];
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
-        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
-            ->setMethods(['setTextBody', 'send', 'setSubject'])
+        $message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['setTextBody', 'send', 'setSubject'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(true);
 
@@ -119,8 +119,8 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
-        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
-            ->setMethods(['formatMessage'])
+        $mailTarget = $this->getMockBuilder(EmailTarget::class)
+            ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
@@ -148,13 +148,13 @@ class EmailTargetTest extends TestCase
      */
     public function testExportWithSendFailure(): void
     {
-        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
-            ->setMethods(['send'])
+        $message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['send'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(false);
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
         $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
-            ->setMethods(['formatMessage'])
+            ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,

@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
 use yii\web\Controller;
+use yii\web\UnauthorizedHttpException;
 use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
@@ -36,9 +37,7 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMockBuilder(AuthMethod::class)
-            ->setMethods(['authenticate'])
-            ->getMock();
+        $filter = $this->createPartialMock(AuthMethod::class, ['authenticate']);
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
 
         return $filter;
@@ -65,7 +64,7 @@ class AuthMethodTest extends TestCase
         $this->assertTrue($filter->beforeAction($action));
 
         $filter = $this->createFilter(fn() => null);
-        $this->expectException('yii\web\UnauthorizedHttpException');
+        $this->expectException(UnauthorizedHttpException::class);
         $this->assertTrue($filter->beforeAction($action));
     }
 

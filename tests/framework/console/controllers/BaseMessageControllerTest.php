@@ -8,7 +8,9 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\MessageController;
+use yii\console\Exception;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
@@ -61,8 +63,8 @@ abstract class BaseMessageControllerTest extends TestCase
      */
     protected function createMessageController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
         $messageController = new MessageControllerMock('message', $module);
@@ -162,7 +164,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
     public function testConfigFileNotExist(): void
     {
-        $this->expectException('yii\\console\\Exception');
+        $this->expectException(Exception::class);
         $this->runMessageControllerAction('extract', ['not_existing_file.php']);
     }
 

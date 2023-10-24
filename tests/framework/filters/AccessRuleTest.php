@@ -10,7 +10,9 @@ namespace yiiunit\framework\filters;
 use Closure;
 use Yii;
 use yii\base\Action;
+use yii\base\InvalidConfigException;
 use yii\filters\AccessRule;
+use yii\rbac\BaseManager;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\User;
@@ -33,26 +35,16 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->mockWebApplication();
     }
 
-    /**
-     * @param string $method
-     * @return Request
-     */
-    protected function mockRequest($method = 'GET')
+    protected function mockRequest(string $method = 'GET'): Request
     {
         /** @var Request $request */
-        $request = $this->getMockBuilder('\yii\web\Request')
-            ->setMethods(['getMethod'])
-            ->getMock();
+        $request = $this->createPartialMock(Request::class, ['getMethod']);
         $request->method('getMethod')->willReturn($method);
 
         return $request;
     }
 
-    /**
-     * @param string $userid optional user id
-     * @return User
-     */
-    protected function mockUser($userid = null)
+    protected function mockUser(string $userid = null): User
     {
         $user = new User([
             'identityClass' => UserIdentity::class,
@@ -65,19 +57,13 @@ class AccessRuleTest extends \yiiunit\TestCase
         return $user;
     }
 
-    /**
-     * @return Action
-     */
-    protected function mockAction()
+    protected function mockAction(): Action
     {
         $controller = new Controller('site', Yii::$app);
         return new Action('test', $controller);
     }
 
-    /**
-     * @return \yii\rbac\BaseManager
-     */
-    protected function mockAuthManager()
+    protected function mockAuthManager(): BaseManager
     {
         $auth = new MockAuthManager();
         // add "createPost" permission
@@ -302,7 +288,7 @@ class AccessRuleTest extends \yiiunit\TestCase
             'roles' => ['@'],
         ]);
 
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectException(InvalidConfigException::class);
         $rule->allows($action, false, $request);
     }
 
@@ -335,7 +321,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     public function testMatchRolesAndPermissions(): void
     {
         $action = $this->mockAction();
-        $user = $this->getMockBuilder('\yii\web\User')->getMock();
+        $user = $this->createMock('\yii\web\User');
         $user->identityCLass = UserIdentity::class;
 
         $rule = new AccessRule([

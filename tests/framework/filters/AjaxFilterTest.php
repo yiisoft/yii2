@@ -10,6 +10,7 @@ namespace yiiunit\framework\filters;
 use Yii;
 use yii\base\Action;
 use yii\filters\AjaxFilter;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Request;
 use yiiunit\TestCase;
@@ -19,16 +20,10 @@ use yiiunit\TestCase;
  */
 class AjaxFilterTest extends TestCase
 {
-    /**
-     * @param bool $isAjax
-     * @return Request
-     */
-    protected function mockRequest($isAjax)
+    protected function mockRequest(bool $isAjax = false): Request
     {
         /** @var Request $request */
-        $request = $this->getMockBuilder('\yii\web\Request')
-            ->setMethods(['getIsAjax'])
-            ->getMock();
+        $request = $this->createPartialMock(Request::class, ['getIsAjax']);
         $request->method('getIsAjax')->willReturn($isAjax);
 
         return $request;
@@ -45,7 +40,7 @@ class AjaxFilterTest extends TestCase
         $this->assertTrue($filter->beforeAction($action));
 
         $filter->request = $this->mockRequest(false);
-        $this->expectException('yii\web\BadRequestHttpException');
+        $this->expectException(BadRequestHttpException::class);
         $filter->beforeAction($action);
     }
 }
