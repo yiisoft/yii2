@@ -497,4 +497,34 @@ class BaseStringHelper
 
         return implode('', $parts);
     }
+
+    /**
+     * Masks a portion of a string with a repeated character.
+     * This method is multibyte-safe.
+     *
+     * @param string $string The input string.
+     * @param int $start The starting position from where to begin masking.
+     *                   This can be a positive or negative integer.
+     *                   Positive values count from the beginning,
+     *                   negative values count from the end of the string.
+     * @param int $length The length of the section to be masked.
+     *                    The masking will start from the $start position
+     *                    and continue for $length characters.
+     * @param string $mask The character to use for masking. The default is '*'.
+     * @return string The masked string.
+     */
+    public static function mask($string, $start, $length, $mask = '*') {
+        $strLength = mb_strlen($string, 'UTF-8');
+
+        // Return original string if start position is out of bounds
+        if ($start >= $strLength || $start < -$strLength) {
+            return $string;
+        }
+
+        $masked = mb_substr($string, 0, $start, 'UTF-8');
+        $masked .= str_repeat($mask, abs($length));
+        $masked .= mb_substr($string, $start + abs($length), null, 'UTF-8');
+
+        return $masked;
+    }
 }
