@@ -11,6 +11,8 @@ Yii Framework 2 Change Log
 - Bug #20002: Fixed superfluous query on HEAD request in serializer (xicond)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 - Enh #20030: Improve performance of handling `ErrorHandler::$memoryReserveSize` (antonshevelev, rob006)
+- Enf #20042: Add empty array check to `ActiveQueryTrait::findWith()` (renkas)
+
 
 2.0.49.2 October 12, 2023
 -------------------------
