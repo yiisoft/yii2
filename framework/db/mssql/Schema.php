@@ -386,27 +386,25 @@ SQL;
         $column->isComputed = (bool)$info['is_computed'];
         $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
-
         $column->type = self::TYPE_STRING;
+
         if (preg_match('/^(\w+)(?:\(([^\)]+)\))?/', $column->dbType, $matches)) {
             $type = $matches[1];
+
             if (isset($this->typeMap[$type])) {
                 $column->type = $this->typeMap[$type];
             }
+
+            if ($type === 'bit') {
+                $column->type = 'boolean';
+            }
+
             if (!empty($matches[2])) {
                 $values = explode(',', $matches[2]);
                 $column->size = $column->precision = (int) $values[0];
+
                 if (isset($values[1])) {
                     $column->scale = (int) $values[1];
-                }
-                if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
-                    $column->type = 'boolean';
-                } elseif ($type === 'bit') {
-                    if ($column->size > 32) {
-                        $column->type = 'bigint';
-                    } elseif ($column->size === 32) {
-                        $column->type = 'integer';
-                    }
                 }
             }
         }

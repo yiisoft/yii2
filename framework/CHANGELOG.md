@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.2 under development
 ------------------------
 
+- Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
 - Chg #19902: Remove support for CUBRID (mtangoo)
 - Chg #19891: Remove XCache and ZendDataCache support (mtangoo)
 
