@@ -135,6 +135,10 @@ trait ActiveQueryTrait
      */
     public function findWith($with, &$models)
     {
+        if (count($models) === 0) {
+            return;
+        }
+
         $primaryModel = reset($models);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             /* @var $modelClass ActiveRecordInterface */
