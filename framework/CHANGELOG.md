@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.50 under development
 ------------------------
+- Bug #20045: Fix type `boolean` in `MYSQL` (terabytesoftw)
 - Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
 - Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
