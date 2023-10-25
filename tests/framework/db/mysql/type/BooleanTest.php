@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\db\mysql\type;
 
-use yii\db\mssql\Schema;
+use yii\db\mysql\Schema;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
