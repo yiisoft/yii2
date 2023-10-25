@@ -135,7 +135,7 @@ trait ActiveQueryTrait
      */
     public function findWith($with, &$models)
     {
-        if (count($models) === 0) {
+        if (empty($models)) {
             return;
         }
 
