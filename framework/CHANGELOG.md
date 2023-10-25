@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.50 under development
 ------------------------
-
+- Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
 - Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
@@ -11,6 +11,8 @@ Yii Framework 2 Change Log
 - Bug #20002: Fixed superfluous query on HEAD request in serializer (xicond)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 - Enh #20030: Improve performance of handling `ErrorHandler::$memoryReserveSize` (antonshevelev, rob006)
+- Enh #20032: Added `mask` method for string masking with multibyte support (salehhashemi1992)
+
 
 2.0.49.2 October 12, 2023
 -------------------------
