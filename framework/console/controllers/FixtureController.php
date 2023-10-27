@@ -483,7 +483,7 @@ class FixtureController extends Controller
             } elseif (class_exists($fullClassName . 'Fixture')) {
                 $config[] = $fullClassName . 'Fixture';
             } else {
-                throw new Exception( 'Fixtures '.$fullClassName. ' or ' . $fullClassName . 'Fixture' . " were not found".($isNamespaced ?" in namespace: ' . $this->namespace . '" :'.'));
+                throw new Exception('Neither fixture "' . $fullClassName . '" nor "' . $fullClassName . 'Fixture" was found.');
             }
         }
 
