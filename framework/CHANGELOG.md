@@ -14,7 +14,7 @@ Yii Framework 2 Change Log
 - Enh #20030: Improve performance of handling `ErrorHandler::$memoryReserveSize` (antonshevelev, rob006)
 - Enh #20042: Add empty array check to `ActiveQueryTrait::findWith()` (renkas)
 - Enh #20032: Added `mask` method for string masking with multibyte support (salehhashemi1992)
-
+- Enh #20047: Throw exception when fixture not found rather than ignoring (borgou)
 
 2.0.49.2 October 12, 2023
 -------------------------
