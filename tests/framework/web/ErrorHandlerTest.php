@@ -42,7 +42,7 @@ Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
     }
 
-    public function testFormatRaw()
+    public function testFormatRaw(): void
     {
         Yii::$app->response->format = yii\web\Response::FORMAT_RAW;
 
@@ -53,13 +53,16 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
         $out = ob_get_clean();
 
-        $this->assertcontains('Test Exception', $out);
+        $this->assertStringContainsString('Test Exception', $out);
 
         $this->assertTrue(is_string(Yii::$app->response->data));
-        $this->assertcontains("Exception 'Exception' with message 'Test Exception'", Yii::$app->response->data);
+        $this->assertStringContainsString(
+            "Exception 'Exception' with message 'Test Exception'",
+            Yii::$app->response->data,
+        );
     }
 
-    public function testFormatXml()
+    public function testFormatXml(): void
     {
         Yii::$app->response->format = yii\web\Response::FORMAT_XML;
 
@@ -70,7 +73,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
         $out = ob_get_clean();
 
-        $this->assertcontains('Test Exception', $out);
+        $this->assertStringContainsString('Test Exception', $out);
 
         $outArray = Yii::$app->response->data;
 
@@ -80,12 +83,12 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertEquals('Test Exception', $outArray['message']);
         $this->assertArrayHasKey('code', $outArray);
         $this->assertEquals('Exception', $outArray['type']);
-        $this->assertContains('ErrorHandlerTest.php', $outArray['file']);
+        $this->assertStringContainsString('ErrorHandlerTest.php', $outArray['file']);
         $this->assertArrayHasKey('stack-trace', $outArray);
         $this->assertArrayHasKey('line', $outArray);
     }
 
-    public function testClearAssetFilesInErrorView()
+    public function testClearAssetFilesInErrorView(): void
     {
         Yii::$app->getView()->registerJsFile('somefile.js');
         /** @var ErrorHandler $handler */
@@ -123,7 +126,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertStringContainsString('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 
-    public static function dataHtmlEncode()
+    public static function dataHtmlEncode(): array
     {
         return [
             [
