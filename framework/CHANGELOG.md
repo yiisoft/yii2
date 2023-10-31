@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.49.3 under development
+--------------------------
+
+- Bug #20041: Revert MaskedInput package update (bizley)
+
+
 2.0.49.2 October 12, 2023
 -------------------------
 
