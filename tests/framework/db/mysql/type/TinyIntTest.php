@@ -18,7 +18,7 @@ class TinyIntTest extends DatabaseTestCase
 {
     protected $driverName = 'mysql';
 
-    public function testBooleanUnsigned()
+    public function testTinyIntUnsigned()
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
