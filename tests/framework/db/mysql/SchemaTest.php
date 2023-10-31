@@ -228,9 +228,13 @@ SQL;
             ]
         );
 
+        $columns['bool_col']['type'] = 'boolean';
+        $columns['bool_col']['phpType'] = 'boolean';
+        $columns['bool_col2']['type'] = 'boolean';
+        $columns['bool_col2']['phpType'] = 'boolean';
+
         if (version_compare($version, '5.7', '<')) {
             $columns['int_col3']['phpType'] = 'string';
-
             $columns['json_col']['type'] = 'text';
             $columns['json_col']['dbType'] = 'longtext';
             $columns['json_col']['phpType'] = 'string';
