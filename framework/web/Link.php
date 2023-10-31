@@ -62,12 +62,10 @@ class Link extends BaseObject
     {
         foreach ($links as $rel => $link) {
             if (is_array($link)) {
-                foreach ($link as $i => $l) {
-                    $link[$i] = $l instanceof self ? array_filter((array) $l) : ['href' => $l];
-                }
+                $link = self::serialize($link);
                 $links[$rel] = $link;
             }
-            if ($link instanceof self) {
+            else if ($link instanceof self) {
                 $l = array_filter((array)$link);
                 $links[$rel] = $l;
             } else {

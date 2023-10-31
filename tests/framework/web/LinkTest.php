@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\web;
 
-use yii\base\BaseObject;
 use yii\web\Link;
 use yiiunit\TestCase;
 
@@ -16,90 +15,75 @@ use yiiunit\TestCase;
  */
 class LinkTest extends TestCase
 {
-    public function testSerializeSimpleArraySuccessfully()
+    public function testSerializeLinkInSimpleArrayWillRemoveNotSetValues()
     {
-        $this->assertEquals([
-            'link' => [
-                'href' => 'http://example.com/users/4'
+        $managerLink = new Link([
+            'href' => 'https://example.com/users/4',
+            'name' => 'User 4',
+            'title' => 'My Manager',
+        ]);
+
+        $expected = [
+            'self' => [
+                'href' => 'https://example.com/users/1'
             ],
-            'title' => [
-                'href' => 'My user',
-            ]
-        ], Link::serialize([
-            'link' => 'http://example.com/users/4',
-            'title' => 'My user',
+            'manager' => [
+                'href' => 'https://example.com/users/4',
+                'name' => 'User 4',
+                'title' => 'My Manager',
+            ],
+        ];
+
+        $this->assertEquals($expected, Link::serialize([
+            'self' => 'https://example.com/users/1',
+            'manager' => $managerLink,
         ]));
     }
 
-    public function testSerializeArrayWithLinkSuccessfully()
+    public function testSerializeNestedArrayWithLinkWillSerialize()
     {
-        $link = new UserLink([
-            'link' => 'http://example.com/users/4',
-            'title' => 'User 4',
-        ]);
-
-        $this->assertEquals([
-            'link serialized' => [
-                'title' => 'User 4',
-                'link' => 'http://example.com/users/4'
-            ],
-            'title' => ['href' => 'My user'],
-        ], Link::serialize([
-            'link serialized' => $link,
-            'title' => 'My user',
-        ]));
-    }
-
-    public function testSerializeNestedArrayWithLinkSuccessfully()
-    {
-        $link = new UserLink([
-            'link' => 'http://example.com/users/4',
-            'title' => 'User 4',
-        ]);
-
-        $this->assertEquals([
-            'link serialized' => [
-                'href' => [
-                    'manager' => [
-                        'title' => 'User 4',
-                        'link' => 'http://example.com/users/4'
-                    ]]
-            ],
-            'title' => ['href' => 'My user'],
-        ],
-            Link::serialize([
-                'link serialized' => [
-                    'manager' => $link
+        $linkData = [
+            'self' => new Link([
+                'href' => 'https://example.com/users/3',
+                'name' => 'Daffy Duck',
+            ]),
+            'fellows' => [
+                [
+                    new Link([
+                        'href' => 'https://example.com/users/4',
+                        'name' => 'Bugs Bunny',
+                    ]),
                 ],
-                'title' => 'My user',
-            ]));
+                [
+                    new Link([
+                        'href' => 'https://example.com/users/5',
+                        'name' => 'Lola Bunny',
+                    ]),
+                ]
+            ]
+        ];
+
+        $expected = [
+            'self' => [
+                'href' => 'https://example.com/users/3',
+                'name' => 'Daffy Duck',
+            ],
+            'fellows' => [
+                [
+                    [
+                        'href' => 'https://example.com/users/4',
+                        'name' => 'Bugs Bunny',
+                    ]
+                ],
+                [
+                    [
+                        'href' => 'https://example.com/users/5',
+                        'name' => 'Lola Bunny',
+                    ]
+                ]
+            ],
+        ];
+
+        $this->assertEquals($expected, Link::serialize($linkData));
     }
-
-    public function testSerializeArrayWithNotaLinkClassesSuccessfully()
-    {
-        $notALink = new NotALink([
-            'fakeName' => 'John',
-        ]);
-
-        $this->assertEquals([
-            'this is not a link' => ['href' => $notALink],
-        ], Link::serialize([
-            'this is not a link' => $notALink,
-        ]));
-    }
-}
-
-class UserLink extends Link
-{
-    /** @var string */
-    public $link;
-
-    /** @var string */
-    public $title;
-}
-
-class NotALink extends BaseObject
-{
-    /** @var string */
-    public $fakeName;
 }
