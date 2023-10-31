@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #18469: Fixed `Link::serialize(array $links)` method in `yii\web\Link` (ggh2e3)
+- Bug #20045: Fix type `boolean` in `MySQL` (terabytesoftw)
+- Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
 - Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
@@ -12,6 +14,10 @@ Yii Framework 2 Change Log
 - Bug #20002: Fixed superfluous query on HEAD request in serializer (xicond)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 - Enh #20030: Improve performance of handling `ErrorHandler::$memoryReserveSize` (antonshevelev, rob006)
+- Enh #20042: Add empty array check to `ActiveQueryTrait::findWith()` (renkas)
+- Enh #20032: Added `yii\helpers\BaseStringHelper::mask()` method for string masking with multibyte support (salehhashemi1992)
+- Enh #20034: Added `yii\helpers\BaseStringHelper::findBetween()` to retrieve a substring that lies between two strings (salehhashemi1992)
+
 
 2.0.49.2 October 12, 2023
 -------------------------
