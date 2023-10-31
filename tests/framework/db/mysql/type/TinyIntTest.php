@@ -36,8 +36,14 @@ class TinyIntTest extends DatabaseTestCase
             ]
         )->execute();
 
+        // test type `integer`
+        $column = $db->getTableSchema($tableName)->getColumn('state');
+
         // test type `boolean`
         $column = $db->getTableSchema($tableName)->getColumn('state');
-        $this->assertSame('integer', $column->phpType);
+        $this->assertSame('boolean', $column->phpType);
+
+        $db->createCommand()->insert($tableName, ['state' => 255])->execute();
+        $this->assertTrue($column->phpTypecast('255'));
     }
 }
