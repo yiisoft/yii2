@@ -189,6 +189,7 @@ class Serializer extends Component
     protected function serializeDataProvider($dataProvider)
     {
         if (($pagination = $dataProvider->getPagination()) !== false) {
+            $pagination->totalCount = $dataProvider->getTotalCount();
             $this->addPaginationHeaders($pagination);
         }
         if ($this->request->getIsHead()) {

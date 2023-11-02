@@ -439,6 +439,8 @@ class SerializerTest extends TestCase
         ]);
         $serializer->preserveKeys = $saveKeys;
         $this->assertEmpty($serializer->serialize($dataProvider));
+        $this->assertNotEmpty($serializer->response->getHeaders()->has($serializer->totalCountHeader));
+
         unset($_POST[$request->methodParam], $_SERVER['REQUEST_METHOD']);
     }
 
