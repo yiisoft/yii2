@@ -439,7 +439,7 @@ class SerializerTest extends TestCase
         ]);
         $serializer->preserveKeys = $saveKeys;
         $this->assertEmpty($serializer->serialize($dataProvider));
-        $this->assertNotEmpty($serializer->response->getHeaders()->has($serializer->totalCountHeader));
+        $this->assertNotEmpty($serializer->response->getHeaders()->get($serializer->totalCountHeader));
 
         $arrayDataProviderMock = $this->getMockBuilder(ArrayDataProvider::className())
         ->disableOriginalConstructor()
