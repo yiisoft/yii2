@@ -441,7 +441,7 @@ class SerializerTest extends TestCase
         $this->assertEmpty($serializer->serialize($dataProvider));
         $this->assertNotEmpty($serializer->response->getHeaders()->has($serializer->totalCountHeader));
 
-        $arrayDataProviderMock = $this->getMockBuilder(ArrayDataProvider::class)
+        $arrayDataProviderMock = $this->getMockBuilder(ArrayDataProvider::className())
         ->disableOriginalConstructor()
         ->getMock();
 
