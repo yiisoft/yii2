@@ -532,6 +532,8 @@ class StringHelperTest extends TestCase
             ['no delimiters here', 'start', 'end', null],  // no start and end
             ['start only', 'start', 'end', null], // start found but no end
             ['end only', 'start', 'end', null], // end found but no start
+            ['a1a2a3a', 'a', 'a', '1a2a3'], // same start and end
+            ['a1a2a3a', 'a', null, '1a2a3'], // end is null
             ['spécial !@#$%^&*()', 'spé', '&*()', 'cial !@#$%^'],  // Special characters
             ['من صالح هاشمی هستم', 'من ', ' هستم', 'صالح هاشمی'], // other languages
         ];
