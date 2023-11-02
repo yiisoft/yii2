@@ -94,7 +94,7 @@ abstract class ErrorHandler extends Component
                 set_error_handler([$this, 'handleError']);
             }
             if ($this->memoryReserveSize > 0) {
-                $this->_memoryReserve = str_pad('', $this->memoryReserveSize, 'x');
+                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
             }
             // to restore working directory in shutdown handler
             if (PHP_SAPI !== 'cli') {

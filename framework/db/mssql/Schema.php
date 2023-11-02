@@ -375,6 +375,7 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
+        $isVersion2017orLater = version_compare($this->db->getSchema()->getServerVersion(), '14', '>=');
         $column = $this->createColumnSchema();
 
         $column->name = $info['column_name'];
@@ -393,20 +394,21 @@ SQL;
             if (isset($this->typeMap[$type])) {
                 $column->type = $this->typeMap[$type];
             }
+
+            if ($isVersion2017orLater && $type === 'bit') {
+                $column->type = 'boolean';
+            }
+
             if (!empty($matches[2])) {
                 $values = explode(',', $matches[2]);
                 $column->size = $column->precision = (int) $values[0];
+
                 if (isset($values[1])) {
                     $column->scale = (int) $values[1];
                 }
-                if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
-                    $column->type = 'boolean';
-                } elseif ($type === 'bit') {
-                    if ($column->size > 32) {
-                        $column->type = 'bigint';
-                    } elseif ($column->size === 32) {
-                        $column->type = 'integer';
-                    }
+
+                if ($isVersion2017orLater === false) {
+                    $column->type = $this->booleanTypeLegacy($column->size, $type);
                 }
             }
         }
@@ -812,5 +814,28 @@ SQL;
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length, $this->db]);
+    }
+
+    /**
+     * Assigns a type boolean for the column type bit, for legacy versions of MSSQL.
+     *
+     * @param int $size column size.
+     * @param string $type column type.
+     *
+     * @return string column type.
+     */
+    private function booleanTypeLegacy($size, $type)
+    {
+        if ($size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+            return 'boolean';
+        } elseif ($type === 'bit') {
+            if ($size > 32) {
+                return 'bigint';
+            } elseif ($size === 32) {
+                return 'integer';
+            }
+        }
+
+        return $type;
     }
 }
