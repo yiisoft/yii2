@@ -279,7 +279,7 @@ SQL;
                     if (isset($values[1])) {
                         $column->scale = (int) $values[1];
                     }
-                    if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+                    if ($column->size === 1 && $type === 'bit') {
                         $column->type = 'boolean';
                     } elseif ($type === 'bit') {
                         if ($column->size > 32) {
