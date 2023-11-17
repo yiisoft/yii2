@@ -190,9 +190,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function getPagination()
     {
         if ($this->_pagination === null) {
-            $this->setPagination([
-                'totalCount' => $this->getTotalCount()
-            ]);
+            $this->setPagination([]);
         }
         return $this->_pagination;
     }
@@ -212,7 +210,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setPagination($value)
     {
         if (is_array($value)) {
-            $config = ['class' => Pagination::className()];
+            $config = [
+                'class' => Pagination::className(),
+                'totalCount' => $this->getTotalCount(),
+            ];
             if ($this->id !== null) {
                 $config['pageParam'] = $this->id . '-page';
                 $config['pageSizeParam'] = $this->id . '-per-page';
