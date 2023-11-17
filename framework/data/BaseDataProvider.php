@@ -210,16 +210,15 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setPagination($value)
     {
         if (is_array($value)) {
-            $config = [
-                'class' => Pagination::className(),
-                'totalCount' => $this->getTotalCount(),
-            ];
+            $config = ['class' => Pagination::className()];
             if ($this->id !== null) {
                 $config['pageParam'] = $this->id . '-page';
                 $config['pageSizeParam'] = $this->id . '-per-page';
             }
-            $this->_pagination = Yii::createObject(array_merge($config, $value));
-        } elseif ($value instanceof Pagination || $value === false) {
+            $value = Yii::createObject(array_merge($config, $value));
+        }
+        if ($value instanceof Pagination || $value === false) {
+            $value->totalCount = $this->getTotalCount();
             $this->_pagination = $value;
         } else {
             throw new InvalidArgumentException('Only Pagination instance, configuration array or false is allowed.');
