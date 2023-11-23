@@ -29,6 +29,8 @@ jobs:
             mssql: server:2019-latest
           - php: 8.2
             mssql: server:2022-latest
+          - php: 8.3
+            mssql: server:2022-latest
 
     services:
       mssql:
