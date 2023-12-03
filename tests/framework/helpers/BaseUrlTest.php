@@ -10,64 +10,103 @@ use yii\helpers\BaseUrl;
  */
 class BaseUrlTest extends TestCase
 {
-
-    public function testIsRelativeWithAbsoluteUrlWillReturnFalse()
+    /** @dataProvider relativeTrueUrlProvider */
+    public function testIsRelativeWillReturnTrue($url)
     {
-        $this->assertFalse(BaseUrl::isRelative('https://acme.com/tnt-room=123'));
+        $this->assertTrue(BaseUrl::isRelative($url));
     }
 
-    public function testUrlStartingWithDoubleSlashesWillReturnFalse()
+    /** @dataProvider relativeFalseUrlProvider */
+    public function testIsRelativeWillReturnFalse($url)
     {
-        $this->assertFalse(BaseUrl::isRelative('//example.com'));
+        $this->assertFalse(BaseUrl::isRelative($url));
     }
 
-    public function testIsRelativeWithRelativeUrlWillReturnTrue()
+    public function testEnsureSchemeWithRelativeUrlWillReturnInputUrl()
     {
-        $this->assertTrue(
-            BaseUrl::isRelative('acme.com/tnt-room=123')
+        $url = 'acme.com?name=bugs.bunny';
+        $this->assertEquals('acme.com?name=bugs.bunny', BaseUrl::ensureScheme($url, 'https'));
+    }
+
+    public function testEnsureSchemeWithRelativeUrlWithAnotherUrlAsParamWillReturnInputUrl()
+    {
+        $this->assertEquals('acme.com/test?tnt-link=https://tnt.com/',
+            BaseUrl::ensureScheme('acme.com/test?tnt-link=https://tnt.com/', 'https')
         );
     }
 
-    public function testIsRelativeWithRelativeUrlHavingHttpsUrlAsParamValueWillReturnTrue()
+    public function testEnsureSchemeWithSchemeNotAStringWillReturnInputUrl()
     {
-        $this->assertTrue(BaseUrl::isRelative(
-            'acme.com/tnt-room-link=https://asd.com'
-        ));
+        $url = 'acme.com?name=bugs.bunny';
+        $this->assertEquals('acme.com?name=bugs.bunny', BaseUrl::ensureScheme($url, 123));
     }
 
-    public function testIsRelativeWithAbsoluteUrlHavingHttpsUrlAsParamValueWillReturnFalse()
+    public function testEnsureSchemeWithProtocolRelativeUrlAndHttpsSchemeWillBeNormalized()
     {
-        $this->assertFalse(
-            BaseUrl::isRelative('https://acme.com/tnt-link=https://tnt.com')
-        );
+        $url = '//acme.com?characters/list';
+        $this->assertEquals('https://acme.com?characters/list', BaseUrl::ensureScheme($url, 'https'));
     }
 
-    public function testIsRelativeWithA()
+    public function testEnsureSchemeWithProtocolRelativeUrlAndEmptySchemeWillBeReturned()
     {
-        $this->assertTrue(
-            BaseUrl::isRelative('/name=bugs.bunny')
-        );
+        $url = '//acme.com?characters/list';
+        $this->assertEquals('//acme.com?characters/list', BaseUrl::ensureScheme($url, ''));
     }
 
-    public function testIsRelativeWithFtpProtocolUrlWillReturnFalse()
+    public function testAbsoluteUrlProtocolAndEmptySchemeWillCreateProtocolRelativeUrl()
     {
-        $this->assertFalse(
-            BaseUrl::isRelative('ftp://ftp.acme.com/tnt-suppliers.txt')
-        );
+        $url = 'https://acme.com?characters/list';
+        $this->assertEquals('//acme.com?characters/list', BaseUrl::ensureScheme($url, ''));
     }
 
-    public function testIsRelativeWithHttpUrl()
+    public function testEnsureSchemeWithAbsoluteUrlWithAnotherUrlAsParamWillReturnInputUrl()
     {
-        $this->assertFalse(
-            BaseUrl::isRelative('http://no-protection.acme.com')
-        );
+        $url = 'ss://acme.com/test?tnt-link=https://tnt.com/';
+        $this->assertEquals('https://acme.com/test?tnt-link=https://tnt.com/', BaseUrl::ensureScheme($url, 'https'));
     }
 
-    public function testIsRelativeWithFileUrl()
+    public function relativeTrueUrlProvider()
     {
-        $this->assertFalse(
-            BaseUrl::isRelative('file:///home/User/2ndFile.html')
-        );
+        return [
+            'url url without protocol' => [
+                'url' => 'acme.com/tnt-room=123',
+            ],
+            'url without protocol and another url in a parameter value' => [
+                'url' => 'acme.com?tnt-room-link=https://tnt.com',
+            ],
+            'path only' => [
+                'url' => '/path',
+            ],
+            'path with param' => [
+                'url' => '/path=/home/user',
+            ],
+        ];
     }
 
+    public function relativeFalseUrlProvider()
+    {
+        return [
+            'url with https protocol' => [
+                'url' => 'https://acme.com',
+            ],
+            'url with https protocol and ending slash' => [
+                'url' => 'https://acme.com/',
+            ],
+            'url with https protocol and another url as param value' => [
+                'url' => 'https://acme.com?tnt-link=https://tnt.com',
+            ],
+            'url starting with two slashes' => [
+                'url' => '//example.com',
+            ],
+            'url with ftp protocol' => [
+                'url' => 'ftp://ftp.acme.com/tnt-suppliers.txt',
+            ],
+            'url with http protocol' => [
+                'url' => 'http://no-protection.acme.com',
+            ],
+            'file url' => [
+                'url' => 'file:///home/User/2ndFile.html',
+            ]
+        ];
+    }
 }
