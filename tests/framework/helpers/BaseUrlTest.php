@@ -22,47 +22,51 @@ class BaseUrlTest extends TestCase
         $this->assertFalse(BaseUrl::isRelative($url));
     }
 
-    public function testEnsureSchemeWithRelativeUrlWillReturnInputUrl()
+    /** @dataProvider ensureSchemeUrlProvider */
+    public function testEnsureScheme()
     {
-        $url = 'acme.com?name=bugs.bunny';
-        $this->assertEquals('acme.com?name=bugs.bunny', BaseUrl::ensureScheme($url, 'https'));
+
     }
 
-    public function testEnsureSchemeWithRelativeUrlWithAnotherUrlAsParamWillReturnInputUrl()
+    public function ensureSchemeUrlProvider()
     {
-        $this->assertEquals('acme.com/test?tnt-link=https://tnt.com/',
-            BaseUrl::ensureScheme('acme.com/test?tnt-link=https://tnt.com/', 'https')
-        );
-    }
-
-    public function testEnsureSchemeWithSchemeNotAStringWillReturnInputUrl()
-    {
-        $url = 'acme.com?name=bugs.bunny';
-        $this->assertEquals('acme.com?name=bugs.bunny', BaseUrl::ensureScheme($url, 123));
-    }
-
-    public function testEnsureSchemeWithProtocolRelativeUrlAndHttpsSchemeWillBeNormalized()
-    {
-        $url = '//acme.com?characters/list';
-        $this->assertEquals('https://acme.com?characters/list', BaseUrl::ensureScheme($url, 'https'));
-    }
-
-    public function testEnsureSchemeWithProtocolRelativeUrlAndEmptySchemeWillBeReturned()
-    {
-        $url = '//acme.com?characters/list';
-        $this->assertEquals('//acme.com?characters/list', BaseUrl::ensureScheme($url, ''));
-    }
-
-    public function testAbsoluteUrlProtocolAndEmptySchemeWillCreateProtocolRelativeUrl()
-    {
-        $url = 'https://acme.com?characters/list';
-        $this->assertEquals('//acme.com?characters/list', BaseUrl::ensureScheme($url, ''));
-    }
-
-    public function testEnsureSchemeWithAbsoluteUrlWithAnotherUrlAsParamWillReturnInputUrl()
-    {
-        $url = 'ss://acme.com/test?tnt-link=https://tnt.com/';
-        $this->assertEquals('https://acme.com/test?tnt-link=https://tnt.com/', BaseUrl::ensureScheme($url, 'https'));
+        return [
+            'relative url and https scheme will return input url' => [
+                'url' => 'acme.com?name=bugs.bunny',
+                'scheme' => 'https',
+                'expected result' => 'acme.com?name=bugs.bunny',
+            ],
+            'relative url and another url as parameter will return input url' => [
+                'url' => 'acme.com/test?tnt-link=https://tnt.com/',
+                'scheme' => 'https',
+                'expected' => 'acme.com/test?tnt-link=https://tnt.com/',
+            ],
+            'url with scheme not a string will return input url' => [
+                'url' => 'acme.com?name=bugs.bunny',
+                'scheme' => 123,
+                'expected' => 'acme.com?name=bugs.bunny',
+            ],
+            'protocol relative url and https scheme will be processed' => [
+                'url' => '//acme.com?characters/list',
+                'scheme' => 'https',
+                'expected' => 'https://acme.com?characters/list',
+            ],
+            'protocol relative url and empty scheme will be returned' => [
+                'url' => '//acme.com?characters/list',
+                'scheme' => '',
+                'expected' => '//acme.com?characters/list',
+            ],
+            'absolute url and empty scheme will create protocol relative url' => [
+                'url' => 'https://acme.com?characters/list',
+                'scheme' => '',
+                'expected' => '//acme.com?characters/list',
+            ],
+            'absolute url and different scheme will be processed' => [
+                'url' => 'http://acme.com/test?tnt-link=https://tnt.com/',
+                'scheme' => 'https',
+                'expected' => 'https://acme.com/test?tnt-link=https://tnt.com/',
+            ]
+        ];
     }
 
     public function relativeTrueUrlProvider()
