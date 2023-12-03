@@ -23,9 +23,9 @@ class BaseUrlTest extends TestCase
     }
 
     /** @dataProvider ensureSchemeUrlProvider */
-    public function testEnsureScheme()
+    public function testEnsureScheme($url, $scheme, $expected)
     {
-
+        $this->assertEquals($expected, BaseUrl::ensureScheme($url, $scheme));
     }
 
     public function ensureSchemeUrlProvider()
