@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #18469: Fixed `Link::serialize(array $links)` method in `yii\web\Link` (ggh2e3)
 - Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
-- Bug #20055: Fix Response header X-Pagination-Total-Count is always 0 (lav45)
+- Bug #20055: Fix Response header X-Pagination-Total-Count is always 0 (lav45, xicond)
 - Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
