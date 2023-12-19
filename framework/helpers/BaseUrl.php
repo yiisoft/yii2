@@ -378,7 +378,8 @@ class BaseUrl
      */
     public static function isRelative($url)
     {
-        return strncmp($url, '//', 2) && strpos($url, '://') === false;
+        $urlComponents = parse_url($url, PHP_URL_SCHEME);
+        return strncmp($url, '//', 2) && empty($urlComponents);
     }
 
     /**
