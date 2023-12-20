@@ -135,6 +135,8 @@ Yii Framework 2 Change Log
 - Bug #19303: Fix serialization in `yii\caching\Dependency::generateReusableHash()` (WinterSilence)
 - Bug #19312: Fix PHP 8.1 error when passing null to `yii\helpers\BaseInflector` (WinterSilence)
 - Bug #19322: Revert force setting value to empty string in case it's `null` in `yii\validators\FilterValidator::validateAttribute()` (bizley)
+- Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
+- Enh #19334: Add `yii\validators\DefaultValueValidator::$callableValue` to support multiple callback modes (eecjimmy)
 - Bug #19324: Fix `yii\helpers\BaseHtml::renderSelectOptions()` giving wrong selection for boolean attributes (adnandautovic)
 - Bug #19328: Passing null to parameter #1 ($string) of type string is deprecated in `yii\db\oci\Schema` (Arkeins)
 - Bug #19329: Fix `yii\web\GroupUrlRule` to properly normalize prefix (bizley)
