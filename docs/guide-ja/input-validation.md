@@ -748,7 +748,7 @@ JS;
 
 ### Deferred 検証 <span id="deferred-validation"></span>
 
-非同期のクライアント・サイドの検証をサポートする必要がある場合は、[Defered オブジェクト](https://api.jquery.com/category/deferred-object/) を作成することが出来ます。
+非同期のクライアント・サイドの検証をサポートする必要がある場合は、[Deferred オブジェクト](https://api.jquery.com/category/deferred-object/) を作成することが出来ます。
 例えば、AJAX によるカスタム検証を実行するために、次のコードを使うことが出来ます。
 
 ```php
