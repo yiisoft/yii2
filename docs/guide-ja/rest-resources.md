@@ -251,11 +251,3 @@ class PostController extends Controller
 REST API におけるコレクションはデータ・プロバイダであるため、データ・プロバイダの全ての機能、すなわち、ページネーションやソーティングを共有しています。
 
 その一例を [クイック・スタート](rest-quick-start.md#trying-it-out) のセクションで見ることが出来ます。
-
-### コレクションをフィルタリングする <span id="filtering-collections"></span>
-
-バージョン 2.0.13 以降、Yii はコレクションをフィルタリングする便利な機能を提供しています。
-その一例を [クイック・スタート](rest-quick-start.md#trying-it-out) のガイドに見ることが出来ます。
-エンド・ボイントをあなた自身が実装しようとしている場合、フィルタリングは
-データ・プロバイダのガイドの [データ・フィルタを使ってデータ・プロバイダをフィルタリングする](output-data-providers.md#filtering-data-providers-using-data-filters
- のセクションで述べられている方法で行うことが出来ます。

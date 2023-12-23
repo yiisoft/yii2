@@ -685,7 +685,7 @@ class m150101_185401_create_news_table extends Migration
 `safeDown()` では、先に行を削除して、次にテーブルを削除しています。
 
 > Note: 全ての DBMS がトランザクションをサポートしている訳ではありません。また、トランザクションに入れることが出来ない DB クエリもあります。
-  いくつかの例を [暗黙のコミット](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html) で見ることが出来ます。
+  そのいくつかの例を [暗黙のコミット](https://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html) で見ることが出来ます。
   その場合には、代りに、`up()` と `down()` を実装しなければなりません。
 
 
