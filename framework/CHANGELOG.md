@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.50 under development
 ------------------------
 
+- Bug #17191: Fixed `UrlManager::createUrl($params)` method now relies on `BaseUrl::isRelative($url)` method (ggh2e3)
 - Bug #17191: Fixed `BaseUrl::isRelative($url)` method in `yii\helpers\BaseUrl` (ggh2e3)
 - Bug #18469: Fixed `Link::serialize(array $links)` method in `yii\web\Link` (ggh2e3)
 - Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
