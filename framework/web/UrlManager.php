@@ -553,13 +553,12 @@ class UrlManager extends Component
     {
         $params = (array) $params;
         $url = $this->createUrl($params);
-        if (strpos($url, '://') === false) {
-            $hostInfo = $this->getHostInfo();
-            if (strncmp($url, '//', 2) === 0) {
-                $url = substr($hostInfo, 0, strpos($hostInfo, '://')) . ':' . $url;
-            } else {
-                $url = $hostInfo . $url;
-            }
+        $hostInfo = $this->getHostInfo();
+        if (Url::isRelative($url)) {
+            $url = $hostInfo . $url;
+        }
+        if (strncmp($url, '//', 2) === 0) {
+            $url = substr($hostInfo, 0, strpos($hostInfo, '://')) . ':' . $url;
         }
 
         return Url::ensureScheme($url, $scheme);
