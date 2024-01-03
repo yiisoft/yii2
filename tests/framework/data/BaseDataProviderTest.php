@@ -20,7 +20,7 @@ class BaseDataProviderTest extends TestCase
         $rc = new \ReflectionClass(BaseDataProvider::class);
         $rp = $rc->getProperty('counter');
         $rp->setAccessible(true);
-        $rp->setValue(null);
+        $rp->setValue(new ConcreteDataProvider(), null);
 
         $this->assertNull((new ConcreteDataProvider())->id);
         $this->assertNotNull((new ConcreteDataProvider())->id);

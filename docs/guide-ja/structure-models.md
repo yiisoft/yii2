@@ -293,6 +293,8 @@ public function rules()
 
         // "login" シナリオでは、username と password が必須
         [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
+        
+        [['username'], 'string'], // username は文字列でなければならない。この規則は全てのシナリオに適用される
     ];
 }
 ```

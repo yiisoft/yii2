@@ -413,7 +413,7 @@ class UrlManager extends Component
         $anchor = isset($params['#']) ? '#' . $params['#'] : '';
         unset($params['#'], $params[$this->routeParam]);
 
-        $route = trim($params[0], '/');
+        $route = trim(isset($params[0]) ? $params[0] : '', '/');
         unset($params[0]);
 
         $baseUrl = $this->showScriptName || !$this->enablePrettyUrl ? $this->getScriptUrl() : $this->getBaseUrl();

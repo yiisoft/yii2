@@ -57,7 +57,7 @@ $data = $cache->getOrSet($key, function () use ($user_id) {
 
 キャッシュ・コンポーネントは通常グローバルに設定しアクセスできるように
 [アプリケーション・コンポーネント](structure-application-components.md) として登録されます。
-以下のコードは、二台のキャッシュ・サーバを用いる [Memcached](https://memcached.org/) を使うように
+以下のコードは、二台のキャッシュ・サーバを用いる [memcached](https://memcached.org/) を使うように
 `cache` アプリケーション・コンポーネントを構成する方法を示すものです。
 
 ```php
