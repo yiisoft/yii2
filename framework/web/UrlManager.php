@@ -446,22 +446,16 @@ class UrlManager extends Component
             }
 
             if ($url !== false) {
-                if (strpos($url, '://') !== false) {
-                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
-                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    }
-
-                    return $url . $baseUrl . $anchor;
-                } elseif (strncmp($url, '//', 2) === 0) {
-                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 2)) !== false) {
-                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    }
-
-                    return $url . $baseUrl . $anchor;
+                if (Url::isRelative($url)) {
+                    $url = ltrim($url, '/');
+                    return "$baseUrl/{$url}{$anchor}";
                 }
 
-                $url = ltrim($url, '/');
-                return "$baseUrl/{$url}{$anchor}";
+                if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
+                    return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
+                }
+
+                return $url . $baseUrl . $anchor;
             }
 
             if ($this->suffix !== null) {
@@ -559,13 +553,12 @@ class UrlManager extends Component
     {
         $params = (array) $params;
         $url = $this->createUrl($params);
-        if (strpos($url, '://') === false) {
-            $hostInfo = $this->getHostInfo();
-            if (strncmp($url, '//', 2) === 0) {
-                $url = substr($hostInfo, 0, strpos($hostInfo, '://')) . ':' . $url;
-            } else {
-                $url = $hostInfo . $url;
-            }
+        $hostInfo = $this->getHostInfo();
+        if (Url::isRelative($url)) {
+            $url = $hostInfo . $url;
+        }
+        if (strncmp($url, '//', 2) === 0) {
+            $url = substr($hostInfo, 0, strpos($hostInfo, '://')) . ':' . $url;
         }
 
         return Url::ensureScheme($url, $scheme);
