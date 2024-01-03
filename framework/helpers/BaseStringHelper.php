@@ -546,14 +546,13 @@ class BaseStringHelper
             return null;
         }
 
-        // Cut the string from the start position
-        $subString = mb_substr($string, $startPos + mb_strlen($start));
-        $endPos = mb_strrpos($subString, $end);
+        $startPos += mb_strlen($start);
+        $endPos = mb_strrpos($string, $end, $startPos);
 
         if ($endPos === false) {
             return null;
         }
 
-        return mb_substr($subString, 0, $endPos);
+        return mb_substr($string, $startPos, $endPos - $startPos);
     }
 }
