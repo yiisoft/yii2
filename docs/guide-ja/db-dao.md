@@ -682,5 +682,5 @@ $table = Yii::$app->db->getTableSchema('post');
 ```
 
 このメソッドは、テーブルのカラム、プライマリ・キー、外部キーなどの情報を含む [[yii\db\TableSchema]] オブジェクトを返します。
-これらの情報は、主として [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) によって利用されて、
+この情報は、主として [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) によって利用されて、
 特定のデータベースに依存しないコードを書くことを助けてくれています。
