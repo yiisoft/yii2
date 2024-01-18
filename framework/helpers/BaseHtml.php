@@ -1278,7 +1278,7 @@ class BaseHtml
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
-            if($emptyClass !== null) {
+            if ($emptyClass !== null) {
                 $options['class'] = $emptyClass;
             } else {
                 $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
