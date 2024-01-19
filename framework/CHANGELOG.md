@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #17181: Improved `BaseUrl::isRelative($url)` performance (sammousa, bizley, rob006)
 - Bug #17191: Fixed `BaseUrl::isRelative($url)` method in `yii\helpers\BaseUrl` (ggh2e3)
 - Bug #18469: Fixed `Link::serialize(array $links)` method in `yii\web\Link` (ggh2e3)
+- Bug #19691: Allow using custom class to style error summary (skepticspriggan)
 - Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
 - Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
