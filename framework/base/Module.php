@@ -641,7 +641,7 @@ class Module extends ServiceLocator
      */
     public function createControllerByID($id)
     {
-        if(Yii::$app->get('cache')){
+        if(Yii::$app->has('cache')){
             $cacheKey = [Yii::$app->id,Yii::getAlias('@app'),__FUNCTION__,$id];
             $className = Yii::$app->cache->get($cacheKey);
         }
@@ -670,7 +670,7 @@ class Module extends ServiceLocator
             if (!is_subclass_of($className, 'yii\base\Controller')) {
                 $className = '';
             }else{
-                if(Yii::$app->get('cache')) {
+                if(Yii::$app->has('cache')) {
                     Yii::$app->cache->set($cacheKey, $className);
                 }
             }
