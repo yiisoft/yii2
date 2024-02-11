@@ -641,28 +641,42 @@ class Module extends ServiceLocator
      */
     public function createControllerByID($id)
     {
-        $pos = strrpos($id, '/');
-        if ($pos === false) {
-            $prefix = '';
-            $className = $id;
-        } else {
-            $prefix = substr($id, 0, $pos + 1);
-            $className = substr($id, $pos + 1);
+        if(Yii::$app->get('cache')){
+            $cacheKey = [Yii::$app->id,Yii::getAlias('@app'),__FUNCTION__,$id];
+            $className = Yii::$app->cache->get($cacheKey);
         }
 
-        if ($this->isIncorrectClassNameOrPrefix($className, $prefix)) {
-            return null;
+        if(empty($className)){
+            $pos = strrpos($id, '/');
+            if ($pos === false) {
+                $prefix = '';
+                $className = $id;
+            } else {
+                $prefix = substr($id, 0, $pos + 1);
+                $className = substr($id, $pos + 1);
+            }
+
+            if ($this->isIncorrectClassNameOrPrefix($className, $prefix)) {
+                return null;
+            }
+
+            $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
+                    return ucfirst($matches[1]);
+                }, ucfirst($className)) . 'Controller';
+            $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
+            if (strpos($className, '-') !== false || !class_exists($className)) {
+                return null;
+            }
+            if (!is_subclass_of($className, 'yii\base\Controller')) {
+                $className = '';
+            }else{
+                if(Yii::$app->get('cache')) {
+                    Yii::$app->cache->set($cacheKey, $className);
+                }
+            }
         }
 
-        $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
-                return ucfirst($matches[1]);
-            }, ucfirst($className)) . 'Controller';
-        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
-        if (strpos($className, '-') !== false || !class_exists($className)) {
-            return null;
-        }
-
-        if (is_subclass_of($className, 'yii\base\Controller')) {
+        if (!empty($className)) {
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
