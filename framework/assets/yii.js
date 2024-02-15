@@ -223,7 +223,7 @@ window.yii = (function ($) {
                 }
             } else {
                 if (!isValidAction) {
-                    action = pub.getCurrentUrl();
+                    action = pub.getSafeUrl();
                 }
                 $form = $('<form/>', {method: method, action: action});
                 var target = $e.attr('target');
@@ -350,7 +350,16 @@ window.yii = (function ($) {
          */
         getCurrentUrl: function () {
             return window.location.href;
-        }
+        },
+
+        /**
+         * Returns the safest URL possiblebased on getCurrentUrl
+         * @returns {string}
+         */
+        getSafeUrl: function () {
+            var url = this.getCurrentUrl();
+            return url.replace(/[^\d\w\&\?\=\[\]\/\:\.]*/gmi, "");
+        },
     };
 
     function initCsrfHandler() {
