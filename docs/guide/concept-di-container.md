@@ -396,18 +396,6 @@ class HotelController extends Controller
 }
 ``` 
 
-Note that not all core code supports DI due to performance concerns. You can add support if needed by overriding
-the method responsible for instantiating the class and making sure it uses [[Yii::createObject()]].
-
-For example, you can add DI support to [[yii\db\ActiveRecord]] models by overriding the `instantiate()` method:
-
-```php
-public static function instantiate($row)
-{
-    return Yii::createObject(static::class);
-}
-```
-
 Advanced Practical Usage <span id="advanced-practical-usage"></span>
 ---------------
 
