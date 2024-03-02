@@ -15,6 +15,8 @@ require __DIR__ . '/BaseYii.php';
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
+ * @phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
  */
 class Yii extends \yii\BaseYii
 {

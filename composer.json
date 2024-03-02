@@ -86,7 +86,9 @@
         "phpunit/phpunit": "4.8.34",
         "cebe/indent": "~1.0.2",
         "friendsofphp/php-cs-fixer": "~2.2.3 | ^3.0",
-        "johnkary/phpunit-speedtrap": "^1.0"
+        "johnkary/phpunit-speedtrap": "^1.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "yiisoft/yii2-coding-standards": "^2.0"
     },
     "repositories": [
         {
@@ -112,7 +114,8 @@
     "config": {
         "allow-plugins": {
             "cweagans/composer-patches": true,
-            "yiisoft/yii2-composer": true
+            "yiisoft/yii2-composer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "bin": [

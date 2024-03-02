@@ -461,6 +461,7 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
@@ -478,6 +479,7 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucwords
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
