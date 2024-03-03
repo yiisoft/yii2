@@ -545,6 +545,39 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertSame('', $columnSchema->dbTypecast(''));
     }
 
+    /**
+     * @dataProvider columnSchemaDbTypecastBooleanPhpTypeProvider
+     * @param mixed $value
+     * @param bool $expected
+     */
+    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected)
+    {
+        $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
+        $this->assertSame($expected, $columnSchema->dbTypecast($value));
+    }
+
+    public function columnSchemaDbTypecastBooleanPhpTypeProvider()
+    {
+        return [
+            [1, true],
+            [0, false],
+            ['1', true],
+            ['0', false],
+
+            // https://github.com/yiisoft/yii2/issues/9006
+            ["\1", true],
+            ["\0", false],
+
+            // https://github.com/yiisoft/yii2/pull/20122
+            ['TRUE', true],
+            ['FALSE', false],
+            ['true', true],
+            ['false', false],
+            ['True', true],
+            ['False', false],
+        ];
+    }
+
     public function testFindUniqueIndexes()
     {
         if ($this->driverName === 'sqlsrv') {
