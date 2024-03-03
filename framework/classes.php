@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Yii core class map.
  *

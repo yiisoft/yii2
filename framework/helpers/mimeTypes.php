@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MIME types.
  *
@@ -11,6 +12,7 @@
  * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 $mimeTypes = [
     123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',

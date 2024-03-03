@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MIME type extensions.
  *
@@ -12,6 +13,7 @@
  * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 return [
     'application/andrew-inset' => 'ez',
     'application/applixware' => 'aw',
