@@ -218,7 +218,7 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+            return preg_replace_callback('#(:\w+)#', function ($matches) use ($params) {
                 $m = $matches[1];
                 return isset($params[$m]) ? $params[$m] : $m;
             }, $this->_sql);

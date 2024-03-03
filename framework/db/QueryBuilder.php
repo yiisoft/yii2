@@ -648,7 +648,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -1527,7 +1526,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $result[] = $with['alias'] . ' AS (' . $with['query'] . ')';
         }
 
-        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode (', ', $result);
+        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode(', ', $result);
     }
 
     /**

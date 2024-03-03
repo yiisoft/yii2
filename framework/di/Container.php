@@ -677,7 +677,6 @@ class Container extends Component
                 } else {
                     $isClass = $class !== null && !$class->isBuiltin();
                 }
-
             } else {
                 $class = $param->getClass();
                 $isClass = $class !== null;

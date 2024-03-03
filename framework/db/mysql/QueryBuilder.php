@@ -266,7 +266,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $columns = [reset($tableSchema->columns)->name];
                     $defaultValue = 'DEFAULT';
                 }
-                
+
                 foreach ($columns as $name) {
                     $names[] = $this->db->quoteColumnName($name);
                     $placeholders[] = $defaultValue;
@@ -312,8 +312,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addCommentOnColumn($table, $column, $comment)
     {
         // Strip existing comment which may include escaped quotes
-        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
-            $this->getColumnDefinition($table, $column)));
+        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '', $this->getColumnDefinition($table, $column)));
 
         $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
         $check = preg_match($checkRegex, $definition, $checkMatches);

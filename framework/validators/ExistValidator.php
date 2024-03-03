@@ -133,7 +133,7 @@ class ExistValidator extends Validator
 
         $connection = $model::getDb();
         if ($this->forceMasterDb && method_exists($connection, 'useMaster')) {
-            $exists = $connection->useMaster(function() use ($relationQuery) {
+            $exists = $connection->useMaster(function () use ($relationQuery) {
                 return $relationQuery->exists();
             });
         } else {
@@ -328,7 +328,8 @@ class ExistValidator extends Validator
                 $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias, '/') . '\.(.*)$/',
                     '$1',
-                    $columnName) . ']]';
+                    $columnName
+                ) . ']]';
             } else {
                 // there is an expression, can't prefix it reliably
                 $prefixedColumn = $columnName;

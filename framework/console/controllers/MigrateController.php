@@ -411,11 +411,7 @@ class MigrateController extends BaseMigrateController
 
         $templateFile = $this->templateFile;
         $table = null;
-        if (preg_match(
-            '/^create_?junction_?(?:table)?_?(?:for)?(.+)_?and(.+)_?tables?$/i',
-            $name,
-            $matches
-        )) {
+        if (preg_match('/^create_?junction_?(?:table)?_?(?:for)?(.+)_?and(.+)_?tables?$/i', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
             $firstTable = $this->normalizeTableName($matches[1]);
             $secondTable = $this->normalizeTableName($matches[2]);

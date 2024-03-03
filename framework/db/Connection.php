@@ -1232,7 +1232,6 @@ class Connection extends Component
             // ignore the cache and try to connect anyway
             // $pool now only contains servers we did not already try in the loop above
             foreach ($pool as $config) {
-
                 /* @var $db Connection */
                 $db = Yii::createObject($config);
                 try {

@@ -894,9 +894,7 @@ class BaseConsole
         } elseif ($options['pattern'] && !preg_match($options['pattern'], $input)) {
             static::output($options['error']);
             goto top;
-        } elseif ($options['validator'] &&
-            !call_user_func_array($options['validator'], [$input, &$error])
-        ) {
+        } elseif ($options['validator'] && !call_user_func_array($options['validator'], [$input, &$error])) {
             static::output(isset($error) ? $error : $options['error']);
             goto top;
         }

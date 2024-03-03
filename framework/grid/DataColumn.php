@@ -131,7 +131,7 @@ class DataColumn extends Column
     public function init()
     {
         parent::init();
-        if($this->filterAttribute === null) {
+        if ($this->filterAttribute === null) {
             $this->filterAttribute = $this->attribute;
         }
     }
@@ -150,8 +150,10 @@ class DataColumn extends Column
             $label = Html::encode($label);
         }
 
-        if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+        if (
+            $this->attribute !== null && $this->enableSorting &&
+            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)
+        ) {
             return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
         }
 

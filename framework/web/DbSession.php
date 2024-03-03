@@ -133,7 +133,7 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $row = $this->db->useMaster(function() use ($oldID) {
+        $row = $this->db->useMaster(function () use ($oldID) {
             return (new Query())->from($this->sessionTable)
                ->where(['id' => $oldID])
                ->createCommand($this->db)

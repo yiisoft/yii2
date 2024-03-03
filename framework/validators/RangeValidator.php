@@ -57,7 +57,8 @@ class RangeValidator extends Validator
     public function init()
     {
         parent::init();
-        if (!is_array($this->range)
+        if (
+            !is_array($this->range)
             && !($this->range instanceof \Closure)
             && !($this->range instanceof \Traversable)
         ) {
@@ -75,7 +76,8 @@ class RangeValidator extends Validator
     {
         $in = false;
 
-        if ($this->allowArray
+        if (
+            $this->allowArray
             && ($value instanceof \Traversable || is_array($value))
             && ArrayHelper::isSubset($value, $this->range, $this->strict)
         ) {

@@ -515,7 +515,8 @@ class BaseStringHelper
      * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */
-    public static function mask($string, $start, $length, $mask = '*') {
+    public static function mask($string, $start, $length, $mask = '*')
+    {
         $strLength = mb_strlen($string, 'UTF-8');
 
         // Return original string if start position is out of bounds

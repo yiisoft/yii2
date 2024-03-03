@@ -963,7 +963,8 @@ class Request extends \yii\base\Request
 
         // try to encode in UTF8 if not so
         // https://www.w3.org/International/questions/qa-forms-utf-8.en.html
-        if (!preg_match('%^(?:
+        if (
+            !preg_match('%^(?:
             [\x09\x0A\x0D\x20-\x7E]              # ASCII
             | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
             | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
@@ -1001,6 +1002,8 @@ class Request extends \yii\base\Request
      * @param string $s
      * @return string the UTF-8 translation of `s`.
      * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
+     * @phpcs:disable Generic.Formatting.DisallowMultipleStatements.SameLine
+     * @phpcs:disable Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore
      */
     private function utf8Encode($s)
     {
@@ -1197,11 +1200,13 @@ class Request extends \yii\base\Request
     protected function getUserIpFromIpHeaders()
     {
         $ip = $this->getSecureForwardedHeaderTrustedPart('for');
-        if ($ip !== null && preg_match(
-            '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:\d{1,3}\.){3}\d{1,3}))\]?(?::(?P<port>\d+))?$/',
-            $ip,
-            $matches
-        )) {
+        if (
+            $ip !== null && preg_match(
+                '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:\d{1,3}\.){3}\d{1,3}))\]?(?::(?P<port>\d+))?$/',
+                $ip,
+                $matches
+            )
+        ) {
             $ip = $this->getUserIpFromIpHeader($matches['ip']);
             if ($ip !== null) {
                 return $ip;
@@ -1291,7 +1296,7 @@ class Request extends \yii\base\Request
     public function getUserHost()
     {
         $userIp = $this->getUserIpFromIpHeaders();
-        if($userIp === null) {
+        if ($userIp === null) {
             return $this->getRemoteHost();
         }
         return gethostbyaddr($userIp);
@@ -1980,8 +1985,7 @@ class Request extends \yii\base\Request
         preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
         foreach ($forwardedElements[0] as $forwardedPairs) {
-            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs,
-                $matches, PREG_SET_ORDER);
+            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
             $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
                 $value = $item['value'];
                 if (isset($item['value2']) && $item['value2'] !== '') {

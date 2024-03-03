@@ -144,13 +144,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if (strpos($table, '{{') !== false) {
                 $table = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $table);
                 list($schema, $table) = explode('.', $table);
-                if (strpos($schema, '%') === false)
-                    $name = $schema.'.'.$name;
-                else
-                    $name = '{{'.$schema.'.'.$name.'}}';
+                if (strpos($schema, '%') === false) {
+                    $name = $schema . '.' . $name;
+                } else {
+                    $name = '{{' . $schema . '.' . $name . '}}';
+                }
             } else {
                 list($schema) = explode('.', $table);
-                $name = $schema.'.'.$name;
+                $name = $schema . '.' . $name;
             }
         }
         return 'DROP INDEX ' . $this->db->quoteTableName($name);
@@ -435,7 +436,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $updates)
             . ' FROM "EXCLUDED" ' . $this->buildWhere($updateCondition, $params)
-            . ' RETURNING ' . $this->db->quoteTableName($table) .'.*';
+            . ' RETURNING ' . $this->db->quoteTableName($table) . '.*';
         $selectUpsertSubQuery = (new Query())
             ->select(new Expression('1'))
             ->from('upsert')
