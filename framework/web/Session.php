@@ -398,7 +398,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
      * Starting with Yii 2.0.21 `sameSite` is also supported. It requires PHP version 7.3.0 or higher.
-     * For securtiy, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
+     * For security, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
      * To use this feature across different PHP versions check the version first. E.g.
      * ```php
      * [
