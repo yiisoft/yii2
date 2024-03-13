@@ -42,7 +42,7 @@ $foo = new Foo($bar);
 
 ### Method Injection <span id="method-injection"></span>
 
-Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
+Usually the dependencies of a class are passed to the constructor and are available inside the class during the whole lifecycle.
 With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
 and passing it to the constructor may not be possible or may cause too much overhead in the majority of use cases.
 

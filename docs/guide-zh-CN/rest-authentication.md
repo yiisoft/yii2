@@ -10,7 +10,7 @@
 
 下面有几种方式来发送 access token：
 
-* [HTTP 基本认证](https://en.wikipedia.org/wiki/Basic_access_authentication)：access token
+* [HTTP 基本认证](https://zh.wikipedia.org/wiki/HTTP%E5%9F%BA%E6%9C%AC%E8%AE%A4%E8%AF%81)：access token
   当作用户名发送，应用在 access token 可安全存在 API 使用端的场景，
   例如，API 使用端是运行在一台服务器上的程序。
 * 请求参数：access token 当作 API URL 请求参数发送，例如

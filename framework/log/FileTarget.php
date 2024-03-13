@@ -106,12 +106,17 @@ class FileTarget extends Target
      */
     public function export()
     {
+        $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
+
+        if (trim($text) === '') {
+            return; // No messages to export, so we exit the function early
+        }
+
         if (strpos($this->logFile, '://') === false || strncmp($this->logFile, 'file://', 7) === 0) {
             $logPath = dirname($this->logFile);
             FileHelper::createDirectory($logPath, $this->dirMode, true);
         }
 
-        $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
         if (($fp = @fopen($this->logFile, 'a')) === false) {
             throw new InvalidConfigException("Unable to append to log file: {$this->logFile}");
         }

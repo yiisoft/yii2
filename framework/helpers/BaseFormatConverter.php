@@ -97,22 +97,13 @@ class BaseFormatConverter
      * @param string|null $locale the locale to use for converting ICU short patterns `short`, `medium`, `long` and `full`.
      * If not given, `Yii::$app->language` will be used.
      * @return string The converted date format pattern.
+     * @throws \Exception
      */
     public static function convertDateIcuToPhp($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
             if (extension_loaded('intl')) {
-                if ($locale === null) {
-                    $locale = Yii::$app->language;
-                }
-                if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
-                } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
-                } else {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
-                }
-                $pattern = $formatter->getPattern();
+                $pattern = self::createFormatter($locale, $type, $pattern);
             } else {
                 return static::$phpFallbackDatePatterns[$pattern][$type];
             }
@@ -350,22 +341,13 @@ class BaseFormatConverter
      * @param string|null $locale the locale to use for converting ICU short patterns `short`, `medium`, `long` and `full`.
      * If not given, `Yii::$app->language` will be used.
      * @return string The converted date format pattern.
+     * @throws \Exception
      */
     public static function convertDateIcuToJui($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
             if (extension_loaded('intl')) {
-                if ($locale === null) {
-                    $locale = Yii::$app->language;
-                }
-                if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
-                } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
-                } else {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
-                }
-                $pattern = $formatter->getPattern();
+                $pattern = self::createFormatter($locale, $type, $pattern);
             } else {
                 return static::$juiFallbackDatePatterns[$pattern][$type];
             }
@@ -544,5 +526,33 @@ class BaseFormatConverter
             'r' => 'D, d M yy', // RFC 2822 formatted date, Example: Thu, 21 Dec 2000 16:01:07 +0200, skipping the time here because it is not supported
             'U' => '@',     // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
         ]);
+    }
+
+    /**
+     * Creates a date/time formatter based on the given parameters.
+     *
+     * @param string|null $locale The locale to be used. If null, the application's current language will be used.
+     * @param string $type The type of formatter ('date', 'time', etc.)
+     * @param string $pattern The pattern for the IntlDateFormatter.
+     *
+     * @return string The resulting pattern after formatter creation.
+     *
+     * @throws \Exception If the 'intl' extension is not loaded.
+     */
+    private static function createFormatter($locale, $type, $pattern)
+    {
+        if ($locale === null) {
+            $locale = Yii::$app->language;
+        }
+
+        if ($type === 'date') {
+            $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
+        } elseif ($type === 'time') {
+            $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
+        } else {
+            $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
+        }
+
+        return $formatter->getPattern();
     }
 }

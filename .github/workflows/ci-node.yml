@@ -1,0 +1,36 @@
+name: build-node
+
+on: [push, pull_request]
+
+env:
+  DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: NPM 6 on ubuntu-latest
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v4
+
+      - name: Install dependencies.
+        run: composer update $DEFAULT_COMPOSER_FLAGS
+
+      - name: Install JQuery `3.6.*@stable` for tests.
+        run: composer require "bower-asset/jquery:3.6.*@stable"
+
+      - name: Install node.js.
+        uses: actions/setup-node@v1
+        with:
+          node-version: 6
+
+      - name: Tests.
+        run: |
+          npm install
+          npm test

@@ -1049,7 +1049,7 @@ PATTERN;
 
     /**
      * Sets the GROUP BY part of the query.
-     * @param string|array|ExpressionInterface $columns the columns to be grouped by.
+     * @param string|array|ExpressionInterface|null $columns the columns to be grouped by.
      * Columns can be specified in either a string (e.g. "id, name") or an array (e.g. ['id', 'name']).
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
@@ -1067,7 +1067,7 @@ PATTERN;
     {
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
-        } elseif (!is_array($columns)) {
+        } elseif (!is_array($columns) && !is_null($columns)) {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->groupBy = $columns;

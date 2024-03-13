@@ -39,6 +39,11 @@ class BaseFileHelper
      * @since 2.0.14
      */
     public static $mimeAliasesFile = '@yii/helpers/mimeAliases.php';
+    /**
+     * @var string the path (or alias) of a PHP file containing extensions per MIME type.
+     * @since 2.0.48
+     */
+    public static $mimeExtensionsFile = '@yii/helpers/mimeExtensions.php';
 
 
     /**
@@ -213,8 +218,47 @@ class BaseFileHelper
             $mimeType = $aliases[$mimeType];
         }
 
+        // Note: For backwards compatibility the "MimeTypes" file is used.
         $mimeTypes = static::loadMimeTypes($magicFile);
         return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
+    }
+
+    /**
+     * Determines the most common extension by given MIME type.
+     * This method will use a local map between MIME types and extension names.
+     * @param string $mimeType file MIME type.
+     * @param bool $preferShort return an extension with a maximum of 3 characters.
+     * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
+     * If this is not set, the file specified by [[mimeMagicFile]] will be used.
+     * @return string|null the extensions corresponding to the specified MIME type
+     * @since 2.0.48
+     */
+    public static function getExtensionByMimeType($mimeType, $preferShort = false, $magicFile = null)
+    {
+        $aliases = static::loadMimeAliases(static::$mimeAliasesFile);
+        if (isset($aliases[$mimeType])) {
+            $mimeType = $aliases[$mimeType];
+        }
+
+        $mimeExtensions = static::loadMimeExtensions($magicFile);
+
+        if (!array_key_exists($mimeType, $mimeExtensions)) {
+            return null;
+        }
+
+        $extensions = $mimeExtensions[$mimeType];
+        if (is_array($extensions)) {
+            if ($preferShort) {
+                foreach ($extensions as $extension) {
+                    if (mb_strlen($extension, 'UTF-8') <= 3) {
+                        return $extension;
+                    }
+                }
+            }
+            return $extensions[0];
+        } else {
+            return $extensions;
+        }
     }
 
     private static $_mimeTypes = [];
@@ -258,6 +302,28 @@ class BaseFileHelper
         }
 
         return self::$_mimeAliases[$aliasesFile];
+    }
+
+    private static $_mimeExtensions = [];
+
+    /**
+     * Loads MIME extensions from the specified file.
+     * @param string|null $extensionsFile the path (or alias) of the file that contains MIME type aliases.
+     * If this is not set, the file specified by [[mimeAliasesFile]] will be used.
+     * @return array the mapping from file extensions to MIME types
+     * @since 2.0.48
+     */
+    protected static function loadMimeExtensions($extensionsFile)
+    {
+        if ($extensionsFile === null) {
+            $extensionsFile = static::$mimeExtensionsFile;
+        }
+        $extensionsFile = Yii::getAlias($extensionsFile);
+        if (!isset(self::$_mimeExtensions[$extensionsFile])) {
+            self::$_mimeExtensions[$extensionsFile] = require $extensionsFile;
+        }
+
+        return self::$_mimeExtensions[$extensionsFile];
     }
 
     /**
@@ -465,6 +531,7 @@ class BaseFileHelper
      *   If a negated pattern matches, this will override lower precedence patterns sources. Put a backslash (`\`) in front of the first `!`
      *   for patterns that begin with a literal `!`, for example, `\!important!.txt`.
      *   Note, the '/' characters in a pattern matches both '/' and '\' in the paths.
+     *   You can find more details about the gitignore pattern format [here](https://git-scm.com/docs/gitignore/en#_pattern_format).
      * - `only`: array, list of patterns that the file paths should match if they are to be returned. Directory paths
      *   are not checked against them. Same pattern matching rules as in the `except` option are used.
      *   If a file path matches a pattern in both `only` and `except`, it will NOT be returned.

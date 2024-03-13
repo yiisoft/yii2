@@ -133,8 +133,8 @@ class Pagination extends BaseObject implements Linkable
      */
     public $defaultPageSize = 20;
     /**
-     * @var array|false the page size limits. The first array element stands for the minimal page size, and the second
-     * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
+     * @var array|false the page size limits. The first array element defines the minimum page size, and the second
+     * the maximum page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];
 

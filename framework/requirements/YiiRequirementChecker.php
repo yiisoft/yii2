@@ -57,6 +57,11 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
 class YiiRequirementChecker
 {
     /**
+     * @var Check result
+     */
+    public $result;
+
+    /**
      * Check the given requirements, collecting results into internal field.
      * This method can be invoked several times checking different requirement sets.
      * Use [[getResult()]] or [[render()]] to get the results.
