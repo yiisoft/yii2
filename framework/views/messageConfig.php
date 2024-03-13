@@ -5,12 +5,17 @@ return [
     'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '..',
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
-    'languages' => ['de'],
+    'languages' => [
+        'af', 'ar', 'az', 'be', 'bg', 'bs', 'ca', 'cs', 'da', 'de', 'el', 'es', 'et', 'fa', 'fi', 'fr', 'he', 'hi',
+        'pt-BR', 'ro', 'hr', 'hu', 'hy', 'id', 'it', 'ja', 'ka', 'kk', 'ko', 'kz', 'lt', 'lv', 'ms', 'nb-NO', 'nl',
+        'pl', 'pt', 'ru', 'sk', 'sl', 'sr', 'sr-Latn', 'sv', 'tg', 'th', 'tr', 'uk', 'uz', 'uz-Cy', 'vi', 'zh-CN',
+        'zh-TW'
+    ],
     // string, the name of the function for translating messages.
     // Defaults to 'Yii::t'. This is used as a mark to find the messages to be
     // translated. You may use a string for single function name or an array for
     // multiple function names.
-    'translator' => 'Yii::t',
+    'translator' => ['\Yii::t', 'Yii::t'],
     // boolean, whether to sort messages by keys when merging new messages
     // with the existing ones. Defaults to false, which means the new (untranslated)
     // messages will be separated from the old (translated) ones.
@@ -31,15 +36,14 @@ return [
     // See helpers/FileHelper::findFiles() for pattern matching rules.
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
     'except' => [
-        '.svn',
-        '.git',
-        '.gitignore',
-        '.gitkeep',
-        '.hgignore',
-        '.hgkeep',
+        '.*',
+        '/.*',
         '/messages',
+        '/tests',
+        '/runtime',
+        '/vendor',
+        '/BaseYii.php',
     ],
-
     // 'php' output format is for saving messages to php files.
     'format' => 'php',
     // Root directory containing message translations.

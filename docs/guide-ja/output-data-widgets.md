@@ -777,4 +777,4 @@ yii gii/crud --controllerClass="backend\\controllers\PostController" \
 さらに読むべき文書
 ------------------
 
-- Arno Slatius による [Rendering Data in Yii 2 with GridView and ListView](https://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/)。
+- Arno Slatius による [Rendering Data in Yii 2 with GridView and ListView](https://www.sitepoint.com/rendering-data-in-yii-2-with-gridview-and-listview/)

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -460,7 +460,7 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
 
         $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
+            'id' => 'custom-input-id',
             'name' => $this->attributeName,
             'container' => '.field-custom-input-id',
             'input' => '#custom-input-id',
@@ -470,7 +470,7 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
 
         $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
+            'id' => 'custom-textinput-id',
             'name' => $this->attributeName,
             'container' => '.field-custom-textinput-id',
             'input' => '#custom-textinput-id',

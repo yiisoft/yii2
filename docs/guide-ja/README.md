@@ -135,6 +135,7 @@ RESTful ウェブ・サービス
 
 * [クイック・スタート](rest-quick-start.md)
 * [リソース](rest-resources.md)
+* [コレクションのフィルタリング](rest-filtering-collections.md)
 * [コントローラ](rest-controllers.md)
 * [ルーティング](rest-routing.md)
 * [レスポンス形式の設定](rest-response-formatting.md)

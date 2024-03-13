@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -286,48 +286,6 @@ class RequestTest extends TestCase
                     'example1.com',
                 ]
             ],
-            // HTTP header missing with port 80
-            [
-                [
-                    'HTTP_HOST' => 'example1.com',
-                    'SERVER_PORT' => 80,
-                ],
-                [
-                    'http://example1.com',
-                    'example1.com',
-                ]
-            ],
-            // normal with nonstandart port 8080
-            [
-                [
-                    'HTTP_HOST' => 'example1.com',
-                    'SERVER_PORT' => 8080,
-                ],
-                [
-                    'http://example1.com:8080',
-                    'example1.com',
-                ]
-            ],
-            [
-                [
-                    'HTTP_HOST' => 'example1.com:8081',
-                    'SERVER_PORT' => 8080,
-                ],
-                [
-                    'http://example1.com:8081',
-                    'example1.com',
-                ]
-            ],
-            [
-                [
-                    'HTTP_HOST' => 'example1.com:8080',
-                    'SERVER_PORT' => 8080,
-                ],
-                [
-                    'http://example1.com:8080',
-                    'example1.com',
-                ]
-            ],
             // HTTP header missing
             [
                 [
@@ -336,28 +294,6 @@ class RequestTest extends TestCase
                 [
                     'http://example2.com',
                     'example2.com',
-                ]
-            ],
-            // HTTP header missing with nonstandart port 8080
-            [
-                [
-                    'SERVER_NAME' => 'example1.com',
-                    'SERVER_PORT' => 8080,
-                ],
-                [
-                    'http://example1.com:8080',
-                    'example1.com',
-                ]
-            ],
-            // HTTP header missing with port 80
-            [
-                [
-                    'SERVER_NAME' => 'example1.com',
-                    'SERVER_PORT' => 80,
-                ],
-                [
-                    'http://example1.com',
-                    'example1.com',
                 ]
             ],
             // forwarded from untrusted server
@@ -1173,6 +1109,33 @@ class RequestTest extends TestCase
         }
         $request = new Request($params);
         $this->assertSame($expectedUserIp, $request->getUserIP());
+    }
+
+    public function trustedHostAndXForwardedPortDataProvider()
+    {
+        return [
+            'defaultPlain' => ['1.1.1.1', 80, null, null, 80],
+            'defaultSSL' => ['1.1.1.1', 443, null, null, 443],
+            'untrustedForwardedSSL' => ['1.1.1.1', 80, 443, ['10.0.0.0/8'], 80],
+            'untrustedForwardedPlain' => ['1.1.1.1', 443, 80, ['10.0.0.0/8'], 443],
+            'trustedForwardedSSL' => ['10.10.10.10', 80, 443, ['10.0.0.0/8'], 443],
+            'trustedForwardedPlain' => ['10.10.10.10', 443, 80, ['10.0.0.0/8'], 80],
+        ];
+    }
+
+    /**
+     * @dataProvider trustedHostAndXForwardedPortDataProvider
+     */
+    public function testTrustedHostAndXForwardedPort($remoteAddress, $requestPort, $xForwardedPort, $trustedHosts, $expectedPort)
+    {
+        $_SERVER['REMOTE_ADDR'] = $remoteAddress;
+        $_SERVER['SERVER_PORT'] = $requestPort;
+        $_SERVER['HTTP_X_FORWARDED_PORT'] = $xForwardedPort;
+        $params = [
+            'trustedHosts' => $trustedHosts,
+        ];
+        $request = new Request($params);
+        $this->assertSame($expectedPort, $request->getServerPort());
     }
 
     /**

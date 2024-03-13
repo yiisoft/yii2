@@ -80,7 +80,7 @@ return [
 ];
 ```
 
-Como resultado do código acima, `http://example.com/v1/users` retornará a lista de usuários na versão 1, enquanto `http://example.com/v2/users` retornará a lista de usuários na versão 2.
+Como resultado do código acima, `https://example.com/v1/users` retornará a lista de usuários na versão 1, enquanto `https://example.com/v2/users` retornará a lista de usuários na versão 2.
 
 Graças aos módulos, o código para diferentes versões principais pode ser bem isolado. Entretanto esta abordagem torna possível a reutilização de código entre os módulos através de classes bases comuns e outros recursos partilhados.
  

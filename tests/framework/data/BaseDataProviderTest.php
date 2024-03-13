@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\data;
@@ -20,7 +20,7 @@ class BaseDataProviderTest extends TestCase
         $rc = new \ReflectionClass(BaseDataProvider::className());
         $rp = $rc->getProperty('counter');
         $rp->setAccessible(true);
-        $rp->setValue(null);
+        $rp->setValue(new ConcreteDataProvider(), null);
 
         $this->assertNull((new ConcreteDataProvider())->id);
         $this->assertNotNull((new ConcreteDataProvider())->id);

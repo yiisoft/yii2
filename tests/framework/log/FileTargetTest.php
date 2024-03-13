@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
@@ -12,6 +12,7 @@ use yii\helpers\FileHelper;
 use yii\log\Dispatcher;
 use yii\log\FileTarget;
 use yii\log\Logger;
+use yiiunit\framework\log\mocks\CustomLogger;
 use yiiunit\TestCase;
 
 /**
@@ -23,14 +24,6 @@ class FileTargetTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
-    }
-
-    public function booleanDataProvider()
-    {
-        return [
-            [true],
-            [false],
-        ];
     }
 
     /**
@@ -50,11 +43,7 @@ class FileTargetTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider booleanDataProvider
-     * @param bool $rotateByCopy
-     */
-    public function testRotate($rotateByCopy)
+    public function testRotate()
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         FileHelper::removeDirectory(dirname($logFile));
@@ -71,7 +60,6 @@ class FileTargetTest extends TestCase
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
-                    'rotateByCopy' => $rotateByCopy,
                 ],
             ],
         ]);
@@ -122,5 +110,54 @@ class FileTargetTest extends TestCase
         $this->assertFileNotExists($logFile . '.2');
         $this->assertFileNotExists($logFile . '.3');
         $this->assertFileNotExists($logFile . '.4');
+    }
+
+    public function testLogEmptyStrings()
+    {
+        $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
+        $this->clearLogFile($logFile);
+
+        $logger = new CustomLogger();
+        $logger->logFile = $logFile;
+        $logger->messages = array_fill(0, 1, 'xxx');
+        $logger->export();
+
+        $test = file($logFile);
+        $this->assertEquals("xxx\n", $test[0]);
+
+        $this->clearLogFile($logFile);
+
+        $logger = new CustomLogger();
+        $logger->logFile = $logFile;
+        $logger->messages = array_fill(0, 3, 'xxx');
+        $logger->export();
+
+        $test = file($logFile);
+        $this->assertEquals("xxx\n", $test[0]);
+        $this->assertEquals("xxx\n", $test[1]);
+        $this->assertEquals("xxx\n", $test[2]);
+
+        $this->clearLogFile($logFile);
+
+        $logger->messages = array_fill(0, 1, 'yyy');
+        $logger->export();
+
+        $this->assertFileNotExists($logFile);
+
+        $logger->messages = array_fill(0, 10, '');
+        $logger->export();
+
+        $this->assertFileNotExists($logFile);
+
+        $logger->messages = array_fill(0, 10, null);
+        $logger->export();
+
+        $this->assertFileNotExists($logFile);
+    }
+
+    private function clearLogFile($logFile)
+    {
+        FileHelper::removeDirectory(dirname($logFile));
+        mkdir(dirname($logFile), 0777, true);
     }
 }

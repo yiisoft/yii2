@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\ar;
@@ -24,6 +24,8 @@ use yii\db\ActiveQuery;
 class Order extends ActiveRecord
 {
     public static $tableName;
+
+    public $virtualCustomerId = null;
 
     public static function tableName()
     {
@@ -238,4 +240,10 @@ class Order extends ActiveRecord
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItemsFor8');
     }
+
+    public function getVirtualCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'virtualCustomerId']);
+    }
+
 }

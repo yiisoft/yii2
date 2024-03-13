@@ -19,8 +19,8 @@ Yii 提供的国际化功能支持全方位信息翻译，
 
 在 Yii 应用程序中使用的所有区域 ID 应该规范化为 `ll-CC`，
 其中 `ll` 是根据两个或三个字母的小写字母语言代码
-[ISO-639](http://www.loc.gov/standards/iso639-2/) 和 `CC` 是两个字母的国别代码
-[ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html)。
+[ISO-639](https://www.loc.gov/standards/iso639-2/) 和 `CC` 是两个字母的国别代码
+[ISO-3166](https://en.wikipedia.org/wiki/ISO_3166-1#Current_codes)。
 有关区域设置的更多细节可以看
 [ICU 项目文档](https://unicode-org.github.io/icu/userguide/locale/#the-locale-concept)。
 
@@ -231,7 +231,7 @@ $price = 100;
 echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 ```
 
-> Note: 参数的格式化需要安装 [intl PHP 扩展](https://www.php.net/manual/en/intro.intl.php)。
+> Note: 参数的格式化需要安装 [intl PHP 扩展](https://www.php.net/manual/zh/intro.intl.php)。
 
 可以使用缩写的形式或完整的形式来格式化占位符：
 
@@ -738,12 +738,12 @@ class TranslationEventHandler
 
 ## 设置 PHP 环境（Setting Up PHP Environment） <span id="setup-environment"></span>
 
-Yii 使用 [PHP intl 扩展](https://www.php.net/manual/en/book.intl.php) 来提供大多数 I18N 的功能，
+Yii 使用 [PHP intl 扩展](https://www.php.net/manual/zh/book.intl.php) 来提供大多数 I18N 的功能，
 如日期和数字格式的 [[yii\i18n\Formatter]] 类和消息格式的 [[yii\i18n\MessageFormatter]] 类。
 当 `intl` 扩展没有安装时，两者会提供一个回调机制。然而，该回调机制只适用于目标语言是英语的情况下。
 因此，当 I18N 对你来说必不可少时，强烈建议你安装 `intl`。
 
-[PHP intl 扩展](https://www.php.net/manual/en/book.intl.php) 是基于对于所有不同的语言环境
+[PHP intl 扩展](https://www.php.net/manual/zh/book.intl.php) 是基于对于所有不同的语言环境
 提供格式化规则的 [ICU库](https://icu.unicode.org/)。
 不同版本的 ICU 中可能会产生不同日期和数值格式的结果。
 为了确保你的网站在所有环境产生相同的结果，

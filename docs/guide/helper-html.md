@@ -349,7 +349,7 @@ If you want to use an external style in a CSS file:
 generates
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -399,7 +399,7 @@ In order to generate an image tag, use the following:
 
 generates
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 Besides [aliases](concept-aliases.md), the first argument can accept routes, parameters and URLs, in the same way [Url::to()](helper-url.md) does.

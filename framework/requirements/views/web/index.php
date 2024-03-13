@@ -70,7 +70,7 @@
     <hr>
     <footer>
         <p>Server: <?php echo $this->getServerInfo() . ' ' . $this->getNowDate() ?></p>
-        <p>Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a></p>
+        <p>Powered by <a href="https://www.yiiframework.com/" rel="external">Yii Framework</a></p>
     </footer>
 </div>
 </body>

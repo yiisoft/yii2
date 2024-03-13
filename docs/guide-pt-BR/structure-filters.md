@@ -323,7 +323,7 @@ detalhes sobre o uso do PageCache.
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 O filtro RateLimiter implementa um limitador de acesso baseado no 
-[algoritmo do balde furado (leaky bucket)](https://en.wikipedia.org/wiki/Leaky_bucket).
+[algoritmo do balde furado (leaky bucket)](https://pt.wikipedia.org/wiki/Leaky_Bucket).
 É usado principalmente na implementação de APIs RESTful. Por favor, consulte a 
 seção [Limitador de Acesso](rest-rate-limiting.md) para mais detalhes sobre o 
 uso deste filtro.
@@ -359,7 +359,7 @@ public function behaviors()
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
 O compartilhamento de recursos cross-origin 
-[CORS](https://developer.mozilla.org/fr/docs/HTTP/Access_control_CORS) é um 
+[CORS](https://developer.mozilla.org/pt-BR/docs/Web/HTTP/CORS) é um 
 mecanismo que permite vários recursos (por exemplo, fontes, JavaScript, etc) 
 na página Web sejam solicitados por outros domínios. Em particular, as chamadas 
 AJAX do JavaScript podem usar o mecanismo XMLHttpRequest. Estas chamadas 
@@ -389,7 +389,7 @@ public function behaviors()
 A filtragem da classe Cors pode ser ajustado pela propriedade `cors`.
 
 * `cors['Origin']`: array usado para definir as origens permitidas. Pode ser 
-  `['*']` (qualquer um) ou `['http://www.myserver.net', 'http://www.myotherserver.com']`.
+  `['*']` (qualquer um) ou `['https://www.myserver.net', 'https://www.myotherserver.com']`.
   O padrão é `['*']`.
 * `cors['Access-Control-Request-Method']`: array com os métodos de requisição 
   permitidos, tais como `['GET', 'OPTIONS', 'HEAD']`. O padrão é 
@@ -403,7 +403,7 @@ A filtragem da classe Cors pode ser ajustado pela propriedade `cors`.
 * `cors['Access-Control-Max-Age']`: define o tempo de vida do pré-processamento 
   (pre-flight) da requisição. O padrão é `86400`.
 
-Por exemplo, permitindo CORS para a origem: `http://www.myserver.net` com os 
+Por exemplo, permitindo CORS para a origem: `https://www.myserver.net` com os 
 métodos `GET`, `HEAD` e `OPTIONS`:
 
 ```php
@@ -416,7 +416,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -438,7 +438,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

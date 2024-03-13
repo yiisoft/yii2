@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db;
@@ -545,6 +545,39 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertSame('', $columnSchema->dbTypecast(''));
     }
 
+    /**
+     * @dataProvider columnSchemaDbTypecastBooleanPhpTypeProvider
+     * @param mixed $value
+     * @param bool $expected
+     */
+    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected)
+    {
+        $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
+        $this->assertSame($expected, $columnSchema->dbTypecast($value));
+    }
+
+    public function columnSchemaDbTypecastBooleanPhpTypeProvider()
+    {
+        return [
+            [1, true],
+            [0, false],
+            ['1', true],
+            ['0', false],
+
+            // https://github.com/yiisoft/yii2/issues/9006
+            ["\1", true],
+            ["\0", false],
+
+            // https://github.com/yiisoft/yii2/pull/20122
+            ['TRUE', true],
+            ['FALSE', false],
+            ['true', true],
+            ['false', false],
+            ['True', true],
+            ['False', false],
+        ];
+    }
+
     public function testFindUniqueIndexes()
     {
         if ($this->driverName === 'sqlsrv') {
@@ -757,7 +790,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -775,7 +808,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }

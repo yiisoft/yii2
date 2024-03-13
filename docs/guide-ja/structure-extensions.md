@@ -75,7 +75,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 2. もし有れば、エクステンションによって提供されているクラス・オートローダをインストールする。
 3. 指示に従って、依存するエクステンションを全てダウンロードしインストールする。
 
-エクステンションがクラス・オートローダを持っていなくても、[PSR-4 標準](https://www.php-fig.org/psr/psr-4/) に従っている場合は、Yii によって提供されているクラス・オートローダを使ってエクステンションのクラスをオートロードすることが出来ます。
+エクステンションがクラス・オートローダを持っていなくても、[PSR-4 標準](https://www.php-fig.org/psr/psr-4/) に従っている場合は、Yii が提供しているクラス・オートローダを使ってエクステンションのクラスをオートロードすることが出来ます。
 必要なことは、エクステンションのルート・ディレクトリのための [ルート・エイリアス](concept-aliases.md#defining-aliases) を宣言することだけです。
 例えば、エクステンションを `vendor/mycompany/myext` というディレクトリにインストールしたと仮定します。
 そして、エクステンションのクラスは `myext` 名前空間の下にあるとします。
@@ -184,7 +184,7 @@ Yii のアプリケーションは、このファイルによって、どんな�
 それぞれの依存パッケージについて、適切なバージョン制約 (例えば `1.*` や `@stable`) を指定することも忘れてはなりません。
 あなたのエクステンションを安定バージョンとしてリリースする場合は、安定した依存パッケージを使ってください。
 
-たいていの JavaScript/CSS パッケージは、Composer ではなく、[Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) を使って管理されています。
+たいていの JavaScript/CSS パッケージは、Composer の代りに、[Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) を使って管理されています。
 Yii は [Composer アセット・プラグイン](https://github.com/fxpio/composer-asset-plugin) を使って、この種のパッケージを Composer によって管理することを可能にしています。
 あなたのエクステンションが Bower パッケージに依存している場合でも、次のように、
 `composer.json` に依存パッケージをリストアップすることが簡単に出来ます。
@@ -432,10 +432,10 @@ Yii は下記のコア・エクステンション (または ["公式エクス�
 - [yiisoft/yii2-smarty](https://github.com/yiisoft/yii2-smarty):
   [Smarty](https://www.smarty.net/) に基づいたテンプレート・エンジンを提供します。
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx):
-  [Sphinx](http://sphinxsearch.com) の使用に対するサポートを提供します。
+  [Sphinx](https://sphinxsearch.com/) の使用に対するサポートを提供します。
   基本的なクエリ、アクティブ・レコード、コード生成などの機能を含みます。
 - [yiisoft/yii2-swiftmailer](https://github.com/yiisoft/yii2-swiftmailer):
-  [swiftmailer](http://swiftmailer.org/) に基づいたメール送信機能を提供します。
+  [swiftmailer](https://swiftmailer.symfony.com/) に基づいたメール送信機能を提供します。
 - [yiisoft/yii2-twig](https://github.com/yiisoft/yii2-twig):
   [Twig](https://twig.symfony.com/) に基づいたテンプレート・エンジンを提供します。
 

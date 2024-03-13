@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 if (version_compare(PHP_VERSION, '4.3', '<')) {
@@ -56,6 +56,11 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  */
 class YiiRequirementChecker
 {
+    /**
+     * @var Check result
+     */
+    public $result;
+
     /**
      * Check the given requirements, collecting results into internal field.
      * This method can be invoked several times checking different requirement sets.

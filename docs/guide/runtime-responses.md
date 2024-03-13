@@ -169,7 +169,7 @@ you can call its shortcut version [[yii\web\Controller::redirect()]]. For exampl
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -180,7 +180,7 @@ In places other than an action method, you should call [[yii\web\Response::redir
 a chained call to the [[yii\web\Response::send()]] method to ensure no extra content will be appended to the response.
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: By default, the [[yii\web\Response::redirect()]] method sets the response status code to be 302 which instructs
@@ -234,7 +234,7 @@ for some popular Web servers:
 - Lighttpd v1.4: [X-LIGHTTPD-send-file](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
 - Lighttpd v1.5: [X-Sendfile](https://redmine.lighttpd.net/projects/lighttpd/wiki/X-LIGHTTPD-send-file)
 - Nginx: [X-Accel-Redirect](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
-- Cherokee: [X-Sendfile and X-Accel-Redirect](http://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
+- Cherokee: [X-Sendfile and X-Accel-Redirect](https://www.cherokee-project.com/doc/other_goodies.html#x-sendfile)
 
 
 ## Sending Response <span id="sending-response"></span>

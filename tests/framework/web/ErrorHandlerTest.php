@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -40,6 +40,49 @@ class ErrorHandlerTest extends TestCase
         $this->assertEquals('Code: 404
 Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
+    }
+
+    public function testFormatRaw()
+    {
+        Yii::$app->response->format = yii\web\Response::FORMAT_RAW;
+
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $out = ob_get_clean();
+
+        $this->assertcontains('Test Exception', $out);
+
+        $this->assertTrue(is_string(Yii::$app->response->data));
+        $this->assertcontains("Exception 'Exception' with message 'Test Exception'", Yii::$app->response->data);
+    }
+
+    public function testFormatXml()
+    {
+        Yii::$app->response->format = yii\web\Response::FORMAT_XML;
+
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $out = ob_get_clean();
+
+        $this->assertcontains('Test Exception', $out);
+
+        $outArray = Yii::$app->response->data;
+
+        $this->assertTrue(is_array(Yii::$app->response->data));
+
+        $this->assertEquals('Exception', $outArray['name']);
+        $this->assertEquals('Test Exception', $outArray['message']);
+        $this->assertArrayHasKey('code', $outArray);
+        $this->assertEquals('Exception', $outArray['type']);
+        $this->assertContains('ErrorHandlerTest.php', $outArray['file']);
+        $this->assertArrayHasKey('stack-trace', $outArray);
+        $this->assertArrayHasKey('line', $outArray);
     }
 
     public function testClearAssetFilesInErrorView()

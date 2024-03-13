@@ -1,4 +1,4 @@
-Collecting tabular input
+Collecting Tabular Input
 ========================
 
 Sometimes you need to handle multiple models of the same kind in a single form. For example, multiple settings, where
@@ -92,7 +92,7 @@ public function actionCreate()
 {
     $settings = [];
     if ($this->request->isPost) {
-        $count = count($this->request->post($setting->tableName())) - 1;
+        $count = count($this->request->post($setting->tableName()));
         for ($i = 0; $i < $count; $i++) {
             $settings[$i] = new Setting();
         }

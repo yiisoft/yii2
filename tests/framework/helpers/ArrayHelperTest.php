@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -129,6 +129,29 @@ class ArrayHelperTest extends TestCase
         $name = ArrayHelper::remove($array, 'name');
 
         $this->assertEquals($name, 'b');
+        $this->assertEquals($array, ['age' => 3]);
+
+        $default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
+        $this->assertEquals('defaultValue', $default);
+    }
+
+    /**
+     * @return void
+     */
+    public function testRemoveWithFloat()
+    {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
+
+        $array = ['name' => 'b', 'age' => 3, 1.1 => null];
+
+        $name = ArrayHelper::remove($array, 'name');
+        $this->assertEquals($name, 'b');
+        $this->assertEquals($array, ['age' => 3, 1.1 => null]);
+
+        $floatVal = ArrayHelper::remove($array, 1.1);
+        $this->assertNull($floatVal);
         $this->assertEquals($array, ['age' => 3]);
 
         $default = ArrayHelper::remove($array, 'nonExisting', 'defaultValue');
@@ -506,14 +529,21 @@ class ArrayHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/pull/11549
      */
-    public function test()
+    public function testGetValueWithFloatKeys()
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
+
         $array = [];
-        $array[1.0] = 'some value';
+        $array[1.1] = 'some value';
+        $array[2.1] = null;
 
-        $result = ArrayHelper::getValue($array, 1.0);
-
+        $result = ArrayHelper::getValue($array, 1.2);
         $this->assertEquals('some value', $result);
+
+        $result = ArrayHelper::getValue($array, 2.2);
+        $this->assertNull($result);
     }
 
     public function testIndex()
@@ -712,6 +742,7 @@ class ArrayHelperTest extends TestCase
             'a' => 1,
             'B' => 2,
         ];
+
         $this->assertTrue(ArrayHelper::keyExists('a', $array));
         $this->assertFalse(ArrayHelper::keyExists('b', $array));
         $this->assertTrue(ArrayHelper::keyExists('B', $array));
@@ -721,6 +752,27 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::keyExists('b', $array, false));
         $this->assertTrue(ArrayHelper::keyExists('B', $array, false));
         $this->assertFalse(ArrayHelper::keyExists('c', $array, false));
+    }
+
+    public function testKeyExistsWithFloat()
+    {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
+
+        $array = [
+            1 => 3,
+            2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.
+            3.3 => null,
+        ];
+
+        $this->assertTrue(ArrayHelper::keyExists(1, $array));
+        $this->assertTrue(ArrayHelper::keyExists(1.1, $array));
+        $this->assertTrue(ArrayHelper::keyExists(2, $array));
+        $this->assertTrue(ArrayHelper::keyExists('2', $array));
+        $this->assertTrue(ArrayHelper::keyExists(2.2, $array));
+        $this->assertTrue(ArrayHelper::keyExists(3, $array));
+        $this->assertTrue(ArrayHelper::keyExists(3.3, $array));
     }
 
     public function testKeyExistsArrayAccess()
@@ -1185,29 +1237,35 @@ class ArrayHelperTest extends TestCase
             3 => 'blank',
             [
                 '<>' => 'a&lt;&gt;b',
+                '&lt;a&gt;' => '&lt;a href=&quot;index.php?a=1&amp;b=2&quot;&gt;link&lt;/a&gt;',
                 '23' => true,
             ],
         ];
-        $this->assertEquals([
+
+        $expected = [
             'abc' => '123',
             '&lt;' => '>',
             'cde' => false,
             3 => 'blank',
             [
                 '<>' => 'a<>b',
+                '&lt;a&gt;' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
-        ], ArrayHelper::htmlDecode($array));
-        $this->assertEquals([
+        ];
+        $this->assertEquals($expected, ArrayHelper::htmlDecode($array));
+        $expected = [
             'abc' => '123',
             '<' => '>',
             'cde' => false,
             3 => 'blank',
             [
                 '<>' => 'a<>b',
+                '<a>' => '<a href="index.php?a=1&b=2">link</a>',
                 '23' => true,
             ],
-        ], ArrayHelper::htmlDecode($array, false));
+        ];
+        $this->assertEquals($expected, ArrayHelper::htmlDecode($array, false));
     }
 
     public function testIsIn()

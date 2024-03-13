@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\sqlite;
@@ -140,7 +140,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         // SQLite supports batch insert natively since 3.7.11
-        // http://www.sqlite.org/releaselog/3_7_11.html
+        // https://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->getServerVersion(), '3.7.11', '>=')) {
             return parent::batchInsert($table, $columns, $rows, $params);
@@ -472,7 +472,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in SQLite
-            // http://www.sqlite.org/syntaxdiagrams.html#select-stmt
+            // https://www.sqlite.org/syntaxdiagrams.html#select-stmt
             $sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
         }
 

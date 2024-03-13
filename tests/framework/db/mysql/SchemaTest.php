@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\mysql;
@@ -230,7 +230,6 @@ SQL;
 
         if (version_compare($version, '5.7', '<')) {
             $columns['int_col3']['phpType'] = 'string';
-
             $columns['json_col']['type'] = 'text';
             $columns['json_col']['dbType'] = 'longtext';
             $columns['json_col']['phpType'] = 'string';

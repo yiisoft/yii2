@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\mssql;
@@ -460,10 +460,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columnSchemas = $tableSchema->columns;
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
-                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value) || $value === null)) {
-                    $phName = $this->bindParam($value, $params);
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value))) {
                     // @see https://github.com/yiisoft/yii2/issues/12599
-                    $columns[$name] = new Expression("CONVERT(VARBINARY(MAX), $phName)", $params);
+                    $columns[$name] = new Expression('CONVERT(VARBINARY(MAX), ' . ('0x' . bin2hex($value)) . ')');
                 }
             }
         }
@@ -485,7 +484,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
         $cols = [];
-        $columns = [];
+        $outputColumns = [];
         if ($version2005orLater) {
             /* @var $schema TableSchema */
             $schema = $this->db->getTableSchema($table);
@@ -493,19 +492,26 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 if ($column->isComputed) {
                     continue;
                 }
+
+                $dbType = $column->dbType;
+                if (in_array($dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary'])) {
+                    $dbType .= '(MAX)';
+                }
+                if ($column->dbType === Schema::TYPE_TIMESTAMP) {
+                    $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
+                }
+
                 $quoteColumnName = $this->db->quoteColumnName($column->name);
-                $cols[] = $quoteColumnName . ' '
-                    . $column->dbType
-                    . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
-                    . ' ' . ($column->allowNull ? "NULL" : "");
-                $columns[] = 'INSERTED.' . $quoteColumnName;
+                $cols[] = $quoteColumnName . ' ' . $dbType . ' ' . ($column->allowNull ? "NULL" : "");
+                $outputColumns[] = 'INSERTED.' . $quoteColumnName;
             }
         }
-        $countColumns = count($columns);
+
+        $countColumns = count($outputColumns);
 
         $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $columns) . ' INTO @temporary_inserted' : '')
+            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $outputColumns) . ' INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
 
         if ($version2005orLater && $countColumns) {
@@ -519,7 +525,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
-     * @see http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
+     * @see https://weblogs.sqlteam.com/dang/2009/01/31/upsert-race-condition-with-merge/
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {

@@ -225,7 +225,7 @@ Mari Kita Coba <span id="trying-it-out"></span>
 Untuk melihat bagaimana kode-kode di atas bekerja, gunakan browser anda untuk mengakses URL ini:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Daftar Country](images/start-country-list.png)
@@ -235,7 +235,7 @@ Jika anda mengklik tombol "2", anda akan melihat halaman tersebut menampilkan 5 
 Silahkan melakukan observasi secara perlahan-lahan dan anda akan mengetahui bahwa URL pada browser juga akan berganti menjadi
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Di belakang layar, [[yii\data\Pagination|Pagination]] menyediakan semua kebutuhkan untuk memecah data menjadi halaman per halaman:

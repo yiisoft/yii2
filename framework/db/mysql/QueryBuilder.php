@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\mysql;
@@ -223,8 +223,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in MySQL
-            // http://stackoverflow.com/a/271650/1106908
-            // http://dev.mysql.com/doc/refman/5.0/en/select.html#idm47619502796240
+            // https://stackoverflow.com/questions/255517/mysql-offset-infinite-rows/271650#271650
+            // https://dev.mysql.com/doc/refman/5.7/en/select.html#idm46193796386608
             $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
         }
 
@@ -259,10 +259,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$columns instanceof Query && empty($names)) {
             $tableSchema = $this->db->getSchema()->getTableSchema($table);
             if ($tableSchema !== null) {
-                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
+                if (!empty($tableSchema->primaryKey)) {
+                    $columns = $tableSchema->primaryKey;
+                    $defaultValue = 'NULL';
+                } else {
+                    $columns = [reset($tableSchema->columns)->name];
+                    $defaultValue = 'DEFAULT';
+                }
+                
                 foreach ($columns as $name) {
                     $names[] = $this->db->quoteColumnName($name);
-                    $placeholders[] = 'DEFAULT';
+                    $placeholders[] = $defaultValue;
                 }
             }
         }
@@ -403,7 +410,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $version = $cache ? $cache->get($key) : null;
         if (!$version) {
-            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $version = $this->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
             if ($cache) {
                 $cache->set($key, $version, $this->db->schemaCacheDuration);
             }

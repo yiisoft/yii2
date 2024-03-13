@@ -1,7 +1,7 @@
 Enregistrement actif (*Active Record*)
 ===================================== 
 
-L'[enregistrement actif](https://en.wikipedia.org/wiki/Active_record_pattern) fournit une interface orientée objet pour accéder aux données stockées dans une base de données et les manipuler. 
+L'[enregistrement actif](https://fr.wikipedia.org/wiki/Active_record) fournit une interface orientée objet pour accéder aux données stockées dans une base de données et les manipuler. 
 Une classe d'enregistrement actif (ActiveRecord) est associée à une table de base de données, une instance de cette classe représente une ligne de cette table, et un *attribut* d'une instance d'enregistrement actif représente la valeur d'une colonne particulière dans cette ligne. 
 Au lieu d'écrire des instructions SQL brutes, 
 vous pouvez accéder aux attributs de l'objet enregistrement actif et appeler ses méthodes pour accéder aux données stockées dans les tables de la base de données et les manipuler. 
@@ -472,9 +472,9 @@ ou la méthode [[yii\db\ActiveRecord::getOldAttribute()|getOldAttribute()]].
 Cela est souvent le cas lorsque le modèle reçoit des entrées utilisateur de formulaires HTML ou chacune des valeurs est représentée par une chaîne de caractères. 
 Pour garantir le type correct pour p. ex. des valeurs entières, vous devez appliquer un [filtre de validation](input-validation.md#data-filtering):
 > `['attributeName', 'filter', 'filter' => 'intval']`. 
-Cela fonctionne pour toutes les fonctions de transformation de type de PHP comme [intval()](https://www.php.net/manual/en/function.intval.php), 
-[floatval()](https://www.php.net/manual/en/function.floatval.php), 
-[boolval](https://www.php.net/manual/en/function.boolval.php), etc...
+Cela fonctionne pour toutes les fonctions de transformation de type de PHP comme [intval()](https://www.php.net/manual/fr/function.intval.php), 
+[floatval()](https://www.php.net/manual/fr/function.floatval.php), 
+[boolval](https://www.php.net/manual/fr/function.boolval.php), etc...
 
 ### Valeurs d'attribut par défaut <span id="default-attribute-values"></span>
 
@@ -688,7 +688,7 @@ try {
 ```
 
 > Note : dans le code précédent, nous utilisons deux blocs de capture pour être compatible avec PHP 5.x et PHP 7.x. 
-`\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/en/class.throwable.php)
+`\Exception` met en œuvre l'[interface `\Throwable`](https://www.php.net/manual/fr/class.throwable.php)
 > à partir de  PHP 7.0, c'est pourquoi vous pouvez sauter la partie avec `\Exception` si votre application utilise PHP 7.0 ou une version plus récente.
 
 La deuxième façon consiste à lister les opérations de base de données qui nécessitent une prise en charge transactionnelle dans la méthode [[yii\db\ActiveRecord::transactions()]]. 

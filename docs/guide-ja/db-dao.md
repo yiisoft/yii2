@@ -275,7 +275,7 @@ Yii::$app->db->createCommand()->batchInsert('user', ['name', 'age'], [
 ```php
 Yii::$app->db->createCommand()->upsert('pages', [
     'name' => 'フロント・ページ',
-    'url' => 'http://example.com/', // url はユニーク
+    'url' => 'https://example.com/', // url はユニーク
     'visits' => 0,
 ], [
     'visits' => new \yii\db\Expression('visits + 1'),
@@ -682,5 +682,5 @@ $table = Yii::$app->db->getTableSchema('post');
 ```
 
 このメソッドは、テーブルのカラム、プライマリ・キー、外部キーなどの情報を含む [[yii\db\TableSchema]] オブジェクトを返します。
-これらの情報は、主として [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) によって利用されて、
+この情報は、主として [クエリ・ビルダ](db-query-builder.md) や [アクティブ・レコード](db-active-record.md) によって利用されて、
 特定のデータベースに依存しないコードを書くことを助けてくれています。
