@@ -19,4 +19,4 @@ jobs:
         run: composer install --prefer-dist
 
       - name: Run phpcs
-        run: vendor/bin/phpcs --standard=Yii2 -q --report=checkstyle framework/ | cs2pr
+        run: vendor/bin/phpcs -q --report=checkstyle framework/ | cs2pr
