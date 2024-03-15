@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "90adcf27ad62d068f15a3bf57e51fd91",
+    "content-hash": "7f989051117a0e72e6e59f7e1e568220",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -1773,16 +1773,16 @@
         },
         {
             "name": "yiisoft/yii2-coding-standards",
-            "version": "2.0.4",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-coding-standards.git",
-                "reference": "b76c3f58b54c37624f4b17582971e71981b71122"
+                "reference": "8bc39acaae848aec1ad52b2af4cf380e3f0b104e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-coding-standards/zipball/b76c3f58b54c37624f4b17582971e71981b71122",
-                "reference": "b76c3f58b54c37624f4b17582971e71981b71122",
+                "url": "https://api.github.com/repos/yiisoft/yii2-coding-standards/zipball/8bc39acaae848aec1ad52b2af4cf380e3f0b104e",
+                "reference": "8bc39acaae848aec1ad52b2af4cf380e3f0b104e",
                 "shasum": ""
             },
             "require": {
@@ -1790,6 +1790,11 @@
                 "squizlabs/php_codesniffer": ">=3.2"
             },
             "type": "phpcodesniffer-standard",
+            "autoload": {
+                "psr-4": {
+                    "yii\\console\\controllers\\": "src/console/controllers/"
+                }
+            },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "BSD-3-Clause"
@@ -1798,30 +1803,30 @@
                 {
                     "name": "Qiang Xue",
                     "email": "qiang.xue@gmail.com",
-                    "homepage": "http://www.yiiframework.com/",
+                    "homepage": "https://www.yiiframework.com/",
                     "role": "Founder and project lead"
                 },
                 {
                     "name": "Alexander Makarov",
                     "email": "sam@rmcreative.ru",
-                    "homepage": "http://rmcreative.ru/",
+                    "homepage": "https://rmcreative.ru/",
                     "role": "Core framework development"
                 },
                 {
                     "name": "Maurizio Domba",
-                    "homepage": "http://mdomba.info/",
+                    "homepage": "https://mdomba.info/",
                     "role": "Core framework development"
                 },
                 {
                     "name": "Carsten Brandt",
                     "email": "mail@cebe.cc",
-                    "homepage": "http://cebe.cc/",
+                    "homepage": "https://cebe.cc/",
                     "role": "Core framework development"
                 },
                 {
                     "name": "Timur Ruziev",
                     "email": "resurtm@gmail.com",
-                    "homepage": "http://resurtm.com/",
+                    "homepage": "https://resurtm.com/",
                     "role": "Core framework development"
                 },
                 {
@@ -1831,20 +1836,26 @@
                 }
             ],
             "description": "Yii PHP Framework Version 2 - Coding standard tools",
-            "homepage": "http://www.yiiframework.com/",
+            "homepage": "https://www.yiiframework.com/",
             "keywords": [
                 "codesniffer",
                 "framework",
                 "yii"
             ],
             "support": {
-                "forum": "http://www.yiiframework.com/forum/",
-                "irc": "irc://irc.freenode.net/yii",
+                "forum": "https://www.yiiframework.com/forum/",
+                "irc": "ircs://irc.libera.chat:6697/yii",
                 "issues": "https://github.com/yiisoft/yii2/issues?state=open",
                 "source": "https://github.com/yiisoft/yii2",
-                "wiki": "http://www.yiiframework.com/wiki/"
+                "wiki": "https://www.yiiframework.com/wiki/"
             },
-            "time": "2018-09-04T23:10:55+00:00"
+            "funding": [
+                {
+                    "url": "https://opencollective.com/yiisoft",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2024-03-15T12:57:48+00:00"
         }
     ],
     "aliases": [],
