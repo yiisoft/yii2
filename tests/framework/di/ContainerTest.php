@@ -236,7 +236,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         // Test optional unresolvable dependency.
-        $closure = fn(QuxInterface $test = null) => $test;
+        $closure = fn(?QuxInterface $test = null) => $test;
         $this->assertNull($container->invoke($closure));
     }
 

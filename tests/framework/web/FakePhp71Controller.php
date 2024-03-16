@@ -26,7 +26,7 @@ class FakePhp71Controller extends Controller
         Request $request,
         $between,
         VendorImage $vendorImage,
-        Post $post = null,
+        ?Post $post = null,
         $after
     ): void {
     }

@@ -77,8 +77,8 @@ class IndexActionTest extends TestCase
     public function testPrepareDataProviderWithPaginationAndSorting(
         \yii\data\Pagination|bool|array $pagination,
         \yii\data\Sort|bool|array $sort,
-        int $expectedPaginationPageSize = null,
-        int $expectedPaginationDefaultPageSize = null,
+        ?int $expectedPaginationPageSize = null,
+        ?int $expectedPaginationDefaultPageSize = null,
         array $expectedSortOrders = [],
         ?array $expectedSortDefaultOrder = null
     ): void {

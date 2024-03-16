@@ -56,7 +56,7 @@ class ControllerTest extends TestCase
     public function testCreateInlineAction(
         string $controllerClass,
         string $actionId,
-        string $expectedActionMethod = null
+        ?string $expectedActionMethod = null
     ): void {
         $this->mockApplication();
         /** @var Controller $controller */

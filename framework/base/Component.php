@@ -604,7 +604,7 @@ class Component extends BaseObject
      * @param string $name the event name
      * @param Event|null $event the event instance. If not set, a default [[Event]] object will be created.
      */
-    public function trigger($name, Event $event = null)
+    public function trigger($name, ?Event $event = null)
     {
         $this->ensureBehaviors();
 

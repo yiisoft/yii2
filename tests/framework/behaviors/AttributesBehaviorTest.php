@@ -105,7 +105,7 @@ class AttributesBehaviorTest extends TestCase
         string $aliasExpected,
         bool $preserveNonEmptyValues,
         string $name,
-        string $alias = null
+        ?string $alias = null
     ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;

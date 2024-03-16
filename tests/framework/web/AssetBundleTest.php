@@ -509,7 +509,7 @@ EOF;
      * @param string|bool $appendTimestamp
      * @param string|null $webAlias
      */
-    public function testRegisterFileAppendTimestamp(string $type, string $path, bool $appendTimestamp, string $expected, string $webAlias = null): void
+    public function testRegisterFileAppendTimestamp(string $type, string $path, bool $appendTimestamp, string $expected, ?string $webAlias = null): void
     {
         $originalAlias = Yii::getAlias('@web');
         if ($webAlias === null) {

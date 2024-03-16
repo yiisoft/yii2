@@ -553,7 +553,7 @@ class FormatterDateTest extends TestCase
      * @param mixed $value
      * @param mixed|null $expectedException
      */
-    public function testIntlDateInput(string|bool $expected, string $value, string $expectedException = null): void
+    public function testIntlDateInput(string|bool $expected, string $value, ?string $expectedException = null): void
     {
         $this->testDateInput($expected, $value, $expectedException);
     }
@@ -564,7 +564,7 @@ class FormatterDateTest extends TestCase
      * @param mixed $value
      * @param mixed|null $expectedException
      */
-    public function testDateInput(string|bool $expected, string $value, string $expectedException = null): void
+    public function testDateInput(string|bool $expected, string $value, ?string $expectedException = null): void
     {
         if ($expectedException !== null) {
             $this->expectException($expectedException);

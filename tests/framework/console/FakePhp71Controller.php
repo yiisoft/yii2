@@ -19,7 +19,7 @@ class FakePhp71Controller extends Controller
         Request $request,
         $between,
         DummyService $dummyService,
-        Post $post = null,
+        ?Post $post = null,
         $after
     ): void {
     }
