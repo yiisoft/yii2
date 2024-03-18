@@ -30,6 +30,7 @@ use yii\base\InvalidArgumentException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
