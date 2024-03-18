@@ -1,4 +1,4 @@
-name: Code Quality
+name: lint
 
 on: [push, pull_request]
 
