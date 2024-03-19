@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -76,11 +77,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var string|null Holds the original session module (before a custom handler is registered) so that it can be
      * restored when a Session component without custom handler is used after one that has.
      */
-    static protected $_originalSessionModule = null;
+    protected static $_originalSessionModule = null;
     /**
      * Polyfill for ini directive session.use-strict-mode for PHP < 5.5.2.
      */
-    static private $_useStrictModePolyfill = false;
+    private static $_useStrictModePolyfill = false;
     /**
      * @var string the name of the session variable that stores the flash message data.
      */
@@ -104,8 +105,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * @var array|null is used for saving session between recreations due to session parameters update.
      */
-    private $frozenSessionData;
-
+    private $_frozenSessionData;
 
     /**
      * Initializes the application component.
@@ -433,7 +433,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                 }
                 session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
             }
-
         } else {
             throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
@@ -1016,7 +1015,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         if ($this->getIsActive()) {
             if (isset($_SESSION)) {
-                $this->frozenSessionData = $_SESSION;
+                $this->_frozenSessionData = $_SESSION;
             }
             $this->close();
             Yii::info('Session frozen', __METHOD__);
@@ -1029,8 +1028,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     protected function unfreeze()
     {
-        if (null !== $this->frozenSessionData) {
-
+        if (null !== $this->_frozenSessionData) {
             YII_DEBUG ? session_start() : @session_start();
 
             if ($this->getIsActive()) {
@@ -1041,8 +1039,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
                 Yii::error($message, __METHOD__);
             }
 
-            $_SESSION = $this->frozenSessionData;
-            $this->frozenSessionData = null;
+            $_SESSION = $this->_frozenSessionData;
+            $this->_frozenSessionData = null;
         }
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -151,13 +152,13 @@ EOD;
         if ($value !== null) {
             $value = (int) $value;
         } else {
-            if (count($tableSchema->primaryKey)>1) {
+            if (count($tableSchema->primaryKey) > 1) {
                 throw new InvalidArgumentException("Can't reset sequence for composite primary key in table: $table");
             }
             // use master connection to get the biggest PK value
             $value = $this->db->useMaster(function (Connection $db) use ($tableSchema) {
                 return $db->createCommand(
-                    'SELECT MAX("' . $tableSchema->primaryKey[0] . '") FROM "'. $tableSchema->name . '"'
+                    'SELECT MAX("' . $tableSchema->primaryKey[0] . '") FROM "' . $tableSchema->name . '"'
                 )->queryScalar();
             }) + 1;
         }
