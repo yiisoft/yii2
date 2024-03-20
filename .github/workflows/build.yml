@@ -26,7 +26,7 @@ jobs:
             coverage: none
           - php: 7.4
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: pcov
+            coverage: xdebug
           - php: 8.0
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             coverage: none

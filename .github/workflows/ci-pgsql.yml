@@ -68,6 +68,7 @@ jobs:
         run: vendor/bin/phpunit --group pgsql --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
+        if: matrix.php == '7.4'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
