@@ -19,13 +19,8 @@ jobs:
 
     strategy:
         matrix:
-            os:
-              - ubuntu-latest
-
-            php:
-              - 8.1
-              - 8.2
-              - 8.3
+            os: [ubuntu-latest]
+            php: [8.1, 8.2, 8.3, 8.4]
 
     steps:
       - name: Checkout.
