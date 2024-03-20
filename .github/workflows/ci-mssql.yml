@@ -19,18 +19,9 @@ jobs:
 
     strategy:
         matrix:
-            os:
-              - ubuntu-latest
-
-            php:
-              - 8.1
-              - 8.2
-              - 8.3
-
-            mssql:
-              - server:2017-latest
-              - server:2019-latest
-              - server:2022-latest
+            os: [ubuntu-latest]
+            php: [8.1, 8.2, 8.3, 8.4]
+            mssql: [server:2017-latest, server:2019-latest, server:2022-latest]
 
     services:
       mssql:
