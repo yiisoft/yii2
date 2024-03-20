@@ -619,8 +619,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
+     * 
      * @param mixed $invalidSelectColumns
      */
     public function testInsertSelectFailed($invalidSelectColumns)
@@ -634,6 +633,8 @@ SQL;
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
 
+        $this->expectException('yii\base\InvalidParamException');
+        $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
         $command->insert('{{customer}}', $query)->execute();
     }
 

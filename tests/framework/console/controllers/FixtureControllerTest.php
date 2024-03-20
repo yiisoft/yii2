@@ -215,19 +215,15 @@ class FixtureControllerTest extends DatabaseTestCase
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should not be loaded');
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNoFixturesWereFoundInLoad()
     {
+        $this->expectException('\yii\console\Exception');
         $this->_fixtureController->actionLoad(['NotExistingFixture']);
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNoFixturesWereFoundInUnload()
     {
+        $this->expectException('\yii\console\Exception');
         $this->_fixtureController->actionUnload(['NotExistingFixture']);
     }
 
