@@ -66,15 +66,9 @@ jobs:
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
       - name: Run MSSQL tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
         run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
 
-      - name: Run MSSQL tests with PHPUnit.
-        if: matrix.php > '7.4'
-        run: vendor/bin/phpunit --group mssql --colors=always
-
       - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml

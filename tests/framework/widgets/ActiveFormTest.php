@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
  */
 class ActiveFormTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -110,6 +110,8 @@ HTML
 
     public function testRegisterClientScript()
     {
+        $this->expectNotToPerformAssertions();
+
         $this->mockWebApplication();
         $_SERVER['REQUEST_URI'] = 'http://example.com/';
 

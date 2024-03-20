@@ -47,6 +47,6 @@ class FileMutexTest extends TestCase
         $this->assertFileExists($fileName);
 
         $mutex->release($mutexName);
-        $this->assertFileNotExists($fileName);
+        $this->assertFileDoesNotExist($fileName);
     }
 }

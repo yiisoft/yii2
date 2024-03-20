@@ -17,7 +17,7 @@ class ActiveQueryModelConnectionTest extends TestCase
     private $globalConnection;
     private $modelConnection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->globalConnection = $this->getMockBuilder('yii\db\Connection')->getMock();
         $this->modelConnection = $this->getMockBuilder('yii\db\Connection')->getMock();

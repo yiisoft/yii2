@@ -19,7 +19,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class ExistValidatorTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

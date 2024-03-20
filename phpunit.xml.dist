@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<phpunit bootstrap="./tests/bootstrap.php"
-		backupGlobals="true"
-		colors="true"
-		convertErrorsToExceptions="true"
-		convertNoticesToExceptions="true"
-		convertWarningsToExceptions="true"
-		stopOnFailure="false"
-		printerClass="yiiunit\ResultPrinter">
-		<testsuites>
-			<testsuite name="Yii Test Suite">
-				<directory>./tests</directory>
-			</testsuite>
-		</testsuites>
-		<filter>
-            <whitelist>
-                <directory suffix=".php">framework/</directory>
-            </whitelist>
-			<blacklist>
-				<file>framework/i18n/GettextFile.php</file>
-				<file>framework/web/ResponseFormatterInterface.php</file>
-				<file>framework/.phpstorm.meta.php</file>
-				<directory suffix="Exception.php">framework/base</directory>
-				<directory suffix=".php">framework/bootstrap</directory>
-			</blacklist>
-		</filter>
-        <listeners>
-            <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener" />
-        </listeners>
+<phpunit
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    backupGlobals="true"
+    bootstrap="./tests/bootstrap.php"
+    colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+    executionOrder="default"
+    failOnRisky="true"
+    failOnWarning="true"
+    printerClass="yiiunit\ResultPrinter"
+    stopOnFailure="false"
+>
+    <testsuites>
+		<testsuite name="Yii Test Suite">
+			<directory>./tests</directory>
+		</testsuite>
+	</testsuites>
+
+	<coverage>
+        <include>
+            <directory suffix=".php">framework/</directory>
+        </include>
+		<exclude>
+			<file>framework/.phpstorm.meta.php</file>
+			<file>framework/i18n/GettextFile.php</file>
+			<file>framework/web/ResponseFormatterInterface.php</file>
+			<directory suffix=".php">framework/bootstrap</directory>
+			<directory suffix="Exception.php">framework/base</directory>
+            <directory suffix=".php">framework/requirements</directory>
+		</exclude>
+	</coverage>
 </phpunit>

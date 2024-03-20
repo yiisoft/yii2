@@ -123,23 +123,23 @@ class TargetTest extends TestCase
             'C_c' => 1,
         ];
         $context = $target->getContextMessage();
-        $this->assertContains('A_a', $context);
-        $this->assertNotContains('A_b', $context);
-        $this->assertContains('A_c', $context);
-        $this->assertContains('B_a', $context);
-        $this->assertNotContains('B_b', $context);
-        $this->assertNotContains('B_c', $context);
-        $this->assertContains('C_a', $context);
-        $this->assertContains('C_b', $context);
-        $this->assertContains('C_c', $context);
-        $this->assertNotContains('D_a', $context);
-        $this->assertNotContains('D_b', $context);
-        $this->assertNotContains('D_c', $context);
-        $this->assertNotContains('E_a', $context);
-        $this->assertNotContains('E_b', $context);
-        $this->assertNotContains('E_c', $context);
-        $this->assertNotContains('mySecret', $context);
-        $this->assertContains('***', $context);
+        $this->assertStringContainsString('A_a', $context);
+        $this->assertStringNotContainsString('A_b', $context);
+        $this->assertStringContainsString('A_c', $context);
+        $this->assertStringContainsString('B_a', $context);
+        $this->assertStringNotContainsString('B_b', $context);
+        $this->assertStringNotContainsString('B_c', $context);
+        $this->assertStringContainsString('C_a', $context);
+        $this->assertStringContainsString('C_b', $context);
+        $this->assertStringContainsString('C_c', $context);
+        $this->assertStringNotContainsString('D_a', $context);
+        $this->assertStringNotContainsString('D_b', $context);
+        $this->assertStringNotContainsString('D_c', $context);
+        $this->assertStringNotContainsString('E_a', $context);
+        $this->assertStringNotContainsString('E_b', $context);
+        $this->assertStringNotContainsString('E_c', $context);
+        $this->assertStringNotContainsString('mySecret', $context);
+        $this->assertStringContainsString('***', $context);
     }
 
     /**

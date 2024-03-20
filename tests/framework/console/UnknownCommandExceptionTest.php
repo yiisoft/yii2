@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class UnknownCommandExceptionTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,

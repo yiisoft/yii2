@@ -20,7 +20,7 @@ use yiiunit\data\ar\NoAutoLabels;
  */
 class GridViewTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -155,8 +155,9 @@ class GridViewTest extends \yiiunit\TestCase
 
     public function testHeaderLabels()
     {
+        $this->expectNotToPerformAssertions();
+        
         // Ensure GridView does not call Model::generateAttributeLabel() to generate labels unless the labels are explicitly used.
-
         $this->mockApplication([
             'components' => [
                 'db' => [
@@ -198,7 +199,6 @@ class GridViewTest extends \yiiunit\TestCase
             'attributes' => ['attr1', 'attr2'],
         ]);
         $grid->renderTableHeader();
-
         // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
 	}
 }

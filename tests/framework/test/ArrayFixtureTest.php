@@ -20,7 +20,7 @@ class ArrayFixtureTest extends TestCase
      */
     private $_fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_fixture = new ArrayFixture();
@@ -47,12 +47,12 @@ class ArrayFixtureTest extends TestCase
         $this->assertEmpty($this->_fixture->data, 'fixture data should not be loaded');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testWrongDataFileException()
     {
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
+
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        
         $this->_fixture->load();
     }
 }
