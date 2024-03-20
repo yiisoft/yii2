@@ -84,7 +84,8 @@
         "dms/phpunit-arraysubset-asserts": "^0.5",
         "phpunit/phpunit": "^9.6",
         "cebe/indent": "~1.0.2",
-        "friendsofphp/php-cs-fixer": "^3.0"
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "yiisoft/yii2-coding-standards": "^3.0"
     },
     "repositories": [
         {
@@ -102,14 +103,14 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "yii\\cs\\": "cs/src/",
             "yii\\build\\": "build/",
             "yiiunit\\": "tests/"
         }
     },
     "config": {
         "allow-plugins": {
-            "yiisoft/yii2-composer": true
+            "yiisoft/yii2-composer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "bin": [

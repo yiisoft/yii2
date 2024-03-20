@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Yii2">
+    <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2">
+        <!-- Yii2 framework supports PHP 5.4, constant visibility was added in PHP 7.1 -->
+        <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
+    </rule>
+
+    <!-- display progress -->
+    <arg value="p"/>
+    <!-- Show error codes -->
+    <arg value="s"/>
+    <arg name="colors"/>
+
+    <!-- generate relative paths -->
+    <arg name="basepath" value="."/>
+
+    <exclude-pattern>framework/views/*</exclude-pattern>
+</ruleset>

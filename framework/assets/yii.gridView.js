@@ -198,7 +198,7 @@
                 $grid.find(checkAllInput + (all ? ":not(:checked)" : ":checked")).prop('checked', all).change();
             };
             initEventHandler($grid, 'checkRow', 'click.yiiGridView', "#" + id + " " + inputs, handler);
-            if($grid.find(inputs).length) {
+            if ($grid.find(inputs).length) {
                 handler(); // Ensure "check all" checkbox is checked on page load if all data row checkboxes are initially checked.
             }
         },
@@ -245,7 +245,8 @@
      * @param {string} selector jQuery selector
      * @param {function} callback The actual function to be executed with this event
      */
-    function initEventHandler($gridView, type, event, selector, callback) {
+    function initEventHandler($gridView, type, event, selector, callback)
+    {
         var id = $gridView.attr('id');
         var prevHandler = gridEventHandlers[id];
         if (prevHandler !== undefined && prevHandler[type] !== undefined) {
