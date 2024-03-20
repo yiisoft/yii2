@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@ use yii\helpers\Url;
  * Menu checks the current route and request parameters to toggle certain menu items
  * with active state.
  *
- * Note that Menu only renders the HTML tags about the menu. It does do any styling.
+ * Note that Menu only renders the HTML tags about the menu. It does not do any styling.
  * You are responsible to provide CSS styles to make it look like a real menu.
  *
  * The following example shows how to use Menu:

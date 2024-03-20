@@ -75,7 +75,12 @@ class TargetTest extends TestCase
         $logger->log('testH', Logger::LEVEL_ERROR, 'yii.db.Command.whatever');
         $logger->log('testI', Logger::LEVEL_ERROR, 'yii\db\Command::query');
 
-        $this->assertEquals(count($expected), count(static::$messages), 'Expected ' . implode(',', $expected) . ', got ' . implode(',', array_column(static::$messages, 0)));
+        $messageColumn = [];
+        foreach (static::$messages as $message) {
+            $messageColumn[] = $message[0];
+        }
+
+        $this->assertEquals(count($expected), count(static::$messages), 'Expected ' . implode(',', $expected) . ', got ' . implode(',', $messageColumn));
         $i = 0;
         foreach ($expected as $e) {
             $this->assertEquals('test' . $e, static::$messages[$i++][0]);

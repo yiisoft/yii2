@@ -1,0 +1,22 @@
+name: lint
+
+on: [push, pull_request]
+
+jobs:
+    phpcs:
+      runs-on: ubuntu-latest
+      name: PHP_CodeSniffer
+      steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+            php-version: '8.2'
+            tools: cs2pr
+
+      - name: Install dependencies
+        run: composer install --prefer-dist
+
+      - name: Run phpcs
+        run: vendor/bin/phpcs -q --report=checkstyle framework/ | cs2pr

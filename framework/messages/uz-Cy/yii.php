@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -67,7 +68,7 @@ return [
     'Unknown alias: -{name}' => '',
     'Unknown filter attribute "{attribute}"' => '',
     'Unknown option: --{name}' => 'Ноаниқ танлов: --{name}',
-    'Update' => 'Таҳририлаш',
+    'Update' => 'Таҳрирлаш',
     'View' => 'Кўриш',
     'Yes' => 'Ҳа',
     'You are not allowed to perform this action.' => 'Сизга ушбу амални бажаришга руҳсат берилмаган.',
