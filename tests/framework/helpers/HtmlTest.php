@@ -1630,6 +1630,11 @@ EOD;
                     $model->addError('name', 'Error message. Here are even more chars: ""');
                 },
             ],
+            [
+                'empty_class',
+                ['emptyClass' => 'd-none'],
+                '<div class="d-none"><p>Please fix the following errors:</p><ul></ul></div>',
+            ],
         ];
     }
 

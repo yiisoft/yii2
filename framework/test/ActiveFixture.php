@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -100,7 +101,6 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-
             if ($this->dataDirectory !== null) {
                 $dataFile = $this->getTableSchema()->fullName . '.php';
             } else {

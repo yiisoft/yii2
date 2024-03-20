@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -169,7 +170,8 @@ class AccessRule extends Component
      */
     public function allows($action, $user, $request)
     {
-        if ($this->matchAction($action)
+        if (
+            $this->matchAction($action)
             && $this->matchRole($user)
             && $this->matchIP($request->getUserIP())
             && $this->matchVerb($request->getMethod())
