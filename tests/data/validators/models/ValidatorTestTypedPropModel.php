@@ -11,8 +11,5 @@ use yii\base\Model;
 
 class ValidatorTestTypedPropModel extends Model
 {
-    /**
-     * @var array
-     */
-    public $arrayTypedProperty = [true, false];
+    public array $arrayTypedProperty = [true, false];
 }
