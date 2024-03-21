@@ -50,7 +50,7 @@ Questa guida è focalizzata principalmente sulla versione 2.0.
 Richieste e requisiti di sistema
 ---------------------------------
 
-Yii 2.0 richiede PHP 5.4.0 o successivo. Puoi trovare maggiori dettagli sulle richieste delle singole funzionalità
+Yii 2.0 richiede PHP 7.3.0 o successivo. Puoi trovare maggiori dettagli sulle richieste delle singole funzionalità
 eseguendo lo script di verifica requisiti incluso in ogni versione di Yii.
 
 L'uso di Yii richiede una conoscenza base della programmazione ad oggetti (OOP), dato che Yii è un framework puramente OOP.
