@@ -1449,8 +1449,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertSame('test123', $model->char_col3);
         $this->assertSame(3.742, $model->float_col);
         $this->assertSame(42.1337, $model->float_col2);
-        //$this->assertSame(true, $model->bool_col);
-        //$this->assertSame(false, $model->bool_col2);
+        $this->assertSame(true, $model->bool_col);
+        $this->assertSame(false, $model->bool_col2);
     }
 
     public function testIssues()
