@@ -23,7 +23,7 @@ jobs:
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
       - name: Install JQuery `3.6.*@stable` for tests.
-        run: composer require "bower-asset/jquery:3.6.*@stable"
+        run: composer require "npm-asset/jquery:3.6.*@stable"
 
       - name: Install node.js.
         uses: actions/setup-node@v1

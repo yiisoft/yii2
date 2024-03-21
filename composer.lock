@@ -4,83 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7269257cc9e1f2b37d4e30c637bb226b",
+    "content-hash": "c1ab83d0eb50d7867b2af1a1966534ad",
     "packages": [
-        {
-            "name": "bower-asset/inputmask",
-            "version": "5.0.8",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:RobinHerbots/Inputmask.git",
-                "reference": "e0f39e0c93569c6b494c3a57edef2c59313a6b64"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/e0f39e0c93569c6b494c3a57edef2c59313a6b64",
-                "reference": "e0f39e0c93569c6b494c3a57edef2c59313a6b64"
-            },
-            "require": {
-                "bower-asset/jquery": ">=1.7"
-            },
-            "type": "bower-asset",
-            "license": [
-                "http://opensource.org/licenses/mit-license.php"
-            ]
-        },
-        {
-            "name": "bower-asset/jquery",
-            "version": "3.7.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/jquery/jquery-dist.git",
-                "reference": "fde1f76e2799dd877c176abde0ec836553246991"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/fde1f76e2799dd877c176abde0ec836553246991",
-                "reference": "fde1f76e2799dd877c176abde0ec836553246991"
-            },
-            "type": "bower-asset",
-            "license": [
-                "MIT"
-            ]
-        },
-        {
-            "name": "bower-asset/punycode",
-            "version": "v2.3.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mathiasbynens/punycode.js.git",
-                "reference": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/9e1b2cda98d215d3a73fcbfe93c62e021f4ba768",
-                "reference": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768"
-            },
-            "type": "bower-asset"
-        },
-        {
-            "name": "bower-asset/yii2-pjax",
-            "version": "2.0.8",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:yiisoft/jquery-pjax.git",
-                "reference": "a9298d57da63d14a950f1b94366a864bc62264fb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/jquery-pjax/zipball/a9298d57da63d14a950f1b94366a864bc62264fb",
-                "reference": "a9298d57da63d14a950f1b94366a864bc62264fb"
-            },
-            "require": {
-                "bower-asset/jquery": ">=1.8"
-            },
-            "type": "bower-asset",
-            "license": [
-                "MIT"
-            ]
-        },
         {
             "name": "cebe/markdown",
             "version": "1.2.1",
@@ -205,6 +130,51 @@
                 "source": "https://github.com/ezyang/htmlpurifier/tree/v4.17.0"
             },
             "time": "2023-11-17T15:01:25+00:00"
+        },
+        {
+            "name": "npm-asset/inputmask",
+            "version": "5.0.8",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/inputmask/-/inputmask-5.0.8.tgz"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/jquery",
+            "version": "3.7.1",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/punycode",
+            "version": "2.3.1",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
+            },
+            "type": "npm-asset",
+            "license": [
+                "MIT"
+            ]
+        },
+        {
+            "name": "npm-asset/yii2-pjax",
+            "version": "2.0.8",
+            "dist": {
+                "type": "tar",
+                "url": "https://registry.npmjs.org/yii2-pjax/-/yii2-pjax-2.0.8.tgz"
+            },
+            "type": "npm-asset"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -2353,7 +2323,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "bower-asset/jquery": 0
+        "npm-asset/jquery": 0
     },
     "prefer-stable": true,
     "prefer-lowest": false,
