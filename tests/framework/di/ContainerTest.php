@@ -457,6 +457,25 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
+    public function testVariadicConstructor()
+    {
+        if (\defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        $container = new Container();
+        $container->get('yiiunit\framework\di\stubs\Variadic');
+    }
+
+    public function testVariadicCallable()
+    {
+        if (\defined('HHVM_VERSION')) {
+            static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
+        }
+
+        require __DIR__ . '/testContainerWithVariadicCallable.php';
+    }
+    
     /**
      * @see https://github.com/yiisoft/yii2/issues/18245
      */
