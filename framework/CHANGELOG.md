@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Chg #19902: Remove support for CUBRID (mtangoo)
 - Chg #19891: Remove XCache and ZendDataCache support (mtangoo)
+- Enh #20135: Remove Bower dependency and use minified JS on production (razvanphp)
 
 
 2.0.50 under development
