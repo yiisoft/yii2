@@ -481,6 +481,8 @@ class ContainerTest extends TestCase
 
     public function testVariadicConstructor()
     {
+        $this->expectNotToPerformAssertions();
+
         if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
@@ -491,13 +493,15 @@ class ContainerTest extends TestCase
 
     public function testVariadicCallable()
     {
+        $this->expectNotToPerformAssertions();
+
         if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
     }
-    
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/18245
      */
