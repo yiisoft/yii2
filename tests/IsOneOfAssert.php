@@ -19,7 +19,7 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
      */
     private $allowedValues = [];
 
-    public function __construct($allowedValues)
+    public function __construct(array $allowedValues)
     {
         $this->allowedValues = $allowedValues;
     }
@@ -42,6 +42,6 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
 
     protected function matches($other): bool
     {
-        return in_array($other, $this->allowedValues);
+        return in_array($other, $this->allowedValues, false);
     }
 }
