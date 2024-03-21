@@ -1931,11 +1931,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testLegalValuesForFindByCondition($modelClassName, $validFilter)
     {
-        $this->expectNotToPerformAssertions();
-
         /** @var Query $query */
         $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
         Customer::getDb()->queryBuilder->build($query);
+
+        $this->assertTrue(true);
     }
 
     public function illegalValuesForFindByCondition()

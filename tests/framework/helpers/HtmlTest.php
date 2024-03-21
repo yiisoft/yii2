@@ -2060,7 +2060,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdDataProvider
+     * @dataProvider getInputIdDataProvider
      */
     public function testGetInputId($attributeName, $inputIdExpected)
     {
@@ -2073,7 +2073,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdByNameDataProvider
+     * @dataProvider getInputIdByNameDataProvider
      */
     public function testGetInputIdByName($attributeName, $inputIdExpected)
     {
@@ -2182,10 +2182,8 @@ HTML;
         $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public function testGetInputIdDataProvider()
+    public static function getInputIdDataProvider()
     {
-        $this->expectNotToPerformAssertions();
-
         return [
             [
                 'foo',
@@ -2223,10 +2221,8 @@ HTML;
         ];
     }
 
-    public function testGetInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider()
     {
-        $this->expectNotToPerformAssertions();
-
         return [
             [
                 'foo',

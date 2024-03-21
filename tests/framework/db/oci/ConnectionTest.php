@@ -78,8 +78,6 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testTransactionIsolation()
     {
-        $this->expectNotToPerformAssertions();
-        
         $connection = $this->getConnection(true);
 
         $transaction = $connection->beginTransaction(Transaction::READ_COMMITTED);
@@ -87,6 +85,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
+
+        $this->assertTrue(true);
     }
 
     /**

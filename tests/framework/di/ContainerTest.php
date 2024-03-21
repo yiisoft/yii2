@@ -481,25 +481,25 @@ class ContainerTest extends TestCase
 
     public function testVariadicConstructor()
     {
-        $this->expectNotToPerformAssertions();
-
         if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
+
+        $this->assertTrue(true);
     }
 
     public function testVariadicCallable()
     {
-        $this->expectNotToPerformAssertions();
-
         if (\defined('HHVM_VERSION')) {
             static::markTestSkipped('Can not test on HHVM because it does not support variadics.');
         }
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -507,8 +507,6 @@ class ContainerTest extends TestCase
      */
     public function testDelayedInitializationOfSubArray()
     {
-        $this->expectNotToPerformAssertions();
-
         $definitions = [
             'test' => [
                 'class' => Corge::className(),
@@ -534,6 +532,8 @@ class ContainerTest extends TestCase
 
         Yii::$container->set('setLater', new Qux());
         Yii::$container->get('test');
+
+        $this->assertTrue(true);
     }
 
     /**
