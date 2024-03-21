@@ -67,7 +67,7 @@ jobs:
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
 
       - name: Run tests with PHPUnit.
-        if: matrix.php >= '8.0'
+        if: matrix.php != '7.4'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
       - name: Upload coverage to Codecov.
