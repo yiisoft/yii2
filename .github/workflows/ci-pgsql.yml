@@ -19,23 +19,9 @@ jobs:
 
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-
-        php:
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
-          - 8.3
-
-        pgsql:
-          - 10
-          - 11
-          - 12
-          - 13
-          - 14
-          - 15
+        os: [ubuntu-latest]
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        pgsql: [10, 11, 12, 13, 14, 15]
 
     services:
       postgres:
