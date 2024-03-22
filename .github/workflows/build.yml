@@ -39,6 +39,11 @@ jobs:
           - php: 8.3
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             coverage: none
+            os: ubuntu-latest
+          - php: 8.4
+            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+            coverage: none
+            os: ubuntu-latest
 
     steps:
       - name: Generate french locale.
