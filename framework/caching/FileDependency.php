@@ -45,7 +45,11 @@ class FileDependency extends Dependency
         }
 
         $fileName = Yii::getAlias($this->fileName);
+        if (!file_exists($fileName)) {
+            return 0;
+        }
+
         clearstatcache(false, $fileName);
-        return @filemtime($fileName);
+        return filemtime($fileName);
     }
 }
