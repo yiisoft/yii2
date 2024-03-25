@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class FormatConverterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +31,7 @@ class FormatConverterTest extends TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -358,7 +358,7 @@ class FormatConverterTest extends TestCase
         $formatter = new Formatter(['locale' => 'ru-RU']);
         // There is a dot after month name in updated ICU data and no dot in old data. Both are acceptable.
         // See https://github.com/yiisoft/yii2/issues/9906
-        $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
+        $this->assertMatchesRegularExpression('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
     }
 
     public function testPhpToICUMixedPatterns()

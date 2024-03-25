@@ -32,7 +32,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->initializeApplicationMock();
         $this->initializeWidgetMocks();

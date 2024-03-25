@@ -26,7 +26,7 @@ class LoggerTest extends TestCase
      */
     protected $dispatcher;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->logger = new Logger();
         $this->dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
