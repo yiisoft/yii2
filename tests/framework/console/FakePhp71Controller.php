@@ -14,14 +14,9 @@ use yii\console\Request;
 
 class FakePhp71Controller extends Controller
 {
-    public function actionInjection(
-        $before,
-        Request $request,
-        $between,
-        DummyService $dummyService,
-        Post $post = null,
-        $after
-    ): void {
+    public function actionInjection($before, Request $request, $between, DummyService $dummyService, ?Post $post = null, $after)
+    {
+
     }
 
     public function actionNullableInjection(?Request $request, ?Post $post): void

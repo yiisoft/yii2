@@ -21,14 +21,9 @@ class FakePhp71Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionInjection(
-        $before,
-        Request $request,
-        $between,
-        VendorImage $vendorImage,
-        Post $post = null,
-        $after
-    ): void {
+    public function actionInjection($before, Request $request, $between, VendorImage $vendorImage, ?Post $post = null, $after)
+    {
+
     }
 
     public function actionNullableInjection(?Request $request, ?Post $post): void
