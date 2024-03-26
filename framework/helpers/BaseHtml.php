@@ -220,6 +220,11 @@ class BaseHtml
      */
     public static function script($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->scriptOptions)) {
+            $options = array_merge($view->scriptOptions, $options);
+        }
+
         return static::tag('script', $content, $options);
     }
 
