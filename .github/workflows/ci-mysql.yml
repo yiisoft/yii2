@@ -47,8 +47,13 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer:v2, pecl
 
-      - name: Install dependencies with composer.
+      - name: Install dependencies with composer
+        if: matrix.php != '8.4'
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: Install dependencies with PHP 8.4.
+        if: matrix.php == '8.4'
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ignore-platform-reqs --ansi
 
       - name: Run MySQL tests with PHPUnit and generate coverage.
         run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
