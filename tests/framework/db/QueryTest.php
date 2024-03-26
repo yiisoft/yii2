@@ -333,8 +333,7 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertCount(2, $result);
 
         $this->assertNotContains(1, $result);
-        $this->assertContains(2, $result);
-        $this->assertContains(3, $result);
+        $this->assertEquals([2, 3], $result);
     }
 
     public function testUnion()

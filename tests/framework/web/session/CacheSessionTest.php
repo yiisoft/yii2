@@ -18,7 +18,7 @@ class CacheSessionTest extends \yiiunit\TestCase
 {
     use SessionTestTrait;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

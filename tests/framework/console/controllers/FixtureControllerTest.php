@@ -30,7 +30,7 @@ class FixtureControllerTest extends DatabaseTestCase
 
     protected $driverName = 'mysql';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -46,7 +46,7 @@ class FixtureControllerTest extends DatabaseTestCase
         ], [null, null]); //id and module are null
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->_fixtureController = null;
         FixtureStorage::clear();
@@ -215,19 +215,15 @@ class FixtureControllerTest extends DatabaseTestCase
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should not be loaded');
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNoFixturesWereFoundInLoad()
     {
+        $this->expectException('\yii\console\Exception');
         $this->_fixtureController->actionLoad(['NotExistingFixture']);
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNoFixturesWereFoundInUnload()
     {
+        $this->expectException('\yii\console\Exception');
         $this->_fixtureController->actionUnload(['NotExistingFixture']);
     }
 

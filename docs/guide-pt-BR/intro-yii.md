@@ -59,7 +59,7 @@ desenvolvimento nos próximos anos. Este guia trata principalmente da versão 2.
 Requisitos e Pré-requisitos
 ---------------------------
 
-Yii 2.0 requer PHP 5.4.0 ou superior. Você pode encontrar requisitos mais
+Yii 2.0 requer PHP 7.3.0 ou superior. Você pode encontrar requisitos mais
 detalhados para recursos específicos executando o verificador de requisitos
 (requirement checker) incluído em cada lançamento do Yii.
 

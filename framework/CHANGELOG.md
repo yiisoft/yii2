@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Enh #20032: Added `yii\helpers\BaseStringHelper::mask()` method for string masking with multibyte support (salehhashemi1992)
 - Enh #20034: Added `yii\helpers\BaseStringHelper::findBetween()` to retrieve a substring that lies between two strings (salehhashemi1992)
 - Enh #20121: Added `yiisoft/yii2-coding-standards` to composer `require-dev` and lint code to comply with PSR12 (razvanphp)
+- Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 
 
 2.0.49.2 October 12, 2023
