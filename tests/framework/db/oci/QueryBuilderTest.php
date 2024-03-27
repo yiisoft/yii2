@@ -305,7 +305,7 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         if (is_string($expectedSQL)) {
             $this->assertEqualsWithoutLE($expectedSQL, $actualSQL);
         } else {
-            $this->assertContains($actualSQL, $expectedSQL);
+            $this->assertStringContainsString($actualSQL, $expectedSQL);
         }
         if (ArrayHelper::isAssociative($expectedParams)) {
             $this->assertSame($expectedParams, $actualParams);

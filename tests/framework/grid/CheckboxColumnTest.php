@@ -21,7 +21,7 @@ use yiiunit\TestCase;
  */
 class CheckboxColumnTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         IntlTestHelper::resetIntlStatus();
@@ -35,34 +35,34 @@ class CheckboxColumnTest extends TestCase
     public function testInputName()
     {
         $column = new CheckboxColumn(['name' => 'selection', 'grid' => $this->getGrid()]);
-        $this->assertContains('name="selection_all"', $column->renderHeaderCell());
+        $this->assertStringContainsString('name="selection_all"', $column->renderHeaderCell());
 
         $column = new CheckboxColumn(['name' => 'selections[]', 'grid' => $this->getGrid()]);
-        $this->assertContains('name="selections_all"', $column->renderHeaderCell());
+        $this->assertStringContainsString('name="selections_all"', $column->renderHeaderCell());
 
         $column = new CheckboxColumn(['name' => 'MyForm[grid1]', 'grid' => $this->getGrid()]);
-        $this->assertContains('name="MyForm[grid1_all]"', $column->renderHeaderCell());
+        $this->assertStringContainsString('name="MyForm[grid1_all]"', $column->renderHeaderCell());
 
         $column = new CheckboxColumn(['name' => 'MyForm[grid1][]', 'grid' => $this->getGrid()]);
-        $this->assertContains('name="MyForm[grid1_all]"', $column->renderHeaderCell());
+        $this->assertStringContainsString('name="MyForm[grid1_all]"', $column->renderHeaderCell());
 
         $column = new CheckboxColumn(['name' => 'MyForm[grid1][key]', 'grid' => $this->getGrid()]);
-        $this->assertContains('name="MyForm[grid1][key_all]"', $column->renderHeaderCell());
+        $this->assertStringContainsString('name="MyForm[grid1][key_all]"', $column->renderHeaderCell());
 
         $column = new CheckboxColumn(['name' => 'MyForm[grid1][key][]', 'grid' => $this->getGrid()]);
-        $this->assertContains('name="MyForm[grid1][key_all]"', $column->renderHeaderCell());
+        $this->assertStringContainsString('name="MyForm[grid1][key_all]"', $column->renderHeaderCell());
     }
 
     public function testInputValue()
     {
         $column = new CheckboxColumn(['grid' => $this->getGrid()]);
-        $this->assertContains('value="1"', $column->renderDataCell([], 1, 0));
-        $this->assertContains('value="42"', $column->renderDataCell([], 42, 0));
-        $this->assertContains('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
+        $this->assertStringContainsString('value="1"', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('value="42"', $column->renderDataCell([], 42, 0));
+        $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
 
         $column = new CheckboxColumn(['checkboxOptions' => ['value' => 42], 'grid' => $this->getGrid()]);
-        $this->assertNotContains('value="1"', $column->renderDataCell([], 1, 0));
-        $this->assertContains('value="42"', $column->renderDataCell([], 1, 0));
+        $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
 
         $column = new CheckboxColumn([
             'checkboxOptions' => function ($model, $key, $index, $column) {
@@ -70,9 +70,9 @@ class CheckboxColumnTest extends TestCase
             },
             'grid' => $this->getGrid(),
         ]);
-        $this->assertContains('value="1"', $column->renderDataCell([], 1, 0));
-        $this->assertContains('value="42"', $column->renderDataCell([], 42, 0));
-        $this->assertContains('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
+        $this->assertStringContainsString('value="1"', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('value="42"', $column->renderDataCell([], 42, 0));
+        $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
 
         $column = new CheckboxColumn([
             'checkboxOptions' => function ($model, $key, $index, $column) {
@@ -80,8 +80,8 @@ class CheckboxColumnTest extends TestCase
             },
             'grid' => $this->getGrid(),
         ]);
-        $this->assertNotContains('value="1"', $column->renderDataCell([], 1, 0));
-        $this->assertContains('value="42"', $column->renderDataCell([], 1, 0));
+        $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
     }
 
     public function testContent()
@@ -92,7 +92,7 @@ class CheckboxColumnTest extends TestCase
             },
             'grid' => $this->getGrid(),
         ]);
-        $this->assertContains('<td></td>', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));;
 
         $column = new CheckboxColumn([
             'content' => function ($model, $key, $index, $column) {
@@ -100,7 +100,7 @@ class CheckboxColumnTest extends TestCase
             },
             'grid' => $this->getGrid(),
         ]);
-        $this->assertContains(Html::checkBox('checkBoxInput', false), $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString(Html::checkBox('checkBoxInput', false), $column->renderDataCell([], 1, 0));
     }
 
     /**

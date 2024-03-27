@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ActionFilterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class MarkdownTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -43,12 +43,11 @@ TEXT;
         $this->assertEquals(Markdown::process($text), Markdown::process($text, 'gfm-comment'));
     }
 
-    /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Markdown flavor 'undefined' is not defined.
-     */
-    public function testProcessInvalidParamException()
+    public function testProcessInvalidArgumentException()
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Markdown flavor 'undefined' is not defined.");
+        
         Markdown::process('foo', 'undefined');
     }
 

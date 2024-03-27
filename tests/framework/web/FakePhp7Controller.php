@@ -17,11 +17,11 @@ class FakePhp7Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionAksi1(int $foo, float $bar = null, bool $true, bool $false)
+    public function actionAksi1(int $foo, ?float $bar, bool $true, bool $false)
     {
     }
 
-    public function actionStringy(string $foo = null)
+    public function actionStringy(?string $foo = null)
     {
     }
 }

@@ -15,7 +15,7 @@ use yiiunit\TestCase;
  */
 class ArrayDataProviderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
