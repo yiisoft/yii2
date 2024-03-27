@@ -65,7 +65,12 @@ jobs:
         uses: niden/actions-memcached@v7
 
       - name: Install dependencies.
+        if: matrix.php != '8.4'
         run: composer update $DEFAULT_COMPOSER_FLAGS
+
+      - name: Install dependencies with PHP 8.4.
+        if: matrix.php == '8.4'
+        run: composer update $DEFAULT_COMPOSER_FLAGS --ignore-platform-reqs
 
       - name: Run tests with PHPUnit and generate coverage.
         if: matrix.php == '7.4'
