@@ -34,6 +34,6 @@ class CallbackDependency extends Dependency
      */
     protected function generateDependencyData($cache)
     {
-        return call_user_func($this->callback);
+        return $this->callback();
     }
 }
