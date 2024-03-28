@@ -275,6 +275,7 @@ $data = $cache->get($key);
 - [[yii\caching\ChainedDependency]]: チェーン上のいずれかの依存が変更された場合に、依存が変更されます。
 - [[yii\caching\DbDependency]]: 指定された SQL 文のクエリ結果が変更された場合、依存が変更されます。
 - [[yii\caching\ExpressionDependency]]: 指定された PHP の式の結果が変更された場合、依存が変更されます。
+- [[yii\caching\CallbackDependency]]: 指定されたPHPコールバックの結果が変更された場合、依存関係は変更されます。
 - [[yii\caching\FileDependency]]: ファイルの最終更新日時が変更された場合、依存が変更されます。
 - [[yii\caching\TagDependency]]: キャッシュされるデータ・アイテムに一つまたは複数のタグを関連付けます。
   [[yii\caching\TagDependency::invalidate()]] を呼び出すことによって、指定されたタグ (複数可) を持つキャッシュされたデータ・アイテムを無効にすることができます。
@@ -431,4 +432,3 @@ $result = $db->cache(function ($db) {
 
 > Info: デフォルトでは、コンソール・アプリケーションは独立した構成情報ファイルを使用します。
 正しい結果を得るためには、ウェブとコンソールのアプリケーション構成で同じキャッシュ・コンポーネントを使用していることを確認してください。
-

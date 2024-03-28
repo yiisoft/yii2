@@ -277,6 +277,7 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
 - [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
 - [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
+- [[yii\caching\CallbackDependency]]: the dependency is changed if the result of the specified PHP callback is changed.
 - [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
 - [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
@@ -433,4 +434,3 @@ You can flush the cache from the console by calling `yii cache/flush` as well.
 
 > Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
 components in your web and console application configs to reach the proper effect.
-

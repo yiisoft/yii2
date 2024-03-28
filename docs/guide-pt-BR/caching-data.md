@@ -229,6 +229,7 @@ Abaixo um sumário das dependências de cache disponíveis:
 - [[yii\caching\DbDependency]]: a dependência muda caso o resultado da consulta especificada pela instrução SQL seja
   alterado.
 - [[yii\caching\ExpressionDependency]]: a dependência muda se o resultado da expressão PHP especificada for alterado.
+- [[yii\caching\CallbackDependency]]: a dependência é alterada se o resultado do callback PHP especificado for alterado..
 - [[yii\caching\FileDependency]]: A dependência muda se a data da última alteração do arquivo for alterada.
 - [[yii\caching\TagDependency]]: associa um registro em cache com uma ou múltiplas tags. Você pode invalidar os
   registros em cache com a tag especificada ao chamar [[yii\caching\TagDependency::invalidate()]].
@@ -352,4 +353,3 @@ O cache de consulta não funciona com resultados de consulta que contêm <i>mani
 Por exemplo, ao usar o tipo de coluna `BLOB` em alguns SGBDs, o resultado da consulta retornará um <i>manipulador de recurso</i> (resource handler) para o registro na coluna.
 
 Alguns armazenamentos em cache têm limitações de tamanho. Por exemplo, memcache limita o uso máximo de espaço de 1MB para cada registro. Então, se o tamanho do resultado de uma consulta exceder este limite, o cache falhará. 
-
