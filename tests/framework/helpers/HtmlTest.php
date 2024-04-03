@@ -90,7 +90,22 @@ class HtmlTest extends TestCase
         $this->assertEquals("<script type=\"text/js\">{$content}</script>", Html::script($content, ['type' => 'text/js']));
     }
 
-    public function testCssFile(): void
+    public function testScriptCustomAttribute()
+    {
+        $nonce = Yii::$app->security->generateRandomString();
+        $this->mockApplication([
+            'components' => [
+                'view' => [
+                    'class' => 'yii\web\View',
+                    'scriptOptions' => ['nonce' => $nonce],
+                ],
+            ],
+        ]);
+        $content = 'a <>';
+        $this->assertEquals("<script nonce=\"{$nonce}\">{$content}</script>", Html::script($content));
+    }
+
+    public function testCssFile()
     {
         $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
