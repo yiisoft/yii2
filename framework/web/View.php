@@ -132,6 +132,7 @@ class View extends \yii\base\View
      */
     public $jsFiles = [];
     /**
+     * @since 2.0.50
      * @var array the script tag options.
      */
     public $scriptOptions = [];
