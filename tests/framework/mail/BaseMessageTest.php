@@ -17,7 +17,7 @@ use yiiunit\TestCase;
  */
 class BaseMessageTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'components' => [

@@ -40,7 +40,7 @@ use yiiunit\TestCase;
  */
 class ContainerTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
@@ -252,7 +252,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         // Test optional unresolvable dependency.
-        $closure = function (QuxInterface $test = null) {
+        $closure = function (?QuxInterface $test = null) {
             return $test;
         };
         $this->assertNull($container->invoke($closure));
@@ -443,11 +443,10 @@ class ContainerTest extends TestCase
         $this->assertSame(42, $qux->a);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testThrowingNotFoundException()
     {
+        $this->expectException(\yii\di\NotInstantiableException::class);
+
         $container = new Container();
         $container->get('non_existing');
     }
@@ -480,9 +479,6 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicConstructor()
     {
         if (\defined('HHVM_VERSION')) {
@@ -491,11 +487,10 @@ class ContainerTest extends TestCase
 
         $container = new Container();
         $container->get('yiiunit\framework\di\stubs\Variadic');
+
+        $this->assertTrue(true);
     }
 
-    /**
-     * @requires PHP 5.6
-     */
     public function testVariadicCallable()
     {
         if (\defined('HHVM_VERSION')) {
@@ -503,6 +498,8 @@ class ContainerTest extends TestCase
         }
 
         require __DIR__ . '/testContainerWithVariadicCallable.php';
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -535,6 +532,8 @@ class ContainerTest extends TestCase
 
         Yii::$container->set('setLater', new Qux());
         Yii::$container->get('test');
+
+        $this->assertTrue(true);
     }
 
     /**
@@ -610,11 +609,6 @@ class ContainerTest extends TestCase
 
     public function testNullTypeConstructorParameters()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         $zeta = (new Container())->get(Zeta::className());
         $this->assertInstanceOf(Beta::className(), $zeta->beta);
         $this->assertInstanceOf(Beta::className(), $zeta->betaNull);

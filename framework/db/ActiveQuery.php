@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -784,7 +785,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @throws InvalidConfigException when query is not initialized properly
      * @see via()
      */
-    public function viaTable($tableName, $link, callable $callable = null)
+    public function viaTable($tableName, $link, ?callable $callable = null)
     {
         $modelClass = $this->primaryModel ? get_class($this->primaryModel) : $this->modelClass;
         $relation = new self($modelClass, [

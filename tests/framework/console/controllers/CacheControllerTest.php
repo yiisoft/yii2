@@ -29,7 +29,7 @@ class CacheControllerTest extends TestCase
 
     private $driverName = 'mysql';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -137,11 +137,11 @@ class CacheControllerTest extends TestCase
         $this->assertEquals('firstValue', Yii::$app->firstCache->get('firstKey'), 'first cache data should not be flushed');
     }
 
-    /**
-     * @expectedException \yii\console\Exception
-     */
     public function testNothingToFlushException()
     {
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage('You should specify cache components names');
+        
         $this->_cacheController->actionFlush();
     }
 

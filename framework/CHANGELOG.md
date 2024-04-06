@@ -3,18 +3,28 @@ Yii Framework 2 Change Log
 
 2.0.50 under development
 ------------------------
+
+- Bug #17181: Improved `BaseUrl::isRelative($url)` performance (sammousa, bizley, rob006)
+- Bug #17191: Fixed `BaseUrl::isRelative($url)` method in `yii\helpers\BaseUrl` (ggh2e3)
+- Bug #18469: Fixed `Link::serialize(array $links)` method in `yii\web\Link` (ggh2e3)
+- Bug #19691: Allow using custom class to style error summary (skepticspriggan)
 - Bug #20040: Fix type `boolean` in `MSSQL` (terabytesoftw)
 - Bug #20005: Fix `yii\console\controllers\ServeController` to specify the router script (terabytesoftw)
 - Bug #19060: Fix `yii\widgets\Menu` bug when using Closure for active item and adding additional tests in `tests\framework\widgets\MenuTest` (atrandafir)
 - Bug #13920: Fixed erroneous validation for specific cases (tim-fischer-maschinensucher)
 - Bug #19927: Fixed `console\controllers\MessageController` when saving translations to database: fixed FK error when adding new string and language at the same time, checking/regenerating all missing messages and dropping messages for unused languages (atrandafir)
 - Bug #20002: Fixed superfluous query on HEAD request in serializer (xicond)
+- Bug #20122: Fixed parsing of boolean keywords (e.g. used in SQLite) in `\yii\db\ColumnSchema::typecast()` (rhertogh)
 - Enh #12743: Added new methods `BaseActiveRecord::loadRelations()` and `BaseActiveRecord::loadRelationsFor()` to eager load related models for existing primary model instances (PowerGamer1)
 - Enh #20030: Improve performance of handling `ErrorHandler::$memoryReserveSize` (antonshevelev, rob006)
 - Enh #20042: Add empty array check to `ActiveQueryTrait::findWith()` (renkas)
 - Enh #20032: Added `yii\helpers\BaseStringHelper::mask()` method for string masking with multibyte support (salehhashemi1992)
 - Enh #20034: Added `yii\helpers\BaseStringHelper::findBetween()` to retrieve a substring that lies between two strings (salehhashemi1992)
-
+- Bug #20083: Fix deprecated warning implicit conversion from float (skepticspriggan)
+- Enh #20087: Add custom attributes to script tags (skepticspriggan)
+- Enh #20121: Added `yiisoft/yii2-coding-standards` to composer `require-dev` and lint code to comply with PSR12 (razvanphp)
+- Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
+- Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
 
 2.0.49.2 October 12, 2023
 -------------------------

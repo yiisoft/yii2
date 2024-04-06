@@ -20,11 +20,8 @@ jobs:
 
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-
-        php:
-          - 7.4
+        os: [ubuntu-latest]
+        php: [7.4]
 
     services:
       oci:

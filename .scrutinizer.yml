@@ -16,7 +16,7 @@ build:
 
   environment:
     php:
-      version: 7.4.28
+      version: 8.1
       ini:
         xdebug.mode: coverage,develop
         memory_limit: -1

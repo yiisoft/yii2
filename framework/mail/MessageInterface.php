@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -208,7 +209,7 @@ interface MessageInterface
      * If null, the "mailer" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */
-    public function send(MailerInterface $mailer = null);
+    public function send(?MailerInterface $mailer = null);
 
     /**
      * Returns string representation of this message.

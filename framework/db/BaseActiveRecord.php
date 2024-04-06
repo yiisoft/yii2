@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -1806,7 +1807,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * - active record instance represented by array (i.e. active record was loaded using [[ActiveQuery::asArray()]]).
      * @param string|array $relationNames the names of the relations of primary models to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
      * @param bool $asArray whether to load each related model as an array or an object (if the relation itself does not specify that).
-     * @since 2.0.49
+     * @since 2.0.50
      */
     public static function loadRelationsFor(&$models, $relationNames, $asArray = false)
     {
@@ -1833,7 +1834,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param string|array $relationNames the names of the relations of this model to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
      * @param bool $asArray whether to load each relation as an array or an object (if the relation itself does not specify that).
-     * @since 2.0.49
+     * @since 2.0.50
      */
     public function loadRelations($relationNames, $asArray = false)
     {

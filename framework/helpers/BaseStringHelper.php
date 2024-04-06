@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -461,6 +462,7 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
@@ -478,6 +480,7 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucwords
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
@@ -513,7 +516,8 @@ class BaseStringHelper
      * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */
-    public static function mask($string, $start, $length, $mask = '*') {
+    public static function mask($string, $start, $length, $mask = '*')
+    {
         $strLength = mb_strlen($string, 'UTF-8');
 
         // Return original string if start position is out of bounds

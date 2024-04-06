@@ -528,7 +528,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (\is_object($expected['defaultValue'])) {
-                $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
+                $this->assertIsObject($column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string)$expected['defaultValue'], (string)$column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
@@ -543,6 +543,39 @@ abstract class SchemaTest extends DatabaseTestCase
     {
         $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
         $this->assertSame('', $columnSchema->dbTypecast(''));
+    }
+
+    /**
+     * @dataProvider columnSchemaDbTypecastBooleanPhpTypeProvider
+     * @param mixed $value
+     * @param bool $expected
+     */
+    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected)
+    {
+        $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
+        $this->assertSame($expected, $columnSchema->dbTypecast($value));
+    }
+
+    public function columnSchemaDbTypecastBooleanPhpTypeProvider()
+    {
+        return [
+            [1, true],
+            [0, false],
+            ['1', true],
+            ['0', false],
+
+            // https://github.com/yiisoft/yii2/issues/9006
+            ["\1", true],
+            ["\0", false],
+
+            // https://github.com/yiisoft/yii2/pull/20122
+            ['TRUE', true],
+            ['FALSE', false],
+            ['true', true],
+            ['false', false],
+            ['True', true],
+            ['False', false],
+        ];
     }
 
     public function testFindUniqueIndexes()
@@ -782,12 +815,25 @@ abstract class SchemaTest extends DatabaseTestCase
 
     private function assertMetadataEquals($expected, $actual)
     {
-        $this->assertInternalType(strtolower(\gettype($expected)), $actual);
+        switch (\strtolower(\gettype($expected))) {
+            case 'object':
+                $this->assertIsObject($actual);
+                break;
+            case 'array':
+                $this->assertIsArray($actual);
+                break;
+            case 'null':
+                $this->assertNull($actual);
+                break;
+        }
+
         if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, false);
             $this->normalizeArrayKeys($actual, false);
         }
+
         $this->normalizeConstraints($expected, $actual);
+
         if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, true);
             $this->normalizeArrayKeys($actual, true);

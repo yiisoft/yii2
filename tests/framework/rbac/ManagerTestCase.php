@@ -373,8 +373,16 @@ abstract class ManagerTestCase extends TestCase
             $roleNames[] = $role->name;
         }
 
-        $this->assertContains('reader', $roleNames, 'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames));
-        $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
+        $this->assertContains(
+            'reader',
+            $roleNames,
+            'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames)
+        );
+        $this->assertContains(
+            'author',
+            $roleNames,
+            'Roles should contain author. Currently it has: ' . implode(', ', $roleNames)
+        );
     }
 
     public function testAssignmentsToIntegerId()

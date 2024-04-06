@@ -47,7 +47,7 @@ Hướng dẫn này chủ yếu là về phiên bản 2.0.
 Yêu cầu hệ thống và các điều kiện cần thiết
 ------------------------------
 
-Yii 2.0 đòi hỏi phiên bản PHP 5.4.0 hoặc cao hơn. Bạn có thể chạy bất kỳ gói Yii đi kèm với các yêu cầu hệ thống. 
+Yii 2.0 đòi hỏi phiên bản PHP 7.3.0 hoặc cao hơn. Bạn có thể chạy bất kỳ gói Yii đi kèm với các yêu cầu hệ thống. 
 kiểm tra xem những gì các đặc điểm cụ thể của từng cấu hình PHP.
 
 Để tìm hiểu Yii, bạn cần có kiến thức cơ bản về lập trình hướng đối tượng (OOP), vì Yii là một framework hướng đối tượng
