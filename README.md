@@ -34,6 +34,20 @@ and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated
 - For Yii 1.1 users, there is [Upgrading from Yii 1.1](https://www.yiiframework.com/doc/guide/2.0/en/intro-upgrade-from-v1)
 to get an idea of what has changed in 2.0.
 
+Versions & PHP compatibility
+----------------------------
+
+| Yii2 Version | PHP version    | Development status                | EOL ¹                                                          |
+|--------------|----------------|-----------------------------------|----------------------------------------------------------------|
+| <= 2.0.49.*  | >= 5.4, <= 8.3 | security fixes only               | 23 Nov 2026 ³                                                  |
+| >= 2.0.50    | >= 7.3, <= 8.4 | bug fixes and security fixes only | bugfixes till 23 Nov 2026 ³, security fixes till 21 Nov 2027 ⁴ |
+| >= 2.2.0 ²   | >= 8.1         | active development                |                                                                |
+
+¹ All mentioned dates may be subject to change and no rights can be derived from them.  
+² Note: Yii 2.1 was [skipped](https://github.com/yiisoft/yii2/discussions/19831#discussioncomment-5858046), [Yii 2.2](https://github.com/yiisoft/yii2/tree/2.2) has not yet been released.  
+³ [PHP 8.3 EOL date](https://www.php.net/supported-versions.php).  
+⁴ [Expected PHP 8.4 EOL date](https://wiki.php.net/todo/php84).  
+
 Community
 ---------
 
