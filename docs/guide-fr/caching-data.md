@@ -217,6 +217,7 @@ Ci-dessous nous présentons un résumé des dépendances de mise en cache dispon
 - [[yii\caching\ChainedDependency]]: la dépendance est modifiée si l'une des dépendances de la chaîne est modifiée.
 - [[yii\caching\DbDependency]]: la dépendance est modifiée si le résultat de le requête de l'instruction SQL spécifiée est modifié.
 - [[yii\caching\ExpressionDependency]]: la dépendance est modifiée si le résultat de l'expression PHP spécifiée est modifié.
+- [[yii\caching\CallbackDependency]]: la dépendance est modifiée si le résultat du rappel PHP spécifié est modifié.
 - [[yii\caching\FileDependency]]: la dépendance est modifiée si la date de dernière modification du fichier est modifiée.
 - [[yii\caching\TagDependency]]: associe une donnée mise en cache à une ou plusieurs balises. Vous pouvez invalider la donnée mise en cache associée à la balise spécifiée en appelant [[yii\caching\TagDependency::invalidate()]].
 
@@ -342,4 +343,3 @@ $result = $db->cache(function ($db) {
 La mise en cache de requêtes ne fonctionne pas avec des résultats de requêtes qui contiennent des gestionnaires de ressources. Par exemple, lorsque vous utilisez de type de colonne `BLOB` dans certains systèmes de gestion de bases de données (DBMS), la requête retourne un gestionnaire de ressources pour la donnée de la colonne.
 
 Quelques supports de stockage pour cache sont limités en taille. Par exemple, avec memcache, chaque entrée est limitée en taille à 1 MO. En conséquence, si le résultat d'une requête dépasse cette taille, la mise en cache échoue.
-
