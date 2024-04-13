@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #20083: Fix deprecated warning implicit conversion from float (skepticspriggan)
 - Enh #20087: Add custom attributes to script tags (skepticspriggan)
 - Enh #20121: Added `yiisoft/yii2-coding-standards` to composer `require-dev` and lint code to comply with PSR12 (razvanphp)
+- New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
 
