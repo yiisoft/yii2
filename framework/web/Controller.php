@@ -133,7 +133,7 @@ class Controller extends \yii\base\Controller
                 if (PHP_VERSION_ID >= 80000) {
                     $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
                 } else {
-                    $isArray = $param->isArray();
+                    $isArray = $param->getType() && $param->getType()->getName() === 'array';
                 }
                 if ($isArray) {
                     $params[$name] = (array)$params[$name];
