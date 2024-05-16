@@ -122,6 +122,16 @@ class RequestTest extends TestCase
                     ],
                 ],
             ],
+			[
+                // Case: Special argument "End of Options" placed instead of route
+                'params' => [
+                    '--', // Special argument "End of Options"
+                ],
+                'expected' => [
+                    'route' => '',
+                    'params' => [],
+                ],
+            ],
             // Case: `--<option> <value>` and `-<alias> <value>` syntax
             [
                 'params' => [
