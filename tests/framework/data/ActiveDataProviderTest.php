@@ -170,9 +170,8 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $query->from('order')->orderBy('id'),
         ]);
         $pagination = $provider->getPagination();
-        $this->assertEquals(0, $pagination->getPageCount());
-        $this->assertCount(3, $provider->getModels());
         $this->assertEquals(1, $pagination->getPageCount());
+        $this->assertCount(3, $provider->getModels());
 
         $provider->getPagination()->pageSize = 2;
         $this->assertCount(3, $provider->getModels());
