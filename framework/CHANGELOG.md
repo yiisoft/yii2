@@ -1,7 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.16 under development
+2.0.49
+
+- Bug #20159: Fixed chroot resolve null route (gozoro)
+
+
+2.0.16 January 31, 2019
 ------------------------
 
 - Bug #16903: Fixed 'yii\validators\NumberValidator' method 'isNotNumber' returns false for true/false value (annechko)
