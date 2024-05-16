@@ -22,7 +22,7 @@ use yiiunit\TestCase;
  */
 class UrlTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -47,7 +47,7 @@ class UrlTest extends TestCase
         ], '\yii\web\Application');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->getSession()->removeAll();
         parent::tearDown();
@@ -268,7 +268,7 @@ class UrlTest extends TestCase
                 ['label' => 'Test', 'url' => ['/site/page', 'view' => 'about']],
             ],
         ]);
-        $this->assertRegExp('~<a href="/site/page.html\?view=about">~', $output);
+        $this->assertMatchesRegularExpression('~<a href="/site/page.html\?view=about">~', $output);
     }
 
     public function testBase()

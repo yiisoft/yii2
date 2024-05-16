@@ -22,7 +22,7 @@ class FormatterDateTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +35,7 @@ class FormatterDateTest extends TestCase
         $this->formatter = new Formatter(['locale' => 'en-US']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -170,22 +170,22 @@ class FormatterDateTest extends TestCase
 
         // empty input
         $this->formatter->locale = 'de-DE';
-        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(''));
-        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(0));
-        $this->assertRegExp('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(false));
+        $this->assertMatchesRegularExpression('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(''));
+        $this->assertMatchesRegularExpression('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(0));
+        $this->assertMatchesRegularExpression('~01\.01\.1970,? 00:00:00~', $this->formatter->asDatetime(false));
     }
 
     public function testAsDatetime()
     {
         $value = time();
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value)),
             $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
         );
         $this->assertSame(date('Y/m/d h:i:s A', $value), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         $value = new DateTime();
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
             $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
         );
@@ -195,7 +195,7 @@ class FormatterDateTest extends TestCase
         $value = new DateTime();
         $date = $value->format('Y-m-d');
         $value = new DateTime($date);
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
             $this->sanitizeWhitespaces($this->formatter->asDatetime($date))
         );
@@ -203,7 +203,7 @@ class FormatterDateTest extends TestCase
 
         if (PHP_VERSION_ID >= 50500) {
             $value = new \DateTimeImmutable();
-            $this->assertRegExp(
+            $this->assertMatchesRegularExpression(
                 $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
                 $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
             );
@@ -217,15 +217,15 @@ class FormatterDateTest extends TestCase
         }
 
         // empty input
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces('~Jan 1, 1970,? 12:00:00 AM~'),
             $this->sanitizeWhitespaces($this->formatter->asDatetime(''))
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces('~Jan 1, 1970,? 12:00:00 AM~'),
             $this->sanitizeWhitespaces($this->formatter->asDatetime(0))
         );
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces('~Jan 1, 1970,? 12:00:00 AM~'),
             $this->sanitizeWhitespaces($this->formatter->asDatetime(false))
         );
@@ -536,6 +536,7 @@ class FormatterDateTest extends TestCase
         // other options
         $this->assertSame('minus 244 seconds', $this->formatter->asDuration($interval_244_seconds, ' and ', 'minus '));
         $this->assertSame('minus 4 minutes and 4 seconds', $this->formatter->asDuration(-244, ' and ', 'minus '));
+        $this->assertSame('1 second', $this->formatter->asDuration(1.5));
 
         // Pass a inverted DateInterval string
         $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));

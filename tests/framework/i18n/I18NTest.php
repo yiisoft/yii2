@@ -25,7 +25,7 @@ class I18NTest extends TestCase
      */
     public $i18n;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();

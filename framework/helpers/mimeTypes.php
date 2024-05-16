@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MIME types.
  *
@@ -7,7 +8,11 @@
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
+
 $mimeTypes = [
     123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',
@@ -1005,7 +1010,7 @@ $mimeTypes = [
 
 # fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
 if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
-    $mimeTypes = array_replace($mimeTypes, array('xz' => 'application/octet-stream'));
+    $mimeTypes = array_replace($mimeTypes, ['xz' => 'application/octet-stream']);
 }
 
 return $mimeTypes;

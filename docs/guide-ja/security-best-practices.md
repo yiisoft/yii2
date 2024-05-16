@@ -333,8 +333,8 @@ H5BP プロジェクトが提供する構成例を参考にすることも出来
 - Apache 2: <https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
-サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、[[yii\filters\HostControl]]
-フィルタを設定することが出来ます。
+サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、
+[[yii\filters\HostControl]] フィルタを設定することが出来ます。
 
 ```php
 // ウェブ・アプリケーション構成ファイル

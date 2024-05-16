@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -128,12 +129,9 @@ class Controller extends \yii\base\Controller
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
-                $isValid = true;
-                if (PHP_VERSION_ID >= 80000) {
-                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
-                } else {
-                    $isArray = $param->isArray();
-                }
+                $isValid = true;                
+                $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+                
                 if ($isArray) {
                     $params[$name] = (array)$params[$name];
                 } elseif (is_array($params[$name])) {

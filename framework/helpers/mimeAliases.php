@@ -1,9 +1,14 @@
 <?php
+
 /**
  * MIME aliases.
  *
  * This file contains aliases for MIME types.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
+
 return [
     'text/rtf' => 'application/rtf',
     'text/xml' => 'application/xml',

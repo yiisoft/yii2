@@ -230,7 +230,6 @@ SQL;
 
         if (version_compare($version, '5.7', '<')) {
             $columns['int_col3']['phpType'] = 'string';
-
             $columns['json_col']['type'] = 'text';
             $columns['json_col']['dbType'] = 'longtext';
             $columns['json_col']['phpType'] = 'string';

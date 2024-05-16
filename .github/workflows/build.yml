@@ -13,55 +13,34 @@ concurrency:
 
 jobs:
   phpunit:
-    name: PHP ${{ matrix.php }} on ${{ matrix.os }}
+    name: PHP ${{ matrix.php }}
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          - php: 5.4
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.5
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.6
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.0
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.1
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.2
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
           - php: 7.3
-            coverage: none
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
+            coverage: none
           - php: 7.4
-            coverage: xdebug
             extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
+            coverage: xdebug
           - php: 8.0
-            coverage: none
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
+            coverage: none
           - php: 8.1
-            coverage: none
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
+            coverage: none
           - php: 8.2
+            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+            coverage: none
+          - php: 8.3
+            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+            coverage: none
+            os: ubuntu-latest
+          - php: 8.4
             extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
             coverage: none
             os: ubuntu-latest
@@ -71,7 +50,7 @@ jobs:
         run: sudo locale-gen fr_FR.UTF-8
 
       - name: Checkout.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
@@ -86,19 +65,20 @@ jobs:
         uses: niden/actions-memcached@v7
 
       - name: Install dependencies.
+        if: matrix.php != '8.4'
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
-      - name: Run tests with PHPUnit.
-        if: matrix.php < '7.4' || matrix.php >= '8.1'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-
-      - name: Run tests with PHPUnit.
-        if: matrix.php == '8.0'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
+      - name: Install dependencies with PHP 8.4.
+        if: matrix.php == '8.4'
+        run: composer update $DEFAULT_COMPOSER_FLAGS --ignore-platform-reqs
 
       - name: Run tests with PHPUnit and generate coverage.
         if: matrix.php == '7.4'
         run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
+
+      - name: Run tests with PHPUnit.
+        if: matrix.php != '7.4'
+        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '7.4'

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -378,7 +379,7 @@ class BaseUrl
      */
     public static function isRelative($url)
     {
-        return strncmp($url, '//', 2) && strpos($url, '://') === false;
+        return preg_match('~^[[:alpha:]][[:alnum:]+-.]*://|^//~', $url) === 0;
     }
 
     /**

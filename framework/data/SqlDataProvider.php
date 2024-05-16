@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -127,7 +128,6 @@ class SqlDataProvider extends BaseDataProvider
         }
 
         if ($pagination !== false) {
-            $pagination->totalCount = $this->getTotalCount();
             $limit = $pagination->getLimit();
             $offset = $pagination->getOffset();
         }

@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - php: 7.4
@@ -28,6 +29,10 @@ jobs:
           - php: 8.1
             mssql: server:2019-latest
           - php: 8.2
+            mssql: server:2022-latest
+          - php: 8.3
+            mssql: server:2022-latest
+          - php: 8.4
             mssql: server:2022-latest
 
     services:
@@ -43,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create MS SQL Database
         run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
@@ -61,15 +66,15 @@ jobs:
         run: composer self-update
 
       - name: Install dependencies with composer
+        if: matrix.php != '8.4'
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run MSSQL tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
-        run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
+      - name: Install dependencies with PHP 8.4.
+        if: matrix.php == '8.4'
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ignore-platform-reqs --ansi
 
-      - name: Run MSSQL tests with PHPUnit.
-        if: matrix.php > '7.4'
-        run: vendor/bin/phpunit --group mssql --colors=always
+      - name: Run MSSQL tests with PHPUnit and generate coverage.
+        run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '7.4'

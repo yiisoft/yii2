@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +27,8 @@ return [
     ' and ' => ' 与 ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" 不支持操作 "{operator}"',
     '(not set)' => '(未设置)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => '服务器内部错误。',
     'Are you sure you want to delete this item?' => '您确定要删除此项吗？',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => '"{attribute}" 的条件应为一个值或有效的操作规约。',
@@ -43,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => '只允许使用以下文件扩展名的文件：{extensions}。',
     'Operator "{operator}" must be used with a search attribute.' => '操作 "{operator}" 必须与一个搜索属性一起使用。',
     'Operator "{operator}" requires multiple operands.' => '操作 "{operator}" 需要多个操作数。',
+    'Options available: {options}' => '',
     'Page not found.' => '页面未找到。',
     'Please fix the following errors:' => '请修复以下错误',
     'Please upload a file.' => '请上传一个文件。',
-    'Powered by {yii}' => '技术支持 {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '第<b>{begin, number}-{end, number}</b>条，共<b>{totalCount, number}</b>条数据.',
     'The combination {values} of {attributes} has already been taken.' => '{attributes} 的值 "{values}" 已经被占用了。',
     'The file "{file}" is not an image.' => '文件 "{file}" 不是一个图像文件。',
@@ -68,7 +71,6 @@ return [
     'Update' => '更新',
     'View' => '查看',
     'Yes' => '是',
-    'Yii Framework' => 'Yii 框架',
     'You are not allowed to perform this action.' => '您没有执行此操作的权限。',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => '您最多上传{limit, number}个文件。',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => '需要至少 {limit, number} 个文件。',
@@ -108,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute}应该包含至少{min, number}个字符。',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute}只能包含至多{max, number}个字符。',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}应该包含{length, number}个字符。',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta} 天',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta} 小时',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta} 分钟',
@@ -123,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
-    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} KiB' => '{nFormatted} KiB',
     '{nFormatted} MB' => '{nFormatted} MB',
     '{nFormatted} MiB' => '{nFormatted} MiB',
@@ -131,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} PiB',
     '{nFormatted} TB' => '{nFormatted} TB',
     '{nFormatted} TiB' => '{nFormatted} TiB',
+    '{nFormatted} kB' => '{nFormatted} kB',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} 字节',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} 千兆二进制字节',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} 千兆字节',

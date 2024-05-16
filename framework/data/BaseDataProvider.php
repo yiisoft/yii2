@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -29,6 +30,7 @@ use yii\base\InvalidArgumentException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
@@ -163,12 +165,12 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      */
     public function getTotalCount()
     {
-        if ($this->getPagination() === false) {
+        if ($this->_pagination === false) {
             return $this->getCount();
-        } elseif ($this->_totalCount === null) {
+        }
+        if ($this->_totalCount === null) {
             $this->_totalCount = $this->prepareTotalCount();
         }
-
         return $this->_totalCount;
     }
 
@@ -192,7 +194,6 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         if ($this->_pagination === null) {
             $this->setPagination([]);
         }
-
         return $this->_pagination;
     }
 
@@ -216,9 +217,13 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
                 $config['pageParam'] = $this->id . '-page';
                 $config['pageSizeParam'] = $this->id . '-per-page';
             }
-            $this->_pagination = Yii::createObject(array_merge($config, $value));
-        } elseif ($value instanceof Pagination || $value === false) {
+            $value = Yii::createObject(array_merge($config, $value));
+        }
+        if ($value instanceof Pagination) {
+            $value->totalCount = $this->getTotalCount();
             $this->_pagination = $value;
+        } elseif ($value === false) {
+            $this->_pagination = false;
         } else {
             throw new InvalidArgumentException('Only Pagination instance, configuration array or false is allowed.');
         }

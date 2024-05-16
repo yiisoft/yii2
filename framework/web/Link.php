@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -62,11 +63,10 @@ class Link extends BaseObject
     {
         foreach ($links as $rel => $link) {
             if (is_array($link)) {
-                foreach ($link as $i => $l) {
-                    $link[$i] = $l instanceof self ? array_filter((array) $l) : ['href' => $l];
-                }
-                $links[$rel] = $link;
-            } elseif (!$link instanceof self) {
+                $links[$rel] = self::serialize($link);
+            } elseif ($link instanceof self) {
+                $links[$rel] = array_filter((array)$link);
+            } else {
                 $links[$rel] = ['href' => $link];
             }
         }

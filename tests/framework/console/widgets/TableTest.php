@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class TableTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -502,7 +502,7 @@ EXPECTED;
             ->setScreenWidth(200)
             ->run();
 
-        $columnWidths = \PHPUnit_Framework_Assert::readAttribute($table, "columnWidths");
+        $columnWidths = $this->getInaccessibleProperty($table, 'columnWidths');
 
         $this->assertArrayHasKey(1, $columnWidths);
         $this->assertEquals(4+2, $columnWidths[1]);

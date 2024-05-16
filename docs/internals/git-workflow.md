@@ -111,7 +111,7 @@ review your suggestion, and provide appropriate feedback along the way.
 ### 2. Pull the latest code from the main Yii branch
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.

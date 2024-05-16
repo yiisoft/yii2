@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -420,7 +421,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.
