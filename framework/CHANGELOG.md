@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
+- Bug #20159: Fixed chroot resolve null route  (gozoro)
 
 2.0.49.2 October 12, 2023
 -------------------------
