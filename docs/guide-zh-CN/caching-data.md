@@ -275,6 +275,7 @@ $data = $cache->get($key);
 - [[yii\caching\ChainedDependency]]：如果依赖链上任何一个依赖产生变化，则依赖改变。
 - [[yii\caching\DbDependency]]：如果指定 SQL 语句的查询结果发生了变化，则依赖改变。
 - [[yii\caching\ExpressionDependency]]：如果指定的 PHP 表达式执行结果发生变化，则依赖改变。
+- [[yii\caching\CallbackDependency]]：如果指定的PHP回调结果发生变化，依赖性将改变。
 - [[yii\caching\FileDependency]]：如果文件的最后修改时间发生变化，则依赖改变。
 - [[yii\caching\TagDependency]]：将缓存的数据项与一个或多个标签相关联。 您可以通过调用
   [[yii\caching\TagDependency::invalidate()]] 来检查指定标签的缓存数据项是否有效。
@@ -431,4 +432,3 @@ $result = $db->cache(function ($db) {
 
 > Info: 默认情况下，控制台应用使用独立的配置文件。
 所以，为了上述命令发挥作用，请确保 Web 应用和控制台应用配置相同的缓存组件。
-

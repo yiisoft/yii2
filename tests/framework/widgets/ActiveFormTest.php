@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
  */
 class ActiveFormTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -133,6 +133,8 @@ HTML
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
+
+        $this->assertTrue(true);
     }
 
     /**

@@ -152,8 +152,9 @@ Yii アプリケーションに渡されるからです。
 信頼できるプロキシの情報を構成することが出来るようになっています。
 [[yii\web\Request::trustedHosts|trustedHosts]]、
 [[yii\web\Request::secureHeaders|secureHeaders]]、 
-[[yii\web\Request::ipHeaders|ipHeaders]] および
-[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+[[yii\web\Request::ipHeaders|ipHeaders]] 
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]] および
+[[yii\web\Request::portHeaders|portHeaders]] (2.0.46 以降)
 
 以下は、リバース・プロキシ・アレイの背後で動作するアプリケーションのための、request の構成例です
 (リバース・プロキシ・アレイは `10.0.2.0/24` のネットワークに設置されているとします)。

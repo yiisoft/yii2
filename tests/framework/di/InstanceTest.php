@@ -21,7 +21,7 @@ use yiiunit\TestCase;
  */
 class InstanceTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
@@ -59,7 +59,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
+        $this->expectExceptionMessageMatches('/^Failed to instantiate component or class/i');
         Instance::ensure('cache', 'yii\cache\Cache', $container);
     }
 
@@ -70,7 +70,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
+        $this->expectExceptionMessageMatches('/^Failed to instantiate component or class/i');
         Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
     }
 
@@ -171,7 +171,10 @@ class InstanceTest extends TestCase
         $instance = Instance::of('something');
         $export = var_export($instance, true);
 
-        $this->assertRegExp('~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~', $export);
+        $this->assertMatchesRegularExpression(
+            '~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~',
+            $export
+        );
 
         $this->assertEquals($instance, Instance::__set_state([
             'id' => 'something',

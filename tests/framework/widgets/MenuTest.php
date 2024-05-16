@@ -15,7 +15,7 @@ use yii\widgets\Menu;
  */
 class MenuTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([

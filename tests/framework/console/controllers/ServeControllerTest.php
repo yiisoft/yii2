@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ServeControllerTest extends TestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication();
     }
@@ -46,7 +46,7 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains('http://localhost:8080 is taken by another process.', $result);
+        $this->assertStringContainsString('http://localhost:8080 is taken by another process.', $result);
     }
 
     public function testDefaultValues()
@@ -70,9 +70,9 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains('Server started on http://localhost:8080', $result);
-        $this->assertContains("Document root is \"{$docroot}\"", $result);
-        $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
+        $this->assertStringContainsString('Server started on http://localhost:8080', $result);
+        $this->assertStringContainsString("Document root is \"{$docroot}\"", $result);
+        $this->assertStringContainsString('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
 
     public function testDoocRootWithNoExistValue()
@@ -95,7 +95,7 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains("Document root \"{$docroot}\" does not exist.", $result);
+        $this->assertStringContainsString("Document root \"{$docroot}\" does not exist.", $result);
     }
 
     public function testWithRouterNoExistValue()
@@ -121,7 +121,7 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains("Routing file \"$router\" does not exist.", $result);
+        $this->assertStringContainsString("Routing file \"$router\" does not exist.", $result);
     }
 
     public function testWithRouterValue()
@@ -147,10 +147,10 @@ class ServeControllerTest extends TestCase
 
         $result = $serveController->flushStdOutBuffer();
 
-        $this->assertContains('Server started on http://localhost:8081', $result);
-        $this->assertContains("Document root is \"{$docroot}\"", $result);
-        $this->assertContains("Routing file is \"{$router}\"", $result);
-        $this->assertContains('Quit the server with CTRL-C or COMMAND-C.', $result);
+        $this->assertStringContainsString('Server started on http://localhost:8081', $result);
+        $this->assertStringContainsString("Document root is \"{$docroot}\"", $result);
+        $this->assertStringContainsString("Routing file is \"{$router}\"", $result);
+        $this->assertStringContainsString('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
 }
 

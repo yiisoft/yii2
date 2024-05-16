@@ -22,7 +22,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -34,7 +34,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAssureMessageSetOnInit()
     {
         $val = new UniqueValidator();
-        $this->assertInternalType('string', $val->message);
+        $this->assertIsString($val->message);
     }
 
     public function testCustomMessage()

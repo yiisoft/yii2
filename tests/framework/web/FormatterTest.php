@@ -21,7 +21,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
      */
     public $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication();
         $this->response = new Response();

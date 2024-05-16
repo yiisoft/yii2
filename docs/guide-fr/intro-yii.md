@@ -47,7 +47,7 @@ Ce guide est principalement pour la version 2.0.
 Configuration nécessaire
 ------------------------
 
-Yii 2.0 nécessite PHP 5.4.0 ou plus. Vous pouvez trouver plus de détails sur la configuration requise pour chaque fonctionnalité
+Yii 2.0 nécessite PHP 7.3.0 ou plus. Vous pouvez trouver plus de détails sur la configuration requise pour chaque fonctionnalité
 en utilisant le script de test de la configuration inclus dans chaque distribution de Yii.
 
 Utiliser Yii requiert des connaissances de base sur la programmation objet (OOP), en effet Yii est un framework basé sur ce type de programmation.
