@@ -207,7 +207,7 @@ SQL;
     {
         // check version MySQL >= 8.0.16
         if (version_compare($this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION), '8.0.16', '<')) {
-            $this->markTestSkipped('MySQL < 8.0.16 does not support CHECK constraints.');
+            throw new NotSupportedException('MySQL < 8.0.16 does not support check constraints.');
         }
 
         $checks = [];
