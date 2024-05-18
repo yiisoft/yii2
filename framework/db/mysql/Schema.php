@@ -223,26 +223,33 @@ SQL;
             return $checks;
         }
 
+        $tableRows = $this->normalizePdoRowKeyCase($tableRows, true);
+
         foreach ($tableRows as $tableRow) {
             $sql = <<<SQL
             SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS WHERE CONSTRAINT_NAME = :constraintName
             SQL;
 
-            $checkRows = $this->db->createCommand($sql, [':constraintName' => $tableRow['CONSTRAINT_NAME']])->queryAll();
+            $checkRows = $this->db->createCommand(
+                $sql,
+                [':constraintName' => $tableRow['constraint_name']],
+            )->queryAll();
+
+            $checkRows = $this->normalizePdoRowKeyCase($checkRows, true);
 
             foreach ($checkRows as $checkRow) {
                 $matches = [];
                 $columnName = null;
 
-                if (preg_match('/\(`?([a-zA-Z0-9_]+)`?\s*[><=]/', $checkRow['CHECK_CLAUSE'], $matches)) {
+                if (preg_match('/\(`?([a-zA-Z0-9_]+)`?\s*[><=]/', $checkRow['check_clause'], $matches)) {
                     $columnName = $matches[1];
                 }
 
                 $check = new CheckConstraint(
                     [
-                        'name' => $checkRow['CONSTRAINT_NAME'],
+                        'name' => $checkRow['constraint_name'],
                         'columnNames' => $columnName,
-                        'expression' => $checkRow['CHECK_CLAUSE'],
+                        'expression' => $checkRow['check_clause'],
                     ]
                 );
                 $checks[] = $check;
