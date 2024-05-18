@@ -1226,6 +1226,11 @@ SQL;
     public function testAddDropCheck(): void
     {
         $db = $this->getConnection(false);
+
+        if (version_compare($db->getServerVersion(), '8.0.16', '<')) {
+            $this->markTestSkipped('MySQL < 8.0.16 does not support CHECK constraints.');
+        }
+
         $tableName = 'test_ck';
         $name = 'test_ck_constraint';
         $schema = $db->getSchema();
