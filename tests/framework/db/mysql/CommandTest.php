@@ -16,9 +16,4 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     public $driverName = 'mysql';
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
-
-    public function testAddDropCheck()
-    {
-        $this->markTestSkipped('MySQL does not support adding/dropping check constraints.');
-    }
 }
