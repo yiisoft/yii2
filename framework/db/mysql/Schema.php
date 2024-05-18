@@ -213,7 +213,11 @@ SQL;
         $checks = [];
 
         $sql = <<<SQL
-        SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_NAME = :tableName
+        SELECT cc.CONSTRAINT_NAME as constraint_name, cc.CHECK_CLAUSE as check_clause
+        FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+        JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc
+        ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
+        WHERE tc.TABLE_NAME = :tableName AND tc.CONSTRAINT_TYPE = 'CHECK';
         SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
@@ -226,34 +230,21 @@ SQL;
         $tableRows = $this->normalizePdoRowKeyCase($tableRows, true);
 
         foreach ($tableRows as $tableRow) {
-            $sql = <<<SQL
-            SELECT * FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS WHERE CONSTRAINT_NAME = :constraintName
-            SQL;
+            $matches = [];
+            $columnName = null;
 
-            $checkRows = $this->db->createCommand(
-                $sql,
-                [':constraintName' => $tableRow['constraint_name']],
-            )->queryAll();
-
-            $checkRows = $this->normalizePdoRowKeyCase($checkRows, true);
-
-            foreach ($checkRows as $checkRow) {
-                $matches = [];
-                $columnName = null;
-
-                if (preg_match('/\(`?([a-zA-Z0-9_]+)`?\s*[><=]/', $checkRow['check_clause'], $matches)) {
-                    $columnName = $matches[1];
-                }
-
-                $check = new CheckConstraint(
-                    [
-                        'name' => $checkRow['constraint_name'],
-                        'columnNames' => $columnName,
-                        'expression' => $checkRow['check_clause'],
-                    ]
-                );
-                $checks[] = $check;
+            if (preg_match('/\(`?([a-zA-Z0-9_]+)`?\s*[><=]/', $tableRow['check_clause'], $matches)) {
+                $columnName = $matches[1];
             }
+
+            $check = new CheckConstraint(
+                [
+                    'name' => $tableRow['constraint_name'],
+                    'columnNames' => [$columnName],
+                    'expression' => $tableRow['check_clause'],
+                ]
+            );
+            $checks[] = $check;
         }
 
         return $checks;

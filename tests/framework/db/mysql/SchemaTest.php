@@ -78,6 +78,8 @@ SQL;
     {
         $result = parent::constraintsProvider();
 
+        $result['1: check'][2][0]->expression = "(`C_check` <> _utf8mb4\\'\\')";
+
         $result['2: primary key'][2]->name = null;
 
         // Work aroung bug in MySQL 5.1 - it creates only this table in lowercase. O_o
