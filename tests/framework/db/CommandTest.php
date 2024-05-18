@@ -1228,7 +1228,6 @@ SQL;
         $db = $this->getConnection(false);
         $tableName = 'test_ck';
         $name = 'test_ck_constraint';
-        /** @var \yii\db\pgsql\Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {
@@ -1243,6 +1242,7 @@ SQL;
         $this->assertMatchesRegularExpression('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
 
         $db->createCommand()->dropCheck($name, $tableName)->execute();
+
         $this->assertEmpty($schema->getTableChecks($tableName, true));
     }
 

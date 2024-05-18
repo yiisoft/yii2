@@ -16,4 +16,48 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     public $driverName = 'mysql';
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
+
+    public function testAddDropCheckSeveral()
+    {
+        $db = $this->getConnection(false);
+        $tableName = 'test_ck_several';
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            'int1' => 'integer',
+            'int2' => 'integer',
+            'int3' => 'integer',
+        ])->execute();
+
+        $this->assertEmpty($schema->getTableChecks($tableName, true));
+
+        $constraints = [
+            ['name' => 'check_int1_positive', 'expression' => '[[int1]] > 0', 'expected' => '(`int1` > 0)'],
+            ['name' => 'check_int2_nonzero', 'expression' => '[[int2]] <> 0', 'expected' => '(`int2` <> 0)'],
+            ['name' => 'check_int3_less_than_100', 'expression' => '[[int3]] < 100', 'expected' => '(`int3` < 100)'],
+        ];
+
+        foreach ($constraints as $constraint) {
+            $db->createCommand()->addCheck($constraint['name'], $tableName, $constraint['expression'])->execute();
+        }
+
+        $tableChecks = $schema->getTableChecks($tableName, true);
+        $this->assertCount(3, $tableChecks);
+
+        foreach ($constraints as $index => $constraint) {
+            $this->assertSame(
+                $constraints[$index]['expected'],
+                $tableChecks[$index]->expression
+            );
+        }
+
+        foreach ($constraints as $constraint) {
+            $db->createCommand()->dropCheck($constraint['name'], $tableName)->execute();
+        }
+
+        $this->assertEmpty($schema->getTableChecks($tableName, true));
+    }
 }
