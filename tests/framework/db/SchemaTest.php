@@ -774,6 +774,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         if (
+            $this->driverName === 'mysql' &&
             version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
             $type === 'checks'
         ) {
@@ -797,6 +798,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         if (
+            $this->driverName === 'mysql' &&
             version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
             $type === 'checks'
         ) {
@@ -822,6 +824,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
 
         if (
+            $this->driverName === 'mysql' &&
             version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
             $type === 'checks'
         ) {
