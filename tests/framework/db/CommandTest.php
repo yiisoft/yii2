@@ -619,7 +619,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * 
+     *
      * @param mixed $invalidSelectColumns
      */
     public function testInsertSelectFailed($invalidSelectColumns)
@@ -1206,9 +1206,13 @@ SQL;
     public function testAddDropCheck()
     {
         $db = $this->getConnection(false);
+
+        if (version_compare($db->getServerVersion(), '8.0.16', '<')) {
+            $this->markTestSkipped('MySQL < 8.0.16 does not support CHECK constraints.');
+        }
+
         $tableName = 'test_ck';
         $name = 'test_ck_constraint';
-        /** @var \yii\db\pgsql\Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {
@@ -1226,6 +1230,7 @@ SQL;
         );
 
         $db->createCommand()->dropCheck($name, $tableName)->execute();
+
         $this->assertEmpty($schema->getTableChecks($tableName, true));
     }
 

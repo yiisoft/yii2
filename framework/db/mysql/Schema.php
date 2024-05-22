@@ -11,6 +11,7 @@ namespace yii\db\mysql;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\db\CheckConstraint;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
@@ -201,11 +202,52 @@ SQL;
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
     {
-        throw new NotSupportedException('MySQL does not support check constraints.');
+        // check version MySQL >= 8.0.16
+        if (version_compare($this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION), '8.0.16', '<')) {
+            throw new NotSupportedException('MySQL < 8.0.16 does not support check constraints.');
+        }
+
+        $checks = [];
+
+        $sql = <<<SQL
+        SELECT cc.CONSTRAINT_NAME as constraint_name, cc.CHECK_CLAUSE as check_clause
+        FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+        JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc
+        ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
+        WHERE tc.TABLE_NAME = :tableName AND tc.CONSTRAINT_TYPE = 'CHECK';
+        SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $tableRows = $this->db->createCommand($sql, [':tableName' => $resolvedName->name])->queryAll();
+
+        if ($tableRows === []) {
+            return $checks;
+        }
+
+        $tableRows = $this->normalizePdoRowKeyCase($tableRows, true);
+
+        foreach ($tableRows as $tableRow) {
+            $matches = [];
+            $columnName = null;
+
+            if (preg_match('/\(`?([a-zA-Z0-9_]+)`?\s*[><=]/', $tableRow['check_clause'], $matches)) {
+                $columnName = $matches[1];
+            }
+
+            $check = new CheckConstraint(
+                [
+                    'name' => $tableRow['constraint_name'],
+                    'columnNames' => [$columnName],
+                    'expression' => $tableRow['check_clause'],
+                ]
+            );
+            $checks[] = $check;
+        }
+
+        return $checks;
     }
 
     /**

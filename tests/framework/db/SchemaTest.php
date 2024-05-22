@@ -773,6 +773,14 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->expectException('yii\base\NotSupportedException');
         }
 
+        if (
+            $this->driverName === 'mysql' &&
+            version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
+            $type === 'checks'
+        ) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
         $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -786,6 +794,14 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
     {
         if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        if (
+            $this->driverName === 'mysql' &&
+            version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
+            $type === 'checks'
+        ) {
             $this->expectException('yii\base\NotSupportedException');
         }
 
@@ -804,6 +820,14 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
     {
         if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        if (
+            $this->driverName === 'mysql' &&
+            version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
+            $type === 'checks'
+        ) {
             $this->expectException('yii\base\NotSupportedException');
         }
 
