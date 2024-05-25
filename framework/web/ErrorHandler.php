@@ -204,7 +204,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null && substr_compare($method, '{closure}', -9) !== 0) {
+        if ($method !== null && substr_compare($method, '{closure', -8) !== 0) {
             $reflection = new \ReflectionClass($class);
             if ($reflection->hasMethod($method)) {
                 $reflectionMethod = $reflection->getMethod($method);
