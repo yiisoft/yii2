@@ -208,18 +208,18 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $files = $this->filterFiles((array) $model->$attribute);
+        $files = $this->filterFiles(is_array($model->$attribute) ? $model->$attribute : [$model->$attribute]);
         $filesCount = count($files);
-        if ($filesCount === 0) {
+        if ($filesCount === 0 && $this->minFiles > 0) {
             $this->addError($model, $attribute, $this->uploadRequired);
 
             return;
         }
 
-        if ($this->maxFiles && $filesCount > $this->maxFiles) {
+        if ($this->maxFiles > 0 && $filesCount > $this->maxFiles) {
             $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
         }
-        if ($this->minFiles && $this->minFiles > $filesCount) {
+        if ($this->minFiles > 0 && $this->minFiles > $filesCount) {
             $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
         }
 

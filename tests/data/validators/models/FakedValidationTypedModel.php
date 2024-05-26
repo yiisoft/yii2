@@ -5,9 +5,10 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace data\validators\models;
+namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
+use yii\web\UploadedFile;
 
 class FakedValidationTypedModel extends Model
 {
