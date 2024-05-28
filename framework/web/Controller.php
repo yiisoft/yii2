@@ -129,9 +129,8 @@ class Controller extends \yii\base\Controller
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
-                $isValid = true;                
+                $isValid = true;
                 $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
-                
                 if ($isArray) {
                     $params[$name] = (array)$params[$name];
                 } elseif (is_array($params[$name])) {
