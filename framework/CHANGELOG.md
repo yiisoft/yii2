@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
 - Bug #19817: Add MySQL Query `addCheck()` and `dropCheck()` (@bobonov)
+- Bug #20165: Adjust pretty name of closures for PHP 8.4 compatibility (@staabm)
 
 2.0.49.2 October 12, 2023
 -------------------------
