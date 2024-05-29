@@ -380,10 +380,19 @@ SQL;
             }
             throw $e;
         }
+
+
+        $jsonColumns = $this->getJsonColumns($table);
+
         foreach ($columns as $info) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
                 $info = array_change_key_case($info, CASE_LOWER);
             }
+
+            if (\in_array($info['field'], $jsonColumns, true)) {
+                $info['type'] = static::TYPE_JSON;
+            }
+
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {
@@ -640,5 +649,21 @@ SQL;
         }
 
         return $result[$returnType];
+    }
+
+    private function getJsonColumns(TableSchema $table): array
+    {
+        $sql = $this->getCreateTableSql($table);
+        $result = [];
+
+        $regexp = '/json_valid\([\`"](.+)[\`"]\s*\)/mi';
+
+        if (\preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $result[] = $match[1];
+            }
+        }
+
+        return $result;
     }
 }
