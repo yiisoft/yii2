@@ -235,7 +235,7 @@ class AttributeTypecastBehavior extends Behavior
         }
 
         foreach ($attributeTypes as $attribute => $type) {
-            $value = $this->owner->{$attribute};
+            $value = $this->owner->hasAttribute($attribute) ? $this->owner->{$attribute} : null;
             if ($this->skipOnNull && $value === null) {
                 continue;
             }
