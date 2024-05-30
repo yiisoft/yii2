@@ -773,14 +773,6 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->expectException('yii\base\NotSupportedException');
         }
 
-        if (
-            $this->driverName === 'mysql' &&
-            version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
-            $type === 'checks'
-        ) {
-            $this->expectException('yii\base\NotSupportedException');
-        }
-
         $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -794,14 +786,6 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
     {
         if ($expected === false) {
-            $this->expectException('yii\base\NotSupportedException');
-        }
-
-        if (
-            $this->driverName === 'mysql' &&
-            version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
-            $type === 'checks'
-        ) {
             $this->expectException('yii\base\NotSupportedException');
         }
 
@@ -823,21 +807,13 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->expectException('yii\base\NotSupportedException');
         }
 
-        if (
-            $this->driverName === 'mysql' &&
-            version_compare($this->getConnection(false)->getServerVersion(), '8.0.16', '<') &&
-            $type === 'checks'
-        ) {
-            $this->expectException('yii\base\NotSupportedException');
-        }
-
         $connection = $this->getConnection(false);
         $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
 
-    private function assertMetadataEquals($expected, $actual)
+    protected function assertMetadataEquals($expected, $actual)
     {
         switch (\strtolower(\gettype($expected))) {
             case 'object':
@@ -865,7 +841,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    private function normalizeArrayKeys(array &$array, $caseSensitive)
+    protected function normalizeArrayKeys(array &$array, $caseSensitive)
     {
         $newArray = [];
         foreach ($array as $value) {
@@ -889,7 +865,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $array = $newArray;
     }
 
-    private function normalizeConstraints(&$expected, &$actual)
+    protected function normalizeConstraints(&$expected, &$actual)
     {
         if (\is_array($expected)) {
             foreach ($expected as $key => $value) {
@@ -904,7 +880,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
     }
 
-    private function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
+    protected function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
     {
         if ($expectedConstraint::className() !== $actualConstraint::className()) {
             return;
