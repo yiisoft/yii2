@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.49.4 June 4, 2024
+---------------------
+
+- CVE-2024-4990: Fix Unsafe Reflection in base Component class (@mtangoo)
+
+
 2.0.49.3 October 31, 2023
 -------------------------
 
