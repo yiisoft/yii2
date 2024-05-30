@@ -189,7 +189,15 @@ class Component extends BaseObject
         } elseif (strncmp($name, 'as ', 3) === 0) {
             // as behavior: attach behavior
             $name = trim(substr($name, 3));
-            $this->attachBehavior($name, $value instanceof Behavior ? $value : Yii::createObject($value));
+            if ($value instanceof Behavior) {
+                $this->attachBehavior($name, $value);
+            } elseif (isset($value['class']) && is_subclass_of($value['class'], Behavior::class, true)) {
+                $this->attachBehavior($name, Yii::createObject($value));
+            } elseif (is_string($value) && is_subclass_of($value, Behavior::class, true)) {
+                $this->attachBehavior($name, Yii::createObject($value));
+            } else {
+                throw new InvalidConfigException('Class is not of type ' . Behavior::class . ' or its subclasses');
+            }
 
             return;
         }
