@@ -10,6 +10,14 @@ Yii Framework 2 Change Log
 
 2.0.50 under development
 ------------------------
+2.0.51 under development
+------------------------
+
+- no changes in this release.
+
+
+2.0.50 May 30, 2024
+-------------------
 
 - Bug #17181: Improved `BaseUrl::isRelative($url)` performance (sammousa, bizley, rob006)
 - Bug #17191: Fixed `BaseUrl::isRelative($url)` method in `yii\helpers\BaseUrl` (ggh2e3)
