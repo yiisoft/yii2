@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
 - Bug #19817: Add MySQL Query `addCheck()` and `dropCheck()` (@bobonov)
 - Bug #20165: Adjust pretty name of closures for PHP 8.4 compatibility (@staabm)
+- Bug #19855: Fixed `yii\validators\FileValidator` to not limit some of its rules only to array attribute (bizley)
 
 2.0.49.2 October 12, 2023
 -------------------------
