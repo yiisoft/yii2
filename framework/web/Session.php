@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -106,6 +105,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @var array|null is used for saving session between recreations due to session parameters update.
      */
     private $_frozenSessionData;
+
 
     /**
      * Initializes the application component.

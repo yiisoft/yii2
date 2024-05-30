@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Yii core class map.
  *
@@ -44,7 +43,6 @@ return [
   'yii\base\ModelEvent' => YII2_PATH . '/base/ModelEvent.php',
   'yii\base\Module' => YII2_PATH . '/base/Module.php',
   'yii\base\NotSupportedException' => YII2_PATH . '/base/NotSupportedException.php',
-  'yii\base\Object' => YII2_PATH . '/base/Object.php',
   'yii\base\Request' => YII2_PATH . '/base/Request.php',
   'yii\base\Response' => YII2_PATH . '/base/Response.php',
   'yii\base\Security' => YII2_PATH . '/base/Security.php',
@@ -74,6 +72,7 @@ return [
   'yii\caching\ArrayCache' => YII2_PATH . '/caching/ArrayCache.php',
   'yii\caching\Cache' => YII2_PATH . '/caching/Cache.php',
   'yii\caching\CacheInterface' => YII2_PATH . '/caching/CacheInterface.php',
+  'yii\caching\CallbackDependency' => YII2_PATH . '/caching/CallbackDependency.php',
   'yii\caching\ChainedDependency' => YII2_PATH . '/caching/ChainedDependency.php',
   'yii\caching\DbCache' => YII2_PATH . '/caching/DbCache.php',
   'yii\caching\DbDependency' => YII2_PATH . '/caching/DbDependency.php',
@@ -81,7 +80,6 @@ return [
   'yii\caching\Dependency' => YII2_PATH . '/caching/Dependency.php',
   'yii\caching\DummyCache' => YII2_PATH . '/caching/DummyCache.php',
   'yii\caching\ExpressionDependency' => YII2_PATH . '/caching/ExpressionDependency.php',
-  'yii\caching\CallbackDependency' => YII2_PATH . '/caching/CallbackDependency.php',
   'yii\caching\FileCache' => YII2_PATH . '/caching/FileCache.php',
   'yii\caching\FileDependency' => YII2_PATH . '/caching/FileDependency.php',
   'yii\caching\MemCache' => YII2_PATH . '/caching/MemCache.php',

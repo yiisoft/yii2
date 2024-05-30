@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -507,12 +506,12 @@ class BaseStringHelper
      *
      * @param string $string The input string.
      * @param int $start The starting position from where to begin masking.
-     *                   This can be a positive or negative integer.
-     *                   Positive values count from the beginning,
-     *                   negative values count from the end of the string.
+     * This can be a positive or negative integer.
+     * Positive values count from the beginning,
+     * negative values count from the end of the string.
      * @param int $length The length of the section to be masked.
-     *                    The masking will start from the $start position
-     *                    and continue for $length characters.
+     * The masking will start from the $start position
+     * and continue for $length characters.
      * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */

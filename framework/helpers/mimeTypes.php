@@ -1,5 +1,4 @@
 <?php
-
 /**
  * MIME types.
  *
@@ -12,7 +11,6 @@
  * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
-
 $mimeTypes = [
     123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',
@@ -420,6 +418,8 @@ $mimeTypes = [
     'm1v' => 'video/mpeg',
     'm21' => 'application/mp21',
     'm2a' => 'audio/mpeg',
+    'm2t' => 'video/mp2t',
+    'm2ts' => 'video/mp2t',
     'm2v' => 'video/mpeg',
     'm3a' => 'audio/mpeg',
     'm3u' => 'audio/x-mpegurl',
@@ -505,7 +505,7 @@ $mimeTypes = [
     'msi' => 'application/x-msdownload',
     'msl' => 'application/vnd.mobius.msl',
     'msty' => 'application/vnd.muvee.style',
-    'mts' => 'model/vnd.mts',
+    'mts' => 'video/mp2t',
     'mus' => 'application/vnd.musician',
     'musicxml' => 'application/vnd.recordare.musicxml+xml',
     'mvb' => 'application/x-msmediaview',
@@ -820,6 +820,7 @@ $mimeTypes = [
     'tr' => 'text/troff',
     'tra' => 'application/vnd.trueapp',
     'trm' => 'application/x-msterminal',
+    'ts' => 'video/mp2t',
     'tsd' => 'application/timestamped-data',
     'tsv' => 'text/tab-separated-values',
     'ttc' => 'font/collection',
