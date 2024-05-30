@@ -34,12 +34,12 @@ Yii Framework 2 Change Log
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
-- CVE-2024-32877: Fixed Reflected XSS in Debug mode (Antiphishing)
-- CVE-2024-4990: Fix Unsafe Reflection in base Component class (@mtangoo)
+- Bug: CVE-2024-32877, Fix Reflected XSS in Debug mode (Antiphishing)
+- Bug: CVE-2024-4990, Fix Unsafe Reflection in base Component class (@mtangoo)
 - Bug #19817: Add MySQL Query `addCheck()` and `dropCheck()` (@bobonov)
 - Bug #20165: Adjust pretty name of closures for PHP 8.4 compatibility (@staabm)
 - Bug #19855: Fixed `yii\validators\FileValidator` to not limit some of its rules only to array attribute (bizley)
-- Enh: #20171: Support JSON columns for MariaDB 10.4 or higher (@terabytesoftw)
+- Enh #20171: Support JSON columns for MariaDB 10.4 or higher (@terabytesoftw)
 
 
 2.0.49.2 October 12, 2023
