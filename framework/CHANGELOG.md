@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
+- CVE-2024-32877: Fixed Reflected XSS in Debug mode (Antiphishing)
 - CVE-2024-4990: Fix Unsafe Reflection in base Component class (@mtangoo)
 - Bug #19817: Add MySQL Query `addCheck()` and `dropCheck()` (@bobonov)
 - Bug #20165: Adjust pretty name of closures for PHP 8.4 compatibility (@staabm)
