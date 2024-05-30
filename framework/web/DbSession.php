@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -133,7 +133,7 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $row = $this->db->useMaster(function() use ($oldID) {
+        $row = $this->db->useMaster(function () use ($oldID) {
             return (new Query())->from($this->sessionTable)
                ->where(['id' => $oldID])
                ->createCommand($this->db)

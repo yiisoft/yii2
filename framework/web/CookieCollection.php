@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -18,7 +18,6 @@ use yii\base\InvalidCallException;
  * For more details and usage information on CookieCollection, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
  *
  * @property-read int $count The number of cookies in the collection.
- * @property-read ArrayIterator $iterator An iterator for traversing the cookies in the collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -52,7 +51,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns an iterator for traversing the cookies in the collection.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return ArrayIterator an iterator for traversing the cookies in the collection.
+     * @return ArrayIterator<string, Cookie> an iterator for traversing the cookies in the collection.
      */
     #[\ReturnTypeWillChange]
     public function getIterator()
@@ -114,7 +113,18 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     public function has($name)
     {
         return isset($this->_cookies[$name]) && $this->_cookies[$name]->value !== ''
-            && ($this->_cookies[$name]->expire === null || $this->_cookies[$name]->expire === 0 || $this->_cookies[$name]->expire >= time());
+            && ($this->_cookies[$name]->expire === null
+                || $this->_cookies[$name]->expire === 0
+                || (
+                    (is_string($this->_cookies[$name]->expire) && strtotime($this->_cookies[$name]->expire) >= time())
+                    || (
+                        interface_exists('\\DateTimeInterface')
+                        && $this->_cookies[$name]->expire instanceof \DateTimeInterface
+                        && $this->_cookies[$name]->expire->getTimestamp() >= time()
+                    )
+                    || $this->_cookies[$name]->expire >= time()
+                )
+            );
     }
 
     /**
@@ -175,7 +185,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
 
     /**
      * Returns the collection as a PHP array.
-     * @return array the array representation of the collection.
+     * @return Cookie[] the array representation of the collection.
      * The array keys are cookie names, and the array values are the corresponding cookie objects.
      */
     public function toArray()

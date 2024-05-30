@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
@@ -411,11 +411,7 @@ class MigrateController extends BaseMigrateController
 
         $templateFile = $this->templateFile;
         $table = null;
-        if (preg_match(
-            '/^create_?junction_?(?:table)?_?(?:for)?(.+)_?and(.+)_?tables?$/i',
-            $name,
-            $matches
-        )) {
+        if (preg_match('/^create_?junction_?(?:table)?_?(?:for)?(.+)_?and(.+)_?tables?$/i', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
             $firstTable = $this->normalizeTableName($matches[1]);
             $secondTable = $this->normalizeTableName($matches[2]);

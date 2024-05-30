@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class HtmlTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -88,6 +88,21 @@ class HtmlTest extends TestCase
         $content = 'a <>';
         $this->assertEquals("<script>{$content}</script>", Html::script($content));
         $this->assertEquals("<script type=\"text/js\">{$content}</script>", Html::script($content, ['type' => 'text/js']));
+    }
+
+    public function testScriptCustomAttribute()
+    {
+        $nonce = Yii::$app->security->generateRandomString();
+        $this->mockApplication([
+            'components' => [
+                'view' => [
+                    'class' => 'yii\web\View',
+                    'scriptOptions' => ['nonce' => $nonce],
+                ],
+            ],
+        ]);
+        $content = 'a <>';
+        $this->assertEquals("<script nonce=\"{$nonce}\">{$content}</script>", Html::script($content));
     }
 
     public function testCssFile()
@@ -513,6 +528,7 @@ class HtmlTest extends TestCase
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test'));
+
         $expected = <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
@@ -520,13 +536,6 @@ EOD;
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems()));
-        $expected = <<<'EOD'
-<select name="test">
-<option value="value1">text1</option>
-<option value="value2" selected>text2</option>
-</select>
-EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
 
         $expected = <<<'EOD'
 <select name="test">
@@ -534,11 +543,15 @@ EOD;
 <option value="value2" selected>text2</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems(), [
-            'options' => [
-                'value2' => ['selected' => true],
-            ],
-        ]));
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', null, $this->getDataItems(), [
+                'options' => [
+                    'value2' => ['selected' => true],
+                ],
+            ])
+        );
 
         $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
@@ -554,8 +567,14 @@ EOD;
 <option value="value3">text3</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', [0], $this->getDataItems3(), ['multiple' => 'true']));
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', new \ArrayObject([0]), $this->getDataItems3(), ['multiple' => 'true']));
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', [0], $this->getDataItems3(), ['multiple' => 'true'])
+        );
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', new \ArrayObject([0]), $this->getDataItems3(), ['multiple' => 'true'])
+        );
 
         $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
@@ -564,8 +583,85 @@ EOD;
 <option value="value3" selected>text3</option>
 </select>
 EOD;
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', ['1', 'value3'], $this->getDataItems3(), ['multiple' => 'true']));
-        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', new \ArrayObject(['1', 'value3']), $this->getDataItems3(), ['multiple' => 'true']));
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', ['1', 'value3'], $this->getDataItems3(), ['multiple' => 'true'])
+        );
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', new \ArrayObject(['1', 'value3']), $this->getDataItems3(), ['multiple' => 'true']
+            )
+        );
+    }
+
+    public function providerForNonStrictBooleanDropDownList()
+    {
+        return [
+            [null, false, false, false],
+            ['', true, false, false],
+            [0, false, false, true],
+            [1, false, true, false],
+            ['0', false, false, true],
+            ['1', false, true, false],
+            [false, false, false, true],
+            [true, false, true, false],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForNonStrictBooleanDropDownList
+     */
+    public function testNonStrictBooleanDropDownList($selection, $selectedEmpty, $selectedYes, $selectedNo)
+    {
+        $selectedEmpty = $selectedEmpty ? ' selected' : '';
+        $selectedYes = $selectedYes ? ' selected' : '';
+        $selectedNo = $selectedNo ? ' selected' : '';
+        $expected = <<<HTML
+<select name="test">
+<option value=""$selectedEmpty></option>
+<option value="1"$selectedYes>Yes</option>
+<option value="0"$selectedNo>No</option>
+</select>
+HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', $selection, ['' => '', '1' => 'Yes', '0' => 'No'])
+        );
+    }
+
+    public function providerForStrictBooleanDropDownList()
+    {
+        return [
+            [null, false, false, false],
+            ['', true, false, false],
+            [0, false, false, true],
+            [1, false, true, false],
+            ['0', false, false, true],
+            ['1', false, true, false],
+            [false, false, false, true],
+            [true, false, true, false],
+        ];
+    }
+
+    /**
+     * @dataProvider providerForStrictBooleanDropDownList
+     */
+    public function testStrictBooleanDropDownList($selection, $selectedEmpty, $selectedYes, $selectedNo)
+    {
+        $selectedEmpty = $selectedEmpty ? ' selected' : '';
+        $selectedYes = $selectedYes ? ' selected' : '';
+        $selectedNo = $selectedNo ? ' selected' : '';
+        $expected = <<<HTML
+<select name="test">
+<option value=""$selectedEmpty></option>
+<option value="1"$selectedYes>Yes</option>
+<option value="0"$selectedNo>No</option>
+</select>
+HTML;
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Html::dropDownList('test', $selection, ['' => '', '1' => 'Yes', '0' => 'No'], ['strict' => true])
+        );
     }
 
     public function testListBox()
@@ -1117,11 +1213,6 @@ EOD;
         //$attributes = ['prompt' => 'Please select'];
         //$this->assertEqualsWithoutLE($expected, Html::renderSelectOptions([false], $data, $attributes));
 
-        $expected = <<<'EOD'
-<option value="">Please select</option>
-<option value="1">Yes</option>
-<option value="0">No</option>
-EOD;
         $attributes = ['prompt' => 'Please select', 'strict' => true];
         $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(false, $data, $attributes));
         $attributes = ['prompt' => 'Please select', 'strict' => true];
@@ -1134,6 +1225,7 @@ EOD;
         $this->assertEquals(' name="test" value="1&lt;&gt;"', Html::renderTagAttributes(['name' => 'test', 'empty' => null, 'value' => '1<>']));
         $this->assertEquals(' checked disabled', Html::renderTagAttributes(['checked' => true, 'disabled' => true, 'hidden' => false]));
         $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first', 'second']]));
+        $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first', null, 'second', '']]));
         Html::$normalizeClassAttribute = true;
         $this->assertEquals(' class="first second"', Html::renderTagAttributes(['class' => ['first second', 'first']]));
         $this->assertEquals('', Html::renderTagAttributes(['class' => []]));
@@ -1153,7 +1245,6 @@ EOD;
             ],
         ];
         $this->assertEquals(' data-foo', Html::renderTagAttributes($attributes));
-
 
         $attributes = [
             'data' => [
@@ -1716,6 +1807,11 @@ EOD;
                     $model->addError('name', 'Error message. Here are even more chars: ""');
                 },
             ],
+            [
+                'empty_class',
+                ['emptyClass' => 'd-none'],
+                '<div class="d-none"><p>Please fix the following errors:</p><ul></ul></div>',
+            ],
         ];
     }
 
@@ -1997,6 +2093,7 @@ EOD;
     public function testAttributeNameException($name)
     {
         $this->expectException('yii\base\InvalidArgumentException');
+
         Html::getAttributeName($name);
     }
 
@@ -2033,12 +2130,11 @@ EOD;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Attribute name must contain word characters only.
-     */
     public function testGetAttributeValueInvalidArgumentException()
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         $model = new HtmlTestModel();
         Html::getAttributeValue($model, '-');
     }
@@ -2068,24 +2164,24 @@ EOD;
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Attribute name must contain word characters only.
-     */
     public function testGetInputNameInvalidArgumentExceptionAttribute()
     {
         $model = new HtmlTestModel();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         Html::getInputName($model, '-');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
-     */
     public function testGetInputNameInvalidArgumentExceptionFormName()
     {
         $model = $this->getMockBuilder('yii\\base\\Model')->getMock();
         $model->method('formName')->willReturn('');
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('cannot be empty for tabular inputs.');
+
         Html::getInputName($model, '[foo]bar');
     }
 
@@ -2099,7 +2195,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdDataProvider
+     * @dataProvider getInputIdDataProvider
      */
     public function testGetInputId($attributeName, $inputIdExpected)
     {
@@ -2112,7 +2208,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdByNameDataProvider
+     * @dataProvider getInputIdByNameDataProvider
      */
     public function testGetInputIdByName($attributeName, $inputIdExpected)
     {
@@ -2191,7 +2287,7 @@ HTML;
 
         $html = Html::activeTextInput($model, 'name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="Name"', $html);
+        $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
     public function testActiveTextInput_customPlaceholder()
@@ -2200,7 +2296,7 @@ HTML;
 
         $html = Html::activeTextInput($model, 'name', ['placeholder' => 'Custom placeholder']);
 
-        $this->assertContains('placeholder="Custom placeholder"', $html);
+        $this->assertStringContainsString('placeholder="Custom placeholder"', $html);
     }
 
     public function testActiveTextInput_placeholderFillFromModelTabular()
@@ -2209,7 +2305,7 @@ HTML;
 
         $html = Html::activeTextInput($model, '[0]name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="Name"', $html);
+        $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
     public function testOverrideSetActivePlaceholder()
@@ -2218,10 +2314,10 @@ HTML;
 
         $html = MyHtml::activeTextInput($model, 'name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="My placeholder: Name"', $html);
+        $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public function testGetInputIdDataProvider()
+    public static function getInputIdDataProvider()
     {
         return [
             [
@@ -2260,7 +2356,7 @@ HTML;
         ];
     }
 
-    public function testGetInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider()
     {
         return [
             [

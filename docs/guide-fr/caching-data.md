@@ -91,15 +91,15 @@ Comme tous les composants de mise en cache prennent en charge le même jeux d'AP
 
 Yii prend en charge un large panel de supports de stockage pour cache. Ce qui suit est un résumé :
 
-* [[yii\caching\ApcCache]]: utilise l'extension PHP [APC](https://www.php.net/manual/en/book.apcu.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache pour une grosse application centralisée (p. ex. un serveur, pas d'équilibrage de charge dédié, etc.).
+* [[yii\caching\ApcCache]]: utilise l'extension PHP [APC](https://www.php.net/manual/fr/book.apcu.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache pour une grosse application centralisée (p. ex. un serveur, pas d'équilibrage de charge dédié, etc.).
 * [[yii\caching\DbCache]]: utilise une table de base de données pour stocker les données en cache. Pour utiliser ce cache, vous devez créer une table comme spécifié dans [[yii\caching\DbCache::cacheTable]].
 * [[yii\caching\DummyCache]]: tient lieu de cache à remplacer qui n'assure pas de mise en cache réelle. Le but de ce composant est de simplifier le code qui a besoin de vérifier la disponibilité du cache. Par exemple, lors du développement ou si le serveur ne dispose pas de la prise en charge d'un cache, vous pouvez configurer un composant de mise en cache pour qu'il utilise ce cache. Lorsque la prise en charge réelle de la mise en cache est activée, vous pouvez basculer sur le composant de mise en cache correspondant. Dans les deux cas, vous pouvez utiliser le même code `Yii::$app->cache->get($key)` pour essayer de retrouver les données du cache sans vous préoccuper du fait que `Yii::$app->cache` puisse être `null`.
 * [[yii\caching\FileCache]]: utilise des fichiers standards pour stocker les données en cache. Cela est particulièrement adapté à la mise en cache de gros blocs de données, comme le contenu d'une page.
-* [[yii\caching\MemCache]]: utilise le [memcache](https://www.php.net/manual/en/book.memcache.php) PHP et l'extension [memcached](https://www.php.net/manual/en/book.memcached.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache dans des applications distribuées (p. ex. avec plusieurs serveurs, l'équilibrage de charge, etc.).
+* [[yii\caching\MemCache]]: utilise le [memcache](https://www.php.net/manual/fr/book.memcache.php) PHP et l'extension [memcached](https://www.php.net/manual/fr/book.memcached.php). Cette option peut être considérée comme la plus rapide lorsqu'on utilise un cache dans des applications distribuées (p. ex. avec plusieurs serveurs, l'équilibrage de charge, etc.).
 * [[yii\redis\Cache]]: met en œuvre un composant de mise en cache basé sur un stockage clé-valeur [Redis](https://redis.io/) 
   (une version de redis égale ou supérieure à 2.6.12 est nécessaire).
 * [[yii\caching\WinCache]]: utilise le [WinCache](https://iis.net/downloads/microsoft/wincache-extension) PHP
-  ([voir aussi l'extension](https://www.php.net/manual/en/book.wincache.php)).
+  ([voir aussi l'extension](https://www.php.net/manual/fr/book.wincache.php)).
 * [[yii\caching\XCache]] _(deprecated)_: utilise l'extension PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache).
 * [[yii\caching\ZendDataCache]] _(deprecated)_: utilise le 
   [cache de données Zend](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
@@ -217,6 +217,7 @@ Ci-dessous nous présentons un résumé des dépendances de mise en cache dispon
 - [[yii\caching\ChainedDependency]]: la dépendance est modifiée si l'une des dépendances de la chaîne est modifiée.
 - [[yii\caching\DbDependency]]: la dépendance est modifiée si le résultat de le requête de l'instruction SQL spécifiée est modifié.
 - [[yii\caching\ExpressionDependency]]: la dépendance est modifiée si le résultat de l'expression PHP spécifiée est modifié.
+- [[yii\caching\CallbackDependency]]: la dépendance est modifiée si le résultat du rappel PHP spécifié est modifié.
 - [[yii\caching\FileDependency]]: la dépendance est modifiée si la date de dernière modification du fichier est modifiée.
 - [[yii\caching\TagDependency]]: associe une donnée mise en cache à une ou plusieurs balises. Vous pouvez invalider la donnée mise en cache associée à la balise spécifiée en appelant [[yii\caching\TagDependency::invalidate()]].
 
@@ -342,4 +343,3 @@ $result = $db->cache(function ($db) {
 La mise en cache de requêtes ne fonctionne pas avec des résultats de requêtes qui contiennent des gestionnaires de ressources. Par exemple, lorsque vous utilisez de type de colonne `BLOB` dans certains systèmes de gestion de bases de données (DBMS), la requête retourne un gestionnaire de ressources pour la donnée de la colonne.
 
 Quelques supports de stockage pour cache sont limités en taille. Par exemple, avec memcache, chaque entrée est limitée en taille à 1 MO. En conséquence, si le résultat d'une requête dépasse cette taille, la mise en cache échoue.
-

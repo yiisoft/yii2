@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -114,7 +114,8 @@ class ColumnSchema extends BaseObject
      */
     protected function typecast($value)
     {
-        if ($value === ''
+        if (
+            $value === ''
             && !in_array(
                 $this->type,
                 [
@@ -123,12 +124,14 @@ class ColumnSchema extends BaseObject
                     Schema::TYPE_BINARY,
                     Schema::TYPE_CHAR
                 ],
-                true)
+                true
+            )
         ) {
             return null;
         }
 
-        if ($value === null
+        if (
+            $value === null
             || gettype($value) === $this->phpType
             || $value instanceof ExpressionInterface
             || $value instanceof Query
@@ -136,7 +139,8 @@ class ColumnSchema extends BaseObject
             return $value;
         }
 
-        if (is_array($value)
+        if (
+            is_array($value)
             && count($value) === 2
             && isset($value[1])
             && in_array($value[1], $this->getPdoParamTypes(), true)
@@ -154,20 +158,28 @@ class ColumnSchema extends BaseObject
                     // ensure type cast always has . as decimal separator in all locales
                     return StringHelper::floatToString($value);
                 }
-                if (is_numeric($value)
+                if (
+                    is_numeric($value)
                     && ColumnSchemaBuilder::CATEGORY_NUMERIC === ColumnSchemaBuilder::$typeCategoryMap[$this->type]
                 ) {
                     // https://github.com/yiisoft/yii2/issues/14663
                     return $value;
                 }
 
+                if (PHP_VERSION_ID >= 80100 && is_object($value) && $value instanceof \BackedEnum) {
+                    return (string) $value->value;
+                }
+
                 return (string) $value;
             case 'integer':
+                if (PHP_VERSION_ID >= 80100 && is_object($value) && $value instanceof \BackedEnum) {
+                    return (int) $value->value;
+                }
                 return (int) $value;
             case 'boolean':
                 // treating a 0 bit value as false too
                 // https://github.com/yiisoft/yii2/issues/9006
-                return (bool) $value && $value !== "\0";
+                return (bool) $value && $value !== "\0" && strtolower($value) !== 'false';
             case 'double':
                 return (float) $value;
         }

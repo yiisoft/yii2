@@ -58,7 +58,7 @@ such as memory, files, databases.
 Cache components are usually registered as [application components](structure-application-components.md) so
 that they can be globally configurable
 and accessible. The following code shows how to configure the `cache` application component to use
-[memcached](http://memcached.org/) with two cache servers:
+[memcached](https://memcached.org/) with two cache servers:
 
 ```php
 'components' => [
@@ -81,6 +81,8 @@ and accessible. The following code shows how to configure the `cache` applicatio
 ```
 
 You can then access the above cache component using the expression `Yii::$app->cache`.
+
+If no cache component is specified, then Yii will use [yii\caching\FileCache](https://www.yiiframework.com/doc/api/2.0/yii-caching-filecache) as default.
 
 Because all cache components support the same set of APIs, you can swap the underlying cache component
 with a different one by reconfiguring it in the application configuration without modifying the code that uses the cache.
@@ -275,6 +277,7 @@ Below is a summary of the available cache dependencies:
 - [[yii\caching\ChainedDependency]]: the dependency is changed if any of the dependencies on the chain is changed.
 - [[yii\caching\DbDependency]]: the dependency is changed if the query result of the specified SQL statement is changed.
 - [[yii\caching\ExpressionDependency]]: the dependency is changed if the result of the specified PHP expression is changed.
+- [[yii\caching\CallbackDependency]]: the dependency is changed if the result of the specified PHP callback is changed.
 - [[yii\caching\FileDependency]]: the dependency is changed if the file's last modification time is changed.
 - [[yii\caching\TagDependency]]: associates a cached data item with one or multiple tags. You may invalidate
   the cached data items with the specified tag(s) by calling [[yii\caching\TagDependency::invalidate()]].
@@ -431,4 +434,3 @@ You can flush the cache from the console by calling `yii cache/flush` as well.
 
 > Info: Console application uses a separate configuration file by default. Ensure, that you have the same caching
 components in your web and console application configs to reach the proper effect.
-

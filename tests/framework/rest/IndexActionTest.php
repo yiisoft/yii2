@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class IndexActionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -174,7 +174,7 @@ class IndexActionTest extends TestCase
                 ]),
                 11, // page size set as param in test
                 992,
-                ['created_at_2' => SORT_DESC], // test sort set as param in test is ignored
+                [], // sort param is set so no default sorting anymore
                 ['created_at_2' => SORT_DESC]
             ],
             [ // Disable pagination and sort

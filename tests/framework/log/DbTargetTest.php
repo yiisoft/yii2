@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
@@ -64,7 +64,7 @@ abstract class DbTargetTest extends TestCase
         }
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $databases = static::getParam('databases');
@@ -78,7 +78,7 @@ abstract class DbTargetTest extends TestCase
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);

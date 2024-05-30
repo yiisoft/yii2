@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\rest;
@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -376,7 +376,8 @@ class UrlRuleTest extends TestCase
     }
 
     /**
-     * @dataProvider testGetCreateUrlStatusProvider
+     * @dataProvider getCreateUrlStatusProvider
+     *
      * @param array $ruleConfig
      * @param array $tests
      */
@@ -413,7 +414,7 @@ class UrlRuleTest extends TestCase
      *   - second element is the expected URL
      *   - third element is the expected result of getCreateUrlStatus() method
      */
-    public function testGetCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider()
     {
         return [
             'single controller' => [

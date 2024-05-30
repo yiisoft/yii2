@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\test;
@@ -20,7 +20,7 @@ class ArrayFixtureTest extends TestCase
      */
     private $_fixture;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_fixture = new ArrayFixture();
@@ -47,12 +47,12 @@ class ArrayFixtureTest extends TestCase
         $this->assertEmpty($this->_fixture->data, 'fixture data should not be loaded');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     */
     public function testWrongDataFileException()
     {
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
+
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        
         $this->_fixture->load();
     }
 }

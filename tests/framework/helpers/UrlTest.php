@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -22,7 +22,7 @@ use yiiunit\TestCase;
  */
 class UrlTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -47,7 +47,7 @@ class UrlTest extends TestCase
         ], '\yii\web\Application');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->getSession()->removeAll();
         parent::tearDown();
@@ -268,7 +268,7 @@ class UrlTest extends TestCase
                 ['label' => 'Test', 'url' => ['/site/page', 'view' => 'about']],
             ],
         ]);
-        $this->assertRegExp('~<a href="/site/page.html\?view=about">~', $output);
+        $this->assertMatchesRegularExpression('~<a href="/site/page.html\?view=about">~', $output);
     }
 
     public function testBase()

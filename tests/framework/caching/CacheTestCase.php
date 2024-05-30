@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -54,13 +54,13 @@ abstract class CacheTestCase extends TestCase
      */
     abstract protected function getCacheInstance();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         static::$time = null;
         static::$microtime = null;
@@ -154,6 +154,13 @@ abstract class CacheTestCase extends TestCase
 
         $cache['arrayaccess_test'] = new \stdClass();
         $this->assertInstanceOf('stdClass', $cache['arrayaccess_test']);
+    }
+
+    public function testGetValueNonExistent()
+    {
+        $cache = $this->getCacheInstance();
+
+        $this->assertFalse($this->invokeMethod($cache, 'getValue', ['non_existent_key']));
     }
 
     public function testGetNonExistent()

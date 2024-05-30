@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) es un mecanismo que permite a diferentes 
+[CORS](https://developer.mozilla.org/es/docs/Web/HTTP/CORS) es un mecanismo que permite a diferentes 
 recursos (por ejemplo: fuentes, JavaScript, etc) de una pagina Web ser solicitados por otro dominio diferente al 
 dominio que esta haciendo la petición. En particular las llamadas AJAX de JavaScript pueden utilizar el mecanismo 
 XMLHttpRequest. De otro modo esta petición de dominio cruzado seria prohibida por los navegadores Web, por la misma 
@@ -348,7 +348,7 @@ public function behaviors()
 El filtrado CORS puede ser ajustado utilizando la propiedad 'cors'.
 
 * `cors['Origin']`: array utilizado para definir los orígenes permitidos. Puede ser `['*']` (everyone) o 
-  `['http://www.myserver.net', 'http://www.myotherserver.com']`. Por defecto `['*']`.
+  `['https://www.myserver.net', 'https://www.myotherserver.com']`. Por defecto `['*']`.
 * `cors['Access-Control-Request-Method']`: array de los verbos permitidos como `['GET', 'OPTIONS', 'HEAD']`.  Por 
   defecto `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: array de las cabeceras permitidas. Puede ser `['*']` todas las cabeceras o 
@@ -356,7 +356,7 @@ El filtrado CORS puede ser ajustado utilizando la propiedad 'cors'.
 * `cors['Access-Control-Allow-Credentials']`: define si la petición actual puede hacer uso de credenciales. Puede ser 
   `true`, `false` o `null` (not set). Por defecto `null`.
 * `cors['Access-Control-Max-Age']`: define el tiempo de vida del la petición pref-flight. Por defecto `86400`. Por 
-  ejemplo, habilitar CORS para el origen: `http://www.myserver.net` con métodos `GET`, `HEAD` y `OPTIONS`:
+  ejemplo, habilitar CORS para el origen: `https://www.myserver.net` con métodos `GET`, `HEAD` y `OPTIONS`:
 
 ```php
 use yii\filters\Cors;
@@ -368,7 +368,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -389,7 +389,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

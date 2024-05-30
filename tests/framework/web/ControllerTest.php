@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -10,7 +10,6 @@ namespace yiiunit\framework\web;
 use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
-use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -25,7 +24,7 @@ class ControllerTest extends TestCase
     /** @var FakeController */
     private $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -62,11 +61,6 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
@@ -89,11 +83,6 @@ class ControllerTest extends TestCase
     }
 
     public function testModelBindingHttpException() {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
@@ -120,10 +109,6 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
@@ -150,10 +135,6 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
@@ -178,10 +159,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
@@ -212,10 +189,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParamsFromModule()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         $module = new \yii\base\Module('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
@@ -245,11 +218,6 @@ class ControllerTest extends TestCase
      */
     public function testBindTypedActionParams()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         // Use the PHP7 controller for this test
         $this->controller = new FakePhp7Controller('fake', new \yii\web\Application([
             'id' => 'app',
@@ -331,5 +299,35 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
         $this->assertEquals($this->controller->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+    }
+
+    public function testUnionBindingActionParams()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        // Use the PHP80 controller for this test
+        $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['arg' => 'test', 'second' => 1];
+
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertSame('test', $args[0]);
+        $this->assertSame(1, $args[1]);
     }
 }

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework;
@@ -26,13 +26,13 @@ class BaseYiiTest extends TestCase
 {
     public $aliases;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->aliases = Yii::$aliases;
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$aliases = $this->aliases;
@@ -72,7 +72,7 @@ class BaseYiiTest extends TestCase
 
     public function testPowered()
     {
-        $this->assertInternalType('string', Yii::powered());
+        $this->assertIsString(Yii::powered());
     }
 
     public function testCreateObjectArray()

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\data;
@@ -26,7 +26,7 @@ use yiiunit\framework\db\UnqueryableQueryMock;
  */
 abstract class ActiveDataProviderTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -132,7 +132,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]);
+        $this->assertIsArray($orders[0]);
         $this->assertEquals([0, 1, 2], $provider->getKeys());
 
         $query = new Query();
@@ -170,9 +170,8 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $query->from('order')->orderBy('id'),
         ]);
         $pagination = $provider->getPagination();
-        $this->assertEquals(0, $pagination->getPageCount());
-        $this->assertCount(3, $provider->getModels());
         $this->assertEquals(1, $pagination->getPageCount());
+        $this->assertCount(3, $provider->getModels());
 
         $provider->getPagination()->pageSize = 2;
         $this->assertCount(3, $provider->getModels());

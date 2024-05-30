@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -135,7 +135,7 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asDate()|date]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
@@ -151,7 +151,7 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asTime()|time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
      *
@@ -167,10 +167,10 @@ class Formatter extends Component
      * @var string the default format string to be used to format a [[asDatetime()|date and time]].
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
      *
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
-     * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
+     * PHP [date()](https://www.php.net/manual/en/function.date.php) function.
      *
      * For example:
      *
@@ -198,7 +198,7 @@ class Formatter extends Component
      * ],
      * ```
      *
-     * Available calendar names can be found in the [ICU manual](http://userguide.icu-project.org/datetime/calendar).
+     * Available calendar names can be found in the [ICU manual](https://unicode-org.github.io/icu/userguide/datetime/calendar/).
      *
      * Since PHP 5.5 you may also use an instance of the [[\IntlCalendar]] class.
      * Check the [PHP manual](https://www.php.net/manual/en/intldateformatter.create.php) for more details.
@@ -276,7 +276,7 @@ class Formatter extends Component
      * Please refer to the [PHP manual](https://www.php.net/manual/en/class.numberformatter.php#intl.numberformatter-constants.unumberformatsymbol)
      * for the possible options.
      *
-     * For example to choose a custom currency symbol, e.g. [U+20BD](http://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
+     * For example to choose a custom currency symbol, e.g. [U+20BD](https://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
      *
      * ```php
      * [
@@ -460,7 +460,7 @@ class Formatter extends Component
         }
         $method = 'as' . $format;
         if ($this->hasMethod($method)) {
-            return call_user_func_array([$this, $method], $params);
+            return call_user_func_array([$this, $method], array_values($params));
         }
 
         throw new InvalidArgumentException("Unknown format type: $format");
@@ -639,7 +639,7 @@ class Formatter extends Component
      * If null, [[dateFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
@@ -676,7 +676,7 @@ class Formatter extends Component
      * If null, [[timeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
@@ -713,7 +713,7 @@ class Formatter extends Component
      * If null, [[datetimeFormat]] will be used.
      *
      * This can be "short", "medium", "long", or "full", which represents a preset format of different lengths.
-     * It can also be a custom format as specified in the [ICU manual](http://userguide.icu-project.org/formatparse/datetime).
+     * It can also be a custom format as specified in the [ICU manual](https://unicode-org.github.io/icu/userguide/format_parse/datetime/).
      *
      * Alternatively this can be a string prefixed with `php:` representing a format that can be recognized by the
      * PHP [date()](https://www.php.net/manual/en/function.date.php)-function.
@@ -882,7 +882,8 @@ class Formatter extends Component
                 ($timestamp = DateTime::createFromFormat(
                     'Y-m-d|',
                     $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                    new DateTimeZone($this->defaultTimeZone)
+                )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
@@ -891,7 +892,8 @@ class Formatter extends Component
                 ($timestamp = DateTime::createFromFormat(
                     'Y-m-d H:i:s',
                     $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                    new DateTimeZone($this->defaultTimeZone)
+                )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
@@ -1056,7 +1058,7 @@ class Formatter extends Component
         } elseif (is_numeric($value)) {
             $isNegative = $value < 0;
             $zeroDateTime = (new DateTime())->setTimestamp(0);
-            $valueDateTime = (new DateTime())->setTimestamp(abs($value));
+            $valueDateTime = (new DateTime())->setTimestamp(abs((int) $value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strncmp($value, 'P-', 2) === 0) {
             $interval = new DateInterval('P' . substr($value, 2));
@@ -1403,7 +1405,7 @@ class Formatter extends Component
      *
      * This is the short form of [[asSize]].
      *
-     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
+     * If [[sizeFormatBase]] is 1024, [binary prefixes](https://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
      * @param string|int|float|null $value value in bytes to be formatted.
@@ -1459,7 +1461,7 @@ class Formatter extends Component
     /**
      * Formats the value in bytes as a size in human readable form, for example `12 kilobytes`.
      *
-     * If [[sizeFormatBase]] is 1024, [binary prefixes](http://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
+     * If [[sizeFormatBase]] is 1024, [binary prefixes](https://en.wikipedia.org/wiki/Binary_prefix) (e.g. kibibyte/KiB, mebibyte/MiB, ...)
      * are used in the formatting result.
      *
      * @param string|int|float|null $value value in bytes to be formatted.
@@ -1643,8 +1645,8 @@ class Formatter extends Component
      */
     private function getUnitMessage($unitType, $unitFormat, $system, $position)
     {
-        if (isset($this->_unitMessages[$unitType][$system][$position])) {
-            return $this->_unitMessages[$unitType][$system][$position];
+        if (isset($this->_unitMessages[$unitType][$unitFormat][$system][$position])) {
+            return $this->_unitMessages[$unitType][$unitFormat][$system][$position];
         }
         if (!$this->_intlLoaded) {
             throw new InvalidConfigException('Format of ' . $unitType . ' is only supported when PHP intl extension is installed.');
@@ -1676,7 +1678,7 @@ class Formatter extends Component
             $message[] = "$key{{$value}}";
         }
 
-        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
+        return $this->_unitMessages[$unitType][$unitFormat][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
     }
 
     /**
@@ -1738,7 +1740,7 @@ class Formatter extends Component
         $params = [
             // this is the unformatted number used for the plural rule
             // abs() to make sure the plural rules work correctly on negative numbers, intl does not cover this
-            // http://english.stackexchange.com/questions/9735/is-1-singular-or-plural
+            // https://english.stackexchange.com/questions/9735/is-1-followed-by-a-singular-or-plural-noun
             'n' => abs($value),
             // this is the formatted number used for display
             'nFormatted' => $this->asDecimal($value, $decimals, $options, $textOptions),

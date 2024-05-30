@@ -8,7 +8,7 @@ Les modules sont des unités logicielles auto-suffisantes constituées de [modè
 
 Un module est organisé comme un dossier qui est appelé le [[yii\base\Module::basePath|dossier de base (*basePath*)]] du module. Dans ce dossier, se trouvent des sous-dossiers, tels que `controllers`, `models` et `views`, qui contiennent les contrôleurs, les modèles , les vues et d'autres parties de code, juste comme une application. L'exemple suivant présente le contenu d'un module : 
 
-```js
+```
 forum/
     Module.php                   le fichier de classe du module 
     controllers/                 contient les fichiers de classe des contrôleurs

@@ -136,6 +136,7 @@ RESTful Web Services
 * [Quick Start](rest-quick-start.md)
 * [Resources](rest-resources.md)
 * [Controllers](rest-controllers.md)
+* [Filtering Collections](rest-filtering-collections.md)
 * [Routing](rest-routing.md)
 * [Response Formatting](rest-response-formatting.md)
 * [Authentication](rest-authentication.md)

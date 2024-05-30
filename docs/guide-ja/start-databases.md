@@ -51,7 +51,7 @@ INSERT INTO `country` VALUES ('US','United States',322976000);
 DB 接続を構成する <span id="configuring-db-connection"></span>
 -----------------
 
-先に進む前に、[PDO](https://www.php.net/manual/en/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
+先に進む前に、[PDO](https://www.php.net/manual/ja/book.pdo.php) PHP 拡張および使用しているデータベースの PDO ドライバ
 (例えば、MySQL のための `pdo_mysql`) の両方をインストール済みであることを確認してください。
 アプリケーションがリレーショナル・データベースを使う場合、これは基本的な必要条件です。
 
@@ -106,8 +106,8 @@ class Country extends ActiveRecord
 }
 ```
 
-`Country` クラスは [[yii\db\ActiveRecord]] を拡張しています。この中には一つもコードを書く必要はありません。
-単に上記のコードだけで、Yii は関連付けられたテーブル名をクラス名から推測します。
+`Country` クラスは [[yii\db\ActiveRecord]] を拡張しています。ここにコードを追加する必要は全くありません。
+上記のコードだけで、Yii は関連付けられたテーブル名をクラス名から推測します。
 
 > Info: クラス名とテーブル名を直接に合致させることが出来ない場合は、[[yii\db\ActiveRecord::tableName()]]
 メソッドをオーバーライドして、関連づけられたテーブル名を明示的に指定することが出来ます。
@@ -231,7 +231,7 @@ use yii\widgets\LinkPager;
 上記のコード全てがどのように動作するかを見るために、ブラウザで下記の URL をアクセスします。
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![国リスト](images/start-country-list.png)
@@ -241,7 +241,7 @@ http://hostname/index.php?r=country%2Findex
 注意深く観察すると、ブラウザの URL も次のように変ったことに気付くでしょう。
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 舞台裏では、[[yii\data\Pagination|Pagination]] が、データ・セットをページ付けするのに必要な全ての機能を提供しています。

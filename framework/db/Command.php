@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -218,7 +218,7 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+            return preg_replace_callback('#(:\w+)#', function ($matches) use ($params) {
                 $m = $matches[1];
                 return isset($params[$m]) ? $params[$m] : $m;
             }, $this->_sql);
@@ -258,7 +258,7 @@ class Command extends Component
             $forRead = false;
         }
         if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
-            $pdo = $this->db->getSlavePdo();
+            $pdo = $this->db->getSlavePdo(true);
         } else {
             $pdo = $this->db->getMasterPdo();
         }
@@ -269,10 +269,10 @@ class Command extends Component
         } catch (\Exception $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+            throw new Exception($message, $errorInfo, $e->getCode(), $e);
         } catch (\Throwable $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
-            throw new Exception($message, null, (int) $e->getCode(), $e);
+            throw new Exception($message, null, $e->getCode(), $e);
         }
     }
 
@@ -377,6 +377,13 @@ class Command extends Component
                 $this->pendingParams[$name] = [$value->getValue(), $value->getType()];
                 $this->params[$name] = $value->getValue();
             } else {
+                if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+                    if ($value instanceof \BackedEnum) {
+                        $value = $value->value;
+                    } elseif ($value instanceof \UnitEnum) {
+                        $value = $value->name;
+                    }
+                }
                 $type = $schema->getPdoType($value);
                 $this->pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
@@ -533,7 +540,7 @@ class Command extends Component
      * ```php
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
-     *     'url' => 'http://example.com/', // url is unique
+     *     'url' => 'https://example.com/', // url is unique
      *     'visits' => 0,
      * ], [
      *     'visits' => new \yii\db\Expression('visits + 1'),
@@ -631,13 +638,24 @@ class Command extends Component
      *
      * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
      * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
+     * stands for the column type which must contain an abstract DB type.
+     *
      * The method [[QueryBuilder::getColumnType()]] will be called
      * to convert the abstract column types to physical ones. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      *
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
      * inserted into the generated SQL.
+     *
+     * Example usage:
+     * ```php
+     * Yii::$app->db->createCommand()->createTable('post', [
+     *     'id' => 'pk',
+     *     'title' => 'string',
+     *     'text' => 'text',
+     *     'column_name double precision null default null',
+     * ]);
+     * ```
      *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
@@ -1153,7 +1171,7 @@ class Command extends Component
                 $cache = $info[0];
                 $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);
-                if (is_array($result) && isset($result[0])) {
+                if (is_array($result) && array_key_exists(0, $result)) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
                     return $result[0];
                 }
@@ -1324,6 +1342,5 @@ class Command extends Component
         $this->params = [];
         $this->_refreshTableName = null;
         $this->_isolationLevel = false;
-        $this->_retryHandler = null;
     }
 }

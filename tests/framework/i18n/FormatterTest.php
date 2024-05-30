@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\i18n;
@@ -24,7 +24,7 @@ class FormatterTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,14 +34,15 @@ class FormatterTest extends TestCase
             'timeZone' => 'UTC',
             'language' => 'ru-RU',
         ]);
-        $this->formatter = new Formatter(['locale' => 'en-US']);
+        if (!isset($this->formatter)) {
+            $this->formatter = new Formatter(['locale' => 'en-US']);
+        }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
-        $this->formatter = null;
     }
 
     public function testFormat()

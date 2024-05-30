@@ -10,7 +10,7 @@ For license information check the [LICENSE](LICENSE.md)-file.
 Installation
 ------------
 
-The preferred way to install the Yii framework is through [composer](http://getcomposer.org/download/).
+The preferred way to install the Yii framework is through [composer](https://getcomposer.org/download/).
 
 Refer to [Bower and NPM Assets installation](https://www.yiiframework.com/doc/guide/2.0/en/structure-assets#bower-npm-assets) to select an asset installation method.
 

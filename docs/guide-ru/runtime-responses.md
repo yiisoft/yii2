@@ -166,7 +166,7 @@ Yii имеет средства для её использования.
 ```php
 public function actionOld()
 {
-    return $this->redirect('http://example.com/new', 301);
+    return $this->redirect('https://example.com/new', 301);
 }
 ```
 
@@ -178,7 +178,7 @@ public function actionOld()
 содержимое.
 
 ```php
-\Yii::$app->response->redirect('http://example.com/new', 301)->send();
+\Yii::$app->response->redirect('https://example.com/new', 301)->send();
 ```
 
 > Info: По умолчанию метод [[yii\web\Response::redirect()]] устанавливает код состояния ответа равным 302, сообщая

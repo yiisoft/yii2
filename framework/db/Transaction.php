@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -53,22 +53,22 @@ class Transaction extends \yii\base\BaseObject
 {
     /**
      * A constant representing the transaction isolation level `READ UNCOMMITTED`.
-     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     const READ_UNCOMMITTED = 'READ UNCOMMITTED';
     /**
      * A constant representing the transaction isolation level `READ COMMITTED`.
-     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     const READ_COMMITTED = 'READ COMMITTED';
     /**
      * A constant representing the transaction isolation level `REPEATABLE READ`.
-     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     const REPEATABLE_READ = 'REPEATABLE READ';
     /**
      * A constant representing the transaction isolation level `SERIALIZABLE`.
-     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     const SERIALIZABLE = 'SERIALIZABLE';
 
@@ -108,7 +108,7 @@ class Transaction extends \yii\base\BaseObject
      * you may need to set the isolation level for all transactions explicitly to avoid conflicting settings.
      * At the time of this writing affected DBMS are MSSQL and SQLite.
      *
-     * [isolation level]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * [isolation level]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      *
      * Starting from version 2.0.16, this method throws exception when beginning nested transaction and underlying DBMS
      * does not support savepoints.
@@ -227,7 +227,7 @@ class Transaction extends \yii\base\BaseObject
      * This can be one of [[READ_UNCOMMITTED]], [[READ_COMMITTED]], [[REPEATABLE_READ]] and [[SERIALIZABLE]] but
      * also a string containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`.
      * @throws Exception if the transaction is not active
-     * @see http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+     * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     public function setIsolationLevel($level)
     {

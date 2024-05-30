@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\di;
@@ -17,11 +17,11 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
 /**
- * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
+ * Container implements a [dependency injection](https://en.wikipedia.org/wiki/Dependency_injection) container.
  *
  * A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
  * all their dependent objects. For more information about DI, please refer to
- * [Martin Fowler's article](http://martinfowler.com/articles/injection.html).
+ * [Martin Fowler's article](https://martinfowler.com/articles/injection.html).
  *
  * Container supports constructor injection as well as property injection.
  *
@@ -256,7 +256,7 @@ class Container extends Component
      *   parameters, `$config` the object configuration, and `$container` the container object. The return value
      *   of the callable will be returned by [[get()]] as the object instance requested.
      * - a configuration array: the array contains name-value pairs that will be used to initialize the property
-     *   values of the newly created object when [[get()]] is called. The `class` element stands for the
+     *   values of the newly created object when [[get()]] is called. The `class` element stands for
      *   the class of the object to be created. If `class` is not specified, `$class` will be used as the class name.
      * - a string: a class name, an interface name or an alias name.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
@@ -677,7 +677,6 @@ class Container extends Component
                 } else {
                     $isClass = $class !== null && !$class->isBuiltin();
                 }
-
             } else {
                 $class = $param->getClass();
                 $isClass = $class !== null;

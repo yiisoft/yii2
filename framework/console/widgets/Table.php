@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\widgets;
@@ -134,9 +134,13 @@ class Table extends Widget
      */
     public function setRows(array $rows)
     {
-        $this->rows = array_map(function($row) {
-            return array_map(function($value) {
-                return empty($value) && !is_numeric($value) ? ' ' : $value;
+        $this->rows = array_map(function ($row) {
+            return array_map(function ($value) {
+                return empty($value) && !is_numeric($value)
+                    ? ' '
+                    :  (is_array($value)
+                        ? array_values($value)
+                        : $value);
             }, array_values($row));
         }, $rows);
         return $this;
@@ -194,7 +198,8 @@ class Table extends Widget
         );
         // Header
         if ($headerCount > 0) {
-            $buffer .= $this->renderRow($this->headers,
+            $buffer .= $this->renderRow(
+                $this->headers,
                 $this->chars[self::CHAR_LEFT],
                 $this->chars[self::CHAR_MIDDLE],
                 $this->chars[self::CHAR_RIGHT]
@@ -211,10 +216,12 @@ class Table extends Widget
                     $this->chars[self::CHAR_RIGHT_MID]
                 );
             }
-            $buffer .= $this->renderRow($row,
+            $buffer .= $this->renderRow(
+                $row,
                 $this->chars[self::CHAR_LEFT],
                 $this->chars[self::CHAR_MIDDLE],
-                $this->chars[self::CHAR_RIGHT]);
+                $this->chars[self::CHAR_RIGHT]
+            );
         }
 
         $buffer .= $this->renderSeparator(
@@ -252,18 +259,32 @@ class Table extends Widget
                 if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
                 }
+
+                $arrayFromMultilineString = false;
+                if (is_string($cell)) {
+                    $cellLines = explode(PHP_EOL, $cell);
+                    if (count($cellLines) > 1) {
+                        $cell = $cellLines;
+                        $arrayFromMultilineString = true;
+                    }
+                }
+
                 if (is_array($cell)) {
                     if (empty($renderedChunkTexts[$index])) {
                         $renderedChunkTexts[$index] = '';
                         $start = 0;
-                        $prefix = $this->listPrefix;
+                        $prefix = $arrayFromMultilineString ? '' : $this->listPrefix;
                         if (!isset($arrayPointer[$index])) {
                             $arrayPointer[$index] = 0;
                         }
                     } else {
                         $start = mb_strwidth($renderedChunkTexts[$index], Yii::$app->charset);
                     }
-                    $chunk = Console::ansiColorizedSubstr($cell[$arrayPointer[$index]], $start, $cellSize - 4);
+                    $chunk = Console::ansiColorizedSubstr(
+                        $cell[$arrayPointer[$index]],
+                        $start,
+                        $cellSize - 2 - Console::ansiStrwidth($prefix)
+                    );
                     $renderedChunkTexts[$index] .= Console::stripAnsiFormat($chunk);
                     $fullChunkText = Console::stripAnsiFormat($cell[$arrayPointer[$index]]);
                     if (isset($cell[$arrayPointer[$index] + 1]) && $renderedChunkTexts[$index] === $fullChunkText) {
@@ -339,6 +360,9 @@ class Table extends Widget
                 if (is_array($val)) {
                     return max(array_map('yii\helpers\Console::ansiStrwidth', $val)) + Console::ansiStrwidth($this->listPrefix);
                 }
+                if (is_string($val)) {
+                    return max(array_map('yii\helpers\Console::ansiStrwidth', explode(PHP_EOL, $val)));
+                }
                 return Console::ansiStrwidth($val);
             }, $column)) + 2;
             $this->columnWidths[] = $columnWidth;
@@ -387,6 +411,9 @@ class Table extends Widget
         }, $this->columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 return array_map('yii\helpers\Console::ansiStrwidth', $val);
+            }
+            if (is_string($val)) {
+                return array_map('yii\helpers\Console::ansiStrwidth', explode(PHP_EOL, $val));
             }
             return Console::ansiStrwidth($val);
         }, $row));

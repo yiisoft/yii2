@@ -1,5 +1,5 @@
 # Autodetect text files
-* text=auto
+* text=auto eol=lf
 
 # ...Unless the name matches the following overriding patterns
 

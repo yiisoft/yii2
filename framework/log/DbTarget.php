@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\log;
@@ -84,13 +84,15 @@ class DbTarget extends Target
                     $text = VarDumper::export($text);
                 }
             }
-            if ($command->bindValues([
+            if (
+                $command->bindValues([
                     ':level' => $level,
                     ':category' => $category,
                     ':log_time' => $timestamp,
                     ':prefix' => $this->getMessagePrefix($message),
                     ':message' => $text,
-                ])->execute() > 0) {
+                ])->execute() > 0
+            ) {
                 continue;
             }
             throw new LogRuntimeException('Unable to export log through database!');

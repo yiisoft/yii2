@@ -49,7 +49,7 @@ Você pode atualizar o Composer executando o comando `composer self-update`.
 > A quantidade de solicitações depende do número de dependências que sua aplicação possui e pode extrapolar a
 > **taxa limite da API do Github**. Se você atingir esse limite, o Composer pode pedir a você suas credenciais de login para obter um
 > token de acesso à API Github. Em conexões rápidas você pode atingir esse limite antes que o Composer consiga lidar com a situação, então, recomendamos
-> configurar um toke de acesso antes de instalar o Yii.
+> configurar um token de acesso antes de instalar o Yii.
 > Por favor, consulte a [documentação do Composer sobre tokens da API Github](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > para instruções de como fazer isso.
 
@@ -191,8 +191,8 @@ no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior. O Yii 2.0 também é c
 com o [HHVM](https://hhvm.com/) do Facebook. No entanto, existem alguns casos extremos em que o HHVM se comporta diferentemente do PHP nativo, então você terá que ter um cuidado extra quando usar o HHVM.
 
 Em um servidor de produção, você pode querer configurar o seu servidor Web de
-modo que a aplicação possa ser acessada pela URL `http://www.example.com/index.php`
-ao invés de `http://www.example.com/basico/web/index.php`. Tal configuração requer que
+modo que a aplicação possa ser acessada pela URL `https://www.example.com/index.php`
+ao invés de `https://www.example.com/basico/web/index.php`. Tal configuração requer que
 você aponte a raiz dos documentos de seu servidor Web para o diretório `basico/web`.
 Você também pode querer ocultar o `index.php` da URL, conforme descrito na seção
 [Roteamento e Criação de URL](runtime-routing.md). Nessa sub-seção, você
@@ -242,7 +242,7 @@ DocumentRoot "caminho/para/basico/web"
 
 ### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
-Para usar o [Nginx](https://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/install.fpm). Use a seguinte configuração do Nginx,
+Para usar o [Nginx](https://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/manual/pt_BR/install.fpm.php). Use a seguinte configuração do Nginx,
 substituindo `caminho/para/basico/web` com o caminho real para `basico/web` e `mysite.test` com o nome de host real a servir.
 
 ```nginx

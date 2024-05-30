@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
@@ -218,10 +218,10 @@ class ReleaseController extends Controller
         $gitDir = reset($what) === 'framework' ? 'framework/' : '';
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. {$gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
-        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. {$gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.com/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
@@ -990,7 +990,7 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
+            '/function getVersion\(\)\R {4}\{\R {8}return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
             $frameworkPath . '/BaseYii.php');
     }

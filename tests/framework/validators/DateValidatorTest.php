@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\validators;
@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class DateValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,7 +30,7 @@ class DateValidatorTest extends TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -1001,7 +1001,7 @@ class DateValidatorTest extends TestCase
     /**
      * Returns true if the version of ICU is old and has a bug that makes it
      * impossible to parse two digit years properly.
-     * @see http://bugs.icu-project.org/trac/ticket/9836
+     * @see https://unicode-org.atlassian.net/browse/ICU-9836
      * @return bool
      */
     private function checkOldIcuBug()

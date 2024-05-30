@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\oci;
@@ -305,7 +305,7 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         if (is_string($expectedSQL)) {
             $this->assertEqualsWithoutLE($expectedSQL, $actualSQL);
         } else {
-            $this->assertContains($actualSQL, $expectedSQL);
+            $this->assertStringContainsString($actualSQL, $expectedSQL);
         }
         if (ArrayHelper::isAssociative($expectedParams)) {
             $this->assertSame($expectedParams, $actualParams);

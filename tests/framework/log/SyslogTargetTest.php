@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\log {
@@ -52,7 +52,7 @@ namespace yiiunit\framework\log {
         /**
          * Set up syslogTarget as the mock object.
          */
-        protected function setUp()
+        protected function setUp(): void
         {
             $this->syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
                 ->setMethods(['getMessagePrefix'])

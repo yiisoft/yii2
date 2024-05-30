@@ -127,7 +127,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 > }
 > ```
 
-创建下拉列表 <span id="creating-activeform-dropdownlist"></span>
+创建下拉列表 <span id="creating-activeform-lists"></span>
 ------------
 
 有三种类型的列表：
@@ -242,7 +242,7 @@ Pjax::end();
 这意味着对 ajax 或使用  [[yii\widgets\Pjax|Pjax]]
 小部件的文件和提交按钮值的唯一官方支持取决于
 `FormData` 类的
-[浏览器支持](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)。
+[浏览器支持](https://developer.mozilla.org/zh-CN/docs/Web/API/FormData#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%85%BC%E5%AE%B9%E6%80%A7)。
 
 延伸阅读 <span id="further-reading"></span>
 ---------------

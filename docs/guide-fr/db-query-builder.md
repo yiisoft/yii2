@@ -771,7 +771,7 @@ foreach ($query->each() as $username => $user) {
 #### Limitations des requêtes par lots dans MySQL <span id="batch-query-mysql"></span>
 
 La mise en œuvre des requêtes par lots de MySQL s'appuie sur la bibliothèque du pilote PDO. Par défaut, les requêtes MySQL sont 
-[`mises en tampon`](https://www.php.net/manual/en/mysqlinfo.concepts.buffering.php). 
+[`mises en tampon`](https://www.php.net/manual/fr/mysqlinfo.concepts.buffering.php). 
 Cela empêche d'utiliser le curseur pour obtenir les données, parce que cela n'empêche pas le jeu résultant complet d'être chargé dans la mémoire du client par le pilote.
 
 

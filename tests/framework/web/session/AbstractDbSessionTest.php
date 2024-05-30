@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session;
@@ -27,7 +27,7 @@ abstract class AbstractDbSessionTest extends TestCase
      */
     abstract protected function getDriverNames();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +37,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->createTableSession();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->dropTableSession();
         parent::tearDown();

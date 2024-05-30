@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework;
@@ -54,6 +54,9 @@ class ChangeLogTest extends TestCase
          * - Description ends without a "."
          * - Line ends with contributor name between "(" and ")".
          */
-        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.+\)$/', $line);
+        $this->assertMatchesRegularExpression(
+            '/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.+\)$/',
+            $line
+        );
     }
 }

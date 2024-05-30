@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -207,40 +207,23 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles != 1 || $this->minFiles > 1) {
-            $rawFiles = $model->$attribute;
-            if (!is_array($rawFiles)) {
-                $this->addError($model, $attribute, $this->uploadRequired);
+        $files = $this->filterFiles(is_array($model->$attribute) ? $model->$attribute : [$model->$attribute]);
+        $filesCount = count($files);
+        if ($filesCount === 0 && $this->minFiles > 0) {
+            $this->addError($model, $attribute, $this->uploadRequired);
 
-                return;
-            }
+            return;
+        }
 
-            $files = $this->filterFiles($rawFiles);
-            $model->$attribute = $files;
+        if ($this->maxFiles > 0 && $filesCount > $this->maxFiles) {
+            $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
+        }
+        if ($this->minFiles > 0 && $this->minFiles > $filesCount) {
+            $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
+        }
 
-            if (empty($files)) {
-                $this->addError($model, $attribute, $this->uploadRequired);
-
-                return;
-            }
-
-            $filesCount = count($files);
-            if ($this->maxFiles && $filesCount > $this->maxFiles) {
-                $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
-            }
-
-            if ($this->minFiles && $this->minFiles > $filesCount) {
-                $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
-            }
-
-            foreach ($files as $file) {
-                $result = $this->validateValue($file);
-                if (!empty($result)) {
-                    $this->addError($model, $attribute, $result[0], $result[1]);
-                }
-            }
-        } else {
-            $result = $this->validateValue($model->$attribute);
+        foreach ($files as $file) {
+            $result = $this->validateValue($file);
             if (!empty($result)) {
                 $this->addError($model, $attribute, $result[0], $result[1]);
             }
@@ -432,7 +415,7 @@ class FileValidator extends Validator
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . Json::encode($options) . ');';
+        return 'yii.validation.file(attribute, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**
@@ -530,6 +513,9 @@ class FileValidator extends Validator
     protected function validateMimeType($file)
     {
         $fileMimeType = $this->getMimeTypeByFile($file->tempName);
+        if ($fileMimeType === null) {
+            return false;
+        }
 
         foreach ($this->mimeTypes as $mimeType) {
             if (strcasecmp($mimeType, $fileMimeType) === 0) {
@@ -548,11 +534,12 @@ class FileValidator extends Validator
      * Get MIME type by file path
      *
      * @param string $filePath
-     * @return string
+     * @return string|null
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.26
      */
-    protected function getMimeTypeByFile($filePath) {
+    protected function getMimeTypeByFile($filePath)
+    {
         return FileHelper::getMimeType($filePath);
     }
 }

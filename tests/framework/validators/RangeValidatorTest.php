@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\validators;
@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class RangeValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -34,7 +34,7 @@ class RangeValidatorTest extends TestCase
     public function testAssureMessageSetOnInit()
     {
         $val = new RangeValidator(['range' => []]);
-        $this->assertInternalType('string', $val->message);
+        $this->assertIsString($val->message);
     }
 
     public function testValidateValue()

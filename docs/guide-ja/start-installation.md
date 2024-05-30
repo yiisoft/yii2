@@ -114,7 +114,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 アセットをインストールする <span id="installing-assets"></span>
 --------------------------
 
-Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて [Bower](http://bower.io/) および/または [NPM](https://www.npmjs.com/) のパッケージに依存しています。
+Yii は、アセット (CSS および JavaScript) ライブラリのインストールについて [Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) のパッケージに依存しています。
 Yii はこれらのライブラリを取得するのに Composer を使って、PHP と CSS/JavaScript のパッケージ・バージョンを同時に解決できるようにしています。
 このことは、[asset-packagist.org](https://asset-packagist.org) または [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) を使用することによって達成されます。
 詳細は [アセットのドキュメント](structure-assets.md) を参照して下さい。
@@ -183,13 +183,13 @@ Yii の最低必要条件を満たすように PHP のインストールを構�
 > Info: もし Yii の試運転をしているだけで、本番サーバに配備する意図がないのであれば、
   当面、この項は飛ばしても構いません。
 
-上記の説明に従ってインストールされたアプリケーションは、[Apache HTTP サーバ](http://httpd.apache.org/)
-と [Nginx HTTP サーバ](http://nginx.org/) のどちらでも、また、Windows、Mac OS X、Linux のどれでも、
+上記の説明に従ってインストールされたアプリケーションは、[Apache HTTP サーバ](https://httpd.apache.org/)
+と [Nginx HTTP サーバ](https://nginx.org/) のどちらでも、また、Windows、Mac OS X、Linux のどれでも、
 PHP 5.4 以上を走らせている環境であれば、そのままの状態で動作するはずです。
-Yii 2.0 は、また、facebook の [HHVM](http://hhvm.com/) とも互換性があります。
+Yii 2.0 は、また、facebook の [HHVM](https://hhvm.com/) とも互換性があります。
 ただし HHVM がネイティブの PHP とは異なる振舞いをする特殊なケースもいくつかありますので、HHVM を使うときはいくらか余分に注意を払う必要があります。
 
-本番用のサーバでは、`http://www.example.com/basic/web/index.php` の代りに `http://www.example.com/index.php` という
+本番用のサーバでは、`https://www.example.com/basic/web/index.php` の代りに `https://www.example.com/index.php` という
 URL でアプリケーションにアクセス出来るようにウェブ・サーバを設定したいでしょう。
 そういう設定をするためには、ウェブ・サーバのドキュメント・ルートを `basic/web` フォルダに向けることが必要になります。
 また、[ルーティングと URL 生成](runtime-routing.md) のセクションで述べられているように、URL から `index.php` を隠したいとも思うでしょう。
@@ -236,7 +236,7 @@ DocumentRoot "path/to/basic/web"
 
 ### 推奨される Nginx の構成 <span id="recommended-nginx-configuration"></span>
 
-[Nginx](http://wiki.nginx.org/) を使うためには、PHP を [FPM SAPI](https://www.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
+[Nginx](https://www.nginx.com/resources/wiki/) を使うためには、PHP を [FPM SAPI](https://www.php.net/manual/ja/install.fpm.php) としてインストールしなければなりません。
 下記の Nginx の設定を使うことができます。
 `path/to/basic/web` の部分を `basic/web` の実際のパスに置き換え、`mysite.test` を実際のサーバのホスト名に置き換えてください。
 

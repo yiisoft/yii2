@@ -193,7 +193,7 @@ For example, the URL `http://localhost/users?fields=id,email` will only return t
 Additionally, you can sort collections like `http://localhost/users?sort=email` or
 `http://localhost/users?sort=-email`. Filtering collections like `http://localhost/users?filter[id]=10` or
 `http://localhost/users?filter[email][like]=gmail.com` could be implemented using
-data filters. See [Resources](rest-resources.md#filtering-collections) section for details.
+data filters. See [Filtering Collections](rest-filtering-collections.md) section for details.
 
 ## Customizing Pagination and Sorting in the list<span id="customizing-pagination-and-sorting"></span>
 

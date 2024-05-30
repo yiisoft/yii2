@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -23,7 +23,7 @@ class EmailValidator extends Validator
 {
     /**
      * @var string the regular expression used to validate the attribute value.
-     * @see http://www.regular-expressions.info/email.html
+     * @see https://www.regular-expressions.info/email.html
      */
     public $pattern = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
     /**
@@ -34,7 +34,7 @@ class EmailValidator extends Validator
     public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
     /**
      * @var string the regular expression used to validate the part before the @ symbol, used if ASCII conversion fails to validate the address.
-     * @see http://www.regular-expressions.info/email.html
+     * @see https://www.regular-expressions.info/email.html
      * @since 2.0.42
      */
     public $patternASCII = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
@@ -105,7 +105,7 @@ class EmailValidator extends Validator
 
             if (strlen($matches['local']) > 64) {
                 // The maximum total length of a user name or other local-part is 64 octets. RFC 5322 section 4.5.3.1.1
-                // http://tools.ietf.org/html/rfc5321#section-4.5.3.1.1
+                // https://datatracker.ietf.org/doc/html/rfc5321#section-4.5.3.1.1
                 $valid = false;
             } elseif (strlen($matches['local'] . '@' . $matches['domain']) > 254) {
                 // There is a restriction in RFC 2821 on the length of an address in MAIL and RCPT commands
@@ -113,7 +113,7 @@ class EmailValidator extends Validator
                 // upper limit on address lengths should normally be considered to be 254.
                 //
                 // Dominic Sayers, RFC 3696 erratum 1690
-                // http://www.rfc-editor.org/errata_search.php?eid=1690
+                // https://www.rfc-editor.org/errata_search.php?eid=1690
                 $valid = false;
             } else {
                 $valid = preg_match($this->pattern, $value) || ($this->allowName && preg_match($this->fullPattern, $value));

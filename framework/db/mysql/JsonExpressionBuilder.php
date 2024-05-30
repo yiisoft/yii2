@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\mysql;
@@ -43,6 +43,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
         $placeholder = static::PARAM_PREFIX . count($params);
         $params[$placeholder] = Json::encode($value);
 
-        return "CAST($placeholder AS JSON)";
+        return $placeholder;
     }
 }

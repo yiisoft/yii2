@@ -1,12 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\base;
 
+use yii\base\DynamicModel;
 use yii\base\Model;
 use yiiunit\data\base\InvalidRulesModel;
 use yiiunit\data\base\RulesModel;
@@ -19,7 +20,7 @@ use yiiunit\TestCase;
  */
 class ModelTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -501,17 +502,21 @@ class ModelTest extends TestCase
 
     public function testFormNameWithAnonymousClass()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $model = require __DIR__ . '/stub/AnonymousModelClass.php';
 
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('The "formName()" method should be explicitly defined for anonymous models');
 
         $model->formName();
+    }
+
+    public function testExcludeEmptyAttributesFromSafe()
+    {
+        $model = new DynamicModel(['' => 'emptyFieldValue']);
+        $model->addRule('', 'safe');
+
+        $this->assertEquals([], $model->safeAttributes());
+        $this->assertEquals([''], $model->attributes());
     }
 }
 

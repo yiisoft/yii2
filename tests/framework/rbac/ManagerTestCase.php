@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\rbac;
@@ -373,8 +373,16 @@ abstract class ManagerTestCase extends TestCase
             $roleNames[] = $role->name;
         }
 
-        $this->assertContains('reader', $roleNames, 'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames));
-        $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
+        $this->assertContains(
+            'reader',
+            $roleNames,
+            'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames)
+        );
+        $this->assertContains(
+            'author',
+            $roleNames,
+            'Roles should contain author. Currently it has: ' . implode(', ', $roleNames)
+        );
     }
 
     public function testAssignmentsToIntegerId()

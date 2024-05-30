@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -145,7 +145,8 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJsonp($response)
     {
-        if (is_array($response->data)
+        if (
+            is_array($response->data)
             && isset($response->data['data'], $response->data['callback'])
         ) {
             $response->content = sprintf(

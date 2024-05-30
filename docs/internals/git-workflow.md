@@ -28,7 +28,7 @@ then you must [setup your Git installation to work with GitHub](https://help.git
 Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
@@ -111,7 +111,7 @@ review your suggestion, and provide appropriate feedback along the way.
 ### 2. Pull the latest code from the main Yii branch
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.
@@ -232,7 +232,7 @@ Doing so will save travis from commencing testruns on changes that are not cover
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\test;
@@ -23,7 +23,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 {
     protected $driverName = 'mysql';
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $db = $this->getConnection();
@@ -31,7 +31,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         ActiveRecord::$db = $db;
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }
@@ -205,12 +205,12 @@ class BaseDbTestCase
 {
     use FixtureTrait;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->initFixtures();
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
     }
 }

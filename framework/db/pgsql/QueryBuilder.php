@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\pgsql;
@@ -113,7 +113,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * a unique index, `false` to make a non-unique index using the default index type, or one of the following constants to specify
      * the index method to use: [[INDEX_B_TREE]], [[INDEX_HASH]], [[INDEX_GIST]], [[INDEX_GIN]].
      * @return string the SQL statement for creating a new index.
-     * @see http://www.postgresql.org/docs/8.2/static/sql-createindex.html
+     * @see https://www.postgresql.org/docs/8.2/sql-createindex.html
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
@@ -144,13 +144,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if (strpos($table, '{{') !== false) {
                 $table = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $table);
                 list($schema, $table) = explode('.', $table);
-                if (strpos($schema, '%') === false)
-                    $name = $schema.'.'.$name;
-                else
-                    $name = '{{'.$schema.'.'.$name.'}}';
+                if (strpos($schema, '%') === false) {
+                    $name = $schema . '.' . $name;
+                } else {
+                    $name = '{{' . $schema . '.' . $name . '}}';
+                }
             } else {
                 list($schema) = explode('.', $table);
-                $name = $schema.'.'.$name;
+                $name = $schema . '.' . $name;
             }
         }
         return 'DROP INDEX ' . $this->db->quoteTableName($name);
@@ -181,7 +182,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
-            // c.f. http://www.postgresql.org/docs/8.1/static/functions-sequence.html
+            // c.f. https://www.postgresql.org/docs/8.1/functions-sequence.html
             $sequence = $this->db->quoteTableName($table->sequenceName);
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
@@ -253,7 +254,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $tableName = $this->db->quoteTableName($table);
 
         // https://github.com/yiisoft/yii2/issues/4492
-        // http://www.postgresql.org/docs/9.1/static/sql-altertable.html
+        // https://www.postgresql.org/docs/9.1/sql-altertable.html
         if (preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
             return "ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$type}";
         }
@@ -435,7 +436,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $updates)
             . ' FROM "EXCLUDED" ' . $this->buildWhere($updateCondition, $params)
-            . ' RETURNING ' . $this->db->quoteTableName($table) .'.*';
+            . ' RETURNING ' . $this->db->quoteTableName($table) . '.*';
         $selectUpsertSubQuery = (new Query())
             ->select(new Expression('1'))
             ->from('upsert')

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\grid;
@@ -22,12 +22,11 @@ use yiiunit\TestCase;
  */
 class RadiobuttonColumnTest extends TestCase
 {
-    /**
-     * @expectedException \yii\base\InvalidConfigException
-     * @expectedExceptionMessage The "name" property must be set.
-     */
     public function testException()
     {
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('The "name" property must be set.');
+
         new RadioButtonColumn([
             'name' => null,
         ]);
@@ -67,14 +66,14 @@ class RadiobuttonColumnTest extends TestCase
                 return null;
             }
         ]);
-        $this->assertContains('<td></td>', $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = new RadioButtonColumn([
             'content' => function ($model, $key, $index, $column) {
                 return Html::radio('radioButtonInput', false);
             }
         ]);
-        $this->assertContains(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
+        $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 
     public function testMultipleInGrid()

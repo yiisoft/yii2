@@ -3,9 +3,9 @@
  *
  * This is the JavaScript widget used by the yii\widgets\ActiveForm widget.
  *
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -330,7 +330,7 @@
                 this.$form = $form;
                 var $input = findInput($form, this);
 
-                var disabled = $input.toArray().reduce(function(result, next) {
+                var disabled = $input.toArray().reduce(function (result, next) {
                     return result && $(next).is(':disabled');
                 }, true);
                 if (disabled) {
@@ -395,9 +395,11 @@
                         data: $form.serialize() + extData,
                         dataType: data.settings.ajaxDataType,
                         complete: function (jqXHR, textStatus) {
+                            currentAjaxRequest = null;
                             $form.trigger(events.ajaxComplete, [jqXHR, textStatus]);
                         },
                         beforeSend: function (jqXHR, settings) {
+                            currentAjaxRequest = jqXHR;
                             $form.trigger(events.ajaxBeforeSend, [jqXHR, settings]);
                         },
                         success: function (msgs) {
@@ -563,6 +565,9 @@
             return;
         }
 
+        if (currentAjaxRequest !== null) {
+            currentAjaxRequest.abort();
+        }
         if (data.settings.timer !== undefined) {
             clearTimeout(data.settings.timer);
         }
@@ -728,8 +733,7 @@
 
         var errorAttributes = [], $input;
         $.each(data.attributes, function () {
-            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form,
-                this, messages));
+            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form, this, messages));
             $input = findInput($form, this);
 
             if (!$input.is(':disabled') && !this.cancelled && hasError) {
@@ -929,4 +933,7 @@
             $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
         }
     }
+
+    var currentAjaxRequest = null;
+
 })(window.jQuery);

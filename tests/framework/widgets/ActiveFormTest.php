@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -17,7 +17,7 @@ use yii\widgets\ActiveForm;
  */
 class ActiveFormTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -133,6 +133,8 @@ HTML
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
+
+        $this->assertTrue(true);
     }
 
     /**

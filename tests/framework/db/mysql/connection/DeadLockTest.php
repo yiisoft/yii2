@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\mysql\connection;
@@ -31,6 +31,12 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
+        if (\stripos($this->getConnection(false)->getServerVersion(), 'MariaDB') !== false) {
+            $this->markTestSkipped('MariaDB does not support this test');
+        }
+        if (PHP_VERSION_ID >= 70400 && PHP_VERSION_ID < 70500) {
+            $this->markTestSkipped('Stable failed in PHP 7.4');
+        }
         if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
         }
@@ -116,7 +122,12 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 . ($logContent ? ". Shared children log:\n$logContent" : '')
             );
         }
-        $this->assertEquals(1, $deadlockHitCount, "exactly one child must hit deadlock; shared children log:\n" . $logContent);
+
+        if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '8.0', '<')) {
+            $this->assertEquals(1, $deadlockHitCount, "exactly one child must hit deadlock; shared children log:\n" . $logContent);
+        } else {
+            $this->assertEquals(0, $deadlockHitCount, "exactly zero children must hit deadlock; shared children log:\n" . $logContent);
+        }
     }
 
     /**

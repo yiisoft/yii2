@@ -53,7 +53,7 @@ This validator checks if the input value is a boolean.
 This validator is usually used together with [[yii\captcha\CaptchaAction]] and [[yii\captcha\Captcha]]
 to make sure an input is the same as the verification code displayed by [[yii\captcha\Captcha|CAPTCHA]] widget.
 
-- `caseSensitive`: whether the comparison of the verification code is case sensitive. Defaults to `false`.
+- `caseSensitive`: whether the comparison of the verification code is case-sensitive. Defaults to `false`.
 - `captchaAction`: the [route](structure-controllers.md#routes) corresponding to the
   [[yii\captcha\CaptchaAction|CAPTCHA action]] that renders the CAPTCHA image. Defaults to `'site/captcha'`.
 - `skipOnEmpty`: whether the validation can be skipped if the input is empty. Defaults to `false`,
@@ -114,7 +114,7 @@ you can use a combination of compare and date validator like the following:
 ```
 
 As validators are executed in the order they are specified this will first validate that the values entered in
-`fromDate` and `toDate` are valid date values and if so, they will be converted into a machine readable format.
+`fromDate` and `toDate` are valid date values and if so, they will be converted into a machine-readable format.
 Afterwards these two values are compared with the compare validator.
 Client validation is not enabled as this will only work on the server-side because the date validator currently does not
 provide client validation, so [[yii\validators\CompareValidator::$enableClientValidation|$enableClientValidation]]
@@ -162,7 +162,7 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   [[yii\validators\DateValidator::$max|maximum]] timestamp.
 
 In case the input is optional you may also want to add a [default value filter](#default) in addition to the date validator
-to ensure empty input is stored as `null`. Otherwise you may end up with dates like `0000-00-00` in your database
+to ensure empty input is stored as `null`. Otherwise, you may end up with dates like `0000-00-00` in your database
 or `1970-01-01` in the input field of a date picker.
 
 ```php
@@ -289,7 +289,7 @@ This validator checks if the input value is a valid email address.
     // equivalent of
     ['a1', 'exist', 'targetAttribute' => ['a2' => 'a2']],
 
-    // a1 and a2 need to exist together, and they both will receive error message
+    // a1 and a2 need to exist together, and the first attribute without errors will receive error message
     // i.e. a1 = 3, a2 = 4, valid if there is value 3 in column "a1" and value 4 in column "a2"
     [['a1', 'a2'], 'exist', 'targetAttribute' => ['a1', 'a2']],
     // equivalent of
@@ -327,7 +327,9 @@ an [Active Record](db-active-record.md) attribute. You can use `targetAttribute`
 class. If you do not specify them, they will take the values of the attribute and the model class being validated.
 
 You can use this validator to validate against a single column or multiple columns (i.e., the combination of
-multiple attribute values should exist).
+multiple attribute values should exist). In case of validation fail on the multiple columns checked at the same time 
+(like `['a1', 'a2']` in the examples) and `skipOnError` set to `true`, only the first attribute without any previous 
+errors will receive a new error message.
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.
@@ -418,7 +420,7 @@ back to the attribute being validated.
 - `filter`: a PHP callback that defines a filter. This can be a global function name, an anonymous function, etc.
   The function signature must be `function ($value) { return $newValue; }`. This property must be set.
 - `skipOnArray`: whether to skip the filter if the input value is an array. Defaults to `false`.
-  Note that if the filter cannot handle array input, you should set this property to be `true`. Otherwise some
+  Note that if the filter cannot handle array input, you should set this property to be `true`. Otherwise, some
   PHP error might occur.
 
 > Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.
@@ -685,7 +687,7 @@ the input value. Note that if the input value is an array, it will be ignored by
     // equivalent of
     ['a1', 'unique', 'targetAttribute' => ['a1' => 'a2']],
 
-    // a1 and a2 need to be unique together, and they both will receive error message
+    // a1 and a2 need to be unique together, and the first attribute without errors will receive error message
     // i.e. a1 = 3, a2 = 4, valid if there is no value 3 in column "a1" and at the same time no value 4 in column "a2"
     [['a1', 'a2'], 'unique', 'targetAttribute' => ['a1', 'a2']],
     // equivalent of
@@ -704,9 +706,10 @@ the input value. Note that if the input value is an array, it will be ignored by
 ]
 ```
 
-This validator checks if the input value is unique in a table column. It only works
-with [Active Record](db-active-record.md) model attributes. It supports validation against
-either a single column or multiple columns.
+This validator checks if the input value is unique in a table column. It only works with [Active Record](db-active-record.md) 
+model attributes. It supports validation against either a single column or multiple columns. In case of validation fail 
+on the multiple columns checked at the same time (like `['a1', 'a2']` in the examples) and `skipOnError` set to `true`, 
+only the first attribute without any previous errors will receive a new error message.
 
 - `targetClass`: the name of the [Active Record](db-active-record.md) class that should be used
   to look for the input value being validated. If not set, the class of the model currently being validated will be used.

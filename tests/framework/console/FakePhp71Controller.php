@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console;
@@ -14,9 +14,14 @@ use yii\console\Request;
 
 class FakePhp71Controller extends Controller
 {
-    public function actionInjection($before, Request $request, $between, DummyService $dummyService, Post $post = null, $after)
-    {
-
+    public function actionInjection(
+        $before,
+        Request $request,
+        $between,
+        DummyService $dummyService,
+        ?Post $post,
+        $after
+    ) {
     }
 
     public function actionNullableInjection(?Request $request, ?Post $post)

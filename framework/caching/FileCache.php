@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -131,7 +131,7 @@ class FileCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param string $value the value to be cached. Other types (If you have disabled [[serializer]]) unable to get is
      * correct in [[getValue()]].
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached value will expire. Fewer than or equal to 0 means 1 year expiration time.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)

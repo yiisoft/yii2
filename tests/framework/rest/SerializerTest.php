@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\rest;
@@ -10,6 +10,7 @@ namespace yiiunit\framework\rest;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
 use yii\rest\Serializer;
+use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
@@ -17,7 +18,7 @@ use yiiunit\TestCase;
  */
 class SerializerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -413,6 +414,56 @@ class SerializerTest extends TestCase
         $serializer->preserveKeys = $saveKeys;
 
         $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
+    }
+
+    /**
+     * @dataProvider dataProviderSerializeDataProvider
+     *
+     * @param \yii\data\DataProviderInterface $dataProvider
+     * @param array $expectedResult
+     * @param bool $saveKeys
+     */
+    public function testHeadSerializeDataProvider($dataProvider, $expectedResult, $saveKeys = false)
+    {
+        $serializer = new Serializer();
+        $serializer->preserveKeys = $saveKeys;
+        $serializer->collectionEnvelope = 'data';
+
+        $this->assertEquals($expectedResult, $serializer->serialize($dataProvider)['data']);
+
+        $_SERVER['REQUEST_METHOD'] = 'HEAD';
+        $request = new Request();
+        $_POST[$request->methodParam] = 'HEAD';
+        $serializer = new Serializer([
+            'request' => $request
+        ]);
+        $serializer->preserveKeys = $saveKeys;
+        $this->assertEmpty($serializer->serialize($dataProvider));
+        $this->assertNotEmpty($serializer->response->getHeaders()->get($serializer->totalCountHeader));
+
+        $arrayDataProviderMock = $this->getMockBuilder(ArrayDataProvider::className())
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // stub getModels to prevent empty
+        $arrayDataProviderMock
+            ->method('getModels')
+            ->willReturn($expectedResult);
+
+        // stub getPagination for header
+        $arrayDataProviderMock
+            ->method('getPagination')
+            ->willReturn($dataProvider->getPagination());
+
+        // assert normal HEAD is empty response
+        $this->assertEmpty($serializer->serialize($arrayDataProviderMock));
+
+        // Test #20002:  Set up the expectation for the getModels method
+        $arrayDataProviderMock->expects($this->never())
+            ->method('getModels');
+
+        // reset Method
+        unset($_POST[$request->methodParam], $_SERVER['REQUEST_METHOD']);
     }
 
     /**

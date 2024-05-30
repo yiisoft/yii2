@@ -1,13 +1,14 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\Json;
 
 /**
  * BooleanValidator checks if the attribute value is a boolean value.
@@ -76,7 +77,7 @@ class BooleanValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.boolean(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.boolean(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**

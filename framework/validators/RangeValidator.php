@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
@@ -56,7 +57,8 @@ class RangeValidator extends Validator
     public function init()
     {
         parent::init();
-        if (!is_array($this->range)
+        if (
+            !is_array($this->range)
             && !($this->range instanceof \Closure)
             && !($this->range instanceof \Traversable)
         ) {
@@ -74,7 +76,8 @@ class RangeValidator extends Validator
     {
         $in = false;
 
-        if ($this->allowArray
+        if (
+            $this->allowArray
             && ($value instanceof \Traversable || is_array($value))
             && ArrayHelper::isSubset($value, $this->range, $this->strict)
         ) {
@@ -111,7 +114,7 @@ class RangeValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.range(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 use yii\helpers\FileHelper;
@@ -21,7 +21,7 @@ class FileHelperTest extends TestCase
      */
     private $testFilePath = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
         $this->createDir($this->testFilePath);
@@ -56,7 +56,7 @@ class FileHelperTest extends TestCase
         return $mode === '0700';
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -140,7 +140,7 @@ class FileHelperTest extends TestCase
      */
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
-        $expectedMode = sprintf('%o', $expectedMode);
+        $expectedMode = sprintf('%04o', $expectedMode);
         $this->assertEquals($expectedMode, $this->getMode($fileName), $message);
     }
 
@@ -258,7 +258,7 @@ class FileHelperTest extends TestCase
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
 
             if (is_array($content)) {
-                $this->assertFileNotExists($fileName);
+                $this->assertFileDoesNotExist($fileName);
             } else {
                 $this->assertFileExists($fileName);
                 $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
@@ -368,6 +368,8 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
+
+        $this->assertTrue(true);
     }
 
     public function testRemoveDirectory()
@@ -389,7 +391,7 @@ class FileHelperTest extends TestCase
 
         FileHelper::removeDirectory($dirName);
 
-        $this->assertFileNotExists($dirName, 'Unable to remove directory!');
+        $this->assertFileDoesNotExist($dirName, 'Unable to remove directory!');
 
         // should be silent about non-existing directories
         FileHelper::removeDirectory($basePath . DIRECTORY_SEPARATOR . 'nonExisting');
@@ -432,10 +434,10 @@ class FileHelperTest extends TestCase
         $this->assertTrue(is_dir($basePath . 'directory'));
         $this->assertFileExists($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory still have it's file
         $this->assertFalse(is_dir($basePath . 'symlinks'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
         $this->assertFalse(is_dir($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
     }
 
     public function testRemoveDirectorySymlinks2()
@@ -473,12 +475,12 @@ class FileHelperTest extends TestCase
 
         $this->assertFileExists($basePath . 'file');
         $this->assertTrue(is_dir($basePath . 'directory'));
-        $this->assertFileNotExists($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory doesn't have it's file now
+        $this->assertFileDoesNotExist($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory doesn't have it's file now
         $this->assertFalse(is_dir($basePath . 'symlinks'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
         $this->assertFalse(is_dir($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
     }
 
     public function testFindFiles()
@@ -653,6 +655,15 @@ class FileHelperTest extends TestCase
             );
         }));
         $this->assertEquals($expect, $foundFiles);
+
+        // negative pattern
+        $foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one/*', '!/one/two']]);
+        sort($foundFiles);
+        $expect = array_values(array_filter($flat, function ($p) {
+            return strpos($p, DIRECTORY_SEPARATOR . 'one') === false || strpos($p, DIRECTORY_SEPARATOR . 'two') !== false;
+        }));
+
+        $this->assertEquals($expect, $foundFiles);
     }
 
     /**
@@ -708,7 +719,7 @@ class FileHelperTest extends TestCase
         file_put_contents($file, 'some text');
         $this->assertEquals('text/plain', FileHelper::getMimeType($file));
 
-        // see http://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
+        // see https://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
         // JSON/JSONP should not use text/plain - see http://jibbering.com/blog/?p=514
         // with "fileinfo" extension enabled, returned MIME is not quite correctly "text/plain"
         // without "fileinfo" it falls back to getMimeTypeByExtension() and returns application/json
@@ -901,8 +912,8 @@ class FileHelperTest extends TestCase
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file1.txt');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
-        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
-        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+        $this->assertFileDoesNotExist($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
+        $this->assertFileDoesNotExist($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
     }
 
     public function testFindDirectories()
@@ -1259,6 +1270,62 @@ class FileHelperTest extends TestCase
             [true, ['user' => new stdClass()], null],
             [true, ['group' => new stdClass()], null],
             [true, null, 'test'],
+        ];
+    }
+
+    /**
+     * @dataProvider getExtensionsByMimeTypeProvider
+     * @param string $mimeType
+     * @param array $extensions
+     * @return void
+     */
+    public function testGetExtensionsByMimeType($mimeType, $extensions)
+    {
+        $this->assertEquals($extensions, FileHelper::getExtensionsByMimeType($mimeType));
+    }
+
+    public function getExtensionsByMimeTypeProvider()
+    {
+        return [
+            [
+                'application/json',
+                [
+                    'json',
+                ],
+            ],
+            [
+                'image/jpeg',
+                [ // Note: For backwards compatibility the (alphabetic) order of `framework/helpers/mimeTypes.php` is expected.
+                    'jfif',
+                    'jpe',
+                    'jpeg',
+                    'jpg',
+                    'pjp',
+                    'pjpeg',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getExtensionByMimeTypeProvider
+     * @param string $mimeType
+     * @param bool $preferShort
+     * @param array $extension
+     * @return void
+     */
+    public function testGetExtensionByMimeType($mimeType, $preferShort, $extension)
+    {
+        $this->assertEquals($extension, FileHelper::getExtensionByMimeType($mimeType, $preferShort));
+    }
+
+    public function getExtensionByMimeTypeProvider()
+    {
+        return [
+            ['application/json', true, 'json'],
+            ['application/json', false, 'json'],
+            ['image/jpeg', true, 'jpg'],
+            ['image/jpeg', false, 'jpeg'],
         ];
     }
 }

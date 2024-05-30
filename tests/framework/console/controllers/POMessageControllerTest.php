@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
@@ -19,7 +19,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
     protected $messagePath;
     protected $catalog = 'messages';
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -27,7 +27,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
         FileHelper::createDirectory($this->messagePath, 0777);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         FileHelper::removeDirectory($this->messagePath);

@@ -75,7 +75,7 @@ return [
 - [[yii\i18n\Formatter::asDate()|date]] - 値は日付としてフォーマットされます。例えば `January 01, 2014`。
 - [[yii\i18n\Formatter::asTime()|time]] - 値は時刻としてフォーマットされます。例えば `14:23`。
 - [[yii\i18n\Formatter::asDatetime()|datetime]] - 値は日付および時刻としてフォーマットされます。例えば `January 01, 2014 14:23`。
-- [[yii\i18n\Formatter::asTimestamp()|timestamp]] - 値は [unix タイムスタンプ](http://en.wikipedia.org/wiki/Unix_time) としてフォーマットされます。例えば `1412609982`。
+- [[yii\i18n\Formatter::asTimestamp()|timestamp]] - 値は [unix タイムスタンプ](https://ja.wikipedia.org/wiki/UNIX%E6%99%82%E9%96%93) としてフォーマットされます。例えば `1412609982`
 - [[yii\i18n\Formatter::asRelativeTime()|relativeTime]] - 値は、その日時と現在との間隔として、人間に分かりやすい言葉でフォーマットされます。
   例えば `1 hour ago`。
 - [[yii\i18n\Formatter::asDuration()|duration]] - 値は継続時間として、人間に分かりやすい言葉でフォーマットされます。例えば `1 day, 2 minutes`。
@@ -85,7 +85,7 @@ return [
 [[yii\i18n\Formatter::$timeFormat|$timeFormat]]、[[yii\i18n\Formatter::$datetimeFormat|$datetimeFormat]] を構成することで、
 グローバルにカスタマイズすることが出来ます。
 
-日付と時刻のフォーマットは、[ICU 構文](http://userguide.icu-project.org/formatparse/datetime) によって指定することが出来ます。
+日付と時刻のフォーマットは、[ICU 構文](https://unicode-org.github.io/icu/userguide/format_parse/datetime/) によって指定することが出来ます。
 また、ICU 構文と区別するために `php:` という接頭辞を付けて、[PHP の date() 構文](https://www.php.net/manual/ja/function.date.php)
 を使うことも出来ます。例えば、
 
@@ -167,7 +167,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > Note: タイム・ゾーンは世界中のさまざまな政府によって作られる規則に従うものであり、頻繁に変更されるものであるため、
 > あなたのシステムにインストールされたタイム・ゾーンのデータベースが最新の情報を持っていない可能性が大いにあります。
 > タイム・ゾーン・データベースの更新についての詳細は、
-> [ICU マニュアル](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) で参照することが出来ます。
+> [ICU マニュアル](https://unicode-org.github.io/icu/userguide/datetime/timezone/#updating-the-time-zone-data) で参照することが出来ます。
 > [PHP 環境を国際化のために設定する](tutorial-i18n.md#setup-environment) も参照してください。
 
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -21,7 +21,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
      */
     public $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication();
         $this->response = new Response();

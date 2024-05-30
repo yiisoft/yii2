@@ -1,8 +1,8 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
@@ -18,14 +18,14 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
 {
     protected $messagePath;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->messagePath = Yii::getAlias('@yiiunit/runtime/test_messages');
         FileHelper::createDirectory($this->messagePath, 0777);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         FileHelper::removeDirectory($this->messagePath);
@@ -165,7 +165,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         if ($isExpectedToExist) {
             $this->assertFileExists($filePath);
         } else {
-            $this->assertFileNotExists($filePath);
+            $this->assertFileDoesNotExist($filePath);
         }
     }
 }

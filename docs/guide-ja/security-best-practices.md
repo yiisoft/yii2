@@ -162,13 +162,13 @@ CSRF は、クロス・サイト・リクエスト・フォージェリ (cross-s
 
 例えば、`an.example.com` というウェブ・サイトが `/logout` という URL を持っており、
 この URL を単純な GET でアクセスするとユーザをログアウトさせるようになっているとします。
-ユーザ自身によってこの URL がリクエストされる限りは何も問題はありませんが、ある日、悪い奴が、ユーザが頻繁に訪れるフォーラムに `<img src="http://an.example.com/logout">` というリンクを含むコンテントを何らかの方法で投稿します。
+ユーザ自身によってこの URL がリクエストされる限りは何も問題はありませんが、ある日、悪い奴が、ユーザが頻繁に訪れるフォーラムに `<img src="https://an.example.com/logout">` というリンクを含むコンテントを何らかの方法で投稿します。
 ブラウザは画像のリクエストとページのリクエストの間に何ら区別を付けませんので、ユーザがそのような `img` タグを含むページを開くとブラウザはその URL に対して GET リクエストを送信します。
 そして、ユーザが `an.example.com` からログアウトされてしまうことになる訳です。
 
 これは CSRF 攻撃がどのように動作するかという基本的な考え方です。ユーザがログアウトされるぐらいは大したことではない、と言うことも出来るでしょう。
 しかしこれは例に過ぎません。この考え方を使って、支払いを開始させたり、データを変更したりというような、もっとひどいことをすることも出来ます。
-`http://an.example.com/purse/transfer?to=anotherUser&amount=2000` という URL を持つウェブ・サイトがあると考えて見てください。この URL に GET リクエストを使ってアクセスすると、権限を持つユーザ・アカウントから `anotherUser` に $2000 が送金されるのです。
+`https://an.example.com/purse/transfer?to=anotherUser&amount=2000` という URL を持つウェブ・サイトがあると考えて見てください。この URL に GET リクエストを使ってアクセスすると、権限を持つユーザ・アカウントから `anotherUser` に $2000 が送金されるのです。
 私たちは、ブラウザは画像をロードするのに常に GET リクエストを使う、ということを知っていますから、
 この URL が POST リクエストだけを受け入れるようにコードを修正することは出来ます。
 しかし残念なことに、それで問題が解決する訳ではありません。攻撃者は `<img>` タグの代りに何らかの JavaScript コードを書いて、
@@ -179,7 +179,7 @@ CSRF は、クロス・サイト・リクエスト・フォージェリ (cross-s
 CSRF を回避するためには、常に次のことを守らなければなりません。
 
 1. HTTP の規格、すなわち、GET はアプリケーションの状態を変更すべきではない、という規則に従うこと。
-   詳細は [RFC2616](https://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html) を参照して下さい。
+   詳細は [RFC2616](https://www.rfc-editor.org/rfc/rfc9110.html#name-method-definitions) を参照して下さい。
 2. Yii の CSRF 保護を有効にしておくこと。
 
 場合によっては、コントローラやアクションの単位で CSRF 検証を無効化する必要があることがあるでしょう。これは、そのプロパティを設定することによって達成することが出来ます。
@@ -330,11 +330,11 @@ H5BP プロジェクトが提供する構成例を参考にすることも出来
 
 サーバの構成についての詳細な情報は、ウェブ・サーバのドキュメントを参照して下さい。
 
-- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Apache 2: <https://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
 
-サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、[[yii\filters\HostControl]]
-フィルタを設定することが出来ます。
+サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、
+[[yii\filters\HostControl]] フィルタを設定することが出来ます。
 
 ```php
 // ウェブ・アプリケーション構成ファイル
