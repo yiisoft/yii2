@@ -173,7 +173,6 @@ class Pagination extends BaseObject implements Linkable
             $page = (int) $this->getQueryParam($this->pageParam, 1) - 1;
             $this->setPage($page, true);
         }
-
         return $this->_page;
     }
 
@@ -221,7 +220,6 @@ class Pagination extends BaseObject implements Linkable
                 $this->setPageSize($pageSize, true);
             }
         }
-
         return $this->_pageSize;
     }
 
@@ -264,7 +262,7 @@ class Pagination extends BaseObject implements Linkable
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
-        if ($page > 0 || $page == 0 && $this->forcePageParam) {
+        if ($page > 0 || ($page === 0 && $this->forcePageParam)) {
             $params[$this->pageParam] = $page + 1;
         } else {
             unset($params[$this->pageParam]);
@@ -282,7 +280,6 @@ class Pagination extends BaseObject implements Linkable
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
         }
-
         return $urlManager->createUrl($params);
     }
 
@@ -293,7 +290,6 @@ class Pagination extends BaseObject implements Linkable
     public function getOffset()
     {
         $pageSize = $this->getPageSize();
-
         return $pageSize < 1 ? 0 : $this->getPage() * $pageSize;
     }
 
@@ -305,7 +301,6 @@ class Pagination extends BaseObject implements Linkable
     public function getLimit()
     {
         $pageSize = $this->getPageSize();
-
         return $pageSize < 1 ? -1 : $pageSize;
     }
 
@@ -331,7 +326,6 @@ class Pagination extends BaseObject implements Linkable
                 $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
             }
         }
-
         return $links;
     }
 
@@ -348,7 +342,6 @@ class Pagination extends BaseObject implements Linkable
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
-
         return isset($params[$name]) && is_scalar($params[$name]) ? $params[$name] : $defaultValue;
     }
 
