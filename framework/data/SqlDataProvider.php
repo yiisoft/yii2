@@ -8,7 +8,6 @@
 namespace yii\data;
 
 use yii\base\InvalidConfigException;
-use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -155,6 +154,8 @@ class SqlDataProvider extends BaseDataProvider
         return array_keys($models);
     }
 
+    private $_totalCount = [];
+
     /**
      * {@inheritdoc}
      */
@@ -164,22 +165,11 @@ class SqlDataProvider extends BaseDataProvider
             'from' => ['sub' => "({$this->sql})"],
             'params' => $this->params,
         ]);
+        $key = md5((string)$query);
 
-        return $this->getQueryCache()->getOrSet((string)$query, function () use ($query) {
-            return (int) $query->count('*', $this->db);
-        });
-    }
-
-    private $_queryCache;
-
-    /**
-     * @return \yii\caching\CacheInterface
-     */
-    protected function getQueryCache()
-    {
-        if ($this->_queryCache === null) {
-            $this->_queryCache = new ArrayCache();
+        if (isset($this->_totalCount[$key]) === false) {
+            $this->_totalCount[$key] = (int)$query->count('*', $this->db);
         }
-        return $this->_queryCache;
+        return $this->_totalCount[$key];
     }
 }

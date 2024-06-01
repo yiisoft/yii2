@@ -9,7 +9,6 @@ namespace yii\data;
 
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\caching\ArrayCache;
 use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
 use yii\db\QueryInterface;
@@ -152,6 +151,8 @@ class ActiveDataProvider extends BaseDataProvider
         return array_keys($models);
     }
 
+    private $_totalCount = [];
+
     /**
      * {@inheritdoc}
      */
@@ -161,23 +162,12 @@ class ActiveDataProvider extends BaseDataProvider
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
         $query = (clone $this->query)->limit(-1)->offset(-1)->orderBy([]);
+        $key = md5((string)$query);
 
-        return $this->getQueryCache()->getOrSet((string)$query, function () use ($query) {
-            return (int) $query->count('*', $this->db);
-        });
-    }
-
-    private $_queryCache;
-
-    /**
-     * @return \yii\caching\CacheInterface
-     */
-    protected function getQueryCache()
-    {
-        if ($this->_queryCache === null) {
-            $this->_queryCache = new ArrayCache();
+        if (isset($this->_totalCount[$key]) === false) {
+            $this->_totalCount[$key] = (int)$query->count('*', $this->db);
         }
-        return $this->_queryCache;
+        return $this->_totalCount[$key];
     }
 
     /**
