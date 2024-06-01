@@ -164,17 +164,10 @@ class SqlDataProvider extends BaseDataProvider
             'from' => ['sub' => "({$this->sql})"],
             'params' => $this->params,
         ]);
-        return $query->cache()->count('*', $this->getDb());
-    }
 
-    /**
-     * @return Connection
-     */
-    protected function getDb()
-    {
-        $db = clone $this->db;
-        $db->queryCache = $this->getQueryCache();
-        return $db;
+        return $this->getQueryCache()->getOrSet((string)$query, function () use ($query) {
+            return (int) $query->count('*', $this->db);
+        });
     }
 
     private $_queryCache;

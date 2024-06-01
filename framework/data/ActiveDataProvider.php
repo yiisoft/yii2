@@ -160,18 +160,11 @@ class ActiveDataProvider extends BaseDataProvider
         if (!$this->query instanceof QueryInterface) {
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
-        $query = clone $this->query;
-        return (int) $query->limit(-1)->offset(-1)->orderBy([])->cache()->count('*', $this->getDb());
-    }
+        $query = (clone $this->query)->limit(-1)->offset(-1)->orderBy([]);
 
-    /**
-     * @return Connection
-     */
-    protected function getDb()
-    {
-        $db = clone $this->db;
-        $db->queryCache = $this->getQueryCache();
-        return $db;
+        return $this->getQueryCache()->getOrSet((string)$query, function () use ($query) {
+            return (int) $query->count('*', $this->db);
+        });
     }
 
     private $_queryCache;
