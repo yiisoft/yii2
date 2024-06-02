@@ -154,22 +154,14 @@ class SqlDataProvider extends BaseDataProvider
         return array_keys($models);
     }
 
-    private $_totalCount = [];
-
     /**
      * {@inheritdoc}
      */
     protected function prepareTotalCount()
     {
-        $query = new Query([
+        return (new Query([
             'from' => ['sub' => "({$this->sql})"],
             'params' => $this->params,
-        ]);
-        $key = md5((string)$query);
-
-        if (isset($this->_totalCount[$key]) === false) {
-            $this->_totalCount[$key] = (int)$query->count('*', $this->db);
-        }
-        return $this->_totalCount[$key];
+        ]))->count('*', $this->db);
     }
 }
