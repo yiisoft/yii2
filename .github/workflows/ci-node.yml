@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   test:
-    name: NPM 6 on ubuntu-latest
+    name: NPM 10 on ubuntu-latest
 
     runs-on: ubuntu-latest
 
@@ -26,9 +26,9 @@ jobs:
         run: composer require "bower-asset/jquery:3.6.*@stable"
 
       - name: Install node.js.
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
-          node-version: 6
+          node-version: 20
 
       - name: Tests.
         run: |
