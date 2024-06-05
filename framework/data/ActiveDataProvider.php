@@ -164,7 +164,7 @@ class ActiveDataProvider extends BaseDataProvider
         $query = (clone $this->query)->limit(-1)->offset(-1)->orderBy([]);
         $key = md5((string)$query);
 
-        if (isset($this->_totalCount[$key]) === false) {
+        if (!array_key_exists($key, $this->_totalCount)) {
             $this->_totalCount[$key] = (int)$query->count('*', $this->db);
         }
         return $this->_totalCount[$key];

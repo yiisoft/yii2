@@ -142,7 +142,7 @@ class Pagination extends BaseObject implements Linkable
      */
     private $_pageSize;
     /**
-     * @var Closure|int return total number of items.
+     * @var Closure|int total number of items or closure returning it.
      */
     private $_totalCount = 0;
 
@@ -353,7 +353,7 @@ class Pagination extends BaseObject implements Linkable
         if (is_numeric($this->_totalCount)) {
             return (int)$this->_totalCount;
         }
-        return (int)call_user_func($this->_totalCount);
+        return (int)$this->_totalCount();
     }
 
     /**
