@@ -96,10 +96,12 @@ class InitDbFixture extends DbFixture
             return;
         }
 
+        if ($this->db->getDriverName() === 'oci') {
+            return;
+        }
+
         foreach ($this->schemas as $schema) {
-            if ($this->db->getDriverName() !== 'oci') {
-                $this->db->createCommand()->checkIntegrity($check, $schema)->execute();
-            }
+            $this->db->createCommand()->checkIntegrity($check, $schema)->execute();
         }
     }
 }
