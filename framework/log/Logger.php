@@ -8,7 +8,6 @@
 
 namespace yii\log;
 
-use Yii;
 use yii\base\Component;
 
 /**
