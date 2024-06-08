@@ -353,7 +353,7 @@ class Pagination extends BaseObject implements Linkable
         if (is_numeric($this->_totalCount)) {
             return (int)$this->_totalCount;
         }
-        return (int)$this->_totalCount();
+        return (int)call_user_func($this->_totalCount);
     }
 
     /**
