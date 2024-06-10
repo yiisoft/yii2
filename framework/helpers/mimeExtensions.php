@@ -947,7 +947,10 @@ return [
     'font/woff' => 'woff',
     'font/woff2' => 'woff2',
     'image/apng' => 'apng',
-    'image/avif' => 'avif',
+    'image/avif' => [
+        'avif',
+        'avif',
+    ],
     'image/bmp' => 'bmp',
     'image/cgm' => 'cgm',
     'image/g3fax' => 'g3',
@@ -1041,7 +1044,6 @@ return [
     'model/vnd.dwf' => 'dwf',
     'model/vnd.gdl' => 'gdl',
     'model/vnd.gtw' => 'gtw',
-    'model/vnd.mts' => 'mts',
     'model/vnd.vtu' => 'vtu',
     'model/vrml' => [
         'wrl',
@@ -1164,6 +1166,12 @@ return [
     'video/mj2' => [
         'mj2',
         'mjp2',
+    ],
+    'video/mp2t' => [
+        'ts',
+        'm2t',
+        'm2ts',
+        'mts',
     ],
     'video/mp4' => [
         'mp4',
