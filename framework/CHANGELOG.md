@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.51 under development
 ------------------------
 
-- no changes in this release.
+- Bug #16116: Codeception: oci does not support enabling/disabling integrity check (@terabytesoftw)
 
 
 2.0.50 May 30, 2024
@@ -39,7 +39,6 @@ Yii Framework 2 Change Log
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Enh #20171: Support JSON columns for MariaDB 10.4 or higher (@terabytesoftw)
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
-- Bug #16116: Codeception: oci does not support enabling/disabling integrity check (@terabytesoftw)
 
 
 2.0.49.2 October 12, 2023
