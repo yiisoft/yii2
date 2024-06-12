@@ -52,9 +52,11 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 Upgrade from Yii 2.0.50
+-----------------------
 
-* Since Yii 2.0.50 added tests for `MariaDB`, correcting the behavior for `JSON` column type, now they work the same for
-`MySQL` and `MariaDb`.
+* Minimum PHP version requirement is now PHP `7.3.0`.
+* Added tests for `MariaDB`, correcting the behavior for `JSON` column type, now they work the same for `MySQL` and
+`MariaDb`.
 
 
 Upgrade from Yii 2.0.48
