@@ -51,6 +51,11 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.50
+
+* Since Yii 2.0.50 added tests for `MariaDB`, correcting the behavior for `JSON` column type, now they work the same for
+`MySQL` and `MariaDb`.
+
 
 Upgrade from Yii 2.0.48
 -----------------------
