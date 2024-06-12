@@ -91,6 +91,46 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
+    public function testSourcesPublishChangedFiles()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = TestSourceChangesAsset::register($view);
+
+        $cssFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . reset($bundle->css);
+        $jsFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . reset($bundle->js);
+
+        $this->writeToFile($cssFile, "/* Hello */\n");
+        $this->writeToFile($jsFile, "/* Hello */\n");
+
+        $bundle->publish($am);
+
+        $this->assertTrue(is_dir($bundle->basePath));
+        $this->sourcesPublish_VerifyFiles('css', $bundle);
+        $this->sourcesPublish_VerifyFiles('js', $bundle);
+
+        $bundle->publish($am);
+
+        $this->writeToFile($cssFile, "/* world */\n");
+        $this->writeToFile($jsFile, "/* world */\n");
+
+        $this->sourcesPublish_VerifyFiles('css', $bundle);
+        $this->sourcesPublish_VerifyFiles('js', $bundle);
+    }
+
+    private function writeToFile($file, $text)
+    {
+        $handle = fopen($file, "w");
+        if ($handle === false) {
+            throw new \Exception('Cannot open file');
+        }
+        if (fwrite($handle, $text) === false) {
+            throw new \Exception('Cannot write to file');
+        }
+        fclose($handle);
+    }
+
     public function testSourcesPublishedBySymlink()
     {
         $view = $this->getView(['linkAssets' => true]);
@@ -589,6 +629,17 @@ class TestSourceAsset extends AssetBundle
     ];
     public $css = [
         'css/stub.css',
+    ];
+}
+
+class TestSourceChangesAsset extends AssetBundle
+{
+    public $sourcePath = '@testSourcePath';
+    public $js = [
+        'jsChangable/jquery.js',
+    ];
+    public $css = [
+        'cssChangable/stub.css',
     ];
 }
 
