@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #20191: Fix `ActiveRecord::getDirtyAttributes()` for JSON columns with multi-dimensional array values (brandonkelly)
 - Bug #20175: Fix bad result for pagination when used with GridView (@lav45)
+- Bug #20199: Fix yii\web\UrlManager::createAbsoluteUrl() external absolute links creation (@edegaudenzi)
 
 
 2.0.50 May 30, 2024
