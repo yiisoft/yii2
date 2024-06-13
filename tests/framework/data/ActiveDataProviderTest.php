@@ -197,4 +197,23 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
         $this->assertEquals(0, $pagination->getPageCount());
     }
+
+    public function testTotalCountAfterSearch()
+    {
+        $query = Order::find();
+        $provider = new ActiveDataProvider([
+            'query' => $query,
+            'pagination' => [
+                'pageSize' => 2,
+            ],
+        ]);
+
+        $pagination = $provider->getPagination();
+        $this->assertEquals(2, $pagination->getPageCount());
+        $this->assertEquals(3, $pagination->getTotalCount());
+
+        $query->andWhere(['customer_id' => 2]);
+        $this->assertEquals(1, $pagination->getPageCount());
+        $this->assertEquals(2, $pagination->getTotalCount());
+    }
 }

@@ -7,7 +7,6 @@
 
 namespace yii\log;
 
-use Yii;
 use yii\helpers\VarDumper;
 
 /**

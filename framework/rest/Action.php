@@ -7,7 +7,6 @@
 
 namespace yii\rest;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecordInterface;
 use yii\web\NotFoundHttpException;

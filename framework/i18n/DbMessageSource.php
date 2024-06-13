@@ -7,7 +7,6 @@
 
 namespace yii\i18n;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;

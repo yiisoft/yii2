@@ -9,9 +9,9 @@
   "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
-    "jsdom": "11.11.0",
-    "leche": "^2.2.3",
-    "mocha": "^5.2.0",
+    "jsdom": "24.1.0",
+    "leche": "^2.3.0",
+    "mocha": "^6.2.3",
     "mocha-jsdom": "^2.0.0",
     "sinon": "^1.17.6"
   },

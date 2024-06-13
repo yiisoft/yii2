@@ -53,6 +53,8 @@ jobs:
         run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v3
+        if: matrix.php == '7.4'
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml

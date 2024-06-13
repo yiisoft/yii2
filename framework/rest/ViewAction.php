@@ -7,8 +7,6 @@
 
 namespace yii\rest;
 
-use Yii;
-
 /**
  * ViewAction implements the API endpoint for returning the detailed information about a model.
  *

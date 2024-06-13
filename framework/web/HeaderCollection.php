@@ -7,7 +7,6 @@
 
 namespace yii\web;
 
-use Yii;
 use yii\base\BaseObject;
 
 /**
