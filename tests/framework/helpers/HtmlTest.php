@@ -1206,6 +1206,16 @@ EOD;
         $this->assertEquals('', Html::renderTagAttributes(['class' => []]));
         $this->assertEquals(' style="width: 100px; height: 200px;"', Html::renderTagAttributes(['style' => ['width' => '100px', 'height' => '200px']]));
         $this->assertEquals('', Html::renderTagAttributes(['style' => []]));
+        $this->assertEquals(' type="submit" value="1"', Html::renderTagAttributes(['type' => 'submit', 'value' => true]));
+        $this->assertEquals(' type="submit" value="0"', Html::renderTagAttributes(['type' => 'submit', 'value' => false]));
+        $this->assertEquals(
+            ' type="submit" value="1" disabled',
+            Html::renderTagAttributes(['type' => 'submit', 'value' => true, 'disabled' => true])
+        );
+        $this->assertEquals(
+            ' type="submit" value="0"',
+            Html::renderTagAttributes(['type' => 'submit', 'value' => false, 'disabled' => false])
+        );
 
         $attributes = [
             'data' => [

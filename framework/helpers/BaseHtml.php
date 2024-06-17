@@ -2004,8 +2004,10 @@ class BaseHtml
         $html = '';
         foreach ($attributes as $name => $value) {
             if (is_bool($value)) {
-                if ($value) {
+                if ($value && 'value' !== $name) {
                     $html .= " $name";
+                } elseif ('value' === $name) {
+                    $html .= " $name=\"" . static::encode((int)$value) . '"';
                 }
             } elseif (is_array($value)) {
                 if (in_array($name, static::$dataAttributes)) {
