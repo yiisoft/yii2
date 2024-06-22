@@ -145,7 +145,8 @@ class Container extends Component
      * In this case, the constructor parameters and object configurations will be used
      * only if the class is instantiated the first time.
      *
-     * @param string|Instance $class the class Instance, name, or an alias name (e.g. `foo`) that was previously
+     * @template T
+     * @param class-string<T>|Instance $class the class Instance, name, or an alias name (e.g. `foo`) that was previously
      * registered via [[set()]] or [[setSingleton()]].
      * @param array $params a list of constructor parameter values. Use one of two definitions:
      *  - Parameters as name-value pairs, for example: `['posts' => PostRepository::class]`.
@@ -154,7 +155,7 @@ class Container extends Component
      *    parameter list.
      *    Dependencies indexed by name and by position in the same array are not allowed.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
-     * @return object an instance of the requested class.
+     * @return T an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
