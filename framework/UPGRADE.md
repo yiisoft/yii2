@@ -88,6 +88,7 @@ $command->insert(
     ],
 )->execute();
 
+// Read all products
 $records = $db->createCommand('SELECT * FROM product')->queryAll();
 ```
 
