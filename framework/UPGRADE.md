@@ -96,7 +96,7 @@ Example usage of `JSON` column type in `ActiveRecord`:
 ```php
 <?php
 
-namespace App\Model;
+namespace app\model;
 
 use yii\db\ActiveRecord;
 
@@ -119,7 +119,7 @@ class ProductModel extends ActiveRecord
 ```php
 <?php
 
-use App\Model\ProductModel;
+use app\model\ProductModel;
 
 // Create a new product
 $product = new ProductModel();
