@@ -37,9 +37,14 @@ class BaseUrlTest extends TestCase
                 'expected result' => 'acme.com?name=bugs.bunny',
             ],
             'relative url and another url as parameter will return input url' => [
-                'url' => 'acme.com/test?tnt-link=https://tnt.com/',
+                'url' => 'acme.com/test?tnt-link=https%3A%2F%2Ftnt.com%2F%3Fq%3Dvalue',
                 'scheme' => 'https',
-                'expected' => 'acme.com/test?tnt-link=https://tnt.com/',
+                'expected' => 'acme.com/test?tnt-link=https%3A%2F%2Ftnt.com%2F%3Fq%3Dvalue',
+            ],
+            'relative url and another url as parameter, using more relaxed rfc3986 3.4, will return input url' => [
+                'url' => 'acme.com/test?tnt-link=https%3A//tnt.com/?q%3Dvalue',
+                'scheme' => 'https',
+                'expected' => 'acme.com/test?tnt-link=https%3A//tnt.com/?q%3Dvalue',
             ],
             'url with scheme not a string will return input url' => [
                 'url' => 'acme.com?name=bugs.bunny',
@@ -76,7 +81,10 @@ class BaseUrlTest extends TestCase
                 'url' => 'acme.com/tnt-room=123',
             ],
             'url without protocol and another url in a parameter value' => [
-                'url' => 'acme.com?tnt-room-link=https://tnt.com',
+                'url' => 'acme.com?tnt-room-link=https%3A%2F%2Ftnt.com%2F%3Fq%3Dvalue',
+            ],
+            'url without protocol and another url in a parameter value, using more relaxed rfc3986 3.4' => [
+                'url' => 'acme.com?tnt-room-link=https%3A//tnt.com/?q%3Dvalue',
             ],
             'path only' => [
                 'url' => '/path',

@@ -378,7 +378,7 @@ class BaseUrl
      */
     public static function isRelative($url)
     {
-        return preg_match('~^[[:alpha:]][[:alnum:]+-.]*://|^//~', $url) === 0;
+        return strncmp($url, '//', 2) && strpos($url, '://') === false;
     }
 
     /**
