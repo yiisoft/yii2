@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Bug #16116: Codeception: oci does not support enabling/disabling integrity check (@terabytesoftw)
 - Bug #20191: Fix `ActiveRecord::getDirtyAttributes()` for JSON columns with multi-dimensional array values (brandonkelly)
 - Bug #20175: Fix bad result for pagination when used with GridView (@lav45)
+- Bug #20211: Add acceptable parameters to `MaskedInput::init()` method (alxlnk)
 
 
 2.0.50 May 30, 2024
