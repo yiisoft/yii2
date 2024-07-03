@@ -10,6 +10,7 @@ namespace yiiunit\framework\widgets;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
+use yii\base\InvalidConfigException;
 use yii\web\AssetManager;
 use yii\web\View;
 use yii\widgets\ActiveField;
@@ -687,6 +688,16 @@ HTML;
             'options' => ['placeholder' => 'pholder_both_direct']
         ]);
         $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
+
+        try {
+            $widget = $this->activeField->widget(TestMaskedInput::className(), [
+                'clientOptions' => [
+                    'regex' => '^.*$',
+                ],
+            ]);
+        } catch (InvalidConfigException $exception) {
+            $this->fail($exception->getMessage());
+        }
     }
 
     /**
