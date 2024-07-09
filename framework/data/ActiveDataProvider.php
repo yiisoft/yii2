@@ -151,6 +151,8 @@ class ActiveDataProvider extends BaseDataProvider
         return array_keys($models);
     }
 
+    private $_totalCount = [];
+
     /**
      * {@inheritdoc}
      */
@@ -159,8 +161,13 @@ class ActiveDataProvider extends BaseDataProvider
         if (!$this->query instanceof QueryInterface) {
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
-        $query = clone $this->query;
-        return (int) $query->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
+        $query = (clone $this->query)->limit(-1)->offset(-1)->orderBy([]);
+        $key = md5((string)$query);
+
+        if (!array_key_exists($key, $this->_totalCount)) {
+            $this->_totalCount[$key] = (int)$query->count('*', $this->db);
+        }
+        return $this->_totalCount[$key];
     }
 
     /**
