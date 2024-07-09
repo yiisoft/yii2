@@ -167,10 +167,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         if ($this->_pagination === false) {
             return $this->getCount();
         }
-        if ($this->_totalCount !== null) {
-            return (int)$this->_totalCount;
+        if ($this->_totalCount === null) {
+            $this->_totalCount = $this->prepareTotalCount();
         }
-        return $this->prepareTotalCount();
+        return $this->_totalCount;
     }
 
     /**
@@ -219,9 +219,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
             $value = Yii::createObject(array_merge($config, $value));
         }
         if ($value instanceof Pagination) {
-            $value->setTotalCount(function () {
-                return $this->getTotalCount();
-            });
+            $value->totalCount = $this->getTotalCount();
             $this->_pagination = $value;
         } elseif ($value === false) {
             $this->_pagination = false;

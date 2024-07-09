@@ -7,6 +7,7 @@
 
 namespace yii\data;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Expression;
@@ -149,8 +150,10 @@ class SqlDataProvider extends BaseDataProvider
                     $keys[] = call_user_func($this->key, $model);
                 }
             }
+
             return $keys;
         }
+
         return array_keys($models);
     }
 

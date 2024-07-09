@@ -7,7 +7,6 @@
 
 namespace yii\data;
 
-use Closure;
 use Yii;
 use yii\base\BaseObject;
 use yii\web\Link;
@@ -70,7 +69,6 @@ use yii\web\Request;
  * @property-read int $pageCount Number of pages.
  * @property int $pageSize The number of items per page. If it is less than 1, it means the page size is
  * infinite, and thus a single page contains all items.
- * @property int $totalCount total number of items.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -126,6 +124,10 @@ class Pagination extends BaseObject implements Linkable
      */
     public $validatePage = true;
     /**
+     * @var int total number of items.
+     */
+    public $totalCount = 0;
+    /**
      * @var int the default page size. This property will be returned by [[pageSize]] when page size
      * cannot be determined by [[pageSizeParam]] from [[params]].
      */
@@ -141,10 +143,6 @@ class Pagination extends BaseObject implements Linkable
      * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
      */
     private $_pageSize;
-    /**
-     * @var Closure|int total number of items or closure returning it.
-     */
-    private $_totalCount = 0;
 
 
     /**
@@ -153,11 +151,13 @@ class Pagination extends BaseObject implements Linkable
     public function getPageCount()
     {
         $pageSize = $this->getPageSize();
-        $totalCount = $this->getTotalCount();
         if ($pageSize < 1) {
-            return $totalCount > 0 ? 1 : 0;
+            return $this->totalCount > 0 ? 1 : 0;
         }
-        return (int) ((max($totalCount, 0) + $pageSize - 1) / $pageSize);
+
+        $totalCount = $this->totalCount < 0 ? 0 : (int) $this->totalCount;
+
+        return (int) (($totalCount + $pageSize - 1) / $pageSize);
     }
 
     private $_page;
@@ -173,6 +173,7 @@ class Pagination extends BaseObject implements Linkable
             $page = (int) $this->getQueryParam($this->pageParam, 1) - 1;
             $this->setPage($page, true);
         }
+
         return $this->_page;
     }
 
@@ -220,6 +221,7 @@ class Pagination extends BaseObject implements Linkable
                 $this->setPageSize($pageSize, true);
             }
         }
+
         return $this->_pageSize;
     }
 
@@ -262,7 +264,7 @@ class Pagination extends BaseObject implements Linkable
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
-        if ($page > 0 || ($page === 0 && $this->forcePageParam)) {
+        if ($page > 0 || $page == 0 && $this->forcePageParam) {
             $params[$this->pageParam] = $page + 1;
         } else {
             unset($params[$this->pageParam]);
@@ -280,6 +282,7 @@ class Pagination extends BaseObject implements Linkable
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
         }
+
         return $urlManager->createUrl($params);
     }
 
@@ -290,6 +293,7 @@ class Pagination extends BaseObject implements Linkable
     public function getOffset()
     {
         $pageSize = $this->getPageSize();
+
         return $pageSize < 1 ? 0 : $this->getPage() * $pageSize;
     }
 
@@ -301,6 +305,7 @@ class Pagination extends BaseObject implements Linkable
     public function getLimit()
     {
         $pageSize = $this->getPageSize();
+
         return $pageSize < 1 ? -1 : $pageSize;
     }
 
@@ -326,6 +331,7 @@ class Pagination extends BaseObject implements Linkable
                 $links[self::LINK_NEXT] = $this->createUrl($currentPage + 1, null, $absolute);
             }
         }
+
         return $links;
     }
 
@@ -342,25 +348,7 @@ class Pagination extends BaseObject implements Linkable
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
+
         return isset($params[$name]) && is_scalar($params[$name]) ? $params[$name] : $defaultValue;
-    }
-
-    /**
-     * @return int total number of items.
-     */
-    public function getTotalCount()
-    {
-        if (is_numeric($this->_totalCount)) {
-            return (int)$this->_totalCount;
-        }
-        return (int)call_user_func($this->_totalCount);
-    }
-
-    /**
-     * @param Closure|int $count
-     */
-    public function setTotalCount($count)
-    {
-        $this->_totalCount = $count;
     }
 }
