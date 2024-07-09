@@ -126,6 +126,7 @@ class SqlDataProvider extends BaseDataProvider
         }
 
         if ($pagination !== false) {
+            $pagination->totalCount = $this->getTotalCount();
             $limit = $pagination->getLimit();
             $offset = $pagination->getOffset();
         }
