@@ -7,7 +7,6 @@
 
 namespace yii\base;
 
-use Yii;
 use yii\helpers\StringHelper;
 
 /**
