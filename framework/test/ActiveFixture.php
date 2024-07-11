@@ -130,7 +130,11 @@ class ActiveFixture extends BaseActiveFixture
         $table = $this->getTableSchema();
         $this->db->createCommand()->delete($table->fullName)->execute();
         if ($table->sequenceName !== null) {
-            $this->db->createCommand()->executeResetSequence($table->fullName, 1);
+            if ('pgsql' === $this->db->driverName) {
+                $this->db->createCommand("ALTER SEQUENCE {$table->sequenceName} RESTART;")->execute();
+            } else {
+                $this->db->createCommand()->executeResetSequence($table->fullName, 1);
+            }
         }
     }
 
