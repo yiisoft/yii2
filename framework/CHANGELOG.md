@@ -16,8 +16,8 @@ Yii Framework 2 Change Log
 - Bug #20195: Do not set non abstract values into `ColumnSchema->type` on MSSQL version less then 2017 (axeltomasson)
 - Bug #16116: Codeception: oci does not support enabling/disabling integrity check (@terabytesoftw)
 - Bug #20191: Fix `ActiveRecord::getDirtyAttributes()` for JSON columns with multi-dimensional array values (brandonkelly)
-- Bug #20175: Fix bad result for pagination when used with GridView (@lav45)
 - Bug #20211: Add acceptable parameters to `MaskedInput::init()` method (alxlnk)
+- Bug #20226: Revert all PR for "Data providers perform unnecessary COUNT queries that negatively affect performance" (@terabytesoftw)
 
 
 2.0.50 May 30, 2024

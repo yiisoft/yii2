@@ -127,6 +127,7 @@ class SqlDataProvider extends BaseDataProvider
         }
 
         if ($pagination !== false) {
+            $pagination->totalCount = $this->getTotalCount();
             $limit = $pagination->getLimit();
             $offset = $pagination->getOffset();
         }
@@ -150,8 +151,10 @@ class SqlDataProvider extends BaseDataProvider
                     $keys[] = call_user_func($this->key, $model);
                 }
             }
+
             return $keys;
         }
+
         return array_keys($models);
     }
 

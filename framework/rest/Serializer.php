@@ -189,12 +189,6 @@ class Serializer extends Component
      */
     protected function serializeDataProvider($dataProvider)
     {
-        if (($pagination = $dataProvider->getPagination()) !== false) {
-            $this->addPaginationHeaders($pagination);
-        }
-        if ($this->request->getIsHead()) {
-            return null;
-        }
         if ($this->preserveKeys) {
             $models = $dataProvider->getModels();
         } else {
@@ -202,7 +196,13 @@ class Serializer extends Component
         }
         $models = $this->serializeModels($models);
 
-        if ($this->collectionEnvelope === null) {
+        if (($pagination = $dataProvider->getPagination()) !== false) {
+            $this->addPaginationHeaders($pagination);
+        }
+
+        if ($this->request->getIsHead()) {
+            return null;
+        } elseif ($this->collectionEnvelope === null) {
             return $models;
         }
 
