@@ -102,6 +102,7 @@ class ActiveDataProvider extends BaseDataProvider
         }
         $query = clone $this->query;
         if (($pagination = $this->getPagination()) !== false) {
+            $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
                 return [];
             }
@@ -110,6 +111,7 @@ class ActiveDataProvider extends BaseDataProvider
         if (($sort = $this->getSort()) !== false) {
             $query->addOrderBy($sort->getOrders());
         }
+
         return $query->all($this->db);
     }
 
@@ -127,6 +129,7 @@ class ActiveDataProvider extends BaseDataProvider
                     $keys[] = call_user_func($this->key, $model);
                 }
             }
+
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
             /* @var $class \yii\db\ActiveRecordInterface */
@@ -146,8 +149,10 @@ class ActiveDataProvider extends BaseDataProvider
                     $keys[] = $kk;
                 }
             }
+
             return $keys;
         }
+
         return array_keys($models);
     }
 
@@ -192,6 +197,7 @@ class ActiveDataProvider extends BaseDataProvider
         if (is_object($this->query)) {
             $this->query = clone $this->query;
         }
+
         parent::__clone();
     }
 }
