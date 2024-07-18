@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #20211: Add acceptable parameters to `MaskedInput::init()` method (alxlnk)
 - Bug #20226: Revert all PR for "Data providers perform unnecessary COUNT queries that negatively affect performance" (@terabytesoftw)
 - Bug #20147: Fix error handler compatibility with PHP 8.3 (samdark)
+- Bug #20230: Fix getting ID in `\yii\filters\Cors::actions()` when attached to a module (timkelty)
 
 
 2.0.50 May 30, 2024
