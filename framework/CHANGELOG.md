@@ -15,8 +15,7 @@ Yii Framework 2 Change Log
 2.0.52 under development
 ------------------------
 
-- no changes in this release.
-
+- Bug #20232: Fix regression introduced in `GHSA-cjcc-p67m-7qxm` while attaching behavior defined by `__class` array key (erickskrauch)
 
 2.0.51 July 18, 2024
 --------------------
