@@ -108,10 +108,11 @@ class FileValidatorTest extends TestCase
         ]);
         $m = FakedValidationModel::createWithAttributes(['attr_files' => 'path']);
         $val->validateAttribute($m, 'attr_files');
-        $this->assertFalse($m->hasErrors('attr_files'));
+        $this->assertTrue($m->hasErrors('attr_files'));
         $m = FakedValidationModel::createWithAttributes(['attr_files' => []]);
         $val->validateAttribute($m, 'attr_files');
-        $this->assertFalse($m->hasErrors('attr_files'));
+        $this->assertTrue($m->hasErrors('attr_files'));
+        $this->assertSame($val->uploadRequired, current($m->getErrors('attr_files')));
 
         $m = FakedValidationModel::createWithAttributes(
             [
@@ -327,7 +328,7 @@ class FileValidatorTest extends TestCase
                     'type' => 'image/png',
                 ],
             ]
-        )[0];
+        )[0]; // <-- only one file
         $model = FakedValidationModel::createWithAttributes(['attr_images' => [$files]]);
 
         $validator->validateAttribute($model, 'attr_images');
@@ -415,7 +416,8 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_files');
         $this->assertFalse($m->hasErrors());
         $val->validateAttribute($m, 'attr_files_empty');
-        $this->assertFalse($m->hasErrors('attr_files_empty'));
+        $this->assertTrue($m->hasErrors('attr_files_empty'));
+        $this->assertSame($val->uploadRequired, current($m->getErrors('attr_files_empty')));
 
         // single File with skipOnEmpty = false
         $val = new FileValidator(['skipOnEmpty' => false]);
@@ -423,7 +425,8 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_files');
         $this->assertFalse($m->hasErrors());
         $val->validateAttribute($m, 'attr_files_empty');
-        $this->assertFalse($m->hasErrors('attr_files_empty'));
+        $this->assertTrue($m->hasErrors('attr_files_empty'));
+        $this->assertSame($val->uploadRequired, current($m->getErrors('attr_files_empty')));
         $m = $this->createModelForAttributeTest();
 
         // too big
