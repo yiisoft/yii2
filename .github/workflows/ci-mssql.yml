@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
+    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
 
     env:
       EXTENSIONS: pdo, pdo_sqlsrv
@@ -34,7 +34,7 @@ jobs:
 
     services:
       mssql:
-          image: mcr.microsoft.com/mssql/${{ matrix.mssql }}
+          image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
           env:
               SA_PASSWORD: YourStrong!Passw0rd
               ACCEPT_EULA: Y
