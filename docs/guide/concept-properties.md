@@ -70,7 +70,7 @@ properties.
 
 There are several special rules for, and limitations on, the properties defined via getters and setters:
 
-* The names of such properties are *case-insensitive*. For example, `$object->label` and `$object->Label` are the same.
+* The names of such properties are *case-insensitive*. For example, `$object->label` and `$object->Label` are considered different.
   This is because method names in PHP are case-insensitive.
 * If the name of such a property is the same as a class member variable, the latter will take precedence.
   For example, if the above `Foo` class has a member variable `label`, then the assignment `$object->label = 'abc'`
