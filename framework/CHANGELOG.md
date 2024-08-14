@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #20232: Fix regression introduced in `GHSA-cjcc-p67m-7qxm` while attaching behavior defined by `__class` array key (erickskrauch)
+- Bug #20231: Fix regression introduced in #20167 in `yii\validators\FileValidator` (bizley)
 
 2.0.51 July 18, 2024
 --------------------

@@ -209,7 +209,7 @@ class FileValidator extends Validator
     {
         $files = $this->filterFiles(is_array($model->$attribute) ? $model->$attribute : [$model->$attribute]);
         $filesCount = count($files);
-        if ($filesCount === 0 && $this->minFiles > 0) {
+        if ($filesCount === 0) {
             $this->addError($model, $attribute, $this->uploadRequired);
 
             return;
