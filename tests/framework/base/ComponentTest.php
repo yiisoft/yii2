@@ -330,26 +330,48 @@ class ComponentTest extends TestCase
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
-    }
 
-    public function testAs()
-    {
+        $this->assertSame($behavior, $component->detachBehavior('a'));
+        $this->assertFalse($component->hasProperty('p'));
+        try {
+            $component->test();
+            $this->fail('Expected exception ' . UnknownMethodException::class . " wasn't thrown");
+        } catch (UnknownMethodException $e) {
+            // Expected
+        }
+
         $component = new NewComponent();
-        $component->{'as a'} = new NewBehavior();
+        $component->{'as b'} = ['class' => NewBehavior::class];
+        $this->assertInstanceOf(NewBehavior::class, $component->getBehavior('b'));
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
 
-        $component->{'as b'} = ['class' => NewBehavior::class];
-        $this->assertNotNull($component->getBehavior('b'));
-
         $component->{'as c'} = ['__class' => NewBehavior::class];
         $this->assertNotNull($component->getBehavior('c'));
 
-        $component->{'as d'} = function () {
+        $component->{'as d'} = [
+            '__class' => NewBehavior2::class,
+            'class' => NewBehavior::class,
+        ];
+        $this->assertInstanceOf(NewBehavior2::class, $component->getBehavior('d'));
+
+        // CVE-2024-4990
+        try {
+            $component->{'as e'} = [
+                '__class' => 'NotExistsBehavior',
+                'class' => NewBehavior::class,
+            ];
+            $this->fail('Expected exception ' . InvalidConfigException::class . " wasn't thrown");
+        } catch (InvalidConfigException $e) {
+            $this->assertSame('Class is not of type yii\base\Behavior or its subclasses', $e->getMessage());
+        }
+
+        $component = new NewComponent();
+        $component->{'as f'} = function () {
             return new NewBehavior();
         };
-        $this->assertNotNull($component->getBehavior('d'));
+        $this->assertNotNull($component->getBehavior('f'));
     }
 
     public function testAttachBehaviors(): void
