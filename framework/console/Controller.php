@@ -216,7 +216,7 @@ class Controller extends \yii\base\Controller
                 if ($param->isVariadic()) {
                     for ($j = array_search($key, $paramKeys); $j < count($paramKeys); $j++) {
                         $jKey = $paramKeys[$j];
-                        if ($j !== $key && !is_int($j)) {
+                        if ($jKey !== $key && !is_int($jKey)) {
                             break;
                         }
                         $args[] = $actionParams[$key][] = $params[$jKey];
