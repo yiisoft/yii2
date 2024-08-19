@@ -91,6 +91,12 @@ class ControllerTest extends TestCase
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
+        $params = ['a', 'b', 'c1', 'c2', 'c3'];
+        [$a, $b, $c] = $controller->run('variadic', $params);
+        $this->assertEquals('a', $a);
+        $this->assertEquals('b', $b);
+        $this->assertEquals(['c1', 'c2', 'c3'], $c);
+
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->expectException('yii\console\Exception');
