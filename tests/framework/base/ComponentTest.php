@@ -328,19 +328,18 @@ class ComponentTest extends TestCase
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
+    }
 
-        $this->assertSame($behavior, $component->detachBehavior('a'));
-        $this->assertFalse($component->hasProperty('p'));
-        $this->expectException('yii\base\UnknownMethodException');
-        $component->test();
-
-        $p = 'as b';
+    public function testAs()
+    {
         $component = new NewComponent();
-        $component->$p = ['class' => 'NewBehavior'];
-        $this->assertSame($behavior, $component->getBehavior('a'));
+        $component->{'as a'} = new NewBehavior();
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
+
+        $component->{'as b'} = ['class' => NewBehavior::class];
+        $this->assertNotNull($component->getBehavior('b'));
 
         $component->{'as c'} = ['__class' => NewBehavior::class];
         $this->assertNotNull($component->getBehavior('c'));
@@ -381,6 +380,9 @@ class ComponentTest extends TestCase
 
         $detachedBehavior = $component->detachBehavior('z');
         $this->assertNull($detachedBehavior);
+
+        $this->expectException('yii\base\UnknownMethodException');
+        $component->test();
     }
 
     public function testDetachBehaviors()
