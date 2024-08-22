@@ -344,6 +344,11 @@ class ComponentTest extends TestCase
 
         $component->{'as c'} = ['__class' => NewBehavior::class];
         $this->assertNotNull($component->getBehavior('c'));
+
+        $component->{'as d'} = function () {
+            return new NewBehavior();
+        };
+        $this->assertNotNull($component->getBehavior('d'));
     }
 
     public function testAttachBehaviors()
