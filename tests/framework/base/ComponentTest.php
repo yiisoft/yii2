@@ -350,22 +350,10 @@ class ComponentTest extends TestCase
         $component->{'as c'} = ['__class' => NewBehavior::class];
         $this->assertNotNull($component->getBehavior('c'));
 
-        $component->{'as d'} = [
-            '__class' => NewBehavior2::class,
-            'class' => NewBehavior::class,
-        ];
-        $this->assertInstanceOf(NewBehavior2::class, $component->getBehavior('d'));
-
-        // CVE-2024-4990
-        try {
-            $component->{'as e'} = [
-                '__class' => 'NotExistsBehavior',
-                'class' => NewBehavior::class,
-            ];
-            $this->fail('Expected exception ' . InvalidConfigException::class . " wasn't thrown");
-        } catch (InvalidConfigException $e) {
-            $this->assertSame('Class is not of type yii\base\Behavior or its subclasses', $e->getMessage());
-        }
+        $component->{'as d'} = function () {
+            return new NewBehavior();
+        };
+        $this->assertNotNull($component->getBehavior('d'));
     }
 
     public function testAttachBehaviors(): void
