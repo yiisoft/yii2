@@ -328,7 +328,7 @@ $user->touch('login_time');
 
 - [[yii\behaviors\BlameableBehavior]] - автоматически заполняет указанные атрибуты ID текущего пользователя.
 - [[yii\behaviors\SluggableBehavior]] - автоматически заполняет указанный атрибут пригодным для URL текстом, получаемым
-  из другого атрибута.
+  из 1 или нескольких других атрибутов.
 - [[yii\behaviors\AttributeBehavior]] - автоматически задаёт указанное значение одному или нескольким атрибутам
   ActiveRecord при срабатывании определённых событий.
 - [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - предоставляет методы для
