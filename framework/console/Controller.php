@@ -198,6 +198,7 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
+        $paramKeys = array_keys($params);
         $args = [];
         $missing = [];
         $actionParams = [];
@@ -212,16 +213,27 @@ class Controller extends \yii\base\Controller
             }
 
             if ($key !== null) {
-                if (PHP_VERSION_ID >= 80000) {
-                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+                if ($param->isVariadic()) {
+                    for ($j = array_search($key, $paramKeys); $j < count($paramKeys); $j++) {
+                        $jKey = $paramKeys[$j];
+                        if ($jKey !== $key && !is_int($jKey)) {
+                            break;
+                        }
+                        $args[] = $actionParams[$key][] = $params[$jKey];
+                        unset($params[$jKey]);
+                    }
                 } else {
-                    $isArray = $param->isArray();
+                    if (PHP_VERSION_ID >= 80000) {
+                        $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+                    } else {
+                        $isArray = $param->isArray();
+                    }
+                    if ($isArray) {
+                        $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
+                    }
+                    $args[] = $actionParams[$key] = $params[$key];
+                    unset($params[$key]);
                 }
-                if ($isArray) {
-                    $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
-                }
-                $args[] = $actionParams[$key] = $params[$key];
-                unset($params[$key]);
             } elseif (
                 PHP_VERSION_ID >= 70100
                 && ($type = $param->getType()) !== null
