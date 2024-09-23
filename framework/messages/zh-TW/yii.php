@@ -24,7 +24,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    ' and ' => ' 和 ',
+    ' and ' => ' 與 ',
     '"{attribute}" does not support operator "{operator}".' => '',
     '(not set)' => '(未設定)',
     'Action not found.' => '',
