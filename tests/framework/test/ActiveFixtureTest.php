@@ -9,6 +9,7 @@ namespace yiiunit\framework\test;
 
 use Yii;
 use yii\db\Connection;
+use yii\di\Instance;
 use yii\test\ActiveFixture;
 use yii\test\FixtureTrait;
 use yiiunit\data\ar\ActiveRecord;
@@ -49,6 +50,36 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals(1, $fixture['customer1']['profile_id']);
 
         $this->assertEquals(2, $fixture['customer2']['id']);
+        $this->assertEquals('customer2@example.com', $fixture['customer2']['email']);
+        $this->assertEquals(2, $fixture['customer2']['profile_id']);
+
+        $test->tearDown();
+    }
+
+    /**
+     * Testing the use of offset fixtures
+     * @return void
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
+     */
+    public function testOffsetGetData()
+    {
+        $test = new CustomerOffsetDbTestCase();
+        /** @var Connection $db */
+        $db = Instance::ensure('db', Connection::class);
+        if ('pgsql' === $db->driverName) {
+            $db->createCommand('alter sequence customer_id_seq start 2 minvalue 2 restart 2;')->execute();
+        }
+        $test->setUp();
+        $fixture = $test->getFixture('customers');
+
+        $this->assertEquals(CustomerFixture::className(), get_class($fixture));
+        $this->assertCount(2, $fixture);
+        $this->assertEquals(2, $fixture['customer1']['id']);
+        $this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
+        $this->assertEquals(1, $fixture['customer1']['profile_id']);
+
+        $this->assertEquals(3, $fixture['customer2']['id']);
         $this->assertEquals('customer2@example.com', $fixture['customer2']['email']);
         $this->assertEquals(2, $fixture['customer2']['profile_id']);
 
@@ -221,6 +252,19 @@ class CustomerDbTestCase extends BaseDbTestCase
     {
         return [
             'customers' => CustomerFixture::className(),
+        ];
+    }
+}
+
+class CustomerOffsetDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => [
+                'class' => CustomerFixture::className(),
+                'dataFile' => '@app/framework/test/data/customer_offset_sequence.php',
+            ],
         ];
     }
 }
