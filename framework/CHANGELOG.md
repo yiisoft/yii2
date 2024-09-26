@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #20231: Fix regression introduced in #20167 in `yii\validators\FileValidator` (bizley)
 - Enh #20247: Support for variadic console controller action methods (brandonkelly)
 - Bug #20256: Add support for dropping views in MSSQL server when running migrate/fresh (ambrozt)
+- Enh #20248: Add support for attaching behaviors in configurations with Closure (timkelty)
 
 2.0.51 July 18, 2024
 --------------------

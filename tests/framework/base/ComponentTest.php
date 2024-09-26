@@ -366,6 +366,12 @@ class ComponentTest extends TestCase
         } catch (InvalidConfigException $e) {
             $this->assertSame('Class is not of type yii\base\Behavior or its subclasses', $e->getMessage());
         }
+
+        $component = new NewComponent();
+        $component->{'as f'} = function () {
+            return new NewBehavior();
+        };
+        $this->assertNotNull($component->getBehavior('f'));
     }
 
     public function testAttachBehaviors()
