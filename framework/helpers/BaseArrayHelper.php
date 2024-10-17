@@ -595,6 +595,9 @@ class BaseArrayHelper
      */
     public static function map($array, $from, $to, $group = null)
     {
+        if (is_string($from) && is_string($to) && $group === null) {
+            return array_column($array, $to, $from);
+        }
         $result = [];
         foreach ($array as $element) {
             $key = static::getValue($element, $from);
