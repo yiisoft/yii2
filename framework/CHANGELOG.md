@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #20247: Support for variadic console controller action methods (brandonkelly)
 - Bug #20256: Add support for dropping views in MSSQL server when running migrate/fresh (ambrozt)
 - Enh #20248: Add support for attaching behaviors in configurations with Closure (timkelty)
+- Enh #20268: Minor optimisation in `\yii\helpers\BaseArrayHelper::map` (chriscpty)
 
 2.0.51 July 18, 2024
 --------------------
