@@ -239,11 +239,12 @@ class BaseStringHelper
         $needle = (string)$needle;
 
         if ($caseSensitive) {
+            // can be replaced with just the str_contains call when minimum supported PHP version is raised to 8.0 or higher
             if (function_exists('str_contains')) {
                 return str_contains($string, $needle);
             }
             $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
-            return mb_strpos($string, $needle, 0,  $encoding) !== false;
+            return mb_strpos($string, $needle, 0, $encoding) !== false;
         }
         $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
         return mb_stripos($string, $needle, 0, $encoding) !== false;
