@@ -772,6 +772,19 @@ class ArrayHelperTest extends TestCase
             ],
         ], $result);
 
+        $array = [
+            ['id' => '123', 'name' => 'aaa', 'class' => 'x', 'map' => ['a' => '11', 'b' => '22']],
+            ['id' => '124', 'name' => 'bbb', 'class' => 'x', 'map' => ['a' => '33', 'b' => '44']],
+            ['id' => '345', 'name' => 'ccc', 'class' => 'y', 'map' => ['a' => '55', 'b' => '66']],
+        ];
+
+        $result = ArrayHelper::map($array, 'map.a', 'map.b');
+
+        $this->assertEquals([
+            '11' => '22',
+            '33' => '44',
+            '55' => '66'
+        ], $result);
     }
 
     public function testKeyExists()

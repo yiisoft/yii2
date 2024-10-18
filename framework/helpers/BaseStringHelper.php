@@ -227,6 +227,29 @@ class BaseStringHelper
     }
 
     /**
+     * @param string $string The input string.
+     * @param string $needle Part to search inside $string
+     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, `$with` must
+     * exactly match the starting of the string in order to get a true value.
+     * @return bool
+     */
+    public static function contains($string, $needle, $caseSensitive = true)
+    {
+        $string = (string)$string;
+        $needle = (string)$needle;
+
+        if ($caseSensitive) {
+            if (function_exists('str_contains')) {
+                return str_contains($string, $needle);
+            }
+            $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+            return mb_strpos($string, $needle, 0,  $encoding) !== false;
+        }
+        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
+        return mb_stripos($string, $needle, 0, $encoding) !== false;
+    }
+
+    /**
      * Check if given string starts with specified substring. Binary and multibyte safe.
      *
      * @param string $string Input string
@@ -313,9 +336,14 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result, function ($value) {
-                return $value !== '';
-            }));
+            $result = array_values(
+                array_filter(
+                    $result,
+                    function ($value) {
+                        return $value !== '';
+                    }
+                )
+            );
         }
 
         return $result;
@@ -343,7 +371,7 @@ class BaseStringHelper
      */
     public static function normalizeNumber($value)
     {
-        $value = (string) $value;
+        $value = (string)$value;
 
         $localeInfo = localeconv();
         $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
@@ -396,7 +424,7 @@ class BaseStringHelper
     {
         // . and , are the only decimal separators known in ICU data,
         // so its safe to call str_replace here
-        return str_replace(',', '.', (string) $number);
+        return str_replace(',', '.', (string)$number);
     }
 
     /**
@@ -422,14 +450,14 @@ class BaseStringHelper
 
         $replacements = [
             '\\\\\\\\' => '\\\\',
-            '\\\\\\*' => '[*]',
-            '\\\\\\?' => '[?]',
-            '\*' => '.*',
-            '\?' => '.',
-            '\[\!' => '[^',
-            '\[' => '[',
-            '\]' => ']',
-            '\-' => '-',
+            '\\\\\\*'  => '[*]',
+            '\\\\\\?'  => '[?]',
+            '\*'       => '.*',
+            '\?'       => '.',
+            '\[\!'     => '[^',
+            '\['       => '[',
+            '\]'       => ']',
+            '\-'       => '-',
         ];
 
         if (isset($options['escape']) && !$options['escape']) {
@@ -483,7 +511,7 @@ class BaseStringHelper
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $string = (string) $string;
+        $string = (string)$string;
         if (empty($string)) {
             return $string;
         }

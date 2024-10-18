@@ -150,6 +150,15 @@ class StringHelperTest extends TestCase
         $this->assertEquals('<span><img src="image.png" />This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test</span><strong> for a sentance</strong>', 5, '...', true));
     }
 
+    public function testContains()
+    {
+        $this->assertEquals(true, StringHelper::contains('Test', 'st'));
+        $this->assertEquals(false, StringHelper::contains('Test', 'ts'));
+        $this->assertEquals(false, StringHelper::contains('Test', 'St'));
+        $this->assertEquals(true, StringHelper::contains('Test', 'St', false));
+        $this->assertEquals(false, StringHelper::contains('Test', 'Ste', false));
+    }
+
     /**
      * @dataProvider providerStartsWith
      * @param bool $result
