@@ -61,6 +61,10 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+    /**
+     * @var string[] used widget classes that have been resolved to their actual class name.
+     */
+    private static $resolvedClasses = [];
 
     /**
      * Initializes the object.
@@ -89,6 +93,7 @@ class Widget extends Component implements ViewContextInterface
         /* @var $widget Widget */
         $widget = Yii::createObject($config);
         self::$stack[] = $widget;
+        self::$resolvedClasses[get_called_class()] = get_class($widget);
 
         return $widget;
     }
@@ -105,10 +110,7 @@ class Widget extends Component implements ViewContextInterface
         if (!empty(self::$stack)) {
             $widget = array_pop(self::$stack);
 
-            $calledClass = get_called_class();
-            if (Yii::$container->has($calledClass) && isset(Yii::$container->getDefinitions()[$calledClass]['class'])) {
-                $calledClass = Yii::$container->getDefinitions()[$calledClass]['class'];
-            }
+            $calledClass = self::$resolvedClasses[get_called_class()] ?? get_called_class();
 
             if (get_class($widget) === $calledClass) {
                 /* @var $widget Widget */
