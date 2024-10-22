@@ -227,30 +227,6 @@ class BaseStringHelper
     }
 
     /**
-     * @param string $string The input string.
-     * @param string $needle Part to search inside $string
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, `$with` must
-     * exactly match the starting of the string in order to get a true value.
-     * @return bool
-     */
-    public static function contains($string, $needle, $caseSensitive = true)
-    {
-        $string = (string)$string;
-        $needle = (string)$needle;
-
-        if ($caseSensitive) {
-            // can be replaced with just the str_contains call when minimum supported PHP version is raised to 8.0 or higher
-            if (function_exists('str_contains')) {
-                return str_contains($string, $needle);
-            }
-            $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
-            return mb_strpos($string, $needle, 0, $encoding) !== false;
-        }
-        $encoding = Yii::$app ? Yii::$app->charset : 'UTF-8';
-        return mb_stripos($string, $needle, 0, $encoding) !== false;
-    }
-
-    /**
      * Check if given string starts with specified substring. Binary and multibyte safe.
      *
      * @param string $string Input string

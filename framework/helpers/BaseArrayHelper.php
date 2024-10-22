@@ -595,7 +595,7 @@ class BaseArrayHelper
      */
     public static function map($array, $from, $to, $group = null)
     {
-        if (is_string($from) && is_string($to) && $group === null && !\yii\helpers\StringHelper::contains($from, '.') && !\yii\helpers\StringHelper::contains($to, '.')) {
+        if (is_string($from) && is_string($to) && $group === null && strpos($from, '.') === false && strpos($to, '.') === false) {
             return array_column($array, $to, $from);
         }
         $result = [];
