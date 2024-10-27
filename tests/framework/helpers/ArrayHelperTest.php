@@ -708,6 +708,57 @@ class ArrayHelperTest extends TestCase
                 '345' => 'ccc',
             ],
         ], $result);
+
+        $result = ArrayHelper::map($array,
+            static function (array $group) {
+                return $group['id'] . $group['name'];
+            },
+            static function (array $group) {
+                return $group['name'] . $group['class'];
+            }
+        );
+
+        $this->assertEquals([
+            '123aaa' => 'aaax',
+            '124bbb' => 'bbbx',
+            '345ccc' => 'cccy',
+        ], $result);
+
+        $result = ArrayHelper::map($array,
+            static function (array $group) {
+                return $group['id'] . $group['name'];
+            },
+            static function (array $group) {
+                return $group['name'] . $group['class'];
+            },
+            static function (array $group) {
+                return $group['class'] . '-' . $group['class'];
+            }
+        );
+
+        $this->assertEquals([
+            'x-x' => [
+                '123aaa' => 'aaax',
+                '124bbb' => 'bbbx',
+            ],
+            'y-y' => [
+                '345ccc' => 'cccy',
+            ],
+        ], $result);
+
+        $array = [
+            ['id' => '123', 'name' => 'aaa', 'class' => 'x', 'map' => ['a' => '11', 'b' => '22']],
+            ['id' => '124', 'name' => 'bbb', 'class' => 'x', 'map' => ['a' => '33', 'b' => '44']],
+            ['id' => '345', 'name' => 'ccc', 'class' => 'y', 'map' => ['a' => '55', 'b' => '66']],
+        ];
+
+        $result = ArrayHelper::map($array, 'map.a', 'map.b');
+
+        $this->assertEquals([
+            '11' => '22',
+            '33' => '44',
+            '55' => '66'
+        ], $result);
     }
 
     public function testKeyExists(): void
@@ -730,6 +781,10 @@ class ArrayHelperTest extends TestCase
 
     public function testKeyExistsWithFloat(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+            $this->markTestSkipped('Using floats as array key is deprecated.');
+        }
+
         $array = [
             1 => 3,
             2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.
