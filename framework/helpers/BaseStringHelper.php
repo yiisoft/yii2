@@ -313,9 +313,14 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result, function ($value) {
-                return $value !== '';
-            }));
+            $result = array_values(
+                array_filter(
+                    $result,
+                    function ($value) {
+                        return $value !== '';
+                    }
+                )
+            );
         }
 
         return $result;
@@ -343,7 +348,7 @@ class BaseStringHelper
      */
     public static function normalizeNumber($value)
     {
-        $value = (string) $value;
+        $value = (string)$value;
 
         $localeInfo = localeconv();
         $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
@@ -396,7 +401,7 @@ class BaseStringHelper
     {
         // . and , are the only decimal separators known in ICU data,
         // so its safe to call str_replace here
-        return str_replace(',', '.', (string) $number);
+        return str_replace(',', '.', (string)$number);
     }
 
     /**
@@ -422,14 +427,14 @@ class BaseStringHelper
 
         $replacements = [
             '\\\\\\\\' => '\\\\',
-            '\\\\\\*' => '[*]',
-            '\\\\\\?' => '[?]',
-            '\*' => '.*',
-            '\?' => '.',
-            '\[\!' => '[^',
-            '\[' => '[',
-            '\]' => ']',
-            '\-' => '-',
+            '\\\\\\*'  => '[*]',
+            '\\\\\\?'  => '[?]',
+            '\*'       => '.*',
+            '\?'       => '.',
+            '\[\!'     => '[^',
+            '\['       => '[',
+            '\]'       => ']',
+            '\-'       => '-',
         ];
 
         if (isset($options['escape']) && !$options['escape']) {
@@ -483,7 +488,7 @@ class BaseStringHelper
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $string = (string) $string;
+        $string = (string)$string;
         if (empty($string)) {
             return $string;
         }
