@@ -6,7 +6,7 @@
 
 ## Сесії <span id="sessions"></span>
 
-За аналогією з [запитами](runtime-requests.md) та [відповідями](runtime-responses.md), до сесій можна отримати доступ через `session` [компонент додатку](structure-application-components.md), який за замовчуванням є екземпляром [[yii\web\Session]].
+За аналогією з [запитами](runtime-requests.md) та [відповідями](runtime-responses.md), до сесій можна отримати доступ через `session` [компонент додатка](structure-application-components.md), який за замовчуванням є екземпляром [[yii\web\Session]].
 
 
 ### Відкриття та закриття сесії <span id="opening-closing-sessions"></span>
