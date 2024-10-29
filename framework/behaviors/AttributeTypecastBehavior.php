@@ -267,9 +267,16 @@ class AttributeTypecastBehavior extends Behavior
                         return StringHelper::floatToString($value);
                     }
                     return (string) $value;
-                default:
-                    throw new InvalidArgumentException("Unsupported type '{$type}'");
             }
+
+            if (PHP_VERSION_ID >= 80100 && is_subclass_of($type, \BackedEnum::class)) {
+                if ($value instanceof $type) {
+                    return $value;
+                }
+                return $type::from($value);
+            }
+
+            throw new InvalidArgumentException("Unsupported type '{$type}'");
         }
 
         return call_user_func($type, $value);
