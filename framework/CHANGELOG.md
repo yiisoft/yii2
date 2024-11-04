@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Enh #20248: Add support for attaching behaviors in configurations with Closure (timkelty)
 - Enh #20267: Fixed called class check in `Widget::end()` when widget configured using callable (rob006, jrajamaki)
 - Enh #20268: Minor optimisation in `\yii\helpers\BaseArrayHelper::map` (chriscpty)
+- Enh #20273: Remove unnecessary `paragonie/random_compat` dependency (timwolla)
 
 2.0.51 July 18, 2024
 --------------------
