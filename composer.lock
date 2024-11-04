@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67d678d7fc90991fe6c1967c41f6264d",
+    "content-hash": "3faf6ba20beedc1db7758907d00f6681",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -204,7 +204,7 @@
                 "issues": "https://github.com/ezyang/htmlpurifier/issues",
                 "source": "https://github.com/ezyang/htmlpurifier/tree/v4.18.0"
             },
-            "time": "2024-11-01T03:51:45+00:00"
+            "time": "2023-11-17T15:01:25+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
