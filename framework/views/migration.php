@@ -17,9 +17,6 @@ if (!empty($namespace)) {
 
 use yii\db\Migration;
 
-/**
- * Class <?= $className . "\n" ?>
- */
 class <?= $className ?> extends Migration
 {
     /**
