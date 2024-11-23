@@ -319,6 +319,16 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testNoCsrfTokenCsrfHeaderValidation()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->validateCsrfHeaderOnly = true;
+
+        $this->assertEquals($request->getCsrfToken(), null);
+    }
+
     public function testResolve()
     {
         $this->mockWebApplication([
