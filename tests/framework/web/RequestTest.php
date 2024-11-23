@@ -211,6 +211,114 @@ class RequestTest extends TestCase
         }
     }
 
+    public function testCustomSafeMethodsCsrfTokenValidation()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->csrfTokenSafeMethods = ['OPTIONS'];
+        $request->enableCsrfCookie = false;
+        $request->enableCsrfValidation = true;
+
+        $token = $request->getCsrfToken();
+
+        // accept any value on custom safe request
+        foreach (['OPTIONS'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $this->assertTrue($request->validateCsrfToken($token));
+            $this->assertTrue($request->validateCsrfToken($token . 'a'));
+            $this->assertTrue($request->validateCsrfToken([]));
+            $this->assertTrue($request->validateCsrfToken([$token]));
+            $this->assertTrue($request->validateCsrfToken(0));
+            $this->assertTrue($request->validateCsrfToken(null));
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
+        // only accept valid token on other requests
+        foreach (['GET', 'HEAD', 'POST'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $this->assertTrue($request->validateCsrfToken($token));
+            $this->assertFalse($request->validateCsrfToken($token . 'a'));
+            $this->assertFalse($request->validateCsrfToken([]));
+            $this->assertFalse($request->validateCsrfToken([$token]));
+            $this->assertFalse($request->validateCsrfToken(0));
+            $this->assertFalse($request->validateCsrfToken(null));
+            $this->assertFalse($request->validateCsrfToken());
+        }
+    }
+
+    public function testCsrfHeaderValidation()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->validateCsrfHeaderOnly = true;
+        $request->enableCsrfValidation = true;
+
+        // only accept valid header on unsafe requests
+        foreach (['GET', 'HEAD', 'POST'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $request->headers->remove(Request::CSRF_HEADER);
+            $this->assertFalse($request->validateCsrfToken());
+
+            $request->headers->add(Request::CSRF_HEADER, '');
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
+        // accept no value on other requests
+        foreach (['DELETE', 'PATCH', 'PUT', 'OPTIONS'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $this->assertTrue($request->validateCsrfToken());
+        }
+    }
+
+    public function testCustomHeaderCsrfHeaderValidation()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->csrfHeader = 'X-JGURDA';
+        $request->validateCsrfHeaderOnly = true;
+        $request->enableCsrfValidation = true;
+
+        // only accept valid header on unsafe requests
+        foreach (['GET', 'HEAD', 'POST'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $request->headers->remove('X-JGURDA');
+            $this->assertFalse($request->validateCsrfToken());
+
+            $request->headers->add('X-JGURDA', '');
+            $this->assertTrue($request->validateCsrfToken());
+        }
+    }
+
+    public function testCustomUnsafeMethodsCsrfHeaderValidation()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->csrfHeaderUnafeMethods = ['POST'];
+        $request->validateCsrfHeaderOnly = true;
+        $request->enableCsrfValidation = true;
+
+        // only accept valid custom header on unsafe requests
+        foreach (['POST'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $request->headers->remove(Request::CSRF_HEADER);
+            $this->assertFalse($request->validateCsrfToken());
+
+            $request->headers->add(Request::CSRF_HEADER, '');
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
+        // accept no value on other requests
+        foreach (['GET', 'HEAD'] as $method) {
+            $_SERVER['REQUEST_METHOD'] = $method;
+            $request->headers->remove(Request::CSRF_HEADER);
+            $this->assertTrue($request->validateCsrfToken());
+        }
+    }
+
     public function testResolve()
     {
         $this->mockWebApplication([

@@ -117,6 +117,26 @@ class Request extends \yii\base\Request
      * @see https://en.wikipedia.org/wiki/Cross-site_request_forgery
      */
     public $enableCsrfValidation = true;
+        /**
+     * @var string the name of the HTTP header for sending CSRF token.
+     */
+    public $csrfHeader = self::CSRF_HEADER;
+    /**
+     * @var array the name of the HTTP header for sending CSRF token.
+     * by default validate CSRF token on non-"safe" methods only
+     * @see https://tools.ietf.org/html/rfc2616#section-9.1.1
+     */
+    public $csrfTokenSafeMethods = ['GET', 'HEAD', 'OPTIONS'];
+    /**
+     * @var array "unsafe" methods not triggered a CORS-preflight request
+     * @see https://fetch.spec.whatwg.org/#http-cors-protocol
+     */
+    public $csrfHeaderUnafeMethods = ['GET', 'HEAD', 'POST'];
+    /**
+     * @var bool whether to use custom header only to CSRF validation. Defaults to false.
+     * @link https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi
+     */
+    public $validateCsrfHeaderOnly = false;
     /**
      * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
      * This property is used only when [[enableCsrfValidation]] is true.
@@ -1772,10 +1792,14 @@ class Request extends \yii\base\Request
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
      * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
-     * @return string the token used to perform CSRF validation.
+     * @return null|string the token used to perform CSRF validation.
      */
     public function getCsrfToken($regenerate = false)
     {
+        if ($this->validateCsrfHeaderOnly) {
+            return null;
+        }
+
         if ($this->_csrfToken === null || $regenerate) {
             $token = $this->loadCsrfToken();
             if ($regenerate || empty($token)) {
@@ -1823,7 +1847,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-        return $this->headers->get(static::CSRF_HEADER);
+        return $this->headers->get($this->csrfHeader);
     }
 
     /**
@@ -1860,8 +1884,14 @@ class Request extends \yii\base\Request
     public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
-        // only validate CSRF token on non-"safe" methods https://tools.ietf.org/html/rfc2616#section-9.1.1
-        if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
+
+        if ($this->validateCsrfHeaderOnly) {
+            return in_array($method, $this->csrfHeaderUnafeMethods, true)
+                ? $this->headers->has($this->csrfHeader)
+                : true;
+        }
+
+        if (!$this->enableCsrfValidation || in_array($method, $this->csrfTokenSafeMethods, true)) {
             return true;
         }
 
