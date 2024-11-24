@@ -43,7 +43,7 @@ use yii\validators\IpValidator;
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
  * @property-read string $csrfToken The token used to perform CSRF validation.
- * @property-read string|null $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is
+ * @property-read string|null $csrfTokenFromHeader The CSRF token sent via [[csrfHeader]] by browser. Null is
  * returned if no such header is sent.
  * @property-read array $eTags The entity tags.
  * @property-read HeaderCollection $headers The header collection.
@@ -92,7 +92,7 @@ use yii\validators\IpValidator;
 class Request extends \yii\base\Request
 {
     /**
-     * The name of the HTTP header for sending CSRF token.
+     * Default name of the HTTP header for sending CSRF token.
      */
     const CSRF_HEADER = 'X-CSRF-Token';
 
@@ -109,28 +109,38 @@ class Request extends \yii\base\Request
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
      * You also need to include CSRF meta tags in your pages by using [[\yii\helpers\Html::csrfMetaTags()]].
      *
+     * For SPA, you can use CSRF validation by custom header with a random or an empty value.
+     * Include a header with the name specified by [[csrfHeader]] to requests that must be validated.
+     * Warning! CSRF validation by custom header can be used only for same-origin requests or
+     * with CORS configured to allow requests from the list of specific origins only.
+     *
      * @see Controller::enableCsrfValidation
      * @see https://en.wikipedia.org/wiki/Cross-site_request_forgery
      */
     public $enableCsrfValidation = true;
-        /**
-     * @var string the name of the HTTP header for sending CSRF token.
+    /**
+     * @var string the name of the HTTP header for sending CSRF token. Defaults [[CSRF_HEADER]].
+     * This property can be changed for Yii API applications only.
+     * Don't change this property for Yii Web application.
      */
     public $csrfHeader = self::CSRF_HEADER;
     /**
      * @var array the name of the HTTP header for sending CSRF token.
      * by default validate CSRF token on non-"safe" methods only
+     * This property is used only when [[enableCsrfValidation]] is true.
      * @see https://tools.ietf.org/html/rfc2616#section-9.1.1
      */
     public $csrfTokenSafeMethods = ['GET', 'HEAD', 'OPTIONS'];
     /**
      * @var array "unsafe" methods not triggered a CORS-preflight request
+     * This property is used only when both [[enableCsrfValidation]] and [[validateCsrfHeaderOnly]] are true.
      * @see https://fetch.spec.whatwg.org/#http-cors-protocol
      */
     public $csrfHeaderUnafeMethods = ['GET', 'HEAD', 'POST'];
     /**
-     * @var bool whether to use custom header only to CSRF validation. Defaults to false.
-     * @link https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi
+     * @var bool whether to use custom header only to CSRF validation of SPA. Defaults to false.
+     * If false and [[enableCsrfValidation]] is true, CSRF validation by token will used.
+     * @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi
      */
     public $validateCsrfHeaderOnly = false;
     /**
@@ -1788,7 +1798,7 @@ class Request extends \yii\base\Request
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
      * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
-     * @return null|string the token used to perform CSRF validation.
+     * @return null|string the token used to perform CSRF validation. Null is returned if the [[validateCsrfHeaderOnly]] is true.
      */
     public function getCsrfToken($regenerate = false)
     {
@@ -1839,7 +1849,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * @return string|null the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
+     * @return string|null the CSRF token sent via [[csrfHeader]] by browser. Null is returned if no such header is sent.
      */
     public function getCsrfTokenFromHeader()
     {
