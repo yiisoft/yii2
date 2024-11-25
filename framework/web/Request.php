@@ -119,8 +119,8 @@ class Request extends \yii\base\Request
      */
     public $enableCsrfValidation = true;
     /**
-     * @var string the name of the HTTP header for sending CSRF token. Defaults [[CSRF_HEADER]].
-     * This property can be changed for Yii API applications only.
+     * @var string the name of the HTTP header for sending CSRF token. Defaults to [[CSRF_HEADER]].
+     * This property may be changed for Yii API applications only.
      * Don't change this property for Yii Web application.
      */
     public $csrfHeader = self::CSRF_HEADER;
@@ -128,7 +128,7 @@ class Request extends \yii\base\Request
      * @var array the name of the HTTP header for sending CSRF token.
      * by default validate CSRF token on non-"safe" methods only
      * This property is used only when [[enableCsrfValidation]] is true.
-     * @see https://tools.ietf.org/html/rfc2616#section-9.1.1
+     * @see https://datatracker.ietf.org/doc/html/rfc9110#name-safe-methods
      */
     public $csrfTokenSafeMethods = ['GET', 'HEAD', 'OPTIONS'];
     /**
@@ -140,6 +140,7 @@ class Request extends \yii\base\Request
     /**
      * @var bool whether to use custom header only to CSRF validation of SPA. Defaults to false.
      * If false and [[enableCsrfValidation]] is true, CSRF validation by token will used.
+     * Warning! CSRF validation by custom header can be used for Yii API applications only.
      * @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi
      */
     public $validateCsrfHeaderOnly = false;
