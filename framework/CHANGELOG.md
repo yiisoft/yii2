@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - New #20279: Add to the `\yii\web\Request` CSRF validation by custom HTTP header (olegbaturin)
 - Enh #20279: Add to the `\yii\web\Request` `csrfHeader` property to configure a custom  HTTP header for CSRF validation (olegbaturin)
 - Enh #20279: Add to the `\yii\web\Request` `csrfTokenSafeMethods` property to configure a custom safe HTTP methods list (olegbaturin)
+- Bug #20284: Revert punycode to 1.4.x which supports pre ES6 format (mtangoo)
 
 2.0.51 July 18, 2024
 --------------------
