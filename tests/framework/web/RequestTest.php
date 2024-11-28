@@ -297,7 +297,7 @@ class RequestTest extends TestCase
         $this->mockWebApplication();
 
         $request = new Request();
-        $request->csrfHeaderUnafeMethods = ['POST'];
+        $request->csrfHeaderUnsafeMethods = ['POST'];
         $request->validateCsrfHeaderOnly = true;
         $request->enableCsrfValidation = true;
 

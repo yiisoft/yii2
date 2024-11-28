@@ -140,7 +140,7 @@ class Request extends \yii\base\Request
      * This property is used only when both [[enableCsrfValidation]] and [[validateCsrfHeaderOnly]] are true.
      * @see https://fetch.spec.whatwg.org/#http-cors-protocol
      */
-    public $csrfHeaderUnafeMethods = ['GET', 'HEAD', 'POST'];
+    public $csrfHeaderUnsafeMethods = ['GET', 'HEAD', 'POST'];
     /**
      * @var bool whether to use custom header only to CSRF validation of SPA. Defaults to false.
      * If false and [[enableCsrfValidation]] is true, CSRF validation by token will used.
@@ -1897,7 +1897,7 @@ class Request extends \yii\base\Request
         $method = $this->getMethod();
 
         if ($this->validateCsrfHeaderOnly) {
-            return in_array($method, $this->csrfHeaderUnafeMethods, true)
+            return in_array($method, $this->csrfHeaderUnsafeMethods, true)
                 ? $this->headers->has($this->csrfHeader)
                 : true;
         }
