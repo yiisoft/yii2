@@ -73,7 +73,6 @@ class SessionTest extends TestCase
         $this->assertNotEquals($oldGcProbability, $newGcProbability);
         $this->assertEquals(100, $newGcProbability);
         $session->setGCProbability($oldGcProbability);
-
     }
 
     /**
