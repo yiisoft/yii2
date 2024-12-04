@@ -65,6 +65,7 @@ class SessionTest extends TestCase
             $this->assertNotEquals($oldUseCookies, $newUseCookies);
             $this->assertFalse($newUseCookies);
         }
+        $session->setUseCookies($oldUseCookies);
 
         $oldGcProbability = $session->getGCProbability();
         $session->setGCProbability(100);
@@ -72,6 +73,7 @@ class SessionTest extends TestCase
         $this->assertNotEquals($oldGcProbability, $newGcProbability);
         $this->assertEquals(100, $newGcProbability);
         $session->setGCProbability($oldGcProbability);
+
     }
 
     /**
