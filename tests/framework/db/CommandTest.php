@@ -1538,13 +1538,13 @@ SQL;
 		    $db = $this->getConnection();
 		    $command = $db->createCommand();
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::ACTIVE]);
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
 		    $this->assertSame('ACTIVE', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::ACTIVE]);
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
 		    $this->assertSame('active', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
 		    $this->assertSame(1, $command->params[':p1']);
 		} else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');
