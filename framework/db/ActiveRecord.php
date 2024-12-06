@@ -280,6 +280,8 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $with If set, reloads the given relations.
      */
     public function refresh(array $with = [])
     {
