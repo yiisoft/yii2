@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.52 under development
 ------------------------
 
+- Bug #20292: Fix `\yii\web\Session` should not set cookie params, when useCookie is false (cebe)
 - Bug #20232: Fix regression introduced in `GHSA-cjcc-p67m-7qxm` while attaching behavior defined by `__class` array key (erickskrauch)
 - Bug #20231: Fix regression introduced in #20167 in `yii\validators\FileValidator` (bizley)
 - Enh #20247: Support for variadic console controller action methods (brandonkelly)
