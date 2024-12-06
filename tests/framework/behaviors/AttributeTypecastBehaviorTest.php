@@ -91,11 +91,11 @@ class AttributeTypecastBehaviorTest extends TestCase
 
         $model = new ActiveRecordAttributeTypecastWithEnum();
 
-        $model->status = StatusTypeString::ACTIVE;
+        $model->status = StatusTypeString::Active;
 
         $model->getAttributeTypecastBehavior()->typecastAttributes();
 
-        $this->assertSame(StatusTypeString::ACTIVE, $model->status);
+        $this->assertSame(StatusTypeString::Active, $model->status);
     }
 
     /**
@@ -112,7 +112,7 @@ class AttributeTypecastBehaviorTest extends TestCase
 
         $model->getAttributeTypecastBehavior()->typecastAttributes();
 
-        $this->assertSame(StatusTypeString::ACTIVE, $model->status);
+        $this->assertSame(StatusTypeString::Active, $model->status);
     }
 
     /**
