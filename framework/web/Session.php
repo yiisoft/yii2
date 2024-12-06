@@ -175,34 +175,23 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             static::$_originalSessionModule = $sessionModuleName;
         }
 
+        if ($this->handler === null && $this->getUseCustomStorage()) {
+            $this->handler = Yii::createObject(
+                [
+                    '__class' => SessionHandler::class,
+                    '__construct()' => [$this],
+                ]
+            );
+        }
+
         if ($this->handler !== null) {
-            if (!is_object($this->handler)) {
+            if (is_array($this->handler)) {
                 $this->handler = Yii::createObject($this->handler);
             }
             if (!$this->handler instanceof \SessionHandlerInterface) {
                 throw new InvalidConfigException('"' . get_class($this) . '::handler" must implement the SessionHandlerInterface.');
             }
             YII_DEBUG ? session_set_save_handler($this->handler, false) : @session_set_save_handler($this->handler, false);
-        } elseif ($this->getUseCustomStorage()) {
-            if (YII_DEBUG) {
-                session_set_save_handler(
-                    [$this, 'openSession'],
-                    [$this, 'closeSession'],
-                    [$this, 'readSession'],
-                    [$this, 'writeSession'],
-                    [$this, 'destroySession'],
-                    [$this, 'gcSession']
-                );
-            } else {
-                @session_set_save_handler(
-                    [$this, 'openSession'],
-                    [$this, 'closeSession'],
-                    [$this, 'readSession'],
-                    [$this, 'writeSession'],
-                    [$this, 'destroySession'],
-                    [$this, 'gcSession']
-                );
-            }
         } elseif (
             $sessionModuleName !== static::$_originalSessionModule
             && static::$_originalSessionModule !== null
@@ -610,7 +599,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method should be overridden if [[useCustomStorage]] returns true.
      * @internal Do not call this method directly.
      * @param string $id session ID
-     * @return string the session data
+     * @return string|false the session data, or false on failure
      */
     public function readSession($id)
     {
@@ -647,11 +636,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * This method should be overridden if [[useCustomStorage]] returns true.
      * @internal Do not call this method directly.
      * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-     * @return bool whether session is GCed successfully
+     * @return int|false the number of deleted sessions on success, or false on failure
      */
     public function gcSession($maxLifetime)
     {
-        return true;
+        return 0;
     }
 
     /**

@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Enh #20279: Add to the `\yii\web\Request` `csrfHeader` property to configure a custom  HTTP header for CSRF validation (olegbaturin)
 - Enh #20279: Add to the `\yii\web\Request` `csrfTokenSafeMethods` property to configure a custom safe HTTP methods list (olegbaturin)
 - Bug #20284: Revert punycode to 1.4.x which supports pre ES6 format (mtangoo)
+- Bug #20140: Fix compatibility with PHP 8.4: calling `session_set_save_handler()` (Izumi-kun)
 
 2.0.51 July 18, 2024
 --------------------
