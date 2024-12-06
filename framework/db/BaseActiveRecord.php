@@ -1783,7 +1783,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if (is_array($newValue) && is_array($oldValue)) {
             // Only sort associative arrays
-            $sorter = function(&$array) {
+            $sorter = function (&$array) {
                 if (ArrayHelper::isAssociative($array)) {
                     ksort($array);
                 }

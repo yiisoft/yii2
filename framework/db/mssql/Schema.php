@@ -825,5 +825,4 @@ SQL;
     {
         return Yii::createObject(ColumnSchemaBuilder::class, [$type, $length, $this->db]);
     }
-
 }
