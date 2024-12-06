@@ -280,8 +280,11 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $with If an array is passed to this function,
+     *   it will be interpreted as an array of relations to eagerly load for the refreshed record.
      */
-    public function refresh(array $with = [])
+    public function refresh()
     {
         $query = static::find();
         $tableName = key($query->getTablesUsedInFrom());
@@ -290,8 +293,11 @@ class ActiveRecord extends BaseActiveRecord
         foreach ($this->getPrimaryKey(true) as $key => $value) {
             $pk[$tableName . '.' . $key] = $value;
         }
-        $query->where($pk)
-            ->with(...$with);
+        $args = func_get_args();
+        if (array_key_exists(0, $args) && is_array($args[0])) {
+            $query->with(...$args[0]);
+        }
+        $query->where($pk);
 
         /* @var $record BaseActiveRecord */
         $record = $query->noCache()->one();
