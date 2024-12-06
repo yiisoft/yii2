@@ -127,8 +127,9 @@ abstract class AbstractDbSessionTest extends TestCase
         $session->db->createCommand()
             ->update('session', ['expire' => time() - 100], 'id = :id', ['id' => 'expire'])
             ->execute();
-        $session->gcSession(1);
+        $deleted = $session->gcSession(1);
 
+        $this->assertEquals(1, $deleted);
         $this->assertEquals('', $session->readSession('expire'));
         $this->assertEquals('new data', $session->readSession('new'));
     }

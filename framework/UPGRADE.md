@@ -51,6 +51,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.51
+-----------------------
+
+* The function signature for `yii\web\Session::readSession()` and `yii\web\Session::gcSession()` have been changed.
+  They now have the same return types as `\SessionHandlerInterface::read()` and `\SessionHandlerInterface::gc()` respectively.
+  In case those methods have overwritten you will need to update your child classes accordingly.
+
 Upgrade from Yii 2.0.50
 -----------------------
 
