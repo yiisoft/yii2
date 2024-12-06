@@ -1082,8 +1082,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
         }
         $this->_oldAttributes = $record->_oldAttributes;
-        $this->_related = [];
-        $this->_relationsDependencies = [];
+        $this->_related = $record->_related;
+        $this->_relationsDependencies = $record->_relationsDependencies;
         $this->afterRefresh();
 
         return true;
