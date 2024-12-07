@@ -280,8 +280,10 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $with If set, reloads the given relations.
      */
-    public function refresh()
+    public function refresh(array $with = [])
     {
         $query = static::find();
         $tableName = key($query->getTablesUsedInFrom());
@@ -290,7 +292,8 @@ class ActiveRecord extends BaseActiveRecord
         foreach ($this->getPrimaryKey(true) as $key => $value) {
             $pk[$tableName . '.' . $key] = $value;
         }
-        $query->where($pk);
+        $query->where($pk)
+            ->with(...$with);
 
         /* @var $record BaseActiveRecord */
         $record = $query->noCache()->one();
