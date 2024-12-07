@@ -280,6 +280,9 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
+     *
+     * @param array $with If an array is passed to this function,
+     *   it will be interpreted as an array of relations to eagerly load for the refreshed record.
      */
     public function refresh()
     {
@@ -289,6 +292,10 @@ class ActiveRecord extends BaseActiveRecord
         // disambiguate column names in case ActiveQuery adds a JOIN
         foreach ($this->getPrimaryKey(true) as $key => $value) {
             $pk[$tableName . '.' . $key] = $value;
+        }
+        $args = func_get_args();
+        if (array_key_exists(0, $args) && is_array($args[0])) {
+            $query->with(...$args[0]);
         }
         $query->where($pk);
 

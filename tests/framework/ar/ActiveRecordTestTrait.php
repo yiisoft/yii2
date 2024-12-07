@@ -288,6 +288,10 @@ trait ActiveRecordTestTrait
         $customer->name = 'to be refreshed';
         $this->assertTrue($customer->refresh());
         $this->assertEquals('user1', $customer->name);
+        $this->assertFalse($customer->isRelationPopulated('profile'));
+
+        $this->assertTrue($customer->refresh(['profile']));
+        $this->assertTrue($customer->isRelationPopulated('profile'));
     }
 
     public function testEquals()
