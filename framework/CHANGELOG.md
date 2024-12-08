@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Bug #20284: Revert punycode to 1.4.x which supports pre ES6 format (mtangoo)
 - Bug #20140: Fix compatibility with PHP 8.4: calling `session_set_save_handler()` (Izumi-kun)
 - New #20185: Add `BackedEnum` support to `AttributeTypecastBehavior` (briedis)
+- Bug #17365: Fix "Trying to access array offset on null" warning (xcopy)
 
 2.0.51 July 18, 2024
 --------------------
