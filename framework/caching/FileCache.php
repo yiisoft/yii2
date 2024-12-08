@@ -158,8 +158,11 @@ class FileCache extends Cache
             return @touch($cacheFile, $duration + time());
         }
 
-        $error = error_get_last();
-        Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
+        $message = "Unable to write cache file '{$cacheFile}'";
+        ($error = error_get_last()) and $message .= ": {$error['message']}";
+
+        Yii::warning($message, __METHOD__);
+
         return false;
     }
 
@@ -265,20 +268,22 @@ class FileCache extends Cache
                     continue;
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;
+                $message = null;
                 if (is_dir($fullPath)) {
                     $this->gcRecursive($fullPath, $expiredOnly);
                     if (!$expiredOnly) {
                         if (!@rmdir($fullPath)) {
-                            $error = error_get_last();
-                            Yii::warning("Unable to remove directory '{$fullPath}': {$error['message']}", __METHOD__);
+                            $message = "Unable to remove directory '$fullPath'";
+                            ($error = error_get_last()) and $message .= ": {$error['message']}";
                         }
                     }
                 } elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
                     if (!@unlink($fullPath)) {
-                        $error = error_get_last();
-                        Yii::warning("Unable to remove file '{$fullPath}': {$error['message']}", __METHOD__);
+                        $message = "Unable to remove file '$fullPath'";
+                        ($error = error_get_last()) and $message .= ": {$error['message']}";
                     }
                 }
+                $message and Yii::warning($message, __METHOD__);
             }
             closedir($handle);
         }
