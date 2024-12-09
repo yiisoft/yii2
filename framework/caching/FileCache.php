@@ -159,7 +159,10 @@ class FileCache extends Cache
         }
 
         $message = "Unable to write cache file '{$cacheFile}'";
-        ($error = error_get_last()) and $message .= ": {$error['message']}";
+
+        if ($error = error_get_last()) {
+            $message .= ": {$error['message']}";
+        }
 
         Yii::warning($message, __METHOD__);
 
@@ -274,13 +277,17 @@ class FileCache extends Cache
                     if (!$expiredOnly) {
                         if (!@rmdir($fullPath)) {
                             $message = "Unable to remove directory '$fullPath'";
-                            ($error = error_get_last()) and $message .= ": {$error['message']}";
+                            if ($error = error_get_last()) {
+                                $message .= ": {$error['message']}";
+                            }
                         }
                     }
                 } elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
                     if (!@unlink($fullPath)) {
                         $message = "Unable to remove file '$fullPath'";
-                        ($error = error_get_last()) and $message .= ": {$error['message']}";
+                        if ($error = error_get_last()) {
+                            $message .= ": {$error['message']}";
+                        }
                     }
                 }
                 $message and Yii::warning($message, __METHOD__);

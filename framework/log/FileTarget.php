@@ -132,7 +132,9 @@ class FileTarget extends Target
         $writeResult = @fwrite($fp, $text);
         if ($writeResult === false) {
             $message = "Unable to export log through file ($this->logFile)!";
-            ($error = error_get_last()) and $message .= ": {$error['message']}";
+            if ($error = error_get_last()) {
+                $message .= ": {$error['message']}";
+            }
             throw new LogRuntimeException($message);
         }
         $textSize = strlen($text);
