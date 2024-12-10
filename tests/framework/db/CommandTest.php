@@ -1539,7 +1539,7 @@ SQL;
 		    $command = $db->createCommand();
 
 		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
-		    $this->assertSame('ACTIVE', $command->params[':p1']);
+		    $this->assertSame('Active', $command->params[':p1']);
 
 		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
 		    $this->assertSame('active', $command->params[':p1']);
