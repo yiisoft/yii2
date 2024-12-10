@@ -55,6 +55,9 @@ jobs:
           options: --name=mssql --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
+      - name: Install ODBC driver
+        run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
       - name: Checkout
         uses: actions/checkout@v4
 
