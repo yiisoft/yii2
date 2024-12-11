@@ -16,7 +16,7 @@ jobs:
       EXTENSIONS: pdo, pdo_sqlsrv
       XDEBUG_MODE: coverage, develop
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.mssql.os || 'ubuntu-latest' }}
 
     strategy:
       fail-fast: false
@@ -38,6 +38,7 @@ jobs:
             mssql:
               version: server:2017-latest
               mssql-tool: /opt/mssql-tools/bin/sqlcmd
+              os: ubuntu-22.04
           - php: 8.0
             mssql:
               version: server:2019-latest
