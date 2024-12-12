@@ -92,6 +92,11 @@ abstract class Target extends Component
      * - `var` - `var` will be logged as `***`
      * - `var.key` - only `var[key]` will be logged as `***`
      *
+     * In addition, this property accepts (case-insensitive) patterns. For example:
+     * - `_SERVER.*_SECRET` matches all ending with `_SECRET`, such as `$_SERVER['TOKEN_SECRET']` etc.
+     * - `_SERVER.SECRET_*` matches all starting with `SECRET_`, such as `$_SERVER['SECRET_TOKEN']` etc.
+     * - `_SERVER.*SECRET*` matches all containing `SECRET` i.e. both of the above.
+     *
      * @since 2.0.16
      */
     public $maskVars = [
