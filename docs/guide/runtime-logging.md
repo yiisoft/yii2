@@ -219,7 +219,7 @@ Or if you want to implement your own way of providing context information, you m
 In case some of your request fields contain sensitive information you would not like to log (e.g. passwords, access tokens),
 you may additionally configure `maskVars` property, which can contain both exact values and (case-insensitive) patterns. By default,
 the following request parameters will be masked with `***`:
-`$_SERVER[HTTP_AUTHORIZATION]`, `$_SERVER[PHP_AUTH_USER]`, `$_SERVER[PHP_AUTH_PW]`, but you can set your own:
+`$_SERVER[HTTP_AUTHORIZATION]`, `$_SERVER[PHP_AUTH_USER]`, `$_SERVER[PHP_AUTH_PW]`, but you can set your own. For example:
 
 ```php
 [
