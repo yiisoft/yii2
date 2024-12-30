@@ -156,7 +156,12 @@ class FileCache extends Cache
                 $duration = 31536000; // 1 year
             }
 
-            return @touch($cacheFile, $duration + time());
+            if (@touch($cacheFile, $duration + time())) {
+                clearstatcache();
+                return true;
+            }
+
+            return false;
         }
 
         $message = "Unable to write cache file '{$cacheFile}'";

@@ -83,38 +83,23 @@ class FileCacheTest extends CacheTestCase
         $this->assertEquals($value, $refMethodGet->invoke($cache, $key));
     }
 
-    public function testCacheRenewalOnDifferentOwnership(): void
+    public function testStatCache()
     {
-        $TRAVIS_SECOND_USER = getenv('TRAVIS_SECOND_USER');
-        if (empty($TRAVIS_SECOND_USER)) {
-            $this->markTestSkipped('Travis second user not found');
-        }
-
         $cache = $this->getCacheInstance();
+        $cache->set(__FUNCTION__, 'cache1', 2);
 
-        $cacheValue = uniqid('value_');
-        $cachePublicKey = uniqid('key_');
-        $cacheInternalKey = $cache->buildKey($cachePublicKey);
-
-        static::$time = \time();
-        $this->assertTrue($cache->set($cachePublicKey, $cacheValue, 2));
-        $this->assertSame($cacheValue, $cache->get($cachePublicKey));
-
+        $normalizeKey = $cache->buildKey(__FUNCTION__);
         $refClass = new \ReflectionClass($cache);
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
         $refMethodGetCacheFile->setAccessible(true);
-        $cacheFile = $refMethodGetCacheFile->invoke($cache, $cacheInternalKey);
-        $refMethodGetCacheFile->setAccessible(false);
+        $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
-        $output = [];
-        $returnVar = null;
-        exec(sprintf('sudo chown %s %s',
-            escapeshellarg($TRAVIS_SECOND_USER),
-            escapeshellarg((string) $cacheFile)
-        ), $output, $returnVar);
+        // simulate cache expire 10 seconds ago
+        touch($cacheFile, time() - 10);
+        clearstatcache();
 
-        $this->assertSame(0, $returnVar, 'Cannot change ownership of cache file to test cache renewal');
-
-        $this->assertTrue($cache->set($cachePublicKey, uniqid('value_2_'), 2), 'Cannot rebuild cache on different file ownership');
+        $this->assertFalse($cache->get(__FUNCTION__));
+        $this->assertTrue($cache->set(__FUNCTION__, 'cache2', 2));
+        $this->assertSame('cache2', $cache->get(__FUNCTION__));
     }
 }
