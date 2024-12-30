@@ -82,4 +82,24 @@ class FileCacheTest extends CacheTestCase
         $this->assertTrue(is_dir(dirname($cacheFile)), 'File not found ' . $cacheFile);
         $this->assertEquals($value, $refMethodGet->invoke($cache, $key));
     }
+
+    public function testStatCache()
+    {
+        $cache = $this->getCacheInstance();
+        $cache->set(__FUNCTION__, 'cache1', 2);
+
+        $normalizeKey = $cache->buildKey(__FUNCTION__);
+        $refClass = new \ReflectionClass($cache);
+        $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
+        $refMethodGetCacheFile->setAccessible(true);
+        $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
+
+        // simulate cache expire 10 seconds ago
+        touch($cacheFile, time() - 10);
+        clearstatcache();
+
+        $this->assertFalse($cache->get(__FUNCTION__));
+        $this->assertTrue($cache->set(__FUNCTION__, 'cache2', 2));
+        $this->assertSame('cache2', $cache->get(__FUNCTION__));
+    }
 }
