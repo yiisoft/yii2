@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - New #20185: Add `BackedEnum` support to `AttributeTypecastBehavior` (briedis)
 - Bug #17365: Fix "Trying to access array offset on null" warning (xcopy)
 - Bug #20296: Fix broken enum test (briedis)
+- Bug #20300: Clear stat cache in `FileCache::setValue()` (rob006)
 
 2.0.51 July 18, 2024
 --------------------
