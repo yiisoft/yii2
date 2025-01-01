@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -91,6 +92,11 @@ abstract class Target extends Component
      * - `var` - `var` will be logged as `***`
      * - `var.key` - only `var[key]` will be logged as `***`
      *
+     * In addition, this property accepts (case-insensitive) patterns. For example:
+     * - `_SERVER.*_SECRET` matches all ending with `_SECRET`, such as `$_SERVER['TOKEN_SECRET']` etc.
+     * - `_SERVER.SECRET_*` matches all starting with `SECRET_`, such as `$_SERVER['SECRET_TOKEN']` etc.
+     * - `_SERVER.*SECRET*` matches all containing `SECRET` i.e. both of the above.
+     *
      * @since 2.0.16
      */
     public $maskVars = [
@@ -162,6 +168,54 @@ abstract class Target extends Component
     }
 
     /**
+     * Flattens a multidimensional array into a one-dimensional array.
+     *
+     * This method recursively traverses the input array and concatenates the keys
+     * to form a new key in the resulting array.
+     *
+     * Example:
+     *
+     * ```php
+     * $array = [
+     *      'A' => [1, 2],
+     *      'B' => [
+     *          'C' => 1,
+     *          'D' => 2,
+     *      ],
+     *      'E' => 1,
+     *  ];
+     * $result = \yii\log\Target::flatten($array);
+     * // result will be:
+     * // [
+     * //     'A.0' => 1
+     * //     'A.1' => 2
+     * //     'B.C' => 1
+     * //     'B.D' => 2
+     * //     'E' => 1
+     * // ]
+     * ```
+     *
+     * @param array $array the input array to be flattened.
+     * @param string $prefix the prefix to be added to each key in the resulting array.
+     *
+     * @return array the flattened array.
+     */
+    private static function flatten($array, $prefix = ''): array
+    {
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, self::flatten($value, $prefix . $key . '.'));
+            } else {
+                $result[$prefix . $key] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Generates the context information to be logged.
      * The default implementation will dump user information, system variables, etc.
      * @return string the context information. If an empty string, it means no context information.
@@ -169,9 +223,12 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        $items = self::flatten($context);
         foreach ($this->maskVars as $var) {
-            if (ArrayHelper::getValue($context, $var) !== null) {
-                ArrayHelper::setValue($context, $var, '***');
+            foreach ($items as $key => $value) {
+                if (StringHelper::matchWildcard($var, $key, ['caseSensitive' => false])) {
+                    ArrayHelper::setValue($context, $key, '***');
+                }
             }
         }
         $result = [];
@@ -292,7 +349,7 @@ abstract class Target extends Component
      */
     public function formatMessage($message)
     {
-        list($text, $level, $category, $timestamp) = $message;
+        [$text, $level, $category, $timestamp] = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
