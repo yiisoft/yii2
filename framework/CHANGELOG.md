@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #20140: Fix compatibility with PHP 8.4: calling `session_set_save_handler()` (Izumi-kun)
 - New #20185: Add `BackedEnum` support to `AttributeTypecastBehavior` (briedis)
 - Bug #17365: Fix "Trying to access array offset on null" warning (xcopy)
+- Enh #20295: Add an ability to have wildcards in `yii\log\Target::$maskVars` array (xcopy)
 - Bug #20296: Fix broken enum test (briedis)
 - Bug #20300: Clear stat cache in `FileCache::setValue()` (rob006)
 
