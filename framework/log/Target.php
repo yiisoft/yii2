@@ -168,54 +168,6 @@ abstract class Target extends Component
     }
 
     /**
-     * Flattens a multidimensional array into a one-dimensional array.
-     *
-     * This method recursively traverses the input array and concatenates the keys
-     * to form a new key in the resulting array.
-     *
-     * Example:
-     *
-     * ```php
-     * $array = [
-     *      'A' => [1, 2],
-     *      'B' => [
-     *          'C' => 1,
-     *          'D' => 2,
-     *      ],
-     *      'E' => 1,
-     *  ];
-     * $result = \yii\log\Target::flatten($array);
-     * // result will be:
-     * // [
-     * //     'A.0' => 1
-     * //     'A.1' => 2
-     * //     'B.C' => 1
-     * //     'B.D' => 2
-     * //     'E' => 1
-     * // ]
-     * ```
-     *
-     * @param array $array the input array to be flattened.
-     * @param string $prefix the prefix to be added to each key in the resulting array.
-     *
-     * @return array the flattened array.
-     */
-    private static function flatten($array, $prefix = ''): array
-    {
-        $result = [];
-
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $result = array_merge($result, self::flatten($value, $prefix . $key . '.'));
-            } else {
-                $result[$prefix . $key] = $value;
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * Generates the context information to be logged.
      * The default implementation will dump user information, system variables, etc.
      * @return string the context information. If an empty string, it means no context information.
@@ -223,7 +175,7 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = ArrayHelper::filter($GLOBALS, $this->logVars);
-        $items = self::flatten($context);
+        $items = ArrayHelper::flatten($context);
         foreach ($this->maskVars as $var) {
             foreach ($items as $key => $value) {
                 if (StringHelper::matchWildcard($var, $key, ['caseSensitive' => false])) {
