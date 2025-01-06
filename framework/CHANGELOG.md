@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Enh #20295: Add an ability to have wildcards in `yii\log\Target::$maskVars` array (xcopy)
 - Bug #20296: Fix broken enum test (briedis)
 - Bug #20300: Clear stat cache in `FileCache::setValue()` (rob006)
+- Enh #20306: Add new `yii\helpers\ArrayHelper::flatten()` method (xcopy)
 
 2.0.51 July 18, 2024
 --------------------
