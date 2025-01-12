@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\helpers\BaseHtml" method="tag" argument="0">
+            <collection name="yiisoft/yii2:html-tags"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="beginTag" argument="0">
+            <collection name="yiisoft/yii2:html-tags"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="endTag" argument="0">
+            <collection name="yiisoft/yii2:html-tags"/>
+        </classMethod>
+
+        <classMethod class="\yii\helpers\BaseHtml" method="activeLabel" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeHint" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="error" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeInput" argument="2">
+            <properties protected="false" private="false" relatedArgument="1" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeTextInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="setActivePlaceholder" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeHiddenInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activePasswordInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeFileInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeTextarea" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeCheckbox" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeBooleanInput" argument="2">
+            <properties protected="false" private="false" relatedArgument="1" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeDropDownList" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeListBox" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeCheckboxList" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeRadioList" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="getAttributeValue" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="getInputName" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="getInputId" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+    </definitions>
+    <collections>
+        <strings name="yiisoft/yii2:html-tags">
+            <value>div</value>
+            <value>a</value>
+            <value>abbr</value>
+            <value>address</value>
+            <value>area</value>
+            <value>article</value>
+            <value>aside</value>
+            <value>audio</value>
+            <value>b</value>
+            <value>base</value>
+            <value>bdi</value>
+            <value>bdo</value>
+            <value>blockquote</value>
+            <value>body</value>
+            <value>br</value>
+            <value>button</value>
+            <value>canvas</value>
+            <value>caption</value>
+            <value>cite</value>
+            <value>code</value>
+            <value>col</value>
+            <value>colgroup</value>
+            <value>data</value>
+            <value>datalist</value>
+            <value>dd</value>
+            <value>del</value>
+            <value>details</value>
+            <value>dfn</value>
+            <value>dialog</value>
+            <value>div</value>
+            <value>dl</value>
+            <value>dt</value>
+            <value>em</value>
+            <value>embed</value>
+            <value>fieldset</value>
+            <value>figcaption</value>
+            <value>figure</value>
+            <value>footer</value>
+            <value>form</value>
+            <value>h1</value>
+            <value>h2</value>
+            <value>h3</value>
+            <value>h4</value>
+            <value>h5</value>
+            <value>h6</value>
+            <value>head</value>
+            <value>header</value>
+            <value>hgroup</value>
+            <value>hr</value>
+            <value>html</value>
+            <value>i</value>
+            <value>iframe</value>
+            <value>img</value>
+            <value>input</value>
+            <value>ins</value>
+            <value>kbd</value>
+            <value>label</value>
+            <value>legend</value>
+            <value>li</value>
+            <value>link</value>
+            <value>main</value>
+            <value>map</value>
+            <value>mark</value>
+            <value>meta</value>
+            <value>meter</value>
+            <value>nav</value>
+            <value>noscript</value>
+            <value>object</value>
+            <value>ol</value>
+            <value>optgroup</value>
+            <value>option</value>
+            <value>output</value>
+            <value>p</value>
+            <value>param</value>
+            <value>picture</value>
+            <value>pre</value>
+            <value>progress</value>
+            <value>q</value>
+            <value>rp</value>
+            <value>rt</value>
+            <value>ruby</value>
+            <value>s</value>
+            <value>samp</value>
+            <value>script</value>
+            <value>section</value>
+            <value>select</value>
+            <value>small</value>
+            <value>source</value>
+            <value>span</value>
+            <value>strong</value>
+            <value>style</value>
+            <value>sub</value>
+            <value>summary</value>
+            <value>sup</value>
+            <value>svg</value>
+            <value>table</value>
+            <value>tbody</value>
+            <value>td</value>
+            <value>template</value>
+            <value>textarea</value>
+            <value>tfoot</value>
+            <value>th</value>
+            <value>thead</value>
+            <value>time</value>
+            <value>title</value>
+            <value>tr</value>
+            <value>track</value>
+            <value>u</value>
+            <value>ul</value>
+            <value>var</value>
+            <value>video</value>
+            <value>wbr</value>
+        </strings>
+    </collections>
+</meta-storm>

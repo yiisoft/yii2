@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\base\Model" method="validate" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getActiveValidators" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="isAttributeRequired" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="isAttributeSafe" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="isAttributeActive" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeHint" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="hasErrors" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getErrors" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getFirstError" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="addError" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="clearErrors" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="generateAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="onUnsafeAttribute" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+    </definitions>
+</meta-storm>
