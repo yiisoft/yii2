@@ -88,7 +88,7 @@ class CompositeAuth extends AuthMethod
 
             $authUser = $auth->user;
             if ($authUser != null && !$authUser instanceof \yii\web\User) {
-                throw new InvalidConfigException(get_class($authUser) . ' must implement of a type yii\web\User');
+                throw new InvalidConfigException(get_class($authUser) . ' must implement yii\web\User');
             } elseif ($authUser != null) {
                 $user = $authUser;
             }
