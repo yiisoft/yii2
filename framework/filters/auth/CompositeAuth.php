@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -83,6 +84,13 @@ class CompositeAuth extends AuthMethod
                 )
             ) {
                 continue;
+            }
+
+            $authUser = $auth->user;
+            if ($authUser != null && !$authUser instanceof \yii\web\User) {
+                throw new InvalidConfigException(get_class($authUser) . ' must implement yii\web\User');
+            } elseif ($authUser != null) {
+                $user = $authUser;
             }
 
             $identity = $auth->authenticate($user, $request, $response);
