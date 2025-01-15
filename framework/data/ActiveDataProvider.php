@@ -11,6 +11,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
+use yii\db\Query;
 use yii\db\QueryInterface;
 use yii\di\Instance;
 
@@ -93,14 +94,40 @@ class ActiveDataProvider extends BaseDataProvider
     }
 
     /**
-     * {@inheritdoc}
+     * Creates a wrapper of [[query]] that allows adding limit and order.
+     * @return QueryInterface
+     * @throws InvalidConfigException
      */
-    protected function prepareModels()
+    protected function createQueryWrapper(): QueryInterface
     {
         if (!$this->query instanceof QueryInterface) {
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
-        $query = clone $this->query;
+        $wrapper = clone $this->query;
+        if ($wrapper instanceof Query && !empty($wrapper->union)) {
+            $wrapper->where = [];
+            $wrapper->limit = null;
+            $wrapper->offset = null;
+            $wrapper->orderBy = [];
+            $wrapper->selectOption = null;
+            $wrapper->distinct = false;
+            $wrapper->groupBy = [];
+            $wrapper->join = [];
+            $wrapper->having = [];
+            $wrapper->union = [];
+            $wrapper->params = [];
+            $wrapper->withQueries = [];
+            $wrapper->select('*')->from(['q' => $this->query]);
+        }
+        return $wrapper;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function prepareModels()
+    {
+        $query = $this->createQueryWrapper();
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
@@ -161,11 +188,7 @@ class ActiveDataProvider extends BaseDataProvider
      */
     protected function prepareTotalCount()
     {
-        if (!$this->query instanceof QueryInterface) {
-            throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
-        }
-        $query = clone $this->query;
-        return (int) $query->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
+        return (int) $this->createQueryWrapper()->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
     }
 
     /**
