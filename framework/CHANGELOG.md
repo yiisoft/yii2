@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #20300: Clear stat cache in `FileCache::setValue()` (rob006)
 - Enh #20306: Add new `yii\helpers\ArrayHelper::flatten()` method (xcopy)
 - Bug #20308: Allow CompositeAuth auth methods to use their own user if defined (mtangoo)
+- Bug #20239: Fix `yii\data\ActiveDataProvider` to avoid unexpected pagination results with UNION queries (Izumi-kun)
 
 2.0.51 July 18, 2024
 --------------------

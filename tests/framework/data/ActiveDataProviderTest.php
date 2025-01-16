@@ -198,4 +198,30 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
         $this->assertEquals(0, $pagination->getPageCount());
     }
+
+    public function testPaginationWithUnionQuery()
+    {
+        $q1 = Item::find()->where(['category_id' => 2])->with('category');
+        $q2 = Item::find()->where(['id' => [2, 4]]);
+        $provider = new ActiveDataProvider([
+            'query' => $q1->union($q2)->indexBy('id'),
+        ]);
+        $pagination = $provider->getPagination();
+        $pagination->pageSize = 2;
+        $provider->prepare();
+        $this->assertEquals(2, $pagination->getPageCount());
+        $this->assertEquals(4, $provider->getTotalCount());
+        $this->assertCount(2, $provider->getModels());
+
+        $pagination->pageSize = 10;
+        $provider->prepare(true);
+        /** @var Item[] $models */
+        $models = $provider->getModels();
+        $this->assertCount(4, $models);
+        $this->assertContainsOnlyInstancesOf(Item::class, $models);
+        $this->assertEquals('Yii 1.1 Application Development Cookbook', $models[2]->name);
+        $this->assertEquals('Toy Story', $models[4]->name);
+        $this->assertTrue($models[2]->isRelationPopulated('category'));
+        $this->assertTrue($models[4]->isRelationPopulated('category'));
+    }
 }
