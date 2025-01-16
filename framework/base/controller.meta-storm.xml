@@ -6,6 +6,7 @@
                 <directoryProcessors>
                     <regexp from="Controller\.php" to=""/>
                     <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower" />
                     <regexp from="/controllers/" to="/views/"/>
                     <regexp from="/modules/([^\\/]+)/controllers/"
                             to="/themes/${yiisoft/yii2:view-theme}/modules/$1/views/"/>
@@ -17,6 +18,7 @@
                 <directoryProcessors>
                     <regexp from="Controller\.php" to=""/>
                     <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower" />
                     <regexp from="/controllers/" to="/views/"/>
                     <regexp from="/modules/([^\\/]+)/controllers/"
                             to="/themes/${yiisoft/yii2:view-theme}/modules/$1/views/"/>
@@ -28,6 +30,7 @@
                 <directoryProcessors>
                     <regexp from="Controller\.php" to=""/>
                     <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower" />
                     <regexp from="/controllers/" to="/views/"/>
                     <regexp from="/modules/([^\\/]+)/controllers/"
                             to="/themes/${yiisoft/yii2:view-theme}/modules/$1/views/"/>
