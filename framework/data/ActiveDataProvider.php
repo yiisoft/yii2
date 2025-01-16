@@ -119,8 +119,14 @@ class ActiveDataProvider extends BaseDataProvider
             {
                 return $this->wrappedQuery->populate(parent::all($db));
             }
+            public function createCommand($db = null)
+            {
+                $command = $this->wrappedQuery->createCommand($db);
+                $this->from(['q' => "({$command->getSql()})"])->params($command->params);
+                return parent::createCommand($command->db);
+            }
         };
-        $wrapper->select('*')->from(['q' => $this->query]);
+        $wrapper->select('*');
         $wrapper->wrappedQuery = $this->query;
         $wrapper->emulateExecution = $this->query->emulateExecution;
 

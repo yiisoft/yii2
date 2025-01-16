@@ -204,7 +204,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $q1 = Item::find()->where(['category_id' => 2])->with('category');
         $q2 = Item::find()->where(['id' => [2, 4]]);
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => $q1->union($q2)->indexBy('id'),
         ]);
         $pagination = $provider->getPagination();
