@@ -93,6 +93,20 @@ class CompositeAuth extends AuthMethod
                 $user = $authUser;
             }
 
+            $authRequest = $auth->request;
+            if ($authRequest != null && !$authRequest instanceof \yii\web\Request) {
+                throw new InvalidConfigException(get_class($authRequest) . ' must implement yii\web\Request');
+            } elseif ($authRequest != null) {
+                $request = $authRequest;
+            }
+
+            $authResponse = $auth->response;
+            if ($authResponse != null && !$authResponse instanceof \yii\web\Response) {
+                throw new InvalidConfigException(get_class($authResponse) . ' must implement yii\web\Response');
+            } elseif ($authResponse != null) {
+                $response = $authResponse;
+            }
+
             $identity = $auth->authenticate($user, $request, $response);
             if ($identity !== null) {
                 return $identity;
