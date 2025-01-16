@@ -103,22 +103,27 @@ class ActiveDataProvider extends BaseDataProvider
         if (!$this->query instanceof QueryInterface) {
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
-        $wrapper = clone $this->query;
-        if ($wrapper instanceof Query && !empty($wrapper->union)) {
-            $wrapper->where = [];
-            $wrapper->limit = null;
-            $wrapper->offset = null;
-            $wrapper->orderBy = [];
-            $wrapper->selectOption = null;
-            $wrapper->distinct = false;
-            $wrapper->groupBy = [];
-            $wrapper->join = [];
-            $wrapper->having = [];
-            $wrapper->union = [];
-            $wrapper->params = [];
-            $wrapper->withQueries = [];
-            $wrapper->select('*')->from(['q' => $this->query]);
+        if (!$this->query instanceof Query || empty($this->query->union)) {
+            return clone $this->query;
         }
+
+        $wrapper = new class extends Query {
+            /**
+             * @var Query
+             */
+            public $wrappedQuery;
+            /**
+             * @inheritDoc
+             */
+            public function all($db = null)
+            {
+                return $this->wrappedQuery->populate(parent::all($db));
+            }
+        };
+        $wrapper->select('*')->from(['q' => $this->query]);
+        $wrapper->wrappedQuery = $this->query;
+        $wrapper->emulateExecution = $this->query->emulateExecution;
+
         return $wrapper;
     }
 
