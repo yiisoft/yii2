@@ -35,7 +35,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
     public function testActiveQuery()
     {
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => Order::find()->orderBy('id'),
         ]);
         $orders = $provider->getModels();
@@ -46,7 +45,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertEquals([1, 2, 3], $provider->getKeys());
 
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => Order::find(),
             'pagination' => [
                 'pageSize' => 2,
@@ -61,7 +59,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         /* @var $customer Customer */
         $customer = Customer::findOne(2);
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => $customer->getOrders(),
         ]);
         $orders = $provider->getModels();
@@ -71,7 +68,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertEquals([2, 3], $provider->getKeys());
 
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => $customer->getOrders(),
             'pagination' => [
                 'pageSize' => 1,
@@ -86,7 +82,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         /* @var $order Order */
         $order = Order::findOne(2);
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => $order->getItems(),
         ]);
         $items = $provider->getModels();
@@ -97,7 +92,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertEquals([3, 4, 5], $provider->getKeys());
 
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => $order->getItems(),
             'pagination' => [
                 'pageSize' => 2,
@@ -112,7 +106,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         /* @var $order Order */
         $order = Order::findOne(1);
         $provider = new ActiveDataProvider([
-            'db' => $this->getConnection(),
             'query' => $order->getBooks(),
         ]);
         $items = $provider->getModels();
