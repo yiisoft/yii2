@@ -122,7 +122,7 @@ class View extends \yii\base\View
     public $cssFiles = [];
 
     /**
-     * @since 2.0.52
+     * @since 2.0.53
      * @var array the style tag options.
      */
     public $styleOptions = [];
