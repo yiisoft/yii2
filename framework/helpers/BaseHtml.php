@@ -2311,6 +2311,12 @@ class BaseHtml
             $value = $value->getPrimaryKey(false);
 
             return is_array($value) ? json_encode($value) : $value;
+        } elseif (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+            if ($value instanceof \BackedEnum) {
+                $value = $value->value;
+            } elseif ($value instanceof \UnitEnum) {
+                $value = $value->name;
+            }
         }
 
         return $value;
