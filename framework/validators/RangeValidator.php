@@ -124,6 +124,13 @@ class RangeValidator extends Validator
     {
         $range = [];
         foreach ($this->range as $value) {
+            if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+                if ($value instanceof \BackedEnum) {
+                    $value = $value->value;
+                } elseif ($value instanceof \UnitEnum) {
+                    $value = $value->name;
+                }
+            }            
             $range[] = (string) $value;
         }
         $options = [
