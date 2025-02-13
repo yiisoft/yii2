@@ -66,6 +66,7 @@ class Widget extends Component implements ViewContextInterface
      */
     private static $_resolvedClasses = [];
 
+
     /**
      * Initializes the object.
      * This method is called at the end of the constructor.

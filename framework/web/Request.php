@@ -42,7 +42,8 @@ use yii\validators\IpValidator;
  * @property-read string $contentType Request content-type. Empty string is returned if this information is
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
- * @property-read string $csrfToken The token used to perform CSRF validation.
+ * @property-read null|string $csrfToken The token used to perform CSRF validation. Null is returned if the
+ * [[validateCsrfHeaderOnly]] is true.
  * @property-read string|null $csrfTokenFromHeader The CSRF token sent via [[csrfHeader]] by browser. Null is
  * returned if no such header is sent.
  * @property-read array $eTags The entity tags.
