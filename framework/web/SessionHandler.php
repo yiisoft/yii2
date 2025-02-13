@@ -22,6 +22,7 @@ class SessionHandler implements SessionHandlerInterface
      */
     private $_session;
 
+
     public function __construct(Session $session)
     {
         $this->_session = $session;
