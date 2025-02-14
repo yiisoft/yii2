@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.53 under development
 ------------------------
 
-- Enh #20309 Add custom attributes support to style tags (nzwz)
+- Enh #20309: Add custom attributes support to style tags (nzwz)
 
 
 2.0.52 February 13, 2025
