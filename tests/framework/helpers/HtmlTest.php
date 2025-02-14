@@ -83,6 +83,21 @@ class HtmlTest extends TestCase
         $this->assertEquals("<style type=\"text/less\">{$content}</style>", Html::style($content, ['type' => 'text/less']));
     }
 
+    public function testStyleCustomAttribute()
+    {
+        $nonce = Yii::$app->security->generateRandomString();
+        $this->mockApplication([
+            'components' => [
+                'view' => [
+                    'class' => 'yii\web\View',
+                    'styleOptions' => ['nonce' => $nonce],
+                ],
+            ],
+        ]);
+        $content = 'a <>';
+        $this->assertEquals("<style nonce=\"{$nonce}\">{$content}</style>", Html::style($content));
+    }
+
     public function testScript()
     {
         $content = 'a <>';

@@ -391,6 +391,7 @@ return [
   'yii\web\ResponseFormatterInterface' => YII2_PATH . '/web/ResponseFormatterInterface.php',
   'yii\web\ServerErrorHttpException' => YII2_PATH . '/web/ServerErrorHttpException.php',
   'yii\web\Session' => YII2_PATH . '/web/Session.php',
+  'yii\web\SessionHandler' => YII2_PATH . '/web/SessionHandler.php',
   'yii\web\SessionIterator' => YII2_PATH . '/web/SessionIterator.php',
   'yii\web\TooManyRequestsHttpException' => YII2_PATH . '/web/TooManyRequestsHttpException.php',
   'yii\web\UnauthorizedHttpException' => YII2_PATH . '/web/UnauthorizedHttpException.php',
