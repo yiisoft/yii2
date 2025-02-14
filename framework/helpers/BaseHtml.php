@@ -205,6 +205,11 @@ class BaseHtml
      */
     public static function style($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->styleOptions)) {
+            $options = array_merge($view->styleOptions, $options);
+        }
+
         return static::tag('style', $content, $options);
     }
 
