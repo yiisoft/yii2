@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <meta-storm xmlns="meta-storm">
     <definitions>
+        <classConstructor class="\yii\base\BaseObject" argument="0" targetValue="false" targetInArray="key">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classConstructor>
+
         <classMethod class="\yii\base\Model" method="validate" argument="0">
             <properties protected="false" private="false" xpath="$variable"/>
         </classMethod>
