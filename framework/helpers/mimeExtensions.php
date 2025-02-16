@@ -961,6 +961,7 @@ return [
         'pjp',
         'pjpeg',
     ],
+    'image/jxl' => 'jxl',
     'image/ktx' => 'ktx',
     'image/png' => 'png',
     'image/prs.btif' => 'btif',
