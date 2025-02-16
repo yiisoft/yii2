@@ -6,10 +6,16 @@
                 <directoryProcessors>
                     <regexp from="Controller\.php" to=""/>
                     <regexp from="([a-z])([A-Z])" to="$1-$2"/>
-                    <case from="/[^/]+$" case="lower" />
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/modules/([^\\/]+)/controllers/" to="/themes/default/modules/$1/views/"/>
+                </directoryProcessors>
+            </files>
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
                     <regexp from="/controllers/" to="/views/"/>
-                    <regexp from="/modules/([^\\/]+)/controllers/"
-                            to="/themes/${yiisoft/yii2:view-theme}/modules/$1/views/"/>
                 </directoryProcessors>
             </files>
         </classMethod>
@@ -18,22 +24,34 @@
                 <directoryProcessors>
                     <regexp from="Controller\.php" to=""/>
                     <regexp from="([a-z])([A-Z])" to="$1-$2"/>
-                    <case from="/[^/]+$" case="lower" />
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/modules/([^\\/]+)/controllers/" to="/themes/default/modules/$1/views/"/>
+                </directoryProcessors>
+            </files>
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
                     <regexp from="/controllers/" to="/views/"/>
-                    <regexp from="/modules/([^\\/]+)/controllers/"
-                            to="/themes/${yiisoft/yii2:view-theme}/modules/$1/views/"/>
                 </directoryProcessors>
             </files>
         </classMethod>
         <classMethod class="\yii\base\Controller" method="renderFile" argument="0">
-            <files extension="" relatedTo="file">
+            <files extension="php" relatedTo="file">
                 <directoryProcessors>
                     <regexp from="Controller\.php" to=""/>
                     <regexp from="([a-z])([A-Z])" to="$1-$2"/>
-                    <case from="/[^/]+$" case="lower" />
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/modules/([^\\/]+)/controllers/" to="/themes/default/modules/$1/views/"/>
+                </directoryProcessors>
+            </files>
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
                     <regexp from="/controllers/" to="/views/"/>
-                    <regexp from="/modules/([^\\/]+)/controllers/"
-                            to="/themes/${yiisoft/yii2:view-theme}/modules/$1/views/"/>
                 </directoryProcessors>
             </files>
         </classMethod>
