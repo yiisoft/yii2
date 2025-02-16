@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\db\Query" method="where" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="andWhere" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="orWhere" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="filterWhere" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="andFilterWhere" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="orFilterWhere" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="filterHaving" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="andFilterHaving" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="orFilterHaving" argument="0" targetValue="false" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="select" argument="0" targetInArray="value">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="addSelect" argument="0" targetInArray="value">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="groupBy" argument="0" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="addGroupBy" argument="0" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="orderBy" argument="0" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\db\Query" method="addOrderBy" argument="0" targetInArray="key">
+            <properties xpath="$variable"/>
+        </classMethod>
+    </definitions>
+</meta-storm>
