@@ -47,23 +47,5 @@
         <classMethod class="\yii\base\Model" method="onUnsafeAttribute" argument="0">
             <properties protected="false" private="false" xpath="$variable"/>
         </classMethod>
-        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
-            <properties protected="false" private="false" xpath="$variable"/>
-        </classMethod>
-        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
-            <properties protected="false" private="false" xpath="$variable"/>
-        </classMethod>
-        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
-            <properties protected="false" private="false" xpath="$variable"/>
-        </classMethod>
-        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
-            <properties protected="false" private="false" xpath="$variable"/>
-        </classMethod>
-        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
-            <properties protected="false" private="false" xpath="$variable"/>
-        </classMethod>
-        <classMethod class="\yii\base\Model" method="getAttributeLabel" argument="0">
-            <properties protected="false" private="false" xpath="$variable"/>
-        </classMethod>
     </definitions>
 </meta-storm>
