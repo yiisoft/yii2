@@ -322,6 +322,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @return T[][]
      * @psalm-return T[][]|BatchQueryResult
      * @phpstan-return T[][]|BatchQueryResult
+     * @codeCoverageIgnore
      */
     public function batch($batchSize = 100, $db = null)
     {
@@ -330,9 +331,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * {@inheritdoc}
+     *
      * @return T[]
      * @psalm-return T[]|BatchQueryResult
      * @phpstan-return T[]|BatchQueryResult
+     * @codeCoverageIgnore
      */
     public function each($batchSize = 100, $db = null)
     {
