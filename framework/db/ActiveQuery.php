@@ -128,7 +128,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns all results as an array.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
-     * @return T[] the query results. If the query results in nothing, an empty array will be returned.
+     * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
      * @psalm-return T[]
      * @phpstan-return T[]
      */
@@ -299,7 +299,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns a single row of result.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If `null`, the DB connection returned by [[modelClass]] will be used.
-     * @return T|null a single row of query result. Depending on the setting of [[asArray]],
+     * @return array|ActiveRecord|null a single row of query result. Depending on the setting of [[asArray]],
      * the query result may be either an array or an ActiveRecord object. `null` will be returned
      * if the query results in nothing.
      * @psalm-return T|null
@@ -319,7 +319,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * {@inheritdoc}
      *
-     * @return T[][]
+     * @return BatchQueryResult
      * @psalm-return T[][]|BatchQueryResult
      * @phpstan-return T[][]|BatchQueryResult
      * @codeCoverageIgnore
@@ -332,7 +332,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * {@inheritdoc}
      *
-     * @return T[]
+     * @return BatchQueryResult
      * @psalm-return T[]|BatchQueryResult
      * @phpstan-return T[]|BatchQueryResult
      * @codeCoverageIgnore
