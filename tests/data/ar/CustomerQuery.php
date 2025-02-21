@@ -11,6 +11,7 @@ use yii\db\ActiveQuery;
 
 /**
  * CustomerQuery.
+ * @extends ActiveQuery<CustomerWithAlias>
  */
 class CustomerQuery extends ActiveQuery
 {

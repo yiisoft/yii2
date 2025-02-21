@@ -69,6 +69,8 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @template T of (ActiveRecord|array)
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
@@ -127,6 +129,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
+     * @psalm-return T[]
+     * @phpstan-return T[]
      */
     public function all($db = null)
     {
@@ -295,9 +299,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns a single row of result.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If `null`, the DB connection returned by [[modelClass]] will be used.
-     * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
+     * @return array|ActiveRecord|null a single row of query result. Depending on the setting of [[asArray]],
      * the query result may be either an array or an ActiveRecord object. `null` will be returned
      * if the query results in nothing.
+     * @psalm-return T|null
+     * @phpstan-return T|null
      */
     public function one($db = null)
     {
@@ -308,6 +314,32 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return BatchQueryResult
+     * @psalm-return T[][]|BatchQueryResult
+     * @phpstan-return T[][]|BatchQueryResult
+     * @codeCoverageIgnore
+     */
+    public function batch($batchSize = 100, $db = null)
+    {
+        return parent::batch($batchSize, $db);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return BatchQueryResult
+     * @psalm-return T[]|BatchQueryResult
+     * @phpstan-return T[]|BatchQueryResult
+     * @codeCoverageIgnore
+     */
+    public function each($batchSize = 100, $db = null)
+    {
+        return parent::each($batchSize, $db);
     }
 
     /**
