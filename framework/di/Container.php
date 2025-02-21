@@ -389,7 +389,7 @@ class Container extends Component
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        [$reflection, $dependencies] = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         $addDependencies = [];
         if (isset($config['__construct()'])) {
