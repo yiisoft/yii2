@@ -785,6 +785,12 @@ class ArrayHelperTest extends TestCase
             '33' => '44',
             '55' => '66'
         ], $result);
+
+        $array = [new MagicClass()];
+
+        $result = ArrayHelper::map($array, 'magic', 'moreMagic');
+
+        $this->assertEquals([42 => 'ta-da'], $result);
     }
 
     public function testKeyExists()
@@ -1862,5 +1868,27 @@ class MagicModel extends Model
     public function getMoreMagic()
     {
         return 'ta-da';
+    }
+}
+
+class MagicClass
+{
+    public function __get($name) {
+        if ($name === 'magic') {
+            return 42;
+        }
+        if ($name === 'moreMagic') {
+            return 'ta-da';
+        }
+        return $this->$name;
+    }
+
+    public function __set($name, $value) {
+        $this->$name = $value;
+    }
+
+    public function __isset($name)
+    {
+        return isset($this->$name);
     }
 }

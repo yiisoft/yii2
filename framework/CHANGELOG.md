@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #20309: Add custom attributes support to style tags (nzwz)
+- Bug #20327: Fix regression in `\yii\helpers\BaseArrayHelper::map` (chriscpty)
 
 
 2.0.52 February 13, 2025
