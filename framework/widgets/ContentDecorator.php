@@ -30,10 +30,11 @@ use yii\base\Widget;
  * [[\yii\base\View]] component to make syntax more friendly. In the view these could be used as follows:
  *
  * ```php
- * <?php $this->beginContent('@app/views/layouts/base.php') ?>
- *
- * some content here
- *
+ * <?php $this->beginContent('main') ?>
+ *     <aside id="sidebar-left">...</aside>
+ *     <main id="main-content">
+ *         <?= $content ?>
+ *     </main>
  * <?php $this->endContent() ?>
  * ```
  *
@@ -76,6 +77,6 @@ class ContentDecorator extends Widget
         $params = $this->params;
         $params['content'] = ob_get_clean();
         // render under the existing context
-        echo $this->view->renderFile($this->viewFile, $params);
+        echo $this->view->render($this->viewFile, $params);
     }
 }
