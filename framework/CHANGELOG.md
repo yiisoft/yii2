@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #20309: Add custom attributes support to style tags (nzwz)
+- Bug #20239: Fix `yii\data\ActiveDataProvider` to avoid unexpected pagination results with UNION queries (Izumi-kun)
 
 
 2.0.52 February 13, 2025
