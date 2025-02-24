@@ -38,6 +38,9 @@ class HtmlTest extends TestCase
         ]);
     }
 
+    /**
+     * @covers \yii\helpers\Html::escapeJsRegularExpression
+     */
     public function testEscapeJsRegularExpressionHexRange()
     {
         $testCases = [
