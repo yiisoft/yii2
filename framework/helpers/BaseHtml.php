@@ -2392,7 +2392,7 @@ class BaseHtml
      */
     public static function escapeJsRegularExpression($regexp)
     {
-        $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $regexp);
+        $pattern = preg_replace('/\\\\x([0-9a-fA-F]{2})/', '\\x{$1}', $regexp);
         $deliminator = substr($pattern, 0, 1);
         $pos = strrpos($pattern, $deliminator, 1);
         $flag = substr($pattern, $pos + 1);

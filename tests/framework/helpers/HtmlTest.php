@@ -38,6 +38,15 @@ class HtmlTest extends TestCase
         ]);
     }
 
+    public function testEscapeJsRegularExpressionHexRange()
+    {
+        $original = '/^[\x00-\xFF]{8,72}$/';
+        $expected = '/^[\x{00}-\x{FF}]{8,72}$/';
+        $escaped = Html::escapeJsRegularExpression($original);
+
+        $this->assertSame($expected, $escaped, "Hex range \x00-\xFF should be correctly converted.");
+    }
+
     public function testEncode()
     {
         $this->assertEquals('a&lt;&gt;&amp;&quot;&#039;�', Html::encode("a<>&\"'\x80"));
