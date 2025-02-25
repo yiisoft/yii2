@@ -341,6 +341,26 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcNowDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, now()) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_now_default');
+        $this->assertEquals('timezone(\'UTC\'::text, now())', $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+    
     public function constraintsProvider()
     {
         $result = parent::constraintsProvider();
