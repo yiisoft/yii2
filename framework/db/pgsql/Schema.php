@@ -558,7 +558,7 @@ SQL;
                             ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
                             true
                         ) ||
-                        preg_match("/TIMEZONE|NOW\(\)/i", $column->defaultValue)
+                        preg_match('/TIMEZONE|NOW\(\)/i', $column->defaultValue)
                     )
                 ) {
                     $column->defaultValue = new Expression($column->defaultValue);
