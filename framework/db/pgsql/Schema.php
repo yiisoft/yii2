@@ -558,7 +558,7 @@ SQL;
                             ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
                             true
                         ) ||
-                        str_contains($column->defaultValue, '(')
+                        (false !== strpos($column->defaultValue, '('))
                     )
                 ) {
                     $column->defaultValue = new Expression($column->defaultValue);
