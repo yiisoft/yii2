@@ -5,7 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #20309: Add custom attributes support to style tags (nzwz)
-- Bug #20322: Correct escaping of hex ranges in Html::escapeJsRegularExpression
+- Bug #20322: Correct escaping of hex ranges in Html::escapeJsRegularExpression (kowap)
 
 
 2.0.52 February 13, 2025
