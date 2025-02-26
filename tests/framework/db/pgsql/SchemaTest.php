@@ -358,7 +358,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $db->schema->refreshTableSchema('test_timestamp_utc_now_default');
         $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_now_default');
-        $this->assertEquals('timezone(\'UTC\'::text, now())', $tableSchema->getColumn('timestamp')->defaultValue);
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, now())'), $tableSchema->getColumn('timestamp')->defaultValue);
     }
 
     /**
@@ -378,7 +378,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $db->schema->refreshTableSchema('test_timestamp_now_default');
         $tableSchema = $db->schema->getTableSchema('test_timestamp_now_default');
-        $this->assertEquals('now()', $tableSchema->getColumn('timestamp')->defaultValue);
+        $this->assertEquals(new Expression('now()'), $tableSchema->getColumn('timestamp')->defaultValue);
     }
 
     /**
@@ -398,7 +398,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $db->schema->refreshTableSchema('test_timestamp_utc_string_default');
         $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_string_default');
-        $this->assertEquals('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)', $tableSchema->getColumn('timestamp')->defaultValue);
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
     }
 
     public function constraintsProvider()
