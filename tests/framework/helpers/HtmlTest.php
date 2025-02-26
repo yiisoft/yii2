@@ -38,6 +38,29 @@ class HtmlTest extends TestCase
         ]);
     }
 
+    /**
+     * @covers \yii\helpers\Html::escapeJsRegularExpression
+     */
+    public function testEscapeJsRegularExpressionHexRange()
+    {
+        $testCases = [
+            '/^[\x00-\xFF]{8,72}$/',
+            '/^[\xA1-\xFE]{2}$/',
+            '/^\xFF\x00$/',
+        ];
+
+        $expectedResults = [
+            '/^[\x{00}-\x{FF}]{8,72}$/',
+            '/^[\x{A1}-\x{FE}]{2}$/',
+            '/^\x{FF}\x{00}$/',
+        ];
+
+        foreach ($testCases as $index => $original) {
+            $escaped = Html::escapeJsRegularExpression($original);
+            $this->assertSame($expectedResults[$index], $escaped, "Test case #$index failed.");
+        }
+    }
+
     public function testEncode()
     {
         $this->assertEquals('a&lt;&gt;&amp;&quot;&#039;�', Html::encode("a<>&\"'\x80"));
