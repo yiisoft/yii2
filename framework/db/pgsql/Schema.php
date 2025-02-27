@@ -552,10 +552,13 @@ SQL;
             } elseif ($column->defaultValue) {
                 if (
                     in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
-                    in_array(
-                        strtoupper($column->defaultValue),
-                        ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
-                        true
+                    (
+                        in_array(
+                            strtoupper($column->defaultValue),
+                            ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
+                            true
+                        ) ||
+                        (false !== strpos($column->defaultValue, '('))
                     )
                 ) {
                     $column->defaultValue = new Expression($column->defaultValue);
