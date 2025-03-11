@@ -1426,6 +1426,126 @@ EOD;
         $this->assertEquals('width: 100px;', $options['style']);
     }
 
+    /**
+     * @return array[]
+     */
+    public function dataProviderIsCustomTagAttribute()
+    {
+        return [
+            'valid "aria" prefix' => ['aria-expanded', true],
+            'valid "data" prefix' => ['data-bs-target', true],
+            'valid "data-ng" prefix' => ['data-ng-id', true],
+            'underscore suffix' => ['data-foo_bar', true],
+            'name in camelCase' => ['dataId', false],
+            'only "aria" prefix' => ['aria', false],
+            'invalid "js" prefix' => ['js-action', false],
+        ];
+    }
+
+    /**
+     * @param string $name the attribute name
+     * @param bool $expected the expected result
+     * @dataProvider dataProviderIsCustomTagAttribute
+     */
+    public function testIsCustomTagAttribute($name, $expected)
+    {
+        $this->assertEquals($expected, Html::isCustomTagAttribute($name));
+    }
+
+    /**
+     * @return array[]
+     */
+    public function dataProviderNormalizeTagAttributes()
+    {
+        return [
+            'mixed "data"' => [
+                [
+                    'data-id' => 2,
+                    'data' => ['foo-bar' => 'baz'],
+                ],
+                [
+                    'data' => ['id' => 2, 'foo-bar' => 'baz'],
+                ],
+            ],
+            'inline "style"' => [
+                [
+                    'style' => 'height:1px;width:100px',
+                ],
+                [
+                    'style' => ['height' => '1px', 'width' => '100px'],
+                ],
+            ],
+            'inline "class"' => [
+                [
+                    'class' => 'form-control form-control-sm',
+                ],
+                [
+                    'class' => ['form-control', 'form-control-sm'],
+                ],
+            ],
+            'duplicate "class"' => [
+                [
+                    'class' => 'form-control form-control',
+                ],
+                [
+                    'class' => ['form-control'],
+                ],
+            ],
+            'all cases' => [
+                [
+                    'data-id' => 123,
+                    'data-bs-target' => '#input-name',
+                    'aria-hidden' => 'true',
+                    'style' => 'display: none;',
+                    'class' => 'navbar navbar-dark',
+                    'method' => 'POST',
+                    'id' => 'main-form',
+                ],
+                [
+                    'data' => ['id' => 123, 'bs-target' => '#input-name'],
+                    'aria' => ['hidden' => 'true'],
+                    'style' => ['display' => 'none'],
+                    'class' => ['navbar', 'navbar-dark'],
+                    'method' => 'POST',
+                    'id' => 'main-form'
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @param array $attributes the attributes to normalize
+     * @param array $expected the normalized attributes
+     * @dataProvider dataProviderNormalizeTagAttributes
+     */
+    public function testNormalizeTagAttributes(array $attributes, array $expected)
+    {
+        $this->assertEquals($expected, Html::normalizeTagAttributes($attributes));
+    }
+
+    public function testMergeTagAttributes()
+    {
+        $attributes = [
+            'data-id' => 1,
+            'data-bs-target' => '#input-name',
+            'style' => 'display: none;',
+            'class' => ['widget' => 'navbar navbar-dark'],
+            'id' => 'form-1',
+        ];
+        $attributes2 = [
+            'data' => ['id' => 2, 'foo' => 'bar'],
+            'class' => 'bg-primary',
+            'id' => 'form-2',
+        ];
+        $expected = [
+            'data' => ['id' => 2, 'bs-target' => '#input-name', 'foo' => 'bar'],
+            'style' => ['display' => 'none'],
+            'class' => ['widget' => 'navbar navbar-dark', 'bg-primary'],
+            'id' => 'form-2',
+        ];
+        $this->assertEquals($expected, Html::mergeTagAttributes($attributes, $attributes2));
+    }
+
     public function testBooleanAttributes()
     {
         $this->assertEquals('<input type="email" name="mail">', Html::input('email', 'mail', null, ['required' => false]));
