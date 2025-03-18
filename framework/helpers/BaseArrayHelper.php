@@ -423,8 +423,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
-     * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
-     * and indexed by `data` on the third level:
+     * The result will be a multidimensional array grouped by `id`:
      *
      * ```php
      * [
