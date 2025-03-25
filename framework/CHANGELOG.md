@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Enh #20309: Add custom attributes support to style tags (nzwz)
 - Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
+- Bug #8298 Loading fixtures, does not update sequence (mtangoo)
 
 
 2.0.52 February 13, 2025
