@@ -51,6 +51,10 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.52
+-----------------------
+* There was a bug when loading fixtures, it would not reset the table sequences. If you used a work-around or if you depended on this beehaviur, you are advised to review your code.
+
 Upgrade from Yii 2.0.51
 -----------------------
 
