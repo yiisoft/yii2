@@ -53,7 +53,7 @@ for both A and B.
 
 Upgrade from Yii 2.0.52
 -----------------------
-* There was a bug when loading fixtures, it would not reset the table sequences. If you used a work-around or if you depended on this beehaviur, you are advised to review your code.
+* There was a bug when loading fixtures into PostgreSQL database, the table sequences were not reset. If you used a work-around or if you depended on this behavior, you are advised to review your code.
 
 Upgrade from Yii 2.0.51
 -----------------------
