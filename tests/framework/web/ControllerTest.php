@@ -10,6 +10,7 @@ namespace yiiunit\framework\web;
 use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -329,5 +330,52 @@ class ControllerTest extends TestCase
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertSame('test', $args[0]);
         $this->assertSame(1, $args[1]);
+
+        // test that a value PHP parsed to a string but that should be an int becomes one
+        $params = ['arg' => 'test', 'second' => '1'];
+
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertSame('test', $args[0]);
+        $this->assertSame(1, $args[1]);
+    }
+
+    public function testUnionBindingActionParamsWithArray()
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+        // Use the PHP80 controller for this test
+        $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
+             'id' => 'app',
+             'basePath' => __DIR__,
+             'components' => [
+                 'request' => [
+                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                     'scriptFile' => __DIR__ . '/index.php',
+                     'scriptUrl' => '/index.php',
+                 ],
+             ],
+        ]));
+
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('array-or-int', $this->controller, 'actionArrayOrInt');
+        $params = ['foo' => 1];
+
+        try {
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+            $this->assertSame(1, $args[0]);
+        } catch (BadRequestHttpException $e) {
+            $this->fail('Failed to bind int param for array|int union type!');
+        }
+
+        try {
+            $paramsArray = ['foo' => [1, 2, 3, 4]];
+            $args = $this->controller->bindActionParams($injectionAction, $paramsArray);
+            $this->assertSame([1, 2, 3, 4], $args[0]);
+        } catch (BadRequestHttpException $e) {
+            $this->fail('Failed to bind array param for array|int union type!');
+        }
     }
 }
