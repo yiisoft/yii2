@@ -203,10 +203,12 @@ class Controller extends \yii\base\Controller
             return [$param, false];
         }
 
-        if (PHP_VERSION_ID >= 70000
+        if (
+            PHP_VERSION_ID >= 70000
             && method_exists($type, 'isBuiltin')
             && $type->isBuiltin()
-            && ($param !== null || !$type->allowsNull())) {
+            && ($param !== null || !$type->allowsNull())
+        ) {
             $typeName = PHP_VERSION_ID >= 70100 ? $type->getName() : (string)$type;
             if ($param === '' && $type->allowsNull()) {
                 if ($typeName !== 'string') { // for old string behavior compatibility
@@ -234,7 +236,8 @@ class Controller extends \yii\base\Controller
         if ($param === '' && $type->allowsNull()) {
             // check if type can be string for old string behavior compatibility
             foreach ($types as $partialType) {
-                if ($partialType === null
+                if (
+                    $partialType === null
                     || !method_exists($partialType, 'isBuiltin')
                     || !$partialType->isBuiltin()
                 ) {
@@ -253,7 +256,8 @@ class Controller extends \yii\base\Controller
         $canBeArray = false;
         $canBeString = false;
         foreach ($types as $partialType) {
-            if ($partialType === null
+            if (
+                $partialType === null
                 || !method_exists($partialType, 'isBuiltin')
                 || !$partialType->isBuiltin()
             ) {
@@ -290,7 +294,8 @@ class Controller extends \yii\base\Controller
      * @param string $typeName The type name.
      * @return mixed|null The resulting value, or null if validation failed or the type can't be validated.
      */
-    private function filterParamByType(string $param, string $typeName) {
+    private function filterParamByType(string $param, string $typeName)
+    {
         switch ($typeName) {
             case 'int':
                 return filter_var($param, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
