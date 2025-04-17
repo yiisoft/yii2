@@ -115,11 +115,11 @@ class Instance
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid
      *
-     * @template T of class-string
+     * @template T of object
      * @psalm-param class-string<T>|null $type
      * @phpstan-param class-string<T>|null $type
-     * @psalm-return ($type is class-string<T> ? T : object)
-     * @phpstan-return ($type is class-string<T> ? T : object)
+     * @psalm-return ($type is null ? object : T)
+     * @phpstan-return ($type is null ? object : T)
      */
     public static function ensure($reference, $type = null, $container = null)
     {
