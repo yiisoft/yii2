@@ -160,10 +160,10 @@ class Container extends Component
      *
      *
      * @template T of object
-     * @psalm-param class-string<T>|Instance $class
-     * @phpstan-param class-string<T>|Instance $class
-     * @psalm-return ($class is Instance ? object : T)
-     * @phpstan-return ($class is Instance ? object : T)
+     * @psalm-param string|class-string<T>|Instance $class
+     * @phpstan-param string|class-string<T>|Instance $class
+     * @psalm-return ($class is class-string<T> ? T : object)
+     * @phpstan-return ($class is class-string<T> ? T : object)
      */
     public function get($class, $params = [], $config = [])
     {
