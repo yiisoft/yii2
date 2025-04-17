@@ -159,11 +159,11 @@ class Container extends Component
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      *
      *
-     * @template T of class-string
+     * @template T of object
      * @psalm-param class-string<T>|Instance $class
      * @phpstan-param class-string<T>|Instance $class
-     * @psalm-return ($class is class-string<T> ? T : object)
-     * @phpstan-return ($class is class-string<T> ? T : object)
+     * @psalm-return ($class is Instance ? object : T)
+     * @phpstan-return ($class is Instance ? object : T)
      */
     public function get($class, $params = [], $config = [])
     {
