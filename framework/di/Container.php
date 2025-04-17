@@ -160,10 +160,10 @@ class Container extends Component
      *
      *
      * @template T of class-string
-     * @psalm-param class-string<T>|array{class: class-string<T>} $class
-     * @phpstan-param class-string<T>|array{class: class-string<T>} $class
-     * @psalm-return T
-     * @phpstan-return T
+     * @psalm-param class-string<T>|Instance $class
+     * @phpstan-param class-string<T>|Instance $class
+     * @psalm-return ($class is class-string<T> ? T : object)
+     * @phpstan-return ($class is class-string<T> ? T : object)
      */
     public function get($class, $params = [], $config = [])
     {
