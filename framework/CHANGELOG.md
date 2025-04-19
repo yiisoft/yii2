@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
 - Bug #8298: Loading fixtures does not update table sequence for Postgresql database (mtangoo)
 - Bug #20347: Fix compatibility with PHP 8.4: remove usage of `session.use_trans_sid` and `session.use_only_cookies` (tehmaestro)
+- Bug #20355: Fix SQL syntax for resetting sequence in `QueryBuilder` for `MSSQL` (terabytesoftw)
 
 
 2.0.52 February 13, 2025
