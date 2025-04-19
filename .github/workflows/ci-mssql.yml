@@ -46,6 +46,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install ODBC driver
+        run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
       - name: Create MS SQL Database.
         run: docker exec -i mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
