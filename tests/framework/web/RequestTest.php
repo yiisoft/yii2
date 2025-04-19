@@ -444,7 +444,6 @@ class RequestTest extends TestCase
         $_SERVER = [];
 
         $this->expectException(\yii\base\InvalidConfigException::class);
-
         $request->getScriptUrl();
     }
 

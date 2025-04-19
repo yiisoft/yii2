@@ -462,6 +462,8 @@ class ContainerTest extends TestCase
      */
     public function testDelayedInitializationOfSubArray(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $definitions = [
             'test' => [
                 'class' => Corge::class,

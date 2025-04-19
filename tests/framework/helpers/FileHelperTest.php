@@ -359,6 +359,8 @@ class FileHelperTest extends TestCase
      */
     public function testCopyDirWithSameName(): void
     {
+        $this->expectNotToPerformAssertions();
+
         $this->createFileStructure([
             'data' => [],
             'data-backup' => [],

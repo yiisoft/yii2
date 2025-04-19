@@ -1895,6 +1895,7 @@ EOD;
     public function testAttributeNameException(string $name): void
     {
         $this->expectException('yii\base\InvalidArgumentException');
+
         Html::getAttributeName($name);
     }
 
@@ -1933,6 +1934,9 @@ EOD;
 
     public function testGetAttributeValueInvalidArgumentException(): void
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         $model = new HtmlTestModel();
 
         $this->expectException(\yii\base\InvalidArgumentException::class);
@@ -2123,6 +2127,8 @@ HTML;
 
     public static function getInputIdDataProvider()
     {
+        $this->expectNotToPerformAssertions();
+
         return [
             [
                 'foo',
@@ -2162,6 +2168,8 @@ HTML;
 
     public static function getInputIdByNameDataProvider()
     {
+        $this->expectNotToPerformAssertions();
+
         return [
             [
                 'foo',

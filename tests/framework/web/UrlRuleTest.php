@@ -1332,6 +1332,8 @@ class UrlRuleTest extends TestCase
      */
     public static function getCreateUrlStatusProvider(): array
     {
+        $this->expectNotToPerformAssertions();
+        
         return [
             'route' => [
                 // rule properties

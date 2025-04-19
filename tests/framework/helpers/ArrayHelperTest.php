@@ -128,14 +128,12 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
+     * @requires PHP < 8.1
+     *
      * @return void
      */
     public function testRemoveWithFloat(): void
     {
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
-            $this->markTestSkipped('Using floats as array key is deprecated.');
-        }
-
         $array = ['name' => 'b', 'age' => 3, 1.1 => null];
 
         $name = ArrayHelper::remove($array, 'name');
@@ -519,14 +517,12 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
+     * @requires PHP < 8.1
+     *
      * @see https://github.com/yiisoft/yii2/pull/11549
      */
     public function testGetValueWithFloatKeys(): void
     {
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
-            $this->markTestSkipped('Using floats as array key is deprecated.');
-        }
-
         $array = [];
         $array[1.1] = 'some value';
         $array[2.1] = null;
@@ -734,10 +730,6 @@ class ArrayHelperTest extends TestCase
 
     public function testKeyExistsWithFloat(): void
     {
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
-            $this->markTestSkipped('Using floats as array key is deprecated.');
-        }
-
         $array = [
             1 => 3,
             2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.

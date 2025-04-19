@@ -81,10 +81,10 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
-        "dms/phpunit-arraysubset-asserts": "^0.5",
-        "phpunit/phpunit": "^9.6",
         "cebe/indent": "~1.0.2",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
+        "dms/phpunit-arraysubset-asserts": "^0.5",
+        "phpunit/phpunit": "9.6",
         "yiisoft/yii2-coding-standards": "^3.0"
     },
     "repositories": [
