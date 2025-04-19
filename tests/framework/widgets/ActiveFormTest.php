@@ -110,8 +110,6 @@ HTML
 
     public function testRegisterClientScript(): void
     {
-        $this->expectNotToPerformAssertions();
-
         $this->mockWebApplication();
         $_SERVER['REQUEST_URI'] = 'http://example.com/';
 

@@ -28,7 +28,6 @@ jobs:
               - 8.3
 
             mssql:
-              - server:2017-latest
               - server:2019-latest
               - server:2022-latest
 
