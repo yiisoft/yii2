@@ -2125,10 +2125,8 @@ HTML;
         $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public static function getInputIdDataProvider()
+    public static function getInputIdDataProvider(): array
     {
-        $this->expectNotToPerformAssertions();
-
         return [
             [
                 'foo',
@@ -2166,10 +2164,8 @@ HTML;
         ];
     }
 
-    public static function getInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider(): array
     {
-        $this->expectNotToPerformAssertions();
-
         return [
             [
                 'foo',

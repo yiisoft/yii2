@@ -409,10 +409,8 @@ class UrlRuleTest extends TestCase
      *   - second element is the expected URL
      *   - third element is the expected result of getCreateUrlStatus() method
      */
-    public static function getCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider(): array
     {
-        $this->expectNotToPerformAssertions();
-        
         return [
             'single controller' => [
                 // rule properties
