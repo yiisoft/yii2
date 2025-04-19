@@ -158,7 +158,6 @@ class Container extends Component
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      *
-     *
      * @template T of object
      * @psalm-param string|class-string<T>|Instance $class
      * @phpstan-param string|class-string<T>|Instance $class
