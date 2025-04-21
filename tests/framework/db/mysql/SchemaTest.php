@@ -129,7 +129,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -166,7 +166,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
