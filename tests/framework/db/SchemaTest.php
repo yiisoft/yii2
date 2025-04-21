@@ -778,8 +778,11 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param string $type The constraint type.
      * @param mixed $expected The expected constraint.
      */
-    public function testTableSchemaConstraints(string $tableName, string $type, \yii\db\Constraint|bool|array|null $expected): void
-    {
+    public function testTableSchemaConstraints(
+        string $tableName,
+        string $type,
+        \yii\db\Constraint|bool|array|null $expected
+    ): void {
         if ($expected === false) {
             $this->expectException(\yii\base\NotSupportedException::class);
         }
