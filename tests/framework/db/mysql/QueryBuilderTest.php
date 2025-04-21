@@ -401,19 +401,6 @@ MySqlStatement;
     }
 
     /**
-     * @dataProvider checksProvider
-     *
-     * @param string $sql The SQL.
-     */
-    public function testAddDropCheck(string $sql, \Closure $builder): void
-    {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by MySQL.');
-
-        parent::testAddDropCheck($sql, $builder);
-    }
-
-    /**
      * @dataProvider defaultValuesProvider
      *
      * @param string $sql The SQL.
