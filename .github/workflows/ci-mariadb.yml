@@ -21,7 +21,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        php: [8.1, 8.2, 8.3, 8.4]
         mariadb:
           - mariadb:10.4
           - mariadb:latest
@@ -49,19 +49,23 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: composer:v2, pecl
 
-      - name: Install dependencies with composer
-        if: matrix.php != '8.4'
+      - name: Update composer.
+        run: composer self-update
+
+      - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Install dependencies with PHP 8.4.
-        if: matrix.php == '8.4'
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ignore-platform-reqs --ansi
-
       - name: Run MariaDB tests with PHPUnit and generate coverage.
-        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
+        if: matrix.php == '8.1'
+        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always --verbose
+
+      - name: Run MariaDB tests with PHPUnit.
+        if: matrix.php != '8.1'
+        run: vendor/bin/phpunit --group mysql --colors=always --verbose
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
+        if: matrix.php == '8.1'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
