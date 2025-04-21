@@ -78,14 +78,123 @@ SQL;
     {
         $result = parent::constraintsProvider();
 
-        $result['1: check'][2][0]->expression = "(`C_check` <> _utf8mb4\\'\\')";
-
+        $result['1: check'][2][0]->columnNames = null;
+        $result['1: check'][2][0]->expression = "`C_check` <> ''";
         $result['2: primary key'][2]->name = null;
 
         // Work aroung bug in MySQL 5.1 - it creates only this table in lowercase. O_o
         $result['3: foreign key'][2][0]->foreignTableName = new AnyCaseValue('T_constraints_2');
 
         return $result;
+    }
+
+    /**
+     * @dataProvider constraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraints($tableName, $type, $expected)
+    {
+        $version = $this->getConnection(false)->getServerVersion();
+
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        if (
+            $this->driverName === 'mysql' &&
+            \stripos($version, 'MariaDb') === false &&
+            version_compare($version, '8.0.16', '<') &&
+            $type === 'checks'
+        ) {
+            $this->expectException('yii\base\NotSupportedException');
+        } elseif (
+            $this->driverName === 'mysql' &&
+            \stripos($version, 'MariaDb') === false &&
+            version_compare($version, '8.0.16', '>=') &&
+            $tableName === 'T_constraints_1' &&
+            $type === 'checks'
+        ) {
+            $expected[0]->expression = "(`C_check` <> _utf8mb4\\'\\')";
+        }
+
+        $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
+        $this->assertMetadataEquals($expected, $constraints);
+    }
+
+    /**
+     * @dataProvider uppercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    {
+        $version = $this->getConnection(false)->getServerVersion();
+
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        if (
+            $this->driverName === 'mysql' &&
+            \stripos($version, 'MariaDb') === false &&
+            version_compare($version, '8.0.16', '<') &&
+            $type === 'checks'
+        ) {
+            $this->expectException('yii\base\NotSupportedException');
+        } elseif (
+            $this->driverName === 'mysql' &&
+            \stripos($version, 'MariaDb') === false &&
+            version_compare($version, '8.0.16', '>=') &&
+            $tableName === 'T_constraints_1' &&
+            $type === 'checks'
+        ) {
+            $expected[0]->expression = "(`C_check` <> _utf8mb4\\'\\')";
+        }
+
+        $connection = $this->getConnection(false);
+        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
+        $this->assertMetadataEquals($expected, $constraints);
+    }
+
+    /**
+     * @dataProvider lowercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    {
+        $version = $this->getConnection(false)->getServerVersion();
+
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
+        if (
+            $this->driverName === 'mysql' &&
+            \stripos($version, 'MariaDb') === false &&
+            version_compare($version, '8.0.16', '<') &&
+            $type === 'checks'
+        ) {
+            $this->expectException('yii\base\NotSupportedException');
+        } elseif (
+            $this->driverName === 'mysql' &&
+            \stripos($version, 'MariaDb') === false &&
+            version_compare($version, '8.0.16', '>=') &&
+            $tableName === 'T_constraints_1' &&
+            $type === 'checks'
+        ) {
+            $expected[0]->expression = "(`C_check` <> _utf8mb4\\'\\')";
+        }
+
+        $connection = $this->getConnection(false);
+        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
+        $this->assertMetadataEquals($expected, $constraints);
     }
 
     /**
