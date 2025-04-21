@@ -197,11 +197,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function defaultValuesProvider()
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
-    }
-
     public function testResetSequence()
     {
         $qb = $this->getQueryBuilder();
