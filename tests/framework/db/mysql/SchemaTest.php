@@ -94,7 +94,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraints($tableName, $type, $expected)
+    public function testTableSchemaConstraints($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
