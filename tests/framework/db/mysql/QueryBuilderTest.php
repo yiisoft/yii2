@@ -324,7 +324,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            self::replaceQuotes('UPDATE [[profile]] SET [[description]]=CAST(:qp0 AS JSON) WHERE [[id]]=:qp1'),
+            self::replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -398,19 +398,6 @@ MySqlStatement;
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);
-    }
-
-    /**
-     * @dataProvider checksProvider
-     *
-     * @param string $sql The SQL.
-     */
-    public function testAddDropCheck(string $sql, \Closure $builder): void
-    {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by MySQL.');
-
-        parent::testAddDropCheck($sql, $builder);
     }
 
     /**
