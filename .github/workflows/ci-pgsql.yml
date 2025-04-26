@@ -14,17 +14,16 @@ jobs:
     env:
       EXTENSIONS: curl, intl, pdo, pdo_pgsql
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-
         php:
           - 8.1
           - 8.2
           - 8.3
+          - 8.4
 
         pgsql:
           - 10
@@ -71,6 +70,7 @@ jobs:
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}

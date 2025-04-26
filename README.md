@@ -18,7 +18,7 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 Installation
 ------------
 
-- The minimum required PHP version of Yii is PHP 5.4.
+- The minimum required PHP version of Yii is PHP 7.3.
 - It works best with PHP 8.
 - [Follow the Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.
@@ -33,6 +33,11 @@ of the framework.
 and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 - For Yii 1.1 users, there is [Upgrading from Yii 1.1](https://www.yiiframework.com/doc/guide/2.0/en/intro-upgrade-from-v1)
 to get an idea of what has changed in 2.0.
+
+Versions & PHP compatibility
+----------------------------
+
+See ["Release Cycle" at the website](https://www.yiiframework.com/release-cycle).
 
 Community
 ---------

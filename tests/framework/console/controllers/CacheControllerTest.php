@@ -138,6 +138,7 @@ class CacheControllerTest extends TestCase
     public function testNothingToFlushException(): void
     {
         $this->expectException(\yii\console\Exception::class);
+        $this->expectExceptionMessage('You should specify cache components names');
 
         $this->_cacheController->actionFlush();
     }

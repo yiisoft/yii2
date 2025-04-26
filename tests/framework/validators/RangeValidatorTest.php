@@ -34,7 +34,7 @@ class RangeValidatorTest extends TestCase
     public function testAssureMessageSetOnInit(): void
     {
         $val = new RangeValidator(['range' => []]);
-        $this->assertIsString('string', $val->message);
+        $this->assertIsString($val->message);
     }
 
     public function testValidateValue(): void

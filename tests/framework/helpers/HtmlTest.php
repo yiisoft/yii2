@@ -90,7 +90,22 @@ class HtmlTest extends TestCase
         $this->assertEquals("<script type=\"text/js\">{$content}</script>", Html::script($content, ['type' => 'text/js']));
     }
 
-    public function testCssFile(): void
+    public function testScriptCustomAttribute()
+    {
+        $nonce = Yii::$app->security->generateRandomString();
+        $this->mockApplication([
+            'components' => [
+                'view' => [
+                    'class' => 'yii\web\View',
+                    'scriptOptions' => ['nonce' => $nonce],
+                ],
+            ],
+        ]);
+        $content = 'a <>';
+        $this->assertEquals("<script nonce=\"{$nonce}\">{$content}</script>", Html::script($content));
+    }
+
+    public function testCssFile()
     {
         $this->assertEquals('<link href="http://example.com" rel="stylesheet">', Html::cssFile('http://example.com'));
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
@@ -1895,6 +1910,7 @@ EOD;
     public function testAttributeNameException(string $name): void
     {
         $this->expectException('yii\base\InvalidArgumentException');
+
         Html::getAttributeName($name);
     }
 
@@ -1933,6 +1949,9 @@ EOD;
 
     public function testGetAttributeValueInvalidArgumentException(): void
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         $model = new HtmlTestModel();
 
         $this->expectException(\yii\base\InvalidArgumentException::class);
@@ -2121,7 +2140,7 @@ HTML;
         $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public static function getInputIdDataProvider()
+    public static function getInputIdDataProvider(): array
     {
         return [
             [
@@ -2160,7 +2179,7 @@ HTML;
         ];
     }
 
-    public static function getInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider(): array
     {
         return [
             [

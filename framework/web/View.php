@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -121,6 +120,13 @@ class View extends \yii\base\View
      * @see registerCssFile()
      */
     public $cssFiles = [];
+
+    /**
+     * @since 2.0.53
+     * @var array the style tag options.
+     */
+    public $styleOptions = [];
+
     /**
      * @var array the registered JS code blocks
      * @see registerJs()
@@ -131,6 +137,11 @@ class View extends \yii\base\View
      * @see registerJsFile()
      */
     public $jsFiles = [];
+    /**
+     * @since 2.0.50
+     * @var array the script tag options.
+     */
+    public $scriptOptions = [];
 
     private $_assetManager;
 

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,7 +7,6 @@
 
 namespace yii\i18n;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;

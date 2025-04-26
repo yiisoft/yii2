@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -314,9 +313,14 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result, function ($value) {
-                return $value !== '';
-            }));
+            $result = array_values(
+                array_filter(
+                    $result,
+                    function ($value) {
+                        return $value !== '';
+                    }
+                )
+            );
         }
 
         return $result;
@@ -344,7 +348,7 @@ class BaseStringHelper
      */
     public static function normalizeNumber($value)
     {
-        $value = (string) $value;
+        $value = (string)$value;
 
         $localeInfo = localeconv();
         $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
@@ -397,7 +401,7 @@ class BaseStringHelper
     {
         // . and , are the only decimal separators known in ICU data,
         // so its safe to call str_replace here
-        return str_replace(',', '.', (string) $number);
+        return str_replace(',', '.', (string)$number);
     }
 
     /**
@@ -423,14 +427,14 @@ class BaseStringHelper
 
         $replacements = [
             '\\\\\\\\' => '\\\\',
-            '\\\\\\*' => '[*]',
-            '\\\\\\?' => '[?]',
-            '\*' => '.*',
-            '\?' => '.',
-            '\[\!' => '[^',
-            '\[' => '[',
-            '\]' => ']',
-            '\-' => '-',
+            '\\\\\\*'  => '[*]',
+            '\\\\\\?'  => '[?]',
+            '\*'       => '.*',
+            '\?'       => '.',
+            '\[\!'     => '[^',
+            '\['       => '[',
+            '\]'       => ']',
+            '\-'       => '-',
         ];
 
         if (isset($options['escape']) && !$options['escape']) {
@@ -484,7 +488,7 @@ class BaseStringHelper
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $string = (string) $string;
+        $string = (string)$string;
         if (empty($string)) {
             return $string;
         }
@@ -507,12 +511,12 @@ class BaseStringHelper
      *
      * @param string $string The input string.
      * @param int $start The starting position from where to begin masking.
-     *                   This can be a positive or negative integer.
-     *                   Positive values count from the beginning,
-     *                   negative values count from the end of the string.
+     * This can be a positive or negative integer.
+     * Positive values count from the beginning,
+     * negative values count from the end of the string.
      * @param int $length The length of the section to be masked.
-     *                    The masking will start from the $start position
-     *                    and continue for $length characters.
+     * The masking will start from the $start position
+     * and continue for $length characters.
      * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */

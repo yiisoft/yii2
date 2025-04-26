@@ -1424,10 +1424,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(5, $itemClass::find()->count());
     }
 
-    /**
-     * @requires PHP 5.6
-     */
-    public function testCastValues(): void
+    public function testCastValues()
     {
         $model = new Type();
         $model->int_col = 123;
@@ -1450,10 +1447,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertSame('1337', trim((string) $model->char_col));
         $this->assertSame('test', $model->char_col2);
         $this->assertSame('test123', $model->char_col3);
-        //        $this->assertSame(1337.42, $model->float_col);
-        //        $this->assertSame(42.1337, $model->float_col2);
-        //        $this->assertSame(true, $model->bool_col);
-        //        $this->assertSame(false, $model->bool_col2);
+        $this->assertSame(3.742, $model->float_col);
+        $this->assertSame(42.1337, $model->float_col2);
+        $this->assertSame(true, $model->bool_col);
+        $this->assertSame(false, $model->bool_col2);
     }
 
     public function testIssues(): void
@@ -1985,7 +1982,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
-
         /** @var Query $query */
         $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', $filterWithInjection);
         Customer::getDb()->queryBuilder->build($query);
@@ -2101,16 +2097,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, sizeof($order->orderItems));
     }
 
-    public function testIssetException(): void
-    {
-        $cat = new Cat();
-        $this->assertFalse(isset($cat->exception));
-    }
-
-    /**
-     * @requires PHP 7
-     */
-    public function testIssetThrowable(): void
+    public function testIssetThrowable()
     {
         $cat = new Cat();
         $this->assertFalse(isset($cat->throwable));

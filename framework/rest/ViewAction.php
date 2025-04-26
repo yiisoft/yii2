@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,8 +6,6 @@
  */
 
 namespace yii\rest;
-
-use Yii;
 
 /**
  * ViewAction implements the API endpoint for returning the detailed information about a model.

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -133,8 +132,8 @@ class MaskedInput extends InputWidget
     public function init()
     {
         parent::init();
-        if (empty($this->mask) && empty($this->clientOptions['alias'])) {
-            throw new InvalidConfigException("Either the 'mask' property or the 'clientOptions[\"alias\"]' property must be set.");
+        if (empty($this->mask) && empty($this->clientOptions['regex']) && empty($this->clientOptions['alias'])) {
+            throw new InvalidConfigException("Either the 'mask' property, 'clientOptions[\"regex\"]' or the 'clientOptions[\"alias\"]' property must be set.");
         }
     }
 

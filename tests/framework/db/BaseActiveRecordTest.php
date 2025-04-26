@@ -28,6 +28,10 @@ abstract class BaseActiveRecordTest extends DatabaseTestCase
                 ['pineapple' => 2, 'apple' => 5, 'banana' => 1],
                 ['pineapple' => 2, 'apple' => 3, 'banana' => 1],
             ],
+            'multi-dimensional array' => [
+                ['foo' => ['c', 'b', 'a']],
+                ['foo' => ['b', 'c', 'a']],
+            ],
 
             'filling an empty array' => [
                 [],

@@ -375,6 +375,9 @@ class UrlRuleTest extends TestCase
 
     /**
      * @dataProvider getCreateUrlStatusProvider
+     *
+     * @param array $ruleConfig
+     * @param array $tests
      */
     public function testGetCreateUrlStatus(array $ruleConfig, array $tests): void
     {

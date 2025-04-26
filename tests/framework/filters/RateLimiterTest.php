@@ -84,7 +84,10 @@ class RateLimiterTest extends TestCase
 
         $result = $rateLimiter->beforeAction('test');
 
-        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
+        $this->assertContains(
+            'Rate limit skipped: "user" does not implement RateLimitInterface.',
+            Yii::getLogger()->messages
+        );
         $this->assertTrue($result);
     }
 
@@ -162,6 +165,9 @@ class RateLimiterTest extends TestCase
         // testing the evaluation of user closure, which in this case returns not the expect object and therefore
         // the log message "does not implement RateLimitInterface" is expected.
         $this->assertInstanceOf(User::class, $rateLimiter->user);
-        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
+        $this->assertContains(
+            'Rate limit skipped: "user" does not implement RateLimitInterface.',
+            Yii::getLogger()->messages
+        );
     }
 }

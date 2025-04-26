@@ -327,6 +327,45 @@ class TargetTest extends TestCase
         $logger->log('token.b', Logger::LEVEL_PROFILE_END, 'category');
         $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
     }
+
+    public function testWildcardsInMaskVars()
+    {
+        $keys = [
+            'PASSWORD',
+            'password',
+            'password_repeat',
+            'repeat_password',
+            'repeat_password_again',
+            '1password',
+            'password1',
+        ];
+
+        $password = '!P@$$w0rd#';
+
+        $items = array_fill_keys($keys, $password);
+
+        $GLOBALS['_TEST'] = array_merge(
+            $items,
+            ['a' => $items],
+            ['b' => ['c' => $items]],
+            ['d' => ['e' => ['f' => $items]]],
+        );
+
+        $target = new TestTarget([
+            'logVars' => ['_SERVER', '_TEST'],
+            'maskVars' => [
+                // option 1: exact value(s)
+                '_SERVER.DOCUMENT_ROOT',
+                // option 2: pattern(s)
+                '_TEST.*password*',
+            ]
+        ]);
+
+        $message = $target->getContextMessage();
+
+        $this->assertStringContainsString("'DOCUMENT_ROOT' => '***'", $message);
+        $this->assertStringNotContainsString($password, $message);
+    }
 }
 
 class TestTarget extends Target

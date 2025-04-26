@@ -235,7 +235,9 @@ abstract class ConnectionTest extends DatabaseTestCase
             throw new \Exception('Exception in transaction shortcut');
         });
 
-        $profilesCount = $connection->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")->queryScalar();
+        $profilesCount = $connection
+            ->createCommand("SELECT COUNT(*) FROM profile WHERE description = 'test transaction shortcut';")
+            ->queryScalar();
         $this->assertEquals(0, $profilesCount, 'profile should not be inserted in transaction shortcut');
     }
 

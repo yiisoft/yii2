@@ -530,6 +530,7 @@ class FormatterDateTest extends TestCase
         // other options
         $this->assertSame('minus 244 seconds', $this->formatter->asDuration($interval_244_seconds, ' and ', 'minus '));
         $this->assertSame('minus 4 minutes and 4 seconds', $this->formatter->asDuration(-244, ' and ', 'minus '));
+        $this->assertSame('1 second', $this->formatter->asDuration(1.5));
 
         // Pass a inverted DateInterval string
         $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('2008-05-11T15:30:00Z/2007-03-01T13:00:00Z'));

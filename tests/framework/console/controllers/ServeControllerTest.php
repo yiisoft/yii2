@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ServeControllerTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->mockApplication();
     }

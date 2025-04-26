@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -158,6 +157,13 @@ class Container extends Component
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     *
+     *
+     * @template T of class-string
+     * @psalm-param class-string<T>|array{class: class-string<T>} $class
+     * @phpstan-param class-string<T>|array{class: class-string<T>} $class
+     * @psalm-return T
+     * @phpstan-return T
      */
     public function get($class, $params = [], $config = [])
     {

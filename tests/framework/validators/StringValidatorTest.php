@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class StringValidatorTest extends TestCase
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -112,9 +112,9 @@ class StringValidatorTest extends TestCase
     public function testEnsureMessagesOnInit(): void
     {
         $val = new StringValidator(['min' => 1, 'max' => 2]);
-        $this->assertIsString('string', $val->message);
-        $this->assertIsString('string', $val->tooLong);
-        $this->assertIsString('string', $val->tooShort);
+        $this->assertIsString($val->message);
+        $this->assertIsString($val->tooLong);
+        $this->assertIsString($val->tooShort);
     }
 
     public function testCustomErrorMessageInValidateAttribute(): void

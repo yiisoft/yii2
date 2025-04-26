@@ -152,7 +152,7 @@ class BaseYiiTest extends TestCase
     public function testLog(): void
     {
         $logger = $this->createMock(Logger::class);
-        $logger->onlyMethods(['log']);
+        $logger->method('log');
 
         BaseYii::setLogger($logger);
 
