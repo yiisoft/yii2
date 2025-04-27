@@ -80,6 +80,12 @@ use yii\base\InvalidConfigException;
  *
  * @phpstan-method ($value is true ? self<array> : self<T>) asArray($value = true)
  * @psalm-method ($value is true ? self<array> : self<T>) asArray($value = true)
+ *
+ * @phpstan-method BatchQueryResult<int,T[]> batch($batchSize = 100, $db = null)
+ * @psalm-method BatchQueryResult<int,T[]> batch($batchSize = 100, $db = null)
+ *
+ * @phpstan-method BatchQueryResult<int,T> each($batchSize = 100, $db = null)
+ * @psalm-method BatchQueryResult<int,T> each($batchSize = 100, $db = null)
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
@@ -323,32 +329,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return BatchQueryResult
-     * @psalm-return T[][]|BatchQueryResult
-     * @phpstan-return T[][]|BatchQueryResult
-     * @codeCoverageIgnore
-     */
-    public function batch($batchSize = 100, $db = null)
-    {
-        return parent::batch($batchSize, $db);
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @return BatchQueryResult
-     * @psalm-return T[]|BatchQueryResult
-     * @phpstan-return T[]|BatchQueryResult
-     * @codeCoverageIgnore
-     */
-    public function each($batchSize = 100, $db = null)
-    {
-        return parent::each($batchSize, $db);
     }
 
     /**
