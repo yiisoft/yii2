@@ -8,7 +8,6 @@ Yii Framework 2 Change Log
 - Chg #19891: Remove XCache and ZendDataCache support (mtangoo)
 
 
-2.0.50 under development
 2.0.53 under development
 ------------------------
 
