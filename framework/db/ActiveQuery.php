@@ -75,6 +75,8 @@ use yii\base\InvalidConfigException;
  * @psalm-method T|null one($db = null)
  * @phpstan-method T[] all($db = null)
  * @psalm-method T[] all($db = null)
+ * @phpstan-method self<array> asArray($value = true)
+ * @psalm-method self<array> asArray($value = true)
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
