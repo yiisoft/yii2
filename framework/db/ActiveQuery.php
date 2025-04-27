@@ -81,11 +81,11 @@ use yii\base\InvalidConfigException;
  * @phpstan-method ($value is true ? (T is array ? self<T> : self<array>) : self<T>) asArray($value = true)
  * @psalm-method ($value is true ? (T is array ? self<T> : self<array>) : self<T>) asArray($value = true)
  *
- * @phpstan-method BatchQueryResult<int,T[]> batch($batchSize = 100, $db = null)
- * @psalm-method BatchQueryResult<int,T[]> batch($batchSize = 100, $db = null)
+ * @phpstan-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
+ * @psalm-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
  *
- * @phpstan-method BatchQueryResult<int,T> each($batchSize = 100, $db = null)
- * @psalm-method BatchQueryResult<int,T> each($batchSize = 100, $db = null)
+ * @phpstan-method BatchQueryResult<int, T> each($batchSize = 100, $db = null)
+ * @psalm-method BatchQueryResult<int, T> each($batchSize = 100, $db = null)
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
