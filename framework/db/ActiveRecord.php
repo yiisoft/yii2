@@ -156,6 +156,9 @@ class ActiveRecord extends BaseActiveRecord
      * @param string $sql the SQL statement to be executed
      * @param array $params parameters to be bound to the SQL statement during execution.
      * @return ActiveQuery the newly created [[ActiveQuery]] instance
+     *
+     * @phpstan-return ActiveQuery<static>
+     * @psalm-return ActiveQuery<static>
      */
     public static function findBySql($sql, $params = [])
     {
@@ -408,6 +411,9 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * {@inheritdoc}
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     *
+     * @phpstan-return ActiveQuery<static>
+     * @psalm-return ActiveQuery<static>
      */
     public static function find()
     {
