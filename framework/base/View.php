@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,6 +20,7 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
+ * @property-read DynamicContentAwareInterface[] $dynamicContents Class instances supporting dynamic contents.
  * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered.
  *

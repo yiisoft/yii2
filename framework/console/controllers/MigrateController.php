@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -334,6 +333,7 @@ class MigrateController extends BaseMigrateController
         $dropViewErrors = [
             'DROP VIEW to delete view', // SQLite
             'SQLSTATE[42S02]', // MySQL
+            'is a view. Use DROP VIEW', // Microsoft SQL Server
         ];
 
         foreach ($dropViewErrors as $dropViewError) {

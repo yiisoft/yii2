@@ -171,7 +171,10 @@ class InstanceTest extends TestCase
         $instance = Instance::of('something');
         $export = var_export($instance, true);
 
-        $this->assertMatchesRegularExpression('~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~', $export);
+        $this->assertMatchesRegularExpression(
+            '~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~',
+            $export
+        );
 
         $this->assertEquals($instance, Instance::__set_state([
             'id' => 'something',

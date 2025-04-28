@@ -1226,9 +1226,13 @@ SQL;
     public function testAddDropCheck(): void
     {
         $db = $this->getConnection(false);
+
+        if (version_compare($db->getServerVersion(), '8.0.16', '<')) {
+            $this->markTestSkipped('MySQL < 8.0.16 does not support CHECK constraints.');
+        }
+
         $tableName = 'test_ck';
         $name = 'test_ck_constraint';
-        /** @var \yii\db\pgsql\Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {
@@ -1243,6 +1247,7 @@ SQL;
         $this->assertMatchesRegularExpression('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
 
         $db->createCommand()->dropCheck($name, $tableName)->execute();
+
         $this->assertEmpty($schema->getTableChecks($tableName, true));
     }
 
@@ -1550,15 +1555,15 @@ SQL;
             $db = $this->getConnection();
             $command = $db->createCommand();
 
-            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::ACTIVE]);
-            $this->assertSame('ACTIVE', $command->params[':p1']);
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
+		    $this->assertSame('Active', $command->params[':p1']);
 
-            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::ACTIVE]);
-            $this->assertSame('active', $command->params[':p1']);
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
+		    $this->assertSame('active', $command->params[':p1']);
 
-            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::ACTIVE]);
-            $this->assertSame(1, $command->params[':p1']);
-        } else {
+		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
+		    $this->assertSame(1, $command->params[':p1']);
+		} else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');
         }
 	  }

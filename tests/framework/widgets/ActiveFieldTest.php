@@ -673,6 +673,13 @@ HTML;
         ]);
         $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
 
+        // use regex clientOptions instead mask
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'options' => ['placeholder' => 'pholder_direct'],
+            'clientOptions' => ['regex' => '^.*$'],
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
+
         // transfer options from ActiveField to widget
         $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
         $widget = $this->activeField->widget(TestMaskedInput::class, [
@@ -796,4 +803,3 @@ class TestMaskedInput extends MaskedInput
         ));
     }
 }
-

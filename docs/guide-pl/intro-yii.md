@@ -52,7 +52,7 @@ Ten przewodnik opisuje wersję 2.0.
 Wymagania i zależności
 ----------------------
 
-Yii 2.0 wymaga PHP w wersji 5.4.0 lub nowszej i pracuje najwydajniej na najnowszej wersji PHP. Aby otrzymać więcej 
+Yii 2.0 wymaga PHP w wersji 7.3.0 lub nowszej i pracuje najwydajniej na najnowszej wersji PHP. Aby otrzymać więcej 
 informacji na temat wymagań i indywidualnych funkcjonalności, uruchom specjalny skrypt testujący system dołączony w każdym wydaniu Yii.
 
 Używanie Yii wymaga podstawowej wiedzy o programowaniu obiektowym w PHP (OOP), ponieważ Yii

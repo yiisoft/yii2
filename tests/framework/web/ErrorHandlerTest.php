@@ -131,7 +131,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         return [
             [
                 "a \t=<>&\"'\x80`\n",
-                "a \t=&lt;&gt;&amp;\"'�`\n",
+                "a \t=&lt;&gt;&amp;&quot;&apos;�`\n",
             ],
             [
                 '<b>test</b>',
@@ -139,11 +139,11 @@ Exception: yii\web\NotFoundHttpException', $out);
             ],
             [
                 '"hello"',
-                '"hello"',
+                '&quot;hello&quot;',
             ],
             [
                 "'hello world'",
-                "'hello world'",
+                "&apos;hello world&apos;",
             ],
             [
                 'Chip&amp;Dale',
@@ -171,7 +171,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $handler = Yii::$app->getErrorHandler();
 
         $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";
-        $expected = "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}";
+        $expected = "a \t=&lt;&gt;&amp;&quot;&apos;�₽`\n\u{000c}\u{0000}";
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }

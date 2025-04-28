@@ -86,6 +86,9 @@ class ActiveFixture extends BaseActiveFixture
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
         }
+        if ($table->sequenceName !== null) {
+            $this->db->createCommand()->executeResetSequence($table->fullName);
+        }
     }
 
     /**

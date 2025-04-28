@@ -69,6 +69,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $sql = 'SELECT int_col, char_col, float_col, CONVERT([nvarchar], blob_col) AS blob_col, numeric_col FROM type';
         $row = $db->createCommand($sql)->queryOne();
+
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, trim((string) $row['char_col']));
         $this->assertEquals($floatCol, (float) $row['float_col']);

@@ -844,7 +844,7 @@ TEXT;
         $this->assertIsString($key1);
         $this->assertEquals($length, strlen($key1));
         $key2 = $this->security->generateRandomKey($length);
-        $this->assertIsString('string', $key2);
+        $this->assertIsString($key2);
         $this->assertEquals($length, strlen($key2));
         $this->assertNotEquals($key1, $key2);
     }

@@ -32,6 +32,6 @@ Bu kılavuz esas olarak sürüm 2.0 ile ilgilidir.
 Gereksinimler ve Önkoşullar
 ------------------------------
 
-Yii 2.0, PHP 5.4.0 veya üstü sürüm gerektirir ve PHP 'nin en son sürümü ile en iyi şekilde çalışır. Her bir Yii sürümünde yer alan gereksinim denetleyicisini çalıştırarak, daha ayrıntılı gereksinimleri ayrı ayrı özellikler için bulabilirsiniz.
+Yii 2.0, PHP 7.3.0 veya üstü sürüm gerektirir ve PHP 'nin en son sürümü ile en iyi şekilde çalışır. Her bir Yii sürümünde yer alan gereksinim denetleyicisini çalıştırarak, daha ayrıntılı gereksinimleri ayrı ayrı özellikler için bulabilirsiniz.
 
 Yii OOP temelli bir kütüphane olduğu için Yii'yi kullanmak, nesne yönelimli programlama (OOP) hakkında temel bilgi gerektirir. Yii 2.0 ayrıca PHP'nin [namespaceler](https://www.php.net/manual/en/language.namespaces.php) ve [traitler](https://www.php.net/manual/en/language.oop5.traits.php) gibi son özelliklerinden de yararlanır. Bu kavramları anlamak, Yii 2.0'ı daha kolay anlamanıza yardımcı olacaktır.

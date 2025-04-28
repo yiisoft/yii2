@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -170,7 +169,6 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
         } elseif ($this->_totalCount === null) {
             $this->_totalCount = $this->prepareTotalCount();
         }
-
         return $this->_totalCount;
     }
 

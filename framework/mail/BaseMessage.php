@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -39,7 +38,7 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
      * the "mailer" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */
-    public function send(MailerInterface $mailer = null)
+    public function send(?MailerInterface $mailer = null)
     {
         if ($mailer === null && $this->mailer === null) {
             $mailer = Yii::$app->getMailer();

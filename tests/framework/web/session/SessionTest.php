@@ -47,8 +47,13 @@ class SessionTest extends TestCase
         $oldUseTransparentSession = $session->getUseTransparentSessionID();
         $session->setUseTransparentSessionID(true);
         $newUseTransparentSession = $session->getUseTransparentSessionID();
-        $this->assertNotEquals($oldUseTransparentSession, $newUseTransparentSession);
-        $this->assertTrue($newUseTransparentSession);
+        if (PHP_VERSION_ID < 80400) {
+            $this->assertNotEquals($oldUseTransparentSession, $newUseTransparentSession);
+            $this->assertTrue($newUseTransparentSession);
+        } else {
+            $this->assertEquals($oldUseTransparentSession, $newUseTransparentSession);
+            $this->assertFalse($newUseTransparentSession);
+        }
         //without this line phpunit will complain about risky tests due to unclosed buffer
         $session->setUseTransparentSessionID(false);
 
@@ -65,6 +70,7 @@ class SessionTest extends TestCase
             $this->assertNotEquals($oldUseCookies, $newUseCookies);
             $this->assertFalse($newUseCookies);
         }
+        $session->setUseCookies($oldUseCookies);
 
         $oldGcProbability = $session->getGCProbability();
         $session->setGCProbability(100);

@@ -23,7 +23,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 {
     protected $driverName = 'mysql';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $db = $this->getConnection();
@@ -31,7 +31,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         ActiveRecord::$db = $db;
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

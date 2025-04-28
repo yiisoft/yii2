@@ -158,7 +158,6 @@ class GridViewTest extends \yiiunit\TestCase
     public function testHeaderLabels(): void
     {
         // Ensure GridView does not call Model::generateAttributeLabel() to generate labels unless the labels are explicitly used.
-
         $this->mockApplication([
             'components' => [
                 'db' => [
@@ -200,7 +199,6 @@ class GridViewTest extends \yiiunit\TestCase
             'attributes' => ['attr1', 'attr2'],
         ]);
         $grid->renderTableHeader();
-
         // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
 
         $this->expectNotToPerformAssertions();

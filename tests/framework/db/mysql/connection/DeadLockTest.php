@@ -32,6 +32,9 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException(): void
     {
+        if (\stripos($this->getConnection(false)->getServerVersion(), 'MariaDB') !== false) {
+            $this->markTestSkipped('MariaDB does not support this test');
+        }
         if (!\function_exists('pcntl_fork')) {
             $this->markTestSkipped('pcntl_fork() is not available');
         }

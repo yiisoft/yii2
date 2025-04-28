@@ -13,42 +13,45 @@ jobs:
     name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
 
     env:
-      EXTENSIONS: pdo, pdo_sqlsrv-5.10.1
+      EXTENSIONS: pdo, pdo_sqlsrv
 
     runs-on: ubuntu-latest
 
     strategy:
-        matrix:
-            os:
-              - ubuntu-latest
+      matrix:
+        os:
+          - ubuntu-latest
 
-            php:
-              - 8.1
-              - 8.2
-              - 8.3
+        php:
+          - 8.1
+          - 8.2
+          - 8.3
+          - 8.4
 
-            mssql:
-              - server:2017-latest
-              - server:2019-latest
-              - server:2022-latest
+        mssql:
+          - server:2019-latest
+          - server:2022-latest
 
     services:
       mssql:
-          image: mcr.microsoft.com/mssql/${{ matrix.mssql }}
-          env:
-              SA_PASSWORD: YourStrong!Passw0rd
-              ACCEPT_EULA: Y
-              MSSQL_PID: Developer
-          ports:
-              - 1433:1433
-          options: --name=mssql --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
+        image: mcr.microsoft.com/mssql/${{ matrix.mssql }}
+        env:
+          SA_PASSWORD: YourStrong!Passw0rd
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: --name=mssql --health-cmd="/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install ODBC driver
+        run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
       - name: Create MS SQL Database.
-        run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
+        run: docker exec -i mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
@@ -75,6 +78,7 @@ jobs:
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           file: ./coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}

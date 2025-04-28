@@ -139,6 +139,7 @@ class PhpManagerTest extends ManagerTestCase
     public function testOverwriteName(): void
     {
         $this->prepareData();
+
         $name = 'readPost';
         $permission = $this->auth->getPermission($name);
         $permission->name = 'createPost';

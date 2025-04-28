@@ -44,12 +44,11 @@ class ArrayFixtureTest extends TestCase
         $this->assertEmpty($this->_fixture->data, 'fixture data should not be loaded');
     }
 
-    public function testWrongDataFileException(): void
+    public function testWrongDataFileException()
     {
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
 
         $this->expectException(\yii\base\InvalidConfigException::class);
-
         $this->_fixture->load();
     }
 }

@@ -21,7 +21,7 @@ class FileHelperTest extends TestCase
      */
     private string $testFilePath = '';
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . static::class;
         $this->createDir($this->testFilePath);
@@ -56,7 +56,7 @@ class FileHelperTest extends TestCase
         return $mode === '0700';
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }

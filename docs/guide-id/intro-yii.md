@@ -38,7 +38,7 @@ Panduan ini terutama tentang versi 2.0.
 
 ## Persyaratan dan Prasyarat
 
-Yii 2.0 memerlukan PHP 5.4.0 atau versi lebih tinggi. Anda dapat menemukan persyaratan yang lebih rinci untuk setiap fitur
+Yii 2.0 memerlukan PHP 7.3.0 atau versi lebih tinggi. Anda dapat menemukan persyaratan yang lebih rinci untuk setiap fitur
 dengan menjalankan pengecek persyaratan yang diikutsertakan dalam setiap rilis Yii.
 
 Menggunakan Yii memerlukan pengetahuan dasar tentang pemrograman berorientasi objek (OOP), mengingat Yii adalah framework berbasis OOP murni.
