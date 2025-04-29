@@ -114,6 +114,12 @@ class Instance
      * @param ServiceLocator|Container|null $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid
+     *
+     * @template T of object
+     * @psalm-param class-string<T>|null $type
+     * @phpstan-param class-string<T>|null $type
+     * @psalm-return ($type is null ? object : T)
+     * @phpstan-return ($type is null ? object : T)
      */
     public static function ensure($reference, $type = null, $container = null)
     {
