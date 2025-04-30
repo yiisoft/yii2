@@ -114,26 +114,11 @@ But there are other installation options available:
 Installing Assets <span id="installing-assets"></span>
 -----------------
 
-Yii relies on [Bower](https://bower.io/) and/or [NPM](https://www.npmjs.com/) packages for the asset (CSS and JavaScript) libraries installation.
-It uses Composer to obtain these libraries, allowing PHP and CSS/JavaScript package versions to resolve at the same time.
-This can be achieved either by usage of [asset-packagist.org](https://asset-packagist.org) or [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
+Yii relies on [NPM](https://www.npmjs.com/) packages for the asset (CSS and JavaScript) libraries installation.
+
 Please refer to [Assets documentation](structure-assets.md) for more details.
 
-You may want to either manage your assets via native Bower/NPM client, use CDN or avoid assets installation entirely.
-In order to prevent assets installation via Composer, add the following lines to your 'composer.json':
-
-```json
-"replace": {
-    "bower-asset/jquery": ">=1.11.0",
-    "bower-asset/inputmask": ">=3.2.0",
-    "bower-asset/punycode": ">=1.3.0",
-    "bower-asset/yii2-pjax": ">=2.0.0"
-},
-```
-
-> Note: in case of bypassing asset installation via Composer, you are responsible for the assets installation and resolving
-> version collisions. Be prepared for possible inconsistencies among asset files from different extensions.
-
+You may want to either manage your assets via native NPM client, use CDN or avoid assets installation entirely.
 
 Verifying the Installation <span id="verifying-installation"></span>
 --------------------------

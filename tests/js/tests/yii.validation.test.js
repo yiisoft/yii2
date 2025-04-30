@@ -18,7 +18,7 @@ var StringUtils = {
 };
 
 var jsdom = require('mocha-jsdom');
-var punycode = require('../../../vendor/bower-asset/punycode/punycode');
+var punycode = require('../../../node_modules/punycode/punycode');
 
 var fs = require('fs');
 var vm = require('vm');
@@ -76,7 +76,7 @@ describe('yii.validation', function () {
     }
 
     jsdom({
-        src: fs.readFileSync('vendor/bower-asset/jquery/dist/jquery.js', 'utf-8'),
+        src: fs.readFileSync('node_modules/jquery/dist/jquery.js', 'utf-8'),
         url: "http://foo.bar"
     });
 

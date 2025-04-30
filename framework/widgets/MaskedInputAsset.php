@@ -19,7 +19,7 @@ use yii\web\AssetBundle;
  */
 class MaskedInputAsset extends AssetBundle
 {
-    public $sourcePath = '@bower/inputmask/dist';
+    public $sourcePath = '@npm/inputmask/dist';
     public $js = [
         'jquery.inputmask.js',
     ];
