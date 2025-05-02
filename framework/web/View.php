@@ -595,8 +595,8 @@ class View extends \yii\base\View
      * but different position option will not override each other.
      * @throws InvalidConfigException
      *
-     * @phpstan-type RegisterJsFileOptions $options
-     * @psalm-type RegisterJsFileOptions $options
+     * @phpstan-param RegisterJsFileOptions $options
+     * @psalm-param RegisterJsFileOptions $options
      */
     public function registerJsFile($url, $options = [], $key = null)
     {
