@@ -62,7 +62,7 @@ class AssetBundle extends BaseObject
      */
     public $baseUrl;
     /**
-     * @var array list of bundle class names that this bundle depends on.
+     * @var string[] list of bundle class names that this bundle depends on.
      *
      * For example:
      *
@@ -72,10 +72,13 @@ class AssetBundle extends BaseObject
      *    'yii\bootstrap\BootstrapAsset',
      * ];
      * ```
+     *
+     * @phpstan-var class-string[]
+     * @psalm-var class-string[]
      */
     public $depends = [];
     /**
-     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
+     * @var mixed[] list of JavaScript files that this bundle contains. Each JavaScript file can be
      * specified in one of the following formats:
      *
      * - an absolute URL representing an external asset. For example,
@@ -92,25 +95,34 @@ class AssetBundle extends BaseObject
      */
     public $js = [];
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
+     * @var mixed[] list of CSS files that this bundle contains. Each CSS file can be specified
      * in one of the three formats as explained in [[js]].
      *
      * Note that only a forward slash "/" should be used as directory separator.
      */
     public $css = [];
     /**
-     * @var array the options that will be passed to [[View::registerJsFile()]]
+     * @var mixed[] the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
+     *
+     * @phpstan-var array<string, mixed>
+     * @psalm-var array<string, mixed>
      */
     public $jsOptions = [];
     /**
-     * @var array the options that will be passed to [[View::registerCssFile()]]
+     * @var mixed[] the options that will be passed to [[View::registerCssFile()]]
      * when registering the CSS files in this bundle.
+     *
+     * @phpstan-var array<string, mixed>
+     * @psalm-var array<string, mixed>
      */
     public $cssOptions = [];
     /**
-     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
+     * @var mixed[] the options to be passed to [[AssetManager::publish()]] when the asset bundle
      * is being published. This property is used only when [[sourcePath]] is set.
+     *
+     * @phpstan-var array<string, mixed>
+     * @psalm-var array<string, mixed>
      */
     public $publishOptions = [];
 
