@@ -123,7 +123,7 @@ trait ArrayableTrait
     {
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
-            $attribute = is_string($definition) ? $this->$definition : $definition($this, $field);
+            $attribute = is_string($definition) ? ($this->$definition ?? null) : $definition($this, $field);
 
             if ($recursive) {
                 $nestedFields = $this->extractFieldsFor($fields, $field);
