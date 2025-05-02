@@ -26,6 +26,15 @@ use yii\helpers\Url;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-import-type RegisterJsFileOptions from View
+ * @psalm-import-type RegisterJsFileOptions from View
+ *
+ * @phpstan-import-type RegisterCssFileOptions from View
+ * @psalm-import-type RegisterCssFileOptions from View
+ *
+ * @phpstan-import-type PublishOptions from AssetManager
+ * @psalm-import-type PublishOptions from AssetManager
  */
 class AssetBundle extends BaseObject
 {
@@ -62,7 +71,7 @@ class AssetBundle extends BaseObject
      */
     public $baseUrl;
     /**
-     * @var string[] list of bundle class names that this bundle depends on.
+     * @var array list of bundle class names that this bundle depends on.
      *
      * For example:
      *
@@ -78,7 +87,7 @@ class AssetBundle extends BaseObject
      */
     public $depends = [];
     /**
-     * @var mixed[] list of JavaScript files that this bundle contains. Each JavaScript file can be
+     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
      * specified in one of the following formats:
      *
      * - an absolute URL representing an external asset. For example,
@@ -92,37 +101,43 @@ class AssetBundle extends BaseObject
      *   This functionality is available since version 2.0.7.
      *
      * Note that only a forward slash "/" should be used as directory separator.
+     *
+     * @phpstan-var mixed[]
+     * @psalm-var mixed[]
      */
     public $js = [];
     /**
-     * @var mixed[] list of CSS files that this bundle contains. Each CSS file can be specified
+     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
      * in one of the three formats as explained in [[js]].
      *
      * Note that only a forward slash "/" should be used as directory separator.
+     *
+     * @phpstan-var mixed[]
+     * @psalm-var mixed[]
      */
     public $css = [];
     /**
-     * @var mixed[] the options that will be passed to [[View::registerJsFile()]]
+     * @var array the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
      *
-     * @phpstan-var array<string, mixed>
-     * @psalm-var array<string, mixed>
+     * @phpstan-var RegisterJsFileOptions
+     * @psalm-var RegisterJsFileOptions
      */
     public $jsOptions = [];
     /**
-     * @var mixed[] the options that will be passed to [[View::registerCssFile()]]
+     * @var array the options that will be passed to [[View::registerCssFile()]]
      * when registering the CSS files in this bundle.
      *
-     * @phpstan-var array<string, mixed>
-     * @psalm-var array<string, mixed>
+     * @phpstan-var RegisterCssFileOptions
+     * @psalm-var RegisterCssFileOptions
      */
     public $cssOptions = [];
     /**
-     * @var mixed[] the options to be passed to [[AssetManager::publish()]] when the asset bundle
+     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
      * is being published. This property is used only when [[sourcePath]] is set.
      *
-     * @phpstan-var array<string, mixed>
-     * @psalm-var array<string, mixed>
+     * @phpstan-var PublishOptions
+     * @psalm-var PublishOptions
      */
     public $publishOptions = [];
 
