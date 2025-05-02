@@ -43,8 +43,8 @@ use yii\helpers\Url;
  *     only?: string[],
  *     except?: string[],
  *     caseSensitive?: bool,
- *     beforeCopy?: bool,
- *     afterCopy?: bool,
+ *     beforeCopy?: callable,
+ *     afterCopy?: callable,
  *     forceCopy?: bool,
  * }
  *
@@ -52,8 +52,8 @@ use yii\helpers\Url;
  *     only?: string[],
  *     except?: string[],
  *     caseSensitive?: bool,
- *     beforeCopy?: bool,
- *     afterCopy?: bool,
+ *     beforeCopy?: callable,
+ *     afterCopy?: callable,
  *     forceCopy?: bool,
  * }
  */
