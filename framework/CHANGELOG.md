@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #8298: Loading fixtures does not update table sequence for Postgresql database (mtangoo)
 - Bug #20347: Fix compatibility with PHP 8.4: remove usage of `session.use_trans_sid` and `session.use_only_cookies` (tehmaestro)
 - Bug #20355: Fix SQL syntax for resetting sequence in `QueryBuilder` for `MSSQL` (terabytesoftw)
+- Bug #20371: Fix "Typed property must not be accessed before initialization" when calling `toArray()` on a model with typed properties without default value
 
 
 2.0.52 February 13, 2025
