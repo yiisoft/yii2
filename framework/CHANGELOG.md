@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Chg #19902: Remove support for CUBRID (mtangoo)
 - Chg #19891: Remove XCache and ZendDataCache support (mtangoo)
+- Enh #20368: Refactor asset management: Migrate from `Bower` to `NPM` for package dependencies and update related documentation (terabytesoftw)
 
 
 2.0.53 under development
