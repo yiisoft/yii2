@@ -184,7 +184,7 @@ If your extension also depends on other extensions or third-party libraries, you
 Make sure you also list appropriate version constraints (for example, `1.*`, `@stable`) for each dependent package. 
 Use stable dependencies when your extension is released in a stable version.
 
-For JavaScript/CSS packages, Yii now uses [NPM](https://www.npmjs.com/) natively. If your extension depends on NPM packages,
+For JavaScript/CSS packages, Yii uses [NPM](https://www.npmjs.com/) natively. If your extension depends on NPM packages,
 you should include a `package.json` file in your extension root directory. For example:
 
 ```json
@@ -201,7 +201,7 @@ you should include a `package.json` file in your extension root directory. For e
 When your extension is installed, users will need to run `npm install` in the extension directory to install these 
 frontend dependencies. You should document this requirement in your extension's README file.
 
-In your extension's code, you can reference these assets from the node_modules directory. For example, in an asset 
+In your extension's code, you can reference these assets from the `node_modules` directory. For example, in an asset 
 bundle class:
 
 For more details about asset management, please refer to the [Assets](structure-assets.md#npm-assets) section.
