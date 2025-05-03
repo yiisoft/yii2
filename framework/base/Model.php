@@ -52,6 +52,15 @@ use yii\validators\Validator;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-property array<string, mixed> $attributes
+ * @psalm-property array<string, mixed> $attributes
+ *
+ * @phpstan-property-read array<string, string[]> $errors
+ * @psalm-property-read array<string, string[]> $errors
+ *
+ * @phpstan-property-read array<string, string> $firstErrors
+ * @psalm-property-read array<string, string> $firstErrors
  */
 class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
@@ -151,6 +160,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @return array validation rules
      * @see scenarios()
+     *
+     * @phpstan-return array<int|string, mixed>[]
+     * @psalm-return array<int|string, mixed>[]
      */
     public function rules()
     {
@@ -181,6 +193,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * are being validated by the validation rules that apply to the scenario.
      *
      * @return array a list of scenarios and the corresponding active attributes.
+     *
+     * @phpstan-return array<string, string[]>
+     * @psalm-return array<string, string[]>
      */
     public function scenarios()
     {
@@ -293,6 +308,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @return array attribute labels (name => label)
      * @see generateAttributeLabel()
+     *
+     * @phpstan-return array<string, string>
+     * @psalm-return array<string, string>
      */
     public function attributeLabels()
     {
@@ -313,6 +331,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @return array attribute hints (name => hint)
      * @since 2.0.4
+     *
+     * @phpstan-return array<string, string>
+     * @psalm-return array<string, string>
      */
     public function attributeHints()
     {
@@ -580,6 +601,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @see getFirstErrors()
      * @see getFirstError()
+     *
+     * @phpstan-return array<string, string[]>
+     * @psalm-return array<string, string[]>
      */
     public function getErrors($attribute = null)
     {
@@ -596,6 +620,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * values are the corresponding error messages. An empty array will be returned if there is no error.
      * @see getErrors()
      * @see getFirstError()
+     *
+     * @phpstan-return array<string, string>
+     * @psalm-return array<string, string>
      */
     public function getFirstErrors()
     {
@@ -708,6 +735,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * If it is an array, only the attributes in the array will be returned.
      * @param array $except list of attributes whose value should NOT be returned.
      * @return array attribute values (name => value).
+     *
+     * @phpstan-return array<string, mixed>
+     * @psalm-return array<string, mixed>
      */
     public function getAttributes($names = null, $except = [])
     {

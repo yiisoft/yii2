@@ -461,6 +461,9 @@ class Component extends BaseObject
      * Behaviors declared in this method will be attached to the component automatically (on demand).
      *
      * @return array the behavior configurations.
+     *
+     * @phpstan-return array<int|string, class-string|array{class: class-string, ...}>
+     * @psalm-return array<int|string, class-string|array{class: class-string, ...}>
      */
     public function behaviors()
     {
