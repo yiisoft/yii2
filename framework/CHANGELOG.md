@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Enh #20361: Add PHPStan/Psalm annotations for `ActiveQuery` (max-s-lab)
 - Enh #20363: Add PHPStan/Psalm annotations for `ActiveRecord` and `ActiveQuery` (max-s-lab)
 - Enh #20372: Add PHPStan/Psalm annotations for `AssetBundle`, `AssetManager` and `View` (max-s-lab)
+- Enh #20374: Add PHPStan/Psalm annotations for `BaseYii`, `BaseObject`, `Component`, `Model`, `Module` and `yii\base\Controller` (max-s-lab)
 
 
 2.0.52 February 13, 2025
