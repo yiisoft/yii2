@@ -660,6 +660,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @see getErrors()
      * @see getFirstErrors()
      * @since 2.0.14
+     *
+     * @phpstan-return string[]
+     * @psalm-return string[]
      */
     public function getErrorSummary($showAllErrors)
     {
