@@ -181,31 +181,30 @@ can know which extensions are installed (the information can be accessed via [[y
 
 Your extension depends on Yii (of course). So you should list it (`yiisoft/yii2`) in the `require` entry in `composer.json`.
 If your extension also depends on other extensions or third-party libraries, you should list them as well.
-Make sure you also list appropriate version constraints (e.g. `1.*`, `@stable`) for each dependent package. Use stable
-dependencies when your extension is released in a stable version.
+Make sure you also list appropriate version constraints (for example, `1.*`, `@stable`) for each dependent package. 
+Use stable dependencies when your extension is released in a stable version.
 
-Most JavaScript/CSS packages are managed using [Bower](https://bower.io/) and/or [NPM](https://www.npmjs.com/),
-instead of Composer. Yii uses the [Composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
-to enable managing these kinds of packages through Composer. If your extension depends on a Bower package, you can
-simply list the dependency in `composer.json` like the following:
+For JavaScript/CSS packages, Yii uses [NPM](https://www.npmjs.com/) natively. If your extension depends on NPM packages,
+you should include a `package.json` file in your extension root directory. For example:
 
 ```json
 {
-    // package dependencies
-    "require": {
-        "bower-asset/jquery": ">=1.11.*"
+    "name": "your-extension-name",
+    "version": "1.0.0",
+    "dependencies": {
+        "jquery": "^3.6.0",
+        "bootstrap": "^5.1.3"
     }
 }
 ```
 
-The above code states that the extension depends on the `jquery` Bower package. In general, you can use
-`bower-asset/PackageName` to refer to a Bower package in `composer.json`, and use `npm-asset/PackageName`
-to refer to a NPM package. When Composer installs a Bower or NPM package, by default the package content will be
-installed under the `@vendor/bower/PackageName` and `@vendor/npm/Packages` directories, respectively.
-These two directories can also be referred to using the shorter aliases `@bower/PackageName` and `@npm/PackageName`.
+When your extension is installed, users will need to run `npm install` in the extension directory to install these 
+frontend dependencies. You should document this requirement in your extension's README file.
 
-For more details about asset management, please refer to the [Assets](structure-assets.md#bower-npm-assets) section.
+In your extension's code, you can reference these assets from the `node_modules` directory. For example, in an asset 
+bundle class:
 
+For more details about asset management, please refer to the [Assets](structure-assets.md#npm-assets) section.
 
 #### Class Autoloading <span id="class-autoloading"></span>
 
