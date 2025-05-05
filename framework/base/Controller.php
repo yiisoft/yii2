@@ -87,6 +87,9 @@ class Controller extends Component implements ViewContextInterface
      * @param string $id the ID of this controller.
      * @param Module $module the module that this controller belongs to.
      * @param array $config name-value pairs that will be used to initialize the object properties.
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $module, $config = [])
     {
@@ -127,6 +130,9 @@ class Controller extends Component implements ViewContextInterface
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
      * @return array
+     *
+     * @phpstan-return array<string, class-string|array{class: class-string, ...}
+     * @psalm-return array<string, class-string|array{class: class-string, ...}
      */
     public function actions()
     {

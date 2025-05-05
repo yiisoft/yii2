@@ -338,6 +338,12 @@ class BaseYii
      * @return object the created object
      * @throws InvalidConfigException if the configuration is invalid.
      * @see \yii\di\Container
+     *
+     * @template T
+     * @phpstan-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
+     * @psalm-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
+     * @phpstan-return T
+     * @psalm-return T
      */
     public static function createObject($type, array $params = [])
     {
