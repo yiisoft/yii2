@@ -153,6 +153,9 @@ class Module extends ServiceLocator
      * @param string $id the ID of this module.
      * @param Module|null $parent the parent module (if any).
      * @param array $config name-value pairs that will be used to initialize the object properties.
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $parent = null, $config = [])
     {
