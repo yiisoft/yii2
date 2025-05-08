@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class ArrayHelperTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -734,6 +734,57 @@ class ArrayHelperTest extends TestCase
                 '345' => 'ccc',
             ],
         ], $result);
+
+        $result = ArrayHelper::map($array,
+            static function (array $group) {
+                return $group['id'] . $group['name'];
+            },
+            static function (array $group) {
+                return $group['name'] . $group['class'];
+            }
+        );
+
+        $this->assertEquals([
+            '123aaa' => 'aaax',
+            '124bbb' => 'bbbx',
+            '345ccc' => 'cccy',
+        ], $result);
+
+        $result = ArrayHelper::map($array,
+            static function (array $group) {
+                return $group['id'] . $group['name'];
+            },
+            static function (array $group) {
+                return $group['name'] . $group['class'];
+            },
+            static function (array $group) {
+                return $group['class'] . '-' . $group['class'];
+            }
+        );
+
+        $this->assertEquals([
+            'x-x' => [
+                '123aaa' => 'aaax',
+                '124bbb' => 'bbbx',
+            ],
+            'y-y' => [
+                '345ccc' => 'cccy',
+            ],
+        ], $result);
+
+        $array = [
+            ['id' => '123', 'name' => 'aaa', 'class' => 'x', 'map' => ['a' => '11', 'b' => '22']],
+            ['id' => '124', 'name' => 'bbb', 'class' => 'x', 'map' => ['a' => '33', 'b' => '44']],
+            ['id' => '345', 'name' => 'ccc', 'class' => 'y', 'map' => ['a' => '55', 'b' => '66']],
+        ];
+
+        $result = ArrayHelper::map($array, 'map.a', 'map.b');
+
+        $this->assertEquals([
+            '11' => '22',
+            '33' => '44',
+            '55' => '66'
+        ], $result);
     }
 
     public function testKeyExists()
@@ -876,13 +927,12 @@ class ArrayHelperTest extends TestCase
 
     public function testGetValueNonexistingProperties1()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->expectException('PHPUnit_Framework_Error_Notice');
-        } else {
-            $this->expectException('PHPUnit_Framework_Error_Warning');
+        try {
+            $object = new Post1();
+            ArrayHelper::getValue($object, 'nonExisting');
+        } catch (\Throwable $th) {
+            $this->assertEquals('Undefined property: yiiunit\framework\helpers\Post1::$nonExisting', $th->getMessage());
         }
-        $object = new Post1();
-        ArrayHelper::getValue($object, 'nonExisting');
     }
 
     public function testGetValueNonexistingPropertiesForArrayObject()
@@ -1559,6 +1609,125 @@ class ArrayHelperTest extends TestCase
                 ]
             ],
         ];
+    }
+
+    public function testFlatten()
+    {
+        // Test with deeply nested arrays
+        $array = [
+            'a' => [
+                'b' => [
+                    'c' => [
+                        'd' => 1,
+                        'e' => 2,
+                    ],
+                    'f' => 3,
+                ],
+                'g' => 4,
+            ],
+            'h' => 5,
+        ];
+        $expected = [
+            'a.b.c.d' => 1,
+            'a.b.c.e' => 2,
+            'a.b.f' => 3,
+            'a.g' => 4,
+            'h' => 5,
+        ];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Test with arrays containing different data types
+        $array = [
+            'a' => [
+                'b' => [
+                    'c' => 'string',
+                    'd' => 123,
+                    'e' => true,
+                    'f' => null,
+                ],
+                'g' => [1, 2, 3],
+            ],
+        ];
+        $expected = [
+            'a.b.c' => 'string',
+            'a.b.d' => 123,
+            'a.b.e' => true,
+            'a.b.f' => null,
+            'a.g.0' => 1,
+            'a.g.1' => 2,
+            'a.g.2' => 3,
+        ];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Test with arrays containing special characters in keys
+        $array = [
+            'a.b' => [
+                'c.d' => [
+                    'e.f' => 1,
+                ],
+            ],
+            'g.h' => 2,
+        ];
+        $expected = [
+            'a.b.c.d.e.f' => 1,
+            'g.h' => 2,
+        ];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Test with custom separator
+        $array = [
+            'a' => [
+                'b' => [
+                    'c' => [
+                        'd' => 1,
+                        'e' => 2,
+                    ],
+                    'f' => 3,
+                ],
+                'g' => 4,
+            ],
+            'h' => 5,
+        ];
+        $result = ArrayHelper::flatten($array, '_');
+        $expected = [
+            'a_b_c_d' => 1,
+            'a_b_c_e' => 2,
+            'a_b_f' => 3,
+            'a_g' => 4,
+            'h' => 5,
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testFlattenEdgeCases()
+    {
+        // Empty array
+        $array = [];
+        $expected = [];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Non-array value
+        $array = 'string';
+        $expected = ['string'];
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Argument $array must be an array or implement Traversable');
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Special characters in keys
+        $array = ['a.b' => ['c.d' => 1]];
+        $expected = ['a.b.c.d' => 1];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Mixed data types
+        $array = ['a' => ['b' => 'string', 'c' => 123, 'd' => true, 'e' => null]];
+        $expected = ['a.b' => 'string', 'a.c' => 123, 'a.d' => true, 'a.e' => null];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
+
+        // Key collisions
+        $array = ['a' => ['b' => 1], 'a.b' => 2];
+        $expected = ['a.b' => 2];
+        $this->assertEquals($expected, ArrayHelper::flatten($array));
     }
 }
 

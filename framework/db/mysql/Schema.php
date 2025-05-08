@@ -10,6 +10,7 @@ namespace yii\db\mysql;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\db\CheckConstraint;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
@@ -200,11 +201,46 @@ SQL;
 
     /**
      * {@inheritdoc}
-     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
     {
-        throw new NotSupportedException('MySQL does not support check constraints.');
+        $version = $this->db->getServerVersion();
+
+        // check version MySQL >= 8.0.16
+        if (\stripos($version, 'MariaDb') === false && \version_compare($version, '8.0.16', '<')) {
+            throw new NotSupportedException('MySQL < 8.0.16 does not support check constraints.');
+        }
+
+        $checks = [];
+
+        $sql = <<<SQL
+        SELECT cc.CONSTRAINT_NAME as constraint_name, cc.CHECK_CLAUSE as check_clause
+        FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS tc
+        JOIN INFORMATION_SCHEMA.CHECK_CONSTRAINTS cc
+        ON tc.CONSTRAINT_NAME = cc.CONSTRAINT_NAME
+        WHERE tc.TABLE_NAME = :tableName AND tc.CONSTRAINT_TYPE = 'CHECK';
+        SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $tableRows = $this->db->createCommand($sql, [':tableName' => $resolvedName->name])->queryAll();
+
+        if ($tableRows === []) {
+            return $checks;
+        }
+
+        $tableRows = $this->normalizePdoRowKeyCase($tableRows, true);
+
+        foreach ($tableRows as $tableRow) {
+            $check = new CheckConstraint(
+                [
+                    'name' => $tableRow['constraint_name'],
+                    'expression' => $tableRow['check_clause'],
+                ]
+            );
+            $checks[] = $check;
+        }
+
+        return $checks;
     }
 
     /**
@@ -301,9 +337,11 @@ SQL;
              *
              * See details here: https://mariadb.com/kb/en/library/now/#description
              */
-            if (in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
+            if (
+                in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
                 && isset($info['default'])
-                && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)) {
+                && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)
+            ) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
@@ -335,10 +373,19 @@ SQL;
             }
             throw $e;
         }
+
+
+        $jsonColumns = $this->getJsonColumns($table);
+
         foreach ($columns as $info) {
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) !== \PDO::CASE_LOWER) {
                 $info = array_change_key_case($info, CASE_LOWER);
             }
+
+            if (\in_array($info['field'], $jsonColumns, true)) {
+                $info['type'] = static::TYPE_JSON;
+            }
+
             $column = $this->loadColumnSchema($info);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {
@@ -595,5 +642,21 @@ SQL;
         }
 
         return $result[$returnType];
+    }
+
+    private function getJsonColumns(TableSchema $table): array
+    {
+        $sql = $this->getCreateTableSql($table);
+        $result = [];
+
+        $regexp = '/json_valid\([\`"](.+)[\`"]\s*\)/mi';
+
+        if (\preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $result[] = $match[1];
+            }
+        }
+
+        return $result;
     }
 }

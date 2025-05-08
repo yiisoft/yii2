@@ -48,7 +48,7 @@ class NumberValidatorTest extends TestCase
         setlocale(LC_NUMERIC, $this->oldLocale);
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -519,8 +519,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5', $js);
-        $this->assertContains('"max":10', $js);
+        $this->assertStringContainsString('"min":5', $js);
+        $this->assertStringContainsString('"max":10', $js);
 
         $val = new NumberValidator([
             'min' => '5',
@@ -528,8 +528,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5', $js);
-        $this->assertContains('"max":10', $js);
+        $this->assertStringContainsString('"min":5', $js);
+        $this->assertStringContainsString('"max":10', $js);
 
         $val = new NumberValidator([
             'min' => 5.65,
@@ -537,8 +537,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5.65', $js);
-        $this->assertContains('"max":13.37', $js);
+        $this->assertStringContainsString('"min":5.65', $js);
+        $this->assertStringContainsString('"max":13.37', $js);
 
         $val = new NumberValidator([
             'min' => '5.65',
@@ -546,8 +546,8 @@ class NumberValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertContains('"min":5.65', $js);
-        $this->assertContains('"max":13.37', $js);
+        $this->assertStringContainsString('"min":5.65', $js);
+        $this->assertStringContainsString('"max":13.37', $js);
     }
 
     public function testValidateObject()

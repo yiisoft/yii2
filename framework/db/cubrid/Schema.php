@@ -308,7 +308,8 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
             return $column;
         }
 
-        if ($column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
+        if (
+            $column->type === 'timestamp' && $info['Default'] === 'SYS_TIMESTAMP' ||
             $column->type === 'datetime' && $info['Default'] === 'SYS_DATETIME' ||
             $column->type === 'date' && $info['Default'] === 'SYS_DATE' ||
             $column->type === 'time' && $info['Default'] === 'SYS_TIME'

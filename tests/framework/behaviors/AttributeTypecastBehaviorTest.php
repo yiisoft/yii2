@@ -7,11 +7,13 @@
 
 namespace yiiunit\framework\behaviors;
 
+use ValueError;
 use Yii;
 use yii\base\DynamicModel;
 use yii\base\Event;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\db\ActiveRecord;
+use yiiunit\framework\db\enums\StatusTypeString;
 use yiiunit\TestCase;
 
 /**
@@ -22,14 +24,14 @@ use yiiunit\TestCase;
  */
 class AttributeTypecastBehaviorTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -47,11 +49,12 @@ class AttributeTypecastBehaviorTest extends TestCase
             'price' => 'float',
             'isActive' => 'boolean',
             'callback' => 'string',
+            'status' => 'string',
         ];
         Yii::$app->getDb()->createCommand()->createTable('test_attribute_typecast', $columns)->execute();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         AttributeTypecastBehavior::clearAutoDetectedAttributeTypes();
@@ -78,6 +81,55 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame(100.8, $model->price);
         $this->assertTrue($model->isActive);
         $this->assertSame('callback: foo', $model->callback);
+    }
+
+    public function testTypecastEnum()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.1');
+        }
+
+        $model = new ActiveRecordAttributeTypecastWithEnum();
+
+        $model->status = StatusTypeString::Active;
+
+        $model->getAttributeTypecastBehavior()->typecastAttributes();
+
+        $this->assertSame(StatusTypeString::Active, $model->status);
+    }
+
+    /**
+     * @depends testTypecastEnum
+     */
+    public function testTypecastEnumFromString()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.1');
+        }
+
+        $model = new ActiveRecordAttributeTypecastWithEnum();
+        $model->status = 'active'; // Same as StatusTypeString::ACTIVE->value;
+
+        $model->getAttributeTypecastBehavior()->typecastAttributes();
+
+        $this->assertSame(StatusTypeString::Active, $model->status);
+    }
+
+    /**
+     * @depends testTypecastEnum
+     */
+    public function testTypecastEnumFailWithInvalidValue()
+    {
+        if (PHP_VERSION_ID < 80100) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.1');
+        }
+
+        $model = new ActiveRecordAttributeTypecastWithEnum();
+        $model->status = 'invalid';
+
+        self::expectException(ValueError::class);
+
+        $model->getAttributeTypecastBehavior()->typecastAttributes();
     }
 
     /**
@@ -329,6 +381,40 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
             ['price', 'number'],
             ['isActive', 'boolean'],
         ];
+    }
+
+    /**
+     * @return AttributeTypecastBehavior
+     */
+    public function getAttributeTypecastBehavior()
+    {
+        return $this->getBehavior('attributeTypecast');
+    }
+}
+
+/**
+ * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached with an enum field.
+ *
+ * @property StatusTypeString $status
+ */
+class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
+{
+    public function behaviors()
+    {
+        return [
+            'attributeTypecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'status' => StatusTypeString::class,
+                ],
+                'typecastBeforeSave' => true,
+            ],
+        ];
+    }
+
+    public static function tableName()
+    {
+        return 'test_attribute_typecast';
     }
 
     /**

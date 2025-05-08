@@ -235,7 +235,8 @@ class InConditionBuilder implements ExpressionBuilderInterface
      * @return string is null or is not null condition
      * @since 2.0.31
      */
-    protected function getNullCondition($operator, $column) {
+    protected function getNullCondition($operator, $column)
+    {
         $column = $this->queryBuilder->db->quoteColumnName($column);
         if ($operator === 'IN') {
             return sprintf('%s IS NULL', $column);

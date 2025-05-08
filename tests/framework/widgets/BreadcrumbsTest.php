@@ -19,7 +19,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
 {
     private $breadcrumbs;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()

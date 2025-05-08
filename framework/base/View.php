@@ -20,6 +20,7 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
+ * @property-read DynamicContentAwareInterface[] $dynamicContents Class instances supporting dynamic contents.
  * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered.
  *
@@ -420,7 +421,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.

@@ -15,6 +15,7 @@ use yii\db\ExpressionInterface;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 class InCondition implements ConditionInterface
 {

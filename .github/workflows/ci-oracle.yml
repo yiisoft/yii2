@@ -20,11 +20,8 @@ jobs:
 
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-
-        php:
-          - 7.4
+        os: [ubuntu-latest]
+        php: [7.4]
 
     services:
       oci:
@@ -35,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
@@ -56,6 +53,8 @@ jobs:
         run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v3
+        if: matrix.php == '7.4'
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml

@@ -1,0 +1,68 @@
+on:
+  - pull_request
+  - push
+
+name: ci-mariadb
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
+    env:
+      extensions: curl, intl, pdo, pdo_mysql
+      XDEBUG_MODE: coverage, develop
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        mariadb:
+          - mariadb:10.4
+          - mariadb:latest
+
+    services:
+      mysql:
+        image: ${{ matrix.mariadb }}
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: yiitest
+        ports:
+          - 3306:3306
+        options: --health-cmd="mariadb-admin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v4
+
+      - name: Install PHP with extensions.
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: xdebug
+          extensions: ${{ env.EXTENSIONS }}
+          ini-values: date.timezone='UTC'
+          php-version: ${{ matrix.php }}
+          tools: composer:v2, pecl
+
+      - name: Install dependencies with composer
+        if: matrix.php != '8.4'
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: Install dependencies with PHP 8.4.
+        if: matrix.php == '8.4'
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ignore-platform-reqs --ansi
+
+      - name: Run MariaDB tests with PHPUnit and generate coverage.
+        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
+
+      - name: Upload coverage to Codecov.
+        if: matrix.php == '7.4'
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml

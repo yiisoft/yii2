@@ -24,7 +24,7 @@ abstract class DatabaseTestCase extends TestCase
     private $_db;
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ($this->driverName === null) {
             throw new \Exception('driverName is not set for a DatabaseTestCase.');
@@ -44,7 +44,7 @@ abstract class DatabaseTestCase extends TestCase
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->_db) {
             $this->_db->close();

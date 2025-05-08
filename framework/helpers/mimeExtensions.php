@@ -8,6 +8,9 @@
  * Its content is generated from the apache http mime.types file.
  * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 return [
     'application/andrew-inset' => 'ez',
@@ -958,6 +961,7 @@ return [
         'pjp',
         'pjpeg',
     ],
+    'image/jxl' => 'jxl',
     'image/ktx' => 'ktx',
     'image/png' => 'png',
     'image/prs.btif' => 'btif',
@@ -1038,7 +1042,6 @@ return [
     'model/vnd.dwf' => 'dwf',
     'model/vnd.gdl' => 'gdl',
     'model/vnd.gtw' => 'gtw',
-    'model/vnd.mts' => 'mts',
     'model/vnd.vtu' => 'vtu',
     'model/vrml' => [
         'wrl',
@@ -1161,6 +1164,12 @@ return [
     'video/mj2' => [
         'mj2',
         'mjp2',
+    ],
+    'video/mp2t' => [
+        'ts',
+        'm2t',
+        'm2ts',
+        'mts',
     ],
     'video/mp4' => [
         'mp4',

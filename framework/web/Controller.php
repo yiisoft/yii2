@@ -17,6 +17,10 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
  *
+ * @property Request $request The request object.
+ * @property Response $response The response object.
+ * @property View $view The view object that can be used to render views or view files.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -129,11 +133,7 @@ class Controller extends \yii\base\Controller
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
                 $isValid = true;
-                if (PHP_VERSION_ID >= 80000) {
-                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
-                } else {
-                    $isArray = $param->isArray();
-                }
+                $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
                 if ($isArray) {
                     $params[$name] = (array)$params[$name];
                 } elseif (is_array($params[$name])) {

@@ -109,7 +109,8 @@ class AttributeBehavior extends Behavior
      */
     public function evaluateAttributes($event)
     {
-        if ($this->skipUpdateOnClean
+        if (
+            $this->skipUpdateOnClean
             && $event->name == ActiveRecord::EVENT_BEFORE_UPDATE
             && empty($this->owner->dirtyAttributes)
         ) {

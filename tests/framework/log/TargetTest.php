@@ -76,7 +76,12 @@ class TargetTest extends TestCase
         $logger->log('testH', Logger::LEVEL_ERROR, 'yii.db.Command.whatever');
         $logger->log('testI', Logger::LEVEL_ERROR, 'yii\db\Command::query');
 
-        $this->assertEquals(count($expected), count(static::$messages), 'Expected ' . implode(',', $expected) . ', got ' . implode(',', array_column(static::$messages, 0)));
+        $messageColumn = [];
+        foreach (static::$messages as $message) {
+            $messageColumn[] = $message[0];
+        }
+
+        $this->assertEquals(count($expected), count(static::$messages), 'Expected ' . implode(',', $expected) . ', got ' . implode(',', $messageColumn));
         $i = 0;
         foreach ($expected as $e) {
             $this->assertEquals('test' . $e, static::$messages[$i++][0]);
@@ -118,23 +123,23 @@ class TargetTest extends TestCase
             'C_c' => 1,
         ];
         $context = $target->getContextMessage();
-        $this->assertContains('A_a', $context);
-        $this->assertNotContains('A_b', $context);
-        $this->assertContains('A_c', $context);
-        $this->assertContains('B_a', $context);
-        $this->assertNotContains('B_b', $context);
-        $this->assertNotContains('B_c', $context);
-        $this->assertContains('C_a', $context);
-        $this->assertContains('C_b', $context);
-        $this->assertContains('C_c', $context);
-        $this->assertNotContains('D_a', $context);
-        $this->assertNotContains('D_b', $context);
-        $this->assertNotContains('D_c', $context);
-        $this->assertNotContains('E_a', $context);
-        $this->assertNotContains('E_b', $context);
-        $this->assertNotContains('E_c', $context);
-        $this->assertNotContains('mySecret', $context);
-        $this->assertContains('***', $context);
+        $this->assertStringContainsString('A_a', $context);
+        $this->assertStringNotContainsString('A_b', $context);
+        $this->assertStringContainsString('A_c', $context);
+        $this->assertStringContainsString('B_a', $context);
+        $this->assertStringNotContainsString('B_b', $context);
+        $this->assertStringNotContainsString('B_c', $context);
+        $this->assertStringContainsString('C_a', $context);
+        $this->assertStringContainsString('C_b', $context);
+        $this->assertStringContainsString('C_c', $context);
+        $this->assertStringNotContainsString('D_a', $context);
+        $this->assertStringNotContainsString('D_b', $context);
+        $this->assertStringNotContainsString('D_c', $context);
+        $this->assertStringNotContainsString('E_a', $context);
+        $this->assertStringNotContainsString('E_b', $context);
+        $this->assertStringNotContainsString('E_c', $context);
+        $this->assertStringNotContainsString('mySecret', $context);
+        $this->assertStringContainsString('***', $context);
     }
 
     /**
@@ -339,6 +344,45 @@ class TargetTest extends TestCase
         $logger->log('token.b', Logger::LEVEL_PROFILE_BEGIN, 'category');
         $logger->log('token.b', Logger::LEVEL_PROFILE_END, 'category');
         $logger->log('token.a', Logger::LEVEL_PROFILE_END, 'category');
+    }
+
+    public function testWildcardsInMaskVars()
+    {
+        $keys = [
+            'PASSWORD',
+            'password',
+            'password_repeat',
+            'repeat_password',
+            'repeat_password_again',
+            '1password',
+            'password1',
+        ];
+
+        $password = '!P@$$w0rd#';
+
+        $items = array_fill_keys($keys, $password);
+
+        $GLOBALS['_TEST'] = array_merge(
+            $items,
+            ['a' => $items],
+            ['b' => ['c' => $items]],
+            ['d' => ['e' => ['f' => $items]]],
+        );
+
+        $target = new TestTarget([
+            'logVars' => ['_SERVER', '_TEST'],
+            'maskVars' => [
+                // option 1: exact value(s)
+                '_SERVER.DOCUMENT_ROOT',
+                // option 2: pattern(s)
+                '_TEST.*password*',
+            ]
+        ]);
+
+        $message = $target->getContextMessage();
+
+        $this->assertStringContainsString("'DOCUMENT_ROOT' => '***'", $message);
+        $this->assertStringNotContainsString($password, $message);
     }
 }
 

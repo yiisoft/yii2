@@ -26,14 +26,14 @@ class AttributeBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -52,7 +52,7 @@ class AttributeBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_attribute', $columns)->execute();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();

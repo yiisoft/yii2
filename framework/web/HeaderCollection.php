@@ -7,11 +7,13 @@
 
 namespace yii\web;
 
-use Yii;
 use yii\base\BaseObject;
 
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
+ *
+ * @property-read int $count The number of headers in the collection.
+ * @property-read \ArrayIterator $iterator An iterator for traversing the headers in the collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

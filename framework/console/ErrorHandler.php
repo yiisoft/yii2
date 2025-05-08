@@ -90,8 +90,10 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         $stream = (PHP_SAPI === 'cli') ? \STDERR : \STDOUT;
         // try controller first to allow check for --color switch
-        if (Yii::$app->controller instanceof \yii\console\Controller && Yii::$app->controller->isColorEnabled($stream)
-            || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)) {
+        if (
+            Yii::$app->controller instanceof \yii\console\Controller && Yii::$app->controller->isColorEnabled($stream)
+            || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)
+        ) {
             $message = Console::ansiFormat($message, $format);
         }
 

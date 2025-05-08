@@ -14,7 +14,7 @@ use yiiunit\TestCase;
 
 class ErrorHandlerTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -42,6 +42,52 @@ Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
     }
 
+    public function testFormatRaw()
+    {
+        Yii::$app->response->format = yii\web\Response::FORMAT_RAW;
+
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $out = ob_get_clean();
+
+        $this->assertStringContainsString('Test Exception', $out);
+
+        $this->assertTrue(is_string(Yii::$app->response->data));
+        $this->assertStringContainsString(
+            "Exception 'Exception' with message 'Test Exception'",
+            Yii::$app->response->data
+        );
+    }
+
+    public function testFormatXml()
+    {
+        Yii::$app->response->format = yii\web\Response::FORMAT_XML;
+
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $out = ob_get_clean();
+
+        $this->assertStringContainsString('Test Exception', $out);
+
+        $outArray = Yii::$app->response->data;
+
+        $this->assertTrue(is_array(Yii::$app->response->data));
+
+        $this->assertEquals('Exception', $outArray['name']);
+        $this->assertEquals('Test Exception', $outArray['message']);
+        $this->assertArrayHasKey('code', $outArray);
+        $this->assertEquals('Exception', $outArray['type']);
+        $this->assertStringContainsString('ErrorHandlerTest.php', $outArray['file']);
+        $this->assertArrayHasKey('stack-trace', $outArray);
+        $this->assertArrayHasKey('line', $outArray);
+    }
+
     public function testClearAssetFilesInErrorView()
     {
         Yii::$app->getView()->registerJsFile('somefile.js');
@@ -66,7 +112,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->invokeMethod($handler, 'renderException', [new NotFoundHttpException()]);
         ob_get_clean();
         $out = Yii::$app->response->data;
-        $this->assertNotContains('<script', $out);
+        $this->assertStringNotContainsString('<script', $out);
     }
 
     public function testRenderCallStackItem()
@@ -77,7 +123,7 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::className(), null, null, null);
 
-        $this->assertContains('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
+        $this->assertStringContainsString('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 
     public function dataHtmlEncode()
@@ -85,7 +131,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         return [
             [
                 "a \t=<>&\"'\x80`\n",
-                "a \t=&lt;&gt;&amp;\"'�`\n",
+                "a \t=&lt;&gt;&amp;&quot;&apos;�`\n",
             ],
             [
                 '<b>test</b>',
@@ -93,11 +139,11 @@ Exception: yii\web\NotFoundHttpException', $out);
             ],
             [
                 '"hello"',
-                '"hello"',
+                '&quot;hello&quot;',
             ],
             [
                 "'hello world'",
-                "'hello world'",
+                "&apos;hello world&apos;",
             ],
             [
                 'Chip&amp;Dale',
@@ -122,15 +168,10 @@ Exception: yii\web\NotFoundHttpException', $out);
 
     public function testHtmlEncodeWithUnicodeSequence()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $handler = Yii::$app->getErrorHandler();
 
         $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";
-        $expected = "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}";
+        $expected = "a \t=&lt;&gt;&amp;&quot;&apos;�₽`\n\u{000c}\u{0000}";
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }

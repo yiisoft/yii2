@@ -24,6 +24,7 @@ use yii\base\InvalidConfigException;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, \IteratorAggregate
 {

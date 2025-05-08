@@ -196,11 +196,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function checksProvider()
-    {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');
-    }
-
     public function defaultValuesProvider()
     {
         $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
@@ -272,35 +267,35 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             // json conditions
             [
                 ['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"lang":"uk","country":"UA"}'],
+                '[[jsoncol]] = :qp0', [':qp0' => '{"lang":"uk","country":"UA"}'],
             ],
             [
                 ['=', 'jsoncol', new JsonExpression([false])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '[false]']
+                '[[jsoncol]] = :qp0', [':qp0' => '[false]']
             ],
             'object with type. Type is ignored for MySQL' => [
                 ['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')],
-                '[[prices]] = CAST(:qp0 AS JSON)', [':qp0' => '{"seeds":15,"apples":25}'],
+                '[[prices]] = :qp0', [':qp0' => '{"seeds":15,"apples":25}'],
             ],
             'nested json' => [
                 ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
-                '[[data]] = CAST(:qp0 AS JSON)', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
+                '[[data]] = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
             ],
             'null value' => [
                 ['=', 'jsoncol', new JsonExpression(null)],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => 'null']
+                '[[jsoncol]] = :qp0', [':qp0' => 'null']
             ],
             'null as array value' => [
                 ['=', 'jsoncol', new JsonExpression([null])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '[null]']
+                '[[jsoncol]] = :qp0', [':qp0' => '[null]']
             ],
             'null as object value' => [
                 ['=', 'jsoncol', new JsonExpression(['nil' => null])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"nil":null}']
+                '[[jsoncol]] = :qp0', [':qp0' => '{"nil":null}']
             ],
             'with object as value' => [
                 ['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"a":1,"b":2}']
+                '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2}']
             ],
             'query' => [
                 ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))],
@@ -312,7 +307,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ],
             'nested and combined json expression' => [
                 ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
-                "[[jsoncol]] = CAST(:qp0 AS JSON)", [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
+                "[[jsoncol]] = :qp0", [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
             ],
             'search by property in JSON column (issue #15838)' => [
                 ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
@@ -333,7 +328,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=CAST(:qp0 AS JSON) WHERE [[id]]=:qp1'),
+            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -403,7 +398,7 @@ MySqlStatement;
         // primary key columns should have NULL as value
         $sql = $command->insert('null_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `null_values` (`id`) VALUES (NULL)", $sql);
-        
+
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);

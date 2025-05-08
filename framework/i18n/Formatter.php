@@ -882,7 +882,8 @@ class Formatter extends Component
                 ($timestamp = DateTime::createFromFormat(
                     'Y-m-d|',
                     $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                    new DateTimeZone($this->defaultTimeZone)
+                )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
@@ -891,7 +892,8 @@ class Formatter extends Component
                 ($timestamp = DateTime::createFromFormat(
                     'Y-m-d H:i:s',
                     $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                    new DateTimeZone($this->defaultTimeZone)
+                )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
@@ -1056,7 +1058,7 @@ class Formatter extends Component
         } elseif (is_numeric($value)) {
             $isNegative = $value < 0;
             $zeroDateTime = (new DateTime())->setTimestamp(0);
-            $valueDateTime = (new DateTime())->setTimestamp(abs($value));
+            $valueDateTime = (new DateTime())->setTimestamp(abs((int) $value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strncmp($value, 'P-', 2) === 0) {
             $interval = new DateInterval('P' . substr($value, 2));

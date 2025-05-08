@@ -151,24 +151,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
-     */
-    public function addCheck($name, $table, $expression)
-    {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
-     */
-    public function dropCheck($name, $table)
-    {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
-    }
-
-    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -266,7 +248,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $columns = [reset($tableSchema->columns)->name];
                     $defaultValue = 'DEFAULT';
                 }
-                
+
                 foreach ($columns as $name) {
                     $names[] = $this->db->quoteColumnName($name);
                     $placeholders[] = $defaultValue;
@@ -312,8 +294,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addCommentOnColumn($table, $column, $comment)
     {
         // Strip existing comment which may include escaped quotes
-        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
-            $this->getColumnDefinition($table, $column)));
+        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '', $this->getColumnDefinition($table, $column)));
 
         $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
         $check = preg_match($checkRegex, $definition, $checkMatches);

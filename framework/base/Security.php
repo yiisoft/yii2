@@ -7,7 +7,6 @@
 
 namespace yii\base;
 
-use Yii;
 use yii\helpers\StringHelper;
 
 /**
@@ -576,7 +575,8 @@ class Security extends Component
             throw new InvalidArgumentException('Password must be a string and cannot be empty.');
         }
 
-        if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches)
+        if (
+            !preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches)
             || $matches[1] < 4
             || $matches[1] > 30
         ) {

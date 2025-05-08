@@ -341,6 +341,66 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcNowDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, now()) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_now_default');
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, now())'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampNowDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT now()',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_now_default');
+        $this->assertEquals(new Expression('now()'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcStringDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_string_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_string_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_string_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_string_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_string_default');
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
     public function constraintsProvider()
     {
         $result = parent::constraintsProvider();

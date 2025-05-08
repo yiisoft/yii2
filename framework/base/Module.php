@@ -153,6 +153,9 @@ class Module extends ServiceLocator
      * @param string $id the ID of this module.
      * @param Module|null $parent the parent module (if any).
      * @param array $config name-value pairs that will be used to initialize the object properties.
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $parent = null, $config = [])
     {
@@ -656,7 +659,7 @@ class Module extends ServiceLocator
 
         $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
                 return ucfirst($matches[1]);
-            }, ucfirst($className)) . 'Controller';
+        }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;

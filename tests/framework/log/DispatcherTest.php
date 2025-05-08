@@ -52,7 +52,7 @@ namespace yiiunit\framework\log {
          */
         public static $functions = [];
 
-        protected function setUp()
+        protected function setUp(): void
         {
             static::$microtimeIsMocked = false;
             $this->dispatcher = new Dispatcher();

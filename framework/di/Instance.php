@@ -114,15 +114,28 @@ class Instance
      * @param ServiceLocator|Container|null $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid
+     *
+     * @template T of object
+     * @psalm-param class-string<T>|null $type
+     * @phpstan-param class-string<T>|null $type
+     * @psalm-return ($type is null ? object : T)
+     * @phpstan-return ($type is null ? object : T)
      */
     public static function ensure($reference, $type = null, $container = null)
     {
         if (is_array($reference)) {
-            $class = isset($reference['class']) ? $reference['class'] : $type;
             if (!$container instanceof Container) {
                 $container = Yii::$container;
             }
-            unset($reference['class']);
+            if (isset($reference['__class'])) {
+                $class = $reference['__class'];
+                unset($reference['__class'], $type['class']);
+            } elseif (isset($reference['class'])) {
+                $class = $reference['class'];
+                unset($reference['class']);
+            } else {
+                $class = $type;
+            }
             $component = $container->get($class, [], $reference);
             if ($type === null || $component instanceof $type) {
                 return $component;

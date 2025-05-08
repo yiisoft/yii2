@@ -520,6 +520,35 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
+     * Creates a SQL command for adding a check constraint to an existing table.
+     * @param string $name the name of the check constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the check constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $expression the SQL of the `CHECK` constraint.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        $time = $this->beginCommand("add check $name in table $table");
+        $this->db->createCommand()->addCheck($name, $table, $expression)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
+     * Creates a SQL command for dropping a check constraint.
+     * @param string $name the name of the check constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose check constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     */
+    public function dropCheck($name, $table)
+    {
+        $time = $this->beginCommand("drop check $name in table $table");
+        $this->db->createCommand()->dropCheck($name, $table)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
      * Builds and execute a SQL statement for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.

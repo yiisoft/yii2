@@ -205,6 +205,11 @@ class BaseHtml
      */
     public static function style($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->styleOptions)) {
+            $options = array_merge($view->styleOptions, $options);
+        }
+
         return static::tag('style', $content, $options);
     }
 
@@ -219,6 +224,11 @@ class BaseHtml
      */
     public static function script($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->scriptOptions)) {
+            $options = array_merge($view->scriptOptions, $options);
+        }
+
         return static::tag('script', $content, $options);
     }
 
@@ -1260,6 +1270,7 @@ class BaseHtml
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
      *   only the first error message for each attribute will be shown. Defaults to `false`.
      *   Option is available since 2.0.10.
+     * - emptyClass: string, the class name that is added to an empty summary.
      *
      * The rest of the options will be rendered as the attributes of the container tag.
      *
@@ -1271,12 +1282,17 @@ class BaseHtml
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
+        $emptyClass = ArrayHelper::remove($options, 'emptyClass', null);
         unset($options['header']);
         $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
-            $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+            if ($emptyClass !== null) {
+                $options['class'] = $emptyClass;
+            } else {
+                $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+            }
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }

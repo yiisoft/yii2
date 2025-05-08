@@ -21,7 +21,7 @@ class WidgetTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Widget::$counter = 0;
@@ -58,6 +58,27 @@ class WidgetTest extends TestCase
             TestWidgetB::className() => [
                 'class' => TestWidget::className()
             ]
+        ]);
+
+        ob_start();
+        ob_implicit_flush(false);
+
+        $widget = TestWidgetB::begin(['id' => 'test']);
+        $this->assertTrue($widget instanceof TestWidget);
+        TestWidgetB::end();
+
+        $output = ob_get_clean();
+
+        $this->assertSame('<run-test>', $output);
+    }
+
+    public function testDependencyInjectionWithCallableConfiguration()
+    {
+        Yii::$container = new Container();
+        Yii::$container->setDefinitions([
+            TestWidgetB::className() => function () {
+                return new TestWidget(['id' => 'test']);
+            }
         ]);
 
         ob_start();

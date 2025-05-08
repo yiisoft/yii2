@@ -94,7 +94,7 @@ abstract class ErrorHandler extends Component
                 set_error_handler([$this, 'handleError']);
             }
             if ($this->memoryReserveSize > 0) {
-                $this->_memoryReserve = str_pad('', $this->memoryReserveSize, 'x');
+                $this->_memoryReserve = str_repeat('x', $this->memoryReserveSize);
             }
             // to restore working directory in shutdown handler
             if (PHP_SAPI !== 'cli') {
@@ -279,13 +279,13 @@ abstract class ErrorHandler extends Component
      */
     public function handleFatalError()
     {
-        unset($this->_memoryReserve);
+        $this->_memoryReserve = null;
 
-        if (isset($this->_workingDirectory)) {
+        if (!empty($this->_workingDirectory)) {
             // fix working directory for some Web servers e.g. Apache
             chdir($this->_workingDirectory);
             // flush memory
-            unset($this->_workingDirectory);
+            $this->_workingDirectory = null;
         }
 
         $error = error_get_last();

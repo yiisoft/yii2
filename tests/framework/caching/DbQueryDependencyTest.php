@@ -23,7 +23,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

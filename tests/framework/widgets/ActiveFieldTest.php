@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
@@ -23,6 +24,8 @@ use yii\widgets\MaskedInput;
  */
 class ActiveFieldTest extends \yiiunit\TestCase
 {
+    use ArraySubsetAsserts;
+    
     /**
      * @var ActiveFieldExtend
      */
@@ -37,7 +40,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     private $helperForm;
     private $attributeName = 'attributeName';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
@@ -672,14 +675,21 @@ HTML;
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_direct'],
         ]);
-        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
+
+        // use regex clientOptions instead mask
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'options' => ['placeholder' => 'pholder_direct'],
+            'clientOptions' => ['regex' => '^.*$'],
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
 
         // transfer options from ActiveField to widget
         $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
         $widget = $this->activeField->widget(TestMaskedInput::className(), [
             'mask' => '999-999-9999',
         ]);
-        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_input"', (string) $widget);
 
         // set both AF and widget options (second one takes precedence)
         $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
@@ -687,7 +697,7 @@ HTML;
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_both_direct']
         ]);
-        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
     }
 
     /**

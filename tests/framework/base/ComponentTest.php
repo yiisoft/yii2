@@ -10,6 +10,8 @@ namespace yiiunit\framework\base;
 use yii\base\Behavior;
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
+use yii\base\UnknownMethodException;
 use yiiunit\TestCase;
 
 function globalEventHandler($event)
@@ -33,14 +35,14 @@ class ComponentTest extends TestCase
      */
     protected $component;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
         $this->component = new NewComponent();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->component = null;
@@ -331,16 +333,45 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->expectException('yii\base\UnknownMethodException');
-        $component->test();
+        try {
+            $component->test();
+            $this->fail('Expected exception ' . UnknownMethodException::class . " wasn't thrown");
+        } catch (UnknownMethodException $e) {
+            // Expected
+        }
 
-        $p = 'as b';
         $component = new NewComponent();
-        $component->$p = ['class' => 'NewBehavior'];
-        $this->assertSame($behavior, $component->getBehavior('a'));
+        $component->{'as b'} = ['class' => NewBehavior::class];
+        $this->assertInstanceOf(NewBehavior::class, $component->getBehavior('b'));
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
+
+        $component->{'as c'} = ['__class' => NewBehavior::class];
+        $this->assertNotNull($component->getBehavior('c'));
+
+        $component->{'as d'} = [
+            '__class' => NewBehavior2::class,
+            'class' => NewBehavior::class,
+        ];
+        $this->assertInstanceOf(NewBehavior2::class, $component->getBehavior('d'));
+
+        // CVE-2024-4990
+        try {
+            $component->{'as e'} = [
+                '__class' => 'NotExistsBehavior',
+                'class' => NewBehavior::class,
+            ];
+            $this->fail('Expected exception ' . InvalidConfigException::class . " wasn't thrown");
+        } catch (InvalidConfigException $e) {
+            $this->assertSame('Class is not of type yii\base\Behavior or its subclasses', $e->getMessage());
+        }
+
+        $component = new NewComponent();
+        $component->{'as f'} = function () {
+            return new NewBehavior();
+        };
+        $this->assertNotNull($component->getBehavior('f'));
     }
 
     public function testAttachBehaviors()
@@ -451,11 +482,6 @@ class ComponentTest extends TestCase
      */
     public function testEventClosureDetachesItself()
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $obj = require __DIR__ . '/stub/AnonymousComponentClass.php';
 
         $obj->trigger('barEventOnce');
@@ -546,6 +572,10 @@ class NewBehavior extends Behavior
 
         return 2;
     }
+}
+
+class NewBehavior2 extends Behavior
+{
 }
 
 class NewComponent2 extends Component

@@ -7,8 +7,6 @@
 
 namespace yii\base;
 
-use Yii;
-
 /**
  * ErrorException represents a PHP error.
  *
@@ -126,15 +124,14 @@ class ErrorException extends \ErrorException
             E_NOTICE => 'PHP Notice',
             E_PARSE => 'PHP Parse Error',
             E_RECOVERABLE_ERROR => 'PHP Recoverable Error',
-            E_STRICT => 'PHP Strict Warning',
             E_USER_DEPRECATED => 'PHP User Deprecated Warning',
             E_USER_ERROR => 'PHP User Error',
             E_USER_NOTICE => 'PHP User Notice',
             E_USER_WARNING => 'PHP User Warning',
             E_WARNING => 'PHP Warning',
             self::E_HHVM_FATAL_ERROR => 'HHVM Fatal Error',
-        ];
+        ] + (PHP_VERSION_ID < 80400 ? [E_STRICT => 'PHP Strict Warning'] : []);
 
-        return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
+        return $names[$this->getCode()] ?? 'Error';
     }
 }
