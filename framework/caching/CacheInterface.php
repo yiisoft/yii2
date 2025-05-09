@@ -188,6 +188,12 @@ interface CacheInterface extends \ArrayAccess
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.
      * @return mixed result of $callable execution
+     *
+     * @template TResult of mixed
+     * @psalm-param callable():TResult|\Closure():TResult $callable
+     * @phpstan-param callable():TResult|\Closure():TResult $callable
+     * @psalm-return TResult
+     * @phpstan-return TResult
      */
     public function getOrSet($key, $callable, $duration = null, $dependency = null);
 }
