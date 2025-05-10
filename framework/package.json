@@ -1,0 +1,20 @@
+{
+  "name": "yii2",
+  "description": "a modern PHP framework designed for professional Web development",
+  "dependencies": {
+    "inputmask": "^5.0.8",
+    "jquery-pjax": "^2.0.1",
+    "jquery": "~3.6.4",
+    "punycode": "^1.4.0",
+    "yii2-pjax": "^2.0.8"
+  },
+  "keywords": [
+    "php",
+    "framework"
+  ],
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/yiisoft/yii2/issues"
+  },
+  "homepage": "https://github.com/yiisoft/yii2"
+}
