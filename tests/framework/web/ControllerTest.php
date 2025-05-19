@@ -235,16 +235,17 @@ class ControllerTest extends TestCase
 
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
-        $params = ['foo' => '100', 'bar' => null, 'true' => 'on', 'false' => 'false'];
-        list($foo, $bar, $true, $false) = $this->controller->bindActionParams($aksi1, $params);
+        $params = ['foo' => '100', 'bar' => null, 'true' => 'on', 'false' => 'false', 'string' => 'strong'];
+        list($foo, $bar, $true, $false, $string) = $this->controller->bindActionParams($aksi1, $params);
         $this->assertSame(100, $foo);
         $this->assertSame(null, $bar);
         $this->assertSame(true, $true);
         $this->assertSame(false, $false);
+        $this->assertSame('strong', $string);
 
         // allow nullable argument to be set to empty string (as null)
         // https://github.com/yiisoft/yii2/issues/18450
-        $params = ['foo' => 100, 'bar' => '', 'true' => true, 'false' => true];
+        $params = ['foo' => 100, 'bar' => '', 'true' => true, 'false' => true, 'string' => 'strong'];
         list(, $bar) = $this->controller->bindActionParams($aksi1, $params);
         $this->assertSame(null, $bar);
 

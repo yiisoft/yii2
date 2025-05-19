@@ -217,6 +217,9 @@ class Controller extends \yii\base\Controller
                 return ['', true];
             }
 
+            if ($typeName === 'string') {
+                return [$param, true];
+            }
             $filterResult = $this->filterParamByType($param, $typeName);
             return [$filterResult, $filterResult !== null];
         }
