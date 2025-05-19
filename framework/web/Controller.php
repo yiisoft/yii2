@@ -137,7 +137,7 @@ class Controller extends \yii\base\Controller
                 if ($type instanceof \ReflectionNamedType) {
                     [$result, $isValid] = $this->filterSingleTypeActionParam($params[$name], $type);
                     $params[$name] = $result;
-                } elseif (class_exists('\ReflectionUnionType') && $type instanceof \ReflectionUnionType) {
+                } elseif ($type instanceof \ReflectionUnionType) {
                     [$result, $isValid] = $this->filterUnionTypeActionParam($params[$name], $type);
                     $params[$name] = $result;
                 }
