@@ -87,6 +87,9 @@ class Controller extends Component implements ViewContextInterface
      * @param string $id the ID of this controller.
      * @param Module $module the module that this controller belongs to.
      * @param array $config name-value pairs that will be used to initialize the object properties.
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $module, $config = [])
     {
@@ -127,6 +130,9 @@ class Controller extends Component implements ViewContextInterface
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
      * @return array
+     *
+     * @phpstan-return array<string, class-string|array{class: class-string, ...}
+     * @psalm-return array<string, class-string|array{class: class-string, ...}
      */
     public function actions()
     {
@@ -548,7 +554,7 @@ class Controller extends Component implements ViewContextInterface
 
     /**
      * Fills parameters based on types and names in action method signature.
-     * @param \ReflectionType $type The reflected type of the action parameter.
+     * @param \ReflectionNamedType $type The reflected type of the action parameter.
      * @param string $name The name of the parameter.
      * @param array &$args The array of arguments for the action, this function may append items to it.
      * @param array &$requestedParams The array with requested params, this function may write specific keys to it.
@@ -558,7 +564,7 @@ class Controller extends Component implements ViewContextInterface
      * (for example an interface type hint) without a proper definition in the container.
      * @since 2.0.36
      */
-    final protected function bindInjectedParams(\ReflectionType $type, $name, &$args, &$requestedParams)
+    final protected function bindInjectedParams(\ReflectionNamedType $type, $name, &$args, &$requestedParams)
     {
         // Since it is not a builtin type it must be DI injection.
         $typeName = $type->getName();

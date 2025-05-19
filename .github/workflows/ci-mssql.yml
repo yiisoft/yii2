@@ -34,11 +34,6 @@ jobs:
             mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
 
         include:
-          - php: 7.4
-            mssql:
-              version: server:2017-latest
-              mssql-tool: /opt/mssql-tools/bin/sqlcmd
-              os: ubuntu-22.04
           - php: 8.0
             mssql:
               version: server:2019-latest

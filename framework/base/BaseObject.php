@@ -100,6 +100,9 @@ class BaseObject implements Configurable
      * - call the parent implementation at the end of the constructor.
      *
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($config = [])
     {
