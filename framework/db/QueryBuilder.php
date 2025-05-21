@@ -1751,7 +1751,7 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     public function selectExists($rawSql)
     {
-        return 'SELECT EXISTS(' . $rawSql . ')';
+        return 'SELECT EXISTS(' . $rawSql . ') AS ' . $this->db->quoteColumnName('result');
     }
 
     /**
