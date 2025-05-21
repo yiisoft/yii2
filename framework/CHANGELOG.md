@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.53 under development
 ------------------------
 
+- Enh #20385: Fixed the memory leak issue when using `Query::exists` (snewer)
 - Enh #20309: Add custom attributes support to style tags (nzwz)
 - Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
 - Bug #8298: Loading fixtures does not update table sequence for Postgresql database (mtangoo)
