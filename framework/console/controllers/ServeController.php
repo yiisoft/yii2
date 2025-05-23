@@ -83,7 +83,7 @@ class ServeController extends Controller
         $command = '"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\"";
 
         if ($this->router !== null && $router !== '') {
-            $command .= " -r \"{$router}\"";
+            $command .= " \"{$router}\"";
         }
 
         $this->runCommand($command);
