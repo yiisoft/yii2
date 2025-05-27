@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.53 under development
 ------------------------
 
-- Enh #20385: Fixed the memory leak issue when using `Query::exists` (snewer)
+- Enh #20385: Fixed the memory leak issue when using `Query::exists()` with MySQL (snewer)
 - Bug #20387: Fixed the command generated to use router.php file in php built-in server (eseperio)
 - Enh #20309: Add custom attributes support to style tags (nzwz)
 - Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
