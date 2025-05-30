@@ -251,7 +251,7 @@ class View extends Component implements DynamicContentAwareInterface
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
                     $this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
                 }
-                /* @var $renderer ViewRenderer */
+                /** @var ViewRenderer $renderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
@@ -550,7 +550,7 @@ class View extends Component implements DynamicContentAwareInterface
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        /* @var $cache FragmentCache */
+        /** @var FragmentCache $cache */
         $cache = FragmentCache::begin($properties);
         if ($cache->getCachedContent() !== false) {
             $this->endCache();

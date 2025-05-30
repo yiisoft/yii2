@@ -239,8 +239,7 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function validateSlug($slug)
     {
-        /* @var $validator UniqueValidator */
-        /* @var $model BaseActiveRecord */
+        /** @var UniqueValidator $validator */
         $validator = Yii::createObject(array_merge(
             [
                 'class' => UniqueValidator::className(),
@@ -248,6 +247,7 @@ class SluggableBehavior extends AttributeBehavior
             $this->uniqueValidator
         ));
 
+        /** @var BaseActiveRecord $model */
         $model = clone $this->owner;
         $model->clearErrors();
         $model->{$this->slugAttribute} = $slug;
