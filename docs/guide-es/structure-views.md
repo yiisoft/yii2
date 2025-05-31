@@ -20,9 +20,9 @@ título de la página y el formulario mismo, mientras que el código HTML organi
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/** @var yii\web\View $this */
+/** @var yii\widgets\ActiveForm $form */
+/** @var app\models\LoginForm $model */
 
 $this->title = 'Login';
 ?>
@@ -324,8 +324,8 @@ bastante el código del layout. En la práctica, probablemente le agregues más 
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/** @var yii\web\View $this */
+/** @var string $content */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

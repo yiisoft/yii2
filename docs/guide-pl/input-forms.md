@@ -151,7 +151,7 @@ Wartość pola formularza (i aktualnie aktywny element) będzie automatycznie us
 Możemy użyć metody klasy ActiveForm [[yii\widgets\ActiveForm::dropDownList()|dropDownList()]] do utworzenia rozwijanej listy:
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->dropdownList([
         1 => 'item 1', 
@@ -166,7 +166,7 @@ echo $form->field($model, 'category')->dropdownList([
 Do stworzenia takiej listy możemy użyć metody ActiveField [[\yii\widgets\ActiveField::radioList()]]:
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->radioList([
     1 => 'radio 1', 
@@ -179,7 +179,7 @@ echo $form->field($model, 'category')->radioList([
 Do stworzenia takiej listy możemy użyć metody ActiveField [[\yii\widgets\ActiveField::checkboxList()]]:
 
 ```php
-/* @var $form yii\widgets\ActiveForm */
+/** @var yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->checkboxList([
     1 => 'checkbox 1', 
