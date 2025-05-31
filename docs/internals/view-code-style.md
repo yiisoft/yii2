@@ -8,10 +8,10 @@ The following code style is used for Yii 2.x core and official extensions view f
 // Leading PHP tag is a must in every template file. Empty line after leading PHP tag is also required.
 
 // Describe input variables passed by controller here.
-/* @var $this yii\base\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $posts app\models\Post[] */
-/* @var $contactMessage app\models\ContactMessage */
+/** @var yii\base\View $this */
+/** @var yii\widgets\ActiveForm $form */
+/** @var app\models\Post[] $posts */
+/** @var app\models\ContactMessage $contactMessage */
 // Empty line below is necessary.
 
 // Namespaced classes declaration.

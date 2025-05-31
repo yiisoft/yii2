@@ -96,8 +96,8 @@ Example mail view file content:
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-/* @var $this \yii\web\View view component instance */
-/* @var $message \yii\mail\BaseMessage instance of newly created mail message */
+/** @var \yii\web\View $this view component instance */
+/** @var \yii\mail\BaseMessage $message instance of newly created mail message */
 
 ?>
 <h2>This message allows you to visit our site home page by one click</h2>
@@ -143,9 +143,9 @@ Layout can be used to setup mail CSS styles or other shared content:
 <?php
 use yii\helpers\Html;
 
-/* @var $this \yii\web\View view component instance */
-/* @var $message \yii\mail\MessageInterface the message being composed */
-/* @var $content string main view render result */
+/** @var \yii\web\View $this view component instance */
+/** @var \yii\mail\MessageInterface $message the message being composed */
+/** @var string $content main view render result */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

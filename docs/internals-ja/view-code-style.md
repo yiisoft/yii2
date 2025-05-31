@@ -8,10 +8,10 @@ Yii 2 ビュー・コード・スタイル
 // 冒頭の PHP タグは全てのテンプレート・ファイルで不可欠。冒頭のタグに続く空行も同じく必須。
 
 // コントローラから渡される入力変数をここで説明。
-/* @var $this yii\base\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $posts app\models\Post[] */
-/* @var $contactMessage app\models\ContactMessage */
+/** @var yii\base\View $this */
+/** @var yii\widgets\ActiveForm $form */
+/** @var app\models\Post[] $posts */
+/** @var app\models\ContactMessage $contactMessage */
 // 下の空行は必要。
 
 // 名前空間に属するクラスの宣言。

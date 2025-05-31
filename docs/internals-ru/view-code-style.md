@@ -10,10 +10,10 @@
 // Открывающий PHP тег должен быть в каждом файле шаблона. Пустая строка после открывающего тега также необходима.
 
 // Описывайте входные переменные, переданные сюда контроллером.
-/* @var $this yii\base\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $posts app\models\Post[] */
-/* @var $contactMessage app\models\ContactMessage */
+/** @var yii\base\View $this */
+/** @var yii\widgets\ActiveForm $form */
+/** @var app\models\Post[] $posts */
+/** @var app\models\ContactMessage $contactMessage */
 // Пустая строка ниже необходима.
 
 // Описание классов с пространствами имён.
