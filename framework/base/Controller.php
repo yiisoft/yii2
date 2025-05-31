@@ -187,7 +187,7 @@ class Controller extends Component implements ViewContextInterface
 
             // call afterAction on modules
             foreach ($modules as $module) {
-                /* @var $module Module */
+                /** @var Module $module */
                 $result = $module->afterAction($action, $result);
             }
         }
