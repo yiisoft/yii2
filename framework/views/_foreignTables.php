@@ -3,7 +3,7 @@
 /**
  * Creates a call for the method `yii\db\Migration::createTable()`.
  */
-/* @var $foreignKeys array the foreign keys */
+/** @var array $foreignKeys the foreign keys */
 
 if (!empty($foreignKeys)):?>
  * Has foreign keys to the tables:

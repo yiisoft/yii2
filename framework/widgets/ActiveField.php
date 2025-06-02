@@ -770,7 +770,7 @@ class ActiveField extends Component
      */
     public function widget($class, $config = [])
     {
-        /* @var $class \yii\base\Widget */
+        /** @var \yii\base\Widget $class */
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
@@ -829,7 +829,7 @@ class ActiveField extends Component
         if ($clientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
-                /* @var $validator \yii\validators\Validator */
+                /** @var \yii\validators\Validator $validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {

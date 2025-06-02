@@ -6,12 +6,12 @@
  * The following variables are available in this view:
  */
 
-/* @var $className string the new migration class name without namespace */
-/* @var $namespace string the new migration class namespace */
-/* @var $table string the name table */
-/* @var $tableComment string the comment table */
-/* @var $fields array the fields */
-/* @var $foreignKeys array the foreign keys */
+/** @var string $className the new migration class name without namespace */
+/** @var string $namespace the new migration class namespace */
+/** @var string $table the name table */
+/** @var string $tableComment the comment table */
+/** @var array $fields the fields */
+/** @var array $foreignKeys the foreign keys */
 
 echo "<?php\n";
 if (!empty($namespace)) {

@@ -5,7 +5,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-/* @var $this YiiRequirementChecker */
+/** @var YiiRequirementChecker $this */
 
 /**
  * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.

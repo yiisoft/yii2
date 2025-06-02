@@ -227,7 +227,7 @@ class UrlRule extends CompositeUrlRule
         foreach ($this->rules as $urlName => $rules) {
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
-                    /* @var $rule WebUrlRule */
+                    /** @var WebUrlRule $rule */
                     $result = $rule->parseRequest($manager, $request);
                     if (YII_DEBUG) {
                         Yii::debug([
@@ -254,7 +254,7 @@ class UrlRule extends CompositeUrlRule
         $this->createStatus = WebUrlRule::CREATE_STATUS_SUCCESS;
         foreach ($this->controller as $urlName => $controller) {
             if (strpos($route, $controller) !== false) {
-                /* @var $rules UrlRuleInterface[] */
+                /** @var UrlRuleInterface[] $rules */
                 $rules = $this->rules[$urlName];
                 $url = $this->iterateRules($rules, $manager, $route, $params);
                 if ($url !== false) {

@@ -3,9 +3,9 @@
 /**
  * Creates a call for the method `yii\db\Migration::createTable()`.
  */
-/* @var $table string the name table */
-/* @var $fields array the fields */
-/* @var $foreignKeys array the foreign keys */
+/** @var string $table the name table */
+/** @var array $fields the fields */
+/** @var array $foreignKeys the foreign keys */
 
 ?>        $this->createTable('<?= $table ?>', [
 <?php foreach ($fields as $field):

@@ -36,7 +36,7 @@ class UpdateAction extends Action
      */
     public function run($id)
     {
-        /* @var $model ActiveRecord */
+        /** @var ActiveRecord $model */
         $model = $this->findModel($id);
 
         if ($this->checkAccess) {

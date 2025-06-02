@@ -414,7 +414,7 @@ class ActiveForm extends Widget
         } else {
             $models = [$model];
         }
-        /* @var $model Model */
+        /** @var Model $model */
         foreach ($models as $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {
@@ -450,7 +450,7 @@ class ActiveForm extends Widget
     public static function validateMultiple($models, $attributes = null)
     {
         $result = [];
-        /* @var $model Model */
+        /** @var Model $model */
         foreach ($models as $i => $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {

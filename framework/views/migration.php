@@ -6,8 +6,8 @@
  * The following variables are available in this view:
  */
 
-/* @var $className string the new migration class name without namespace */
-/* @var $namespace string the new migration class namespace */
+/** @var string $className the new migration class name without namespace */
+/** @var string $namespace the new migration class namespace */
 
 echo "<?php\n";
 if (!empty($namespace)) {
