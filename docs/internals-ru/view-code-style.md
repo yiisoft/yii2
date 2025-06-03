@@ -11,10 +11,10 @@
 
 // Описывайте входные переменные, переданные сюда контроллером.
 /**
- * @var yii\base\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\Post[] $posts
- * @var app\models\ContactMessage $contactMessage
+ * @var \yii\base\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\Post[] $posts
+ * @var \app\models\ContactMessage $contactMessage
  */
 // Пустая строка ниже необходима.
 

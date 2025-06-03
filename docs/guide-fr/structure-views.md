@@ -17,9 +17,9 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\LoginForm $model
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
  */
 
 $this->title = 'Login';
@@ -265,7 +265,7 @@ L'exemple qui suit montre à quoi ressemble une disposition. Notez que dans un b
 use yii\helpers\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \yii\web\View $this
  * @var string $content
  */
 ?>

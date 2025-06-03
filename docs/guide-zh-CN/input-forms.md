@@ -162,7 +162,7 @@ $items = Category::find()
 我们可以使用 ActiveField [[\yii\widgets\ActiveField::dropDownList()]] 方法创建一个下拉列表：
 
 ```php
-/** @var yii\widgets\ActiveForm $form */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->dropdownList([
         1 => 'item 1', 
@@ -177,7 +177,7 @@ echo $form->field($model, 'category')->dropdownList([
 我们可以使用 ActiveField [[\yii\widgets\ActiveField::radioList()]] 方法创建一个单选列表：
 
 ```php
-/** @var yii\widgets\ActiveForm $form */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->radioList([
     1 => 'radio 1', 
@@ -190,7 +190,7 @@ echo $form->field($model, 'category')->radioList([
 我们可以使用 ActiveField [[\yii\widgets\ActiveField::checkboxList()]] 方法创建一个复选框列表：
 
 ```php
-/** @var yii\widgets\ActiveForm $form */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->checkboxList([
     1 => 'checkbox 1', 

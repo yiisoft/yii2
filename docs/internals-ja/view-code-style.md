@@ -9,10 +9,10 @@ Yii 2 ビュー・コード・スタイル
 
 // コントローラから渡される入力変数をここで説明。
 /**
- * @var yii\base\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\Post[] $posts
- * @var app\models\ContactMessage $contactMessage
+ * @var \yii\base\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\Post[] $posts
+ * @var \app\models\ContactMessage $contactMessage
  */
 // 下の空行は必要。
 

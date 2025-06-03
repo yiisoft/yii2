@@ -100,9 +100,9 @@ Vous pouvez utiliser la méthode [dropDownList()](https://www.yiiframework.com/d
 use app\models\ProductCategory;
 
 /**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\Product $model
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\Product $model
  */
 
 echo $form->field($model, 'product_category')->dropdownList(

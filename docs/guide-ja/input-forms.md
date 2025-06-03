@@ -162,7 +162,7 @@ $items = Category::find()
 ActiveField の [[\yii\widgets\ActiveField::dropDownList()]] メソッドを使って、ドロップダウン・リストを作ることが出来ます。
 
 ```php
-/** @var yii\widgets\ActiveForm $form */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->dropdownList([
         1 => '項目 1', 
@@ -177,7 +177,7 @@ echo $form->field($model, 'category')->dropdownList([
 ActiveField の [[\yii\widgets\ActiveField::radioList()]] メソッドを使ってラジオ・リストを作ることが出来ます。
 
 ```php
-/** @var yii\widgets\ActiveForm $form */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->radioList([
     1 => 'ラジオ 1', 
@@ -190,7 +190,7 @@ echo $form->field($model, 'category')->radioList([
 ActiveField の [[\yii\widgets\ActiveField::checkboxList()]] メソッドを使ってチェックボックス・リストを作ることが出来ます。
 
 ```php
-/** @var yii\widgets\ActiveForm $form */
+/** @var \yii\widgets\ActiveForm $form */
 
 echo $form->field($model, 'category')->checkboxList([
     1 => 'チェックボックス 1', 

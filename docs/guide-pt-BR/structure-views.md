@@ -25,9 +25,9 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /**
- * @var yii\web\View $this
- * @var yii\widgets\ActiveForm $form
- * @var app\models\LoginForm $model
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
  */
 
 $this->title = 'Login';
@@ -368,7 +368,7 @@ como tags no head, menu principal, etc.
 use yii\helpers\Html;
 
 /**
- * @var yii\web\View $this
+ * @var \yii\web\View $this
  * @var string $content
  */
 ?>
