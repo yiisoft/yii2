@@ -3,9 +3,7 @@
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
- */
-
-/**
+ *
  * @var YiiRequirementChecker $this
  * @var array $summary
  * @var array[] $requirements

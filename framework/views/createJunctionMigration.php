@@ -6,9 +6,7 @@
  * The following variables are available in this view:
  * @since 2.0.7
  * @deprecated since 2.0.8
- */
-
-/**
+ *
  * @var string $className the new migration class name without namespace
  * @var string $namespace the new migration class namespace
  * @var string $table the name table

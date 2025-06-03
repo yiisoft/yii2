@@ -2,8 +2,7 @@
 
 /**
  * Creates a call for the method `yii\db\Migration::createTable()`.
- */
-/**
+ *
  * @var string $table the name table
  * @var array $fields the fields
  * @var array $foreignKeys the foreign keys
