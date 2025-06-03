@@ -127,6 +127,9 @@ class BaseYii
      * @return string|false the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
+     *
+     * @phpstan-return ($throwException is true ? string : string|false)
+     * @psalm-return ($throwException is true ? string : string|false)
      */
     public static function getAlias($alias, $throwException = true)
     {
