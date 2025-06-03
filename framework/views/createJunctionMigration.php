@@ -8,11 +8,13 @@
  * @deprecated since 2.0.8
  */
 
-/** @var string $className the new migration class name without namespace */
-/** @var string $namespace the new migration class namespace */
-/** @var string $table the name table */
-/** @var string $field_first the name field first */
-/** @var string $field_second the name field second */
+/**
+ * @var string $className the new migration class name without namespace
+ * @var string $namespace the new migration class namespace
+ * @var string $table the name table
+ * @var string $field_first the name field first
+ * @var string $field_second the name field second
+ */
 
 echo "<?php\n";
 if (!empty($namespace)) {
