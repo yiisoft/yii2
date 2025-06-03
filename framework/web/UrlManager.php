@@ -320,7 +320,7 @@ class UrlManager extends Component
     public function parseRequest($request)
     {
         if ($this->enablePrettyUrl) {
-            /* @var $rule UrlRule */
+            /** @var UrlRule $rule */
             foreach ($this->rules as $rule) {
                 $result = $rule->parseRequest($this, $request);
                 if (YII_DEBUG) {
@@ -428,7 +428,7 @@ class UrlManager extends Component
 
             $url = $this->getUrlFromCache($cacheKey, $route, $params);
             if ($url === false) {
-                /* @var $rule UrlRule */
+                /** @var UrlRule $rule */
                 foreach ($this->rules as $rule) {
                     if (in_array($rule, $this->_ruleCache[$cacheKey], true)) {
                         // avoid redundant calls of `UrlRule::createUrl()` for rules checked in `getUrlFromCache()`
@@ -516,7 +516,7 @@ class UrlManager extends Component
     {
         if (!empty($this->_ruleCache[$cacheKey])) {
             foreach ($this->_ruleCache[$cacheKey] as $rule) {
-                /* @var $rule UrlRule */
+                /** @var UrlRule $rule */
                 if (($url = $rule->createUrl($this, $route, $params)) !== false) {
                     return $url;
                 }

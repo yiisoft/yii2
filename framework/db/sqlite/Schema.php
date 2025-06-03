@@ -160,7 +160,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         $sql = $this->db->createCommand('SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
             ':tableName' => $tableName,
         ])->queryScalar();
-        /** @var $code SqlToken[]|SqlToken[][]|SqlToken[][][] */
+        /** @var SqlToken[]|SqlToken[][]|SqlToken[][][] $code */
         $code = (new SqlTokenizer($sql))->tokenize();
         $pattern = (new SqlTokenizer('any CREATE any TABLE any()'))->tokenize();
         if (!$code[0]->matches($pattern, 0, $firstMatchIndex, $lastMatchIndex)) {

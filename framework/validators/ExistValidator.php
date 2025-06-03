@@ -299,7 +299,7 @@ class ExistValidator extends Validator
      */
     protected function createQuery($targetClass, $condition)
     {
-        /* @var $targetClass \yii\db\ActiveRecordInterface */
+        /** @var \yii\db\ActiveRecordInterface $targetClass */
         $query = $targetClass::find()->andWhere($condition);
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);

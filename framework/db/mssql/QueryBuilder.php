@@ -425,7 +425,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $modelClass \yii\db\ActiveRecord */
+        /** @var \yii\db\ActiveRecord $modelClass */
         $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
@@ -488,7 +488,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $cols = [];
         $outputColumns = [];
         if ($version2005orLater) {
-            /* @var $schema TableSchema */
+            /** @var TableSchema $schema */
             $schema = $this->db->getTableSchema($table);
             foreach ($schema->columns as $column) {
                 if ($column->isComputed) {
