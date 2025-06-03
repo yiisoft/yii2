@@ -16,9 +16,11 @@ Comme nous l'avons dit ci-dessus, une vue n'est rien d'autre qu'un script PHP in
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var yii\widgets\ActiveForm $form */
-/** @var app\models\LoginForm $model */
+/**
+ * @var yii\web\View $this
+ * @var yii\widgets\ActiveForm $form
+ * @var app\models\LoginForm $model
+ */
 
 $this->title = 'Login';
 ?>
@@ -262,8 +264,10 @@ L'exemple qui suit montre à quoi ressemble une disposition. Notez que dans un b
 <?php
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var string $content */
+/**
+ * @var yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

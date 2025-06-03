@@ -451,9 +451,11 @@ echo GridView::widget([
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var app\models\PostSearch $model */
-/** @var yii\widgets\ActiveForm $form */
+/**
+ * @var yii\web\View $this
+ * @var app\models\PostSearch $model
+ * @var yii\widgets\ActiveForm $form
+ */
 ?>
 
 <div class="post-search">

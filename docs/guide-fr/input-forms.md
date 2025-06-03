@@ -99,9 +99,11 @@ Vous pouvez utiliser la méthode [dropDownList()](https://www.yiiframework.com/d
 ```php
 use app\models\ProductCategory;
 
-/** @var yii\web\View $this */
-/** @var yii\widgets\ActiveForm $form */
-/** @var app\models\Product $model */
+/**
+ * @var yii\web\View $this
+ * @var yii\widgets\ActiveForm $form
+ * @var app\models\Product $model
+ */
 
 echo $form->field($model, 'product_category')->dropdownList(
     ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),

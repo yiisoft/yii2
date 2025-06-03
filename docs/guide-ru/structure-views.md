@@ -16,9 +16,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var yii\web\View $this */
-/** @var yii\widgets\ActiveForm $form */
-/** @var app\models\LoginForm $model */
+/**
+ * @var yii\web\View $this
+ * @var yii\widgets\ActiveForm $form
+ * @var app\models\LoginForm $model
+ */
 
 $this->title = 'Вход';
 ?>
@@ -269,8 +271,10 @@ $this->params['breadcrumbs'][] = 'О нас';
 <?php
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var string $content */
+/**
+ * @var yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
