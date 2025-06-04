@@ -672,13 +672,13 @@ trait ActiveRecordTestTrait
 
     public function testLink()
     {
-        /** @var ActiveRecordInterface $orderClass */
-        /** @var ActiveRecordInterface $itemClass */
-        /** @var ActiveRecordInterface $orderItemClass */
         /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
+        /** @var ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
+        /** @var ActiveRecordInterface $orderItemClass */
         $orderItemClass = $this->getOrderItemClass();
+        /** @var ActiveRecordInterface $itemClass */
         $itemClass = $this->getItemClass();
         /** @var TestCase|ActiveRecordTestTrait $this */
         $customer = $customerClass::findOne(2);
