@@ -403,6 +403,9 @@ class ActiveForm extends Widget
      * as a model.
      *
      * @return array the error message array indexed by the attribute IDs.
+     *
+     * @phpstan-return array<string,array<string>>
+     * @psalm-return array<string,array<string>>
      */
     public static function validate($model, $attributes = null)
     {
