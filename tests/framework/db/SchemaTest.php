@@ -36,7 +36,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testGetSchemaNames()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $schemas = $schema->getSchemaNames();
@@ -60,7 +60,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $connection->pdo->setAttribute($name, $value);
         }
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $connection->schema;
 
         $tables = $schema->getTableNames();
@@ -92,7 +92,7 @@ abstract class SchemaTest extends DatabaseTestCase
             }
             $connection->pdo->setAttribute($name, $value);
         }
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $connection->schema;
 
         $tables = $schema->getTableSchemas();
@@ -119,10 +119,10 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testSchemaCache()
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = $this->getConnection();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -143,7 +143,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testRefreshTableSchema()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -202,7 +202,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
         $schema->db->enableSchemaCache = true;
 
@@ -233,7 +233,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testCompositeFk()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('composite_fk');
@@ -259,7 +259,7 @@ abstract class SchemaTest extends DatabaseTestCase
             [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
         ];
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
@@ -492,7 +492,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testNegativeDefaultValues()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('negative_default_values');
@@ -595,7 +595,7 @@ abstract class SchemaTest extends DatabaseTestCase
             'someCol2' => 'string',
         ])->execute();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));

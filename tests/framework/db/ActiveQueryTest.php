@@ -292,7 +292,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
      */
     public function testDeeplyNestedTableRelationWith()
     {
-        /* @var $category Category */
+        /** @var Category $category */
         $categories = Category::find()->with('orders')->indexBy('id')->all();
 
         $category = $categories[1];

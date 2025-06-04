@@ -85,7 +85,7 @@ class LoggerTest extends TestCase
      */
     public function testLogWithFlush()
     {
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['flush'])
             ->getMock();
@@ -149,7 +149,7 @@ class LoggerTest extends TestCase
             ['duration' => 30],
         ];
 
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['getProfiling'])
             ->getMock();
@@ -343,7 +343,7 @@ class LoggerTest extends TestCase
     {
         $messages = ['anyData'];
         $returnValue = 'return value';
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();
@@ -370,7 +370,7 @@ class LoggerTest extends TestCase
                 'duration' => 5,
             ],
         ];
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();
@@ -410,7 +410,7 @@ class LoggerTest extends TestCase
         /*
          * Matched by category name
          */
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();
@@ -423,7 +423,7 @@ class LoggerTest extends TestCase
         /*
          * Matched by prefix
          */
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();
@@ -472,7 +472,7 @@ class LoggerTest extends TestCase
         /*
          * Exclude by category name
          */
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();
@@ -485,7 +485,7 @@ class LoggerTest extends TestCase
         /*
          * Exclude by category prefix
          */
-        /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
+        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->getMockBuilder('yii\log\Logger')
             ->setMethods(['calculateTimings'])
             ->getMock();

@@ -11,7 +11,7 @@ namespace yiiunit\data\ar;
  * @property string $address
  * @property int $status
  *
- * @method CustomerQuery findBySql($sql, $params = []) static
+ * @method static CustomerQuery findBySql($sql, $params = [])
  */
 class CustomerWithAlias extends ActiveRecord
 {

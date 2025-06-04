@@ -85,8 +85,7 @@ class FormatterTest extends TestCase
         }));
         $this->assertSame(
             'from: ' . date('Y-m-d', $value),
-            $this->formatter->format($value, function ($value, $formatter) {
-              /** @var $formatter Formatter */
+            $this->formatter->format($value, function ($value, Formatter $formatter) {
               return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
             })
         );

@@ -46,10 +46,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     public function testGetStringFieldsSize()
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = $this->getConnection();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $columns = $schema->getTableSchema('type', false)->columns;

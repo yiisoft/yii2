@@ -28,9 +28,10 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testBooleanAttribute()
     {
-        /* @var $customerClass ActiveRecordInterface */
+        /** @var TestCase|ActiveRecordTestTrait $this */
+
+        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
-        /* @var $this TestCase|ActiveRecordTestTrait */
         $customer = new $customerClass();
         $customer->name = 'boolean customer';
         $customer->email = 'mail@example.com';
@@ -55,7 +56,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testFindAsArray()
     {
-        /* @var $customerClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
 
         // asArray
