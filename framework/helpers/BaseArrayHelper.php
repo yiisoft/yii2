@@ -104,6 +104,10 @@ class BaseArrayHelper
     }
 
     /**
+     * @phpstan-template TItemA
+     * @phpstan-template TItemB
+     * @psalm-template TItemA
+     * @psalm-template TItemB
      * Merges two or more arrays into one recursively.
      * If each array has an element with the same string key value, the latter
      * will overwrite the former (different from array_merge_recursive).
@@ -117,6 +121,12 @@ class BaseArrayHelper
      * @param array $b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
      * @return array the merged array (the original arrays are not changed.)
+     * @phpstan-param array<TItemA> $a
+     * @phpstan-param array<TItemB> $b
+     * @psalm-param array<TItemA> $a
+     * @psalm-param array<TItemB> $b
+     * @phpstan-return array<TItemA|TItemB>
+     * @psalm-return array<TItemA|TItemB>
      */
     public static function merge($a, $b)
     {
