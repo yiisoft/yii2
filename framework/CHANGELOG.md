@@ -19,8 +19,8 @@ Yii Framework 2 Change Log
 - Bug #20373: Fixed the type of the first parameter `yii\base\Controller::bindInjectedParams()` (max-s-lab)
 - Enh #20374: Add PHPStan/Psalm annotations for `BaseYii`, `BaseObject`, `Component`, `Model`, `Module` and `yii\base\Controller` (max-s-lab)
 - Enh #20394: Add PHPStan/Psalm annotations for `Yii::getAlias` (max-s-lab)
-- Enh #20395: Add PHPStan/Psalm annotations for 'ActiveForm::validate' (samuelrajan747)
-- Enh #20397: Add PHPStan/Psalm annotations for 'ArrayHelper::merge' (samuelrajan747)
+- Enh #20395: Add PHPStan/Psalm annotations for `ActiveForm::validate` (samuelrajan747)
+- Enh #20397: Add PHPStan/Psalm annotations for `ArrayHelper::merge` (samuelrajan747)
 
 
 2.0.52 February 13, 2025
