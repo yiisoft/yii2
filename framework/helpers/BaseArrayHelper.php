@@ -104,10 +104,8 @@ class BaseArrayHelper
     }
 
     /**
-     * @phpstan-template TItemA
-     * @phpstan-template TItemB
-     * @psalm-template TItemA
-     * @psalm-template TItemB
+     * @template TItemA
+     * @template TItemB
      * Merges two or more arrays into one recursively.
      * If each array has an element with the same string key value, the latter
      * will overwrite the former (different from array_merge_recursive).
