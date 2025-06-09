@@ -70,13 +70,13 @@ class UnknownCommandException extends Exception
         if ($help === false || $this->command === '') {
             return [];
         }
-        /** @var $helpController HelpController */
+        /** @var HelpController $helpController */
         list($helpController, $actionID) = $help;
 
         $availableActions = [];
         foreach ($helpController->getCommands() as $command) {
             $result = $this->application->createController($command);
-            /** @var $controller Controller */
+            /** @var Controller $controller */
             list($controller, $actionID) = $result;
             if ($controller->createAction($controller->defaultAction) !== null) {
                 // add the command itself (default action)

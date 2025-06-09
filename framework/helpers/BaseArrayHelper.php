@@ -117,8 +117,18 @@ class BaseArrayHelper
      * @param array $b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
      * @return array the merged array (the original arrays are not changed.)
+     * @phpstan-template TItemA
+     * @phpstan-template TItemB
+     * @psalm-template TItemA
+     * @psalm-template TItemB
+     * @phpstan-param array<TItemA> $a
+     * @phpstan-param array<array<TItemB>> ...$b
+     * @psalm-param array<TItemA> $a
+     * @psalm-param array<array<TItemB>> ...$b
+     * @phpstan-return array<TItemA|TItemB>
+     * @psalm-return array<TItemA|TItemB>
      */
-    public static function merge($a, $b)
+    public static function merge($a, ...$b)
     {
         $args = func_get_args();
         $res = array_shift($args);

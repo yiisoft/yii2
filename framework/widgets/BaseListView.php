@@ -251,9 +251,9 @@ abstract class BaseListView extends Widget
         if ($pagination === false || $this->dataProvider->getCount() <= 0) {
             return '';
         }
-        /* @var $class LinkPager */
         $pager = $this->pager;
-        $class = ArrayHelper::remove($pager, 'class', LinkPager::class);
+        /** @var LinkPager $class */
+        $class = ArrayHelper::remove($pager, 'class', LinkPager::className());
         $pager['pagination'] = $pagination;
         $pager['view'] = $this->getView();
 
@@ -270,9 +270,9 @@ abstract class BaseListView extends Widget
         if ($sort === false || empty($sort->attributes) || $this->dataProvider->getCount() <= 0) {
             return '';
         }
-        /* @var $class LinkSorter */
         $sorter = $this->sorter;
-        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::class);
+        /** @var LinkSorter $class */
+        $class = ArrayHelper::remove($sorter, 'class', LinkSorter::className());
         $sorter['sort'] = $sort;
         $sorter['view'] = $this->getView();
 

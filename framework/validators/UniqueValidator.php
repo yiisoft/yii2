@@ -142,7 +142,7 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        /* @var $targetClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $targetClass */
         $targetClass = $this->getTargetClass($model);
         $db = $targetClass::getDb();
 

@@ -88,7 +88,6 @@ trait FixtureTrait
             $fixtures = $this->getFixtures();
         }
 
-        /* @var $fixture Fixture */
         foreach ($fixtures as $fixture) {
             $fixture->beforeLoad();
         }
@@ -112,7 +111,6 @@ trait FixtureTrait
             $fixtures = $this->getFixtures();
         }
 
-        /* @var $fixture Fixture */
         foreach ($fixtures as $fixture) {
             $fixture->beforeUnload();
         }

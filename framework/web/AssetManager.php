@@ -306,7 +306,7 @@ class AssetManager extends Component
         if (!isset($config['class'])) {
             $config['class'] = $name;
         }
-        /* @var $bundle AssetBundle */
+        /** @var AssetBundle $bundle */
         $bundle = Yii::createObject($config);
         if ($publish) {
             $bundle->publish($this);

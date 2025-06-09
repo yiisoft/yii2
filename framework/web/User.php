@@ -57,6 +57,10 @@ use yii\rbac\CheckAccessInterface;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @phpstan-template T of IdentityInterface
+ * @psalm-template T of IdentityInterface
+ * @phpstan-property T|null $identity
+ * @psalm-property T|null $identity
  */
 class User extends Component
 {
@@ -67,6 +71,8 @@ class User extends Component
 
     /**
      * @var string the class name of the [[identity]] object.
+     * @phpstan-var class-string<T>
+     * @psalm-var class-string<T>
      */
     public $identityClass;
     /**
@@ -189,6 +195,8 @@ class User extends Component
      * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
+     * @phpstan-return T|null
+     * @psalm-return T|null
      */
     public function getIdentity($autoRenew = true)
     {
@@ -221,6 +229,8 @@ class User extends Component
      * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
      * If null, it means the current user will be a guest without any associated identity.
      * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
+     * @phpstan-param T|null $identity
+     * @psalm-param T|null $identity
      */
     public function setIdentity($identity)
     {
@@ -252,6 +262,8 @@ class User extends Component
      * @param IdentityInterface $identity the user identity (which should already be authenticated)
      * @param int $duration number of seconds that the user can remain in logged-in status, defaults to `0`
      * @return bool whether the user is logged in
+     * @phpstan-param T $identity
+     * @psalm-param T $identity
      */
     public function login(IdentityInterface $identity, $duration = 0)
     {
@@ -297,10 +309,16 @@ class User extends Component
      * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
      * @return IdentityInterface|null the identity associated with the given access token. Null is returned if
      * the access token is invalid or [[login()]] is unsuccessful.
+     * @phpstan-return T|null
+     * @psalm-return T|null
      */
     public function loginByAccessToken($token, $type = null)
     {
-        /* @var $class IdentityInterface */
+        /**
+         * @var IdentityInterface $class
+         * @phpstan-var class-string<T> $class
+         * @psalm-var class-string<T> $class
+         */
         $class = $this->identityClass;
         $identity = $class::findIdentityByAccessToken($token, $type);
         if ($identity && $this->login($identity)) {
@@ -472,6 +490,8 @@ class User extends Component
      * @param int $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
      * @return bool whether the user should continue to be logged in
+     * @phpstan-param T $identity
+     * @psalm-param T $identity
      */
     protected function beforeLogin($identity, $cookieBased, $duration)
     {
@@ -494,6 +514,8 @@ class User extends Component
      * @param bool $cookieBased whether the login is cookie-based
      * @param int $duration number of seconds that the user can remain in logged-in status.
      * If 0, it means login till the user closes the browser or the session is manually destroyed.
+     * @phpstan-param T $identity
+     * @psalm-param T $identity
      */
     protected function afterLogin($identity, $cookieBased, $duration)
     {
@@ -511,6 +533,8 @@ class User extends Component
      * so that the event is triggered.
      * @param IdentityInterface $identity the user identity information
      * @return bool whether the user should continue to be logged out
+     * @phpstan-param T $identity
+     * @psalm-param T $identity
      */
     protected function beforeLogout($identity)
     {
@@ -528,6 +552,8 @@ class User extends Component
      * If you override this method, make sure you call the parent implementation
      * so that the event is triggered.
      * @param IdentityInterface $identity the user identity information
+     * @phpstan-param T $identity
+     * @psalm-param T $identity
      */
     protected function afterLogout($identity)
     {
@@ -566,6 +592,8 @@ class User extends Component
      * @param IdentityInterface $identity
      * @param int $duration number of seconds that the user can remain in logged-in status.
      * @see loginByCookie()
+     * @phpstan-param T $identity
+     * @psalm-param T $identity
      */
     protected function sendIdentityCookie($identity, $duration)
     {
@@ -598,7 +626,7 @@ class User extends Component
         $data = json_decode($value, true);
         if (is_array($data) && count($data) == 3) {
             list($id, $authKey, $duration) = $data;
-            /* @var $class IdentityInterface */
+            /** @var IdentityInterface $class */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             if ($identity !== null) {
@@ -641,6 +669,8 @@ class User extends Component
      * If null, it means switching the current user to be a guest.
      * @param int $duration number of seconds that the user can remain in logged-in status.
      * This parameter is used only when `$identity` is not null.
+     * @phpstan-param T|null $identity
+     * @psalm-param T|null $identity
      */
     public function switchIdentity($identity, $duration = 0)
     {
@@ -694,7 +724,7 @@ class User extends Component
         if ($id === null) {
             $identity = null;
         } else {
-            /* @var $class IdentityInterface */
+            /** @var IdentityInterface $class */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             if ($identity === null) {
