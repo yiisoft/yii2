@@ -473,9 +473,11 @@ you can easily add it as well. You can create partial view `_search.php` with th
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\PostSearch */
-/* @var $form yii\widgets\ActiveForm */
+/**
+ * @var \yii\web\View $this
+ * @var \app\models\PostSearch $model
+ * @var \yii\widgets\ActiveForm $form
+ */
 ?>
 
 <div class="post-search">

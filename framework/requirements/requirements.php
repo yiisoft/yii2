@@ -3,11 +3,9 @@
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
- */
-
-/* @var $this YiiRequirementChecker */
-
-/**
+ *
+ * @var YiiRequirementChecker $this
+ *
  * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
  * These requirements are mandatory for any Yii application.
  */

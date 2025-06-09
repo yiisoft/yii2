@@ -444,7 +444,7 @@ class Module extends ServiceLocator
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::debug("Loading module: $id", __METHOD__);
-                /* @var $module Module */
+                /** @var self $module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
                 $module::setInstance($module);
                 return $this->_modules[$id] = $module;
@@ -548,7 +548,7 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /* @var $controller Controller */
+            /** @var Controller $controller */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;

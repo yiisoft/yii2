@@ -188,7 +188,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /* @var $viaQuery ActiveQuery */
+                /** @var self $viaQuery */
                 list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
                     if ($viaCallableUsed) {
@@ -266,7 +266,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function removeDuplicatedModels($models)
     {
         $hash = [];
-        /* @var $class ActiveRecord */
+        /** @var ActiveRecord $class */
         $class = $this->modelClass;
         $pks = $class::primaryKey();
 
@@ -339,7 +339,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function createCommand($db = null)
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -363,7 +363,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -452,7 +452,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /* @var $query ActiveQuery */
+                    /** @var self $query */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -475,7 +475,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        /* @var $modelClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $modelClass */
         $modelClass = $this->modelClass;
         $model = $modelClass::instance();
         foreach ($this->joinWith as $config) {
@@ -570,7 +570,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                /* @var $relationModelClass ActiveRecordInterface */
+                /** @var ActiveRecordInterface $relationModelClass */
                 $relationModelClass = $relation->modelClass;
                 $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
@@ -870,7 +870,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function getPrimaryTableName()
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         return $modelClass::tableName();
     }

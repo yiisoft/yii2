@@ -54,7 +54,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     public function parseRequest($manager, $request)
     {
         foreach ($this->rules as $rule) {
-            /* @var $rule UrlRule */
+            /** @var UrlRule $rule */
             $result = $rule->parseRequest($manager, $request);
             if (YII_DEBUG) {
                 Yii::debug([
@@ -103,7 +103,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      */
     protected function iterateRules($rules, $manager, $route, $params)
     {
-        /* @var $rule UrlRule */
+        /** @var UrlRule $rule */
         foreach ($rules as $rule) {
             $url = $rule->createUrl($manager, $route, $params);
             if ($url !== false) {

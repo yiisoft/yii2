@@ -932,7 +932,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public static function loadMultiple($models, $data, $formName = null)
     {
         if ($formName === null) {
-            /* @var $first Model|false */
+            /** @var self|false $first */
             $first = reset($models);
             if ($first === false) {
                 return false;
@@ -942,7 +942,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
         $success = false;
         foreach ($models as $i => $model) {
-            /* @var $model Model */
+            /** @var self $model */
             if ($formName == '') {
                 if (!empty($data[$i]) && $model->load($data[$i], '')) {
                     $success = true;
@@ -969,7 +969,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public static function validateMultiple($models, $attributeNames = null)
     {
         $valid = true;
-        /* @var $model Model */
+        /** @var self $model */
         foreach ($models as $model) {
             $valid = $model->validate($attributeNames) && $valid;
         }

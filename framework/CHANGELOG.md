@@ -12,6 +12,8 @@ Yii Framework 2 Change Log
 2.0.53 under development
 ------------------------
 
+- Enh #20385: Fixed the memory leak issue when using `Query::exists()` with MySQL (snewer)
+- Bug #20387: Fixed the command generated to use router.php file in php built-in server (eseperio)
 - Enh #20309: Add custom attributes support to style tags (nzwz)
 - Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
 - Bug #8298: Loading fixtures does not update table sequence for Postgresql database (mtangoo)
@@ -24,6 +26,10 @@ Yii Framework 2 Change Log
 - Enh #20372: Add PHPStan/Psalm annotations for `AssetBundle`, `AssetManager` and `View` (max-s-lab)
 - Bug #20373: Fixed the type of the first parameter `yii\base\Controller::bindInjectedParams()` (max-s-lab)
 - Enh #20374: Add PHPStan/Psalm annotations for `BaseYii`, `BaseObject`, `Component`, `Model`, `Module` and `yii\base\Controller` (max-s-lab)
+- Enh #20394: Add PHPStan/Psalm annotations for `Yii::getAlias` (max-s-lab)
+- Enh #20400: Add PHPStan/Psalm annotations for `yii\web\User` (samuelrajan747)
+- Enh #20395: Add PHPStan/Psalm annotations for `ActiveForm::validate` (samuelrajan747)
+- Enh #20397: Add PHPStan/Psalm annotations for `ArrayHelper::merge` (samuelrajan747)
 
 
 2.0.52 February 13, 2025

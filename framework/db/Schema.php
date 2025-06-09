@@ -278,7 +278,7 @@ abstract class Schema extends BaseObject
      */
     public function refresh()
     {
-        /* @var $cache CacheInterface */
+        /** @var CacheInterface $cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             TagDependency::invalidate($cache, $this->getCacheTag());
@@ -299,7 +299,7 @@ abstract class Schema extends BaseObject
         $rawName = $this->getRawTableName($name);
         unset($this->_tableMetadata[$rawName]);
         $this->_tableNames = [];
-        /* @var $cache CacheInterface */
+        /** @var CacheInterface $cache */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
         if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             $cache->delete($this->getCacheKey($rawName));
