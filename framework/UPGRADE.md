@@ -645,7 +645,7 @@ Upgrade from Yii 2.0.13
 
 * Log targets (like `yii\log\EmailTarget`) are now throwing `yii\log\LogRuntimeException` in case log can not be properly exported.
 
-* You can start preparing your application for Yii 22 by doing the following:
+* You can start preparing your application for Yii 2.2 by doing the following:
 
   - Replace usages of `yii\base\InvalidParamException` with `yii\base\InvalidArgumentException`.
   - Replace calls to `Yii::trace()` with `Yii::debug()`.
