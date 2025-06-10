@@ -49,7 +49,7 @@ jobs:
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
       - name: Run tests with PHPUnit.
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
+        run: vendor/bin/phpunit --verbose --exclude-group --coverage-clover=coverage.xml --colors=always
 
       - name: Upload coverage to Codecov.
         uses: codecov/codecov-action@v4
