@@ -12,7 +12,7 @@ jobs:
   tests:
     name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
     env:
-      extensions: curl, intl, pdo, pdo_mysql
+      extensions: curl, intl, pdo, pdo_mysql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
       - name: Install dependencies with composer
         if: matrix.php != '8.4'

@@ -13,7 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-sqlite
 
     env:
-      EXTENSIONS: pdo, pdo_sqlite, sqlite3
+      EXTENSIONS: pdo, pdo_sqlite, sqlite3, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
@@ -35,7 +35,7 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
       - name: Update composer.
         run: composer self-update
