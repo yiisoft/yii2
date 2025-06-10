@@ -15,35 +15,15 @@ jobs:
   phpunit:
     name: PHP ${{ matrix.php }}
 
+    extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+    XDEBUG_MODE: coverage, develop
+
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - php: 7.3
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 7.4
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: xdebug
-          - php: 8.0
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 8.1
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 8.2
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 8.3
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-            os: ubuntu-latest
-          - php: 8.4
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-            os: ubuntu-latest
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
     steps:
       - name: Generate french locale.
@@ -55,11 +35,11 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: ${{ matrix.coverage }}
+          coverage: xdebug
           extensions: ${{ matrix.extensions }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pecl
+          tools: pie
 
       - name: Install Memcached.
         uses: niden/actions-memcached@v7

@@ -16,11 +16,10 @@ jobs:
       extensions: oci8, pdo, pdo_oci, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
         php: [7.4]
 
     services:
