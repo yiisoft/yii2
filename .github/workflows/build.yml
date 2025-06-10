@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
+  extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
   PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
   XDEBUG_MODE: coverage, develop
 
@@ -14,9 +15,6 @@ concurrency:
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}
-
-    extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
-    XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
 
