@@ -13,7 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
 
     env:
-      extensions: oci8, pdo, pdo_oci, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+      EXTENSIONS: oci8, pdo, pdo_oci, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest

@@ -13,7 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
 
     env:
-      extensions: curl, intl, pdo, pdo_mysql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+      EXTENSIONS: curl, intl, pdo, pdo_mysql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
