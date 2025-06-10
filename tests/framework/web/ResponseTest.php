@@ -187,7 +187,7 @@ class ResponseTest extends \yiiunit\TestCase
     public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes) {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $request= Yii::$app->request;
-        /* @var $request TestRequestComponent */
+        /** @var TestRequestComponent $request */
         $request->getIssAjaxOverride = true;
         $request->getUserAgentOverride = $userAgent;
         foreach([true, false] as $pjaxOverride) {
@@ -332,8 +332,7 @@ class ResponseTest extends \yiiunit\TestCase
 
     public function testSettingContentToNullOn204()
     {
-        $this->assertEmptyContentOn(204, function ($response) {
-            /** @var $response Response */
+        $this->assertEmptyContentOn(204, function (Response $response) {
             $this->assertSame($response->content, '');
         });
     }
@@ -356,8 +355,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSettingContentToNullOn304()
     {
-        $this->assertEmptyContentOn(304, function ($response) {
-            /** @var $response Response */
+        $this->assertEmptyContentOn(304, function (Response $response) {
             $this->assertSame($response->content, '');
         });
     }

@@ -3,9 +3,9 @@
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
+ *
+ * @var \yiiunit\framework\db\CommandTest $this
  */
-
-/* @var $this \yiiunit\framework\db\CommandTest  */
 
 $rows = call_user_func(function () {
     if (false) {

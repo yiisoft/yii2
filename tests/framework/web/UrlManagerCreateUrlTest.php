@@ -730,7 +730,7 @@ class UrlManagerCreateUrlTest extends TestCase
 
     public function testCreateUrlCache()
     {
-        /* @var $rules CachedUrlRule[] */
+        /** @var CachedUrlRule[] $rules */
         $rules = [
             Yii::createObject([
                 'class' => CachedUrlRule::className(),
@@ -777,7 +777,7 @@ class UrlManagerCreateUrlTest extends TestCase
      */
     public function testUrlCreateCacheWithParameterMismatch()
     {
-        /* @var $rules CachedUrlRule[] */
+        /** @var CachedUrlRule[] $rules */
         $rules = [
             Yii::createObject([
                 'class' => CachedUrlRule::className(),
