@@ -12,7 +12,7 @@ jobs:
 
     env:
         DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-        EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached, xdebug-3.3.2
+        EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
         PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
         XDEBUG_MODE: coverage, develop
 
@@ -33,7 +33,7 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: xdebug
+          coverage: ${{ matrix.php == '7.4' && 'xdebug' || 'none' }}
           extensions: ${{ env.EXTENSIONS }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
