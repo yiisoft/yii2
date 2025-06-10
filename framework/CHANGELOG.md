@@ -7,7 +7,8 @@ Yii Framework 2 Change Log
 - Chg #19902: Remove support for CUBRID (mtangoo)
 - Chg #19891: Remove XCache and ZendDataCache support (mtangoo)
 - Enh #20368: Refactor asset management: Migrate from `Bower` to `NPM` for package dependencies and update related documentation (terabytesoftw)
-- Bug #20242: Remove used code `E_STRICT` handling in `ErrorException` class and update tests to reflect changes (terabytesoftw)
+- Bug #20402: Remove unsed code `E_STRICT` handling in `ErrorException` class and update tests to reflect changes (terabytesoftw)
+- Bug #20403: Remove unsed code in `ErrorHandler` class (terabytesoftw)
 
 
 2.0.53 under development
