@@ -251,24 +251,8 @@ abstract class ErrorHandler extends Component
             if (!class_exists('yii\\base\\ErrorException', false)) {
                 require_once __DIR__ . '/ErrorException.php';
             }
-            $exception = new ErrorException($message, $code, $code, $file, $line);
 
-            if (PHP_VERSION_ID < 70400) {
-                // prior to PHP 7.4 we can't throw exceptions inside of __toString() - it will result a fatal error
-                $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-                array_shift($trace);
-                foreach ($trace as $frame) {
-                    if ($frame['function'] === '__toString') {
-                        $this->handleException($exception);
-                        if (defined('HHVM_VERSION')) {
-                            flush();
-                        }
-                        exit(1);
-                    }
-                }
-            }
-
-            throw $exception;
+            throw new ErrorException($message, $code, $code, $file, $line);
         }
 
         return false;
