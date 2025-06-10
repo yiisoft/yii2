@@ -13,21 +13,15 @@ jobs:
     name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
 
     env:
-      EXTENSIONS: pdo, pdo_sqlsrv
+      EXTENSIONS: pdo, pdo_sqlsrv, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
-    runs-on: ${{ matrix.mssql.os || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php:
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
-          - 8.3
-          - 8.4
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
         mssql:
           - version: server:2022-latest
@@ -67,7 +61,7 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
       - name: Update composer
         run: composer self-update

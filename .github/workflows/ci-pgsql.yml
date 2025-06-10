@@ -11,8 +11,9 @@ concurrency:
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
+
     env:
-      extensions: curl, intl, pdo, pdo_pgsql
+      EXTENSIONS: curl, intl, pdo, pdo_pgsql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
@@ -20,7 +21,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
         pgsql: [10, 11, 12, 13, 14, 15]
 
@@ -46,7 +46,7 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
       - name: Update composer.
         run: composer self-update

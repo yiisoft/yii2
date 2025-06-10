@@ -11,8 +11,9 @@ concurrency:
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-mysql-${{ matrix.mysql }}
+
     env:
-      extensions: curl, intl, pdo, pdo_mysql
+      EXTENSIONS: curl, intl, pdo, pdo_mysql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage, develop
 
     runs-on: ubuntu-latest
@@ -20,7 +21,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
         php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
         mysql: [5.7, latest]
 
@@ -45,7 +45,7 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
       - name: Install dependencies with composer
         if: matrix.php != '8.4'
