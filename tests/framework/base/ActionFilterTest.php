@@ -108,7 +108,7 @@ class ActionFilterTest extends TestCase
     {
         $this->mockWebApplication();
 
-        /** @var $filter ActionFilter */
+        /** @var ActionFilter $filter */
         $filter = Yii::createObject($filterClass);
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');

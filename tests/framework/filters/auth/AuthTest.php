@@ -153,7 +153,7 @@ class AuthTest extends \yiiunit\TestCase
      */
     public function testActive(string $authClass): void
     {
-        /** @var $filter AuthMethod */
+        /** @var AuthMethod $filter */
         $filter = new $authClass();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');

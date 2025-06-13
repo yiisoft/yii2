@@ -85,7 +85,7 @@ abstract class DatabaseTestCase extends TestCase
         if (!isset($config['class'])) {
             $config['class'] = 'yii\db\Connection';
         }
-        /* @var $db \yii\db\Connection */
+        /** @var \yii\db\Connection $db */
         $db = \Yii::createObject($config);
         if (!$open) {
             return $db;

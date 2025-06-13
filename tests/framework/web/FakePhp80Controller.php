@@ -17,4 +17,9 @@ class FakePhp80Controller extends Controller
     {
 
     }
+
+    public function actionArrayOrInt(array|int $foo)
+    {
+
+    }
 }

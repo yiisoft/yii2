@@ -13,20 +13,15 @@ jobs:
     name: PHP ${{ matrix.php }}-oracle-11g-r2
 
     env:
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
       EXTENSIONS: oci8, pdo, pdo_oci
+      PHPUNIT_COMMAND: --group oci --colors=always --coverage-clover=coverage.xml
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-
-        php:
-          - 8.1
-
-        oracle:
-          - 11
+        php: [8.1]
 
     services:
       oci:
@@ -46,13 +41,13 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
       - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run Oracle tests with PHPUnit and generate coverage.
-        run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always --verbose
+      - name: Run Oracle tests with PHPUnit.
+        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
 
       - name: Upload coverage to Codecov.
         uses: codecov/codecov-action@v4

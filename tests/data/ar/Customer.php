@@ -19,7 +19,7 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property string $address
  * @property int $status
  *
- * @method CustomerQuery findBySql($sql, $params = []) static
+ * @method static CustomerQuery findBySql($sql, $params = [])
  */
 class Customer extends ActiveRecord
 {
@@ -78,13 +78,15 @@ class Customer extends ActiveRecord
     // deeply nested table relation
     public function getOrderItems()
     {
-        /* @var $rel ActiveQuery */
-        $rel = $this->hasMany(Item::class, ['id' => 'item_id']);
+        $rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
 
-        return $rel->viaTable('order_item', ['order_id' => 'id'], function ($q): void {
-            /* @var $q ActiveQuery */
-            $q->viaTable('order', ['customer_id' => 'id']);
-        })->orderBy('id');
+        return $rel->viaTable(
+            'order_item',
+            ['order_id' => 'id'],
+            function (ActiveQuery $q) {
+                $q->viaTable('order', ['customer_id' => 'id']);
+            }
+        )->orderBy('id');
     }
 
     public function getOrderItems2()

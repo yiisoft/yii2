@@ -11,27 +11,19 @@ concurrency:
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
+
     env:
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
       EXTENSIONS: curl, intl, pdo, pdo_pgsql
+      PHPUNIT_COMMAND: --group pgsql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php:
-          - 8.1
-          - 8.2
-          - 8.3
-          - 8.4
-
-        pgsql:
-          - 10
-          - 11
-          - 12
-          - 13
-          - 14
-          - 15
+        php: [8.1, 8.2, 8.3, 8.4]
+        pgsql: [13, 14, 15, 16, 17]
 
     services:
       postgres:
@@ -55,18 +47,16 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
 
-      - name: Install dependencies with composer
+      - name: Update composer.
+        run: composer self-update
+
+      - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run Pgsql tests with PHPUnit and generate coverage.
-        if: matrix.php == '8.1'
-        run: vendor/bin/phpunit --group pgsql --coverage-clover=coverage.xml --colors=always --verbose
-
       - name: Run Pgsql tests with PHPUnit.
-        if: matrix.php != '8.1'
-        run: vendor/bin/phpunit --group pgsql --colors=always --verbose
+        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '8.1'

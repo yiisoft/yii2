@@ -316,7 +316,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->callback = 'foo';
         $model->save(false);
 
-        /* @var $model ActiveRecordAttributeTypecast */
+        /** @var ActiveRecordAttributeTypecast $model */
         $model = ActiveRecordAttributeTypecast::find()
             ->select(['id', 'name'])
             ->limit(1)

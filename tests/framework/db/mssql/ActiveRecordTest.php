@@ -42,7 +42,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $model->bool_col2 = false;
         $model->save(false);
 
-        /* @var $model Type */
+        /** @var Type $model */
         $model = Type::find()->one();
         $this->assertSame(123, $model->int_col);
         $this->assertSame(456, $model->int_col2);

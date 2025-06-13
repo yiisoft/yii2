@@ -17,7 +17,7 @@ class FakePhp7Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionAksi1(int $foo, ?float $bar, bool $true, bool $false)
+    public function actionAksi1(int $foo, ?float $bar, bool $true, bool $false, string $string)
     {
     }
 
