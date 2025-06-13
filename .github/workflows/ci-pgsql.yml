@@ -14,7 +14,7 @@ jobs:
 
     env:
       EXTENSIONS: curl, intl, pdo, pdo_pgsql
-			PHPUNIT_COMMAND: --group pgsql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
+      PHPUNIT_COMMAND: --group pgsql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
 
     runs-on: ubuntu-latest
 
