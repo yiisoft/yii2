@@ -13,6 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-oracle-11g-r2
 
     env:
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
       EXTENSIONS: oci8, pdo, pdo_oci
       PHPUNIT_COMMAND: --group oci --colors=always --coverage-clover=coverage.xml
 

@@ -11,8 +11,8 @@ jobs:
     name: PHP ${{ matrix.php }}
 
     env:
-      DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-      EXTENSIONS: 'apcu', curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+      EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
       PHPUNIT_COMMAND: --verbose --exclude-group db,wincache,xcache,zenddata --coverage-clover=coverage.xml --colors=always
 
     runs-on: ubuntu-latest

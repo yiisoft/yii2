@@ -13,6 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
 
     env:
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
       EXTENSIONS: curl, intl, pdo, pdo_mysql
       PHPUNIT_COMMAND: --group mysql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
 

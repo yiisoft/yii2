@@ -13,6 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-sqlite
 
     env:
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
       EXTENSIONS: pdo, pdo_sqlite, sqlite3
       PHPUNIT_COMMAND: --group sqlite --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
 

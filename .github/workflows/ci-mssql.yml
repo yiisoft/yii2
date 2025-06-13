@@ -13,6 +13,7 @@ jobs:
     name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
 
     env:
+      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
       EXTENSIONS: pdo, pdo_sqlsrv
       PHPUNIT_COMMAND: --group mssql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
 

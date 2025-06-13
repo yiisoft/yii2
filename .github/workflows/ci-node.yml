@@ -3,7 +3,7 @@ name: build-node
 on: [push, pull_request]
 
 env:
-  DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
+  DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
