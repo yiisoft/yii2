@@ -197,7 +197,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $request= Yii::$app->request;
-        /* @var $request TestRequestComponent */
+        /** @var TestRequestComponent $request */
         $request->getIssAjaxOverride = true;
         $request->getUserAgentOverride = $userAgent;
         foreach([true, false] as $pjaxOverride) {
@@ -347,10 +347,12 @@ class ResponseTest extends \yiiunit\TestCase
 
     public function testSettingContentToNullOn204(): void
     {
-        $this->assertEmptyContentOn(204, function ($response): void {
-            /** @var $response Response */
-            $this->assertSame($response->content, '');
-        });
+        $this->assertEmptyContentOn(
+            204,
+            function (Response $response) {
+                $this->assertSame($response->content, '');
+            }
+        );
     }
 
     public function testSettingStreamToNullOn204(): void
@@ -371,10 +373,12 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSettingContentToNullOn304(): void
     {
-        $this->assertEmptyContentOn(304, function ($response): void {
-            /** @var $response Response */
-            $this->assertSame($response->content, '');
-        });
+        $this->assertEmptyContentOn(
+            304,
+            function (Response $response) {
+                $this->assertSame($response->content, '');
+            }
+        );
     }
 
     public function testSettingStreamToNullOn304(): void

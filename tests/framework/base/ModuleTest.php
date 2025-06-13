@@ -63,9 +63,11 @@ class ModuleTest extends TestCase
         $module->setVersion($version);
         $this->assertEquals($version, $module->getVersion());
 
-        $module->setVersion(fn($module) =>
-            /* @var $module TestModule */
-            'version.' . $module->getUniqueId());
+        $module->setVersion(
+            function (TestModule $module) {
+                return 'version.' . $module->getUniqueId();
+            }
+        );
         $this->assertEquals('version.test', $module->getVersion());
     }
 

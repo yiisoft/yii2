@@ -150,7 +150,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindColumn()
     {
-        /* @var $this TestCase|ActiveRecordTestTrait */
+        /** @var TestCase|ActiveRecordTestTrait $this */
         $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->select('[[name]]')->column());
         $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['[[name]]' => SORT_DESC])->select('[[name]]')->column());
     }
@@ -187,7 +187,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindLazyViaTable(): void
     {
-        /* @var $order Order */
+        /** @var Order $order */
         $order = Order::findOne(1);
         $this->assertEquals(1, $order->id);
         $this->assertCount(2, $order->books);
@@ -238,7 +238,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     // deeply nested table relation
     public function testDeeplyNestedTableRelation(): void
     {
-        /* @var $customer Customer */
+        /** @var Customer $customer */
         $customer = Customer::findOne(1);
         $this->assertNotNull($customer);
 
@@ -259,7 +259,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testDeeplyNestedTableRelation2(): void
     {
-        /* @var $category Category */
+        /** @var Category $category */
         $category = Category::findOne(1);
         $this->assertNotNull($category);
         $orders = $category->orders;
@@ -895,8 +895,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         // joining sub relations
         $query = Order::find()->innerJoinWith([
-            'items i' => function ($q) use ($aliasMethod): void {
-                /* @var $q ActiveQuery */
+            'items i' => function (ActiveQuery $q) use ($aliasMethod) {
                 if ($aliasMethod === 'explicit') {
                     $q->orderBy('{{i}}.id');
                 } elseif ($aliasMethod === 'querysyntax') {
@@ -905,8 +904,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
                     $q->orderBy($q->applyAlias('item', 'id'));
                 }
             },
-            'items.category c' => function ($q) use ($aliasMethod): void {
-                /* @var $q ActiveQuery */
+            'items.category c' => function (ActiveQuery $q) use ($aliasMethod) {
                 if ($aliasMethod === 'explicit') {
                     $q->where('{{c}}.[[id]] = 2');
                 } elseif ($aliasMethod === 'querysyntax') {
@@ -963,7 +961,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
 
         // join with count and query
-        /** @var $query ActiveQuery */
+        /** @var ActiveQuery $query */
         $query = Order::find()->joinWith(['customer c']);
         if ($aliasMethod === 'explicit') {
             $count = $query->count('[[c.id]]');
@@ -977,7 +975,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(3, $orders);
 
         // relational query
-        /** @var $order Order */
+        /** @var Order $order */
         $order = Order::findOne(1);
         $customerQuery = $order->getCustomer()->innerJoinWith(['orders o'], false);
         if ($aliasMethod === 'explicit') {
@@ -992,8 +990,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         // join with sub-relation called inside Closure
         $orders = Order::find()->joinWith([
-            'items' => function ($q) use ($aliasMethod): void {
-                /* @var $q ActiveQuery */
+            'items' => function (ActiveQuery $q) use ($aliasMethod) {
                 $q->orderBy('item.id');
                 $q->joinWith(['category c']);
                 if ($aliasMethod === 'explicit') {
@@ -1103,7 +1100,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testFindCompositeRelationWithJoin(): void
     {
-        /* @var $orderItem OrderItem */
+        /** @var OrderItem $orderItem */
         $orderItem = OrderItem::findOne([1, 1]);
 
         $orderItemNoJoin = $orderItem->orderItemCompositeNoJoin;
@@ -1115,7 +1112,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testFindSimpleRelationWithJoin(): void
     {
-        /* @var $order Order */
+        /** @var Order $order */
         $order = Order::findOne(1);
 
         $customerNoJoin = $order->customer;
@@ -1155,7 +1152,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         Order::$tableName = $orderTableName;
         OrderItem::$tableName = $orderItemTableName;
 
-        /** @var $order Order */
+        /** @var Order $order */
         $order = Order::findOne(1);
         $itemsSQL = $order->getOrderitems()->createCommand()->rawSql;
         $expectedSQL = self::replaceQuotes('SELECT * FROM [[order_item]] WHERE [[order_id]]=1');
@@ -1392,17 +1389,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testUnlinkAllViaTable(): void
     {
-        /* @var $orderClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
-        /* @var $orderItemClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $orderItemClass */
         $orderItemClass = $this->getOrderItemClass();
-        /* @var $itemClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $itemClass */
         $itemClass = $this->getItemClass();
-        /* @var $orderItemsWithNullFKClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $orderItemsWithNullFKClass */
         $orderItemsWithNullFKClass = $this->getOrderItemWithNullFKmClass();
 
         // via table with delete
-        /* @var $order  Order */
+        /** @var Order $order */
         $order = $orderClass::findOne(1);
         $this->assertCount(2, $order->booksViaTable);
         $orderItemCount = $orderItemClass::find()->count();
@@ -1439,7 +1436,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $model->bool_col2 = false;
         $model->save(false);
 
-        /* @var $model Type */
+        /** @var Type $model */
         $model = Type::find()->one();
         $this->assertSame(123, $model->int_col);
         $this->assertSame(456, $model->int_col2);
@@ -1511,8 +1508,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testOptimisticLock(): void
     {
-        /* @var $record Document */
-
+        /** @var Document $record */
         $record = Document::findOne(1);
         $record->content = 'New Content';
         $record->save(false);
@@ -2160,7 +2156,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testUnlinkWithViaOnCondition(bool $delete, int $count): void
     {
-        /* @var $orderClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
 
         $order = $orderClass::findOne(2);
@@ -2171,7 +2167,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(0, $order->itemsFor8);
         $this->assertCount(2, $order->orderItemsWithNullFK);
 
-        /* @var $orderItemClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $orderItemClass */
         $orderItemClass = $this->getOrderItemWithNullFKmClass();
         $this->assertCount(1, $orderItemClass::findAll([
             'order_id' => 2,
@@ -2185,7 +2181,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testVirtualRelation(): void
     {
-        /* @var $orderClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
         $order = $orderClass::findOne(2);
         $order->virtualCustomerId = $order->customer_id;

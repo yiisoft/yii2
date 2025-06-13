@@ -14,7 +14,6 @@ use yii\web\Response;
 use yii\web\User;
 use yiiunit\framework\filters\stubs\ExposedLogger;
 use yiiunit\framework\filters\stubs\RateLimit;
-use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**
@@ -105,7 +104,6 @@ class RateLimiterTest extends TestCase
 
     public function testCheckRateLimitTooManyRequests(): void
     {
-        /* @var $rateLimit UserIdentity|\Prophecy\ObjectProphecy */
         $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([1, 1])
@@ -118,7 +116,6 @@ class RateLimiterTest extends TestCase
 
     public function testCheckRateaddRateLimitHeaders(): void
     {
-        /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
         $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([2, 10])

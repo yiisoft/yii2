@@ -21,7 +21,7 @@ use yiiunit\TestCase;
  */
 trait MigrateControllerTestTrait
 {
-    /* @var $this TestCase */
+    /** @var TestCase $this */
 
     /**
      * @var string name of the migration controller class, which is under test.
