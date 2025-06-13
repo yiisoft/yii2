@@ -53,6 +53,9 @@ class Action extends Component
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $controller, $config = [])
     {

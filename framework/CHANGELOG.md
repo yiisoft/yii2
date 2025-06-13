@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Enh #20400: Add PHPStan/Psalm annotations for `yii\web\User` (samuelrajan747)
 - Enh #20395: Add PHPStan/Psalm annotations for `ActiveForm::validate` (samuelrajan747)
 - Enh #20397: Add PHPStan/Psalm annotations for `ArrayHelper::merge` (samuelrajan747)
+- Enh #20413: Add PHPStan/Psalm annotations for `Action`, `ActionEvent`, `Application`, `DynamicModel` and `InlineAction` (max-s-lab)
 
 
 2.0.52 February 13, 2025
