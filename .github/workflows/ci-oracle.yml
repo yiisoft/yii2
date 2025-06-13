@@ -21,7 +21,7 @@ jobs:
 
     strategy:
       matrix:
-        php: [7.4]
+        php: [8.1]
 
     services:
       oci:
