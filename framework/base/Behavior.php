@@ -29,6 +29,8 @@ class Behavior extends BaseObject
 {
     /**
      * @var Component|null the owner of this behavior
+     *
+     * @phpstan-var T|null
      */
     public $owner;
 
