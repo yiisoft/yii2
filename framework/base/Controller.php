@@ -131,8 +131,8 @@ class Controller extends Component implements ViewContextInterface
      * using the configuration provided here.
      * @return array
      *
-     * @phpstan-return array<string, class-string|array{class: class-string, ...}
-     * @psalm-return array<string, class-string|array{class: class-string, ...}
+     * @phpstan-return array<string, class-string|array{class: class-string, ...}>
+     * @psalm-return array<string, class-string|array{class: class-string, ...}>
      */
     public function actions()
     {
