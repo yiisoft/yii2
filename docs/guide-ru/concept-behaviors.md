@@ -166,7 +166,7 @@ $component->attachBehavior('myBehavior1', new MyBehavior);
 // прикрепляем по имени класса поведения
 $component->attachBehavior('myBehavior2', MyBehavior::class);
 
-// прикрепляем, используя массив конфигураций
+// прикрепляем, используя массив настроек
 $component->attachBehavior('myBehavior3', [
     'class' => MyBehavior::class,
     'prop1' => 'value1',
