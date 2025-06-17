@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #20402: Remove unsed code `E_STRICT` handling in `ErrorException` class and update tests to reflect changes (terabytesoftw)
 - Bug #20403: Remove unsed code in `ErrorHandler` class (terabytesoftw)
 - Bug #20408: Remove unsed code in `Model` in `formName()` method to enforce explicit definition for anonymous models (terabytesoftw)
+- Bug #20421: Remove `PHP_VERSION_ID` check in `pbkdf2` method for `hash_pbkdf2` function (terabytesoftw)
 
 2.0.53 under development
 ------------------------
