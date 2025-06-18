@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #20403: Remove unsed code in `ErrorHandler` class (terabytesoftw)
 - Bug #20408: Remove unsed code in `Model` in `formName()` method to enforce explicit definition for anonymous models (terabytesoftw)
 - Bug #20421: Remove `PHP_VERSION_ID` check in `pbkdf2` method for `hash_pbkdf2` function (terabytesoftw)
+- Bug #20422: Remove `PHP_VERSION_ID` checks from `AttributeTypecastBehavior` and its tests for enum typecasting (terabytesoftw)
 
 2.0.53 under development
 ------------------------
