@@ -97,7 +97,7 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($this->buildKey($key));
 
-        set_error_handler(function($errno, $errstr) {
+        set_error_handler(function ($errno, $errstr) {
             return strpos($errstr, 'filemtime') !== false;
         }, E_WARNING);
 
@@ -117,7 +117,7 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($key);
 
-        set_error_handler(function($errno, $errstr) {
+        set_error_handler(function ($errno, $errstr) {
             return strpos($errstr, 'filemtime') !== false;
         }, E_WARNING);
 
