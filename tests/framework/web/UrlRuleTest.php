@@ -1320,6 +1320,30 @@ class UrlRuleTest extends TestCase
         }
     }
 
+    public function testUrlRuleDefaultsWithNonStringValues()
+    {
+        $this->mockWebApplication();
+
+        $manager = new UrlManager(
+            [
+                'cache' => null,
+            ],
+        );
+
+        $rule = new UrlRule(
+            [
+                'pattern' => 'post/index',
+                'route' => 'post/index',
+                'defaults' => ['page' => 1],
+            ],
+        );
+
+        $this->assertSame(
+            'post/index',
+            $rule->createUrl($manager, 'post/index', ['page' => '1']),
+        );
+    }
+
     /**
      * Provides test cases for getCreateUrlStatus() method.
      *
