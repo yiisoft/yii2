@@ -60,14 +60,6 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 class BaseYii
 {
     /**
-     * @var array class map used by the Yii autoloading mechanism.
-     * The array keys are the class names (without leading backslashes), and the array values
-     * are the corresponding class file paths (or [path aliases](guide:concept-aliases)). This property mainly affects
-     * how [[autoload()]] works.
-     * @see autoload()
-     */
-    public static $classMap = [];
-    /**
      * @var \yii\console\Application|\yii\web\Application the application instance
      */
     public static $app;
@@ -251,52 +243,6 @@ class BaseYii
             } elseif ($pos === false) {
                 unset(static::$aliases[$root]);
             }
-        }
-    }
-
-    /**
-     * Class autoload loader.
-     *
-     * This method is invoked automatically when PHP sees an unknown class.
-     * The method will attempt to include the class file according to the following procedure:
-     *
-     * 1. Search in [[classMap]];
-     * 2. If the class is namespaced (e.g. `yii\base\Component`), it will attempt
-     *    to include the file associated with the corresponding path alias
-     *    (e.g. `@yii/base/Component.php`);
-     *
-     * This autoloader allows loading classes that follow the [PSR-4 standard](https://www.php-fig.org/psr/psr-4/)
-     * and have its top-level namespace or sub-namespaces defined as path aliases.
-     *
-     * Example: When aliases `@yii` and `@yii/bootstrap` are defined, classes in the `yii\bootstrap` namespace
-     * will be loaded using the `@yii/bootstrap` alias which points to the directory where the bootstrap extension
-     * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
-     *
-     * Also the [guide section on autoloading](guide:concept-autoloading).
-     *
-     * @param string $className the fully qualified class name without a leading backslash "\"
-     * @throws UnknownClassException if the class does not exist in the class file
-     */
-    public static function autoload($className)
-    {
-        if (isset(static::$classMap[$className])) {
-            $classFile = static::$classMap[$className];
-            if (strncmp($classFile, '@', 1) === 0) {
-                $classFile = static::getAlias($classFile);
-            }
-        } elseif (strpos($className, '\\') !== false) {
-            $classFile = static::getAlias('@' . str_replace('\\', '/', $className) . '.php', false);
-            if ($classFile === false || !is_file($classFile)) {
-                return;
-            }
-        } else {
-            return;
-        }
-
-        include $classFile;
-
-        if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
-            throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
         }
     }
 

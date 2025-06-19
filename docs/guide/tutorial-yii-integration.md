@@ -19,17 +19,7 @@ You can install such libraries by taking the following two simple steps:
 1. modify the `composer.json` file of your application and specify which Composer packages you want to install.
 2. run `composer install` to install the specified packages.
 
-The classes in the installed Composer packages can be autoloaded using the Composer autoloader. Make sure
-the [entry script](structure-entry-scripts.md) of your application contains the following lines to install
-the Composer autoloader:
-
-```php
-// install Composer autoloader
-require __DIR__ . '/../vendor/autoload.php';
-
-// include Yii class file
-require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
-```
+The classes in the installed Composer packages can be autoloaded using the Composer autoloader.
 
 ### Using Downloaded Libraries <span id="using-downloaded-libs"></span>
 
@@ -37,22 +27,26 @@ If a library is not released as a Composer package, you should follow its instal
 In most cases, you will need to download a release file manually and unpack it in the `BasePath/vendor` directory,
 where `BasePath` represents the [base path](structure-applications.md#basePath) of your application.
 
-If a library carries its own class autoloader, you may install it in the [entry script](structure-entry-scripts.md)
-of your application. It is recommended the installation is done before you include the `Yii.php` file so that
-the Yii class autoloader can take precedence in autoloading classes.
+If a library carries its own class autoloader, you may require it in the [entry script](structure-entry-scripts.md)
+of your application. It is recommended to put `require` statements before Composer autoloader file so that
+the Composer autoloader can take precedence in autoloading classes.
 
 If a library does not provide a class autoloader, but its class naming follows [PSR-4](https://www.php-fig.org/psr/psr-4/),
-you may use the Yii class autoloader to autoload the classes. All you need to do is just to declare a
-[root alias](concept-aliases.md#defining-aliases) for each root namespace used in its classes. For example,
+you may use the Composer autoloader to autoload the classes. You need to declare each root namespace used in its classes
+in `composer.json`. For example,
 assume you have installed a library in the directory `vendor/foo/bar`, and the library classes are under
-the `xyz` root namespace. You can include the following code in your application configuration:
+the `xyz` root namespace. You can include the following:
 
-```php
-[
-    'aliases' => [
-        '@xyz' => '@vendor/foo/bar',
-    ],
-]
+```json
+{
+    "name": "myorg/myapp",
+    "autoload": {
+        "psr-4": {
+          "app\\": "src",
+          "xyz\\": "vendor/foo/bar",          
+        }
+    },
+}
 ```
 
 If neither of the above is the case, it is likely that the library relies on PHP include path configuration to
@@ -62,12 +56,19 @@ In the worst case when the library requires explicitly including every class fil
 to include the classes on demand:
 
 * Identify which classes the library contains.
-* List the classes and the corresponding file paths in `Yii::$classMap` in the [entry script](structure-entry-scripts.md)
-  of the application. For example,
-```php
-Yii::$classMap['Class1'] = 'path/to/Class1.php';
-Yii::$classMap['Class2'] = 'path/to/Class2.php';
-```
+* List the classes and the corresponding file paths in the application `composer.json`:
+  ```json
+  "autoload": {
+      "psr-4": {
+          "app\\": ""
+      },
+      "classmap": [
+          "path/to/Class1.php",
+          "path/to/Class2.php",
+          "path/to/library/",
+      ]
+  },
+  ```
 
 
 Using Yii in Third-Party Systems <span id="using-yii-in-others"></span>
@@ -99,7 +100,7 @@ the `BasePath/vendor` directory.
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:
 
 ```php
-require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
+require __DIR__ . '/../vendor/autoload.php'; // in case 3rd-party system doesn't use Composer
 
 $yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // Do NOT call run() here
@@ -125,7 +126,7 @@ If you were using Yii 1 previously, it is likely you have a running Yii 1 applic
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
 This can be achieved as described below.
 
-> Note: Yii 2 requires PHP 5.4 or above. You should make sure that both your server and the existing application
+> Note: Yii 22 requires PHP 8.1 or above. You should make sure that both your server and the existing application
 > support this.
 
 First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).
@@ -150,7 +151,7 @@ The above code includes the customized `Yii` class file, which can be created as
 
 ```php
 $yii2path = '/path/to/yii2';
-require $yii2path . '/BaseYii.php'; // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 22
 
 $yii1path = '/path/to/yii1';
 require $yii1path . '/YiiBase.php'; // Yii 1.x
@@ -160,12 +161,9 @@ class Yii extends \yii\BaseYii
     // copy-paste the code from YiiBase (1.x) here
 }
 
-spl_autoload_unregister(array('YiiBase','autoload'));
-spl_autoload_register(array('Yii','autoload'));
+// register Composer autoloader
+require(__DIR__ . '/../vendor/autoload.php');
 
-Yii::$classMap = include($yii2path . '/classes.php');
-// register Yii 2 autoloader via Yii 1
-Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;
 ```

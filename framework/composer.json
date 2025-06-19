@@ -72,7 +72,12 @@
         "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0"
     },
     "autoload": {
-        "psr-4": {"yii\\": ""}
+        "psr-4": {
+            "yii\\": ""
+        },
+        "classmap": [
+           "Yii.php"
+        ]
     },
     "bin": [
         "yii"

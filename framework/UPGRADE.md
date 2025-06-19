@@ -51,6 +51,14 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Ugrade from Yii 22.0 
+--------------------
+* Yii autoloader was removed in favor of Composer-generated one. You should remove explicit inclusion of `Yii.php` from
+  your entry `index.php` scripts. In case you have relied on class map, use `composer.json` instead of configuring it
+  with PHP. For details please refer to [guide on autoloading](https://github.com/yiisoft/yii2/blob/22.0/docs/guide/concept-autoloading.md),  
+  [guide on customizing helpers](https://github.com/yiisoft/yii2/blob/22.0/docs/guide/helper-overview.md#customizing-helper-classes-)
+  and [guide on Working with Third-Party Code](https://github.com/yiisoft/yii2/blob/22.0/docs/guide/tutorial-yii-integration.md).
+
 Upgrade from Yii 2.0.52
 -----------------------
 * There was a bug when loading fixtures into PostgreSQL database, the table sequences were not reset. If you used a work-around or if you depended on this behavior, you are advised to review your code.

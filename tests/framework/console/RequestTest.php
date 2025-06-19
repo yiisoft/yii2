@@ -5,6 +5,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+namespace yiiunit\framework\console;
+
 use yii\console\Request;
 use yiiunit\TestCase;
 

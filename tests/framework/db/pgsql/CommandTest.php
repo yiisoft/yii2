@@ -5,7 +5,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yii\tests\unit\framework\db\pgsql;
+namespace yiiunit\framework\db\pgsql;
 
 use yii\db\ArrayExpression;
 use yii\db\JsonExpression;
