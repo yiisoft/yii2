@@ -85,10 +85,6 @@ class AttributeTypecastBehaviorTest extends TestCase
 
     public function testTypecastEnum()
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.1');
-        }
-
         $model = new ActiveRecordAttributeTypecastWithEnum();
 
         $model->status = StatusTypeString::Active;
@@ -103,10 +99,6 @@ class AttributeTypecastBehaviorTest extends TestCase
      */
     public function testTypecastEnumFromString()
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.1');
-        }
-
         $model = new ActiveRecordAttributeTypecastWithEnum();
         $model->status = 'active'; // Same as StatusTypeString::ACTIVE->value;
 
@@ -120,10 +112,6 @@ class AttributeTypecastBehaviorTest extends TestCase
      */
     public function testTypecastEnumFailWithInvalidValue()
     {
-        if (PHP_VERSION_ID < 80100) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.1');
-        }
-
         $model = new ActiveRecordAttributeTypecastWithEnum();
         $model->status = 'invalid';
 

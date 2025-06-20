@@ -269,7 +269,7 @@ class AttributeTypecastBehavior extends Behavior
                     return (string) $value;
             }
 
-            if (PHP_VERSION_ID >= 80100 && is_subclass_of($type, \BackedEnum::class)) {
+            if (is_subclass_of($type, \BackedEnum::class)) {
                 if ($value instanceof $type) {
                     return $value;
                 }
