@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #20416: Add `PHPStan`/`PSalm` annotation for `owner` property in `Behavior` class (terabytesoftw)
 - Bug #20423: `strcmp()` Passing `null` to parameter `2` ($string2) of type string is deprecated (terabytesoftw)
 - Enh #20430: Update PHPStan/Psalm annotations for `ArrayHelper::merge` to handle array-key (samuelrajan747)
+- Bug #20348: `ErrorHandler::convertExceptionToError()` Passing `E_USER_ERROR` to `trigger_error()` is deprecated since PHP `8.4` (terabytesoftw)
 
 
 2.0.52 February 13, 2025
