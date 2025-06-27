@@ -189,6 +189,9 @@ class Controller extends \yii\base\Controller
      * @param array $params the parameters to be bound to the action
      * @return array the valid parameters that the action can run with.
      * @throws Exception if there are unknown options or missing arguments
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function bindActionParams($action, $params)
     {

@@ -227,6 +227,9 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action to be bound with parameters.
      * @param array $params the parameters to be bound to the action.
      * @return array the valid parameters that the action can run with.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function bindActionParams($action, $params)
     {
