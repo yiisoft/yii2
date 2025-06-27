@@ -327,6 +327,9 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function afterAction($action, $result)
     {
