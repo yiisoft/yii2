@@ -193,8 +193,8 @@ class Controller extends \yii\base\Controller
      * @phpstan-param Action<static> $action
      * @psalm-param Action<static> $action
      *
-     * @phpstan-param array<array-key, string> $params
-     * @psalm-param array<array-key, string> $params
+     * @phpstan-param array<array-key, mixed> $params
+     * @psalm-param array<array-key, mixed> $params
      *
      * @phpstan-return mixed[]
      * @psalm-return mixed[]
