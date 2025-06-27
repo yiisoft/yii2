@@ -296,6 +296,9 @@ class Controller extends Component implements ViewContextInterface
      *
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to run.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function beforeAction($action)
     {
