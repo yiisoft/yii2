@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.54 under development
 ------------------------
 
-- no changes in this release.
+- Enh #20432: Updated PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
 
 
 2.0.53 June 27, 2025
