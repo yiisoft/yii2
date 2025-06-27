@@ -142,13 +142,11 @@ class View extends \yii\base\View
      * @see registerCssFile()
      */
     public $cssFiles = [];
-
     /**
      * @since 2.0.53
      * @var array the style tag options.
      */
     public $styleOptions = [];
-
     /**
      * @var array the registered JS code blocks
      * @see registerJs()
