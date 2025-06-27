@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
+use yii\base\Action;
 
 /**
  * Controller is the base class of web controllers.
@@ -108,14 +109,23 @@ class Controller extends \yii\base\Controller
 
     /**
      * Binds the parameters to the action.
-     * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
+     * This method is invoked by [[Action]] when it begins to run with the given parameters.
      * This method will check the parameter names that the action requires and return
      * the provided parameters according to the requirement. If there is any missing parameter,
      * an exception will be thrown.
-     * @param \yii\base\Action $action the action to be bound with parameters
+     * @param Action $action the action to be bound with parameters
      * @param array $params the parameters to be bound to the action
      * @return array the valid parameters that the action can run with.
      * @throws BadRequestHttpException if there are missing or invalid parameters.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
+     *
+     * @phpstan-param array<array-key, mixed> $params
+     * @psalm-param array<array-key, mixed> $params
+     *
+     * @phpstan-return mixed[]
+     * @psalm-return mixed[]
      */
     public function bindActionParams($action, $params)
     {
