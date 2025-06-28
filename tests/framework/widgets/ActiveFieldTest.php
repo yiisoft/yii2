@@ -696,6 +696,54 @@ HTML;
         $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
     }
 
+    public function testExceptionToString()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped('This test is for PHP 7.4+ only');
+        }
+
+        $field = new TestActiveFieldWithException();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Test exception in toString.');
+
+        (string) $field;
+    }
+
+    public function testExceptionToStringLegacy()
+    {
+        if (PHP_VERSION_ID >= 70400) {
+            $this->markTestSkipped('This test is for PHP < 7.4 only');
+        }
+
+        $field = new TestActiveFieldWithException();
+
+        $errorTriggered = false;
+        $errorMessage = '';
+
+        set_error_handler(
+            function ($severity, $message, $file, $line) use (&$errorTriggered, &$errorMessage) {
+                if ($severity === E_USER_ERROR) {
+                    $errorTriggered = true;
+                    $errorMessage = $message;
+
+                    return true;
+                }
+
+                return false;
+            },
+            E_USER_ERROR,
+        );
+
+        $result = (string) $field;
+
+        restore_error_handler();
+
+        $this->assertTrue($errorTriggered, 'E_USER_ERROR should have been triggered');
+        $this->assertStringContainsString('Test exception in toString.', $errorMessage);
+        $this->assertSame('', $result, 'Result should be an empty string');
+    }
+
     /**
      * Helper methods.
      */
@@ -803,3 +851,12 @@ class TestMaskedInput extends MaskedInput
         ));
     }
 }
+
+class TestActiveFieldWithException extends ActiveField
+{
+    public function render($content = null)
+    {
+        throw new \Exception('Test exception in toString.');
+    }
+}
+

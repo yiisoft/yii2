@@ -51,6 +51,41 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.53
+-----------------------
+
+* `ErrorHandler::convertExceptionToError()` has been deprecated and will be removed in version 22.0.
+
+  This method was deprecated due to `PHP 8.4` deprecating the use of `E_USER_ERROR` with `trigger_error()`.
+  The framework now handles exceptions in `__toString()` methods more appropriately based on the PHP version.
+
+  **Before (deprecated):**
+  ```php
+  public function __toString() {
+      try {
+          return $this->render();
+      } catch (\Throwable $e) {
+          ErrorHandler::convertExceptionToError($e);
+          return '';
+      }
+  }
+  ```
+
+  **After (recommended):**
+  ```php
+  public function __toString() {
+      try {
+          return $this->render();
+      } catch (\Throwable $e) {
+          if (PHP_VERSION_ID < 70400) {
+              trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+              return '';
+          }
+          throw $e;
+      }
+  }
+  ```
+
 Upgrade from Yii 2.0.52
 -----------------------
 * There was a bug when loading fixtures into PostgreSQL database, the table sequences were not reset. If you used a work-around or if you depended on this behavior, you are advised to review your code.

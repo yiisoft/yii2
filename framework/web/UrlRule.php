@@ -97,6 +97,8 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      * @var string|null the URL suffix used for this rule.
      * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
      * If not set, the value of [[UrlManager::suffix]] will be used.
+     * Default values should be strings. Non-string values will be automatically converted to
+     * strings for comparison with URL parameters.
      */
     public $suffix;
     /**
@@ -494,7 +496,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                     return false;
                 }
             }
-            if (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
+            if (strcmp($params[$name], (string) $value) === 0) {
                 unset($params[$name]);
                 if (isset($this->_paramRules[$name])) {
                     $tr["<$name>"] = '';

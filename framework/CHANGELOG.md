@@ -15,27 +15,40 @@ Yii Framework 2 Change Log
 - Bug #20427: Remove `PHP_VERSION_ID` and `PHP_MAJOR_VERSION` checks from console `Controller` class (terabytesoftw)
 
 2.0.53 under development
+2.0.54 under development
 ------------------------
 
-- Enh #20385: Fixed the memory leak issue when using `Query::exists()` with MySQL (snewer)
-- Bug #20387: Fixed the command generated to use router.php file in php built-in server (eseperio)
-- Enh #20309: Add custom attributes support to style tags (nzwz)
-- Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
+- no changes in this release.
+
+
+2.0.53 June 27, 2025
+--------------------
+
 - Bug #8298: Loading fixtures does not update table sequence for Postgresql database (mtangoo)
+- Bug #20329: pgsql: Column Schema doesn't recognize PG type cast (arkhamvm)
 - Bug #20347: Fix compatibility with PHP 8.4: remove usage of `session.use_trans_sid` and `session.use_only_cookies` (tehmaestro)
+- Bug #20348: `ErrorHandler::convertExceptionToError()` Passing `E_USER_ERROR` to `trigger_error()` is deprecated since PHP `8.4` (terabytesoftw)
 - Bug #20351: Fix behavior for `yii\web\Controller::bindActionParams` around union types (chriscpty)
 - Bug #20355: Fix SQL syntax for resetting sequence in `QueryBuilder` for `MSSQL` (terabytesoftw)
 - Bug #20371: Fix "Typed property must not be accessed before initialization" when calling `toArray()` on a model with typed properties without default value (uaoleg)
+- Bug #20373: Fixed the type of the first parameter `yii\base\Controller::bindInjectedParams()` (max-s-lab)
+- Bug #20387: Fixed the command generated to use router.php file in php built-in server (eseperio)
+- Bug #20423: `strcmp()` Passing `null` to parameter `2` ($string2) of type string is deprecated (terabytesoftw)
+- Enh #20309: Add custom attributes support to style tags (nzwz)
 - Enh #20354: Add PHPStan/Psalm annotations for `Container` and `Instance` (max-s-lab)
 - Enh #20361: Add PHPStan/Psalm annotations for `ActiveQuery` (max-s-lab)
 - Enh #20363: Add PHPStan/Psalm annotations for `ActiveRecord` and `ActiveQuery` (max-s-lab)
 - Enh #20372: Add PHPStan/Psalm annotations for `AssetBundle`, `AssetManager` and `View` (max-s-lab)
-- Bug #20373: Fixed the type of the first parameter `yii\base\Controller::bindInjectedParams()` (max-s-lab)
 - Enh #20374: Add PHPStan/Psalm annotations for `BaseYii`, `BaseObject`, `Component`, `Model`, `Module` and `yii\base\Controller` (max-s-lab)
+- Enh #20385: Fixed the memory leak issue when using `Query::exists()` with MySQL (snewer)
 - Enh #20394: Add PHPStan/Psalm annotations for `Yii::getAlias` (max-s-lab)
-- Enh #20400: Add PHPStan/Psalm annotations for `yii\web\User` (samuelrajan747)
 - Enh #20395: Add PHPStan/Psalm annotations for `ActiveForm::validate` (samuelrajan747)
 - Enh #20397: Add PHPStan/Psalm annotations for `ArrayHelper::merge` (samuelrajan747)
+- Enh #20400: Add PHPStan/Psalm annotations for `yii\web\User` (samuelrajan747)
+- Enh #20413: Add PHPStan/Psalm annotations for `Action`, `ActionEvent`, `Application`, `DynamicModel` and `InlineAction` (max-s-lab)
+- Enh #20416: Add `PHPStan`/`PSalm` annotation for `owner` property in `Behavior` class (terabytesoftw)
+- Enh #20426: Add `PHPStan`/`Psalm` annotation for `controller` property in `Action` class (terabytesoftw)
+- Enh #20430: Update PHPStan/Psalm annotations for `ArrayHelper::merge` to handle array-key (samuelrajan747)
 
 
 2.0.52 February 13, 2025
