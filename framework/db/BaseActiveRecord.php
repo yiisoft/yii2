@@ -389,6 +389,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
      * @return ActiveQueryInterface the relational query object.
+     *
+     * @phpstan-param class-string $class
+     * @psalm-param class-string $class
+     *
+     * @phpstan-param array<string, string> $link
+     * @psalm-param array<string, string> $link
      */
     public function hasOne($class, $link)
     {
@@ -424,6 +430,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * the attributes of the record associated with the `$class` model, while the values of the
      * array refer to the corresponding attributes in **this** AR class.
      * @return ActiveQueryInterface the relational query object.
+     *
+     * @phpstan-param class-string $class
+     * @psalm-param class-string $class
+     *
+     * @phpstan-param array<string, string> $link
+     * @psalm-param array<string, string> $link
      */
     public function hasMany($class, $link)
     {

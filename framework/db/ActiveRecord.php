@@ -70,9 +70,6 @@ use yii\helpers\StringHelper;
  *
  * For more details and usage information on ActiveRecord, see the [guide article on ActiveRecord](guide:db-active-record).
  *
- * @method ActiveQuery hasMany($class, array $link) See [[BaseActiveRecord::hasMany()]] for more info.
- * @method ActiveQuery hasOne($class, array $link) See [[BaseActiveRecord::hasOne()]] for more info.
- *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -593,6 +590,42 @@ class ActiveRecord extends BaseActiveRecord
             $transaction->rollBack();
             throw $e;
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return ActiveQuery
+     *
+     * @template T
+     *
+     * @phpstan-param class-string<T> $class
+     * @psalm-param class-string<T> $class
+     *
+     * @phpstan-return ActiveQuery<T>
+     * @psalm-return ActiveQuery<T>
+     */
+    public function hasMany($class, $link)
+    {
+        return parent::hasMany($class, $link);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return ActiveQuery
+     *
+     * @template T
+     *
+     * @phpstan-param class-string<T> $class
+     * @psalm-param class-string<T> $class
+     *
+     * @phpstan-return ActiveQuery<T>
+     * @psalm-return ActiveQuery<T>
+     */
+    public function hasOne($class, $link)
+    {
+        return parent::hasOne($class, $link);
     }
 
     /**
