@@ -16,7 +16,7 @@ use yii\helpers\VarDumper;
  * MimeTypeController generates a map of file extensions to MIME types.
  *
  * It uses `mime.types` file from apache http located under
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  *
  * This file has been placed in the public domain for unlimited redistribution,
  * so we can use it and ship it with Yii.
@@ -76,13 +76,13 @@ class MimeTypeController extends Controller
         }
 
         $this->stdout('Downloading mime-type file from apache httpd repository...');
-        if ($apacheMimeTypesFileContent = file_get_contents('https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=co')) {
+        if ($apacheMimeTypesFileContent = file_get_contents('https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types')) {
             $this->stdout("Done.\n", Console::FG_GREEN);
             $this->generateMimeTypesFile($outFile, $apacheMimeTypesFileContent);
             $this->generateMimeAliasesFile($aliasesOutFile);
             $this->generateMimeExtensionsFile($extensionsOutFile, $apacheMimeTypesFileContent);
         } else {
-            $this->stderr("Failed to download mime.types file from apache SVN.\n");
+            $this->stderr("Failed to download mime.types file from apache Git.\n");
         }
     }
 
@@ -119,7 +119,7 @@ class MimeTypeController extends Controller
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
  * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
@@ -214,7 +214,7 @@ EOD;
  * If there are multiple extensions for a singe MIME type
  * they are ordered from most to least common.
  * Its content is generated from the apache http mime.types file.
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
  * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php

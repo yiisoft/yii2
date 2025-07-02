@@ -33,6 +33,9 @@ class InlineAction extends Action
      * @param Controller $controller the controller that owns this action
      * @param string $actionMethod the controller method that this inline action is associated with
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $controller, $actionMethod, $config = [])
     {
