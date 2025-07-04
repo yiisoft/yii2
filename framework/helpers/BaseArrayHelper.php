@@ -126,11 +126,11 @@ class BaseArrayHelper
      * @psalm-template TKeyB
      * @psalm-template TValueB
      * @phpstan-param array<TKeyA, TValueA> $a
-     * @phpstan-param array<array<TKeyB, TValueB>> ...$b
+     * @phpstan-param array<TKeyB, TValueB> ...$b
      * @psalm-param array<TKeyA, TValueA> $a
-     * @psalm-param array<array<TKeyB, TValueB>> ...$b
-     * @phpstan-return array<TKeyA|TKeyB, TValueA|TValueB>
-     * @psalm-return array<TKeyA|TKeyB, TValueA|TValueB>
+     * @psalm-param array<TKeyB, TValueB> ...$b
+     * @phpstan-return array<TKeyA|TKeyB, TValueA|TValueB|mixed>
+     * @psalm-return array<TKeyA|TKeyB, TValueA|TValueB|mixed>
      */
     public static function merge($a, ...$b)
     {
