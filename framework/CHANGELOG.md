@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.54 under development
 ------------------------
 
-- Bug #20438: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge`
+- Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
 
 
 2.0.53 June 27, 2025
