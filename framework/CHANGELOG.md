@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #20434: Added PHPStan/Psalm annotations for `hasMany` and `hasOne` methods (max-s-lab)
+- Enh #20433: Added PHPStan/Psalm annotations for some controllers methods: `beforeAction`, `afterAction` and `bindActionParams` (max-s-lab)
 
 
 2.0.53 June 27, 2025
