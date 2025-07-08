@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.54 under development
 ------------------------
 
-- no changes in this release.
+- Enh #20433: Added PHPStan/Psalm annotations for some controllers methods: `beforeAction`, `afterAction` and `bindActionParams` (max-s-lab)
 
 
 2.0.53 June 27, 2025
