@@ -78,8 +78,8 @@ use yii\base\InvalidConfigException;
  * @phpstan-method T[] all($db = null)
  * @psalm-method T[] all($db = null)
  *
- * @phpstan-method ($value is true ? (T is array ? self<T> : self<array>) : self<T>) asArray($value = true)
- * @psalm-method ($value is true ? (T is array ? self<T> : self<array>) : self<T>) asArray($value = true)
+ * @phpstan-method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true)
+ * @psalm-method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true)
  *
  * @phpstan-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
  * @psalm-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)

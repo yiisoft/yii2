@@ -227,6 +227,15 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action to be bound with parameters.
      * @param array $params the parameters to be bound to the action.
      * @return array the valid parameters that the action can run with.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
+     *
+     * @phpstan-param array<array-key, mixed> $params
+     * @psalm-param array<array-key, mixed> $params
+     *
+     * @phpstan-return mixed[]
+     * @psalm-return mixed[]
      */
     public function bindActionParams($action, $params)
     {
@@ -296,6 +305,9 @@ class Controller extends Component implements ViewContextInterface
      *
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to run.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function beforeAction($action)
     {
@@ -324,6 +336,9 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function afterAction($action, $result)
     {
