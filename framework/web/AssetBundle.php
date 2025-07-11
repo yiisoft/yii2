@@ -102,8 +102,8 @@ class AssetBundle extends BaseObject
      *
      * Note that only a forward slash "/" should be used as directory separator.
      *
-     * @phpstan-var (string|array<int|string, mixed>)[]
-     * @psalm-var (string|array<int|string, mixed>)[]
+     * @phpstan-var (string|array<array-key, mixed>)[]
+     * @psalm-var (string|array<array-key, mixed>)[]
      */
     public $js = [];
     /**
@@ -112,8 +112,8 @@ class AssetBundle extends BaseObject
      *
      * Note that only a forward slash "/" should be used as directory separator.
      *
-     * @phpstan-var (string|array<int|string, mixed>)[]
-     * @psalm-var (string|array<int|string, mixed>)[]
+     * @phpstan-var (string|array<array-key, mixed>)[]
+     * @psalm-var (string|array<array-key, mixed>)[]
      */
     public $css = [];
     /**

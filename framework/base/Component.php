@@ -462,8 +462,8 @@ class Component extends BaseObject
      *
      * @return array the behavior configurations.
      *
-     * @phpstan-return array<int|string, class-string|array{class: class-string, ...}>
-     * @psalm-return array<int|string, class-string|array{class: class-string, ...}>
+     * @phpstan-return array<array-key, class-string|array{class: class-string, ...}>
+     * @psalm-return array<array-key, class-string|array{class: class-string, ...}>
      */
     public function behaviors()
     {
