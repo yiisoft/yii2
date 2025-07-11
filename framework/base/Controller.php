@@ -147,6 +147,9 @@ class Controller extends Component implements ViewContextInterface
      * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
      * @see createAction()
+     *
+     * @phpstan-param array<array-key, mixed> $params
+     * @psalm-param array<array-key, mixed> $params
      */
     public function runAction($id, $params = [])
     {
@@ -208,6 +211,9 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters to be passed to the action.
      * @return mixed the result of the action.
      * @see runAction()
+     *
+     * @phpstan-param array<array-key, mixed> $params
+     * @psalm-param array<array-key, mixed> $params
      */
     public function run($route, $params = [])
     {
@@ -422,6 +428,9 @@ class Controller extends Component implements ViewContextInterface
      * These parameters will not be available in the layout.
      * @return string the rendering result.
      * @throws InvalidArgumentException if the view file or the layout file does not exist.
+     *
+     * @phpstan-param array<string, mixed> $params
+     * @psalm-param array<string, mixed> $params
      */
     public function render($view, $params = [])
     {
@@ -453,6 +462,9 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
      * @throws InvalidArgumentException if the view file does not exist.
+     *
+     * @phpstan-param array<string, mixed> $params
+     * @psalm-param array<string, mixed> $params
      */
     public function renderPartial($view, $params = [])
     {
@@ -465,6 +477,9 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
      * @throws InvalidArgumentException if the view file does not exist.
+     *
+     * @phpstan-param array<string, mixed> $params
+     * @psalm-param array<string, mixed> $params
      */
     public function renderFile($file, $params = [])
     {
