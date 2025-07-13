@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #20421: Remove `PHP_VERSION_ID` check in `pbkdf2` method for `hash_pbkdf2` function (terabytesoftw)
 - Bug #20422: Remove `PHP_VERSION_ID` checks from `AttributeTypecastBehavior` and its tests for enum typecasting (terabytesoftw)
 - Bug #20427: Remove `PHP_VERSION_ID` and `PHP_MAJOR_VERSION` checks from console `Controller` class (terabytesoftw)
+- Bug #20444: Remove `PHP_VERSION_ID` checks from db `ColumnSchema` class (terabytesoftw)
 
 2.0.53 under development
 2.0.54 under development
