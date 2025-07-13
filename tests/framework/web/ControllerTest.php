@@ -336,10 +336,6 @@ class ControllerTest extends TestCase
 
     public function testUnionBindingActionParamsWithArray()
     {
-        if (PHP_VERSION_ID < 80000) {
-            $this->markTestSkipped('Can not be tested on PHP < 8.0');
-            return;
-        }
         // Use the PHP80 controller for this test
         $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
              'id' => 'app',
