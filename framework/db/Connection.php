@@ -727,7 +727,7 @@ class Connection extends Component
             }
         }
 
-        if (PHP_VERSION_ID >= 80100 && $this->getDriverName() === 'sqlite') {
+        if ($this->getDriverName() === 'sqlite') {
             $this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
         }
 
