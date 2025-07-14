@@ -45,23 +45,27 @@ use yii\helpers\Url;
  * @phpstan-type RegisterJsFileOptions array{
  *     depends?: class-string[],
  *     position?: int,
- *     appendTimestamp?: boolean
+ *     appendTimestamp?: boolean,
+ *     ...
  * }
  *
  * @psalm-type RegisterJsFileOptions = array{
  *     depends?: class-string[],
  *     position?: int,
- *     appendTimestamp?: boolean
+ *     appendTimestamp?: boolean,
+ *     ...
  * }
  *
  * @phpstan-type RegisterCssFileOptions array{
  *     depends?: class-string[],
- *     appendTimestamp?: boolean
+ *     appendTimestamp?: boolean,
+ *     ...
  * }
  *
  * @psalm-type RegisterCssFileOptions = array{
  *     depends?: class-string[],
- *     appendTimestamp?: boolean
+ *     appendTimestamp?: boolean,
+ *     ...
  * }
  */
 class View extends \yii\base\View
