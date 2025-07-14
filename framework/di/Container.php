@@ -523,38 +523,17 @@ class Container extends Component
         $constructor = $reflection->getConstructor();
         if ($constructor !== null) {
             foreach ($constructor->getParameters() as $param) {
-                if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
+                if ($param->isVariadic()) {
                     break;
                 }
 
-                if (PHP_VERSION_ID >= 80000) {
-                    $c = $param->getType();
-                    $isClass = false;
-                    if ($c instanceof ReflectionNamedType) {
-                        $isClass = !$c->isBuiltin();
-                    }
-                } else {
-                    try {
-                        $c = $param->getClass();
-                    } catch (ReflectionException $e) {
-                        if (!$this->isNulledParam($param)) {
-                            $notInstantiableClass = null;
-                            if (PHP_VERSION_ID >= 70000) {
-                                $type = $param->getType();
-                                if ($type instanceof ReflectionNamedType) {
-                                    $notInstantiableClass = $type->getName();
-                                }
-                            }
-                            throw new NotInstantiableException(
-                                $notInstantiableClass,
-                                $notInstantiableClass === null ? 'Can not instantiate unknown class.' : null
-                            );
-                        } else {
-                            $c = null;
-                        }
-                    }
-                    $isClass = $c !== null;
+                $c = $param->getType();
+                $isClass = false;
+
+                if ($c instanceof ReflectionNamedType) {
+                    $isClass = !$c->isBuiltin();
                 }
+
                 $className = $isClass ? $c->getName() : null;
 
                 if ($className !== null) {
@@ -579,7 +558,7 @@ class Container extends Component
      */
     private function isNulledParam($param)
     {
-        return $param->isOptional() || (PHP_VERSION_ID >= 70100 && $param->getType()->allowsNull());
+        return $param->isOptional() || $param->getType()->allowsNull();
     }
 
     /**
@@ -669,28 +648,25 @@ class Container extends Component
         foreach ($reflection->getParameters() as $param) {
             $name = $param->getName();
 
-            if (PHP_VERSION_ID >= 80000) {
-                $class = $param->getType();
-                if ($class instanceof \ReflectionUnionType || (PHP_VERSION_ID >= 80100 && $class instanceof \ReflectionIntersectionType)) {
-                    $isClass = false;
-                    foreach ($class->getTypes() as $type) {
-                        if (!$type->isBuiltin()) {
-                            $class = $type;
-                            $isClass = true;
-                            break;
-                        }
+            $class = $param->getType();
+
+            if ($class instanceof \ReflectionUnionType || $class instanceof \ReflectionIntersectionType) {
+                $isClass = false;
+                foreach ($class->getTypes() as $type) {
+                    if (!$type->isBuiltin()) {
+                        $class = $type;
+                        $isClass = true;
+                        break;
                     }
-                } else {
-                    $isClass = $class !== null && !$class->isBuiltin();
                 }
             } else {
-                $class = $param->getClass();
-                $isClass = $class !== null;
+                $isClass = $class !== null && !$class->isBuiltin();
             }
 
             if ($isClass) {
                 $className = $class->getName();
-                if (PHP_VERSION_ID >= 50600 && $param->isVariadic()) {
+
+                if ($param->isVariadic()) {
                     $args = array_merge($args, array_values($params));
                     break;
                 }
