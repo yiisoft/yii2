@@ -14,8 +14,8 @@ Yii Framework 2 Change Log
 - Chg #20422: Remove `PHP_VERSION_ID` checks from `AttributeTypecastBehavior` and its tests for enum typecasting (terabytesoftw)
 - Chg #20427: Remove `PHP_VERSION_ID` and `PHP_MAJOR_VERSION` checks from console `Controller` class (terabytesoftw)
 - Chg #20444: Remove `PHP_VERSION_ID` checks from db `ColumnSchema` class (terabytesoftw)
+- Chg #20446: Remove deprecated method `convertExceptionToError()` in `ErrorHandler` class and clean tests (terabytesoftw)
 
-2.0.53 under development
 2.0.54 under development
 ------------------------
 

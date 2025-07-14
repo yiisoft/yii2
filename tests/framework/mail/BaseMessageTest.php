@@ -63,50 +63,12 @@ class BaseMessageTest extends TestCase
 
     public function testExceptionToString()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped('This test is for PHP 7.4+ only');
-        }
-
         $message = new TestMessageWithException();
 
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Test exception in toString.');
 
         (string) $message;
-    }
-
-    public function testExceptionToStringLegacy()
-    {
-        if (PHP_VERSION_ID >= 70400) {
-            $this->markTestSkipped('This test is for PHP < 7.4 only');
-        }
-
-        $message = new TestMessageWithException();
-
-        $errorTriggered = false;
-        $errorMessage = '';
-
-        set_error_handler(
-            function ($severity, $message, $file, $line) use (&$errorTriggered, &$errorMessage) {
-                if ($severity === E_USER_ERROR) {
-                    $errorTriggered = true;
-                    $errorMessage = $message;
-
-                    return true;
-                }
-
-                return false;
-            },
-            E_USER_ERROR,
-        );
-
-        $result = (string) $message;
-
-        restore_error_handler();
-
-        $this->assertTrue($errorTriggered, 'E_USER_ERROR should have been triggered');
-        $this->assertStringContainsString('Test exception in toString.', $errorMessage);
-        $this->assertSame('', $result, 'Result should be an empty string');
     }
 }
 

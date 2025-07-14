@@ -60,12 +60,6 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
         try {
             return $this->toString();
         } catch (\Throwable $e) {
-            if (PHP_VERSION_ID < 70400) {
-                trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
-
-                return '';
-            }
-
             throw $e;
         }
     }
