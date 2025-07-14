@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Chg #20446: Remove deprecated method `convertExceptionToError()` in `ErrorHandler` class and clean tests (terabytesoftw)
 - Chg #20448: Remove `PHP_VERSION_ID` checks from di `Container` class (terabytesoftw)
 - Chg #20450: Remove `PHP_VERSION_ID` checks from validators `EmailValidator` class (terabytesoftw)
+- Chg #20449: Remove `PHP_VERSION_ID` checks from helpers `BaseJson` class (terabytesoftw)
 
 2.0.54 under development
 ------------------------
