@@ -166,13 +166,13 @@ class ColumnSchema extends BaseObject
                     return $value;
                 }
 
-                if (PHP_VERSION_ID >= 80100 && is_object($value) && $value instanceof \BackedEnum) {
+                if (is_object($value) && $value instanceof \BackedEnum) {
                     return (string) $value->value;
                 }
 
                 return (string) $value;
             case 'integer':
-                if (PHP_VERSION_ID >= 80100 && is_object($value) && $value instanceof \BackedEnum) {
+                if (is_object($value) && $value instanceof \BackedEnum) {
                     return (int) $value->value;
                 }
                 return (int) $value;

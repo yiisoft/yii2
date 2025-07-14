@@ -7,16 +7,16 @@ Yii Framework 2 Change Log
 - Chg #19902: Remove support for CUBRID (mtangoo)
 - Chg #19891: Remove XCache and ZendDataCache support (mtangoo)
 - Enh #20368: Refactor asset management: Migrate from `Bower` to `NPM` for package dependencies and update related documentation (terabytesoftw)
-- Bug #20402: Remove unsed code `E_STRICT` handling in `ErrorException` class and update tests to reflect changes (terabytesoftw)
-- Bug #20403: Remove unsed code in `ErrorHandler` class (terabytesoftw)
-- Bug #20408: Remove unsed code in `Model` in `formName()` method to enforce explicit definition for anonymous models (terabytesoftw)
-- Bug #20421: Remove `PHP_VERSION_ID` check in `pbkdf2` method for `hash_pbkdf2` function (terabytesoftw)
-- Bug #20422: Remove `PHP_VERSION_ID` checks from `AttributeTypecastBehavior` and its tests for enum typecasting (terabytesoftw)
-- Bug #20427: Remove `PHP_VERSION_ID` and `PHP_MAJOR_VERSION` checks from console `Controller` class (terabytesoftw)
+- Chg #20402: Remove unsed code `E_STRICT` handling in `ErrorException` class and update tests to reflect changes (terabytesoftw)
+- Chg #20403: Remove unsed code in `ErrorHandler` class (terabytesoftw)
+- Chg #20408: Remove unsed code in `Model` in `formName()` method to enforce explicit definition for anonymous models (terabytesoftw)
+- Chg #20421: Remove `PHP_VERSION_ID` check in `pbkdf2` method for `hash_pbkdf2` function (terabytesoftw)
+- Chg #20422: Remove `PHP_VERSION_ID` checks from `AttributeTypecastBehavior` and its tests for enum typecasting (terabytesoftw)
+- Chg #20427: Remove `PHP_VERSION_ID` and `PHP_MAJOR_VERSION` checks from console `Controller` class (terabytesoftw)
+- Chg #20444: Remove `PHP_VERSION_ID` checks from db `ColumnSchema` class (terabytesoftw)
 - Chg #20445: Remove `PHP_VERSION_ID` checks from db `Connection` class (terabytesoftw)
 - Chg #20446: Remove deprecated method `convertExceptionToError()` in `ErrorHandler` class and clean tests (terabytesoftw)
 
-2.0.53 under development
 2.0.54 under development
 ------------------------
 
