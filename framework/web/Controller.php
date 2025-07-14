@@ -160,7 +160,7 @@ class Controller extends \yii\base\Controller
                 $args[] = $actionParams[$name] = $params[$name];
                 unset($params[$name]);
             } elseif (
-                $type = $param->getType() !== null
+                ($type = $param->getType()) !== null
                 && $type instanceof \ReflectionNamedType
                 && !$type->isBuiltin()
             ) {
