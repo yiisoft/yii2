@@ -1762,11 +1762,7 @@ class Request extends \yii\base\Request
                 if ($data === false) {
                     continue;
                 }
-                if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 70000) {
-                    $data = @unserialize($data, ['allowed_classes' => false]);
-                } else {
-                    $data = @unserialize($data);
-                }
+                $data = @unserialize($data, ['allowed_classes' => false]);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
                         'class' => 'yii\web\Cookie',
