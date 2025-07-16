@@ -51,10 +51,10 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
-Upgrade from Yii 2.0.53
+Upgrade from Yii 2.0.52
 -----------------------
 
-* `ErrorHandler::convertExceptionToError()` has been deprecated and will be removed in version 22.0.
+* `ErrorHandler::convertExceptionToError()` has been deprecated and will be removed in version 2.2.0.
 
   This method was deprecated due to `PHP 8.4` deprecating the use of `E_USER_ERROR` with `trigger_error()`.
   The framework now handles exceptions in `__toString()` methods more appropriately based on the PHP version.
@@ -86,8 +86,6 @@ Upgrade from Yii 2.0.53
   }
   ```
 
-Upgrade from Yii 2.0.52
------------------------
 * There was a bug when loading fixtures into PostgreSQL database, the table sequences were not reset. If you used a work-around or if you depended on this behavior, you are advised to review your code.
 
 Upgrade from Yii 2.0.51
@@ -99,112 +97,112 @@ Upgrade from Yii 2.0.51
 
 Upgrade from Yii 2.0.50
 -----------------------
-
 * Correcting the behavior for `JSON` column type in `MariaDb`.
 
-Example usage of `JSON` column type in `db`:
+  Example usage of `JSON` column type in `db`:
+  
+  ```php
+  <?php
+  
+  use yii\db\Schema;
+  
+  $db = Yii::$app->db;
+  $command = $db->createCommand();
+  
+  // Create a table with a JSON column
+  $command->createTable(
+      'products',
+      [
+          'id' => Schema::TYPE_PK,
+          'details' => Schema::TYPE_JSON,
+      ],
+  )->execute();
+  
+  // Insert a new product
+  $command->insert(
+      'products',
+      [
+          'details' => [
+              'name' => 'apple',
+              'price' => 100,
+              'color' => 'blue',
+              'size' => 'small',
+          ],
+      ],
+  )->execute();
+  
+  // Read all products
+  $records = $db->createCommand('SELECT * FROM products')->queryAll();
+  ```
+  
+  Example usage of `JSON` column type in `ActiveRecord`:
+  
+  ```php
+  <?php
+  
+  namespace app\model;
+  
+  use yii\db\ActiveRecord;
+  
+  class ProductModel extends ActiveRecord
+  {
+      public static function tableName()
+      {
+          return 'products';
+      }
+  
+      public function rules()
+      {
+          return [
+              [['details'], 'safe'],
+          ];
+      }
+  }
+  ```
+  
+  ```php
+  <?php
+  
+  use app\model\ProductModel;
+  
+  // Create a new product
+  $product = new ProductModel();
+  
+  // Set the product details
+  $product->details = [
+      'name' => 'windows',
+      'color' => 'red',
+      'price' => 200,
+      'size' => 'large',
+  ];
+  
+  // Save the product
+  $product->save();
+  
+  // Read the first product
+  $product = ProductModel::findOne(1);
+  
+  // Get the product details
+  $details = $product->details;
+  
+  echo 'Name: ' . $details['name'];
+  echo 'Color: ' . $details['color'];
+  echo 'Size: ' . $details['size'];
+  
+  // Read all products with color red
+  $products = ProductModel::find()
+      ->where(new \yii\db\Expression('JSON_EXTRACT(details, "$.color") = :color', [':color' => 'red']))
+      ->all();
+  
+  // Loop through all products
+  foreach ($products as $product) {
+      $details = $product->details;
+      echo 'Name: ' . $details['name'];
+      echo 'Color: ' . $details['color'];
+      echo 'Size: ' . $details['size'];
+  }
+  ```
 
-```php
-<?php
-
-use yii\db\Schema;
-
-$db = Yii::$app->db;
-$command = $db->createCommand();
-
-// Create a table with a JSON column
-$command->createTable(
-    'products',
-    [
-        'id' => Schema::TYPE_PK,
-        'details' => Schema::TYPE_JSON,
-    ],
-)->execute();
-
-// Insert a new product
-$command->insert(
-    'products',
-    [
-        'details' => [
-            'name' => 'apple',
-            'price' => 100,
-            'color' => 'blue',
-            'size' => 'small',
-        ],
-    ],
-)->execute();
-
-// Read all products
-$records = $db->createCommand('SELECT * FROM products')->queryAll();
-```
-
-Example usage of `JSON` column type in `ActiveRecord`:
-
-```php
-<?php
-
-namespace app\model;
-
-use yii\db\ActiveRecord;
-
-class ProductModel extends ActiveRecord
-{
-    public static function tableName()
-    {
-        return 'products';
-    }
-
-    public function rules()
-    {
-        return [
-            [['details'], 'safe'],
-        ];
-    }
-}
-```
-
-```php
-<?php
-
-use app\model\ProductModel;
-
-// Create a new product
-$product = new ProductModel();
-
-// Set the product details
-$product->details = [
-    'name' => 'windows',
-    'color' => 'red',
-    'price' => 200,
-    'size' => 'large',
-];
-
-// Save the product
-$product->save();
-
-// Read the first product
-$product = ProductModel::findOne(1);
-
-// Get the product details
-$details = $product->details;
-
-echo 'Name: ' . $details['name'];
-echo 'Color: ' . $details['color'];
-echo 'Size: ' . $details['size'];
-
-// Read all products with color red
-$products = ProductModel::find()
-    ->where(new \yii\db\Expression('JSON_EXTRACT(details, "$.color") = :color', [':color' => 'red']))
-    ->all();
-
-// Loop through all products
-foreach ($products as $product) {
-    $details = $product->details;
-    echo 'Name: ' . $details['name'];
-    echo 'Color: ' . $details['color'];
-    echo 'Size: ' . $details['size'];
-}
-```
 
 Upgrade from Yii 2.0.48
 -----------------------
