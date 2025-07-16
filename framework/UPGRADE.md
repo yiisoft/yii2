@@ -97,6 +97,7 @@ Upgrade from Yii 2.0.51
 
 Upgrade from Yii 2.0.50
 -----------------------
+
 * Correcting the behavior for `JSON` column type in `MariaDb`.
 
   Example usage of `JSON` column type in `db`:
@@ -202,7 +203,6 @@ Upgrade from Yii 2.0.50
       echo 'Size: ' . $details['size'];
   }
   ```
-
 
 Upgrade from Yii 2.0.48
 -----------------------
