@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #20433: Added PHPStan/Psalm annotations for some controllers methods: `beforeAction`, `afterAction` and `bindActionParams` (max-s-lab)
 - Enh #20442: Add PHPStan/Psalm annotations for `yii\base\Controller` methods: `runAction`, `run`, `render`, `renderPartial` and `renderFile` (max-s-lab)
 - Bug #20453: Fix PHPStan/Psalm types in `yii\web\View` (max-s-lab)
+- Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 
 
