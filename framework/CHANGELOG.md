@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Chg #20452: Remove `PHP_VERSION_ID` checks from web `Controller` class (terabytesoftw)
 - Chg #20451: Remove `PHP_VERSION_ID` checks from validators `UrlValidator` class (terabytesoftw)
 - Chg #20455: Remove `PHP_VERSION_ID` checks from web `Request` class (terabytesoftw)
+- Chg #20465: Remove `PHP_VERSION_ID` checks from web `Session` class (terabytesoftw)
 - Chg #20464: Remove `PHP_VERSION_ID` checks from web `Response` class (terabytesoftw)
 
 2.0.54 under development
