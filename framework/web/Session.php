@@ -417,14 +417,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         $data = $this->getCookieParams();
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
-            if (PHP_VERSION_ID >= 70300) {
-                session_set_cookie_params($data);
-            } else {
-                if (!empty($data['samesite'])) {
-                    $data['path'] .= '; samesite=' . $data['samesite'];
-                }
-                session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
-            }
+            session_set_cookie_params($data);
         } else {
             throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
         }
@@ -556,17 +549,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function setUseStrictMode($value)
     {
-        if (PHP_VERSION_ID < 50502) {
-            if ($this->getUseCustomStorage() || !$value) {
-                self::$_useStrictModePolyfill = $value;
-            } else {
-                throw new InvalidConfigException('Enabling `useStrictMode` on PHP < 5.5.2 is only supported with custom storage classes.');
-            }
-        } else {
-            $this->freeze();
-            ini_set('session.use_strict_mode', $value ? '1' : '0');
-            $this->unfreeze();
-        }
+        $this->freeze();
+        ini_set('session.use_strict_mode', $value ? '1' : '0');
+        $this->unfreeze();
     }
 
     /**
@@ -576,10 +561,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getUseStrictMode()
     {
-        if (PHP_VERSION_ID < 50502) {
-            return self::$_useStrictModePolyfill;
-        }
-
         return (bool)ini_get('session.use_strict_mode');
     }
 
