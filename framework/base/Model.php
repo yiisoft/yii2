@@ -161,8 +161,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @return array validation rules
      * @see scenarios()
      *
-     * @phpstan-return array<int|string, mixed>[]
-     * @psalm-return array<int|string, mixed>[]
+     * @phpstan-return array<array-key, mixed>[]
+     * @psalm-return array<array-key, mixed>[]
      */
     public function rules()
     {
