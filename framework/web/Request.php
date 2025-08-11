@@ -307,6 +307,8 @@ class Request extends \yii\base\Request
      * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
+    /** @var boolean Enable gzip inflate */
+    public $gzip = true;
 
 
     /**
@@ -569,7 +571,15 @@ class Request extends \yii\base\Request
     public function getRawBody()
     {
         if ($this->_rawBody === null) {
-            $this->_rawBody = file_get_contents('php://input');
+            $contentEncoding = $this->headers->get('Content-Encoding', '');
+            if (!empty($contentEncoding)) {
+                $contentEncoding = strtolower($contentEncoding);
+            }
+            if ($this->gzip && $contentEncoding === 'gzip' || $contentEncoding === 'deflate') {
+                $this->_rawBody = gzinflate(file_get_contents('php://input'));
+            } else {
+                $this->_rawBody = file_get_contents('php://input');
+            }
         }
 
         return $this->_rawBody;
