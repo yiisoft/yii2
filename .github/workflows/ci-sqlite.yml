@@ -14,6 +14,7 @@ jobs:
 
     env:
       COVERAGE: ${{ matrix.php == '7.4' && '--coverage-clover=coverage.xml  --colors=always' || '--colors=always' }}
+      DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
       EXTENSIONS: pdo, pdo_sqlite, sqlite3, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
       XDEBUG_MODE: coverage
 
@@ -22,7 +23,7 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-            php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+            php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
 
     steps:
       - name: Checkout.
@@ -41,7 +42,7 @@ jobs:
         run: composer self-update
 
       - name: Install dependencies with composer.
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+        run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
 
       - name: Run SQLite tests with PHPUnit.
         run: vendor/bin/phpunit --group sqlite ${{ env.COVERAGE }}
