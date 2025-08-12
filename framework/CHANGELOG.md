@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #20453: Fix PHPStan/Psalm types in `yii\web\View` (max-s-lab)
 - Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
+- Enh #20477: Added Content-Encoding(aka gzip) support to request body (lucaswitch)
 
 
 2.0.53 June 27, 2025
