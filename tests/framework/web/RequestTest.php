@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use ReflectionClass;
 use yii\web\Request;
 use yiiunit\TestCase;
 
@@ -1411,19 +1412,38 @@ class RequestTest extends TestCase
         $this->assertSame('http://yiiframework.com', $request->hostInfo, 'Host info fail!');
     }
 
-
     public function testGzipGetRawBody()
     {
         $request = new Request(['gzip' => true]);
-        $request->headers->add('Content-encoding', 'gzip');
-        $this->assertSame($request->getRawBody(), null);
+        $reflection = new ReflectionClass($request);
+        $tryInflateRawBody = $reflection->getMethod('tryInflateRawBody');
+        $rawBody = $reflection->getProperty('_rawBody');
+        $rawBody->setAccessible(true);
+        $tryInflateRawBody->setAccessible(true);
 
-        $request = new Request(['gzip' => true]);
-        $request->headers->add('Content-encoding', 'deflate');
-        $this->assertSame($request->getRawBody(), null);
+        $testString = 'hello!';
+        // Test gzip as described in RFC 1950, Content-Encoding: gzip or x-gzip
+        $request->headers->add('Content-encoding','gzip');
+        $rawBody->setValue($request, gzencode($testString));
+        $tryInflateRawBody->invoke($request);
+        $this->assertSame($testString, $rawBody->getValue($request), 'Could not deflate correctly');
+        $request->headers->add('Content-encoding','x-gzip');
+        $rawBody->setValue($request, gzencode($testString));
+        $tryInflateRawBody->invoke($request);
+        $this->assertSame($testString, $rawBody->getValue($request), 'Could not deflate correctly');
 
+        // Test deflate as described in RFC 1951, Content-Encoding: deflate
         $request = new Request(['gzip' => true]);
-        $request->headers->add('Content-encoding', 'x-gzip');
-        $this->assertSame($request->getRawBody(), null);
+        $request->headers->add('Content-encoding','deflate');
+        $rawBody->setValue($request, gzdeflate($testString));
+        $tryInflateRawBody->invoke($request);
+        $this->assertSame($testString, $rawBody->getValue($request), 'Could not deflate correctly');
+
+        // Test backwards compatibility
+        $request = new Request(['gzip' => false]);
+        $request->headers->add('Content-encoding','deflate');
+        $rawBody->setValue($request, gzdeflate($testString));
+        $tryInflateRawBody->invoke($request);
+        $this->assertSame(gzdeflate($testString), $rawBody->getValue($request), 'Gzip flag not working as expected');
     }
 }
