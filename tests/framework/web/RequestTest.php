@@ -1412,8 +1412,18 @@ class RequestTest extends TestCase
     }
 
 
-    public function testGetRawBody()
+    public function testGzipGetRawBody()
     {
         $request = new Request(['gzip' => true]);
+        $request->headers->add('Content-encoding', 'gzip');
+        $this->assertSame($request->getRawBody(), null);
+
+        $request = new Request(['gzip' => true]);
+        $request->headers->add('Content-encoding', 'deflate');
+        $this->assertSame($request->getRawBody(), null);
+
+        $request = new Request(['gzip' => true]);
+        $request->headers->add('Content-encoding', 'x-gzip');
+        $this->assertSame($request->getRawBody(), null);
     }
 }
