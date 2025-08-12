@@ -1445,5 +1445,11 @@ class RequestTest extends TestCase
         $rawBody->setValue($request, gzdeflate($testString));
         $tryInflateRawBody->invoke($request);
         $this->assertSame(gzdeflate($testString), $rawBody->getValue($request), 'Gzip flag not working as expected');
+
+        $request = new Request();
+        $request->headers->add('Content-encoding','deflate');
+        $rawBody->setValue($request, gzdeflate($testString));
+        $tryInflateRawBody->invoke($request);
+        $this->assertSame(gzdeflate($testString), $rawBody->getValue($request), 'Gzip flag not working as expected');
     }
 }
