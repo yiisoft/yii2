@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        php: [7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
 
     steps:
       - name: Generate french locale.
@@ -46,7 +46,7 @@ jobs:
         run: composer self-update
 
       - name: Install dependencies with composer.
-        run: composer update $DEFAULT_COMPOSER_FLAGS
+        run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
 
       - name: Run tests with PHPUnit.
         run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}

@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 - Enh #20477: Added Content-Encoding(aka gzip) support to request body (lucaswitch)
 
+- Bug #20475: Fix `Formatter` class `asScientific()` method for PHP `8.5` `sprintf` precision change (`6` to `0`) (terabytesoftw)
 
 2.0.53 June 27, 2025
 --------------------
