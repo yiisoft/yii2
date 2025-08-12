@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 - Bug #20475: Fix `Formatter` class `asScientific()` method for PHP `8.5` `sprintf` precision change (`6` to `0`) (terabytesoftw)
+- Bug #20478: Fix `Schema` class to handle `null` bytes in `PDO::quote()` for PHP `8.5` compatibility (terabytesoftw)
 
 2.0.53 June 27, 2025
 --------------------
