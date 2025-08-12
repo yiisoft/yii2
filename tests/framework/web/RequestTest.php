@@ -564,7 +564,7 @@ class RequestTest extends TestCase
         $_SERVER = [];
 
         $this->expectException(\yii\base\InvalidConfigException::class);
-        
+
         $request->getScriptUrl();
     }
 
@@ -1409,5 +1409,11 @@ class RequestTest extends TestCase
 
         $this->assertSame('10.0.0.1', $request->userIP, 'User IP fail!');
         $this->assertSame('http://yiiframework.com', $request->hostInfo, 'Host info fail!');
+    }
+
+
+    public function testGetRawBody()
+    {
+        $request = new Request(['gzip' => true]);
     }
 }

@@ -571,17 +571,14 @@ class Request extends \yii\base\Request
     public function getRawBody()
     {
         if ($this->_rawBody === null) {
-            $contentEncoding = $this->headers->get('Content-Encoding', '');
-            if (!empty($contentEncoding)) {
-                $contentEncoding = strtolower($contentEncoding);
-            }
-            if ($this->gzip && $contentEncoding === 'gzip' || $contentEncoding === 'deflate') {
-                $this->_rawBody = gzinflate(file_get_contents('php://input'));
-            } else {
-                $this->_rawBody = file_get_contents('php://input');
+            $this->_rawBody = file_get_contents('php://input');
+            if ($this->gzip) {
+                $contentEncoding = $this->headers->get('Content-Encoding', '');
+                if ($contentEncoding === 'gzip' || $contentEncoding === 'deflate' || $contentEncoding === 'x-gzip') {
+                    $this->_rawBody = gzinflate($this->_rawBody);
+                }
             }
         }
-
         return $this->_rawBody;
     }
 
