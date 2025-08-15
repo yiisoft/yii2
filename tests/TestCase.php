@@ -195,9 +195,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $reflection = new \ReflectionObject($object);
         $method = $reflection->getMethod($method);
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $method->setAccessible(true);
+        }
+
         $result = $method->invokeArgs($object, $args);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if ($revoke && PHP_VERSION_ID < 80500) {
             $method->setAccessible(false);
         }
 
@@ -219,9 +226,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-        $property->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $property->setAccessible(true);
+        }
+
         $property->setValue($object, $value);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if ($revoke && PHP_VERSION_ID < 80500) {
             $property->setAccessible(false);
         }
     }
@@ -240,9 +254,16 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-        $property->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $property->setAccessible(true);
+        }
+
         $result = $property->getValue($object);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if ($revoke && PHP_VERSION_ID < 80500) {
             $property->setAccessible(false);
         }
 

@@ -19,7 +19,12 @@ class BaseDataProviderTest extends TestCase
     {
         $rc = new \ReflectionClass(BaseDataProvider::className());
         $rp = $rc->getProperty('counter');
-        $rp->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $rp->setAccessible(true);
+        }
+
         $rp->setValue(new ConcreteDataProvider(), null);
 
         $this->assertNull((new ConcreteDataProvider())->id);
