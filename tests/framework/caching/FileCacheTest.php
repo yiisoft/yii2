@@ -70,7 +70,12 @@ class FileCacheTest extends CacheTestCase
         $refClass = new \ReflectionClass($cache);
 
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $refMethodGetCacheFile->setAccessible(true);
+        }
+
         $refMethodGet = $refClass->getMethod('get');
         $refMethodSet = $refClass->getMethod('set');
 
@@ -91,7 +96,12 @@ class FileCacheTest extends CacheTestCase
         $normalizeKey = $cache->buildKey(__FUNCTION__);
         $refClass = new \ReflectionClass($cache);
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $refMethodGetCacheFile->setAccessible(true);
+        }
+
         $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
         // simulate cache expire 10 seconds ago

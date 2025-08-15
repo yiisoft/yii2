@@ -195,7 +195,11 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     protected function reflectMethod($class = '\yii\widgets\Breadcrumbs', $method = 'renderItem')
     {
         $value = new \ReflectionMethod($class, $method);
-        $value->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $value->setAccessible(true);
+        }
 
         return $value;
     }

@@ -73,7 +73,11 @@ class AuthMethodTest extends TestCase
     {
         $reflection = new \ReflectionClass(AuthMethod::className());
         $method = $reflection->getMethod('isOptional');
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        if (PHP_VERSION_ID < 80500) {
+            $method->setAccessible(true);
+        }
 
         $filter = $this->createFilter(function () {return new \stdClass();});
 
