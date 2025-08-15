@@ -121,6 +121,9 @@ class ServiceLocator extends Component
      * @throws InvalidConfigException if `$id` refers to a nonexistent component ID
      * @see has()
      * @see set()
+     *
+     * @phpstan-return ($throwException is true ? object : null)
+     * @psalm-return ($throwException is true ? object : null)
      */
     public function get($id, $throwException = true)
     {
