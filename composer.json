@@ -85,7 +85,8 @@
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "dms/phpunit-arraysubset-asserts": "^0.5",
         "phpunit/phpunit": "^9.6",
-        "yiisoft/yii2-coding-standards": "^3.0"
+        "yiisoft/yii2-coding-standards": "^3.0",
+        "phpstan/phpstan": "^1.12"
     },
     "repositories": [
         {

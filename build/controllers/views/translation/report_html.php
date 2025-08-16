@@ -2,6 +2,14 @@
 
 use yii\helpers\Html;
 
+/**
+ * @var \yii\web\View $this
+ * @var string $title
+ * @var string $sourcePath
+ * @var string $translationPath
+ * @var array $results
+ */
+
 ?><!doctype html>
 <html>
     <head>

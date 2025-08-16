@@ -1,0 +1,24 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 1
+
+    excludePaths:
+        analyse:
+            - vendor
+        analyseAndScan:
+            - tests
+
+    bootstrapFiles:
+        - framework/BaseYii.php
+
+    dynamicConstantNames:
+        - YII_DEBUG
+        - YII_ENV
+        - YII_ENV_DEV
+        - YII_ENV_PROD
+        - YII_ENV_TEST
+
+    ignoreErrors:
+        - '#Unsafe usage of new static\(\).#'
