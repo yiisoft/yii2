@@ -1,0 +1,41 @@
+parameters:
+    ignoreErrors:
+        - message: '#Variable \$error in isset\(\) always exists and is always null.#'
+          identifier: isset.variable
+          count: 1
+          path: framework/helpers/BaseConsole.php
+
+        - message: '#Variable \$rawValues in isset\(\) always exists and is not nullable.#'
+          identifier: isset.variable
+          count: 1
+          path: framework/db/conditions/InConditionBuilder.php
+
+        - message: '#Variable \$command might not be defined.#'
+          identifier: variable.undefined
+          count: 1
+          path: framework/db/Query.php
+
+        - message: '#Variable \$viaClass might not be defined.#'
+          identifier: variable.undefined
+          count: 5
+          path: framework/db/BaseActiveRecord.php
+
+        - message: '#Variable \$viaTable might not be defined.#'
+          identifier: variable.undefined
+          count: 5
+          path: framework/db/BaseActiveRecord.php
+
+        - message: '#^Method yii\\console\\controllers\\.*Controller::action.*\(\) should return int but return statement is missing.$#'
+          identifier: return.missing
+          count: 5
+          path: framework/console/controllers/*
+
+        - message: '#Method yii\\build\\controllers\\DevController::linkFrameworkAndExtensions\(\) should return int but return statement is missing.#'
+          identifier: return.missing
+          count: 1
+          path: build/controllers/DevController.php
+
+        - message: '#Result of function xcache_clear_cache \(void\) is used.#'
+          identifier: function.void
+          count: 1
+          path: framework/caching/XCache.php
