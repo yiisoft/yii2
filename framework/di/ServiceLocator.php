@@ -122,8 +122,8 @@ class ServiceLocator extends Component
      * @see has()
      * @see set()
      *
-     * @phpstan-return ($throwException is true ? object : null)
-     * @psalm-return ($throwException is true ? object : null)
+     * @phpstan-return ($throwException is true ? object : object|null)
+     * @psalm-return ($throwException is true ? object : object|null)
      */
     public function get($id, $throwException = true)
     {
