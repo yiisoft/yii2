@@ -27,7 +27,7 @@ parameters:
 
         - message: '#^Method yii\\console\\controllers\\.*Controller::action.*\(\) should return int but return statement is missing.$#'
           identifier: return.missing
-          count: 5
+          count: 4
           path: framework/console/controllers/*
 
         - message: '#Method yii\\build\\controllers\\DevController::linkFrameworkAndExtensions\(\) should return int but return statement is missing.#'
