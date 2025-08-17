@@ -14,7 +14,7 @@ Yii Framework 2 Change Log
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 - Bug #20475: Fix `Formatter` class `asScientific()` method for PHP `8.5` `sprintf` precision change (`6` to `0`) (terabytesoftw)
 - Enh #20480: Add PHPStan/Psalm annotations for `ServiceLocator::get` (max-s-lab)
-- Bug #20485: Fix error `Cannot unset string offsets` in `\yii\di\Instance:ensure(['__class' => ...], 'class')` (max-s-lab)
+- Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
 
 2.0.53 June 27, 2025
 --------------------
