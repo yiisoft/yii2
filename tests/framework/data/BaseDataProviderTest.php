@@ -21,7 +21,8 @@ class BaseDataProviderTest extends TestCase
         $rp = $rc->getProperty('counter');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        if (PHP_VERSION_ID < 80500) {
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
             $rp->setAccessible(true);
         }
 
