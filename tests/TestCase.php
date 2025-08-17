@@ -205,7 +205,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $result = $method->invokeArgs($object, $args);
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        if ($revoke && PHP_VERSION_ID < 80500) {
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $method->setAccessible(false);
         }
 
@@ -237,7 +238,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $property->setValue($object, $value);
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        if ($revoke && PHP_VERSION_ID < 80500) {
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $property->setAccessible(false);
         }
     }
@@ -266,7 +268,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $result = $property->getValue($object);
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        if ($revoke && PHP_VERSION_ID < 80500) {
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $property->setAccessible(false);
         }
 
