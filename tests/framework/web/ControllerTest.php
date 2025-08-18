@@ -254,6 +254,17 @@ class ControllerTest extends TestCase
         list($foo) = $this->controller->bindActionParams($stringy, ['foo' => '']);
         $this->assertSame('', $foo);
 
+        // make sure mixed type works
+        $params = ['foo' => 100];
+        $mixedParameter = new InlineAction('mixed-parameter', $this->controller, 'actionMixedParameter');
+        list($foo) = $this->controller->bindActionParams($mixedParameter, $params);
+        $this->assertSame(100, $foo);
+        $params = ['foo' => 'foobar'];
+        $mixedParameter = new InlineAction('mixed-parameter', $this->controller, 'actionMixedParameter');
+        list($foo) = $this->controller->bindActionParams($mixedParameter, $params);
+        $this->assertSame('foobar', $foo);
+
+
         $params = ['foo' => 'oops', 'bar' => null];
         $this->expectException('yii\web\BadRequestHttpException');
         $this->expectExceptionMessage('Invalid data received for parameter "foo".');
