@@ -63,7 +63,9 @@ class BaseArrayHelper
         if (is_array($object)) {
             if ($recursive) {
                 foreach ($object as $key => $value) {
-                    if (is_array($value) || is_object($value)) {
+                    if ($value instanceof \UnitEnum) {
+                        $object[$key] = $value->value;
+                    } elseif (is_array($value) || is_object($value)) {
                         $object[$key] = static::toArray($value, $properties, true);
                     }
                 }
