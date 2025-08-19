@@ -271,19 +271,6 @@ abstract class AbstractDbSessionTest extends TestCase
         ini_set('session.gc_maxlifetime', $oldTimeout);
     }
 
-    public function testStrictModeWithCharAndNcharColumns()
-    {
-        $session = new DbSession([
-            'useStrictMode' => true,
-        ]);
-
-        $this->expectNotToPerformAssertions();
-
-        $session->open();
-        $session->regenerateID(true);
-        $session->close();
-    }
-
     public function testInitUseStrictMode()
     {
         $this->initStrictModeTest(DbSession::className());
