@@ -34,8 +34,3 @@ parameters:
           identifier: return.missing
           count: 1
           path: build/controllers/DevController.php
-
-        - message: '#Result of function xcache_clear_cache \(void\) is used.#'
-          identifier: function.void
-          count: 1
-          path: framework/caching/XCache.php
