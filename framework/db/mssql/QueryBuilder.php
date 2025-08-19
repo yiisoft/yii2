@@ -484,7 +484,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
-        list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        [$names, $placeholders, $values, $params] = $this->prepareInsertValues($table, $columns, $params);
         $cols = [];
         $outputColumns = [];
         if ($version2005orLater) {
