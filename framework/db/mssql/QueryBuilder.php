@@ -537,7 +537,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
 
         /** @var Constraint[] $constraints */
-        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+        [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
         }
@@ -557,7 +557,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $onCondition[] = $constraintCondition;
         }
         $on = $this->buildCondition($onCondition, $params);
-        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        [, $placeholders, $values, $params] = $this->prepareInsertValues($table, $insertColumns, $params);
 
         /**
          * Fix number of select query params for old MSSQL version that does not support offset correctly.
@@ -597,7 +597,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $updateColumns = $this->normalizeTableRowData($table, $updateColumns, $params);
 
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
         return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql;";
     }
