@@ -9,7 +9,6 @@ namespace yiiunit\framework\web\session;
 
 use Yii;
 use yii\db\Connection;
-use yii\db\Exception;
 use yii\db\Migration;
 use yii\db\Query;
 use yii\web\DbSession;
