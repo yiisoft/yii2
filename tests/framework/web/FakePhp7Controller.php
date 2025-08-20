@@ -24,4 +24,8 @@ class FakePhp7Controller extends Controller
     public function actionStringy(?string $foo = null)
     {
     }
+
+    public function actionMixedParameter(mixed $foo)
+    {
+    }
 }

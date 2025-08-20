@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.54 under development
 ------------------------
-
+- Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
 - Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
 - Enh #20434: Added PHPStan/Psalm annotations for `hasMany` and `hasOne` methods (max-s-lab)
@@ -13,6 +13,8 @@ Yii Framework 2 Change Log
 - Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 - Bug #20475: Fix `Formatter` class `asScientific()` method for PHP `8.5` `sprintf` precision change (`6` to `0`) (terabytesoftw)
+- Enh #20480: Add PHPStan/Psalm annotations for `ServiceLocator::get` (max-s-lab)
+- Bug #20447: Fix behavior for `yii\web\Controller::bindActionParams` around `mixed` type (chriscpty)
 
 2.0.53 June 27, 2025
 --------------------
