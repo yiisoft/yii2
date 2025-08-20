@@ -160,7 +160,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @return string the SQL statement for resetting sequence
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
-    public function resetSequence(string $tableName, $value = null)
+    public function resetSequence($tableName, $value = null)
     {
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {

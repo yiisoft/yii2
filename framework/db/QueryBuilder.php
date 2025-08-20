@@ -1040,7 +1040,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
-    public function resetSequence(string $tableName, $value = null)
+    public function resetSequence($tableName, $value = null)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support resetting sequence.');
     }
