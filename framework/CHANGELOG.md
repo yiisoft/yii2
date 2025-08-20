@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #20475: Fix `Formatter` class `asScientific()` method for PHP `8.5` `sprintf` precision change (`6` to `0`) (terabytesoftw)
 - Enh #20480: Add PHPStan/Psalm annotations for `ServiceLocator::get` (max-s-lab)
 - Bug #20447: Fix behavior for `yii\web\Controller::bindActionParams` around `mixed` type (chriscpty)
+- Bug #20479: Fix issue with MSSQL related to char and nchar (craiglondon)
 
 2.0.53 June 27, 2025
 --------------------
