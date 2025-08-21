@@ -4,11 +4,9 @@ includes:
 parameters:
     level: 1
 
-    excludePaths:
-        analyse:
-            - vendor
-        analyseAndScan:
-            - tests
+    paths:
+        - build
+        - framework
 
     bootstrapFiles:
         - framework/BaseYii.php
