@@ -171,7 +171,11 @@ class BaseFileHelper
 
         if ($info) {
             $result = finfo_file($info, $file);
-            finfo_close($info);
+            // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_finfo_close
+            // @link https://github.com/php/php-src/commit/ccb716dcadf60d989db48e4d2963e14d7dc63df3
+            if (PHP_VERSION_ID < 80500) {
+                finfo_close($info);
+            }
 
             if ($result !== false) {
                 return $result;

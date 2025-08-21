@@ -183,13 +183,8 @@ class AssetControllerTest extends TestCase
     protected function invokeAssetControllerMethod($methodName, array $args = [])
     {
         $controller = $this->createAssetController();
-        $controllerClassReflection = new \ReflectionClass(get_class($controller));
-        $methodReflection = $controllerClassReflection->getMethod($methodName);
-        $methodReflection->setAccessible(true);
-        $result = $methodReflection->invokeArgs($controller, $args);
-        $methodReflection->setAccessible(false);
 
-        return $result;
+        return $this->invokeMethod($controller, $methodName, $args);
     }
 
     /**
