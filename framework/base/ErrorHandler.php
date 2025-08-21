@@ -222,7 +222,13 @@ abstract class ErrorHandler extends Component
         if (E_ERROR & $code) {
             $exception = new ErrorException($message, $code, $code, $file, $line);
             $ref = new \ReflectionProperty('\Exception', 'trace');
-            $ref->setAccessible(true);
+
+            // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+            // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+            if (PHP_VERSION_ID < 80100) {
+                $ref->setAccessible(true);
+            }
+
             $ref->setValue($exception, $backtrace);
             $this->_hhvmException = $exception;
         }
