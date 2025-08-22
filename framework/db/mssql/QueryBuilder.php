@@ -258,7 +258,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     ->andWhere(['IS NOT', 'last_value', null])
                     ->createCommand($this->db)
                     ->getRawSql();
-                $sql = "SELECT COALESCE(MAX({$key}), IIF(EXISTS({$subSql}), 0, 1)) FROM {$tableName}";
+                $sql = "SELECT COALESCE(MAX({$key}), CASE WHEN EXISTS({$subSql}) THEN 0 ELSE 1 END) FROM {$tableName}";
                 $value = $this->db->createCommand($sql)->queryScalar();
             } else {
                 $value = (int) $value;
