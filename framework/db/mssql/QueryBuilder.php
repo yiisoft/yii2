@@ -248,9 +248,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if ($table !== null && $table->sequenceName !== null) {
             $tableName = $this->db->quoteTableName($tableName);
 
-            if ($value === null) {
+            if ($value === null || $value === 1) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $sql = "SELECT COALESCE(MAX({$key}), 0) + 1 FROM {$tableName}";
+                $subSql = (new Query())
+                    ->select('last_value')
+                    ->from('sys.identity_columns')
+                    ->where(['object_id' => new Expression("OBJECT_ID('{$tableName}')")])
+                    ->andWhere(['IS NOT', 'last_value', null])
+                    ->createCommand($this->db)
+                    ->getRawSql();
+                $sql = "SELECT COALESCE(MAX({$key}), IIF(EXISTS({$subSql}), 0, 1)) FROM {$tableName}";
                 $value = $this->db->createCommand($sql)->queryScalar();
             } else {
                 $value = (int) $value;
