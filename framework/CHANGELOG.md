@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Enh #20480: Add PHPStan/Psalm annotations for `ServiceLocator::get` (max-s-lab)
 - Bug #20447: Fix behavior for `yii\web\Controller::bindActionParams` around `mixed` type (chriscpty)
 - Bug #20492: Fix deprecation of `finfo_close()` in PHP `8.5` by conditionally closing the resource (terabytesoftw)
+- Bug #20489: Replace deprecated `strftime` with `date` in `YiiRequirementChecker` (max-s-lab)
 
 2.0.53 June 27, 2025
 --------------------
