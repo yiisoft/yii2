@@ -133,7 +133,7 @@ class TimestampBehaviorTest extends TestCase
     {
         return [
             [function () { return '2015-01-01'; }, '2015-01-01'],
-            [new Expression("date('Y')"), date('Y')],
+            [new Expression("strftime('%Y')"), date('Y')],
             ['2015-10-20', '2015-10-20'],
             [time(), time()],
             [[$this, 'arrayCallable'], '2015-10-20'],
@@ -179,7 +179,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'value' => new Expression("date('Y')"),
+                'value' => new Expression("strftime('%Y')"),
             ],
         ];
         $model = new ActiveRecordTimestamp();
@@ -202,7 +202,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'value' => new Expression("date('Y')"),
+                'value' => new Expression("strftime('%Y')"),
             ],
         ];
         $model = new ActiveRecordTimestamp();
@@ -217,7 +217,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
                 'class' => TimestampBehavior::className(),
-                'value' => new Expression("date('Y')"),
+                'value' => new Expression("strftime('%Y')"),
             ],
         ];
         $model = new ActiveRecordTimestamp();
@@ -225,7 +225,7 @@ class TimestampBehaviorTest extends TestCase
         $model->created_at = $enforcedTime;
         $model->updated_at = $enforcedTime;
         $model->save(false);
-        $expectedCreatedAt = new Expression("date('Y')");
+        $expectedCreatedAt = new Expression("strftime('%Y')");
 
         $model->touch('created_at');
 

@@ -652,7 +652,7 @@ SQL;
                 $expression = 'YEAR(NOW())';
                 break;
             case 'sqlite':
-                $expression = "date('Y')";
+                $expression = "strftime('%Y')";
                 break;
             case 'sqlsrv':
                 $expression = 'YEAR(GETDATE())';
