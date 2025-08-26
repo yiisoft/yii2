@@ -129,7 +129,7 @@ class Instance
             }
             if (isset($reference['__class'])) {
                 $class = $reference['__class'];
-                unset($reference['__class'], $type['class']);
+                unset($reference['__class'], $reference['class']);
             } elseif (isset($reference['class'])) {
                 $class = $reference['class'];
                 unset($reference['class']);
