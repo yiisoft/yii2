@@ -131,7 +131,7 @@ class TimestampBehavior extends AttributeBehavior
      */
     public function touch($attribute)
     {
-        /* @var $owner BaseActiveRecord */
+        /** @var BaseActiveRecord $owner */
         $owner = $this->owner;
         if ($owner->getIsNewRecord()) {
             throw new InvalidCallException('Updating the timestamp is not possible on a new record.');

@@ -217,14 +217,20 @@ Or if you want to implement your own way of providing context information, you m
 [[yii\log\Target::getContextMessage()]] method.
 
 In case some of your request fields contain sensitive information you would not like to log (e.g. passwords, access tokens),
-you may additionally configure `maskVars` property. By default, the following request parameters will be masked with `***`:
-`$_SERVER[HTTP_AUTHORIZATION]`, `$_SERVER[PHP_AUTH_USER]`, `$_SERVER[PHP_AUTH_PW]`, but you can set your own:
+you may additionally configure `maskVars` property, which can contain both exact values and (case-insensitive) patterns. By default,
+the following request parameters will be masked with `***`:
+`$_SERVER[HTTP_AUTHORIZATION]`, `$_SERVER[PHP_AUTH_USER]`, `$_SERVER[PHP_AUTH_PW]`, but you can set your own. For example:
 
 ```php
 [
     'class' => 'yii\log\FileTarget',
     'logVars' => ['_SERVER'],
-    'maskVars' => ['_SERVER.HTTP_X_PASSWORD']
+    'maskVars' => [
+        '_SERVER.HTTP_X_PASSWORD',
+        '_SERVER.*_SECRET', // matches all ending with "_SECRET"
+        '_SERVER.SECRET_*', // matches all starting with "SECRET_"
+        '_SERVER.*SECRET*', // matches all containing "SECRET"
+    ]
 ]
 ```
 

@@ -648,7 +648,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -1035,13 +1034,13 @@ class QueryBuilder extends \yii\base\BaseObject
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or the maximum existing value +1.
-     * @param string $table the name of the table whose primary key sequence will be reset
+     * @param string $tableName the name of the table whose primary key sequence will be reset
      * @param array|string|null $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
-    public function resetSequence($table, $value = null)
+    public function resetSequence($tableName, $value = null)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support resetting sequence.');
     }
@@ -1527,7 +1526,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $result[] = $with['alias'] . ' AS (' . $with['query'] . ')';
         }
 
-        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode (', ', $result);
+        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode(', ', $result);
     }
 
     /**

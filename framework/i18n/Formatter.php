@@ -882,7 +882,8 @@ class Formatter extends Component
                 ($timestamp = DateTime::createFromFormat(
                     'Y-m-d|',
                     $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                    new DateTimeZone($this->defaultTimeZone)
+                )
                 ) !== false
             ) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
@@ -891,7 +892,8 @@ class Formatter extends Component
                 ($timestamp = DateTime::createFromFormat(
                     'Y-m-d H:i:s',
                     $value,
-                    new DateTimeZone($this->defaultTimeZone))
+                    new DateTimeZone($this->defaultTimeZone)
+                )
                 ) !== false
             ) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
@@ -1056,7 +1058,7 @@ class Formatter extends Component
         } elseif (is_numeric($value)) {
             $isNegative = $value < 0;
             $zeroDateTime = (new DateTime())->setTimestamp(0);
-            $valueDateTime = (new DateTime())->setTimestamp(abs($value));
+            $valueDateTime = (new DateTime())->setTimestamp(abs((int) $value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strncmp($value, 'P-', 2) === 0) {
             $interval = new DateInterval('P' . substr($value, 2));
@@ -1259,10 +1261,12 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
             $f = $this->createNumberFormatter(NumberFormatter::SCIENTIFIC, $decimals, $options, $textOptions);
+
             if (($result = $f->format($value)) === false) {
                 throw new InvalidArgumentException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
@@ -1274,7 +1278,12 @@ class Formatter extends Component
             return sprintf("%.{$decimals}E", $value);
         }
 
-        return sprintf('%.E', $value);
+        // PHP 8.5+ changed sprintf('%.E') behavior: empty precision now defaults to '0' instead of '6'
+        // Specify explicit precision to maintain backward compatibility
+        // @link https://github.com/php/php-src/commit/5ed8b2be5533fbd4db95d9724d268eb9c9741f14
+        $format = PHP_VERSION_ID >= 80500 ? '%.6E' : '%.E';
+
+        return sprintf($format, $value);
     }
 
     /**

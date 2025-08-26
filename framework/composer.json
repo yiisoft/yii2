@@ -63,18 +63,17 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=7.3.0",
         "ext-mbstring": "*",
         "ext-ctype": "*",
         "lib-pcre": "*",
         "yiisoft/yii2-composer": "~2.0.4",
-        "ezyang/htmlpurifier": "^4.6",
+        "ezyang/htmlpurifier": "^4.17",
         "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0",
         "bower-asset/jquery": "3.7.*@stable | 3.6.*@stable | 3.5.*@stable | 3.4.*@stable | 3.3.*@stable | 3.2.*@stable | 3.1.*@stable | 2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
         "bower-asset/inputmask": "^5.0.8 ",
-        "bower-asset/punycode": "^2.2",
-        "bower-asset/yii2-pjax": "~2.0.1",
-        "paragonie/random_compat": ">=1"
+        "bower-asset/punycode": "^1.4",
+        "bower-asset/yii2-pjax": "~2.0.1"
     },
     "autoload": {
         "psr-4": {"yii\\": ""}

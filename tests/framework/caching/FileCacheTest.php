@@ -70,51 +70,48 @@ class FileCacheTest extends CacheTestCase
         $refClass = new \ReflectionClass($cache);
 
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $refMethodGetCacheFile->setAccessible(true);
+        }
+
         $refMethodGet = $refClass->getMethod('get');
         $refMethodSet = $refClass->getMethod('set');
 
         $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
         $this->assertTrue($refMethodSet->invoke($cache, $key, $value));
-        $this->assertContains($keyPrefix, basename($cacheFile));
+        $this->assertStringContainsString($keyPrefix, basename($cacheFile));
         $this->assertEquals($expectedDirectoryName, basename(dirname($cacheFile)), $cacheFile);
         $this->assertTrue(is_dir(dirname($cacheFile)), 'File not found ' . $cacheFile);
         $this->assertEquals($value, $refMethodGet->invoke($cache, $key));
     }
 
-    public function testCacheRenewalOnDifferentOwnership()
+    public function testStatCache()
     {
-        $TRAVIS_SECOND_USER = getenv('TRAVIS_SECOND_USER');
-        if (empty($TRAVIS_SECOND_USER)) {
-            $this->markTestSkipped('Travis second user not found');
-        }
-
         $cache = $this->getCacheInstance();
+        $cache->set(__FUNCTION__, 'cache1', 2);
 
-        $cacheValue = uniqid('value_');
-        $cachePublicKey = uniqid('key_');
-        $cacheInternalKey = $cache->buildKey($cachePublicKey);
-
-        static::$time = \time();
-        $this->assertTrue($cache->set($cachePublicKey, $cacheValue, 2));
-        $this->assertSame($cacheValue, $cache->get($cachePublicKey));
-
+        $normalizeKey = $cache->buildKey(__FUNCTION__);
         $refClass = new \ReflectionClass($cache);
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-        $refMethodGetCacheFile->setAccessible(true);
-        $cacheFile = $refMethodGetCacheFile->invoke($cache, $cacheInternalKey);
-        $refMethodGetCacheFile->setAccessible(false);
 
-        $output = array();
-        $returnVar = null;
-        exec(sprintf('sudo chown %s %s',
-            escapeshellarg($TRAVIS_SECOND_USER),
-            escapeshellarg($cacheFile)
-        ), $output, $returnVar);
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $refMethodGetCacheFile->setAccessible(true);
+        }
 
-        $this->assertSame(0, $returnVar, 'Cannot change ownership of cache file to test cache renewal');
+        $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
-        $this->assertTrue($cache->set($cachePublicKey, uniqid('value_2_'), 2), 'Cannot rebuild cache on different file ownership');
+        // simulate cache expire 10 seconds ago
+        touch($cacheFile, time() - 10);
+        clearstatcache();
+
+        $this->assertFalse($cache->get(__FUNCTION__));
+        $this->assertTrue($cache->set(__FUNCTION__, 'cache2', 2));
+        $this->assertSame('cache2', $cache->get(__FUNCTION__));
     }
 }

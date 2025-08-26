@@ -32,7 +32,7 @@ class AssetControllerTest extends TestCase
      */
     protected $testAssetsBasePath = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication();
         $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
@@ -41,7 +41,7 @@ class AssetControllerTest extends TestCase
         $this->createDir($this->testAssetsBasePath);
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -183,13 +183,8 @@ class AssetControllerTest extends TestCase
     protected function invokeAssetControllerMethod($methodName, array $args = [])
     {
         $controller = $this->createAssetController();
-        $controllerClassReflection = new \ReflectionClass(get_class($controller));
-        $methodReflection = $controllerClassReflection->getMethod($methodName);
-        $methodReflection->setAccessible(true);
-        $result = $methodReflection->invokeArgs($controller, $args);
-        $methodReflection->setAccessible(false);
 
-        return $result;
+        return $this->invokeMethod($controller, $methodName, $args);
     }
 
     /**
@@ -258,7 +253,7 @@ EOL;
         $this->runAssetControllerAction('template', [$configFileName]);
         $this->assertFileExists($configFileName, 'Unable to create config file template!');
         $config = require $configFileName;
-        $this->assertInternalType('array', $config, 'Invalid config created!');
+        $this->assertIsArray($config, 'Invalid config created!');
     }
 
     public function testActionCompress()
@@ -304,7 +299,7 @@ EOL;
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
         $compressedBundleConfig = require $bundleFile;
-        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
+        $this->assertIsArray($compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertCount(2, $compressedBundleConfig, 'Output bundle config contains wrong bundle count!');
 
         $this->assertArrayHasKey($assetBundleClassName, $compressedBundleConfig, 'Source bundle is lost!');
@@ -320,11 +315,19 @@ EOL;
 
         $compressedCssFileContent = file_get_contents($compressedCssFileName);
         foreach ($cssFiles as $name => $content) {
-            $this->assertContains($content, $compressedCssFileContent, "Source of '{$name}' is missing in combined file!");
+            $this->assertStringContainsString(
+                $content,
+                $compressedCssFileContent,
+                "Source of '{$name}' is missing in combined file!",
+            );
         }
         $compressedJsFileContent = file_get_contents($compressedJsFileName);
         foreach ($jsFiles as $name => $content) {
-            $this->assertContains($content, $compressedJsFileContent, "Source of '{$name}' is missing in combined file!");
+            $this->assertStringContainsString(
+                $content,
+                $compressedJsFileContent,
+                "Source of '{$name}' is missing in combined file!",
+            );
         }
     }
 
@@ -384,7 +387,7 @@ EOL;
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
         $compressedBundleConfig = require $bundleFile;
-        $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
+        $this->assertIsArray($compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
 
         $compressedExternalAssetConfig = $compressedBundleConfig[$externalAssetBundleClassName];
@@ -392,7 +395,11 @@ EOL;
         $this->assertEquals($externalAssetConfig['css'], $compressedExternalAssetConfig['css'], 'External bundle css is lost!');
 
         $compressedRegularAssetConfig = $compressedBundleConfig[$regularAssetBundleClassName];
-        $this->assertContains($externalAssetBundleClassName, $compressedRegularAssetConfig['depends'], 'Dependency on external bundle is lost!');
+        $this->assertContains(
+            $externalAssetBundleClassName,
+            $compressedRegularAssetConfig['depends'],
+            'Dependency on external bundle is lost!',
+        );
     }
 
     /**

@@ -105,7 +105,7 @@ class DataReader extends \yii\base\BaseObject implements \Iterator, \Countable
 
     /**
      * Advances the reader to the next row in a result set.
-     * @return array the current row, false if no more row available
+     * @return array|false the current row, false if no more row available
      */
     public function read()
     {

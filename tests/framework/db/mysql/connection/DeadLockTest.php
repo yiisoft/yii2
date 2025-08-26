@@ -31,6 +31,9 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
+        if (\stripos($this->getConnection(false)->getServerVersion(), 'MariaDB') !== false) {
+            $this->markTestSkipped('MariaDB does not support this test');
+        }
         if (PHP_VERSION_ID >= 70400 && PHP_VERSION_ID < 70500) {
             $this->markTestSkipped('Stable failed in PHP 7.4');
         }

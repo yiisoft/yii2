@@ -222,7 +222,13 @@ abstract class ErrorHandler extends Component
         if (E_ERROR & $code) {
             $exception = new ErrorException($message, $code, $code, $file, $line);
             $ref = new \ReflectionProperty('\Exception', 'trace');
-            $ref->setAccessible(true);
+
+            // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+            // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+            if (PHP_VERSION_ID < 80100) {
+                $ref->setAccessible(true);
+            }
+
             $ref->setValue($exception, $backtrace);
             $this->_hhvmException = $exception;
         }
@@ -279,13 +285,13 @@ abstract class ErrorHandler extends Component
      */
     public function handleFatalError()
     {
-        unset($this->_memoryReserve);
+        $this->_memoryReserve = null;
 
-        if (isset($this->_workingDirectory)) {
+        if (!empty($this->_workingDirectory)) {
             // fix working directory for some Web servers e.g. Apache
             chdir($this->_workingDirectory);
             // flush memory
-            unset($this->_workingDirectory);
+            $this->_workingDirectory = null;
         }
 
         $error = error_get_last();
@@ -378,6 +384,11 @@ abstract class ErrorHandler extends Component
      * to PHP errors because exceptions cannot be thrown inside of them.
      * @param \Throwable $exception the exception to convert to a PHP error.
      * @return never
+     *
+     * @deprecated since 2.0.53. Use conditional exception throwing in `__toString()` methods instead.
+     * For PHP < 7.4: use `trigger_error()` directly with `convertExceptionToString()` method.
+     * For PHP >= 7.4: throw the exception directly as `__toString()` supports exceptions.
+     * This method will be removed in 2.2.0.
      */
     public static function convertExceptionToError($exception)
     {

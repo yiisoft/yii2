@@ -313,9 +313,14 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result, function ($value) {
-                return $value !== '';
-            }));
+            $result = array_values(
+                array_filter(
+                    $result,
+                    function ($value) {
+                        return $value !== '';
+                    }
+                )
+            );
         }
 
         return $result;
@@ -343,7 +348,7 @@ class BaseStringHelper
      */
     public static function normalizeNumber($value)
     {
-        $value = (string) $value;
+        $value = (string)$value;
 
         $localeInfo = localeconv();
         $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
@@ -396,7 +401,7 @@ class BaseStringHelper
     {
         // . and , are the only decimal separators known in ICU data,
         // so its safe to call str_replace here
-        return str_replace(',', '.', (string) $number);
+        return str_replace(',', '.', (string)$number);
     }
 
     /**
@@ -422,14 +427,14 @@ class BaseStringHelper
 
         $replacements = [
             '\\\\\\\\' => '\\\\',
-            '\\\\\\*' => '[*]',
-            '\\\\\\?' => '[?]',
-            '\*' => '.*',
-            '\?' => '.',
-            '\[\!' => '[^',
-            '\[' => '[',
-            '\]' => ']',
-            '\-' => '-',
+            '\\\\\\*'  => '[*]',
+            '\\\\\\?'  => '[?]',
+            '\*'       => '.*',
+            '\?'       => '.',
+            '\[\!'     => '[^',
+            '\['       => '[',
+            '\]'       => ']',
+            '\-'       => '-',
         ];
 
         if (isset($options['escape']) && !$options['escape']) {
@@ -461,6 +466,7 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
@@ -478,10 +484,11 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucwords
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $string = (string) $string;
+        $string = (string)$string;
         if (empty($string)) {
             return $string;
         }
@@ -504,16 +511,17 @@ class BaseStringHelper
      *
      * @param string $string The input string.
      * @param int $start The starting position from where to begin masking.
-     *                   This can be a positive or negative integer.
-     *                   Positive values count from the beginning,
-     *                   negative values count from the end of the string.
+     * This can be a positive or negative integer.
+     * Positive values count from the beginning,
+     * negative values count from the end of the string.
      * @param int $length The length of the section to be masked.
-     *                    The masking will start from the $start position
-     *                    and continue for $length characters.
+     * The masking will start from the $start position
+     * and continue for $length characters.
      * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */
-    public static function mask($string, $start, $length, $mask = '*') {
+    public static function mask($string, $start, $length, $mask = '*')
+    {
         $strLength = mb_strlen($string, 'UTF-8');
 
         // Return original string if start position is out of bounds
@@ -526,5 +534,33 @@ class BaseStringHelper
         $masked .= mb_substr($string, $start + abs($length), null, 'UTF-8');
 
         return $masked;
+    }
+
+    /**
+     * Returns the portion of the string that lies between the first occurrence of the start string
+     * and the last occurrence of the end string after that.
+     *
+     * @param string $string The input string.
+     * @param string $start The string marking the start of the portion to extract.
+     * @param string $end The string marking the end of the portion to extract.
+     * @return string|null The portion of the string between the first occurrence of
+     * start and the last occurrence of end, or null if either start or end cannot be found.
+     */
+    public static function findBetween($string, $start, $end)
+    {
+        $startPos = mb_strpos($string, $start);
+
+        if ($startPos === false) {
+            return null;
+        }
+
+        $startPos += mb_strlen($start);
+        $endPos = mb_strrpos($string, $end, $startPos);
+
+        if ($endPos === false) {
+            return null;
+        }
+
+        return mb_substr($string, $startPos, $endPos - $startPos);
     }
 }

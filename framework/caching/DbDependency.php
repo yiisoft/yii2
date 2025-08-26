@@ -49,7 +49,7 @@ class DbDependency extends Dependency
      */
     protected function generateDependencyData($cache)
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
             throw new InvalidConfigException('DbDependency::sql must be set.');

@@ -157,6 +157,12 @@ class Container extends Component
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     *
+     * @template T of object
+     * @psalm-param string|class-string<T>|Instance $class
+     * @phpstan-param string|class-string<T>|Instance $class
+     * @psalm-return ($class is class-string<T> ? T : object)
+     * @phpstan-return ($class is class-string<T> ? T : object)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -381,7 +387,7 @@ class Container extends Component
      */
     protected function build($class, $params, $config)
     {
-        /* @var $reflection ReflectionClass */
+        /** @var ReflectionClass $reflection */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
         $addDependencies = [];
@@ -677,7 +683,6 @@ class Container extends Component
                 } else {
                     $isClass = $class !== null && !$class->isBuiltin();
                 }
-
             } else {
                 $class = $param->getClass();
                 $isClass = $class !== null;

@@ -123,8 +123,10 @@ class Cors extends ActionFilter
      */
     public function overrideDefaultSettings($action)
     {
-        if (isset($this->actions[$action->id])) {
-            $actionParams = $this->actions[$action->id];
+        $actionId = $this->getActionId($action);
+
+        if (isset($this->actions[$actionId])) {
+            $actionParams = $this->actions[$actionId];
             $actionParamsKeys = array_keys($actionParams);
             foreach ($this->cors as $headerField => $headerValue) {
                 if (in_array($headerField, $actionParamsKeys)) {

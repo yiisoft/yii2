@@ -7,7 +7,6 @@
 
 namespace yii\rest;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecordInterface;
 use yii\web\NotFoundHttpException;
@@ -85,7 +84,7 @@ class Action extends \yii\base\Action
             return call_user_func($this->findModel, $id, $this);
         }
 
-        /* @var $modelClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $modelClass */
         $modelClass = $this->modelClass;
         $keys = $modelClass::primaryKey();
         if (count($keys) > 1) {

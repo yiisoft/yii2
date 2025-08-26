@@ -117,8 +117,17 @@ class BaseArrayHelper
      * @param array $b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
      * @return array the merged array (the original arrays are not changed.)
+     *
+     * @phpstan-param array<array-key, mixed> $a
+     * @psalm-param array<array-key, mixed> $a
+     *
+     * @phpstan-param array<array-key, mixed> ...$b
+     * @psalm-param array<array-key, mixed> ...$b
+     *
+     * @phpstan-return array<array-key, mixed>
+     * @psalm-return array<array-key, mixed>
      */
-    public static function merge($a, $b)
+    public static function merge($a, ...$b)
     {
         $args = func_get_args();
         $res = array_shift($args);
@@ -423,8 +432,7 @@ class BaseArrayHelper
      * $result = ArrayHelper::index($array, null, 'id');
      * ```
      *
-     * The result will be a multidimensional array grouped by `id` on the first level, by `device` on the second level
-     * and indexed by `data` on the third level:
+     * The result will be a multidimensional array grouped by `id`:
      *
      * ```php
      * [
@@ -595,6 +603,9 @@ class BaseArrayHelper
      */
     public static function map($array, $from, $to, $group = null)
     {
+        if (is_string($from) && is_string($to) && $group === null && strpos($from, '.') === false && strpos($to, '.') === false) {
+            return array_column($array, $to, $from);
+        }
         $result = [];
         foreach ($array as $element) {
             $key = static::getValue($element, $from);
@@ -1039,5 +1050,62 @@ class BaseArrayHelper
         call_user_func_array($sorter, [&$array]);
 
         return $array;
+    }
+
+    /**
+     * Flattens a multidimensional array into a one-dimensional array.
+     *
+     * This method recursively traverses the input array and concatenates the keys
+     * in a dot format to form a new key in the resulting array.
+     *
+     * Example:
+     *
+     * ```php
+     * $array = [
+     *      'A' => [1, 2],
+     *      'B' => [
+     *          'C' => 1,
+     *          'D' => 2,
+     *      ],
+     *      'E' => 1,
+     *  ];
+     * $result = \yii\helpers\ArrayHelper::flatten($array);
+     * // $result will be:
+     * // [
+     * //     'A.0' => 1
+     * //     'A.1' => 2
+     * //     'B.C' => 1
+     * //     'B.D' => 2
+     * //     'E' => 1
+     * // ]
+     * ```
+     *
+     * @param array $array the input array to be flattened in terms of name-value pairs.
+     * @param string $separator the separator to use between keys. Defaults to '.'.
+     *
+     * @return array the flattened array.
+     * @throws InvalidArgumentException if `$array` is neither traversable nor an array.
+     */
+    public static function flatten($array, $separator = '.'): array
+    {
+        if (!static::isTraversable($array)) {
+            throw new InvalidArgumentException('Argument $array must be an array or implement Traversable');
+        }
+
+        $result = [];
+
+        foreach ($array as $key => $value) {
+            $newKey = $key;
+            if (is_array($value)) {
+                $flattenedArray = self::flatten($value, $separator);
+                foreach ($flattenedArray as $subKey => $subValue) {
+                    $result[$newKey . $separator . $subKey] = $subValue;
+                }
+            } else {
+                $result[$newKey] = $value;
+            }
+        }
+
+        return $result;
     }
 }

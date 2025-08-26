@@ -133,7 +133,7 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $row = $this->db->useMaster(function() use ($oldID) {
+        $row = $this->db->useMaster(function () use ($oldID) {
             return (new Query())->from($this->sessionTable)
                ->where(['id' => $oldID])
                ->createCommand($this->db)
@@ -171,7 +171,7 @@ class DbSession extends MultiFieldSession
      * Session read handler.
      * @internal Do not call this method directly.
      * @param string $id session ID
-     * @return string the session data
+     * @return string|false the session data, or false on failure
      */
     public function readSession($id)
     {
@@ -247,15 +247,13 @@ class DbSession extends MultiFieldSession
      * Session GC (garbage collection) handler.
      * @internal Do not call this method directly.
      * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-     * @return bool whether session is GCed successfully
+     * @return int|false the number of deleted sessions on success, or false on failure
      */
     public function gcSession($maxLifetime)
     {
-        $this->db->createCommand()
+        return $this->db->createCommand()
             ->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
             ->execute();
-
-        return true;
     }
 
     /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    ' and ' => '',
+    ' and ' => ' 與 ',
     '"{attribute}" does not support operator "{operator}".' => '',
     '(not set)' => '(未設定)',
     'Action not found.' => '',
@@ -50,7 +51,7 @@ return [
     'Please fix the following errors:' => '請修正以下錯誤：',
     'Please upload a file.' => '請上傳一個檔案。',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '第 <b>{begin, number}-{end, number}</b> 項，共 <b>{totalCount, number}</b> 項資料.',
-    'The combination {values} of {attributes} has already been taken.' => '',
+    'The combination {values} of {attributes} has already been taken.' => '{attribute} 的值 "{value}" 已經被佔用了。',
     'The file "{file}" is not an image.' => '檔案 "{file}" 不是一個圖片檔案。',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => '檔案"{file}"太大了。它的大小不可以超過{formattedLimit}。',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => '文件"{file}"太小了。它的大小不可以小於{formattedLimit}。',

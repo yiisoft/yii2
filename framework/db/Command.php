@@ -218,7 +218,7 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+            return preg_replace_callback('#(:\w+)#', function ($matches) use ($params) {
                 $m = $matches[1];
                 return isset($params[$m]) ? $params[$m] : $m;
             }, $this->_sql);
@@ -1167,7 +1167,7 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\CacheInterface */
+                /** @var \yii\caching\CacheInterface $cache */
                 $cache = $info[0];
                 $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);

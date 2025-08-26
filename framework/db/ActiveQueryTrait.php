@@ -115,7 +115,7 @@ trait ActiveQueryTrait
             return $rows;
         } else {
             $models = [];
-            /* @var $class ActiveRecord */
+            /** @var ActiveRecord $class */
             $class = $this->modelClass;
             foreach ($rows as $row) {
                 $model = $class::instantiate($row);
@@ -141,12 +141,12 @@ trait ActiveQueryTrait
 
         $primaryModel = reset($models);
         if (!$primaryModel instanceof ActiveRecordInterface) {
-            /* @var $modelClass ActiveRecordInterface */
+            /** @var ActiveRecordInterface $modelClass */
             $modelClass = $this->modelClass;
             $primaryModel = $modelClass::instance();
         }
         $relations = $this->normalizeRelations($primaryModel, $with);
-        /* @var $relation ActiveQuery */
+        /** @var ActiveQuery $relation */
         foreach ($relations as $name => $relation) {
             if ($relation->asArray === null) {
                 // inherit asArray from primary query

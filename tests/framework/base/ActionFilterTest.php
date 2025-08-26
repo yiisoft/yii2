@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class ActionFilterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -107,11 +107,16 @@ class ActionFilterTest extends TestCase
     {
         $this->mockWebApplication();
 
-        /** @var $filter ActionFilter */
+        /** @var ActionFilter $filter */
         $filter = Yii::createObject($filterClass);
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $controller = new \yii\web\Controller('test', Yii::$app);
 
@@ -145,7 +150,12 @@ class ActionFilterTest extends TestCase
         $filter = new ActionFilter();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $controller = new \yii\web\Controller('test', Yii::$app);
 

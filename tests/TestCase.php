@@ -20,7 +20,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Clean up after test case.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
         $logger = Yii::getLogger();
@@ -46,7 +46,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Clean up after test.
      * By default the application created with [[mockApplication]] will be destroyed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->destroyApplication();
@@ -168,7 +168,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $needle = str_replace("\r\n", "\n", $needle);
         $haystack = str_replace("\r\n", "\n", $haystack);
 
-        $this->assertContains($needle, $haystack, $message);
+        $this->assertStringContainsString($needle, $haystack, $message);
     }
 
     /**
@@ -195,9 +195,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     {
         $reflection = new \ReflectionObject($object);
         $method = $reflection->getMethod($method);
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
+
         $result = $method->invokeArgs($object, $args);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $method->setAccessible(false);
         }
 
@@ -219,9 +228,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-        $property->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
+
         $property->setValue($object, $value);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $property->setAccessible(false);
         }
     }
@@ -240,9 +258,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-        $property->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
+
         $result = $property->getValue($object);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $property->setAccessible(false);
         }
 

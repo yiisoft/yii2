@@ -17,7 +17,7 @@ use yii\caching\ArrayCache;
  */
 class FragmentCacheTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication();

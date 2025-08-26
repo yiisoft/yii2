@@ -2,69 +2,26 @@ name: build
 
 on: [push, pull_request]
 
-env:
-  DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
-  XDEBUG_MODE: coverage, develop
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   phpunit:
-    name: PHP ${{ matrix.php }} on ${{ matrix.os }}
+    name: PHP ${{ matrix.php }}
 
-    runs-on: ${{ matrix.os }}
+    env:
+        DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
+        EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+        PHPUNIT_COMMAND: --verbose --exclude-group db,wincache,xcache,zenddata --coverage-clover=coverage.xml --colors=always
+        XDEBUG_MODE: coverage
+
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - php: 5.4
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.5
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 5.6
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.0
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.1
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.2
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.3
-            coverage: none
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 7.4
-            coverage: xdebug
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 8.0
-            coverage: none
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 8.1
-            coverage: none
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            os: ubuntu-latest
-          - php: 8.2
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-            os: ubuntu-latest
+        php: [7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
 
     steps:
       - name: Generate french locale.
@@ -76,32 +33,26 @@ jobs:
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: ${{ matrix.coverage }}
-          extensions: ${{ matrix.extensions }}
+          coverage: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
+          extensions: ${{ env.EXTENSIONS }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pecl
+          tools: pie
 
       - name: Install Memcached.
         uses: niden/actions-memcached@v7
 
-      - name: Install dependencies.
-        run: composer update $DEFAULT_COMPOSER_FLAGS
+      - name: Update composer.
+        run: composer self-update
+
+      - name: Install dependencies with composer.
+        run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
 
       - name: Run tests with PHPUnit.
-        if: matrix.php < '7.4' || matrix.php >= '8.1'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-
-      - name: Run tests with PHPUnit.
-        if: matrix.php == '8.0'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-
-      - name: Run tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
+        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
 
       - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml

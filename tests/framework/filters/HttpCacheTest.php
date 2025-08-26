@@ -15,7 +15,7 @@ use yii\filters\HttpCache;
  */
 class HttpCacheTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -52,9 +52,13 @@ class HttpCacheTest extends \yiiunit\TestCase
     {
         $httpCache = new HttpCache();
         $request = Yii::$app->getRequest();
-
         $method = new \ReflectionMethod($httpCache, 'validateCache');
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $request->headers->remove('If-Modified-Since');
         $request->headers->remove('If-None-Match');

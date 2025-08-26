@@ -65,7 +65,7 @@ class UrlManagerParseUrlTest extends TestCase
         return new Request($config);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         unset($_POST['_method']);
         parent::tearDown();

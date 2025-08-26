@@ -174,12 +174,14 @@ class ActiveField extends Component
         // use trigger_error to bypass this limitation
         try {
             return $this->render();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
         } catch (\Throwable $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
+            if (PHP_VERSION_ID < 70400) {
+                trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+
+                return '';
+            }
+
+            throw $e;
         }
     }
 
@@ -770,7 +772,7 @@ class ActiveField extends Component
      */
     public function widget($class, $config = [])
     {
-        /* @var $class \yii\base\Widget */
+        /** @var \yii\base\Widget $class */
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
@@ -829,7 +831,7 @@ class ActiveField extends Component
         if ($clientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
-                /* @var $validator \yii\validators\Validator */
+                /** @var \yii\validators\Validator $validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {

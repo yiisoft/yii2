@@ -1,11 +1,13 @@
 <?php
+
 /**
  * This view is used by console/controllers/MigrateController.php.
  *
  * The following variables are available in this view:
+ *
+ * @var string $className the new migration class name without namespace
+ * @var string $namespace the new migration class namespace
  */
-/* @var $className string the new migration class name without namespace */
-/* @var $namespace string the new migration class namespace */
 
 echo "<?php\n";
 if (!empty($namespace)) {
@@ -15,9 +17,6 @@ if (!empty($namespace)) {
 
 use yii\db\Migration;
 
-/**
- * Class <?= $className . "\n" ?>
- */
 class <?= $className ?> extends Migration
 {
     /**

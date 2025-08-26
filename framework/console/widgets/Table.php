@@ -134,8 +134,8 @@ class Table extends Widget
      */
     public function setRows(array $rows)
     {
-        $this->rows = array_map(function($row) {
-            return array_map(function($value) {
+        $this->rows = array_map(function ($row) {
+            return array_map(function ($value) {
                 return empty($value) && !is_numeric($value)
                     ? ' '
                     :  (is_array($value)
@@ -198,7 +198,8 @@ class Table extends Widget
         );
         // Header
         if ($headerCount > 0) {
-            $buffer .= $this->renderRow($this->headers,
+            $buffer .= $this->renderRow(
+                $this->headers,
                 $this->chars[self::CHAR_LEFT],
                 $this->chars[self::CHAR_MIDDLE],
                 $this->chars[self::CHAR_RIGHT]
@@ -215,10 +216,12 @@ class Table extends Widget
                     $this->chars[self::CHAR_RIGHT_MID]
                 );
             }
-            $buffer .= $this->renderRow($row,
+            $buffer .= $this->renderRow(
+                $row,
                 $this->chars[self::CHAR_LEFT],
                 $this->chars[self::CHAR_MIDDLE],
-                $this->chars[self::CHAR_RIGHT]);
+                $this->chars[self::CHAR_RIGHT]
+            );
         }
 
         $buffer .= $this->renderSeparator(

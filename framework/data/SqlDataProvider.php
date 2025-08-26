@@ -7,7 +7,6 @@
 
 namespace yii\data;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Expression;

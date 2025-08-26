@@ -24,7 +24,7 @@ abstract class DatabaseTestCase extends TestCase
     private $_db;
 
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if ($this->driverName === null) {
             throw new \Exception('driverName is not set for a DatabaseTestCase.');
@@ -44,7 +44,7 @@ abstract class DatabaseTestCase extends TestCase
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->_db) {
             $this->_db->close();
@@ -83,7 +83,7 @@ abstract class DatabaseTestCase extends TestCase
         if (!isset($config['class'])) {
             $config['class'] = 'yii\db\Connection';
         }
-        /* @var $db \yii\db\Connection */
+        /** @var \yii\db\Connection $db */
         $db = \Yii::createObject($config);
         if (!$open) {
             return $db;

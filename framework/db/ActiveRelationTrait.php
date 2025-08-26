@@ -16,6 +16,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  *
  * @method ActiveRecordInterface|array|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
@@ -102,7 +103,7 @@ trait ActiveRelationTrait
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the relation object itself.
      */
-    public function via($relationName, callable $callable = null)
+    public function via($relationName, ?callable $callable = null)
     {
         $relation = $this->primaryModel->getRelation($relationName);
         $callableUsed = $callable !== null;
@@ -205,7 +206,7 @@ trait ActiveRelationTrait
                 $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel);
             } else {
                 if (!isset($inverseRelation)) {
-                    /* @var $modelClass ActiveRecordInterface */
+                    /** @var ActiveRecordInterface $modelClass */
                     $modelClass = $this->modelClass;
                     $inverseRelation = $modelClass::instance()->getRelation($this->inverseOf);
                 }
@@ -229,13 +230,13 @@ trait ActiveRelationTrait
 
         if ($this->via instanceof self) {
             // via junction table
-            /* @var $viaQuery ActiveRelationTrait */
+            /** @var self $viaQuery */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findJunctionRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /* @var $viaQuery ActiveRelationTrait|ActiveQueryTrait */
+            /** @var self|ActiveQueryTrait $viaQuery */
             list($viaName, $viaQuery) = $this->via;
             if ($viaQuery->asArray === null) {
                 // inherit asArray from primary query
@@ -338,11 +339,11 @@ trait ActiveRelationTrait
             return;
         }
         $model = reset($models);
-        /* @var $relation ActiveQueryInterface|ActiveQuery */
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         if ($model instanceof ActiveRecordInterface) {
             $relation = $model->getRelation($name);
         } else {
-            /* @var $modelClass ActiveRecordInterface */
+            /** @var ActiveRecordInterface $modelClass */
             $modelClass = $this->modelClass;
             $relation = $modelClass::instance()->getRelation($name);
         }
@@ -453,7 +454,8 @@ trait ActiveRelationTrait
      * @param array $viaMap
      * @return array
      */
-    private function mapVia($map, $viaMap) {
+    private function mapVia($map, $viaMap)
+    {
         $resultMap = [];
         foreach ($map as $key => $linkKeys) {
             $resultMap[$key] = [];
@@ -494,7 +496,7 @@ trait ActiveRelationTrait
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
             if (empty($this->from)) {
-                /* @var $modelClass ActiveRecord */
+                /** @var ActiveRecord $modelClass */
                 $modelClass = $this->modelClass;
                 $alias = $modelClass::tableName();
             } else {
@@ -623,7 +625,7 @@ trait ActiveRelationTrait
             return [];
         }
         $this->filterByModels($primaryModels);
-        /* @var $primaryModel ActiveRecord */
+        /** @var ActiveRecord $primaryModel */
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)

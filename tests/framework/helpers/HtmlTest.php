@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class HtmlTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication([
@@ -83,11 +83,41 @@ class HtmlTest extends TestCase
         $this->assertEquals("<style type=\"text/less\">{$content}</style>", Html::style($content, ['type' => 'text/less']));
     }
 
+    public function testStyleCustomAttribute()
+    {
+        $nonce = Yii::$app->security->generateRandomString();
+        $this->mockApplication([
+            'components' => [
+                'view' => [
+                    'class' => 'yii\web\View',
+                    'styleOptions' => ['nonce' => $nonce],
+                ],
+            ],
+        ]);
+        $content = 'a <>';
+        $this->assertEquals("<style nonce=\"{$nonce}\">{$content}</style>", Html::style($content));
+    }
+
     public function testScript()
     {
         $content = 'a <>';
         $this->assertEquals("<script>{$content}</script>", Html::script($content));
         $this->assertEquals("<script type=\"text/js\">{$content}</script>", Html::script($content, ['type' => 'text/js']));
+    }
+
+    public function testScriptCustomAttribute()
+    {
+        $nonce = Yii::$app->security->generateRandomString();
+        $this->mockApplication([
+            'components' => [
+                'view' => [
+                    'class' => 'yii\web\View',
+                    'scriptOptions' => ['nonce' => $nonce],
+                ],
+            ],
+        ]);
+        $content = 'a <>';
+        $this->assertEquals("<script nonce=\"{$nonce}\">{$content}</script>", Html::script($content));
     }
 
     public function testCssFile()
@@ -1638,8 +1668,7 @@ EOD;
                 'not_an_integer',
                 [],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
-                function ($model) {
-                    /* @var $model DynamicModel */
+                function (DynamicModel $model) {
                     $model->addError('name', 'Error message. Here are some chars: < >');
                 },
             ],
@@ -1647,8 +1676,7 @@ EOD;
                 'not_an_integer',
                 ['encode' => false],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: < ></li></ul></div>',
-                function ($model) {
-                    /* @var $model DynamicModel */
+                function (DynamicModel $model) {
                     $model->addError('name', 'Error message. Here are some chars: < >');
                 },
             ],
@@ -1656,8 +1684,7 @@ EOD;
                 str_repeat('long_string', 60),
                 [],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
-                function ($model) {
-                    /* @var $model DynamicModel */
+                function (DynamicModel $model) {
                     $model->addError('name', 'Error message. Here are some chars: < >');
                 },
             ],
@@ -1666,11 +1693,15 @@ EOD;
                 ['showAllErrors' => true],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li>
 <li>Error message. Here are even more chars: &quot;&quot;</li></ul></div>',
-                function ($model) {
-                    /* @var $model DynamicModel */
+                function (DynamicModel $model) {
                     $model->addError('name', 'Error message. Here are some chars: < >');
                     $model->addError('name', 'Error message. Here are even more chars: ""');
                 },
+            ],
+            [
+                'empty_class',
+                ['emptyClass' => 'd-none'],
+                '<div class="d-none"><p>Please fix the following errors:</p><ul></ul></div>',
             ],
         ];
     }
@@ -1953,6 +1984,7 @@ EOD;
     public function testAttributeNameException($name)
     {
         $this->expectException('yii\base\InvalidArgumentException');
+
         Html::getAttributeName($name);
     }
 
@@ -1989,12 +2021,11 @@ EOD;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Attribute name must contain word characters only.
-     */
     public function testGetAttributeValueInvalidArgumentException()
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         $model = new HtmlTestModel();
         Html::getAttributeValue($model, '-');
     }
@@ -2024,24 +2055,24 @@ EOD;
         $this->assertSame($expected, $actual);
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Attribute name must contain word characters only.
-     */
     public function testGetInputNameInvalidArgumentExceptionAttribute()
     {
         $model = new HtmlTestModel();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Attribute name must contain word characters only.');
+
         Html::getInputName($model, '-');
     }
 
-    /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
-     */
     public function testGetInputNameInvalidArgumentExceptionFormName()
     {
         $model = $this->getMockBuilder('yii\\base\\Model')->getMock();
         $model->method('formName')->willReturn('');
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('cannot be empty for tabular inputs.');
+
         Html::getInputName($model, '[foo]bar');
     }
 
@@ -2055,7 +2086,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdDataProvider
+     * @dataProvider getInputIdDataProvider
      */
     public function testGetInputId($attributeName, $inputIdExpected)
     {
@@ -2068,7 +2099,7 @@ EOD;
     }
 
     /**
-     * @dataProvider testGetInputIdByNameDataProvider
+     * @dataProvider getInputIdByNameDataProvider
      */
     public function testGetInputIdByName($attributeName, $inputIdExpected)
     {
@@ -2147,7 +2178,7 @@ HTML;
 
         $html = Html::activeTextInput($model, 'name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="Name"', $html);
+        $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
     public function testActiveTextInput_customPlaceholder()
@@ -2156,7 +2187,7 @@ HTML;
 
         $html = Html::activeTextInput($model, 'name', ['placeholder' => 'Custom placeholder']);
 
-        $this->assertContains('placeholder="Custom placeholder"', $html);
+        $this->assertStringContainsString('placeholder="Custom placeholder"', $html);
     }
 
     public function testActiveTextInput_placeholderFillFromModelTabular()
@@ -2165,7 +2196,7 @@ HTML;
 
         $html = Html::activeTextInput($model, '[0]name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="Name"', $html);
+        $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
     public function testOverrideSetActivePlaceholder()
@@ -2174,10 +2205,10 @@ HTML;
 
         $html = MyHtml::activeTextInput($model, 'name', ['placeholder' => true]);
 
-        $this->assertContains('placeholder="My placeholder: Name"', $html);
+        $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public function testGetInputIdDataProvider()
+    public static function getInputIdDataProvider()
     {
         return [
             [
@@ -2216,7 +2247,7 @@ HTML;
         ];
     }
 
-    public function testGetInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider()
     {
         return [
             [

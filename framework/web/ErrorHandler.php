@@ -180,7 +180,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
     }
 
     /**
@@ -203,7 +203,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null && substr_compare($method, '{closure}', -9) !== 0) {
+        if ($method !== null && strpos($method, '{closure') === false) {
             $reflection = new \ReflectionClass($class);
             if ($reflection->hasMethod($method)) {
                 $reflectionMethod = $reflection->getMethod($method);

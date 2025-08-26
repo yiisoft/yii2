@@ -17,7 +17,7 @@ use yiiunit\TestCase;
 class StringHelperTest extends TestCase
 {
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -505,5 +505,35 @@ class StringHelperTest extends TestCase
         // Special characters
         $this->assertSame('em**l@email.com', StringHelper::mask('email@email.com', 2, 2));
         $this->assertSame('******email.com', StringHelper::mask('email@email.com', 0, 6));
+    }
+
+    /**
+     * @param string $string
+     * @param string $start
+     * @param string $end
+     * @param string $expectedResult
+     * @dataProvider dataProviderFindBetween
+     */
+    public function testFindBetween($string, $start, $end, $expectedResult)
+    {
+        $this->assertSame($expectedResult, StringHelper::findBetween($string, $start, $end));
+    }
+
+    public function dataProviderFindBetween()
+    {
+        return [
+            ['hello world hello', ' hello', ' world', null],  // end before start
+            ['This is a sample string', ' is ', ' string', 'a sample'],  // normal case
+            ['startendstart', 'start', 'end', ''],  // end before start
+            ['startmiddleend', 'start', 'end', 'middle'],  // normal case
+            ['startend', 'start', 'end', ''],  // end immediately follows start
+            ['multiple start start end end', 'start ', ' end', 'start end'],  // multiple starts and ends
+            ['', 'start', 'end', null],  // empty string
+            ['no delimiters here', 'start', 'end', null],  // no start and end
+            ['start only', 'start', 'end', null], // start found but no end
+            ['end only', 'start', 'end', null], // end found but no start
+            ['spécial !@#$%^&*()', 'spé', '&*()', 'cial !@#$%^'],  // Special characters
+            ['من صالح هاشمی هستم', 'من ', ' هستم', 'صالح هاشمی'], // other languages
+        ];
     }
 }

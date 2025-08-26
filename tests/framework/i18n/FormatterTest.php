@@ -24,7 +24,7 @@ class FormatterTest extends TestCase
      */
     protected $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,7 +39,7 @@ class FormatterTest extends TestCase
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -85,8 +85,7 @@ class FormatterTest extends TestCase
         }));
         $this->assertSame(
             'from: ' . date('Y-m-d', $value),
-            $this->formatter->format($value, function ($value, $formatter) {
-              /** @var $formatter Formatter */
+            $this->formatter->format($value, function ($value, Formatter $formatter) {
               return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
             })
         );

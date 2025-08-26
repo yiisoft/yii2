@@ -19,7 +19,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
 {
     private $breadcrumbs;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
@@ -195,7 +195,12 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     protected function reflectMethod($class = '\yii\widgets\Breadcrumbs', $method = 'renderItem')
     {
         $value = new \ReflectionMethod($class, $method);
-        $value->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $value->setAccessible(true);
+        }
 
         return $value;
     }

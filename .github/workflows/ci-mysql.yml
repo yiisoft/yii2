@@ -11,26 +11,19 @@ concurrency:
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-mysql-${{ matrix.mysql }}
-    env:
-      extensions: curl, intl, pdo, pdo_mysql
-      XDEBUG_MODE: coverage, develop
 
-    runs-on: ${{ matrix.os }}
+    env:
+      COVERAGE: ${{ matrix.php == '7.4' && '--coverage-clover=coverage.xml  --colors=always' || '--colors=always' }}
+      EXTENSIONS: curl, intl, pdo, pdo_mysql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+      XDEBUG_MODE: coverage
+
+    runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-
-        php:
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
-
-        mysql:
-          - 5.7
-          - latest
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        mysql: [5.7, latest]
 
     services:
       mysql:
@@ -53,21 +46,20 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: date.timezone='UTC'
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
+          tools: pie
+
+      - name: Update composer.
+        run: composer self-update
 
       - name: Install dependencies with composer.
         run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
 
-      - name: Run MySQL tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
-        run: vendor/bin/phpunit --group mysql --coverage-clover=coverage.xml --colors=always
-
       - name: Run MySQL tests with PHPUnit.
-        if: matrix.php > '7.4'
-        run: vendor/bin/phpunit --group mysql --colors=always
+        run: vendor/bin/phpunit --group mysql ${{ env.COVERAGE }}
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '7.4'
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml

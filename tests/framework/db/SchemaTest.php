@@ -36,7 +36,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testGetSchemaNames()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $schemas = $schema->getSchemaNames();
@@ -60,7 +60,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $connection->pdo->setAttribute($name, $value);
         }
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $connection->schema;
 
         $tables = $schema->getTableNames();
@@ -92,7 +92,7 @@ abstract class SchemaTest extends DatabaseTestCase
             }
             $connection->pdo->setAttribute($name, $value);
         }
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $connection->schema;
 
         $tables = $schema->getTableSchemas();
@@ -119,10 +119,10 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testSchemaCache()
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = $this->getConnection();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -143,7 +143,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testRefreshTableSchema()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -202,7 +202,7 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
         $schema->db->enableSchemaCache = true;
 
@@ -233,7 +233,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testCompositeFk()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('composite_fk');
@@ -259,7 +259,7 @@ abstract class SchemaTest extends DatabaseTestCase
             [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
         ];
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
@@ -492,7 +492,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     public function testNegativeDefaultValues()
     {
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('negative_default_values');
@@ -528,7 +528,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (\is_object($expected['defaultValue'])) {
-                $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
+                $this->assertIsObject($column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string)$expected['defaultValue'], (string)$column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
@@ -543,6 +543,39 @@ abstract class SchemaTest extends DatabaseTestCase
     {
         $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
         $this->assertSame('', $columnSchema->dbTypecast(''));
+    }
+
+    /**
+     * @dataProvider columnSchemaDbTypecastBooleanPhpTypeProvider
+     * @param mixed $value
+     * @param bool $expected
+     */
+    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected)
+    {
+        $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
+        $this->assertSame($expected, $columnSchema->dbTypecast($value));
+    }
+
+    public function columnSchemaDbTypecastBooleanPhpTypeProvider()
+    {
+        return [
+            [1, true],
+            [0, false],
+            ['1', true],
+            ['0', false],
+
+            // https://github.com/yiisoft/yii2/issues/9006
+            ["\1", true],
+            ["\0", false],
+
+            // https://github.com/yiisoft/yii2/pull/20122
+            ['TRUE', true],
+            ['FALSE', false],
+            ['true', true],
+            ['false', false],
+            ['True', true],
+            ['False', false],
+        ];
     }
 
     public function testFindUniqueIndexes()
@@ -562,7 +595,7 @@ abstract class SchemaTest extends DatabaseTestCase
             'someCol2' => 'string',
         ])->execute();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
@@ -780,14 +813,27 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertMetadataEquals($expected, $constraints);
     }
 
-    private function assertMetadataEquals($expected, $actual)
+    protected function assertMetadataEquals($expected, $actual)
     {
-        $this->assertInternalType(strtolower(\gettype($expected)), $actual);
+        switch (\strtolower(\gettype($expected))) {
+            case 'object':
+                $this->assertIsObject($actual);
+                break;
+            case 'array':
+                $this->assertIsArray($actual);
+                break;
+            case 'null':
+                $this->assertNull($actual);
+                break;
+        }
+
         if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, false);
             $this->normalizeArrayKeys($actual, false);
         }
+
         $this->normalizeConstraints($expected, $actual);
+
         if (\is_array($expected)) {
             $this->normalizeArrayKeys($expected, true);
             $this->normalizeArrayKeys($actual, true);
@@ -795,7 +841,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertEquals($expected, $actual);
     }
 
-    private function normalizeArrayKeys(array &$array, $caseSensitive)
+    protected function normalizeArrayKeys(array &$array, $caseSensitive)
     {
         $newArray = [];
         foreach ($array as $value) {
@@ -819,7 +865,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $array = $newArray;
     }
 
-    private function normalizeConstraints(&$expected, &$actual)
+    protected function normalizeConstraints(&$expected, &$actual)
     {
         if (\is_array($expected)) {
             foreach ($expected as $key => $value) {
@@ -834,7 +880,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
     }
 
-    private function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
+    protected function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
     {
         if ($expectedConstraint::className() !== $actualConstraint::className()) {
             return;

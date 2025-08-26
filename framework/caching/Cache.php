@@ -294,21 +294,7 @@ abstract class Cache extends Component implements CacheInterface
             $duration = $this->defaultDuration;
         }
 
-        if ($dependency !== null && $this->serializer !== false) {
-            $dependency->evaluateDependency($this);
-        }
-
-        $data = [];
-        foreach ($items as $key => $value) {
-            if ($this->serializer === null) {
-                $value = serialize([$value, $dependency]);
-            } elseif ($this->serializer !== false) {
-                $value = call_user_func($this->serializer[0], [$value, $dependency]);
-            }
-
-            $key = $this->buildKey($key);
-            $data[$key] = $value;
-        }
+        $data = $this->prepareCacheData($items, $dependency);
 
         return $this->setValues($data, $duration);
     }
@@ -344,6 +330,21 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
     {
+        $data = $this->prepareCacheData($items, $dependency);
+
+        return $this->addValues($data, $duration);
+    }
+
+    /**
+     * Prepares data for caching by serializing values and evaluating dependencies.
+     *
+     * @param array $items The items to be cached.
+     * @param mixed $dependency The dependency to be evaluated.
+     *
+     * @return array The prepared data for caching.
+     */
+    private function prepareCacheData($items, $dependency)
+    {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -360,7 +361,7 @@ abstract class Cache extends Component implements CacheInterface
             $data[$key] = $value;
         }
 
-        return $this->addValues($data, $duration);
+        return $data;
     }
 
     /**

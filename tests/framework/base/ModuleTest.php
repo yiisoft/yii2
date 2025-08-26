@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class ModuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -63,8 +63,7 @@ class ModuleTest extends TestCase
         $module->setVersion($version);
         $this->assertEquals($version, $module->getVersion());
 
-        $module->setVersion(function ($module) {
-            /* @var $module TestModule */
+        $module->setVersion(function (TestModule $module) {
             return 'version.' . $module->getUniqueId();
         });
         $this->assertEquals('version.test', $module->getVersion());

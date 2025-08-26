@@ -109,7 +109,7 @@ class MysqlMutex extends DbMutex
     protected function prepareName()
     {
         $params = [];
-        $expression = "SUBSTRING(CONCAT(:prefix, :name), 1, 64)";
+        $expression = 'SUBSTRING(CONCAT(:prefix, :name), 1, 64)';
         if ($this->keyPrefix instanceof Expression) {
             $expression = strtr($expression, [':prefix' => $this->keyPrefix->expression]);
             $params = $this->keyPrefix->params;

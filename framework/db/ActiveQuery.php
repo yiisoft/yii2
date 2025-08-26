@@ -69,6 +69,23 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @template T of (ActiveRecord|array)
+ *
+ * @phpstan-method T|null one($db = null)
+ * @psalm-method T|null one($db = null)
+ *
+ * @phpstan-method T[] all($db = null)
+ * @psalm-method T[] all($db = null)
+ *
+ * @phpstan-method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true)
+ * @psalm-method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true)
+ *
+ * @phpstan-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
+ * @psalm-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
+ *
+ * @phpstan-method BatchQueryResult<int, T> each($batchSize = 100, $db = null)
+ * @psalm-method BatchQueryResult<int, T> each($batchSize = 100, $db = null)
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
@@ -127,6 +144,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
      * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
+     * @psalm-return T[]
+     * @phpstan-return T[]
      */
     public function all($db = null)
     {
@@ -169,7 +188,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /* @var $viaQuery ActiveQuery */
+                /** @var self $viaQuery */
                 list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
                     if ($viaCallableUsed) {
@@ -247,7 +266,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function removeDuplicatedModels($models)
     {
         $hash = [];
-        /* @var $class ActiveRecord */
+        /** @var ActiveRecord $class */
         $class = $this->modelClass;
         $pks = $class::primaryKey();
 
@@ -295,9 +314,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns a single row of result.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If `null`, the DB connection returned by [[modelClass]] will be used.
-     * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
+     * @return array|ActiveRecord|null a single row of query result. Depending on the setting of [[asArray]],
      * the query result may be either an array or an ActiveRecord object. `null` will be returned
      * if the query results in nothing.
+     * @psalm-return T|null
+     * @phpstan-return T|null
      */
     public function one($db = null)
     {
@@ -318,7 +339,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function createCommand($db = null)
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -342,7 +363,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -431,7 +452,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /* @var $query ActiveQuery */
+                    /** @var self $query */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -454,7 +475,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        /* @var $modelClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $modelClass */
         $modelClass = $this->modelClass;
         $model = $modelClass::instance();
         foreach ($this->joinWith as $config) {
@@ -549,7 +570,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                /* @var $relationModelClass ActiveRecordInterface */
+                /** @var ActiveRecordInterface $relationModelClass */
                 $relationModelClass = $relation->modelClass;
                 $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
@@ -784,7 +805,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @throws InvalidConfigException when query is not initialized properly
      * @see via()
      */
-    public function viaTable($tableName, $link, callable $callable = null)
+    public function viaTable($tableName, $link, ?callable $callable = null)
     {
         $modelClass = $this->primaryModel ? get_class($this->primaryModel) : $this->modelClass;
         $relation = new self($modelClass, [
@@ -849,7 +870,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function getPrimaryTableName()
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         return $modelClass::tableName();
     }

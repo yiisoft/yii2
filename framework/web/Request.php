@@ -41,8 +41,9 @@ use yii\validators\IpValidator;
  * @property-read string $contentType Request content-type. Empty string is returned if this information is
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
- * @property-read string $csrfToken The token used to perform CSRF validation.
- * @property-read string|null $csrfTokenFromHeader The CSRF token sent via [[CSRF_HEADER]] by browser. Null is
+ * @property-read null|string $csrfToken The token used to perform CSRF validation. Null is returned if the
+ * [[validateCsrfHeaderOnly]] is true.
+ * @property-read string|null $csrfTokenFromHeader The CSRF token sent via [[csrfHeader]] by browser. Null is
  * returned if no such header is sent.
  * @property-read array $eTags The entity tags.
  * @property-read HeaderCollection $headers The header collection.
@@ -91,7 +92,7 @@ use yii\validators\IpValidator;
 class Request extends \yii\base\Request
 {
     /**
-     * The name of the HTTP header for sending CSRF token.
+     * Default name of the HTTP header for sending CSRF token.
      */
     const CSRF_HEADER = 'X-CSRF-Token';
     /**
@@ -113,10 +114,41 @@ class Request extends \yii\base\Request
      * `yii.getCsrfToken()`, respectively. The [[\yii\web\YiiAsset]] asset must be registered.
      * You also need to include CSRF meta tags in your pages by using [[\yii\helpers\Html::csrfMetaTags()]].
      *
+     * For SPA, you can use CSRF validation by custom header with a random or an empty value.
+     * Include a header with the name specified by [[csrfHeader]] to requests that must be validated.
+     * Warning! CSRF validation by custom header can be used only for same-origin requests or
+     * with CORS configured to allow requests from the list of specific origins only.
+     *
      * @see Controller::enableCsrfValidation
      * @see https://en.wikipedia.org/wiki/Cross-site_request_forgery
      */
     public $enableCsrfValidation = true;
+    /**
+     * @var string the name of the HTTP header for sending CSRF token. Defaults to [[CSRF_HEADER]].
+     * This property may be changed for Yii API applications only.
+     * Don't change this property for Yii Web application.
+     */
+    public $csrfHeader = self::CSRF_HEADER;
+    /**
+     * @var array the name of the HTTP header for sending CSRF token.
+     * by default validate CSRF token on non-"safe" methods only
+     * This property is used only when [[enableCsrfValidation]] is true.
+     * @see https://datatracker.ietf.org/doc/html/rfc9110#name-safe-methods
+     */
+    public $csrfTokenSafeMethods = ['GET', 'HEAD', 'OPTIONS'];
+    /**
+     * @var array "unsafe" methods not triggered a CORS-preflight request
+     * This property is used only when both [[enableCsrfValidation]] and [[validateCsrfHeaderOnly]] are true.
+     * @see https://fetch.spec.whatwg.org/#http-cors-protocol
+     */
+    public $csrfHeaderUnsafeMethods = ['GET', 'HEAD', 'POST'];
+    /**
+     * @var bool whether to use custom header only to CSRF validation of SPA. Defaults to false.
+     * If false and [[enableCsrfValidation]] is true, CSRF validation by token will used.
+     * Warning! CSRF validation by custom header can be used for Yii API applications only.
+     * @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#employing-custom-request-headers-for-ajaxapi
+     */
+    public $validateCsrfHeaderOnly = false;
     /**
      * @var string the name of the token used to prevent CSRF. Defaults to '_csrf'.
      * This property is used only when [[enableCsrfValidation]] is true.
@@ -963,7 +995,8 @@ class Request extends \yii\base\Request
 
         // try to encode in UTF8 if not so
         // https://www.w3.org/International/questions/qa-forms-utf-8.en.html
-        if (!preg_match('%^(?:
+        if (
+            !preg_match('%^(?:
             [\x09\x0A\x0D\x20-\x7E]              # ASCII
             | [\xC2-\xDF][\x80-\xBF]             # non-overlong 2-byte
             | \xE0[\xA0-\xBF][\x80-\xBF]         # excluding overlongs
@@ -1001,6 +1034,8 @@ class Request extends \yii\base\Request
      * @param string $s
      * @return string the UTF-8 translation of `s`.
      * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
+     * @phpcs:disable Generic.Formatting.DisallowMultipleStatements.SameLine
+     * @phpcs:disable Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore
      */
     private function utf8Encode($s)
     {
@@ -1197,11 +1232,13 @@ class Request extends \yii\base\Request
     protected function getUserIpFromIpHeaders()
     {
         $ip = $this->getSecureForwardedHeaderTrustedPart('for');
-        if ($ip !== null && preg_match(
-            '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:\d{1,3}\.){3}\d{1,3}))\]?(?::(?P<port>\d+))?$/',
-            $ip,
-            $matches
-        )) {
+        if (
+            $ip !== null && preg_match(
+                '/^\[?(?P<ip>(?:(?:(?:[0-9a-f]{1,4}:){1,6}(?:[0-9a-f]{1,4})?(?:(?::[0-9a-f]{1,4}){1,6}))|(?:\d{1,3}\.){3}\d{1,3}))\]?(?::(?P<port>\d+))?$/',
+                $ip,
+                $matches
+            )
+        ) {
             $ip = $this->getUserIpFromIpHeader($matches['ip']);
             if ($ip !== null) {
                 return $ip;
@@ -1291,7 +1328,7 @@ class Request extends \yii\base\Request
     public function getUserHost()
     {
         $userIp = $this->getUserIpFromIpHeaders();
-        if($userIp === null) {
+        if ($userIp === null) {
             return $this->getRemoteHost();
         }
         return gethostbyaddr($userIp);
@@ -1767,10 +1804,14 @@ class Request extends \yii\base\Request
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
      * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
-     * @return string the token used to perform CSRF validation.
+     * @return null|string the token used to perform CSRF validation. Null is returned if the [[validateCsrfHeaderOnly]] is true.
      */
     public function getCsrfToken($regenerate = false)
     {
+        if ($this->validateCsrfHeaderOnly) {
+            return null;
+        }
+
         if ($this->_csrfToken === null || $regenerate) {
             $token = $this->loadCsrfToken();
             if ($regenerate || empty($token)) {
@@ -1814,11 +1855,11 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * @return string|null the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
+     * @return string|null the CSRF token sent via [[csrfHeader]] by browser. Null is returned if no such header is sent.
      */
     public function getCsrfTokenFromHeader()
     {
-        return $this->headers->get(static::CSRF_HEADER);
+        return $this->headers->get($this->csrfHeader);
     }
 
     /**
@@ -1855,8 +1896,14 @@ class Request extends \yii\base\Request
     public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
-        // only validate CSRF token on non-"safe" methods https://tools.ietf.org/html/rfc2616#section-9.1.1
-        if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
+
+        if ($this->validateCsrfHeaderOnly) {
+            return in_array($method, $this->csrfHeaderUnsafeMethods, true)
+                ? $this->headers->has($this->csrfHeader)
+                : true;
+        }
+
+        if (!$this->enableCsrfValidation || in_array($method, $this->csrfTokenSafeMethods, true)) {
             return true;
         }
 
@@ -1980,8 +2027,7 @@ class Request extends \yii\base\Request
         preg_match_all('/(?:[^",]++|"[^"]++")+/', $forwarded, $forwardedElements);
 
         foreach ($forwardedElements[0] as $forwardedPairs) {
-            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs,
-                $matches, PREG_SET_ORDER);
+            preg_match_all('/(?P<key>\w+)\s*=\s*(?:(?P<value>[^",;]*[^",;\s])|"(?P<value2>[^"]+)")/', $forwardedPairs, $matches, PREG_SET_ORDER);
             $this->_secureForwardedHeaderParts[] = array_reduce($matches, function ($carry, $item) {
                 $value = $item['value'];
                 if (isset($item['value2']) && $item['value2'] !== '') {

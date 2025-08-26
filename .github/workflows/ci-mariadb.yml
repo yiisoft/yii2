@@ -1,0 +1,67 @@
+on:
+  - pull_request
+  - push
+
+name: ci-mariadb
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
+
+    env:
+      COVERAGE: ${{ matrix.php == '7.4' && '--coverage-clover=coverage.xml  --colors=always' || '--colors=always' }}
+      EXTENSIONS: curl, intl, pdo, pdo_mysql, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+      XDEBUG_MODE: coverage
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        mariadb:
+          - mariadb:10.4
+          - mariadb:latest
+
+    services:
+      mysql:
+        image: ${{ matrix.mariadb }}
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: yiitest
+        ports:
+          - 3306:3306
+        options: --health-cmd="mariadb-admin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v4
+
+      - name: Install PHP with extensions.
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: xdebug
+          extensions: ${{ env.EXTENSIONS }}
+          ini-values: date.timezone='UTC'
+          php-version: ${{ matrix.php }}
+          tools: pie
+
+      - name: Update composer.
+        run: composer self-update
+
+      - name: Install dependencies.
+        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
+
+      - name: Run MariaDB tests with PHPUnit.
+        run: vendor/bin/phpunit --group mysql ${{ env.COVERAGE }}
+
+      - name: Upload coverage to Codecov.
+        if: matrix.php == '7.4'
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml

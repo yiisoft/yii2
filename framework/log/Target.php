@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
+use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -91,6 +92,11 @@ abstract class Target extends Component
      * - `var` - `var` will be logged as `***`
      * - `var.key` - only `var[key]` will be logged as `***`
      *
+     * In addition, this property accepts (case-insensitive) patterns. For example:
+     * - `_SERVER.*_SECRET` matches all ending with `_SECRET`, such as `$_SERVER['TOKEN_SECRET']` etc.
+     * - `_SERVER.SECRET_*` matches all starting with `SECRET_`, such as `$_SERVER['SECRET_TOKEN']` etc.
+     * - `_SERVER.*SECRET*` matches all containing `SECRET` i.e. both of the above.
+     *
      * @since 2.0.16
      */
     public $maskVars = [
@@ -169,9 +175,12 @@ abstract class Target extends Component
     protected function getContextMessage()
     {
         $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        $items = ArrayHelper::flatten($context);
         foreach ($this->maskVars as $var) {
-            if (ArrayHelper::getValue($context, $var) !== null) {
-                ArrayHelper::setValue($context, $var, '***');
+            foreach ($items as $key => $value) {
+                if (StringHelper::matchWildcard($var, $key, ['caseSensitive' => false])) {
+                    ArrayHelper::setValue($context, $key, '***');
+                }
             }
         }
         $result = [];
@@ -292,7 +301,7 @@ abstract class Target extends Component
      */
     public function formatMessage($message)
     {
-        list($text, $level, $category, $timestamp) = $message;
+        [$text, $level, $category, $timestamp] = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
@@ -335,7 +344,7 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /* @var $user \yii\web\User */
+        /** @var \yii\web\User $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();
@@ -343,7 +352,7 @@ abstract class Target extends Component
             $userID = '-';
         }
 
-        /* @var $session \yii\web\Session */
+        /** @var \yii\web\Session $session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 

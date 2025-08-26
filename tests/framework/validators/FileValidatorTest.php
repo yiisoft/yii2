@@ -12,6 +12,7 @@ use yii\helpers\FileHelper;
 use yii\validators\FileValidator;
 use yii\web\UploadedFile;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\data\validators\models\FakedValidationTypedModel;
 use yiiunit\TestCase;
 
 /**
@@ -19,7 +20,7 @@ use yiiunit\TestCase;
  */
 class FileValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -29,7 +30,7 @@ class FileValidatorTest extends TestCase
     {
         $val = new FileValidator();
         foreach (['message', 'uploadRequired', 'tooMany', 'wrongExtension', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
-            $this->assertInternalType('string', $val->$attr);
+            $this->assertIsString($val->$attr);
         }
     }
 
@@ -119,6 +120,7 @@ class FileValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors('attr_files'));
         $this->assertSame($val->uploadRequired, current($m->getErrors('attr_files')));
+
         $m = FakedValidationModel::createWithAttributes(
             [
                 'attr_files' => $this->createTestFiles(
@@ -312,6 +314,32 @@ class FileValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_images');
 
         $this->assertTrue($model->hasErrors('attr_images'));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/19855
+     */
+    public function testValidateArrayAttributeWithMinMaxOneAndOneFile()
+    {
+        $validator = new FileValidator(['maxFiles' => 1, 'minFiles' => 0]);
+        $files = $this->createTestFiles(
+            [
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ],
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ],
+            ]
+        )[0]; // <-- only one file
+        $model = FakedValidationModel::createWithAttributes(['attr_images' => [$files]]);
+
+        $validator->validateAttribute($model, 'attr_images');
+        $this->assertFalse($model->hasErrors('attr_images'));
     }
 
     /**
@@ -654,7 +682,9 @@ class FileValidatorTest extends TestCase
      * @dataProvider mimeTypeCaseInsensitive
      */
     public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected) {
-        $validator = $this->getMock('\yii\validators\FileValidator', ['getMimeTypeByFile']);
+        $validator = $this->getMockBuilder(\yii\validators\FileValidator::class)
+            ->onlyMethods(['getMimeTypeByFile'])
+            ->getMock();
         $validator->method('getMimeTypeByFile')->willReturn($fileMimeType);
         $validator->mimeTypes = [$mask];
 
@@ -662,12 +692,141 @@ class FileValidatorTest extends TestCase
         $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
     }
 
-    public function mimeTypeCaseInsensitive() {
+    public function mimeTypeCaseInsensitive()
+    {
         return [
             ['Image/*', 'image/jp2', true],
             ['image/*', 'Image/jp2', true],
             ['application/vnd.ms-word.document.macroEnabled.12', 'application/vnd.ms-word.document.macroenabled.12', true],
             ['image/jxra', 'image/jxrA', true],
         ];
+    }
+
+    public function testValidateTypedAttributeNoErrors()
+    {
+        if (version_compare(PHP_VERSION, '7.4', '<')) {
+            $this->markTestSkipped('Requires typed properties');
+        }
+
+        $validator = new FileValidator(['minFiles' => 0, 'maxFiles' => 2]);
+        $file = $this->createTestFiles(
+            [
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ]
+            ]
+        );
+        $model = new FakedValidationTypedModel();
+        $model->single = $file;
+        $model->multiple = [$file];
+        $validator->validateAttribute($model, 'single');
+        $this->assertFalse($model->hasErrors('single'));
+        $validator->validateAttribute($model, 'multiple');
+        $this->assertFalse($model->hasErrors('multiple'));
+    }
+
+    public function testValidateTypedAttributeExactMinNoErrors()
+    {
+        if (version_compare(PHP_VERSION, '7.4', '<')) {
+            $this->markTestSkipped('Requires typed properties');
+        }
+
+        $validator = new FileValidator(['minFiles' => 1]);
+        $file = $this->createTestFiles(
+            [
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ]
+            ]
+        );
+        $model = new FakedValidationTypedModel();
+        $model->single = $file;
+        $model->multiple = [$file];
+        $validator->validateAttribute($model, 'single');
+        $this->assertFalse($model->hasErrors('single'));
+        $validator->validateAttribute($model, 'multiple');
+        $this->assertFalse($model->hasErrors('multiple'));
+    }
+
+    public function testValidateTypedAttributeExactMaxNoErrors()
+    {
+        if (version_compare(PHP_VERSION, '7.4', '<')) {
+            $this->markTestSkipped('Requires typed properties');
+        }
+
+        $validator = new FileValidator(['maxFiles' => 1]);
+        $file = $this->createTestFiles(
+            [
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ]
+            ]
+        );
+        $model = new FakedValidationTypedModel();
+        $model->single = $file;
+        $model->multiple = [$file];
+        $validator->validateAttribute($model, 'single');
+        $this->assertFalse($model->hasErrors('single'));
+        $validator->validateAttribute($model, 'multiple');
+        $this->assertFalse($model->hasErrors('multiple'));
+    }
+
+    public function testValidateTypedAttributeMinError()
+    {
+        if (version_compare(PHP_VERSION, '7.4', '<')) {
+            $this->markTestSkipped('Requires typed properties');
+        }
+
+        $validator = new FileValidator(['minFiles' => 2]);
+        $file = $this->createTestFiles(
+            [
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ]
+            ]
+        );
+        $model = new FakedValidationTypedModel();
+        $model->single = $file;
+        $model->multiple = [$file];
+        $validator->validateAttribute($model, 'single');
+        $this->assertTrue($model->hasErrors('single'));
+        $validator->validateAttribute($model, 'multiple');
+        $this->assertTrue($model->hasErrors('multiple'));
+    }
+
+    public function testValidateTypedAttributeMaxError()
+    {
+        if (version_compare(PHP_VERSION, '7.4', '<')) {
+            $this->markTestSkipped('Requires typed properties');
+        }
+
+        $validator = new FileValidator(['maxFiles' => 1]);
+        $files = $this->createTestFiles(
+            [
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ],
+                [
+                    'name' => 'image.png',
+                    'size' => 1024,
+                    'type' => 'image/png',
+                ]
+            ]
+        );
+        $model = new FakedValidationTypedModel();
+        // single attribute cannot be checked because maxFiles = 0 === no limits
+        $model->multiple = $files;
+        $validator->validateAttribute($model, 'multiple');
+        $this->assertTrue($model->hasErrors('multiple'));
     }
 }

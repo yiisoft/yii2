@@ -233,6 +233,7 @@ class PhpDocController extends Controller
                 'requirements/',
                 'gii/generators/',
                 'vendor/',
+                '_support/',
             ]),
         ];
 

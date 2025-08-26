@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.50-dev';
+        return '2.0.54-dev';
     }
 
     /**
@@ -127,6 +127,9 @@ class BaseYii
      * @return string|false the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
+     *
+     * @phpstan-return ($throwException is true ? string : string|false)
+     * @psalm-return ($throwException is true ? string : string|false)
      */
     public static function getAlias($alias, $throwException = true)
     {
@@ -338,6 +341,12 @@ class BaseYii
      * @return object the created object
      * @throws InvalidConfigException if the configuration is invalid.
      * @see \yii\di\Container
+     *
+     * @template T
+     * @phpstan-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
+     * @psalm-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
+     * @phpstan-return T
+     * @psalm-return T
      */
     public static function createObject($type, array $params = [])
     {
@@ -502,8 +511,7 @@ class BaseYii
     public static function powered()
     {
         return \Yii::t('yii', 'Powered by {yii}', [
-            'yii' => '<a href="https://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>',
+            'yii' => '<a href="https://www.yiiframework.com/" rel="external">' . \Yii::t('yii', 'Yii Framework') . '</a>',
         ]);
     }
 

@@ -240,53 +240,53 @@ class BaseFormatConverter
             "'" => "''''",  // single `'` should be encoded as `''`, which internally should be encoded as `''''`
             // Day
             '\d' => "'d'",
-            'd' => 'dd',    // Day of the month, 2 digits with leading zeros 	01 to 31
+            'd' => 'dd',    // Day of the month, 2 digits with leading zeros — 01 to 31
             '\D' => "'D'",
-            'D' => 'eee',   // A textual representation of a day, three letters 	Mon through Sun
+            'D' => 'eee',   // A textual representation of a day, three letters — Mon through Sun
             '\j' => "'j'",
-            'j' => 'd',     // Day of the month without leading zeros 	1 to 31
+            'j' => 'd',     // Day of the month without leading zeros — 1 to 31
             '\l' => "'l'",
-            'l' => 'eeee',  // A full textual representation of the day of the week 	Sunday through Saturday
+            'l' => 'eeee',  // A full textual representation of the day of the week — Sunday through Saturday
             '\N' => "'N'",
             'N' => 'e',     // ISO-8601 numeric representation of the day of the week, 1 (for Monday) through 7 (for Sunday)
             '\S' => "'S'",
-            'S' => '',      // English ordinal suffix for the day of the month, 2 characters 	st, nd, rd or th. Works well with j
+            'S' => '',      // English ordinal suffix for the day of the month, 2 characters — st, nd, rd or th. Works well with j
             '\w' => "'w'",
-            'w' => '',      // Numeric representation of the day of the week 	0 (for Sunday) through 6 (for Saturday)
+            'w' => '',      // Numeric representation of the day of the week — 0 (for Sunday) through 6 (for Saturday)
             '\z' => "'z'",
-            'z' => 'D',     // The day of the year (starting from 0) 	0 through 365
+            'z' => 'D',     // The day of the year (starting from 0) — 0 through 365
             // Week
             '\W' => "'W'",
-            'W' => 'w',     // ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0) 	Example: 42 (the 42nd week in the year)
+            'W' => 'w',     // ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0) — Example: 42 (the 42nd week in the year)
             // Month
             '\F' => "'F'",
             'F' => 'MMMM',  // A full textual representation of a month, January through December
             '\m' => "'m'",
-            'm' => 'MM',    // Numeric representation of a month, with leading zeros 	01 through 12
+            'm' => 'MM',    // Numeric representation of a month, with leading zeros — 01 through 12
             '\M' => "'M'",
-            'M' => 'MMM',   // A short textual representation of a month, three letters 	Jan through Dec
+            'M' => 'MMM',   // A short textual representation of a month, three letters — Jan through Dec
             '\n' => "'n'",
-            'n' => 'M',     // Numeric representation of a month, without leading zeros 	1 through 12, not supported by ICU but we fallback to "with leading zero"
+            'n' => 'M',     // Numeric representation of a month, without leading zeros — 1 through 12, not supported by ICU but we fallback to "with leading zero"
             '\t' => "'t'",
-            't' => '',      // Number of days in the given month 	28 through 31
+            't' => '',      // Number of days in the given month — 28 through 31
             // Year
             '\L' => "'L'",
             'L' => '',      // Whether it's a leap year, 1 if it is a leap year, 0 otherwise.
             '\o' => "'o'",
             'o' => 'Y',     // ISO-8601 year number. This has the same value as Y, except that if the ISO week number (W) belongs to the previous or next year, that year is used instead.
             '\Y' => "'Y'",
-            'Y' => 'yyyy',  // A full numeric representation of a year, 4 digits 	Examples: 1999 or 2003
+            'Y' => 'yyyy',  // A full numeric representation of a year, 4 digits — Examples: 1999 or 2003
             '\y' => "'y'",
-            'y' => 'yy',    // A two digit representation of a year 	Examples: 99 or 03
+            'y' => 'yy',    // A two digit representation of a year — Examples: 99 or 03
             // Time
             '\a' => "'a'",
             'a' => 'a',     // Lowercase Ante meridiem and Post meridiem, am or pm
             '\A' => "'A'",
             'A' => 'a',     // Uppercase Ante meridiem and Post meridiem, AM or PM, not supported by ICU but we fallback to lowercase
             '\B' => "'B'",
-            'B' => '',      // Swatch Internet time 	000 through 999
+            'B' => '',      // Swatch Internet time — 000 through 999
             '\g' => "'g'",
-            'g' => 'h',     // 12-hour format of an hour without leading zeros 	1 through 12
+            'g' => 'h',     // 12-hour format of an hour without leading zeros — 1 through 12
             '\G' => "'G'",
             'G' => 'H',     // 24-hour format of an hour without leading zeros 0 to 23h
             '\h' => "'h'",
@@ -294,9 +294,9 @@ class BaseFormatConverter
             '\H' => "'H'",
             'H' => 'HH',    // 24-hour format of an hour with leading zeros, 00 to 23 h
             '\i' => "'i'",
-            'i' => 'mm',    // Minutes with leading zeros 	00 to 59
+            'i' => 'mm',    // Minutes with leading zeros — 00 to 59
             '\s' => "'s'",
-            's' => 'ss',    // Seconds, with leading zeros 	00 through 59
+            's' => 'ss',    // Seconds, with leading zeros — 00 through 59
             '\u' => "'u'",
             'u' => '',      // Microseconds. Example: 654321
             // Timezone
@@ -482,37 +482,37 @@ class BaseFormatConverter
         // https://www.php.net/manual/en/function.date
         return strtr($pattern, [
             // Day
-            'd' => 'dd',    // Day of the month, 2 digits with leading zeros 	01 to 31
-            'D' => 'D',     // A textual representation of a day, three letters 	Mon through Sun
-            'j' => 'd',     // Day of the month without leading zeros 	1 to 31
-            'l' => 'DD',    // A full textual representation of the day of the week 	Sunday through Saturday
+            'd' => 'dd',    // Day of the month, 2 digits with leading zeros — 01 to 31
+            'D' => 'D',     // A textual representation of a day, three letters — Mon through Sun
+            'j' => 'd',     // Day of the month without leading zeros — 1 to 31
+            'l' => 'DD',    // A full textual representation of the day of the week — Sunday through Saturday
             'N' => '',      // ISO-8601 numeric representation of the day of the week, 1 (for Monday) through 7 (for Sunday)
-            'S' => '',      // English ordinal suffix for the day of the month, 2 characters 	st, nd, rd or th. Works well with j
-            'w' => '',      // Numeric representation of the day of the week 	0 (for Sunday) through 6 (for Saturday)
-            'z' => 'o',     // The day of the year (starting from 0) 	0 through 365
+            'S' => '',      // English ordinal suffix for the day of the month, 2 characters — st, nd, rd or th. Works well with j
+            'w' => '',      // Numeric representation of the day of the week — 0 (for Sunday) through 6 (for Saturday)
+            'z' => 'o',     // The day of the year (starting from 0) — 0 through 365
             // Week
-            'W' => '',      // ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0) 	Example: 42 (the 42nd week in the year)
+            'W' => '',      // ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0) — Example: 42 (the 42nd week in the year)
             // Month
             'F' => 'MM',    // A full textual representation of a month, January through December
-            'm' => 'mm',    // Numeric representation of a month, with leading zeros 	01 through 12
-            'M' => 'M',     // A short textual representation of a month, three letters 	Jan through Dec
-            'n' => 'm',     // Numeric representation of a month, without leading zeros 	1 through 12
-            't' => '',      // Number of days in the given month 	28 through 31
+            'm' => 'mm',    // Numeric representation of a month, with leading zeros — 01 through 12
+            'M' => 'M',     // A short textual representation of a month, three letters — Jan through Dec
+            'n' => 'm',     // Numeric representation of a month, without leading zeros — 1 through 12
+            't' => '',      // Number of days in the given month — 28 through 31
             // Year
             'L' => '',      // Whether it's a leap year, 1 if it is a leap year, 0 otherwise.
             'o' => '',      // ISO-8601 year number. This has the same value as Y, except that if the ISO week number (W) belongs to the previous or next year, that year is used instead.
-            'Y' => 'yy',    // A full numeric representation of a year, 4 digits 	Examples: 1999 or 2003
-            'y' => 'y',     // A two digit representation of a year 	Examples: 99 or 03
+            'Y' => 'yy',    // A full numeric representation of a year, 4 digits — Examples: 1999 or 2003
+            'y' => 'y',     // A two digit representation of a year — Examples: 99 or 03
             // Time
             'a' => '',      // Lowercase Ante meridiem and Post meridiem, am or pm
             'A' => '',      // Uppercase Ante meridiem and Post meridiem, AM or PM, not supported by ICU but we fallback to lowercase
-            'B' => '',      // Swatch Internet time 	000 through 999
-            'g' => '',      // 12-hour format of an hour without leading zeros 	1 through 12
+            'B' => '',      // Swatch Internet time — 000 through 999
+            'g' => '',      // 12-hour format of an hour without leading zeros — 1 through 12
             'G' => '',      // 24-hour format of an hour without leading zeros 0 to 23h
             'h' => '',      // 12-hour format of an hour with leading zeros, 01 to 12 h
             'H' => '',      // 24-hour format of an hour with leading zeros, 00 to 23 h
-            'i' => '',      // Minutes with leading zeros 	00 to 59
-            's' => '',      // Seconds, with leading zeros 	00 through 59
+            'i' => '',      // Minutes with leading zeros — 00 to 59
+            's' => '',      // Seconds, with leading zeros — 00 through 59
             'u' => '',      // Microseconds. Example: 654321
             // Timezone
             'e' => '',      // Timezone identifier. Examples: UTC, GMT, Atlantic/Azores

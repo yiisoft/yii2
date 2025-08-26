@@ -19,11 +19,19 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ *
+ * @phpstan-property T|null $owner
+ * @psalm-property T|null $owner
  */
 class Behavior extends BaseObject
 {
     /**
      * @var Component|null the owner of this behavior
+     *
+     * @phpstan-var T|null
+     * @psalm-var T|null
      */
     public $owner;
 

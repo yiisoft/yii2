@@ -663,5 +663,4 @@ class BaseInflector
     {
         return isset(Yii::$app) ? Yii::$app->charset : 'UTF-8';
     }
-
 }

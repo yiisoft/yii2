@@ -104,4 +104,9 @@ class FakeController extends Controller
         $response->exitStatus = (int) $status;
         return $response;
     }
+
+    public function actionVariadic($foo, $bar, ...$baz)
+    {
+        return [$foo, $bar, $baz];
+    }
 }

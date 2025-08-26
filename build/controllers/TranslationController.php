@@ -8,7 +8,6 @@
 namespace yii\build\controllers;
 
 use DirectoryIterator;
-use Yii;
 use yii\console\Controller;
 use yii\helpers\Html;
 
@@ -39,7 +38,7 @@ class TranslationController extends Controller
 
         $dir = new DirectoryIterator($sourcePath);
         foreach ($dir as $fileinfo) {
-            /* @var $fileinfo DirectoryIterator */
+            /** @var DirectoryIterator $fileinfo */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
                 $sourceFilePath = $sourcePath . '/' . $fileinfo->getFilename();
@@ -62,7 +61,7 @@ class TranslationController extends Controller
         // checking if there are obsolete translation files
         $dir = new DirectoryIterator($translationPath);
         foreach ($dir as $fileinfo) {
-            /* @var $fileinfo \DirectoryIterator */
+            /** @var DirectoryIterator $fileinfo */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
 

@@ -21,7 +21,7 @@ use yiiunit\TestCase;
  */
 class InstanceTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$container = new Container();
@@ -50,6 +50,7 @@ class InstanceTest extends TestCase
         $this->assertInstanceOf(Connection::className(), Instance::ensure('db', 'yii\db\Connection', $container));
         $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection(), 'yii\db\Connection', $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
+        $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
     }
 
     /**
@@ -59,7 +60,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
+        $this->expectExceptionMessageMatches('/^Failed to instantiate component or class/i');
         Instance::ensure('cache', 'yii\cache\Cache', $container);
     }
 
@@ -70,7 +71,7 @@ class InstanceTest extends TestCase
     {
         $container = new Container();
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
+        $this->expectExceptionMessageMatches('/^Failed to instantiate component or class/i');
         Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
     }
 
@@ -97,6 +98,7 @@ class InstanceTest extends TestCase
         $this->assertInstanceOf(Connection::className(), Instance::ensure('db'));
         $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection()));
         $this->assertInstanceOf(Connection::className(), Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test']));
         Yii::$container = new Container();
     }
 
@@ -171,7 +173,10 @@ class InstanceTest extends TestCase
         $instance = Instance::of('something');
         $export = var_export($instance, true);
 
-        $this->assertRegExp('~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~', $export);
+        $this->assertMatchesRegularExpression(
+            '~yii\\\\di\\\\Instance::__set_state\(array\(\s+\'id\' => \'something\',\s+\'optional\' => false,\s+\)\)~',
+            $export
+        );
 
         $this->assertEquals($instance, Instance::__set_state([
             'id' => 'something',

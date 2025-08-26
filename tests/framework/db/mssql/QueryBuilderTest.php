@@ -364,7 +364,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $qb = $this->getQueryBuilder();
 
-        $expected = "DBCC CHECKIDENT ('[item]', RESEED, (SELECT COALESCE(MAX([id]),0) FROM [item])+1)";
+        $expected = "DBCC CHECKIDENT ('[item]', RESEED, 5)";
         $sql = $qb->resetSequence('item');
         $this->assertEquals($expected, $sql);
 
