@@ -253,7 +253,7 @@ class UploadedFile extends BaseObject
     {
         if (self::$_files === null) {
             self::$_files = [];
-            if (isset($_FILES) && is_array($_FILES)) {
+            if (is_array($_FILES)) {
                 foreach ($_FILES as $key => $info) {
                     self::loadFilesRecursive(
                         $key,
