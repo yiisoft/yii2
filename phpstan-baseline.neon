@@ -1,36 +1,76 @@
 parameters:
-    ignoreErrors:
-        - message: '#Variable \$error in isset\(\) always exists and is always null.#'
-          identifier: isset.variable
-          count: 1
-          path: framework/helpers/BaseConsole.php
+	ignoreErrors:
+		-
+			message: "#^Method yii\\\\build\\\\controllers\\\\DevController\\:\\:linkFrameworkAndExtensions\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: build/controllers/DevController.php
 
-        - message: '#Variable \$rawValues in isset\(\) always exists and is not nullable.#'
-          identifier: isset.variable
-          count: 1
-          path: framework/db/conditions/InConditionBuilder.php
+		-
+			message: "#^Constant XC_TYPE_VAR not found\\.$#"
+			count: 2
+			path: framework/caching/XCache.php
 
-        - message: '#Variable \$command might not be defined.#'
-          identifier: variable.undefined
-          count: 1
-          path: framework/db/Query.php
+		-
+			message: "#^Method yii\\\\console\\\\controllers\\\\CacheController\\:\\:actionFlushSchema\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: framework/console/controllers/CacheController.php
 
-        - message: '#Variable \$viaClass might not be defined.#'
-          identifier: variable.undefined
-          count: 5
-          path: framework/db/BaseActiveRecord.php
+		-
+			message: "#^Method yii\\\\console\\\\controllers\\\\FixtureController\\:\\:actionUnload\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: framework/console/controllers/FixtureController.php
 
-        - message: '#Variable \$viaTable might not be defined.#'
-          identifier: variable.undefined
-          count: 5
-          path: framework/db/BaseActiveRecord.php
+		-
+			message: "#^Method yii\\\\console\\\\controllers\\\\HelpController\\:\\:actionIndex\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: framework/console/controllers/HelpController.php
 
-        - message: '#^Method yii\\console\\controllers\\.*Controller::action.*\(\) should return int but return statement is missing.$#'
-          identifier: return.missing
-          count: 4
-          path: framework/console/controllers/*
+		-
+			message: "#^Method yii\\\\console\\\\controllers\\\\ServeController\\:\\:actionIndex\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: framework/console/controllers/ServeController.php
 
-        - message: '#Method yii\\build\\controllers\\DevController::linkFrameworkAndExtensions\(\) should return int but return statement is missing.#'
-          identifier: return.missing
-          count: 1
-          path: build/controllers/DevController.php
+		-
+			message: "#^Variable \\$viaClass might not be defined\\.$#"
+			count: 5
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: "#^Variable \\$viaTable might not be defined\\.$#"
+			count: 5
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: "#^Variable \\$command might not be defined\\.$#"
+			count: 1
+			path: framework/db/Query.php
+
+		-
+			message: "#^Variable \\$rawValues in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_CONSTRAINT\\.$#"
+			count: 1
+			path: framework/db/cubrid/Schema.php
+
+		-
+			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_IMPORTED_KEYS\\.$#"
+			count: 2
+			path: framework/db/cubrid/Schema.php
+
+		-
+			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_PRIMARY_KEY\\.$#"
+			count: 2
+			path: framework/db/cubrid/Schema.php
+
+		-
+			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_TABLE\\.$#"
+			count: 2
+			path: framework/db/cubrid/Schema.php
+
+		-
+			message: "#^Variable \\$error in isset\\(\\) always exists and is always null\\.$#"
+			count: 1
+			path: framework/helpers/BaseConsole.php
