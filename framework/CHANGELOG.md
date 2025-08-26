@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #20482: Fix deprecation of `ReflectionMethod::setAccessible()` in PHP `8.5` (terabytesoftw)
 - Enh #20480: Add PHPStan/Psalm annotations for `ServiceLocator::get` (max-s-lab)
 - Bug #20447: Fix behavior for `yii\web\Controller::bindActionParams` around `mixed` type (chriscpty)
+- Bug #20479: Fix issue with MSSQL related to char and nchar (craiglondon)
 - Bug #20492: Fix deprecation of `finfo_close()` in PHP `8.5` by conditionally closing the resource (terabytesoftw)
 - Bug #20495: Fix behavior when resetting sequence in `QueryBuilder` for `MSSQL` (achretien)
 - Bug #20489: Replace deprecated `strftime` with `date` in `YiiRequirementChecker` (max-s-lab)

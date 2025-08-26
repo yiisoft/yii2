@@ -504,9 +504,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
 
                 $dbType = $column->dbType;
-                if (in_array($dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary'])) {
+                if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'])) {
                     $dbType .= '(MAX)';
+                } elseif (in_array($dbType, ['char',  'nchar'])) {
+                    $dbType .= "($column->size)";
                 }
+
                 if ($column->dbType === Schema::TYPE_TIMESTAMP) {
                     $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
                 }
