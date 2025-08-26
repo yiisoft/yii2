@@ -36,5 +36,11 @@ jobs:
           php-version: ${{ matrix.php }}
           tools: pie
 
+      - name: Update composer.
+        run: composer self-update
+
+      - name: Install dependencies with composer.
+        run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
+
       - name: Static analysis.
-        run: vendor/bin/phpstan --configuration=${{ inputs.configuration }} ${{ inputs.command-options }}
+        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
