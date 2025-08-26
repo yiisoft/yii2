@@ -39,9 +39,7 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
         $labels = [];
         foreach ($grid->columns as $column) {
-            $method = new \ReflectionMethod($column, 'getHeaderCellLabel');
-            $method->setAccessible(true);
-            $labels[] = $method->invoke($column);
+            $labels[] = $this->invokeMethod($column, 'getHeaderCellLabel');
         }
         $this->assertEquals(['Customer', 'Invoice Total'], $labels);
     }
@@ -62,9 +60,7 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
         $labels = [];
         foreach ($grid->columns as $column) {
-            $method = new \ReflectionMethod($column, 'getHeaderCellLabel');
-            $method->setAccessible(true);
-            $labels[] = $method->invoke($column);
+            $labels[] = $this->invokeMethod($column, 'getHeaderCellLabel');
         }
         $this->assertEquals(['Customer', 'Invoice Total'], $labels);
     }
@@ -91,10 +87,8 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
         //print_r($grid->columns);exit();
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
-        $this->assertEquals($result, $filterInput);
+
+        $this->assertEquals($this->invokeMethod($dataColumn, 'renderFilterCellContent'), $filterInput);
     }
 
     /**
@@ -128,10 +122,8 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
 
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
-        $this->assertEquals($result, $filterInput);
+
+        $this->assertEquals($this->invokeMethod($dataColumn, 'renderFilterCellContent'), $filterInput);
     }
 
 
@@ -172,9 +164,6 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
 
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
 
         $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
@@ -183,7 +172,8 @@ class DataColumnTest extends \yiiunit\TestCase
 <option value="1">2</option>
 </select>
 HTML
-            , $result);
+            , $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+        );
     }
 
     /**
@@ -222,9 +212,6 @@ HTML
         ]);
 
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
 
         $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
@@ -233,7 +220,8 @@ HTML
 <option value="0">No</option>
 </select>
 HTML
-            , $result);
+            , $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+        );
     }
 
     /**
@@ -258,10 +246,10 @@ HTML
         ]);
 
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
 
-        $this->assertEquals('<input type="text" class="form-control" name="RulesModel[user_id]">', $result);
+        $this->assertEquals(
+            '<input type="text" class="form-control" name="RulesModel[user_id]">',
+            $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+        );
     }
 }

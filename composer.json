@@ -80,8 +80,9 @@
         "cebe/indent": "~1.0.2",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "dms/phpunit-arraysubset-asserts": "^0.5",
-        "phpunit/phpunit": "9.6",
-        "yiisoft/yii2-coding-standards": "^3.0"
+        "phpunit/phpunit": "^9.6",
+        "yiisoft/yii2-coding-standards": "^3.0",
+        "phpstan/phpstan": "^1.12"
     },
     "suggest": {
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"

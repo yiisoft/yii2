@@ -5,6 +5,7 @@
  *
  * The following variables are available in this view:
  *
+ * @var \yii\web\View $this
  * @var string $className the new migration class name without namespace
  * @var string $namespace the new migration class namespace
  * @var string $table the name table
