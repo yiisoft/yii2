@@ -34,7 +34,7 @@ jobs:
           extensions: ${{ env.EXTENSIONS }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
+          tools: cs2pr, pie
 
       - name: Update composer.
         run: composer self-update
