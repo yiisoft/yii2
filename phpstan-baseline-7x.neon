@@ -6,6 +6,11 @@ parameters:
 			path: build/controllers/DevController.php
 
 		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 1
+			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
 			message: "#^Constant XC_TYPE_VAR not found\\.$#"
 			count: 2
 			path: framework/caching/XCache.php
@@ -39,6 +44,21 @@ parameters:
 			message: "#^Variable \\$viaTable might not be defined\\.$#"
 			count: 5
 			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 2
+			path: framework/db/ColumnSchema.php
+
+		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: "#^Class UnitEnum not found\\.$#"
+			count: 1
+			path: framework/db/Command.php
 
 		-
 			message: "#^Variable \\$command might not be defined\\.$#"

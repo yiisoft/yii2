@@ -50,7 +50,7 @@ jobs:
         run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Create MS SQL Database
         run: docker exec -i mssql ${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
@@ -75,7 +75,7 @@ jobs:
 
       - name: Upload coverage to Codecov.
         if: matrix.php == '7.4'
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml

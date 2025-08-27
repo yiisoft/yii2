@@ -1,20 +1,20 @@
-name: build
+on:
+  - pull_request
+  - push
 
-on: [push, pull_request]
+name: static analysis
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  phpunit:
+  phpstan:
     name: PHP ${{ matrix.php }}
 
     env:
         DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
         EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-        PHPUNIT_COMMAND: --verbose --exclude-group db,wincache,xcache,zenddata --coverage-clover=coverage.xml --colors=always
-        XDEBUG_MODE: coverage
 
     runs-on: ubuntu-latest
 
@@ -24,23 +24,17 @@ jobs:
         php: [7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
 
     steps:
-      - name: Generate french locale.
-        run: sudo locale-gen fr_FR.UTF-8
-
       - name: Checkout.
         uses: actions/checkout@v5
 
       - name: Install PHP.
         uses: shivammathur/setup-php@v2
         with:
-          coverage: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
+          coverage: none
           extensions: ${{ env.EXTENSIONS }}
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
-
-      - name: Install Memcached.
-        uses: niden/actions-memcached@v7
+          tools: cs2pr, pie
 
       - name: Update composer.
         run: composer self-update
@@ -48,11 +42,10 @@ jobs:
       - name: Install dependencies with composer.
         run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
 
-      - name: Run tests with PHPUnit.
-        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
+      - name: Static analysis PHP 7.x
+        if: matrix.php == '7.3' || matrix.php == '7.4'
+        run: vendor/bin/phpstan analyse --configuration=phpstan-7x.dist.neon --error-format=checkstyle | cs2pr
 
-      - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+      - name: Static analysis PHP 8.x
+        if: matrix.php != '7.3' && matrix.php != '7.4'
+        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
