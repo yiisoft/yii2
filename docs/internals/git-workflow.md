@@ -79,9 +79,11 @@ We use [PHPStan](https://phpstan.org) for static analysis. It can be launched us
 `php vendor/bin/phpstan` or `vendor\bin\phpstan.bat` in case of execution from the Windows OS.
 
 By default, PHPStan will use the configuration from `phpstan.dist.neon`. You can create
-a `phpstan.neon` file with your own configuration, and it will use it.
+a `phpstan.neon` file with your own configuration, and PHPStan will use it.
 
-> Note: In PHPDoc annotations, we use standard PHP types. Please use PHPStan/Psalm annotations if you want to add conditional types, array shapes, etc. This is because not all IDEs currently support PHPStan/Psalm types, and it will also break automatic documentation generation.
+#### Note
+
+In PHPDoc annotations, we use standard PHP types. Please use PHPStan/Psalm annotations if you want to add conditional types, array shapes, etc. This is because not all IDEs currently support PHPStan/Psalm types, and it will also break automatic documentation generation.
 
 ### Extensions
 
