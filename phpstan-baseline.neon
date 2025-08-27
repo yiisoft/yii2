@@ -1,14 +1,14 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method yii\\\\build\\\\controllers\\\\DevController\\:\\:linkFrameworkAndExtensions\\(\\) should return int but return statement is missing\\.$#"
+			message: "#^Instantiated class yii\\\\base\\\\InvalidParamException not found\\.$#"
 			count: 1
 			path: build/controllers/DevController.php
 
 		-
-			message: "#^Constant XC_TYPE_VAR not found\\.$#"
-			count: 2
-			path: framework/caching/XCache.php
+			message: "#^Method yii\\\\build\\\\controllers\\\\DevController\\:\\:linkFrameworkAndExtensions\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: build/controllers/DevController.php
 
 		-
 			message: "#^Method yii\\\\console\\\\controllers\\\\CacheController\\:\\:actionFlushSchema\\(\\) should return int but return statement is missing\\.$#"
@@ -49,26 +49,6 @@ parameters:
 			message: "#^Variable \\$rawValues in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
 			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_CONSTRAINT\\.$#"
-			count: 1
-			path: framework/db/cubrid/Schema.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_IMPORTED_KEYS\\.$#"
-			count: 2
-			path: framework/db/cubrid/Schema.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_PRIMARY_KEY\\.$#"
-			count: 2
-			path: framework/db/cubrid/Schema.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_TABLE\\.$#"
-			count: 2
-			path: framework/db/cubrid/Schema.php
 
 		-
 			message: "#^Variable \\$error in isset\\(\\) always exists and is always null\\.$#"
