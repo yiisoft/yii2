@@ -27,7 +27,7 @@ Yii Framework 2 Change Log
 
 2.0.54 under development
 ------------------------
-
+- Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
 - Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
 - Enh #20434: Added PHPStan/Psalm annotations for `hasMany` and `hasOne` methods (max-s-lab)
@@ -37,6 +37,16 @@ Yii Framework 2 Change Log
 - Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
 - Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 
+- Bug #20475: Fix `Formatter` class `asScientific()` method for PHP `8.5` `sprintf` precision change (`6` to `0`) (terabytesoftw)
+- Bug #20482: Fix deprecation of `ReflectionMethod::setAccessible()` in PHP `8.5` (terabytesoftw)
+- Enh #20480: Add PHPStan/Psalm annotations for `ServiceLocator::get` (max-s-lab)
+- Bug #20447: Fix behavior for `yii\web\Controller::bindActionParams` around `mixed` type (chriscpty)
+- Bug #20479: Fix issue with MSSQL related to char and nchar (craiglondon)
+- Bug #20492: Fix deprecation of `finfo_close()` in PHP `8.5` by conditionally closing the resource (terabytesoftw)
+- Bug #20495: Fix behavior when resetting sequence in `QueryBuilder` for `MSSQL` (achretien)
+- Bug #20489: Replace deprecated `strftime` with `date` in `YiiRequirementChecker` (max-s-lab)
+- Bug #20494: Fix `PHPdoc`, add `PHPStan/Psalm` annotations for `authMethods` property in `CompositeAuth` class (terabytesoftw)
+- Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
 
 2.0.53 June 27, 2025
 --------------------

@@ -365,7 +365,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $qb = $this->getQueryBuilder();
 
-        $expected = "DBCC CHECKIDENT ('[item]', RESEED, 6)";
+        $expected = "DBCC CHECKIDENT ('[item]', RESEED, 5)";
         $sql = $qb->resetSequence('item');
         $this->assertEquals($expected, $sql);
 

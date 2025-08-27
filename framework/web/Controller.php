@@ -207,6 +207,10 @@ class Controller extends \yii\base\Controller
         if ($isArray) {
             return [(array)$param, true];
         }
+        $isMixed = $type->getName() === 'mixed';
+        if ($isMixed) {
+            return [$param, true];
+        }
 
         if (is_array($param)) {
             return [$param, false];
