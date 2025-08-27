@@ -191,21 +191,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $reflection = new \ReflectionObject($object);
         $method = $reflection->getMethod($method);
 
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $method->setAccessible(true);
-        }
-
-        $result = $method->invokeArgs($object, $args);
-
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if ($revoke && PHP_VERSION_ID < 80100) {
-            $method->setAccessible(false);
-        }
-
-        return $result;
+        return $method->invokeArgs($object, $args);
     }
 
     /**
@@ -223,20 +209,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $property->setAccessible(true);
-        }
-
         $property->setValue($object, $value);
-
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if ($revoke && PHP_VERSION_ID < 80100) {
-            $property->setAccessible(false);
-        }
     }
 
     /**
@@ -254,21 +227,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         }
         $property = $class->getProperty($propertyName);
 
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $property->setAccessible(true);
-        }
-
-        $result = $property->getValue($object);
-
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if ($revoke && PHP_VERSION_ID < 80100) {
-            $property->setAccessible(false);
-        }
-
-        return $result;
+        return $property->getValue($object);
     }
 
 
