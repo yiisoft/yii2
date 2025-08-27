@@ -32,7 +32,7 @@ jobs:
 
     steps:
       - name: Checkout.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install PHP with extensions.
         uses: shivammathur/setup-php@v2
@@ -50,7 +50,7 @@ jobs:
         run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
 
       - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./coverage.xml
           token: ${{ secrets.CODECOV_TOKEN }}

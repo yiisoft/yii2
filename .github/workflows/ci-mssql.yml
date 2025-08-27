@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install ODBC driver
         run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
