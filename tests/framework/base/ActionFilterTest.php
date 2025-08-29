@@ -113,12 +113,6 @@ class ActionFilterTest extends TestCase
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $method->setAccessible(true);
-        }
-
         $controller = new \yii\web\Controller('test', Yii::$app);
 
         // active by default
@@ -151,12 +145,6 @@ class ActionFilterTest extends TestCase
         $filter = new ActionFilter();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
-
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $method->setAccessible(true);
-        }
 
         $controller = new \yii\web\Controller('test', Yii::$app);
 

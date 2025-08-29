@@ -71,12 +71,6 @@ class FileCacheTest extends CacheTestCase
 
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
 
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $refMethodGetCacheFile->setAccessible(true);
-        }
-
         $refMethodGet = $refClass->getMethod('get');
         $refMethodSet = $refClass->getMethod('set');
 
@@ -97,12 +91,6 @@ class FileCacheTest extends CacheTestCase
         $normalizeKey = $cache->buildKey(__FUNCTION__);
         $refClass = new \ReflectionClass($cache);
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
-
-        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
-        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
-        if (PHP_VERSION_ID < 80100) {
-            $refMethodGetCacheFile->setAccessible(true);
-        }
 
         $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);
 
