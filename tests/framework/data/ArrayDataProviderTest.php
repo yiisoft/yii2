@@ -183,6 +183,25 @@ class ArrayDataProviderTest extends TestCase
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $mixedArray, 'pagination' => $pagination]);
         $this->assertEquals(['key1', 9], $dataProvider->getKeys());
+
+        $nestedArray = [
+            ['foo' => ['bar' => 'key1']],
+            ['foo' => ['bar' => 'key2']],
+            ['foo' => ['bar' => 'key3']],
+        ];
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $nestedArray,
+            'key' => ['foo', 'bar'],
+            'pagination' => $pagination,
+        ]);
+        $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $nestedArray,
+            'key' => 'foo.bar',
+            'pagination' => $pagination,
+        ]);
+        $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
     }
 
     public function testSortFlags()
