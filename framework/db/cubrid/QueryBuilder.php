@@ -9,7 +9,6 @@ namespace yii\db\cubrid;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
 use yii\db\Exception;
 use yii\db\Expression;
 

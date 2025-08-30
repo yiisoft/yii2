@@ -8,7 +8,6 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidArgumentException;
-use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\Query;

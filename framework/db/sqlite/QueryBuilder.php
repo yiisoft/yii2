@@ -10,7 +10,6 @@ namespace yii\db\sqlite;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Connection;
-use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\Query;

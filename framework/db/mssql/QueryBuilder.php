@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\db\TableSchema;

@@ -9,7 +9,6 @@ namespace yii\db\oci;
 
 use yii\base\InvalidArgumentException;
 use yii\db\Connection;
-use yii\db\Constraint;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
