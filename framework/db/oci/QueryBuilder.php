@@ -213,7 +213,6 @@ EOD;
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
