@@ -107,7 +107,6 @@ class Dispatcher extends Component
     /**
      * Gets the connected logger.
      * If not set, [[Yii::getLogger()]] will be used.
-     * @property Logger the logger. If not set, [[Yii::getLogger()]] will be used.
      * @return Logger the logger.
      */
     public function getLogger()

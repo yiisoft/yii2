@@ -381,9 +381,6 @@ class Module extends ServiceLocator
      * Defines path aliases.
      * This method calls [[Yii::setAlias()]] to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
-     * @property array list of path aliases to be defined. The array keys are alias names
-     * (must start with `@`) and the array values are the corresponding paths or aliases.
-     * See [[setAliases()]] for an example.
      * @param array $aliases list of path aliases to be defined. The array keys are alias names
      * (must start with `@`) and the array values are the corresponding paths or aliases.
      * For example,

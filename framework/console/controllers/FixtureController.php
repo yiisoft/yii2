@@ -236,7 +236,6 @@ class FixtureController extends Controller
 
     /**
      * Show help message.
-     * @param array $fixturesInput
      */
     private function printHelpMessage()
     {

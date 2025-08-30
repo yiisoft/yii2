@@ -776,9 +776,6 @@ class Request extends \yii\base\Request
      * > If you don't have access to the server configuration, you can setup [[\yii\filters\HostControl]] filter at
      * > application level in order to protect against such kind of attack.
      *
-     * @property string|null schema and hostname part (with port number if needed) of the request URL
-     * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
-     * See [[getHostInfo()]] for security related notes on this property.
      * @return string|null schema and hostname part (with port number if needed) of the request URL
      * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
