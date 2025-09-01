@@ -381,6 +381,7 @@ abstract class Target extends Component
 
     /**
      * Check whether the log target is enabled.
+     * @property bool Indicates whether this log target is enabled. Defaults to true.
      * @return bool A value indicating whether this log target is enabled.
      */
     public function getEnabled()
