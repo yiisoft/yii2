@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #20494: Fix `PHPdoc`, add `PHPStan/Psalm` annotations for `authMethods` property in `CompositeAuth` class (terabytesoftw)
 - Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
 - Enh #20505: `ArrayDataProvider` key handling with flexible path support (fetus-hina)
+- Bug #20508: Fix PHPDoc, add PHPStan/Psalm annotations for `yii\web\CookieCollection::getIterator`. Add missing `@property` annotation in `yii\base\Model` (max-s-lab)
 
 2.0.53 June 27, 2025
 --------------------

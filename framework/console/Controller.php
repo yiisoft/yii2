@@ -520,7 +520,7 @@ class Controller extends \yii\base\Controller
      * You may override this method to return customized summary.
      * The default implementation returns first line from the PHPDoc comment.
      *
-     * @return string
+     * @return string the one-line short summary describing this controller.
      */
     public function getHelpSummary()
     {
@@ -532,7 +532,7 @@ class Controller extends \yii\base\Controller
      *
      * You may override this method to return customized help.
      * The default implementation returns help information retrieved from the PHPDoc comment.
-     * @return string
+     * @return string the help information for this controller.
      */
     public function getHelp()
     {
