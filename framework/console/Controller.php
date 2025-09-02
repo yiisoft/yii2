@@ -532,7 +532,7 @@ class Controller extends \yii\base\Controller
      *
      * You may override this method to return customized help.
      * The default implementation returns help information retrieved from the PHPDoc comment.
-     * @return string the help information for this controller
+     * @return string the help information for this controller.
      */
     public function getHelp()
     {
