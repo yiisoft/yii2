@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\db\TableSchema;
@@ -533,7 +532,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
 
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);

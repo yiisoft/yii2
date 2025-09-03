@@ -52,7 +52,10 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns an iterator for traversing the cookies in the collection.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return ArrayIterator<string, Cookie> an iterator for traversing the cookies in the collection.
+     * @return ArrayIterator an iterator for traversing the cookies in the collection.
+     *
+     * @phpstan-return ArrayIterator<string, Cookie>
+     * @psalm-return ArrayIterator<string, Cookie>
      */
     #[\ReturnTypeWillChange]
     public function getIterator()
