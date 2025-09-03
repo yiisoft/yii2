@@ -95,7 +95,6 @@ class BaseMarkdown
         if ($flavor === null) {
             $flavor = static::$defaultFlavor;
         }
-        /** @var \cebe\markdown\Markdown $parser */
         if (!isset(static::$flavors[$flavor])) {
             throw new InvalidArgumentException("Markdown flavor '$flavor' is not defined.'");
         } elseif (!is_object($config = static::$flavors[$flavor])) {
