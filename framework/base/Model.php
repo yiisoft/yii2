@@ -37,13 +37,11 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
+ * @property-read array $errors Errors for all attributes or the specified attribute. Empty array if no error.
+ * See [[getErrors()]] for detailed description.
  * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]].
  * @property array $attributes Attribute values (name => value).
- * @property-read array $errors Errors for all attributes or the specified attribute. Empty array is returned
- * if no error. See [[getErrors()]] for detailed description. Note that when returning errors for all attributes,
- * the result is a two-dimensional array, like the following: ```php [ 'username' => [ 'Username is required.',
- * 'Username must contain only word characters.', ], 'email' => [ 'Email address is invalid.', ] ] ```.
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
  * values are the corresponding error messages. An empty array will be returned if there is no error.
  * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
