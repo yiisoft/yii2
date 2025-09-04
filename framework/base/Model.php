@@ -583,7 +583,6 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns the errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * See [[getErrors()]] for detailed description.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
      * ```php
