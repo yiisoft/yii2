@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Chg #20455: Remove `PHP_VERSION_ID` checks from web `Request` class (terabytesoftw)
 - Chg #20465: Remove `PHP_VERSION_ID` checks from web `Session` class (terabytesoftw)
 - Chg #20464: Remove `PHP_VERSION_ID` checks from web `Response` class (terabytesoftw)
+- Enh #20511: Allow `jQuery` usage in `View` class while maintaining backward compatibility (terabytesoftw)
 
 2.0.54 under development
 ------------------------

@@ -166,9 +166,19 @@ class View extends \yii\base\View
      * @var array the script tag options.
      */
     public $scriptOptions = [];
-
+    /**
+     * @var \yii\web\AssetManager the asset manager.
+     */
     private $_assetManager;
-
+    /**
+     * @var bool whether to use jQuery for POS_READY and POS_LOAD script positions.
+     *
+     * When `true` (default), maintains backward compatibility by using jQuery wrappers.
+     * When `false`, uses vanilla JavaScript equivalents.
+     *
+     * @since 2.2.0
+     */
+    public bool $useJquery = true;
 
     /**
      * Whether [[endPage()]] has been called and all files have been registered
@@ -480,6 +490,7 @@ class View extends \yii\base\View
 
     /**
      * Registers a JS code block.
+     *
      * @param string $js the JS code block to be registered
      * @param int $position the position at which the JS script tag should be inserted
      * in a page. The possible values are:
@@ -487,12 +498,15 @@ class View extends \yii\base\View
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
      * - [[POS_END]]: at the end of the body section
-     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
-     *   Note that by using this position, the method will automatically register the jQuery js file.
-     * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
-     *   Note that by using this position, the method will automatically register the jQuery js file.
-     *
-     * @param string|null $key the key that identifies the JS code block. If null, it will use
+     * - [[POS_LOAD]]: enclosed within `jQuery(window).load()` when [[useJquery]] is `true`,
+     *   or executed when HTML page is completely loaded when `false`.
+     *   Note that by using this position with [[useJquery]] `true`, the method will automatically
+     *   register the `jQuery.js` file.
+     * - [[POS_READY]]: enclosed within `jQuery(document).ready()` when [[useJquery]] is `true`,
+     *   or executed when HTML document composition is ready when `false`. This is the default value.
+     *   Note that by using this position with [[useJquery]] true, the method will automatically
+     *   register the `jQuery.js` file.
+     * @param string|null $key the key that identifies the JS code block. If `null`, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
      * will overwrite the former.
      */
@@ -500,7 +514,9 @@ class View extends \yii\base\View
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
-        if ($position === self::POS_READY || $position === self::POS_LOAD) {
+
+        // only auto-register jQuery if useJquery is `true` (maintains backward compatibility)
+        if ($this->useJquery && ($position === self::POS_READY || $position === self::POS_LOAD)) {
             JqueryAsset::register($this);
         }
     }
@@ -714,15 +730,53 @@ class View extends \yii\base\View
                 $lines[] = Html::script(implode("\n", $this->js[self::POS_END]));
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(function ($) {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
-                $lines[] = Html::script($js);
+                $lines[] = Html::script($this->wrapReadyScript(implode("\n", $this->js[self::POS_READY])));
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
-                $lines[] = Html::script($js);
+                $lines[] = Html::script($this->wrapLoadScript(implode("\n", $this->js[self::POS_LOAD])));
             }
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
+    }
+
+    /**
+     * Wraps script content for POS_READY position.
+     *
+     * @param string $script the script content to wrap
+     *
+     * @return string the wrapped script
+     *
+     * @since 2.2.0
+     */
+    protected function wrapReadyScript(string $script): string
+    {
+        if ($this->useJquery) {
+            // jQuery wrapper (backward compatible)
+            return "jQuery(function ($) {\n{$script}\n});";
+        }
+
+        // Vanilla JavaScript wrapper
+        return "document.addEventListener('DOMContentLoaded', function(event) {\n{$script}\n});";
+    }
+
+    /**
+     * Wraps script content for POS_LOAD position.
+     *
+     * @param string $script the script content to wrap
+     *
+     * @return string the wrapped script
+     *
+     * @since 2.2.0
+     */
+    protected function wrapLoadScript(string $script): string
+    {
+        if ($this->useJquery) {
+            // jQuery wrapper (backward compatible)
+            return "jQuery(window).on('load', function () {\n{$script}\n});";
+        }
+
+        // Vanilla JavaScript wrapper
+        return "window.addEventListener('load', function (event) {\n{$script}\n});";
     }
 }
