@@ -363,7 +363,6 @@ abstract class Application extends Module
      * Sets the root directory of the application and the @app alias.
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
-     * @property string the root directory of the application.
      * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)

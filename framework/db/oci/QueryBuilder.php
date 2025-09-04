@@ -9,7 +9,6 @@ namespace yii\db\oci;
 
 use yii\base\InvalidArgumentException;
 use yii\db\Connection;
-use yii\db\Constraint;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
@@ -213,7 +212,6 @@ EOD;
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);

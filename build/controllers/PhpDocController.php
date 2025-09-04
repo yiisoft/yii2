@@ -12,6 +12,7 @@ use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
+use yii\web\Controller as WebController;
 
 /**
  * PhpDocController is there to help to maintain PHPDoc annotation in class files.
@@ -22,6 +23,19 @@ use yii\helpers\Json;
  */
 class PhpDocController extends Controller
 {
+    /**
+     * Manually added PHPDoc properties that do not need to be removed.
+     *
+     * @phpstan-var array<class-string, string[]>
+     */
+    private const MANUALLY_ADDED_PROPERTIES = [
+        WebController::class => [
+            'request',
+            'response',
+            'view',
+        ],
+    ];
+
     /**
      * {@inheritdoc}
      */
@@ -535,7 +549,7 @@ class PhpDocController extends Controller
         }
 
         $oldDoc = $ref->getDocComment();
-        $newDoc = $this->cleanDocComment($this->updateDocComment($oldDoc, $propertyDoc));
+        $newDoc = $this->cleanDocComment($this->updateDocComment($oldDoc, $propertyDoc, $className));
 
         $seenSince = false;
         $seenAuthor = false;
@@ -614,8 +628,9 @@ class PhpDocController extends Controller
      * @param $properties
      * @return string
      */
-    protected function updateDocComment($doc, $properties)
+    protected function updateDocComment($doc, $properties, $className)
     {
+        $manuallyAddedProperties = self::MANUALLY_ADDED_PROPERTIES[$className] ?? [];
         $lines = explode("\n", $doc);
         $propertyPart = false;
         $propertyPosition = false;
@@ -632,7 +647,10 @@ class PhpDocController extends Controller
                 $propertyPart = false;
             }
             if ($propertyPart) {
-                unset($lines[$i]);
+                preg_match('/@property\s+\w+\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/', $line, $matches);
+                if (!isset($matches[1]) || !in_array($matches[1], $manuallyAddedProperties)) {
+                    unset($lines[$i]);
+                }
             }
         }
 
@@ -700,16 +718,16 @@ class PhpDocController extends Controller
 
             $gets = $this->match(
                 '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
+                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
                 $class['content'], true);
             $sets = $this->match(
                 '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
+                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
                 $class['content'], true);
             // check for @property annotations in getter and setter
             $properties = $this->match(
                 '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
+                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
                 $class['content']);
             $acrs = array_merge($properties, $gets, $sets);
 
@@ -791,6 +809,9 @@ class PhpDocController extends Controller
 
     protected function fixSentence($str)
     {
+        $str = rtrim($str, '*');
+        $str = rtrim($str);
+
         // TODO fix word wrap
         if ($str == '') {
             return '';
