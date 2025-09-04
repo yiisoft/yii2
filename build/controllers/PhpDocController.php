@@ -47,6 +47,7 @@ class PhpDocController extends Controller
             'aliases',
         ],
         Dispatcher::class => [
+            'flushInterval',
             'logger',
         ],
         Target::class => [
