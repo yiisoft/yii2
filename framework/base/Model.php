@@ -37,7 +37,7 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property-read array $errors Errors for all attributes. Empty array if no errors. This is a two-dimensional
+ * @property-read array $errors Errors for all attributes. This is a two-dimensional
  * array of errors for all attributes, similar to the following:
  *
  * ```php
@@ -51,6 +51,8 @@ use yii\validators\Validator;
  *     ]
  * ]
  * ```
+ *
+ * Empty array if no errors.
  * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]].
  * @property array $attributes Attribute values (name => value).
