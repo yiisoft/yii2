@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Enh #20505: `ArrayDataProvider` key handling with flexible path support (fetus-hina)
 - Bug #20508: Fix PHPDoc, add PHPStan/Psalm annotations for `yii\web\CookieCollection::getIterator`. Add missing `@property` annotation in `yii\base\Model` (max-s-lab)
 - Bug #20513: Fix code examples in PHPDoc (max-s-lab)
+- Enh #20514: Add `@property` annotations for `yii\console\Controller` (max-s-lab)
 
 
 2.0.53 June 27, 2025

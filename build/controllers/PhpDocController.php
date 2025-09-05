@@ -10,7 +10,7 @@ namespace yii\build\controllers;
 use Yii;
 use yii\base\Model;
 use yii\base\Module;
-use yii\console\Controller;
+use yii\console\Controller as ConsoleController;
 use yii\db\QueryBuilder;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
@@ -27,7 +27,7 @@ use yii\web\Request as WebRequest;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class PhpDocController extends Controller
+class PhpDocController extends ConsoleController
 {
     /**
      * Manually added PHPDoc properties that do not need to be removed or changed.
@@ -39,6 +39,10 @@ class PhpDocController extends Controller
             'request',
             'response',
             'view',
+        ],
+        ConsoleController::class => [
+            'request',
+            'response',
         ],
         Model::class => [
             'errors',
