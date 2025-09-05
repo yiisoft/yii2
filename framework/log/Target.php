@@ -211,7 +211,7 @@ abstract class Target extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * ['error', 'warning']
      * // which is equivalent to:
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
@@ -368,7 +368,7 @@ abstract class Target extends Component
      * For example, to only enable a log if the current user is logged in you can configure the target
      * as follows:
      *
-     * ```php
+     * ```
      * 'enabled' => function() {
      *     return !Yii::$app->user->isGuest;
      * }

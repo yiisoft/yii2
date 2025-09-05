@@ -72,7 +72,7 @@ class Event extends BaseObject
      * For example, the following code attaches an event handler to `ActiveRecord`'s
      * `afterInsert` event:
      *
-     * ```php
+     * ```
      * Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
      *     Yii::trace(get_class($event->sender) . ' is inserted.');
      * });
@@ -82,7 +82,7 @@ class Event extends BaseObject
      *
      * Since 2.0.14 you can specify either class name or event name as a wildcard pattern:
      *
-     * ```php
+     * ```
      * Event::on('app\models\db\*', '*Insert', function ($event) {
      *     Yii::trace(get_class($event->sender) . ' is inserted.');
      * });

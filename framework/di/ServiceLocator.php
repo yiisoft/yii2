@@ -22,7 +22,7 @@ use yii\base\InvalidConfigException;
  *
  * For example,
  *
- * ```php
+ * ```
  * $locator = new \yii\di\ServiceLocator;
  * $locator->setComponents([
  *     'db' => [
@@ -150,7 +150,7 @@ class ServiceLocator extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * // a class name
      * $locator->set('cache', 'yii\caching\FileCache');
      *
@@ -247,7 +247,7 @@ class ServiceLocator extends Component
      *
      * The following is an example for registering two component definitions:
      *
-     * ```php
+     * ```
      * [
      *     'db' => [
      *         'class' => 'yii\db\Connection',

@@ -160,7 +160,7 @@ class Validator extends Component
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```php
+     * ```
      * function ($model) {
      *     return $model->country == Country::USA;
      * }
@@ -342,7 +342,7 @@ class Validator extends Component
      * A validator class can implement this method to support data validation out of the context of a data model.
      * @param mixed $value the data value to be validated.
      * @return array|null the error message and the array of parameters to be inserted into the error message.
-     * ```php
+     * ```
      * if (!$valid) {
      *     return [$this->message, [
      *         'param1' => $this->param1,

@@ -84,7 +84,7 @@ trait ActiveRelationTrait
      *
      * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
      *
-     * ```php
+     * ```
      * class Order extends ActiveRecord
      * {
      *    public function getOrderItems() {
@@ -124,7 +124,7 @@ trait ActiveRelationTrait
      *
      * Use this method when declaring a relation in the [[ActiveRecord]] class, e.g. in Customer model:
      *
-     * ```php
+     * ```
      * public function getOrders()
      * {
      *     return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
@@ -133,7 +133,7 @@ trait ActiveRelationTrait
      *
      * This also may be used for Order model, but with caution:
      *
-     * ```php
+     * ```
      * public function getCustomer()
      * {
      *     return $this->hasOne(Customer::class, ['id' => 'customer_id'])->inverseOf('orders');
@@ -143,14 +143,14 @@ trait ActiveRelationTrait
      * in this case result will depend on how order(s) was loaded.
      * Let's suppose customer has several orders. If only one order was loaded:
      *
-     * ```php
+     * ```
      * $orders = Order::find()->where(['id' => 1])->all();
      * $customerOrders = $orders[0]->customer->orders;
      * ```
      *
      * variable `$customerOrders` will contain only one order. If orders was loaded like this:
      *
-     * ```php
+     * ```
      * $orders = Order::find()->with('customer')->where(['customer_id' => 1])->all();
      * $customerOrders = $orders[0]->customer->orders;
      * ```

@@ -84,7 +84,7 @@ class LinkPager extends Widget
      * @var array the options for the disabled tag to be generated inside the disabled list element.
      * In order to customize the html tag, please use the tag key.
      *
-     * ```php
+     * ```
      * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
      * @since 2.0.11

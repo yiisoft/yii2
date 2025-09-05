@@ -32,7 +32,7 @@ class Action extends \yii\base\Action
      * to the specified primary key value. If not set, [[findModel()]] will be used instead.
      * The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($id, $action) {
      *     // $id is the primary key value. If composite primary key, the key values
      *     // will be separated by comma.
@@ -48,7 +48,7 @@ class Action extends \yii\base\Action
      * if the current user has the permission to execute the action. If not set, the access
      * check will not be performed. The signature of the callable should be as follows,
      *
-     * ```php
+     * ```
      * function ($action, $model = null) {
      *     // $model is the requested model instance.
      *     // If null, it means no specific model (e.g. IndexAction)

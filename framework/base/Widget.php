@@ -284,7 +284,7 @@ class Widget extends Component implements ViewContextInterface
      *
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeRun()
      * {
      *     if (!parent::beforeRun()) {
@@ -315,7 +315,7 @@ class Widget extends Component implements ViewContextInterface
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function afterRun($result)
      * {
      *     $result = parent::afterRun($result);

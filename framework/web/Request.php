@@ -212,7 +212,7 @@ class Request extends \yii\base\Request
      * For example, to trust all headers listed in [[secureHeaders]] for IP addresses
      * in range `192.168.0.0-192.168.0.254` write the following:
      *
-     * ```php
+     * ```
      * [
      *     '192.168.0.0/24',
      * ]
@@ -1487,7 +1487,7 @@ class Request extends \yii\base\Request
      *
      * This is determined by the `Accept` HTTP header. For example,
      *
-     * ```php
+     * ```
      * $_SERVER['HTTP_ACCEPT'] = 'text/plain; q=0.5, application/json; version=1.0, application/xml; version=2.0;';
      * $types = $request->getAcceptableContentTypes();
      * print_r($types);
@@ -1587,7 +1587,7 @@ class Request extends \yii\base\Request
      * while the array values consisting of the corresponding quality scores and parameters. The acceptable
      * values with the highest quality scores will be returned first. For example,
      *
-     * ```php
+     * ```
      * $header = 'text/plain; q=0.5, application/json; version=1.0, application/xml; version=2.0;';
      * $accepts = $request->parseAcceptHeader($header);
      * print_r($accepts);
@@ -1721,7 +1721,7 @@ class Request extends \yii\base\Request
      *
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
-     * ```php
+     * ```
      * $cookie = $request->cookies['name']
      * if ($cookie !== null) {
      *     $value = $cookie->value;

@@ -29,7 +29,7 @@ use yii\i18n\Formatter;
  *
  * A typical usage of DetailView is as follows:
  *
- * ```php
+ * ```
  * echo DetailView::widget([
  *     'model' => $model,
  *     'attributes' => [
@@ -76,7 +76,7 @@ class DetailView extends Widget
      *   according to the `format` option. Since version 2.0.11 it can be defined as closure with the following
      *   parameters:
      *
-     *   ```php
+     *   ```
      *   function ($model, $widget)
      *   ```
      *
@@ -96,7 +96,7 @@ class DetailView extends Widget
      * and `{value}` will be replaced with the label and the value of the corresponding attribute.
      * If a callback (e.g. an anonymous function), the signature must be as follows:
      *
-     * ```php
+     * ```
      * function ($attribute, $index, $widget)
      * ```
      *

@@ -22,7 +22,7 @@ use yii\base\InvalidConfigException;
  *
  * Session can be used like an array to set and get session data. For example,
  *
- * ```php
+ * ```
  * $session = new Session;
  * $session->open();
  * $value1 = $session['name1'];  // get session variable 'name1'
@@ -392,7 +392,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Starting with Yii 2.0.21 `sameSite` is also supported. It requires PHP version 7.3.0 or higher.
      * For security, an exception will be thrown if `sameSite` is set while using an unsupported version of PHP.
      * To use this feature across different PHP versions check the version first. E.g.
-     * ```php
+     * ```
      * [
      *     'sameSite' => PHP_VERSION_ID >= 70300 ? yii\web\Cookie::SAME_SITE_LAX : null,
      * ]
@@ -812,7 +812,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      *
      * You may use this method to display all the flash messages in a view file:
      *
-     * ```php
+     * ```
      * <?php
      * foreach (Yii::$app->session->getAllFlashes() as $key => $message) {
      *     echo '<div class="alert alert-' . $key . '">' . $message . '</div>';

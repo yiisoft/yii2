@@ -268,7 +268,7 @@ class BaseConsole
      * Any output after this will have default text format.
      * This is equal to calling.
      *
-     * ```php
+     * ```
      * echo Console::ansiFormatCode([Console::RESET])
      * ```
      */
@@ -676,7 +676,7 @@ class BaseConsole
      *
      * Usage:
      *
-     * ```php
+     * ```
      * list($width, $height) = ConsoleHelper::getScreenSize();
      * ```
      *
@@ -907,7 +907,7 @@ class BaseConsole
      *
      * A typical usage looks like the following:
      *
-     * ```php
+     * ```
      * if (Console::confirm("Are you sure?")) {
      *     echo "user typed yes\n";
      * } else {
@@ -987,7 +987,7 @@ class BaseConsole
      *
      * The following example shows a simple usage of a progress bar:
      *
-     * ```php
+     * ```
      * Console::startProgress(0, 1000);
      * for ($n = 1; $n <= 1000; $n++) {
      *     usleep(1000);
@@ -998,7 +998,7 @@ class BaseConsole
      *
      * Git clone like progress (showing only status information):
      *
-     * ```php
+     * ```
      * Console::startProgress(0, 1000, 'Counting objects: ', false);
      * for ($n = 1; $n <= 1000; $n++) {
      *     usleep(1000);

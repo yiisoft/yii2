@@ -367,7 +367,7 @@ class Controller extends \yii\base\Controller
      *
      * An example of how to use the prompt method with a validator function.
      *
-     * ```php
+     * ```
      * $code = $this->prompt('Enter 4-Chars-Pin', ['required' => true, 'validator' => function($input, &$error) {
      *     if (strlen($input) !== 4) {
      *         $error = 'The Pin must be exactly 4 chars!';
@@ -393,7 +393,7 @@ class Controller extends \yii\base\Controller
      *
      * A typical usage looks like the following:
      *
-     * ```php
+     * ```
      * if ($this->confirm("Are you sure?")) {
      *     echo "user typed yes\n";
      * } else {

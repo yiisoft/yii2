@@ -88,7 +88,7 @@ class DateValidator extends Validator
      *
      * Here are some example values:
      *
-     * ```php
+     * ```
      * 'MM/dd/yyyy' // date in ICU format
      * 'php:m/d/Y' // the same date in PHP format
      * 'MM/dd/yyyy HH:mm' // not only dates but also times can be validated

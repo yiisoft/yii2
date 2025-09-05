@@ -15,7 +15,7 @@ use yii\base\Widget;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * <body>
  *     <?php Spaceless::begin(); ?>
  *         <div class="nav-bar">

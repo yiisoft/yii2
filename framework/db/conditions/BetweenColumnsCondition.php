@@ -15,7 +15,7 @@ use yii\db\Query;
  * Class BetweenColumnCondition represents a `BETWEEN` condition where
  * values is between two columns. For example:
  *
- * ```php
+ * ```
  * new BetweenColumnsCondition(42, 'BETWEEN', 'min_value', 'max_value')
  * // Will be build to:
  * // 42 BETWEEN min_value AND max_value
@@ -23,7 +23,7 @@ use yii\db\Query;
  *
  * And a more complex example:
  *
- * ```php
+ * ```
  * new BetweenColumnsCondition(
  *    new Expression('NOW()'),
  *    'NOT BETWEEN',

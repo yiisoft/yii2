@@ -54,7 +54,7 @@ use yii\helpers\Inflector;
  * Since 2.0.10 you can use namespaced migrations. In order to enable this feature you should configure [[migrationNamespaces]]
  * property for the controller at application configuration:
  *
- * ```php
+ * ```
  * return [
  *     'controllerMap' => [
  *         'migrate' => [

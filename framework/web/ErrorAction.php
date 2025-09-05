@@ -20,7 +20,7 @@ use yii\base\UserException;
  * First, declare an action of ErrorAction type in the `actions()` method of your `SiteController`
  * class (or whatever controller you prefer), like the following:
  *
- * ```php
+ * ```
  * public function actions()
  * {
  *     return [
@@ -38,7 +38,7 @@ use yii\base\UserException;
  *
  * Finally, configure the "errorHandler" application component as follows,
  *
- * ```php
+ * ```
  * 'errorHandler' => [
  *     'errorAction' => 'site/error',
  * ]

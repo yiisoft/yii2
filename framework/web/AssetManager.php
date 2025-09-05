@@ -23,7 +23,7 @@ use yii\helpers\Url;
  * You can modify its configuration by adding an array to your application config under `components`
  * as shown in the following example:
  *
- * ```php
+ * ```
  * 'assetManager' => [
  *     'bundles' => [
  *         // you can override AssetBundle configs here
@@ -74,7 +74,7 @@ class AssetManager extends Component
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ```php
+     * ```
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
@@ -107,7 +107,7 @@ class AssetManager extends Component
      * In the following example, any assets ending with `jquery.min.js` will be replaced with `jquery/dist/jquery.js`
      * which is relative to [[baseUrl]] and [[basePath]].
      *
-     * ```php
+     * ```
      * [
      *     'jquery.min.js' => 'jquery/dist/jquery.js',
      * ]
@@ -115,7 +115,7 @@ class AssetManager extends Component
      *
      * You may also use aliases while specifying map value, for example:
      *
-     * ```php
+     * ```
      * [
      *     'jquery.min.js' => '@web/js/jquery/jquery.js',
      * ]
@@ -206,7 +206,7 @@ class AssetManager extends Component
      *
      * Example of an implementation using MD4 hash:
      *
-     * ```php
+     * ```
      * function ($path) {
      *     return hash('md4', $path);
      * }

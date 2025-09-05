@@ -17,7 +17,7 @@ use yii\helpers\Json;
  *
  * To add a CheckboxColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
  *
- * ```php
+ * ```
  * 'columns' => [
  *     // ...
  *     [
@@ -56,7 +56,7 @@ class CheckboxColumn extends Column
      * Specifically if you want to set a different value for the checkbox
      * you can use this option in the following way (in this example using the `name` attribute of the model):
      *
-     * ```php
+     * ```
      * 'checkboxOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->name];
      * }
