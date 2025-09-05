@@ -16,7 +16,7 @@ use yii\validators\Validator;
  *
  * The typical usage of DynamicModel is as follows,
  *
- * ```php
+ * ```
  * public function actionSearch($name, $email)
  * {
  *     $model = DynamicModel::validateData(compact('name', 'email'), [
@@ -41,7 +41,7 @@ use yii\validators\Validator;
  *
  * Alternatively, you may use the following more "classic" syntax to perform ad-hoc data validation:
  *
- * ```php
+ * ```
  * $model = new DynamicModel(compact('name', 'email'));
  * $model->addRule(['name', 'email'], 'string', ['max' => 128])
  *     ->addRule('email', 'email')

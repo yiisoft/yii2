@@ -16,7 +16,7 @@ use yii\helpers\Html;
  *
  * To add a RadioButtonColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
  *
- * ```php
+ * ```
  * 'columns' => [
  *     // ...
  *     [
@@ -52,7 +52,7 @@ class RadioButtonColumn extends Column
      * Specifically if you want to set a different value for the radio button you can use this option
      * in the following way (in this example using the `name` attribute of the model):
      *
-     * ```php
+     * ```
      * 'radioOptions' => function ($model, $key, $index, $column) {
      *     return ['value' => $model->attribute];
      * }

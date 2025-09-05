@@ -45,7 +45,7 @@ use yii\base\InvalidConfigException;
  *
  * These options can be configured using methods of the same name. For example:
  *
- * ```php
+ * ```
  * $customers = Customer::find()->with('orders')->asArray()->all();
  * ```
  *
@@ -411,7 +411,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * In the following you find some examples:
      *
-     * ```php
+     * ```
      * // find all orders that contain books, and eager loading "books"
      * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
      * // find all orders, eager loading "books", and sort the orders and books by the book names.
@@ -717,7 +717,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * Use this method to specify additional conditions when declaring a relation in the [[ActiveRecord]] class:
      *
-     * ```php
+     * ```
      * public function getActiveUsers()
      * {
      *     return $this->hasMany(User::class, ['id' => 'user_id'])
@@ -787,7 +787,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * Use this method to specify a junction table when declaring a relation in the [[ActiveRecord]] class:
      *
-     * ```php
+     * ```
      * public function getItems()
      * {
      *     return $this->hasMany(Item::class, ['id' => 'item_id'])

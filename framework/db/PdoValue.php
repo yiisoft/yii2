@@ -12,7 +12,7 @@ namespace yii\db;
  *
  * For example, it will be useful when you need to bind binary data to BLOB column in DBMS:
  *
- * ```php
+ * ```
  * [':name' => 'John', ':profile' => new PdoValue($profile, \PDO::PARAM_LOB)]`.
  * ```
  *

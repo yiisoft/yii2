@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
  *
  * Below is an example of using Container:
  *
- * ```php
+ * ```
  * namespace app\models;
  *
  * use yii\base\BaseObject;
@@ -212,7 +212,7 @@ class Container extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * // register a class name as is. This can be skipped.
      * $container->set('yii\db\Connection');
      *
@@ -616,7 +616,7 @@ class Container extends Component
      *
      * For example, the following callback may be invoked using the Container to resolve the formatter dependency:
      *
-     * ```php
+     * ```
      * $formatString = function($string, \yii\i18n\Formatter $formatter) {
      *    // ...
      * }
@@ -746,7 +746,7 @@ class Container extends Component
      *    as the second argument `$definition`.
      *
      * Example:
-     * ```php
+     * ```
      * $container->setDefinitions([
      *     'yii\web\Request' => 'app\components\Request',
      *     'yii\web\Response' => [
@@ -768,7 +768,7 @@ class Container extends Component
      *    second argument `$definition`, the second one — as `$params`.
      *
      * Example:
-     * ```php
+     * ```
      * $container->setDefinitions([
      *     'foo\Bar' => [
      *          ['class' => 'app\Bar'],

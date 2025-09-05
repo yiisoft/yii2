@@ -21,7 +21,7 @@ use yii\base\ErrorHandler;
  *
  * You may configure the targets in application configuration, like the following:
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'log' => [
@@ -46,7 +46,7 @@ use yii\base\ErrorHandler;
  *
  * Each log target can have a name and can be referenced via the [[targets]] property as follows:
  *
- * ```php
+ * ```
  * Yii::$app->log->targets['file']->enabled = false;
  * ```
  *

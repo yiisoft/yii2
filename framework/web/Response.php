@@ -28,7 +28,7 @@ use yii\helpers\Url;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ```php
+ * ```
  * 'response' => [
  *     'format' => yii\web\Response::FORMAT_JSON,
  *     'charset' => 'UTF-8',
@@ -495,7 +495,7 @@ class Response extends \yii\base\Response
      * The following is an example implementation of a controller action that allows requesting files from a directory
      * that is not accessible from web:
      *
-     * ```php
+     * ```
      * public function actionFile($filename)
      * {
      *     $storagePath = Yii::getAlias('@app/files');
@@ -748,7 +748,7 @@ class Response extends \yii\base\Response
      *
      * **Example**
      *
-     * ```php
+     * ```
      * Yii::$app->response->xSendFile('/home/user/Pictures/picture1.jpg');
      * ```
      *
@@ -838,14 +838,14 @@ class Response extends \yii\base\Response
      * This method adds a "Location" header to the current response. Note that it does not send out
      * the header until [[send()]] is called. In a controller action you may use this method as follows:
      *
-     * ```php
+     * ```
      * return Yii::$app->getResponse()->redirect($url);
      * ```
      *
      * In other places, if you want to send out the "Location" header immediately, you should use
      * the following code:
      *
-     * ```php
+     * ```
      * Yii::$app->getResponse()->redirect($url)->send();
      * return;
      * ```
@@ -858,7 +858,7 @@ class Response extends \yii\base\Response
      * described above. Otherwise, you should write the following JavaScript code to
      * handle the redirection:
      *
-     * ```javascript
+     * ```
      * $document.ajaxComplete(function (event, xhr, settings) {
      *     var url = xhr && xhr.getResponseHeader('X-Redirect');
      *     if (url) {
@@ -933,7 +933,7 @@ class Response extends \yii\base\Response
      *
      * In a controller action you may use this method like this:
      *
-     * ```php
+     * ```
      * return Yii::$app->getResponse()->refresh();
      * ```
      *
@@ -953,7 +953,7 @@ class Response extends \yii\base\Response
      *
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
-     * ```php
+     * ```
      * // add a cookie
      * $response->cookies->add(new Cookie([
      *     'name' => $name,

@@ -59,7 +59,7 @@ class View extends Component implements DynamicContentAwareInterface
      * Each renderer may be a view renderer object or the configuration for creating the renderer object.
      * For example, the following configuration enables both Smarty and Twig view renderers:
      *
-     * ```php
+     * ```
      * [
      *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
      *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
@@ -497,7 +497,7 @@ class View extends Component implements DynamicContentAwareInterface
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
-     * ```php
+     * ```
      * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
      * //...layout content here...
      * <?php $this->endContent(); ?>
@@ -534,7 +534,7 @@ class View extends Component implements DynamicContentAwareInterface
      * call to end the cache and save the content into cache.
      * A typical usage of fragment caching is as follows,
      *
-     * ```php
+     * ```
      * if ($this->beginCache($id)) {
      *     // ...generate content here
      *     $this->endCache();

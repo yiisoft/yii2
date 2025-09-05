@@ -47,14 +47,14 @@ class BaseIpHelper
      *
      * For example, the following code checks whether subnet `192.168.1.0/24` is in subnet `192.168.0.0/22`:
      *
-     * ```php
+     * ```
      * IpHelper::inRange('192.168.1.0/24', '192.168.0.0/22'); // true
      * ```
      *
      * In case you need to check whether a single IP address `192.168.1.21` is in the subnet `192.168.1.0/24`,
      * you can use any of theses examples:
      *
-     * ```php
+     * ```
      * IpHelper::inRange('192.168.1.21', '192.168.1.0/24'); // true
      * IpHelper::inRange('192.168.1.21/32', '192.168.1.0/24'); // true
      * ```

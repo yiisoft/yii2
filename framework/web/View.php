@@ -24,7 +24,7 @@ use yii\helpers\Url;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ```php
+ * ```
  * 'view' => [
  *     'theme' => 'app\themes\MyTheme',
  *     'renderers' => [
@@ -364,7 +364,7 @@ class View extends \yii\base\View
      *
      * For example, a description meta tag can be added like the following:
      *
-     * ```php
+     * ```
      * $view->registerMetaTag([
      *     'name' => 'description',
      *     'content' => 'This website is about funny raccoons.'
@@ -391,7 +391,7 @@ class View extends \yii\base\View
      * Registers CSRF meta tags.
      * They are rendered dynamically to retrieve a new CSRF token for each request.
      *
-     * ```php
+     * ```
      * $view->registerCsrfMetaTags();
      * ```
      *
@@ -414,7 +414,7 @@ class View extends \yii\base\View
      * For example, a link tag for a custom [favicon](https://www.w3.org/2005/10/howto-favicon)
      * can be added like the following:
      *
-     * ```php
+     * ```
      * $view->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => '/myicon.png']);
      * ```
      *

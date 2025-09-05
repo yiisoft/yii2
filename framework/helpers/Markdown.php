@@ -12,7 +12,7 @@ namespace yii\helpers;
  *
  * Basic usage is the following:
  *
- * ```php
+ * ```
  * $myHtml = Markdown::process($myText); // use original markdown flavor
  * $myHtml = Markdown::process($myText, 'gfm'); // use github flavored markdown
  * $myHtml = Markdown::process($myText, 'extra'); // use markdown extra
