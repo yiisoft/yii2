@@ -31,7 +31,7 @@ use yii\helpers\Inflector;
  * this command is executed, if it does not exist. You may also manually
  * create it as follows:
  *
- * ```sql
+ * ```
  * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer

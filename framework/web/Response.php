@@ -858,7 +858,7 @@ class Response extends \yii\base\Response
      * described above. Otherwise, you should write the following JavaScript code to
      * handle the redirection:
      *
-     * ```javascript
+     * ```
      * $document.ajaxComplete(function (event, xhr, settings) {
      *     var url = xhr && xhr.getResponseHeader('X-Redirect');
      *     if (url) {

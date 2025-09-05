@@ -135,7 +135,7 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ```apache
+     * ```
      * Options FollowSymLinks
      * ```
      */

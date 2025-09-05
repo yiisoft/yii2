@@ -50,7 +50,7 @@ class DbSession extends MultiFieldSession
      * @var string the name of the DB table that stores the session data.
      * The table should be pre-created as follows:
      *
-     * ```sql
+     * ```
      * CREATE TABLE session
      * (
      *     id CHAR(40) NOT NULL PRIMARY KEY,

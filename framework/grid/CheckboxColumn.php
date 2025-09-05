@@ -30,7 +30,7 @@ use yii\helpers\Json;
  * Users may click on the checkboxes to select rows of the grid. The selected rows may be
  * obtained by calling the following JavaScript code:
  *
- * ```javascript
+ * ```
  * var keys = $('#grid').yiiGridView('getSelectedRows');
  * // keys is an array consisting of the keys associated with the selected rows
  * ```

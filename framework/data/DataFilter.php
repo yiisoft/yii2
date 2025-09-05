@@ -24,7 +24,7 @@ use yii\validators\Validator;
  *
  * Filter example:
  *
- * ```json
+ * ```
  * {
  *     "or": [
  *         {
@@ -51,7 +51,7 @@ use yii\validators\Validator;
  * In the request the filter should be specified using a key name equal to [[filterAttributeName]]. Thus actual HTTP request body
  * will look like following:
  *
- * ```json
+ * ```
  * {
  *     "filter": {"or": {...}},
  *     "page": 2,
