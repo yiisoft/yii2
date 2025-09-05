@@ -447,7 +447,7 @@ public function getEventHandlers($name)
  * Correct code example:
  * 
  * ```
- * $someClass->doMagic()
+ * $someClass->doMagic();
  * ```
  */
 public function doMagic()
@@ -458,7 +458,7 @@ public function doMagic()
  * Incorrect code example:
  * 
  * ```php
- * $someClass->doMagic()
+ * $someClass->doMagic();
  * ```
  */
 public function doMagic()

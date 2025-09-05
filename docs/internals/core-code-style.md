@@ -478,7 +478,7 @@ Specifying a language in code examples may break their display in some IDEs. Her
  * Correct code example:
  * 
  * ```
- * $someClass->doMagic()
+ * $someClass->doMagic();
  * ```
  */
 function doMagic()
@@ -489,7 +489,7 @@ function doMagic()
  * Incorrect code example:
  * 
  * ```php
- * $someClass->doMagic()
+ * $someClass->doMagic();
  * ```
  */
 function doMagic()
