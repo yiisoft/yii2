@@ -62,7 +62,7 @@ class BetweenColumnsCondition implements ConditionInterface
     /**
      * Creates a condition with the `BETWEEN` operator.
      *
-     * @param mixed the value to compare against
+     * @param mixed $value the value to compare against
      * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
      * @param string|ExpressionInterface $intervalStartColumn the column name or expression that is a beginning of the interval
      * @param string|ExpressionInterface $intervalEndColumn the column name or expression that is an end of the interval
