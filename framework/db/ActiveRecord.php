@@ -597,7 +597,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @return ActiveQuery
      *
-     * @template T
+     * @template T of self
      *
      * @phpstan-param class-string<T> $class
      * @psalm-param class-string<T> $class
@@ -615,7 +615,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @return ActiveQuery
      *
-     * @template T
+     * @template T of self
      *
      * @phpstan-param class-string<T> $class
      * @psalm-param class-string<T> $class
