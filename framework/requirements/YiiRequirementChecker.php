@@ -49,15 +49,13 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
  * and should not use features from newer PHP versions!
  *
- * @property array|null $result the check results, this property is for internal usage only.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class YiiRequirementChecker
 {
     /**
-     * @var Check result
+     * @var array|null the check results, this property is for internal usage only.
      */
     public $result;
 
