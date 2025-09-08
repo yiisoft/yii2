@@ -339,7 +339,6 @@ trait ActiveRelationTrait
             return;
         }
         $model = reset($models);
-        /** @var ActiveQueryInterface|ActiveQuery $relation */
         if ($model instanceof ActiveRecordInterface) {
             $relation = $model->getRelation($name);
         } else {
@@ -348,6 +347,7 @@ trait ActiveRelationTrait
             $relation = $modelClass::instance()->getRelation($name);
         }
 
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         if ($relation->multiple) {
             $buckets = $this->buildBuckets($primaryModels, $relation->link, null, null, false);
             if ($model instanceof ActiveRecordInterface) {

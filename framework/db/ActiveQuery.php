@@ -266,7 +266,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function removeDuplicatedModels($models)
     {
         $hash = [];
-        /** @var ActiveRecord $class */
+        /**
+         * @var ActiveRecord
+         * @phpstan-var class-string<ActiveRecord>
+         */
         $class = $this->modelClass;
         $pks = $class::primaryKey();
 
