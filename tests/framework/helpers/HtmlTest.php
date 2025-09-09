@@ -1652,8 +1652,12 @@ EOD;
     /**
      * @dataProvider errorSummaryDataProvider
      */
-    public function testErrorSummary(string $value, array $options, string $expectedHtml, \Closure $beforeValidate = null): void
-    {
+    public function testErrorSummary(
+        string $value,
+        array $options,
+        string $expectedHtml,
+        \Closure|null $beforeValidate = null
+    ): void {
         $model = new HtmlTestModel();
         $model->name = $value;
         if ($beforeValidate !== null) {
