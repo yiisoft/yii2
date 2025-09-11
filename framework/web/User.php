@@ -626,7 +626,10 @@ class User extends Component
         $data = json_decode($value, true);
         if (is_array($data) && count($data) == 3) {
             list($id, $authKey, $duration) = $data;
-            /** @var IdentityInterface $class */
+            /**
+             * @var IdentityInterface
+             * @phpstan-var class-string<IdentityInterface>
+             */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             if ($identity !== null) {
