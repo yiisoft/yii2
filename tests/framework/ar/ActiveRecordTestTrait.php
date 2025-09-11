@@ -1297,7 +1297,7 @@ trait ActiveRecordTestTrait
         /** @var ActiveRecordInterface $orderClass */
         $orderClass = $this->getOrderClass();
 
-        /* @var Order $order */
+        /** @var Order $order */
         $order = $orderClass::findOne(2);
 
         $expensiveItems = $order->expensiveItemsUsingViaWithCallable;
