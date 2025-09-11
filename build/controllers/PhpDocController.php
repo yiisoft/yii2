@@ -774,13 +774,22 @@ class PhpDocController extends ConsoleController
             $className = $namespace . '\\' . $class['name'];
 
             $gets = $this->match(
-                '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content'], true);
+                '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)'
+                    . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
+                    . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
+                    . 'public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
+                $class['content'],
+                true
+            );
+
             $sets = $this->match(
-                '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content'], true);
+                '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+'
+                    . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
+                    . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
+                    . 'public function (?<kind>set)(?<name>\w+)\(([\w\\|\\\\\\[\\]]+\s*)*\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
+                $class['content'],
+                true
+            );
 
             $acrs = array_merge($gets, $sets);
             $manuallyAddedProperties = self::MANUALLY_ADDED_PROPERTIES[$className] ?? [];
