@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 
 /**
@@ -115,6 +116,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $joinWith;
 
+    protected $useJoinForVia = false;
+
+    protected $viaAppliedByJoin = false;
 
     /**
      * Constructor.
@@ -182,7 +186,69 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             // lazy loading of a relation
             $where = $this->where;
 
-            if ($this->via instanceof self) {
+            if (
+                $this->useJoinForVia()
+                && ($this->via instanceof self
+                    || is_array($this->via)
+                )
+            ) {
+                /* @var $viaQuery ActiveQuery */
+                $viaQuery = ($this->via instanceof self) ? $this->via : $this->via[1];
+
+                list(, $tableAlias) = $this->getTableNameAndAlias();
+                if (strpos($tableAlias, '{{') === false) {
+                    $tableAlias = '{{' . $tableAlias . '}}';
+                }
+
+                if (empty($this->select)) {
+                    $this->select = ["$tableAlias.*"];
+                }
+
+                if (empty($this->groupBy) && !$this->distinct) {
+                    $this->distinct();
+                }
+
+                if (!$this->viaAppliedByJoin) {
+                    // Setup first 'via' relation in the chain based on initial link.
+                    $previousRelation = $this;
+                    $previousLink = $this->link;
+                    while ($viaQuery) { // Loop over each 'via' chain while we got links.
+                        if ($viaQuery->via) { // Check if we've got another 'via' link.
+                            $nextViaQuery = ($viaQuery->via instanceof self) ? $viaQuery->via : $viaQuery->via[1];
+                            $viaQuery->via = null;
+                        } else {
+                            // End of 'via' chain
+                            $nextViaQuery = null;
+
+                            // Get table alias for final junction table
+                            list(, $viaAlias) = $viaQuery->getTableNameAndAlias();
+                            if (strpos($viaAlias, '{{') === false) {
+                                $viaAlias = '{{' . $viaAlias . '}}';
+                            }
+                            // Apply primary model relation as additional inner join `on` conditions for the final junction table.
+                            foreach ($viaQuery->link as $primaryColumn => $viaColumn) {
+                                $viaQuery->andOnCondition([
+                                    "$viaAlias.[[$primaryColumn]]" => $this->primaryModel->getAttribute($viaColumn)
+                                ]);
+                            }
+                        }
+
+                        $nextLink = $viaQuery->link; // Store the current 'via' link for the next link.
+                        $viaQuery->link = array_flip($previousLink); // Use the inverted previous link as the current one.
+
+                        // Join the 'via' link on the previous link
+                        $this->joinWithRelation($previousRelation, $viaQuery, 'INNER JOIN');
+
+                        // Setup data for next iteration
+                        $previousRelation = $viaQuery;
+                        $viaQuery = $nextViaQuery;
+                        $previousLink = $nextLink;
+                    }
+
+                    // Prevent duplicate application of the join(s) e.g. for ActiveDataProvider
+                    $this->viaAppliedByJoin = true;
+                }
+            } elseif ($this->via instanceof self) {
                 // via junction table
                 $viaModels = $this->via->findJunctionRows([$this->primaryModel]);
                 $this->filterByModels($viaModels);
@@ -785,6 +851,33 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         return $this;
     }
 
+    public function viaByJoin($viaByJoin = true)
+    {
+        if (!$viaByJoin) {
+            if ($this->viaAppliedByJoin) {
+                throw new InvalidCallException('`viaByJoin` can not be disabled after it has been applied.');
+            }
+            if ($this->via instanceof self && !empty($this->via->via)) {
+                throw new InvalidCallException('`viaByJoin` can not be disabled when using multiple "via tables".');
+            }
+        }
+
+        $this->useJoinForVia = $viaByJoin;
+        return $this;
+    }
+
+    public function useJoinForVia()
+    {
+        return $this->useJoinForVia;
+    }
+
+    public function viaJoined($relationName, callable $callable = null)
+    {
+        return $this
+            ->viaByJoin()
+            ->via($relationName, $callable);
+    }
+
     /**
      * Specifies the junction table for a relational query.
      *
@@ -822,6 +915,24 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             call_user_func($callable, $relation);
         }
 
+        return $this;
+    }
+
+    public function viaJoinedTable($tableName, $link, callable $callable = null)
+    {
+        return $this
+            ->viaByJoin()
+            ->viaTable($tableName, $link, $callable);
+    }
+
+    public function viaJoinedTables($links, callable $callable = null)
+    {
+        $this->viaByJoin();
+        $query = $this;
+        foreach ($links as $tableName => $link) {
+            $query->viaTable($tableName, $link, $callable);
+            $query = $query->via;
+        }
         return $this;
     }
 
