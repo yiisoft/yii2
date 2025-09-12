@@ -777,7 +777,7 @@ class PhpDocController extends ConsoleController
                 '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)'
                     . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
                     . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
-                    . 'public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)(\:\s[\w\\|\\\\\\[\\]]+\s*)?#',
+                    . 'public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)(\:\s*[\w\\|\\\\\\[\\]]+)?#',
                 $class['content'],
                 true
             );
@@ -786,7 +786,7 @@ class PhpDocController extends ConsoleController
                 '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+'
                     . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
                     . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
-                    . 'public function (?<kind>set)(?<name>\w+)\(([\w\\|\\\\\\[\\]]+\s*)?\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)(\:\s[\w\\|\\\\\\[\\]]+\s*)?#',
+                    . 'public function (?<kind>set)(?<name>\w+)\(([\w\\|\\\\\\[\\]]+\s*)?\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)(\:\s*[\w\\|\\\\\\[\\]]+)?#',
                 $class['content'],
                 true
             );
