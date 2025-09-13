@@ -674,14 +674,14 @@ class Container extends Component
                 if ($class instanceof \ReflectionUnionType || (PHP_VERSION_ID >= 80100 && $class instanceof \ReflectionIntersectionType)) {
                     $isClass = false;
                     foreach ($class->getTypes() as $type) {
-                        if (!$type->isBuiltin()) {
+                        if ($type instanceof \ReflectionNamedType && !$type->isBuiltin()) {
                             $class = $type;
                             $isClass = true;
                             break;
                         }
                     }
                 } else {
-                    $isClass = $class !== null && !$class->isBuiltin();
+                    $isClass = $class instanceof \ReflectionNamedType && !$class->isBuiltin();
                 }
             } else {
                 $class = $param->getClass();
