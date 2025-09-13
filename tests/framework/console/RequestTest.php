@@ -185,7 +185,7 @@ class RequestTest extends TestCase
      * @param array $expected The expected result.
      * @param array|null $expectedException The expected exception.
      */
-    public function testResolve(array $params, array $expected, array $expectedException = null): void
+    public function testResolve(array $params, array $expected, array|null $expectedException = null): void
     {
         if (isset($expectedException)) {
             $this->expectException($expectedException[0]);

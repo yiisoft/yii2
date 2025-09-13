@@ -44,7 +44,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         return $request;
     }
 
-    protected function mockUser(string $userid = null): User
+    protected function mockUser(string|null $userid = null): User
     {
         $user = new User([
             'identityClass' => UserIdentity::class,
