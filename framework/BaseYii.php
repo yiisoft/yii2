@@ -343,8 +343,8 @@ class BaseYii
      * @see \yii\di\Container
      *
      * @template T
-     * @phpstan-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
-     * @psalm-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
+     * @phpstan-param class-string<T>|array{class: class-string<T>, ...}|array{__class: class-string<T>, ...}|callable(): T $type
+     * @psalm-param class-string<T>|array{class: class-string<T>, ...}|array{__class: class-string<T>, ...}|callable(): T $type
      * @phpstan-return T
      * @psalm-return T
      */
