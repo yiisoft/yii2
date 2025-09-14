@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #20514: Add `@property` annotations for `yii\console\Controller` (max-s-lab)
 - Bug #20515: Fix `@param` annotations in `BetweenColumnsCondition`, `InCondition` and `LikeCondition` (max-s-lab)
 - Bug #20516: Fix `@template` annotations in `ActiveRecord` (max-s-lab)
+- Enh #20525: Add `@template` annotations for all actions (max-s-lab)
 
 
 2.0.53 June 27, 2025
