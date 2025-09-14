@@ -299,7 +299,7 @@ class UploadedFile extends BaseObject
                     isset($tempResources[$i]) ? $tempResources[$i] : null
                 );
             }
-        } elseif ($errors != UPLOAD_ERR_NO_FILE) {
+        } elseif (is_array($errors) || $errors != UPLOAD_ERR_NO_FILE) {
             self::$_files[$key] = [
                 'name' => $names,
                 'tempName' => $tempNames,
