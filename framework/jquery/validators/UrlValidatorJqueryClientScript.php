@@ -35,7 +35,8 @@ class UrlValidatorJqueryClientScript implements ClientValidatorScriptInterface
             $pattern = str_replace(
                 '{schemes}',
                 '(' . implode('|',
-                $validator->validSchemes) . ')', $validator->pattern,
+                $validator->validSchemes) . ')',
+                $validator->pattern,
             );
         } else {
             $pattern = $validator->pattern;
