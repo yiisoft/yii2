@@ -21,6 +21,22 @@ class NumberValidatorTest extends TestCase
     private array $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
     private string|bool $oldLocale;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockWebApplication();
+
+        $this->oldLocale = setlocale(LC_NUMERIC, 0);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
+    }
+
     private function setCommaDecimalLocale(): void
     {
         if ($this->oldLocale === false) {
@@ -46,16 +62,6 @@ class NumberValidatorTest extends TestCase
     private function restoreLocale(): void
     {
         setlocale(LC_NUMERIC, $this->oldLocale);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->oldLocale = setlocale(LC_NUMERIC, 0);
-
-        // destroy application, Validator must work without Yii::$app
-        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit(): void

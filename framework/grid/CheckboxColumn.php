@@ -8,9 +8,12 @@
 namespace yii\grid;
 
 use Closure;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\jquery\gridview\CheckboxColumnJqueryClientScript;
+use yii\web\client\ClientScriptInterface;
 
 /**
  * CheckboxColumn displays a column of checkboxes in a grid view.
@@ -74,7 +77,10 @@ class CheckboxColumn extends Column
      * @since 2.0.9
      */
     public $cssClass;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -88,6 +94,11 @@ class CheckboxColumn extends Column
         }
         if (substr_compare($this->name, '[]', -2, 2)) {
             $this->name .= '[]';
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof CheckboxColumnJqueryClientScript) {
+            $this->clientScript ??= ['class' => CheckboxColumnJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
 
         $this->registerClientScript();
@@ -139,7 +150,7 @@ class CheckboxColumn extends Column
      * @return string header checkbox name
      * @since 2.0.8
      */
-    protected function getHeaderCheckBoxName()
+    public function getHeaderCheckBoxName()
     {
         $name = $this->name;
         if (substr_compare($name, '[]', -2, 2) === 0) {
@@ -160,13 +171,8 @@ class CheckboxColumn extends Column
      */
     public function registerClientScript()
     {
-        $id = $this->grid->options['id'];
-        $options = Json::encode([
-            'name' => $this->name,
-            'class' => $this->cssClass,
-            'multiple' => $this->multiple,
-            'checkAll' => $this->grid->showHeader ? $this->getHeaderCheckBoxName() : null,
-        ]);
-        $this->grid->getView()->registerJs("jQuery('#$id').yiiGridView('setSelectionColumn', $options);");
+        if ($this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript->register($this, $this->grid->getView());
+        }
     }
 }

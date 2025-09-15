@@ -10,8 +10,8 @@ namespace yii\captcha;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
+use yii\jquery\captcha\CaptchaJqueryClientScript;
+use yii\web\client\ClientScriptInterface;
 use yii\widgets\InputWidget;
 
 /**
@@ -82,7 +82,10 @@ class Captcha extends InputWidget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'form-control'];
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientScriptInterface|null $clientScript = null;
 
     /**
      * Initializes the widget.
@@ -95,6 +98,11 @@ class Captcha extends InputWidget
 
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof CaptchaJqueryClientScript) {
+            $this->clientScript ??= ['class' => CaptchaJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -123,12 +131,9 @@ class Captcha extends InputWidget
      */
     public function registerClientScript()
     {
-        $options = $this->getClientOptions();
-        $options = empty($options) ? '' : Json::htmlEncode($options);
-        $id = $this->imageOptions['id'];
-        $view = $this->getView();
-        CaptchaAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiCaptcha($options);");
+        if ($this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript->register($this, $this->getView());
+        }
     }
 
     /**
@@ -137,19 +142,11 @@ class Captcha extends InputWidget
      */
     protected function getClientOptions()
     {
-        $route = $this->captchaAction;
-        if (is_array($route)) {
-            $route[CaptchaAction::REFRESH_GET_VAR] = 1;
-        } else {
-            $route = [$route, CaptchaAction::REFRESH_GET_VAR => 1];
+        if (Yii::$app->useJquery === false || $this->clientScript === null) {
+            return [];
         }
 
-        $options = [
-            'refreshUrl' => Url::toRoute($route),
-            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/'),
-        ];
-
-        return $options;
+        return $this->clientScript->getClientOptions($this);
     }
 
     /**

@@ -13,8 +13,8 @@ use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
+use yii\jquery\widgets\ActiveFormJqueryClientScript;
+use yii\web\client\ClientScriptInterface;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -188,12 +188,15 @@ class ActiveForm extends Widget
      * @internal
      */
     public $attributes = [];
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientScriptInterface|null $clientScript = null;
 
     /**
      * @var ActiveField[] the ActiveField objects that are currently active
      */
     private $_fields = [];
-
 
     /**
      * Initializes the widget.
@@ -202,9 +205,20 @@ class ActiveForm extends Widget
     public function init()
     {
         parent::init();
+
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
+
+        if (
+            $this->enableClientScript &&
+            Yii::$app->useJquery &&
+            !$this->clientScript instanceof ActiveFormJqueryClientScript
+        ) {
+            $this->clientScript ??= ['class' => ActiveFormJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
+        }
+
         ob_start();
         ob_implicit_flush(false);
     }
@@ -224,11 +238,10 @@ class ActiveForm extends Widget
         $html = Html::beginForm($this->action, $this->method, $this->options);
         $html .= $content;
 
-        if ($this->enableClientScript) {
-            $this->registerClientScript();
-        }
+        $this->registerClientScript();
 
         $html .= Html::endForm();
+
         return $html;
     }
 
@@ -238,51 +251,18 @@ class ActiveForm extends Widget
      */
     public function registerClientScript()
     {
-        $id = $this->options['id'];
-        $options = Json::htmlEncode($this->getClientOptions());
-        $attributes = Json::htmlEncode($this->attributes);
-        $view = $this->getView();
-        ActiveFormAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+        if ($this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript->register($this, $this->getView());
+        }
     }
 
-    /**
-     * Returns the options for the form JS widget.
-     * @return array the options.
-     */
     protected function getClientOptions()
     {
-        $options = [
-            'encodeErrorSummary' => $this->encodeErrorSummary,
-            'errorSummary' => '.' . implode('.', preg_split('/\s+/', $this->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY)),
-            'validateOnSubmit' => $this->validateOnSubmit,
-            'errorCssClass' => $this->errorCssClass,
-            'successCssClass' => $this->successCssClass,
-            'validatingCssClass' => $this->validatingCssClass,
-            'ajaxParam' => $this->ajaxParam,
-            'ajaxDataType' => $this->ajaxDataType,
-            'scrollToError' => $this->scrollToError,
-            'scrollToErrorOffset' => $this->scrollToErrorOffset,
-            'validationStateOn' => $this->validationStateOn,
-        ];
-        if ($this->validationUrl !== null) {
-            $options['validationUrl'] = Url::to($this->validationUrl);
+        if ($this->enableClientScript === false || Yii::$app->useJquery === false || $this->clientScript === null) {
+            return [];
         }
 
-        // only get the options that are different from the default ones (set in yii.activeForm.js)
-        return array_diff_assoc($options, [
-            'encodeErrorSummary' => true,
-            'errorSummary' => '.error-summary',
-            'validateOnSubmit' => true,
-            'errorCssClass' => 'has-error',
-            'successCssClass' => 'has-success',
-            'validatingCssClass' => 'validating',
-            'ajaxParam' => 'ajax',
-            'ajaxDataType' => 'json',
-            'scrollToError' => true,
-            'scrollToErrorOffset' => 0,
-            'validationStateOn' => self::VALIDATION_STATE_ON_CONTAINER,
-        ]);
+        return $this->clientScript->getClientOptions($this);
     }
 
     /**

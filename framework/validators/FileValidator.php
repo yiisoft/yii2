@@ -9,10 +9,9 @@ namespace yii\validators;
 
 use Yii;
 use yii\helpers\FileHelper;
-use yii\helpers\Html;
-use yii\helpers\Json;
 use yii\helpers\StringHelper;
-use yii\web\JsExpression;
+use yii\jquery\validators\FileValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 use yii\web\UploadedFile;
 
 /**
@@ -158,7 +157,10 @@ class FileValidator extends Validator
      * - {mimeTypes}: the value of [[mimeTypes]]
      */
     public $wrongMimeType;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -199,6 +201,11 @@ class FileValidator extends Validator
             $this->mimeTypes = preg_split('/[\s,]+/', strtolower((string)$this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof FileValidatorJqueryClientScript) {
+            $this->clientScript ??= ['class' => FileValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -413,9 +420,11 @@ class FileValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.file(attribute, messages, ' . Json::htmlEncode($options) . ');';
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
+        }
+
+        return '';
     }
 
     /**
@@ -423,70 +432,11 @@ class FileValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $label = $model->getAttributeLabel($attribute);
-
-        $options = [];
-        if ($this->message !== null) {
-            $options['message'] = $this->formatMessage($this->message, [
-                'attribute' => $label,
-            ]);
+        if (Yii::$app->useJquery === false || !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            return [];
         }
 
-        $options['skipOnEmpty'] = $this->skipOnEmpty;
-
-        if (!$this->skipOnEmpty) {
-            $options['uploadRequired'] = $this->formatMessage($this->uploadRequired, [
-                'attribute' => $label,
-            ]);
-        }
-
-        if ($this->mimeTypes !== null) {
-            $mimeTypes = [];
-            foreach ($this->mimeTypes as $mimeType) {
-                $mimeTypes[] = new JsExpression(Html::escapeJsRegularExpression($this->buildMimeTypeRegexp($mimeType)));
-            }
-            $options['mimeTypes'] = $mimeTypes;
-            $options['wrongMimeType'] = $this->formatMessage($this->wrongMimeType, [
-                'attribute' => $label,
-                'mimeTypes' => implode(', ', $this->mimeTypes),
-            ]);
-        }
-
-        if ($this->extensions !== null) {
-            $options['extensions'] = $this->extensions;
-            $options['wrongExtension'] = $this->formatMessage($this->wrongExtension, [
-                'attribute' => $label,
-                'extensions' => implode(', ', $this->extensions),
-            ]);
-        }
-
-        if ($this->minSize !== null) {
-            $options['minSize'] = $this->minSize;
-            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
-                'attribute' => $label,
-                'limit' => $this->minSize,
-                'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
-            ]);
-        }
-
-        if ($this->maxSize !== null) {
-            $options['maxSize'] = $this->maxSize;
-            $options['tooBig'] = $this->formatMessage($this->tooBig, [
-                'attribute' => $label,
-                'limit' => $this->getSizeLimit(),
-                'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
-            ]);
-        }
-
-        if ($this->maxFiles !== null) {
-            $options['maxFiles'] = $this->maxFiles;
-            $options['tooMany'] = $this->formatMessage($this->tooMany, [
-                'attribute' => $label,
-                'limit' => $this->maxFiles,
-            ]);
-        }
-
-        return $options;
+        return $this->clientScript->getClientOptions($this, $model, $attribute);
     }
 
     /**

@@ -9,8 +9,8 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
-use yii\web\JsExpression;
+use yii\jquery\validators\UrlValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
@@ -47,7 +47,10 @@ class UrlValidator extends Validator
      * extension, otherwise an exception would be thrown.
      */
     public $enableIDN = false;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -60,6 +63,11 @@ class UrlValidator extends Validator
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is not a valid URL.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof UrlValidatorJqueryClientScript) {
+            $this->clientScript ??= ['class' => UrlValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -118,13 +126,11 @@ class UrlValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
         }
-        $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+        return '';
     }
 
     /**
@@ -132,26 +138,10 @@ class UrlValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        if (strpos($this->pattern, '{schemes}') !== false) {
-            $pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
-        } else {
-            $pattern = $this->pattern;
+        if (Yii::$app->useJquery === false || !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            return [];
         }
 
-        $options = [
-            'pattern' => new JsExpression($pattern),
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-            'enableIDN' => (bool) $this->enableIDN,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->defaultScheme !== null) {
-            $options['defaultScheme'] = $this->defaultScheme;
-        }
-
-        return $options;
+        return $this->clientScript->getClientOptions($this, $model, $attribute);
     }
 }

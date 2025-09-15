@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\web;
 
+use Yii;
 use yii\caching\FileCache;
 use yii\web\View;
 use yiiunit\TestCase;
@@ -604,7 +605,7 @@ class ViewTest extends TestCase
         );
 
         $view = new View();
-        $view->useJquery = false;
+        Yii::$app->useJquery = false;
 
         $view->registerJs('alert("ready");', View::POS_READY);
 
@@ -677,7 +678,7 @@ class ViewTest extends TestCase
         );
 
         $view = new View();
-        $view->useJquery = true;
+        Yii::$app->useJquery = true;
 
         $view->registerJs('alert("ready");', View::POS_READY);
 

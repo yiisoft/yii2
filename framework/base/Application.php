@@ -182,7 +182,15 @@ abstract class Application extends Module
      * @var array list of loaded modules indexed by their class names.
      */
     public $loadedModules = [];
-
+    /**
+     * @var bool whether to use jQuery for POS_READY and POS_LOAD script positions.
+     *
+     * When `true` (default), maintains backward compatibility by using jQuery wrappers.
+     * When `false`, uses vanilla JavaScript equivalents.
+     *
+     * @since 2.2.0
+     */
+    public bool $useJquery = true;
 
     /**
      * Constructor.

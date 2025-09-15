@@ -7,8 +7,10 @@
 
 namespace yii\validators;
 
+use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
+use yii\jquery\validators\FilterValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * FilterValidator converts the attribute value according to a filter.
@@ -58,7 +60,10 @@ class FilterValidator extends Validator
      * be applied when the value being validated is empty.
      */
     public $skipOnEmpty = false;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -66,8 +71,14 @@ class FilterValidator extends Validator
     public function init()
     {
         parent::init();
+
         if ($this->filter === null) {
             throw new InvalidConfigException('The "filter" property must be set.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof FilterValidatorJqueryClientScript) {
+            $this->clientScript ??= ['class' => FilterValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -87,14 +98,11 @@ class FilterValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        if ($this->filter !== 'trim') {
-            return null;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'value = yii.validation.trim($form, attribute, ' . Json::htmlEncode($options) . ', value);';
+        return '';
     }
 
     /**
@@ -102,11 +110,10 @@ class FilterValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $options = [];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
+        if (Yii::$app->useJquery === false || !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            return [];
         }
 
-        return $options;
+        return $this->clientScript->getClientOptions($this, $model, $attribute);
     }
 }

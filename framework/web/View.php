@@ -171,16 +171,6 @@ class View extends \yii\base\View
      */
     private $_assetManager;
     /**
-     * @var bool whether to use jQuery for POS_READY and POS_LOAD script positions.
-     *
-     * When `true` (default), maintains backward compatibility by using jQuery wrappers.
-     * When `false`, uses vanilla JavaScript equivalents.
-     *
-     * @since 2.2.0
-     */
-    public bool $useJquery = true;
-
-    /**
      * Whether [[endPage()]] has been called and all files have been registered
      * @var bool
      * @since 2.0.44
@@ -498,13 +488,13 @@ class View extends \yii\base\View
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
      * - [[POS_END]]: at the end of the body section
-     * - [[POS_LOAD]]: enclosed within `jQuery(window).load()` when [[useJquery]] is `true`,
+     * - [[POS_LOAD]]: enclosed within `jQuery(window).load()` when [[Yii::$app->useJquery]] is `true`,
      *   or executed when HTML page is completely loaded when `false`.
-     *   Note that by using this position with [[useJquery]] `true`, the method will automatically
+     *   Note that by using this position with [[Yii::$app->useJquery]] `true`, the method will automatically
      *   register the `jQuery.js` file.
-     * - [[POS_READY]]: enclosed within `jQuery(document).ready()` when [[useJquery]] is `true`,
+     * - [[POS_READY]]: enclosed within `jQuery(document).ready()` when [[Yii::$app->useJquery]] is `true`,
      *   or executed when HTML document composition is ready when `false`. This is the default value.
-     *   Note that by using this position with [[useJquery]] true, the method will automatically
+     *   Note that by using this position with [[Yii::$app->useJquery]] true, the method will automatically
      *   register the `jQuery.js` file.
      * @param string|null $key the key that identifies the JS code block. If `null`, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
@@ -516,7 +506,7 @@ class View extends \yii\base\View
         $this->js[$position][$key] = $js;
 
         // only auto-register jQuery if useJquery is `true` (maintains backward compatibility)
-        if ($this->useJquery && ($position === self::POS_READY || $position === self::POS_LOAD)) {
+        if (Yii::$app->useJquery && ($position === self::POS_READY || $position === self::POS_LOAD)) {
             JqueryAsset::register($this);
         }
     }
@@ -751,7 +741,7 @@ class View extends \yii\base\View
      */
     protected function wrapReadyScript(string $script): string
     {
-        if ($this->useJquery) {
+        if (Yii::$app->useJquery) {
             // jQuery wrapper (backward compatible)
             return "jQuery(function ($) {\n{$script}\n});";
         }
@@ -771,7 +761,7 @@ class View extends \yii\base\View
      */
     protected function wrapLoadScript(string $script): string
     {
-        if ($this->useJquery) {
+        if (Yii::$app->useJquery) {
             // jQuery wrapper (backward compatible)
             return "jQuery(window).on('load', function () {\n{$script}\n});";
         }
