@@ -34,8 +34,7 @@ class UrlValidatorJqueryClientScript implements ClientValidatorScriptInterface
         if (strpos($validator->pattern, '{schemes}') !== false) {
             $pattern = str_replace(
                 '{schemes}',
-                '(' . implode('|',
-                $validator->validSchemes) . ')',
+                '(' . implode('|', $validator->validSchemes) . ')',
                 $validator->pattern,
             );
         } else {
