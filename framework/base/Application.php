@@ -183,10 +183,11 @@ abstract class Application extends Module
      */
     public $loadedModules = [];
     /**
-     * @var bool whether to use jQuery for POS_READY and POS_LOAD script positions.
+     * Indicates whether jQuery should be used for client-side validation and widgets.
      *
-     * When `true` (default), maintains backward compatibility by using jQuery wrappers.
-     * When `false`, uses vanilla JavaScript equivalents.
+     * When enabled, jQuery assets will be registered for validators and widgets that require it.
+     *
+     * Set to `false` to disable automatic jQuery inclusion for these features.
      *
      * @since 2.2.0
      */
