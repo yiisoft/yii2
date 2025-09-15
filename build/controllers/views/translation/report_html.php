@@ -8,6 +8,10 @@ use yii\helpers\Html;
  * @var string $sourcePath
  * @var string $translationPath
  * @var array $results
+ *
+ * @phpstan-var \yii\web\View&object{
+ *     context: \yii\build\controllers\TranslationController,
+ * } $this
  */
 
 ?><!doctype html>
