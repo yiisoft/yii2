@@ -132,7 +132,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
             return (int) $expire >= $currentTime;
         }
 
-        if (is_string($expire)){
+        if (is_string($expire)) {
             return strtotime($expire) >= $currentTime;
         }
 
