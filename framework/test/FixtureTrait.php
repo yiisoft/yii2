@@ -40,7 +40,7 @@ trait FixtureTrait
      *
      * The return value of this method must be an array of fixture configurations. For example,
      *
-     * ```php
+     * ```
      * [
      *     // anonymous fixture
      *     PostFixture::class,

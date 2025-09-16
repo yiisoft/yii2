@@ -60,7 +60,7 @@ class Behavior extends BaseObject
      *
      * The following is an example:
      *
-     * ```php
+     * ```
      * [
      *     Model::EVENT_BEFORE_VALIDATE => 'myBeforeValidate',
      *     Model::EVENT_AFTER_VALIDATE => 'myAfterValidate',

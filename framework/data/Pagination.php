@@ -26,7 +26,7 @@ use yii\web\Request;
  *
  * Controller action:
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
@@ -45,7 +45,7 @@ use yii\web\Request;
  *
  * View:
  *
- * ```php
+ * ```
  * foreach ($models as $model) {
  *     // display $model here
  * }

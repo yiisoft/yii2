@@ -21,7 +21,7 @@ use yii\base\ErrorHandler;
  *
  * You may configure the targets in application configuration, like the following:
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'log' => [
@@ -46,12 +46,12 @@ use yii\base\ErrorHandler;
  *
  * Each log target can have a name and can be referenced via the [[targets]] property as follows:
  *
- * ```php
+ * ```
  * Yii::$app->log->targets['file']->enabled = false;
  * ```
  *
- * @property int $flushInterval How many messages should be logged before they are sent to targets. This
- * method returns the value of [[Logger::flushInterval]].
+ * @property int $flushInterval How many messages should be logged before they are sent to targets. See
+ * [[getFlushInterval()]] and [[setFlushInterval()]] for details.
  * @property Logger $logger The logger. If not set, [[Yii::getLogger()]] will be used. Note that the type of
  * this property differs in getter and setter. See [[getLogger()]] and [[setLogger()]] for details.
  * @property int $traceLevel How many application call stacks should be logged together with each message.
@@ -107,7 +107,6 @@ class Dispatcher extends Component
     /**
      * Gets the connected logger.
      * If not set, [[Yii::getLogger()]] will be used.
-     * @property Logger the logger. If not set, [[Yii::getLogger()]] will be used.
      * @return Logger the logger.
      */
     public function getLogger()

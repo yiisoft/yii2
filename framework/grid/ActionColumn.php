@@ -16,7 +16,7 @@ use yii\helpers\Url;
  *
  * To add an ActionColumn to the gridview, add it to the [[GridView::columns|columns]] configuration as follows:
  *
- * ```php
+ * ```
  * 'columns' => [
  *     // ...
  *     [
@@ -53,7 +53,7 @@ class ActionColumn extends Column
      *
      * As an example, to only have the view, and update button you can add the ActionColumn to your GridView columns as follows:
      *
-     * ```php
+     * ```
      * ['class' => 'yii\grid\ActionColumn', 'template' => '{view} {update}'],
      * ```
      *
@@ -65,7 +65,7 @@ class ActionColumn extends Column
      * and the values are the corresponding button rendering callbacks. The callbacks should use the following
      * signature:
      *
-     * ```php
+     * ```
      * function ($url, $model, $key) {
      *     // return the button HTML code
      * }
@@ -77,7 +77,7 @@ class ActionColumn extends Column
      * You can add further conditions to the button, for example only display it, when the model is
      * editable (here assuming you have a status field that indicates that):
      *
-     * ```php
+     * ```
      * [
      *     'update' => function ($url, $model, $key) {
      *         return $model->status === 'editable' ? Html::a('Update', $url) : '';
@@ -88,7 +88,7 @@ class ActionColumn extends Column
     public $buttons = [];
     /**
      * @var array button icons. The array keys are the icon names and the values the corresponding html:
-     * ```php
+     * ```
      * [
      *     'eye-open' => '<svg ...></svg>',
      *     'pencil' => Html::tag('span', '', ['class' => 'glyphicon glyphicon-pencil'])
@@ -108,7 +108,7 @@ class ActionColumn extends Column
      * this array it will be shown by default.
      * The callbacks must use the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index) {
      *     return $model->status === 'editable';
      * }
@@ -116,7 +116,7 @@ class ActionColumn extends Column
      *
      * Or you can pass a boolean value:
      *
-     * ```php
+     * ```
      * [
      *     'update' => \Yii::$app->user->can('update'),
      * ],
@@ -129,7 +129,7 @@ class ActionColumn extends Column
      * The signature of the callback should be the same as that of [[createUrl()]]
      * Since 2.0.10 it can accept additional parameter, which refers to the column instance itself:
      *
-     * ```php
+     * ```
      * function (string $action, mixed $model, mixed $key, integer $index, ActionColumn $this) {
      *     //return string;
      * }

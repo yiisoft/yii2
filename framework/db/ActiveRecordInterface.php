@@ -99,7 +99,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * methods defined in [[ActiveQueryInterface]] before `one()` or `all()` is called to return
      * populated ActiveRecord instances. For example,
      *
-     * ```php
+     * ```
      * // find the customer whose ID is 1
      * $customer = Customer::find()->where(['id' => 1])->one();
      *
@@ -115,7 +115,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * You may override this method to return a customized query. For example,
      *
-     * ```php
+     * ```
      * class Customer extends ActiveRecord
      * {
      *     public static function find()
@@ -128,7 +128,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * The following code shows how to apply a default condition for all queries:
      *
-     * ```php
+     * ```
      * class Customer extends ActiveRecord
      * {
      *     public static function find()
@@ -172,7 +172,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * See the following code for usage examples:
      *
-     * ```php
+     * ```
      * // find a single customer whose primary key value is 10
      * $customer = Customer::findOne(10);
      *
@@ -195,7 +195,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * If you need to pass user input to this method, make sure the input value is scalar or in case of
      * array condition, make sure the array structure can not be changed from the outside:
      *
-     * ```php
+     * ```
      * // yii\web\Controller ensures that $id is scalar
      * public function actionView($id)
      * {
@@ -240,7 +240,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * See the following code for usage examples:
      *
-     * ```php
+     * ```
      * // find the customers whose primary key value is 10
      * $customers = Customer::findAll(10);
      *
@@ -263,7 +263,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      * If you need to pass user input to this method, make sure the input value is scalar or in case of
      * array condition, make sure the array structure can not be changed from the outside:
      *
-     * ```php
+     * ```
      * // yii\web\Controller ensures that $id is scalar
      * public function actionView($id)
      * {
@@ -288,7 +288,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], ['status' => '2']);
      * ```
      *
@@ -307,7 +307,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll([status = 3]);
      * ```
      *
@@ -326,7 +326,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * For example, to save a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -347,7 +347,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * Usage example:
      *
-     * ```php
+     * ```
      * $customer = new Customer;
      * $customer->name = $name;
      * $customer->email = $email;
@@ -368,7 +368,7 @@ interface ActiveRecordInterface extends StaticInstanceInterface
      *
      * Usage example:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;

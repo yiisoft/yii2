@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
+use yii\web\Controller;
 use yii\web\Response;
 
 /**
@@ -35,6 +36,9 @@ use yii\web\Response;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends Action<T>
  */
 class CaptchaAction extends Action
 {

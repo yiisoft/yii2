@@ -77,7 +77,7 @@ class Module extends ServiceLocator
      * the controller's fully qualified class name, and the rest of the name-value pairs
      * in the array are used to initialize the corresponding controller properties. For example,
      *
-     * ```php
+     * ```
      * [
      *   'account' => 'app\controllers\UserController',
      *   'article' => [
@@ -135,7 +135,7 @@ class Module extends ServiceLocator
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
-     * ```php
+     * ```
      * function (Module $module) {
      *     //return string|int
      * }
@@ -349,7 +349,7 @@ class Module extends ServiceLocator
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
-     * ```php
+     * ```
      * function (Module $module) {
      *     //return string
      * }
@@ -381,14 +381,11 @@ class Module extends ServiceLocator
      * Defines path aliases.
      * This method calls [[Yii::setAlias()]] to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
-     * @property array list of path aliases to be defined. The array keys are alias names
-     * (must start with `@`) and the array values are the corresponding paths or aliases.
-     * See [[setAliases()]] for an example.
      * @param array $aliases list of path aliases to be defined. The array keys are alias names
      * (must start with `@`) and the array values are the corresponding paths or aliases.
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     '@models' => '@app/models', // an existing alias
      *     '@backend' => __DIR__ . '/../backend',  // a directory
@@ -512,7 +509,7 @@ class Module extends ServiceLocator
      *
      * The following is an example for registering two sub-modules:
      *
-     * ```php
+     * ```
      * [
      *     'comment' => [
      *         'class' => 'app\modules\comment\CommentModule',
@@ -705,7 +702,7 @@ class Module extends ServiceLocator
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function beforeAction($action)
      * {
      *     if (!parent::beforeAction($action)) {
@@ -736,7 +733,7 @@ class Module extends ServiceLocator
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function afterAction($action, $result)
      * {
      *     $result = parent::afterAction($action, $result);

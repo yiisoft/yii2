@@ -12,7 +12,7 @@ namespace yii\grid;
  *
  * To add a SerialColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
  *
- * ```php
+ * ```
  * 'columns' => [
  *     // ...
  *     [

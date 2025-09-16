@@ -23,7 +23,7 @@ class DefaultValueValidator extends Validator
      * be assigned to the attributes being validated if they are empty. The signature of the anonymous function
      * should be as follows,
      *
-     * ```php
+     * ```
      * function($model, $attribute) {
      *     // compute value
      *     return $value;

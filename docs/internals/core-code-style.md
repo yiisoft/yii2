@@ -468,6 +468,35 @@ It is also possible to link to the Guide using the following syntax:
 [link to guide](guide:file-name.md#subsection)
 ```
 
+##### Code examples
+
+Code examples should use Markdown syntax, but they should not specify the language.
+Specifying a language in code examples may break their display in some IDEs. Here is an example:
+
+```php
+/**
+ * Correct code example:
+ * 
+ * ```
+ * $object->doMagic();
+ * ```
+ */
+function doMagic()
+{
+}
+
+/**
+ * Incorrect code example:
+ * 
+ * ```php
+ * $object->doMagic();
+ * ```
+ */
+function doMagic()
+{
+}
+```
+
 
 #### Comments
 

@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
  *
  * Expressions of this type can be used in conditions as well:
  *
- * ```php
+ * ```
  * $query->andWhere(['@>', 'items', new ArrayExpression([1, 2, 3], 'integer')])
  * ```
  *

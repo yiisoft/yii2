@@ -32,7 +32,7 @@ use yii\caching\CacheInterface;
  * The following example shows how to create a Connection instance and establish
  * the DB connection:
  *
- * ```php
+ * ```
  * $connection = new \yii\db\Connection([
  *     'dsn' => $dsn,
  *     'username' => $username,
@@ -43,7 +43,7 @@ use yii\caching\CacheInterface;
  *
  * After the DB connection is established, one can execute SQL statements like the following:
  *
- * ```php
+ * ```
  * $command = $connection->createCommand('SELECT * FROM post');
  * $posts = $command->queryAll();
  * $command = $connection->createCommand('UPDATE post SET status=1');
@@ -54,7 +54,7 @@ use yii\caching\CacheInterface;
  * When the parameters are coming from user input, you should use this approach
  * to prevent SQL injection attacks. The following is an example:
  *
- * ```php
+ * ```
  * $command = $connection->createCommand('SELECT * FROM post WHERE id=:id');
  * $command->bindValue(':id', $_GET['id']);
  * $post = $command->query();
@@ -65,7 +65,7 @@ use yii\caching\CacheInterface;
  * If the underlying DBMS supports transactions, you can perform transactional SQL queries
  * like the following:
  *
- * ```php
+ * ```
  * $transaction = $connection->beginTransaction();
  * try {
  *     $connection->createCommand($sql1)->execute();
@@ -79,7 +79,7 @@ use yii\caching\CacheInterface;
  *
  * You also can use shortcut for the above like the following:
  *
- * ```php
+ * ```
  * $connection->transaction(function () {
  *     $order = new Order($customer);
  *     $order->save();
@@ -89,7 +89,7 @@ use yii\caching\CacheInterface;
  *
  * If needed you can pass transaction isolation level as a second parameter:
  *
- * ```php
+ * ```
  * $connection->transaction(function (Connection $db) {
  *     //return $db->...
  * }, Transaction::READ_UNCOMMITTED);
@@ -98,7 +98,7 @@ use yii\caching\CacheInterface;
  * Connection is often used as an application component and configured in the application
  * configuration like the following:
  *
- * ```php
+ * ```
  * 'components' => [
  *     'db' => [
  *         'class' => '\yii\db\Connection',
@@ -346,7 +346,7 @@ class Connection extends Component
      * @var array the configuration that should be merged with every slave configuration listed in [[slaves]].
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'username' => 'slave',
      *     'password' => 'slave',
@@ -372,7 +372,7 @@ class Connection extends Component
      * @var array the configuration that should be merged with every master configuration listed in [[masters]].
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'username' => 'master',
      *     'password' => 'master',
@@ -469,7 +469,7 @@ class Connection extends Component
      * queries performed within the callable will be cached and their results will be fetched from cache if available.
      * For example,
      *
-     * ```php
+     * ```
      * // The customer will be fetched from cache if available.
      * // If not, the query will be made against DB and cached for use next time.
      * $customer = $db->cache(function (Connection $db) {
@@ -513,7 +513,7 @@ class Connection extends Component
      *
      * Queries performed within the callable will not use query cache at all. For example,
      *
-     * ```php
+     * ```
      * $db->cache(function (Connection $db) {
      *
      *     // ... queries that use query cache ...
@@ -1098,7 +1098,7 @@ class Connection extends Component
      * This method is provided so that you can temporarily force using the master connection to perform
      * DB operations even if they are read queries. For example,
      *
-     * ```php
+     * ```
      * $result = $db->useMaster(function ($db) {
      *     return $db->createCommand('SELECT * FROM user LIMIT 1')->queryOne();
      * });

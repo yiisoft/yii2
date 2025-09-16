@@ -14,7 +14,7 @@ namespace yii\base;
  * The interface does not declare any method. Classes implementing this interface must declare their constructors
  * like the following:
  *
- * ```php
+ * ```
  * public function __construct($param1, $param2, ..., $config = [])
  * ```
  *

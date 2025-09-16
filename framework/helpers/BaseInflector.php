@@ -613,7 +613,7 @@ class BaseInflector
      *
      * Special treatment is done for the last few words. For example,
      *
-     * ```php
+     * ```
      * $words = ['Spain', 'France'];
      * echo Inflector::sentence($words);
      * // output: Spain and France

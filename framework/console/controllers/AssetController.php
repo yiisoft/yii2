@@ -60,7 +60,7 @@ class AssetController extends Controller
      * You can specify the name of the output compressed file using 'css' and 'js' keys:
      * For example:
      *
-     * ```php
+     * ```
      * 'app\config\AllAsset' => [
      *     'js' => 'js/all-{hash}.js',
      *     'css' => 'css/all-{hash}.css',
@@ -76,7 +76,7 @@ class AssetController extends Controller
      * bundles in this case.
      * For example:
      *
-     * ```php
+     * ```
      * 'allShared' => [
      *     'js' => 'js/all-shared-{hash}.js',
      *     'css' => 'css/all-shared-{hash}.css',

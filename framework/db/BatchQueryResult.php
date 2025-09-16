@@ -16,7 +16,7 @@ use yii\base\Component;
  * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the [[\Iterator]] interface,
  * you can iterate it to obtain a batch of data in each iteration. For example,
  *
- * ```php
+ * ```
  * $query = (new Query)->from('user');
  * foreach ($query->batch() as $i => $users) {
  *     // $users represents the rows in the $i-th batch

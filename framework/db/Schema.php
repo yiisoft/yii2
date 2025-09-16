@@ -336,7 +336,7 @@ abstract class Schema extends BaseObject
      *
      * Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *  'IndexName1' => ['col1' [, ...]],
      *  'IndexName2' => ['col2' [, ...]],

@@ -25,7 +25,7 @@ interface Linkable
      *
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'self' => 'https://example.com/users/1',
      *     'friends' => [

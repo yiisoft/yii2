@@ -33,7 +33,7 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ```php
+ * ```
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
@@ -48,7 +48,7 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ```php
+ * ```
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',

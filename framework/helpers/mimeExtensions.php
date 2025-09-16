@@ -9,7 +9,7 @@
  * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
 return [

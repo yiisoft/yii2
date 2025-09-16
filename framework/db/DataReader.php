@@ -16,7 +16,7 @@ use yii\base\InvalidCallException;
  * returns all the rows in a single array. Rows of data can also be read by
  * iterating through the reader. For example,
  *
- * ```php
+ * ```
  * $command = $connection->createCommand('SELECT * FROM post');
  * $reader = $command->query();
  *

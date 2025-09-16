@@ -40,7 +40,7 @@ class LikeCondition extends SimpleCondition
     /**
      * This method allows to specify how to escape special characters in the value(s).
      *
-     * @param array|null|false an array of mappings from the special characters to their escaped counterparts.
+     * @param array|null|false $escapingReplacements an array of mappings from the special characters to their escaped counterparts.
      * You may use `false` to indicate the values are already escaped and no escape should be applied,
      * or either `null` or empty array if escaping is condition builder responsibility.
      * Note that when using an escape mapping (or the third operand is not provided),

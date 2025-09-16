@@ -36,7 +36,7 @@ class BaseUrl
      * if you want to specify additional query parameters for the URL being created. The
      * array format must be:
      *
-     * ```php
+     * ```
      * // generates: /index.php?r=site/index&param1=value1&param2=value2
      * ['site/index', 'param1' => 'value1', 'param2' => 'value2']
      * ```
@@ -44,7 +44,7 @@ class BaseUrl
      * If you want to create a URL with an anchor, you can use the array format with a `#` parameter.
      * For example,
      *
-     * ```php
+     * ```
      * // generates: /index.php?r=site/index&param1=value1#name
      * ['site/index', 'param1' => 'value1', '#' => 'name']
      * ```
@@ -64,7 +64,7 @@ class BaseUrl
      *
      * Below are some examples of using this method:
      *
-     * ```php
+     * ```
      * // /index.php?r=site%2Findex
      * echo Url::toRoute('site/index');
      *
@@ -167,7 +167,7 @@ class BaseUrl
      *
      * Below are some examples of using this method:
      *
-     * ```php
+     * ```
      * // /index.php?r=site%2Findex
      * echo Url::to(['site/index']);
      *
@@ -332,7 +332,7 @@ class BaseUrl
      * [[\yii\web\Controller::actionParams]]. You may use the following code in the layout view to add a link tag
      * about canonical URL:
      *
-     * ```php
+     * ```
      * $this->registerLinkTag(['rel' => 'canonical', 'href' => Url::canonical()]);
      * ```
      *
@@ -389,7 +389,7 @@ class BaseUrl
      * will be removed from the existing GET parameters; all other parameters specified in `$params` will
      * be merged with the existing GET parameters. For example,
      *
-     * ```php
+     * ```
      * // assume $_GET = ['id' => 123, 'src' => 'google'], current route is "post/view"
      *
      * // /index.php?r=post%2Fview&id=123&src=google
@@ -406,7 +406,7 @@ class BaseUrl
      * For a `PostSearchForm` model where parameter names are `PostSearchForm[id]` and `PostSearchForm[src]` the syntax
      * would be the following:
      *
-     * ```php
+     * ```
      * // index.php?r=post%2Findex&PostSearchForm%5Bid%5D=100&PostSearchForm%5Bsrc%5D=google
      * echo Url::current([
      *     $postSearch->formName() => ['id' => 100, 'src' => 'google'],

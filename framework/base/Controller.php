@@ -116,7 +116,7 @@ class Controller extends Component implements ViewContextInterface
      * It should return an array, with array keys being action IDs, and array values the corresponding
      * action class names or action configuration arrays. For example,
      *
-     * ```php
+     * ```
      * return [
      *     'action1' => 'app\components\Action1',
      *     'action2' => [
@@ -293,7 +293,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function beforeAction($action)
      * {
      *     // your custom code here, if you want the code to run before action filters,
@@ -330,7 +330,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function afterAction($action, $result)
      * {
      *     $result = parent::afterAction($action, $result);

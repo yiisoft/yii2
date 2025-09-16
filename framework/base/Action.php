@@ -21,7 +21,7 @@ use Yii;
  * with user input values automatically according to their names.
  * For example, if the `run()` method is declared as follows:
  *
- * ```php
+ * ```
  * public function run($id, $type = 'book') { ... }
  * ```
  *

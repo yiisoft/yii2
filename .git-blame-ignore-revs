@@ -1,0 +1,4 @@
+# Reformat code to be PSR-2 compatible
+b5f8a4dc22d5f8188405a2099d85fc154226c9b2
+# Added php-cs-fixer coding standards validation to Travis CI
+ba0ab403b52124c941dbeb46fbd9efdc12252a5d

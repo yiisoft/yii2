@@ -19,7 +19,7 @@ use yii\base\NotSupportedException;
  * The following code is a typical example of using transactions (note that some
  * DBMS may not support transactions):
  *
- * ```php
+ * ```
  * $transaction = $connection->beginTransaction();
  * try {
  *     $connection->createCommand($sql1)->execute();

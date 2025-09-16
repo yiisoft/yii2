@@ -17,7 +17,7 @@ namespace yii\base;
  * The first approach is mainly used by extensions and is managed by the Composer installation process.
  * You mainly need to list the bootstrapping class of your extension in the `composer.json` file like following,
  *
- * ```json
+ * ```
  * {
  *     // ...
  *     "extra": {
@@ -31,7 +31,7 @@ namespace yii\base;
  * The second approach is used by application code which needs to register some code to be run during
  * the bootstrap process. This is done by configuring the [[Application::bootstrap]] property:
  *
- * ```php
+ * ```
  * return [
  *     // ...
  *     'bootstrap' => [

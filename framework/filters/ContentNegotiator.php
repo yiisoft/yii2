@@ -32,7 +32,7 @@ use yii\web\Response;
  * The following code shows how you can use ContentNegotiator as a bootstrapping component. Note that in this case,
  * the content negotiation applies to the whole application.
  *
- * ```php
+ * ```
  * // in application configuration
  * use yii\web\Response;
  *
@@ -57,7 +57,7 @@ use yii\web\Response;
  * In this case, the content negotiation result only applies to the corresponding controller or module, or even
  * specific actions if you configure the `only` or `except` property of the filter.
  *
- * ```php
+ * ```
  * use yii\web\Response;
  *
  * public function behaviors()

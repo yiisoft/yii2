@@ -65,7 +65,7 @@ trait QueryTrait
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($row)
      * {
      *     // return the index value corresponding to $row
@@ -145,7 +145,7 @@ trait QueryTrait
      *
      * The following code shows the difference between this method and [[where()]]:
      *
-     * ```php
+     * ```
      * // WHERE `age`=:age
      * $query->filterWhere(['name' => null, 'age' => 20]);
      * // WHERE `age`=:age

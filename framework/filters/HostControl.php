@@ -20,7 +20,7 @@ use yii\web\NotFoundHttpException;
  *
  * Application configuration example:
  *
- * ```php
+ * ```
  * return [
  *     'as hostControl' => [
  *         'class' => 'yii\filters\HostControl',
@@ -35,7 +35,7 @@ use yii\web\NotFoundHttpException;
  *
  * Controller configuration example:
  *
- * ```php
+ * ```
  * use yii\web\Controller;
  * use yii\filters\HostControl;
  *
@@ -70,7 +70,7 @@ class HostControl extends ActionFilter
      * @var array|\Closure|null list of host names, which are allowed.
      * Each host can be specified as a wildcard pattern. For example:
      *
-     * ```php
+     * ```
      * [
      *     'example.com',
      *     '*.example.com',
@@ -79,7 +79,7 @@ class HostControl extends ActionFilter
      *
      * This field can be specified as a PHP callback of following signature:
      *
-     * ```php
+     * ```
      * function (\yii\base\Action $action) {
      *     //return array of strings
      * }
@@ -96,7 +96,7 @@ class HostControl extends ActionFilter
      *
      * The signature of the callback should be as follows:
      *
-     * ```php
+     * ```
      * function (\yii\base\Action $action)
      * ```
      *

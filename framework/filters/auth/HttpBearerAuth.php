@@ -12,7 +12,7 @@ namespace yii\filters\auth;
  *
  * You may use HttpBearerAuth by attaching it as a behavior to a controller or module, like the following:
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [

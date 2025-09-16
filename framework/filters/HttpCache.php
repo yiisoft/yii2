@@ -20,7 +20,7 @@ use yii\base\ActionFilter;
  * In the following example the filter will be applied to the `index` action and
  * the Last-Modified header will contain the date of the last update to the user table in the database.
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -49,7 +49,7 @@ class HttpCache extends ActionFilter
      * @var callable a PHP callback that returns the UNIX timestamp of the last modification time.
      * The callback's signature should be:
      *
-     * ```php
+     * ```
      * function ($action, $params)
      * ```
      *
@@ -63,7 +63,7 @@ class HttpCache extends ActionFilter
      * @var callable a PHP callback that generates the ETag seed string.
      * The callback's signature should be:
      *
-     * ```php
+     * ```
      * function ($action, $params)
      * ```
      *

@@ -67,7 +67,7 @@ abstract class BaseMigrateController extends Controller
      *
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'app\migrations',
      *     'some\extension\migrations',

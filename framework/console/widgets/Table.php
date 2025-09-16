@@ -17,7 +17,7 @@ use yii\helpers\Console;
  *
  * For example,
  *
- * ```php
+ * ```
  * $table = new Table();
  *
  * echo $table
@@ -31,7 +31,7 @@ use yii\helpers\Console;
  *
  * or
  *
- * ```php
+ * ```
  * echo Table::widget([
  *     'headers' => ['test1', 'test2', 'test3'],
  *     'rows' => [
@@ -40,7 +40,10 @@ use yii\helpers\Console;
  *     ],
  * ]);
  *
+ * @property-write array $chars Table chars.
+ * @property-write array $headers Table headers.
  * @property-write string $listPrefix List prefix.
+ * @property-write array $rows Table rows.
  * @property-write int $screenWidth Screen width.
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>

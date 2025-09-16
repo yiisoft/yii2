@@ -412,7 +412,7 @@ class BaseHtml
      * If you want to use an absolute url you can call [[Url::to()]] yourself, before passing the URL to this method,
      * like this:
      *
-     * ```php
+     * ```
      * Html::a('link text', Url::to($url, true))
      * ```
      *
@@ -817,14 +817,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -875,14 +875,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -961,7 +961,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1054,7 +1054,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1130,7 +1130,7 @@ class BaseHtml
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($item, $index)
      *   ```
      *
@@ -1181,7 +1181,7 @@ class BaseHtml
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($item, $index)
      *   ```
      *
@@ -1670,14 +1670,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -1725,14 +1725,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -1785,7 +1785,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1826,7 +1826,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -2057,7 +2057,7 @@ class BaseHtml
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
      *
-     * ```php
+     * ```
      * $options = ['class' => ['persistent' => 'initial']];
      * Html::addCssClass($options, ['persistent' => 'override']);
      * var_dump($options['class']); // outputs: array('persistent' => 'initial');
@@ -2139,7 +2139,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * Html::addCssStyle($options, 'width: 100px; height: 200px');
      * ```
      *
@@ -2174,7 +2174,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * Html::removeCssStyle($options, ['width', 'height']);
      * ```
      *
@@ -2199,7 +2199,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * print_r(Html::cssStyleFromArray(['width' => '100px', 'height' => '200px']));
      * // will display: 'width: 100px; height: 200px;'
      * ```
@@ -2226,7 +2226,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * print_r(Html::cssStyleToArray('width: 100px; height: 200px;'));
      * // will display: ['width' => '100px', 'height' => '200px']
      * ```

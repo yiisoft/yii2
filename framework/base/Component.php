@@ -28,7 +28,7 @@ use yii\helpers\StringHelper;
  *
  * To attach an event handler to an event, call [[on()]]:
  *
- * ```php
+ * ```
  * $post->on('update', function ($event) {
  *     // send email notification
  * });
@@ -44,7 +44,7 @@ use yii\helpers\StringHelper;
  *
  * The signature of an event handler should be like the following:
  *
- * ```php
+ * ```
  * function foo($event)
  * ```
  *
@@ -53,7 +53,7 @@ use yii\helpers\StringHelper;
  * You can also attach a handler to an event when configuring a component with a configuration array.
  * The syntax is like the following:
  *
- * ```php
+ * ```
  * [
  *     'on add' => function ($event) { ... }
  * ]
@@ -64,7 +64,7 @@ use yii\helpers\StringHelper;
  * Sometimes, you may want to associate extra data with an event handler when you attach it to an event
  * and then access it when the handler is invoked. You may do so by
  *
- * ```php
+ * ```
  * $post->on('update', function ($event) {
  *     // the data can be accessed via $event->data
  * }, $data);
@@ -80,7 +80,7 @@ use yii\helpers\StringHelper;
  * One can also attach a behavior to a component when configuring it with a configuration array. The syntax is like the
  * following:
  *
- * ```php
+ * ```
  * [
  *     'as tree' => [
  *         'class' => 'Tree',
@@ -446,7 +446,7 @@ class Component extends BaseObject
      * indexed by behavior names. A behavior configuration can be either a string specifying
      * the behavior class or an array of the following structure:
      *
-     * ```php
+     * ```
      * 'behaviorName' => [
      *     'class' => 'BehaviorClass',
      *     'property1' => 'value1',
@@ -515,7 +515,7 @@ class Component extends BaseObject
      *
      * Since 2.0.14 you can specify event name as a wildcard pattern:
      *
-     * ```php
+     * ```
      * $component->on('event.group.*', function ($event) {
      *     Yii::trace($event->name . ' is triggered.');
      * });
