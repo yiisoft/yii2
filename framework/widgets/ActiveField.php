@@ -188,7 +188,7 @@ class ActiveField extends Component
      * and use them as the content.
      * If a callable, it will be called to generate the content. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($field) {
      *     return $html;
      * }
@@ -751,7 +751,7 @@ class ActiveField extends Component
      * For example to use the [[MaskedInput]] widget to get some date input, you can use
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
-     * ```php
+     * ```
      * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);

@@ -141,7 +141,7 @@ class Formatter extends Component
      *
      * For example:
      *
-     * ```php
+     * ```
      * 'MM/dd/yyyy' // date in ICU format
      * 'php:m/d/Y' // the same date in PHP format
      * ```
@@ -157,7 +157,7 @@ class Formatter extends Component
      *
      * For example:
      *
-     * ```php
+     * ```
      * 'HH:mm:ss' // time in ICU format
      * 'php:H:i:s' // the same time in PHP format
      * ```
@@ -174,7 +174,7 @@ class Formatter extends Component
      *
      * For example:
      *
-     * ```php
+     * ```
      * 'MM/dd/yyyy HH:mm:ss' // date and time in ICU format
      * 'php:m/d/Y H:i:s' // the same date and time in PHP format
      * ```
@@ -191,7 +191,7 @@ class Formatter extends Component
      * set this property to `\IntlDateFormatter::TRADITIONAL`.
      * The calendar must then be specified in the [[locale]], for example for the persian calendar the configuration for the formatter would be:
      *
-     * ```php
+     * ```
      * 'formatter' => [
      *     'locale' => 'fa_IR@calendar=persian',
      *     'calendar' => \IntlDateFormatter::TRADITIONAL,
@@ -241,7 +241,7 @@ class Formatter extends Component
      *
      * For example to adjust the maximum and minimum value of fraction digits you can configure this property like the following:
      *
-     * ```php
+     * ```
      * [
      *     NumberFormatter::MIN_FRACTION_DIGITS => 0,
      *     NumberFormatter::MAX_FRACTION_DIGITS => 2,
@@ -260,7 +260,7 @@ class Formatter extends Component
      *
      * For example to change the minus sign for negative numbers you can configure this property like the following:
      *
-     * ```php
+     * ```
      * [
      *     NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
      * ]
@@ -278,7 +278,7 @@ class Formatter extends Component
      *
      * For example to choose a custom currency symbol, e.g. [U+20BD](https://unicode-table.com/en/20BD/) instead of `руб.` for Russian Ruble:
      *
-     * ```php
+     * ```
      * [
      *     NumberFormatter::CURRENCY_SYMBOL => '₽',
      * ]
@@ -317,7 +317,7 @@ class Formatter extends Component
      *
      * For example, you can add smaller measure unit:
      *
-     * ```php
+     * ```
      * $this->measureUnits[self::UNIT_LENGTH][self::UNIT_SYSTEM_METRIC] = [
      *     'nanometer' => 0.000001
      * ]

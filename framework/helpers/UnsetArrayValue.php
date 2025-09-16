@@ -12,7 +12,7 @@ namespace yii\helpers;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * $array1 = [
  *     'ids' => [
  *         1,
@@ -35,7 +35,7 @@ namespace yii\helpers;
  *
  * The result will be
  *
- * ```php
+ * ```
  * [
  *     'ids' => [
  *         1,

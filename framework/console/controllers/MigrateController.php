@@ -31,7 +31,7 @@ use yii\helpers\Inflector;
  * this command is executed, if it does not exist. You may also manually
  * create it as follows:
  *
- * ```sql
+ * ```
  * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
@@ -54,7 +54,7 @@ use yii\helpers\Inflector;
  * Since 2.0.10 you can use namespaced migrations. In order to enable this feature you should configure [[migrationNamespaces]]
  * property for the controller at application configuration:
  *
- * ```php
+ * ```
  * return [
  *     'controllerMap' => [
  *         'migrate' => [

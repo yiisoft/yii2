@@ -88,7 +88,7 @@ class Cookie extends \yii\base\BaseObject
     /**
      * Magic method to turn a cookie object into a string without having to explicitly access [[value]].
      *
-     * ```php
+     * ```
      * if (isset($request->cookies['name'])) {
      *     $value = (string) $request->cookies['name'];
      * }

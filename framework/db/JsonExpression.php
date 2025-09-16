@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
  *
  * For example:
  *
- * ```php
+ * ```
  * new JsonExpression(['a' => 1, 'b' => 2]); // will be encoded to '{"a": 1, "b": 2}'
  * ```
  *

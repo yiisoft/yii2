@@ -19,7 +19,7 @@ use yii\helpers\Json;
  * To configure properties like [[encodeOptions]] or [[prettyPrint]], you can configure the `response`
  * application component like the following:
  *
- * ```php
+ * ```
  * 'response' => [
  *     // ...
  *     'formatters' => [
