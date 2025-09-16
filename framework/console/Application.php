@@ -78,7 +78,15 @@ class Application extends \yii\base\Application
      * @var Controller the currently active controller instance
      */
     public $controller;
-
+    /**
+     * Whether to enable jQuery integration for the console application.
+     *
+     * This property is reserved for future compatibility. Console applications do not utilize jQuery, but this flag is
+     * provided for configuration consistency with web applications.
+     *
+     * @since 2.2.0
+     */
+    public bool $useJquery = false;
 
     /**
      * {@inheritdoc}
