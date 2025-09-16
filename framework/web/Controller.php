@@ -52,7 +52,10 @@ class Controller extends \yii\base\Controller
      */
     public function renderAjax($view, $params = [])
     {
-        return $this->getView()->renderAjax($view, $params, $this);
+        /** @var View */
+        $viewComponent = $this->getView();
+
+        return $viewComponent->renderAjax($view, $params, $this);
     }
 
     /**
