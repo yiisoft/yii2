@@ -387,6 +387,8 @@ class DataFilter extends Model
             }
             return self::TYPE_DATE;
         }
+
+        return null;
     }
 
     /**

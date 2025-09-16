@@ -484,7 +484,13 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getGCProbability()
     {
-        return (float) (ini_get('session.gc_probability') / ini_get('session.gc_divisor') * 100);
+        /** @phpstan-var numeric-string|false */
+        $gcProbability = ini_get('session.gc_probability');
+
+        /** @phpstan-var numeric-string|false */
+        $gcDivisor = ini_get('session.gc_divisor');
+
+        return (float) ($gcProbability / $gcDivisor * 100);
     }
 
     /**
