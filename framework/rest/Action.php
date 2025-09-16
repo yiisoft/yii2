@@ -10,6 +10,7 @@ namespace yii\rest;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecordInterface;
 use yii\web\NotFoundHttpException;
+use yii\base\Action as BaseAction;
 
 /**
  * Action is the base class for action classes that implement RESTful API.
@@ -18,8 +19,11 @@ use yii\web\NotFoundHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends BaseAction<T>
  */
-class Action extends \yii\base\Action
+class Action extends BaseAction
 {
     /**
      * @var string class name of the model which will be handled by this action.
