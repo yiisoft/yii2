@@ -408,6 +408,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
             $this->assertSame(
                 'Object must be an instance of ' . ActiveForm::class . ' or ' . ActiveField::class . '.',
                 $e->getMessage(),
+                'Failed asserting that the thrown exception message matches the expected one.',
             );
 
             while (ob_get_level() > $ob_level) {
