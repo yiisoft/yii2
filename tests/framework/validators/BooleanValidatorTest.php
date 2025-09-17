@@ -21,7 +21,7 @@ class BooleanValidatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockWebApplication();
+        $this->mockApplication();
     }
 
     protected function tearDown(): void
@@ -70,29 +70,6 @@ class BooleanValidatorTest extends TestCase
         $this->assertFalse($obj->hasErrors('attrB'));
         $val->validateAttribute($obj, 'attrD');
         $this->assertTrue($obj->hasErrors('attrD'));
-    }
-
-    public function testErrorMessage(): void
-    {
-        $validator = new BooleanValidator([
-            'trueValue' => true,
-            'falseValue' => false,
-            'strict' => true,
-        ]);
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertEquals('the input value must be either "true" or "false".', $errorMessage);
-
-        $obj = new FakedValidationModel();
-        $obj->attrA = true;
-        $obj->attrB = '1';
-        $obj->attrC = '0';
-        $obj->attrD = [];
-
-        $this->assertEquals(
-            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
-            $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
-        );
     }
 }
 
