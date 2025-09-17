@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
 use yii\jquery\validators\RangeValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
@@ -121,7 +120,7 @@ class RangeValidator extends Validator
             return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        return '';
+        return null;
     }
 
     /**
@@ -129,10 +128,6 @@ class RangeValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        if (Yii::$app->useJquery === false || !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            return [];
-        }
-
-        return $this->clientScript->getClientOptions($this, $model, $attribute);
+        return [];
     }
 }

@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\jquery\validators\CompareValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
-use yii\web\client\ClientScriptInterface;
 
 /**
  * CompareValidator compares the specified attribute value with another value.
@@ -252,7 +251,7 @@ class CompareValidator extends Validator
             return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        return '';
+        return null;
     }
 
     /**
@@ -260,10 +259,6 @@ class CompareValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        if (Yii::$app->useJquery === false || !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            return [];
-        }
-
-        return $this->clientScript->getClientOptions($this, $model, $attribute);
+        return [];
     }
 }

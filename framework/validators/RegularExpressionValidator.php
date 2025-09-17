@@ -76,7 +76,7 @@ class RegularExpressionValidator extends Validator
             return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        return '';
+        return null;
     }
 
     /**
@@ -84,10 +84,6 @@ class RegularExpressionValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        if (Yii::$app->useJquery === false || !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            return [];
-        }
-
-        return $this->clientScript->getClientOptions($this, $model, $attribute);
+        return [];
     }
 }
