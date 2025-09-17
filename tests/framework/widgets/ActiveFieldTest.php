@@ -986,7 +986,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
     {
         $this->activeField->checkbox(
             [
-                'label' => '<p class="form-control">Custom Label</p>',
+                'label' => 'Custom Label',
                 'labelOptions' => [
                     'tag' => false,
                 ],
@@ -997,7 +997,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="form-group field-activefieldtestmodel-attributename">
-            <p class="form-control">Custom Label</p>
+            Custom Label
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
             <div class="hint-block">Hint for attributeName attribute</div>
             <div class="help-block"></div>

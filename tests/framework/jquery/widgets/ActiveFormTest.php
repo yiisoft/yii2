@@ -45,6 +45,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
+        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -80,7 +81,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             <div class="help-block"></div>
             </div></form>
-            <script src="/assets/3d740ac4/jquery.js"></script>
+            <script src="/assets/5a1b552/jquery.js"></script>
             <script src="/assets/5a1b552/yii.js"></script>
             <script src="/assets/5a1b552/yii.validation.js"></script>
             <script src="/assets/5a1b552/yii.activeForm.js"></script>
@@ -165,6 +166,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
+        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -200,7 +202,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             <div class="help-block"></div>
             </div></form>
-            <script src="/assets/3d740ac4/jquery.js"></script>
+            <script src="/assets/5a1b552/jquery.js"></script>
             <script src="/assets/5a1b552/yii.js"></script>
             <script src="/assets/5a1b552/yii.validation.js"></script>
             <script src="/assets/5a1b552/yii.activeForm.js"></script>
@@ -227,6 +229,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
+        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -262,7 +265,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             <div class="help-block"></div>
             </div></form>
-            <script src="/assets/3d740ac4/jquery.js"></script>
+            <script src="/assets/5a1b552/jquery.js"></script>
             <script src="/assets/5a1b552/yii.js"></script>
             <script src="/assets/5a1b552/yii.validation.js"></script>
             <script src="/assets/5a1b552/yii.activeForm.js"></script>
@@ -285,6 +288,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'string');
 
+        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -319,7 +323,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             <div></div>
             </div></form>
-            <script src="/assets/3d740ac4/jquery.js"></script>
+            <script src="/assets/5a1b552/jquery.js"></script>
             <script src="/assets/5a1b552/yii.js"></script>
             <script src="/assets/5a1b552/yii.validation.js"></script>
             <script src="/assets/5a1b552/yii.activeForm.js"></script>
@@ -342,9 +346,11 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
+        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
+        $view = new View();
+
         ob_start();
         ob_implicit_flush(false);
-        $view = new View();
         $form = ActiveForm::begin(
             [
                 'id' => 'w0',
@@ -377,7 +383,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             <div class="error-class another-class"></div>
             </div></form>
-            <script src="/assets/3d740ac4/jquery.js"></script>
+            <script src="/assets/5a1b552/jquery.js"></script>
             <script src="/assets/5a1b552/yii.js"></script>
             <script src="/assets/5a1b552/yii.validation.js"></script>
             <script src="/assets/5a1b552/yii.activeForm.js"></script>
