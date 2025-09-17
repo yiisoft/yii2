@@ -47,7 +47,7 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertEquals(
+        $this->assertSame(
             'the input value must be either "true" or "false".',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -90,7 +90,7 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertEquals(
+        $this->assertSame(
             'the input value must be either "true" or "false".',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
