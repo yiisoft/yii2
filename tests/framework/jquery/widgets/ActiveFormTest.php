@@ -27,7 +27,11 @@ final class ActiveFormTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
+        $_SERVER['REQUEST_URI'] = 'http://example.com/';
+
         $this->mockWebApplication();
+
+        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
     }
 
     protected function tearDown(): void
@@ -35,17 +39,16 @@ final class ActiveFormTest extends \yiiunit\TestCase
         parent::tearDown();
 
         $this->destroyApplication();
+
+        $_SERVER = [];
     }
 
     public function testRegisterClientScript(): void
     {
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
-
         $model = new DynamicModel(['name']);
 
         $model->addRule(['name'], 'required');
 
-        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -160,13 +163,10 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
     public function testGetClientOptionsForFieldWithAriaAttributesFalse(): void
     {
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
-
         $model = new DynamicModel(['name']);
 
         $model->addRule(['name'], 'required');
 
-        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -223,13 +223,10 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
     public function testGetClientOptionsForFieldWithCustomErrorSelector(): void
     {
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
-
         $model = new DynamicModel(['name']);
 
         $model->addRule(['name'], 'required');
 
-        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -282,13 +279,10 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
     public function testGetClientOptionsForFieldWithDefaultTag(): void
     {
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
-
         $model = new DynamicModel(['name']);
 
         $model->addRule(['name'], 'string');
 
-        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
@@ -340,13 +334,10 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
     public function testGetClientOptionsForFieldWithErrorOptionsClass(): void
     {
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
-
         $model = new DynamicModel(['name']);
 
         $model->addRule(['name'], 'required');
 
-        Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
         $view = new View();
 
         ob_start();
