@@ -258,11 +258,7 @@ class ActiveForm extends Widget
 
     protected function getClientOptions()
     {
-        if ($this->enableClientScript === false || Yii::$app->useJquery === false || $this->clientScript === null) {
-            return [];
-        }
-
-        return $this->clientScript->getClientOptions($this);
+        return [];
     }
 
     /**

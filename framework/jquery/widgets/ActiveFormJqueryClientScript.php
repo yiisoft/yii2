@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace yii\jquery\widgets;
 
 use yii\base\BaseObject;
+use yii\base\InvalidArgumentException;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -39,15 +40,17 @@ class ActiveFormJqueryClientScript implements ClientScriptInterface
 {
     public function getClientOptions(BaseObject $object): array
     {
+        if (!($object instanceof ActiveForm) && !($object instanceof ActiveField)) {
+            throw new InvalidArgumentException(
+                'Object must be an instance of ' . ActiveForm::class . ' or ' . ActiveField::class . '.',
+            );
+        }
+
         if ($object instanceof ActiveForm) {
             return $this->getClientOptionsInternal($object);
         }
 
-        if ($object instanceof ActiveField) {
-            return $this->getClientOptionsForFieldInternal($object);
-        }
-
-        return [];
+        return $this->getClientOptionsForFieldInternal($object);
     }
 
     public function register(BaseObject $object, View $view): void
