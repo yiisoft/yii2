@@ -43,7 +43,7 @@ class HelpController extends Controller
      *
      * @param string|null $command The name of the command to show help about.
      * If not provided, all available commands will be displayed.
-     * @return int the exit status
+     * @return void
      * @throws Exception if the command for help is unknown
      */
     public function actionIndex($command = null)
