@@ -253,4 +253,390 @@ class CompareValidatorTest extends TestCase
         }
         $this->fail('InvalidConfigException expected none received');
     }
+
+    /**
+     * @dataProvider numericTypeConversionProvider
+     */
+    public function testValidateAttributeWithNumericTypeConversion(
+        array $validatorConfig,
+        int|string $attributeValue,
+        string|null $compareAttributeValue,
+        bool $expectedValidation,
+        string $expectedMessage,
+    ): void {
+        $model = new FakedValidationModel();
+
+        $model->attr_test = $attributeValue;
+
+        $validator = new CompareValidator($validatorConfig);
+
+        if ($compareAttributeValue !== null) {
+            $model->attr_compare = $compareAttributeValue;
+        }
+
+        $validator->validateAttribute($model, 'attr_test');
+
+        $this->assertSame($expectedValidation, $model->hasErrors('attr_test'), $expectedMessage);
+    }
+
+    /**
+     * @dataProvider numericValueConversionProvider
+     */
+    public function testValidateValueWithNumericTypeConversion(
+        array $validatorConfig,
+        float|int|string $attributeValue,
+        bool $expectedResult,
+        string $expectedMessage,
+    ): void {
+        $validator = new CompareValidator($validatorConfig);
+
+        $result = $validator->validate($attributeValue);
+
+        $this->assertSame($expectedResult, $result, $expectedMessage);
+    }
+
+    public function testValidateAttributeWithClosure(): void
+    {
+        $expectedValue = 42;
+        $closureExecuted = false;
+
+        $closure = static function() use ($expectedValue, &$closureExecuted): int {
+            $closureExecuted = true;
+
+            return $expectedValue;
+        };
+
+        $model = new FakedValidationModel();
+
+        $model->attr_test = $expectedValue;
+
+        $validator = new CompareValidator(['compareValue' => $closure]);
+
+        $validator->validateAttribute($model, 'attr_test');
+
+        $this->assertTrue(
+            $closureExecuted,
+            'Closure should be executed during validation',
+        );
+        $this->assertFalse(
+            $model->hasErrors('attr_test'),
+            'Validation should pass when values match',
+        );
+    }
+
+    public function testValidateAttributeWithClosureFailure(): void
+    {
+        $expectedValue = 100;
+        $actualValue = 50;
+
+        $model = new FakedValidationModel();
+
+        $model->attr_test = $actualValue;
+
+        $validator = new CompareValidator(['compareValue' => static fn(): int => $expectedValue]);
+
+        $validator->validateAttribute($model, 'attr_test');
+
+        $this->assertTrue(
+            $model->hasErrors('attr_test'),
+            'Validation should fail when values do not match',
+        );
+    }
+
+    public function testValidateAttributeWithClosureAndOperator(): void
+    {
+        $compareValue = 75;
+
+        $model = new FakedValidationModel();
+
+        $model->attr_test = 100;
+
+        $validator = new CompareValidator(
+            [
+                'compareValue' => static fn(): int => $compareValue,
+                'operator' => '>',
+            ],
+        );
+
+        $validator->validateAttribute($model, 'attr_test');
+
+        $this->assertFalse(
+            $model->hasErrors('attr_test'),
+            "Validation should pass when '100' > '75'.",
+        );
+
+        $model2 = new FakedValidationModel();
+
+        $model2->attr_test = 50;
+
+        $validator->validateAttribute($model2, 'attr_test');
+
+        $this->assertTrue(
+            $model2->hasErrors('attr_test'),
+            "Validation should fail when '50' is not > '75'."
+        );
+    }
+
+    public static function numericTypeConversionProvider(): array
+    {
+        return [
+            'invalid numeric greater than failure case' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 100,
+                    'operator' => '>',
+                ],
+                '50',
+                null,
+                true,
+                'Numeric comparison should fail when condition is not met.',
+            ],
+            'valid closure with numeric type conversion' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => static fn(): string => '42.5',
+                    'operator' => '==',
+                ],
+                '42.5',
+                null,
+                false,
+                'Closure returning string should be converted to float for numeric comparison.',
+            ],
+            'valid compare attribute numeric type' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareAttribute' => 'attr_compare',
+                    'operator' => '==',
+                ],
+                '42.0',
+                '42',
+                false,
+                'Numeric type conversion should work with compareAttribute.',
+            ],
+            'valid decimal string comparison' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => '42.5',
+                    'operator' => '==',
+                ],
+                '42.5',
+                null,
+                false,
+                'Decimal values should be properly converted and compared.',
+            ],
+            'valid integer to float strict equality' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 42,
+                    'operator' => '===',
+                ],
+                42,
+                null,
+                false,
+                'Integer values should be converted to float for strict comparison.',
+            ],
+            'valid less than or equal operator' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 100,
+                    'operator' => '<=',
+                ],
+                '100',
+                null,
+                false,
+                'Less than or equal operator should work with numeric conversion.'
+            ],
+            'valid negative numbers comparison' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => -10.5,
+                    'operator' => '==',
+                ],
+                '-10.5',
+                null,
+                false,
+                'Negative numbers should be properly converted and compared.',
+            ],
+            'valid not equal operator success' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 50,
+                    'operator' => '!=',
+                ],
+                '25',
+                null,
+                false,
+                'Not equal operator should work with different numeric values.',
+            ],
+            'valid numeric greater than with strings' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => '10',
+                    'operator' => '>',
+                ],
+                '20',
+                null,
+                false,
+                'Numeric comparison with > operator should work with string numbers.',
+            ],
+            'valid string numeric to float equality' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 42.0,
+                    'operator' => '==',
+                ],
+                '42',
+                null,
+                false,
+                'String numeric value should be converted to float for comparison.',
+            ],
+            'valid zero values comparison' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 0,
+                    'operator' => '==',
+                ],
+                '0.0',
+                null,
+                false,
+                'Zero values should be properly converted and compared.',
+            ],
+        ];
+    }
+
+    public static function numericValueConversionProvider(): array
+    {
+        return [
+            'invalid closure less than or equal' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => static fn(): int => 100,
+                    'operator' => '<=',
+                ],
+                '150',
+                false,
+                "String '150' should not be less than or equal to '100'.",
+            ],
+            'invalid different numeric values' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 123.45,
+                    'operator' => '==',
+                ],
+                '123.46',
+                false,
+                'Different numeric values should not be equal.',
+            ],
+            'invalid greater than' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => '10.5',
+                    'operator' => '>',
+                ],
+                '5',
+                false,
+                "String '5' should not be greater than '10.5' after conversion.",
+            ],
+            'valid closure less than or equal (equal)' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => static fn(): int => 100,
+                    'operator' => '<=',
+                ],
+                '100',
+                true,
+                "String '100' should be less than or equal to '100'.",
+            ],
+            'valid closure less than or equal (less)' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => static fn(): int => 100,
+                    'operator' => '<=',
+                ],
+                '50',
+                true,
+                "String '50' should be less than or equal to '100'.",
+            ],
+            'valid float equality' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 123.45,
+                    'operator' => '==',
+                ],
+                123.45,
+                true,
+                'Float values should be equal.',
+            ],
+            'valid greater than' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => '10.5',
+                    'operator' => '>',
+                ],
+                '20',
+                true,
+                "String '20' should be greater than '10.5' after conversion.",
+            ],
+            'valid integer strict equality' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 42,
+                    'operator' => '===',
+                ],
+                42,
+                true,
+                'Integer should be converted to float for strict comparison.',
+            ],
+            'valid negative number comparison' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => -5.5,
+                    'operator' => '<',
+                ],
+                '-10',
+                true,
+                'Negative string should be converted and compared correctly.',
+            ],
+            'valid not equal operator' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 100,
+                    'operator' => '!=',
+                ],
+                '99.9',
+                true,
+                'Not equal operator should work with numeric conversion.',
+            ],
+            'valid string to float equality' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 123.45,
+                    'operator' => '==',
+                ],
+                '123.45',
+                true,
+                'String should be converted to float for comparison.',
+            ],
+            'valid string strict equality' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 42,
+                    'operator' => '===',
+                ],
+                '42',
+                true,
+                'String should be converted to float for strict comparison.',
+            ],
+            'valid zero comparison' => [
+                [
+                    'type' => CompareValidator::TYPE_NUMBER,
+                    'compareValue' => 0,
+                    'operator' => '>=',
+                ],
+                '0.0',
+                true,
+                'Zero values should be properly converted and compared.',
+            ],
+        ];
+    }
 }
