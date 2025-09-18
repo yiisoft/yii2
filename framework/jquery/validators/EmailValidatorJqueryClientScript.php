@@ -57,6 +57,7 @@ class EmailValidatorJqueryClientScript implements ClientValidatorScriptInterface
         if ($validator->enableIDN) {
             PunycodeAsset::register($view);
         }
+
         $options = $this->getClientOptions($validator, $model, $attribute);
 
         return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
