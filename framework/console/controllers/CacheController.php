@@ -141,7 +141,7 @@ class CacheController extends Controller
      * ```
      *
      * @param string $db id connection component
-     * @return int exit code
+     * @return int|null exit code
      * @throws Exception
      * @throws \yii\base\InvalidConfigException
      *
@@ -169,6 +169,8 @@ class CacheController extends Controller
         } catch (\Exception $e) {
             $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
         }
+
+        return null;
     }
 
     /**

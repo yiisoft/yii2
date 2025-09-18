@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.54 under development
 ------------------------
+
 - Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
 - Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
@@ -32,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh #20525: Add `@template` annotations for all actions (max-s-lab)
 - Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
 - Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
+- Bug #20532: Fix `@return` annotations in `CacheController::actionFlushSchema`, `FixtureController::actionUnload`, `HelpController::actionIndex` and `ServeController::actionIndex` (max-s-lab)
 
 
 2.0.53 June 27, 2025

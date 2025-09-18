@@ -180,7 +180,7 @@ class FixtureController extends Controller
      * ```
      *
      * @param array $fixturesInput
-     * @return int return code
+     * @return int|null return code
      * @throws Exception if the specified fixture does not exist.
      */
     public function actionUnload(array $fixturesInput = [])
@@ -232,6 +232,8 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($this->createFixtures($fixtures));
         $this->notifyUnloaded($fixtures);
+
+        return null;
     }
 
     /**

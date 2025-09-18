@@ -291,7 +291,7 @@ class DevController extends Controller
      * @param string $dir application directory
      * @param string $base Yii sources base directory
      *
-     * @return int
+     * @return int|null
      */
     protected function linkFrameworkAndExtensions($dir, $base)
     {
@@ -316,6 +316,8 @@ class DevController extends Controller
                 symlink("$base/extensions/$ext", $link);
             }
         }
+
+        return null;
     }
 
     /**
