@@ -433,6 +433,10 @@ class FileValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
+        }
+
         return [];
     }
 
@@ -443,7 +447,7 @@ class FileValidator extends Validator
      * @return string the regular expression
      * @see mimeTypes
      */
-    private function buildMimeTypeRegexp($mask)
+    public function buildMimeTypeRegexp($mask)
     {
         return '/^' . str_replace('\*', '.*', preg_quote($mask, '/')) . '$/i';
     }
