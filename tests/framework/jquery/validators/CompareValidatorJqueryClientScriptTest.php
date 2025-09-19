@@ -36,6 +36,7 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
     public function testClientValidateAttribute(): void
     {
+        $modelValidator = new FakedValidationModel();
         $validator = new CompareValidator(
             [
                 'compareValue' => 'test_value',
@@ -43,16 +44,6 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'type' => CompareValidator::TYPE_STRING,
             ],
         );
-
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertSame(
-            'the input value must be equal to "test_value".',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-
-        $modelValidator = new FakedValidationModel();
 
         $modelValidator->attrA = 'test_value';
 
@@ -72,10 +63,19 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             $validator->getClientOptions($modelValidator, 'attrA'),
             "'getClientOptions()' method should return correct options array.",
         );
+
+        $validator->validate('someIncorrectValue', $errorMessage);
+
+        $this->assertSame(
+            'the input value must be equal to "test_value".',
+            $errorMessage,
+            'Failed asserting that the generated error message matches the expected one.',
+        );
     }
 
     public function testClientValidateAttributeWithClosureCompareValue(): void
     {
+        $modelValidator = new FakedValidationModel();
         $validator = new CompareValidator(
             [
                 'compareValue' => static fn(): string => 'closure_value',
@@ -83,16 +83,6 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'type' => CompareValidator::TYPE_STRING,
             ],
         );
-
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertSame(
-            'the input value must be equal to "closure_value".',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-
-        $modelValidator = new FakedValidationModel();
 
         $this->assertSame(
             'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":"closure_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022closure_value\u0022."}, $form);',
@@ -110,15 +100,19 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             $validator->getClientOptions($modelValidator, 'attrA'),
             "'getClientOptions()' method should return correct options array.",
         );
+
+        $validator->validate('someIncorrectValue', $errorMessage);
+
+        $this->assertSame(
+            'the input value must be equal to "closure_value".',
+            $errorMessage,
+            'Failed asserting that the generated error message matches the expected one.',
+        );
     }
 
     public function testClientValidateAttributeWithNullCompareAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
-
-        $modelValidator->attrA = 'test';
-        $modelValidator->attrA_repeat = 'test';
-
         $validator = new CompareValidator(
             [
                 'compareAttribute' => 'attrA_repeat',
@@ -126,6 +120,9 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'type' => CompareValidator::TYPE_STRING,
             ],
         );
+
+        $modelValidator->attrA = 'test';
+        $modelValidator->attrA_repeat = 'test';
 
         $this->assertSame(
             'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareAttribute":"fakedvalidationmodel-attra_repeat","compareAttributeName":"FakedValidationModel[attrA_repeat]","skipOnEmpty":1,"message":"attrA must be equal to \u0022attrA_repeat\u0022."}, $form);',
@@ -158,14 +155,6 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertSame(
-            'the input value must be equal to "test_value".',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-
         $modelValidator = new FakedValidationModel();
 
         $modelValidator->attrA = 'test_value';
@@ -177,6 +166,14 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $this->assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
             "'getClientOptions()' method should return an empty array.",
+        );
+
+        $validator->validate('someIncorrectValue', $errorMessage);
+
+        $this->assertSame(
+            'the input value must be equal to "test_value".',
+            $errorMessage,
+            'Failed asserting that the generated error message matches the expected one.',
         );
     }
 }

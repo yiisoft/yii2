@@ -36,6 +36,7 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
     public function testClientValidateAttribute(): void
     {
+        $modelValidator = new FakedValidationModel();
         $validator = new BooleanValidator(
             [
                 'trueValue' => true,
@@ -44,22 +45,12 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertSame(
-            'the input value must be either "true" or "false".',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-
-        $modelValidator = new FakedValidationModel();
-
         $modelValidator->attrA = true;
 
         $this->assertSame(
             'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
             $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+            "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(
             [
@@ -70,20 +61,7 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'strict' => 1,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
-        );
-    }
-
-    public function testClientValidateAttributeWithUseJqueryFalse(): void
-    {
-        Yii::$app->useJquery = false;
-
-        $validator = new BooleanValidator(
-            [
-                'trueValue' => true,
-                'falseValue' => false,
-                'strict' => true,
-            ],
+            "'getClientOptions()' method should return correct options array.",
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
@@ -93,8 +71,20 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
         );
+    }
+
+    public function testClientValidateAttributeWithUseJqueryFalse(): void
+    {
+        Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
+        $validator = new BooleanValidator(
+            [
+                'trueValue' => true,
+                'falseValue' => false,
+                'strict' => true,
+            ],
+        );
 
         $modelValidator->attrA = true;
 
@@ -105,6 +95,14 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $this->assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
             "'getClientOptions()' method should return an empty array.",
+        );
+
+        $validator->validate('someIncorrectValue', $errorMessage);
+
+        $this->assertSame(
+            'the input value must be either "true" or "false".',
+            $errorMessage,
+            'Failed asserting that the generated error message matches the expected one.',
         );
     }
 }
