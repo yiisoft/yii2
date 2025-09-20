@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,7 +9,8 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Json;
+use yii\jquery\validators\ImageValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 use yii\web\UploadedFile;
 
 /**
@@ -87,7 +89,12 @@ class ImageValidator extends FileValidator
      * - {limit}: the value of [[maxHeight]]
      */
     public $overHeight;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => ImageValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -158,65 +165,5 @@ class ImageValidator extends FileValidator
         }
 
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-        return 'yii.validation.image(attribute, messages, ' . Json::htmlEncode($options) . ', deferred);';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $options = parent::getClientOptions($model, $attribute);
-
-        $label = $model->getAttributeLabel($attribute);
-
-        if ($this->notImage !== null) {
-            $options['notImage'] = $this->formatMessage($this->notImage, [
-                'attribute' => $label,
-            ]);
-        }
-
-        if ($this->minWidth !== null) {
-            $options['minWidth'] = $this->minWidth;
-            $options['underWidth'] = $this->formatMessage($this->underWidth, [
-                'attribute' => $label,
-                'limit' => $this->minWidth,
-            ]);
-        }
-
-        if ($this->maxWidth !== null) {
-            $options['maxWidth'] = $this->maxWidth;
-            $options['overWidth'] = $this->formatMessage($this->overWidth, [
-                'attribute' => $label,
-                'limit' => $this->maxWidth,
-            ]);
-        }
-
-        if ($this->minHeight !== null) {
-            $options['minHeight'] = $this->minHeight;
-            $options['underHeight'] = $this->formatMessage($this->underHeight, [
-                'attribute' => $label,
-                'limit' => $this->minHeight,
-            ]);
-        }
-
-        if ($this->maxHeight !== null) {
-            $options['maxHeight'] = $this->maxHeight;
-            $options['overHeight'] = $this->formatMessage($this->overHeight, [
-                'attribute' => $label,
-                'limit' => $this->maxHeight,
-            ]);
-        }
-
-        return $options;
     }
 }

@@ -3,6 +3,12 @@
     <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2">
         <!-- Yii2 framework supports PHP 5.4, constant visibility was added in PHP 7.1 -->
         <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
+        <!-- Exclude false positive for PSR12.Files.FileHeader.SpacingAfterBlock -->
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterBlock"/>
+        <!-- Exclude false positive for PSR12.Files.FileHeader.SpacingAfterDocblockBlock -->
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterDocblockBlock"/>
+        <!-- Exclude false positive for PSR12.Files.FileHeader.SpacingAfterTagBlock -->
+        <exclude name="PSR12.Files.FileHeader.SpacingAfterTagBlock"/>
     </rule>
 
     <!-- display progress -->
@@ -14,5 +20,11 @@
     <!-- generate relative paths -->
     <arg name="basepath" value="."/>
 
+    <!-- Exclude files and directories -->
+    <exclude-pattern>framework/caching/migrations/*</exclude-pattern>
+    <exclude-pattern>framework/i18n/migrations/*</exclude-pattern>
+    <exclude-pattern>framework/log/migrations/*</exclude-pattern>
+    <exclude-pattern>framework/rbac/migrations/*</exclude-pattern>
     <exclude-pattern>framework/views/*</exclude-pattern>
+    <exclude-pattern>framework/web/migrations/*</exclude-pattern>
 </ruleset>

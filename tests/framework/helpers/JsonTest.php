@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,13 @@ class JsonTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, helper must work without Yii::$app
+        $this->mockWebApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,15 @@ class FileValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mockApplication();
+
+        $this->mockWebApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
     }
 
     public function testAssureMessagesSetOnInit(): void
