@@ -54,7 +54,9 @@ class RangeValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => RangeValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -73,8 +75,7 @@ class RangeValidator extends Validator
             $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof RangeValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => RangeValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
@@ -129,6 +130,10 @@ class RangeValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
+        }
+
         return [];
     }
 }
