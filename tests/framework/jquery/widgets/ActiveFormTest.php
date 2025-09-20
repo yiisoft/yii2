@@ -18,6 +18,12 @@ use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 
+use function ob_end_clean;
+use function ob_get_clean;
+use function ob_get_level;
+use function ob_implicit_flush;
+use function ob_start;
+
 /**
  * @group jquery
  */
@@ -27,7 +33,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['REQUEST_URI'] = 'http://example.com/';
+        $_SERVER['REQUEST_URI'] = 'https://example.com/';
 
         $this->mockWebApplication();
 
