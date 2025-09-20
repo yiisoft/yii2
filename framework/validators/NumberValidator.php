@@ -64,7 +64,7 @@ class NumberValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript =[
+    public array|ClientValidatorScriptInterface|null $clientScript = [
         'class' => NumberValidatorJqueryClientScript::class,
     ];
 
