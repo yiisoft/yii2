@@ -200,7 +200,9 @@ class IpValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => IpValidatorJqueryClientScript::class,
+    ];
 
     /**
      * @var array
@@ -239,8 +241,7 @@ class IpValidator extends Validator
             $this->notInRange = Yii::t('yii', '{attribute} is not in the allowed range.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof IpValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => IpValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
@@ -520,7 +521,7 @@ class IpValidator extends Validator
      * Used to get the Regexp pattern for initial IP address parsing.
      * @return string
      */
-    private function getIpParsePattern()
+    public function getIpParsePattern()
     {
         return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
@@ -555,6 +556,10 @@ class IpValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
+        }
+
         return [];
     }
 }
