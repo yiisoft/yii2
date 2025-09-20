@@ -42,12 +42,10 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = 'test@example.com';
 
         $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' .
-            $validator->pattern .
-            ',"fullPattern":' .
-            $validator->fullPattern .
-            ',"allowName":false,"message":"attrB is not a valid email address.","enableIDN":false,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
+            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
+            '"enableIDN":false,"skipOnEmpty":1});',
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
 
@@ -84,11 +82,9 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $validator = new EmailValidator(['enableIDN' => true]);
 
         $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' .
-            $validator->pattern .
-            ',"fullPattern":' .
-            $validator->fullPattern .
-            ',"allowName":false,"message":"attrA is not a valid email address.","enableIDN":true,"skipOnEmpty":1});',
+            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
+            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
+            '"enableIDN":true,"skipOnEmpty":1});',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -135,7 +131,7 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = 'test@example.com';
 
         $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return 'null' value.",
         );
         $this->assertEmpty(

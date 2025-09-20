@@ -51,7 +51,12 @@ final class FileValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = 'test-file.jpg';
 
         $this->assertSame(
-            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,"mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .","extensions":["jpg","png"],"wrongExtension":"Only files with these extensions are allowed: jpg, png.","minSize":1024,"tooSmall":"The file \u0022{file}\u0022 is too small. Its size cannot be smaller than 1 KiB.","maxSize":1048576,"tooBig":"The file \u0022{file}\u0022 is too big. Its size cannot exceed 1 MiB.","maxFiles":1,"tooMany":"You can upload at most 1 file."});',
+            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,' .
+            '"mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .",' .
+            '"extensions":["jpg","png"],"wrongExtension":"Only files with these extensions are allowed: jpg, png.",' .
+            '"minSize":1024,"tooSmall":"The file \u0022{file}\u0022 is too small. Its size cannot be smaller than 1 KiB.",' .
+            '"maxSize":1048576,"tooBig":"The file \u0022{file}\u0022 is too big. Its size cannot exceed 1 MiB.",' .
+            '"maxFiles":1,"tooMany":"You can upload at most 1 file."});',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -101,7 +106,11 @@ final class FileValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         );
 
         $this->assertSame(
-            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,"mimeTypes":[/^image\/jpeg$/i,/^image\/png$/i],"wrongMimeType":"Only files with these MIME types are allowed: image\/jpeg, image\/png.","extensions":[],"wrongExtension":"Only files with these extensions are allowed: .","maxFiles":3,"tooMany":"You can upload at most 3 files."});',
+            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,' .
+            '"mimeTypes":[/^image\/jpeg$/i,/^image\/png$/i],' .
+            '"wrongMimeType":"Only files with these MIME types are allowed: image\/jpeg, image\/png.",' .
+            '"extensions":[],"wrongExtension":"Only files with these extensions are allowed: .","maxFiles":3,' .
+            '"tooMany":"You can upload at most 3 files."});',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -145,7 +154,11 @@ final class FileValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $validator = new FileValidator(['skipOnEmpty' => false]);
 
         $this->assertSame(
-            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":false,"uploadRequired":"Please upload a file.","mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .","extensions":[],"wrongExtension":"Only files with these extensions are allowed: .","maxFiles":1,"tooMany":"You can upload at most 1 file."});',
+            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":false,' .
+            '"uploadRequired":"Please upload a file.","mimeTypes":[],' .
+            '"wrongMimeType":"Only files with these MIME types are allowed: .","extensions":[],' .
+            '"wrongExtension":"Only files with these extensions are allowed: .","maxFiles":1,' .
+            '"tooMany":"You can upload at most 1 file."});',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -190,7 +203,11 @@ final class FileValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         );
 
         $this->assertSame(
-            'yii.validation.file(attribute, messages, {"message":"Custom file validation message.","skipOnEmpty":true,"mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .","extensions":["pdf"],"wrongExtension":"Custom wrong extension message.","minSize":512,"tooSmall":"Custom too small message.","maxSize":2048,"tooBig":"Custom too big message.","maxFiles":1,"tooMany":"You can upload at most 1 file."});',
+            'yii.validation.file(attribute, messages, {"message":"Custom file validation message.",' .
+            '"skipOnEmpty":true,"mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .",' .
+            '"extensions":["pdf"],"wrongExtension":"Custom wrong extension message.","minSize":512,' .
+            '"tooSmall":"Custom too small message.","maxSize":2048,"tooBig":"Custom too big message.","maxFiles":1,' .
+            '"tooMany":"You can upload at most 1 file."});',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -235,7 +252,10 @@ final class FileValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $validator = new FileValidator();
 
         $this->assertSame(
-            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,"mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .","extensions":[],"wrongExtension":"Only files with these extensions are allowed: .","maxFiles":1,"tooMany":"You can upload at most 1 file."});',
+            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,' .
+            '"mimeTypes":[],"wrongMimeType":"Only files with these MIME types are allowed: .","extensions":[],' .
+            '"wrongExtension":"Only files with these extensions are allowed: .","maxFiles":1,' .
+            '"tooMany":"You can upload at most 1 file."});',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );

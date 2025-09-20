@@ -48,8 +48,9 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = 'test_value';
 
         $this->assertSame(
-            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":"test_value","skipOnEmpty":1,"message":"attrB must be equal to \u0022test_value\u0022."}, $form);',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":' .
+            '"test_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022test_value\u0022."}, $form);',
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(
@@ -85,7 +86,8 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         );
 
         $this->assertSame(
-            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":"closure_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022closure_value\u0022."}, $form);',
+            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":' .
+            '"closure_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022closure_value\u0022."}, $form);',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -125,7 +127,9 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA_repeat = 'test';
 
         $this->assertSame(
-            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareAttribute":"fakedvalidationmodel-attra_repeat","compareAttributeName":"FakedValidationModel[attrA_repeat]","skipOnEmpty":1,"message":"attrA must be equal to \u0022attrA_repeat\u0022."}, $form);',
+            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareAttribute":' .
+            '"fakedvalidationmodel-attra_repeat","compareAttributeName":"FakedValidationModel[attrA_repeat]",' .
+            '"skipOnEmpty":1,"message":"attrA must be equal to \u0022attrA_repeat\u0022."}, $form);',
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
@@ -160,7 +164,7 @@ final class CompareValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = 'test_value';
 
         $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return 'null' value.",
         );
         $this->assertEmpty(

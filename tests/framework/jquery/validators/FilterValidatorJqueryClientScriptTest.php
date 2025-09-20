@@ -43,7 +43,7 @@ final class FilterValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $this->assertSame(
             'value = yii.validation.trim($form, attribute, [], value);',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(
@@ -73,7 +73,7 @@ final class FilterValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $this->assertSame(
             'value = yii.validation.trim($form, attribute, [], value);',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(
@@ -103,7 +103,7 @@ final class FilterValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $this->assertSame(
             '',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(
@@ -135,7 +135,7 @@ final class FilterValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $this->assertSame(
             'value = yii.validation.trim($form, attribute, {"skipOnEmpty":1}, value);',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(

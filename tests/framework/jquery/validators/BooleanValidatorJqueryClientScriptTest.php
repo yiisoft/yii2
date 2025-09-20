@@ -48,8 +48,9 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = true;
 
         $this->assertSame(
-            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrA ' .
+            'must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return correct validation script.",
         );
         $this->assertSame(
@@ -89,7 +90,7 @@ final class BooleanValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = true;
 
         $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrB', new View()),
+            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return 'null' value.",
         );
         $this->assertEmpty(
