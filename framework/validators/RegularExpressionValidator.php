@@ -35,7 +35,9 @@ class RegularExpressionValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => RegularValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -50,8 +52,7 @@ class RegularExpressionValidator extends Validator
             $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof RegularValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => RegularValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
@@ -85,6 +86,10 @@ class RegularExpressionValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
+        }
+
         return [];
     }
 }
