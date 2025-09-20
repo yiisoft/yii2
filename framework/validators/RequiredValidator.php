@@ -56,7 +56,9 @@ class RequiredValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => RequireValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -69,8 +71,7 @@ class RequiredValidator extends Validator
                 : Yii::t('yii', '{attribute} must be "{requiredValue}".');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof RequireValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => RequireValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
@@ -113,6 +114,10 @@ class RequiredValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
+        }
+
         return [];
     }
 }
