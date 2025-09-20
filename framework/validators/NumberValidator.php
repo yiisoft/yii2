@@ -64,7 +64,9 @@ class NumberValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript =[
+        'class' => NumberValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -83,8 +85,7 @@ class NumberValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof NumberValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => NumberValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
@@ -173,6 +174,10 @@ class NumberValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
+        }
+
         return [];
     }
 }
