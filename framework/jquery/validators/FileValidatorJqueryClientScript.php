@@ -15,6 +15,7 @@ use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\validators\client\ClientValidatorScriptInterface;
+use yii\validators\ImageValidator;
 use yii\validators\ValidationAsset;
 use yii\validators\Validator;
 use yii\web\JsExpression;
@@ -131,6 +132,10 @@ class FileValidatorJqueryClientScript implements ClientValidatorScriptInterface
         ValidationAsset::register($view);
 
         $options = $this->getClientOptions($validator, $model, $attribute);
+
+        if ($validator instanceof ImageValidator) {
+            return 'yii.validation.image(attribute, messages, ' . Json::htmlEncode($options) . ', deferred);';
+        }
 
         return 'yii.validation.file(attribute, messages, ' . Json::htmlEncode($options) . ');';
     }

@@ -11,11 +11,7 @@ declare(strict_types=1);
 namespace yii\jquery\validators;
 
 use yii\base\Model;
-use yii\helpers\Json;
-use yii\validators\client\ClientValidatorScriptInterface;
-use yii\validators\ValidationAsset;
 use yii\validators\Validator;
-use yii\web\View;
 
 /**
  * ImageValidatorJqueryClientScript provides client-side validation script generation for image attributes.
@@ -26,13 +22,12 @@ use yii\web\View;
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 2.2.0
  */
-class ImageValidatorJqueryClientScript implements ClientValidatorScriptInterface
+class ImageValidatorJqueryClientScript extends FileValidatorJqueryClientScript
 {
     public function getClientOptions(Validator $validator, Model $model, string $attribute): array
     {
-        $options = $validator->getClientOptions($model, $attribute);
-
         $label = $model->getAttributeLabel($attribute);
+        $options = parent::getClientOptions($validator, $model, $attribute);
 
         if ($validator->notImage !== null) {
             $options['notImage'] = $validator->formatMessage(
@@ -90,14 +85,5 @@ class ImageValidatorJqueryClientScript implements ClientValidatorScriptInterface
         }
 
         return $options;
-    }
-
-    public function register(Validator $validator, Model $model, string $attribute, View $view): string
-    {
-        ValidationAsset::register($view);
-
-        $options = $this->getClientOptions($validator, $model, $attribute);
-
-        return 'yii.validation.image(attribute, messages, ' . Json::htmlEncode($options) . ', deferred);';
     }
 }

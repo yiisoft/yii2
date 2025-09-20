@@ -92,7 +92,9 @@ class ImageValidator extends FileValidator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => ImageValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -115,11 +117,6 @@ class ImageValidator extends FileValidator
         }
         if ($this->overHeight === null) {
             $this->overHeight = Yii::t('yii', 'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.');
-        }
-
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ImageValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => ImageValidatorJqueryClientScript::class];
-            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -168,25 +165,5 @@ class ImageValidator extends FileValidator
         }
 
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
-            return $this->clientScript->register($this, $model, $attribute, $view);
-        }
-
-        return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        return [];
     }
 }
