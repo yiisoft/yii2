@@ -73,7 +73,9 @@ class EmailValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => EmailValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -88,8 +90,7 @@ class EmailValidator extends Validator
             $this->message = Yii::t('yii', '{attribute} is not a valid email address.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof EmailValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => EmailValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

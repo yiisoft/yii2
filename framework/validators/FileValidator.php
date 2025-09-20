@@ -161,7 +161,9 @@ class FileValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = null;
+    public array|ClientValidatorScriptInterface|null $clientScript = [
+        'class' => FileValidatorJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -204,8 +206,7 @@ class FileValidator extends Validator
             $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof FileValidatorJqueryClientScript) {
-            $this->clientScript ??= ['class' => FileValidatorJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
