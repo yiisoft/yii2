@@ -167,11 +167,13 @@ class LinkPagerTest extends \yiiunit\TestCase
             'maxButtonCount' => 2,
         ]);
 
-        $this->assertStringContainsString(
-            '<li class="prev disabled"><span>&laquo;</span></li>' . "\n" .
-            '<li class="active"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>' . "\n" .
-            '<li><a href="/?r=test&amp;page=2" data-page="1">2</a></li>' . "\n" .
-            '<li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li>',
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev disabled"><span>&laquo;</span></li>
+            <li class="active"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>
+            <li><a href="/?r=test&amp;page=2" data-page="1">2</a></li>
+            <li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li></ul>
+            HTML,
             $output,
         );
 
@@ -180,11 +182,13 @@ class LinkPagerTest extends \yiiunit\TestCase
             'maxButtonCount' => 2,
         ]);
 
-        $this->assertStringContainsString(
-            '<li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>' . "\n" .
-            '<li class="active"><a href="/?r=test&amp;page=2" data-page="1">2</a></li>' . "\n" .
-            '<li><a href="/?r=test&amp;page=3" data-page="2">3</a></li>' . "\n" .
-            '<li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li>',
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>
+            <li class="active"><a href="/?r=test&amp;page=2" data-page="1">2</a></li>
+            <li><a href="/?r=test&amp;page=3" data-page="2">3</a></li>
+            <li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li></ul>
+            HTML,
             $output,
         );
     }
@@ -196,10 +200,12 @@ class LinkPagerTest extends \yiiunit\TestCase
             'maxButtonCount' => 1,
         ]);
 
-        $this->assertStringContainsString(
-            '<li class="prev disabled"><span>&laquo;</span></li>' . "\n" .
-            '<li class="active"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>' . "\n" .
-            '<li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li>',
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev disabled"><span>&laquo;</span></li>
+            <li class="active"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>
+            <li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li></ul>
+            HTML,
             $output,
         );
 
@@ -208,10 +214,12 @@ class LinkPagerTest extends \yiiunit\TestCase
             'maxButtonCount' => 1,
         ]);
 
-        $this->assertStringContainsString(
-            '<li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>' . "\n" .
-            '<li class="active"><a href="/?r=test&amp;page=2" data-page="1">2</a></li>' . "\n" .
-            '<li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li>',
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>
+            <li class="active"><a href="/?r=test&amp;page=2" data-page="1">2</a></li>
+            <li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li></ul>
+            HTML,
             $output,
         );
     }
@@ -223,9 +231,11 @@ class LinkPagerTest extends \yiiunit\TestCase
             'maxButtonCount' => 0,
         ]);
 
-        $this->assertStringContainsString(
-            '<li class="prev disabled"><span>&laquo;</span></li>' . "\n" .
-            '<li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li>',
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev disabled"><span>&laquo;</span></li>
+            <li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li></ul>
+            HTML,
             $output
         );
 
@@ -234,9 +244,11 @@ class LinkPagerTest extends \yiiunit\TestCase
             'maxButtonCount' => 0,
         ]);
 
-        $this->assertStringContainsString(
-            '<li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>' . "\n".
-            '<li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li>',
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>
+            <li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li></ul>
+            HTML,
             $output
         );
     }
