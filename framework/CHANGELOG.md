@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #20525: Add `@template` annotations for all actions (max-s-lab)
 - Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
 - Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
+- Bug #19655: Fix `LinkPager::getPageRange` when `maxButtons` assign with 2 (max-s-lab)
 
 
 2.0.53 June 27, 2025
