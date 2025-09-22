@@ -92,6 +92,14 @@ final class GridViewJqueryClientScriptTest extends \yiiunit\TestCase
             $gridView->clientScript->getClientOptions($gridView),
             "'getClientOptions()' method should return correct options array.",
         );
+        $this->assertSame(
+            [
+                'filterUrl' => '/test/filter',
+                'filterSelector' => '#test-grid-filters input, #test-grid-filters select, #custom-filter input',
+            ],
+            $this->invokeMethod($gridView, 'getClientOptions'),
+            "'getClientOptions()' method should return correct options array.",
+        );
     }
 
     public function testRegisterWithComplexFilterUrl(): void
@@ -367,6 +375,11 @@ final class GridViewJqueryClientScriptTest extends \yiiunit\TestCase
             $gridView->clientScript,
             "'clientScript' property must not be an instance of 'GridViewJqueryClientScript' when 'useJquery' is " .
             "'false'.",
+        );
+        $this->assertSame(
+            [],
+            $this->invokeMethod($gridView, 'getClientOptions'),
+            "'getClientOptions()' method should return an empty array.",
         );
     }
 
