@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Enh #20525: Add `@template` annotations for all actions (max-s-lab)
 - Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
 - Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
+- Enh #20539: Update minimum PHP version requirement from `7.3` to `7.4` (terabytesoftw)
 
 
 2.0.53 June 27, 2025
