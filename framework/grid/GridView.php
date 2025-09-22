@@ -268,7 +268,9 @@ class GridView extends BaseListView
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientScriptInterface|null $clientScript = null;
+    public array|ClientScriptInterface|null $clientScript = [
+        'class' => GridViewJqueryClientScript::class,
+    ];
 
     /**
      * Initializes the grid view.
@@ -289,8 +291,7 @@ class GridView extends BaseListView
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof GridViewJqueryClientScript) {
-            $this->clientScript ??= ['class' => GridViewJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
 
@@ -302,7 +303,7 @@ class GridView extends BaseListView
      */
     public function run()
     {
-        if ($this->clientScript instanceof ClientScriptInterface) {
+        if (Yii::$app->useJquery && $this->clientScript instanceof ClientScriptInterface) {
             $this->clientScript->register($this, $this->getView());
         }
 

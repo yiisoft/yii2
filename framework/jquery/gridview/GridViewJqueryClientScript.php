@@ -19,6 +19,8 @@ use yii\helpers\Url;
 use yii\web\client\ClientScriptInterface;
 use yii\web\View;
 
+use function array_merge;
+
 /**
  * GridViewJqueryClientScript provides client-side script registration for GridView widgets using jQuery.
  *
@@ -30,28 +32,13 @@ use yii\web\View;
  */
 class GridViewJqueryClientScript implements ClientScriptInterface
 {
-    public function register(BaseObject $object, View $view): void
-    {
-        $view = $object->getView();
-
-        GridViewAsset::register($view);
-
-        $id = $object->options['id'];
-
-        $options = Json::htmlEncode(
-            array_merge($this->getClientOptions($object), ['filterOnFocusOut' => $object->filterOnFocusOut]),
-        );
-
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
-    }
-
     public function getClientOptions(BaseObject $object): array
     {
         if (!$object instanceof GridView) {
             return [];
         }
 
-        $filterUrl = isset($object->filterUrl) ? $object->filterUrl : Yii::$app->request->url;
+        $filterUrl = $object->filterUrl ?? Yii::$app->request->url;
         $id = $object->filterRowOptions['id'];
         $filterSelector = "#$id input, #$id select";
 
@@ -63,5 +50,23 @@ class GridViewJqueryClientScript implements ClientScriptInterface
             'filterUrl' => Url::to($filterUrl),
             'filterSelector' => $filterSelector,
         ];
+    }
+
+    public function register(BaseObject $object, View $view): void
+    {
+        $view = $object->getView();
+
+        GridViewAsset::register($view);
+
+        $id = $object->options['id'];
+
+        $options = Json::htmlEncode(
+            array_merge(
+                $this->getClientOptions($object),
+                ['filterOnFocusOut' => $object->filterOnFocusOut],
+            ),
+        );
+
+        $view->registerJs("jQuery('#$id').yiiGridView($options);");
     }
 }
