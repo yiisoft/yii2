@@ -14,7 +14,6 @@ use Yii;
 use yii\base\DynamicModel;
 use yii\base\InvalidArgumentException;
 use yii\base\Widget;
-use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 
@@ -55,7 +54,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
-        $view = new View();
+        $view = Yii::$app->getView();
 
         ob_start();
         ob_implicit_flush(false);
@@ -118,7 +117,8 @@ final class ActiveFormTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $model = new DynamicModel(['name']);
-        $view = new View();
+
+        $view = Yii::$app->getView();
 
         ob_start();
         ob_implicit_flush(false);
@@ -173,7 +173,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
-        $view = new View();
+        $view = Yii::$app->getView();
 
         ob_start();
         ob_implicit_flush(false);
@@ -233,7 +233,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
-        $view = new View();
+        $view = Yii::$app->getView();
 
         ob_start();
         ob_implicit_flush(false);
@@ -289,7 +289,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'string');
 
-        $view = new View();
+        $view = Yii::$app->getView();
 
         ob_start();
         ob_implicit_flush(false);
@@ -344,7 +344,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->addRule(['name'], 'required');
 
-        $view = new View();
+        $view = Yii::$app->getView();
 
         ob_start();
         ob_implicit_flush(false);
@@ -400,11 +400,10 @@ final class ActiveFormTest extends \yiiunit\TestCase
         $ob_level = ob_get_level();
         ob_start();
 
-        $view = new View();
         $form = new ActiveForm(
             [
                 'id' => 'test-form',
-                'view' => $view,
+                'view' => Yii::$app->getView(),
             ],
         );
 
