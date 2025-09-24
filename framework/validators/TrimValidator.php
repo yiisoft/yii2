@@ -36,9 +36,7 @@ class TrimValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = [
-        'class' => TrimValidatorJqueryClientScript::class,
-    ];
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -48,6 +46,7 @@ class TrimValidator extends Validator
         parent::init();
 
         if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => TrimValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

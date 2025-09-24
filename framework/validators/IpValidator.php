@@ -200,9 +200,7 @@ class IpValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = [
-        'class' => IpValidatorJqueryClientScript::class,
-    ];
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * @var array
@@ -242,6 +240,7 @@ class IpValidator extends Validator
         }
 
         if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => IpValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

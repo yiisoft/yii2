@@ -82,6 +82,10 @@ final class RegularValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = 'option1';
 
         $this->assertNull(
+            $validator->clientScript,
+            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+        );
+        $this->assertNull(
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return 'null' value.",
         );

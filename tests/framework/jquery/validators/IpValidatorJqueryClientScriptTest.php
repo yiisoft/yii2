@@ -266,6 +266,10 @@ final class IpValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator->attrA = '192.168.1.1';
 
         $this->assertNull(
+            $validator->clientScript,
+            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+        );
+        $this->assertNull(
             $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
             "'clientValidateAttribute()' method should return 'null' value.",
         );

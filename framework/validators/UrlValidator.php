@@ -51,9 +51,7 @@ class UrlValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = [
-        'class' => UrlValidatorJqueryClientScript::class,
-    ];
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -69,6 +67,7 @@ class UrlValidator extends Validator
         }
 
         if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => UrlValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

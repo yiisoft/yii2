@@ -40,9 +40,7 @@ class BooleanValidator extends Validator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = [
-        'class' => BooleanValidatorJqueryClientScript::class,
-    ];
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -56,6 +54,7 @@ class BooleanValidator extends Validator
         }
 
         if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => BooleanValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

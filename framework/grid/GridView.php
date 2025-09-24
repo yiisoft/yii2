@@ -14,7 +14,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\i18n\Formatter;
-use yii\jquery\gridview\GridViewJqueryClientScript;
+use yii\jquery\grid\GridViewJqueryClientScript;
 use yii\web\client\ClientScriptInterface;
 use yii\widgets\BaseListView;
 
@@ -268,9 +268,7 @@ class GridView extends BaseListView
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientScriptInterface|null $clientScript = [
-        'class' => GridViewJqueryClientScript::class,
-    ];
+    public array|ClientScriptInterface|null $clientScript = null;
 
     /**
      * Initializes the grid view.
@@ -292,6 +290,7 @@ class GridView extends BaseListView
         }
 
         if (Yii::$app->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript ??= ['class' => GridViewJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }
 

@@ -8,13 +8,13 @@
 
 declare(strict_types=1);
 
-namespace yiiunit\framework\jquery\gridview;
+namespace yiiunit\framework\jquery\grid;
 
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\grid\GridView;
-use yii\jquery\gridview\CheckboxColumnJqueryClientScript;
+use yii\jquery\grid\CheckboxColumnJqueryClientScript;
 
 /**
  * @group jquery
@@ -89,6 +89,52 @@ final class CheckboxColumnJqueryClientScriptTest extends \yiiunit\TestCase
         );
     }
 
+    public function testRegisterWithUseJqueryFalse(): void
+    {
+        Yii::$app->useJquery = false;
+
+        $config = [
+            'id' => 'test-grid',
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'options' => ['id' => 'test-grid'],
+            'columns' => [
+                [
+                    'class' => CheckboxColumn::class,
+                    'name' => 'selection',
+                    'multiple' => true,
+                    'cssClass' => 'checkbox-class',
+                ],
+            ],
+        ];
+
+        $view = Yii::$app->getView();
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Test</title>
+                </head>
+            <body>
+
+            <div id="test-grid">
+            <table class="table table-striped table-bordered"><thead>
+            <tr><th><input type="checkbox" class="select-on-check-all" name="selection_all" value="1"></th></tr>
+            </thead>
+            <tbody>
+            <tr><td colspan="1"><div class="empty">No results found.</div></td></tr>
+            </tbody></table>
+            </div>
+            </body>
+            </html>
+
+            HTML,
+            $view->render('@yiiunit/data/views/layout.php', ['content' => GridView::widget($config)]),
+            'Failed asserting that the generated form matches the expected view.',
+        );
+    }
+
     public function testRegisterWithClientScriptOptions(): void
     {
         $gridView = new GridView(
@@ -122,4 +168,29 @@ final class CheckboxColumnJqueryClientScriptTest extends \yiiunit\TestCase
         );
     }
 
+    public function testRegisterWithClientScriptOptionsAndUseJqueryFalse(): void
+    {
+        Yii::$app->useJquery = false;
+
+        $gridView = new GridView(
+            [
+                'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+                'options' => ['id' => 'test-grid'],
+            ],
+        );
+
+        $checkboxColumn = new CheckboxColumn(
+            [
+                'cssClass' => 'custom-class',
+                'grid' => $gridView,
+                'multiple' => false,
+                'name' => 'customSelection',
+            ],
+        );
+
+        $this->assertNull(
+            $checkboxColumn->clientScript,
+            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+        );
+    }
 }

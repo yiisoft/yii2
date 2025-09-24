@@ -8,14 +8,14 @@
 
 declare(strict_types=1);
 
-namespace yiiunit\framework\jquery\gridview;
+namespace yiiunit\framework\jquery\grid;
 
 use Yii;
 use yii\base\BaseObject;
 use yii\base\UnknownMethodException;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
-use yii\jquery\gridview\GridViewJqueryClientScript;
+use yii\jquery\grid\GridViewJqueryClientScript;
 use yii\web\View;
 
 /**
@@ -370,11 +370,9 @@ final class GridViewJqueryClientScriptTest extends \yiiunit\TestCase
 
         $gridView = new GridView($config);
 
-        $this->assertSame(
-            ['class' => 'yii\jquery\gridview\GridViewJqueryClientScript'],
+        $this->assertNull(
             $gridView->clientScript,
-            "'clientScript' property must not be an instance of 'GridViewJqueryClientScript' when 'useJquery' is " .
-            "'false'.",
+            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
         );
         $this->assertSame(
             [],

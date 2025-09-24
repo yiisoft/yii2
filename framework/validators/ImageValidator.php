@@ -92,15 +92,17 @@ class ImageValidator extends FileValidator
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientValidatorScriptInterface|null $clientScript = [
-        'class' => ImageValidatorJqueryClientScript::class,
-    ];
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
      */
     public function init()
     {
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => ImageValidatorJqueryClientScript::class];
+        }
+
         parent::init();
 
         if ($this->notImage === null) {

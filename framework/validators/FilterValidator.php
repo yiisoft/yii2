@@ -76,7 +76,7 @@ class FilterValidator extends Validator
             throw new InvalidConfigException('The "filter" property must be set.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof FilterValidatorJqueryClientScript) {
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => FilterValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

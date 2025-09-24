@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace yii\jquery\gridview;
+namespace yii\jquery\grid;
 
 use yii\base\BaseObject;
 use yii\helpers\Json;

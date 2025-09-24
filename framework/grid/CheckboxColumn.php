@@ -13,7 +13,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\jquery\gridview\CheckboxColumnJqueryClientScript;
+use yii\jquery\grid\CheckboxColumnJqueryClientScript;
 use yii\web\client\ClientScriptInterface;
 
 /**
@@ -81,9 +81,7 @@ class CheckboxColumn extends Column
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientScriptInterface|null $clientScript = [
-        'class' => CheckboxColumnJqueryClientScript::class,
-    ];
+    public array|ClientScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -100,6 +98,7 @@ class CheckboxColumn extends Column
         }
 
         if (Yii::$app->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript ??= ['class' => CheckboxColumnJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }
 

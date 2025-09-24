@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace yii\jquery\gridview;
+namespace yii\jquery\grid;
 
 use Yii;
 use yii\base\BaseObject;

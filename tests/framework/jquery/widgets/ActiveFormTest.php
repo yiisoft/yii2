@@ -100,7 +100,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             HTML,
             $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected form.',
+            'Failed asserting that the generated form matches the expected view.',
         );
         $this->assertSame(
             [
@@ -108,7 +108,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
                 'validationUrl' => '/custom/validation',
             ],
             $form->clientScript->getClientOptions($form),
-            "Failed asserting that 'getClientOptions()' returns the expected options.",
+            "'getClientOptions()' method should return correct options array.",
         );
     }
 
@@ -163,7 +163,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             HTML,
             $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected form.',
+            'Failed asserting that the generated form matches the expected view.',
         );
     }
 
@@ -219,11 +219,11 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             HTML,
             $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected form.',
+            'Failed asserting that the generated form matches the expected view.',
         );
         $this->assertFalse(
             $form->clientScript->getClientOptions($field)['updateAriaInvalid'] ?? null,
-            "Failed asserting that 'getClientOptions()' returns the expected options.",
+            "'getClientOptions()' method should return correct options array.",
         );
     }
 
@@ -279,7 +279,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             HTML,
             $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected form.',
+            'Failed asserting that the generated form matches the expected view.',
         );
     }
 
@@ -334,7 +334,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             HTML,
             $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected form.',
+            'Failed asserting that the generated form matches the expected view.',
         );
     }
 
@@ -391,7 +391,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
             HTML,
             $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected form.',
+            'Failed asserting that the generated form matches the expected view.',
         );
     }
 
