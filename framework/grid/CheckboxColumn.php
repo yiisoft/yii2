@@ -81,7 +81,9 @@ class CheckboxColumn extends Column
     /**
      * Client script class to use for client-side validation.
      */
-    public array|ClientScriptInterface|null $clientScript = null;
+    public array|ClientScriptInterface|null $clientScript = [
+        'class' => CheckboxColumnJqueryClientScript::class,
+    ];
 
     /**
      * {@inheritdoc}
@@ -97,8 +99,7 @@ class CheckboxColumn extends Column
             $this->name .= '[]';
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof CheckboxColumnJqueryClientScript) {
-            $this->clientScript ??= ['class' => CheckboxColumnJqueryClientScript::class];
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
 
