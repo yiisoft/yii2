@@ -4,7 +4,7 @@ clone_folder: C:\projects\yii2
 
 environment:
     matrix:
-      - php_ver: 7.3.0
+      - php_ver: 7.4.0
 
 cache:
     - '%APPDATA%\Composer'
