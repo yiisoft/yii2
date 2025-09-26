@@ -38,4 +38,4 @@ before_test:
 
 test_script:
     - cd C:\projects\yii2
-    - vendor\bin\phpunit --exclude-group mssql,mysql,pgsql,sqlite,db,oci,wincache,xcache,zenddata,cubrid
+    - vendor\bin\phpunit --exclude-group mssql,mysql,pgsql,sqlite,db,oci,wincache,cubrid
