@@ -6,11 +6,6 @@ parameters:
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Constant XC_TYPE_VAR not found\\.$#"
-			count: 2
-			path: framework/caching/XCache.php
-
-		-
 			message: "#^Variable \\$viaClass might not be defined\\.$#"
 			count: 5
 			path: framework/db/BaseActiveRecord.php
