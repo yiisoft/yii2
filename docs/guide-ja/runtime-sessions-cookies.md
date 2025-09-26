@@ -384,7 +384,7 @@ secure フラグの目的は、クッキーが平文で送信されることを�
 
 ### sameSite
 
-Yii 2.0.21 以降、[[yii\web\Cookie::sameSite]] 設定がサポートされています。これは PHP バージョン 7.3.0 以降を必要とします。
+Yii 2.0.21 以降、[[yii\web\Cookie::sameSite]] 設定がサポートされています。これは PHP バージョン 7.4.0 以降を必要とします。
 `sameSite` 設定の目的は CSRF (Cross-Site Request Forgery) 攻撃を防止することです。
 ブラウザが `sameSite` 設定をサポートしている場合、指定されたポリシー ('Lax' または 'Strict') に従うクッキーだけが送信されます。
 詳細については [SameSite の wiki 記事](https://owasp.org/www-community/SameSite) を参照して下さい。
