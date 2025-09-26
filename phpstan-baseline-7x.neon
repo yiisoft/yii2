@@ -11,11 +11,6 @@ parameters:
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Constant XC_TYPE_VAR not found\\.$#"
-			count: 2
-			path: framework/caching/XCache.php
-
-		-
 			message: "#^Method yii\\\\console\\\\controllers\\\\CacheController\\:\\:actionFlushSchema\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
 			path: framework/console/controllers/CacheController.php
