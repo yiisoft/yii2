@@ -1679,7 +1679,7 @@ class Formatter extends Component
 
         $message = [];
         foreach ($unitBundle as $key => $value) {
-            if ($key === 'dnam') {
+            if ($key === 'dnam' || $key === 'case') {
                 continue;
             }
             $message[] = "$key{{$value}}";
