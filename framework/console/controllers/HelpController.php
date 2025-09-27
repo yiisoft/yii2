@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Application;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
@@ -43,7 +44,7 @@ class HelpController extends Controller
      *
      * @param string|null $command The name of the command to show help about.
      * If not provided, all available commands will be displayed.
-     * @return void
+     * @return int the exit status
      * @throws Exception if the command for help is unknown
      */
     public function actionIndex($command = null)
@@ -66,6 +67,8 @@ class HelpController extends Controller
         } else {
             $this->getDefaultHelp();
         }
+
+        return ExitCode::OK;
     }
 
     /**

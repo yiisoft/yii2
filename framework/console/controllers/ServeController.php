@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 
 /**
@@ -47,7 +48,7 @@ class ServeController extends Controller
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
-     * @return int|null
+     * @return int
      */
     public function actionIndex($address = 'localhost')
     {
@@ -88,7 +89,7 @@ class ServeController extends Controller
 
         $this->runCommand($command);
 
-        return null;
+        return ExitCode::OK;
     }
 
     /**

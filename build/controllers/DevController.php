@@ -10,6 +10,7 @@ namespace yii\build\controllers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -291,7 +292,7 @@ class DevController extends Controller
      * @param string $dir application directory
      * @param string $base Yii sources base directory
      *
-     * @return int|null
+     * @return int
      */
     protected function linkFrameworkAndExtensions($dir, $base)
     {
@@ -317,7 +318,7 @@ class DevController extends Controller
             }
         }
 
-        return null;
+        return ExitCode::OK;
     }
 
     /**
