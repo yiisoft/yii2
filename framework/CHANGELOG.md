@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Bug #19655: Fix `LinkPager::getPageRange` when `maxButtons` is 2 (max-s-lab)
 - Enh #20539: Update minimum PHP version requirement from `7.3` to `7.4` (terabytesoftw)
 - Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
+- Bug #20548: Fix PHP `8.5` `null` array offset deprecation warnings (terabytesoftw)
 
 
 2.0.53 June 27, 2025
