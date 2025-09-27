@@ -31,7 +31,7 @@ use yii\widgets\InputWidget;
  *
  * The following example shows how to use this widget with a model attribute:
  *
- * ```php
+ * ```
  * echo Captcha::widget([
  *     'model' => $model,
  *     'attribute' => 'captcha',
@@ -40,7 +40,7 @@ use yii\widgets\InputWidget;
  *
  * The following example will use the name property instead:
  *
- * ```php
+ * ```
  * echo Captcha::widget([
  *     'name' => 'captcha',
  * ]);
@@ -49,7 +49,7 @@ use yii\widgets\InputWidget;
  * You can also use this widget in an [[\yii\widgets\ActiveForm|ActiveForm]] using the [[\yii\widgets\ActiveField::widget()|widget()]]
  * method, for example like this:
  *
- * ```php
+ * ```
  * <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), [
  *     // configure additional widget properties here
  * ]) ?>

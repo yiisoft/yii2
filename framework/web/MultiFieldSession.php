@@ -42,7 +42,7 @@ abstract class MultiFieldSession extends Session
      *
      * For example:
      *
-     * ```php
+     * ```
      * function ($fields) {
      *     return [
      *         'expireDate' => Yii::$app->formatter->asDate($fields['expire']),
@@ -64,7 +64,7 @@ abstract class MultiFieldSession extends Session
      *
      * For example:
      *
-     * ```php
+     * ```
      * function ($session) {
      *     return [
      *         'user_id' => Yii::$app->user->id,

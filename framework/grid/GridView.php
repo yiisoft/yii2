@@ -24,7 +24,7 @@ use yii\widgets\BaseListView;
  *
  * A basic usage looks like the following:
  *
- * ```php
+ * ```
  * <?= GridView::widget([
  *     'dataProvider' => $dataProvider,
  *     'columns' => [
@@ -95,7 +95,7 @@ class GridView extends BaseListView
      * returns an array of the HTML attributes. The anonymous function will be called once for every
      * data model returned by [[dataProvider]]. It should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $grid)
      * ```
      *
@@ -146,7 +146,7 @@ class GridView extends BaseListView
      * @var array grid column configuration. Each array element represents the configuration
      * for one particular grid column. For example,
      *
-     * ```php
+     * ```
      * [
      *     ['class' => SerialColumn::class],
      *     [
@@ -169,7 +169,7 @@ class GridView extends BaseListView
      *
      * Using the shortcut format the configuration for columns in simple cases would look like this:
      *
-     * ```php
+     * ```
      * [
      *     'id',
      *     'amount:currency:Total Amount',
@@ -180,7 +180,7 @@ class GridView extends BaseListView
      * When using a [[dataProvider]] with active records, you can also display values from related records,
      * e.g. the `name` attribute of the `author` relation:
      *
-     * ```php
+     * ```
      * // shortcut syntax
      * 'author.name',
      * // full syntax

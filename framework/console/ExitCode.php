@@ -14,7 +14,7 @@ namespace yii\console;
  *
  * These constants can be used in console controllers for example like this:
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     if (!$this->isAllowedToPerformAction()) {

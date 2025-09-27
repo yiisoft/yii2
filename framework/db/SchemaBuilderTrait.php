@@ -16,7 +16,7 @@ namespace yii\db;
  *
  * For example you may use the following code inside your migration files:
  *
- * ```php
+ * ```
  * $this->createTable('example_table', [
  *   'id' => $this->primaryKey(),
  *   'name' => $this->string(64)->notNull(),

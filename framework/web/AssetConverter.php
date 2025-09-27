@@ -30,7 +30,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      *
      * You may also use a [path alias](guide:concept-aliases) to specify the location of the command:
      *
-     * ```php
+     * ```
      * [
      *     'styl' => ['css', '@app/node_modules/bin/stylus < {from} > {to}'],
      * ]

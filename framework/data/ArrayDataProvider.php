@@ -27,7 +27,7 @@ use yii\helpers\ArrayHelper;
  *
  * ArrayDataProvider may be used in the following way:
  *
- * ```php
+ * ```
  * $query = new Query;
  * $provider = new ArrayDataProvider([
  *     'allModels' => $query->from('post')->all(),

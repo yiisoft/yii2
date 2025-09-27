@@ -21,7 +21,7 @@ use yii\di\Instance;
  *
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
- * ```php
+ * ```
  * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
  *     'pagination' => [
@@ -35,7 +35,7 @@ use yii\di\Instance;
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
  *
- * ```php
+ * ```
  * $query = new Query();
  * $provider = new ActiveDataProvider([
  *     'query' => $query->from('post'),

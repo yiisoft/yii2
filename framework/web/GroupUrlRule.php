@@ -16,7 +16,7 @@ use yii\base\InvalidConfigException;
  * GroupUrlRule is best used by a module which often uses module ID as the prefix for the URL rules.
  * For example, the following code creates a rule for the `admin` module:
  *
- * ```php
+ * ```
  * new GroupUrlRule([
  *     'prefix' => 'admin',
  *     'rules' => [
