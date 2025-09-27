@@ -264,7 +264,9 @@ class LinkPager extends Widget
         $currentPage = $this->pagination->getPage();
         $pageCount = $this->pagination->getPageCount();
 
-        $beginPage = max(0, $currentPage - (int) ($this->maxButtonCount / 2));
+        $beginPageOffset = $this->maxButtonCount > 2 ? (int) ($this->maxButtonCount / 2) : 0;
+        $beginPage = max(0, $currentPage - $beginPageOffset);
+
         if (($endPage = $beginPage + $this->maxButtonCount - 1) >= $pageCount) {
             $endPage = $pageCount - 1;
             $beginPage = max(0, $endPage - $this->maxButtonCount + 1);
