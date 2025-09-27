@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.60 under development
+2.0.54 under development
 ------------------------
 
 - Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
 - Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
 - Bug #20532: Fix `@return` annotations in `CacheController::actionFlushSchema`, `FixtureController::actionUnload`, `HelpController::actionIndex` and `ServeController::actionIndex` (max-s-lab)
+- Bug #19655: Fix `LinkPager::getPageRange` when `maxButtons` is 2 (max-s-lab)
 - Enh #20539: Update minimum PHP version requirement from `7.3` to `7.4` (terabytesoftw)
 - Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
 
