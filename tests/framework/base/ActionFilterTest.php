@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
+use ReflectionClass;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
@@ -25,7 +29,7 @@ class ActionFilterTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testFilter()
+    public function testFilter(): void
     {
         // no filters
         $controller = new FakeController('fake', Yii::$app);
@@ -37,8 +41,8 @@ class ActionFilterTest extends TestCase
         // all filters pass
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
+                'filter1' => Filter1::class,
+                'filter3' => Filter3::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -49,9 +53,9 @@ class ActionFilterTest extends TestCase
         // a filter stops in the middle
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter2' => Filter2::className(),
-                'filter3' => Filter3::className(),
+                'filter1' => Filter1::class,
+                'filter2' => Filter2::class,
+                'filter3' => Filter3::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -62,9 +66,9 @@ class ActionFilterTest extends TestCase
         // the first filter stops
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter2' => Filter2::className(),
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
+                'filter2' => Filter2::class,
+                'filter1' => Filter1::class,
+                'filter3' => Filter3::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -75,9 +79,9 @@ class ActionFilterTest extends TestCase
         // the last filter stops
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
-                'filter2' => Filter2::className(),
+                'filter1' => Filter1::class,
+                'filter3' => Filter3::class,
+                'filter2' => Filter2::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -103,13 +107,13 @@ class ActionFilterTest extends TestCase
      * @dataProvider actionFilterProvider
      * @param string|array $filterClass
      */
-    public function testActive($filterClass)
+    public function testActive($filterClass): void
     {
         $this->mockWebApplication();
 
         /** @var ActionFilter $filter */
         $filter = Yii::createObject($filterClass);
-        $reflection = new \ReflectionClass($filter);
+        $reflection = new ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
@@ -143,12 +147,12 @@ class ActionFilterTest extends TestCase
     /**
      * @depends testActive
      */
-    public function testActiveWildcard()
+    public function testActiveWildcard(): void
     {
         $this->mockWebApplication();
 
         $filter = new ActionFilter();
-        $reflection = new \ReflectionClass($filter);
+        $reflection = new ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
@@ -249,7 +253,7 @@ class Filter3 extends ActionFilter
 
 class MockUser extends User
 {
-    public function init()
+    public function init(): void
     {
         // do not call parent to avoid the need to mock configuration
     }

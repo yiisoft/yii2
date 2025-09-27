@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\behaviors;
 
+use yii\db\StaleObjectException;
 use Yii;
 use yii\behaviors\OptimisticLockBehavior;
 use yii\web\Request;
@@ -70,10 +74,10 @@ class OptimisticLockBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testUpdateRecordWithinConsoleRequest()
+    public function testUpdateRecordWithinConsoleRequest(): void
     {
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $model->version = 0;
@@ -94,7 +98,7 @@ class OptimisticLockBehaviorTest extends TestCase
     }
 
 
-    public function testNewRecord()
+    public function testNewRecord(): void
     {
         // create a record without any version
 
@@ -102,7 +106,7 @@ class OptimisticLockBehaviorTest extends TestCase
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
@@ -128,13 +132,13 @@ class OptimisticLockBehaviorTest extends TestCase
     }
 
 
-    public function testUpdateRecord()
+    public function testUpdateRecord(): void
     {
         $request = new Request();
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
@@ -151,7 +155,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->save(false);
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -167,7 +171,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->save(false);
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -183,7 +187,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->save(false);
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -211,13 +215,13 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(3, $model->version, 'updated version should equal 3');
     }
 
-     public function testDeleteRecord()
+     public function testDeleteRecord(): void
     {
         $request = new Request();
         Yii::$app->set('request', $request);
 
         ActiveRecordLockVersion::$behaviors = [
-            OptimisticLockBehavior::className(),
+            OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
@@ -232,7 +236,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->delete();
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being deleted is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -248,7 +252,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->delete();
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being deleted is outdated.', $e->getMessage());
             $thrown = true;
         }

@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
+use Exception;
 use Yii;
 use yii\base\Theme;
 use yii\base\View;
@@ -42,7 +46,7 @@ class ViewTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/13058
      */
-    public function testExceptionOnRenderFile()
+    public function testExceptionOnRenderFile(): void
     {
         $view = new View();
 
@@ -62,7 +66,7 @@ PHP
 
         try {
             $view->renderFile($exceptionViewFile);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // shutdown exception
         }
         $view->renderFile($normalViewFile);
@@ -70,12 +74,12 @@ PHP
         $this->assertEquals($obInitialLevel, ob_get_level());
     }
 
-    public function testRelativePathInView()
+    public function testRelativePathInView(): void
     {
         $view = new View();
         FileHelper::createDirectory($this->testViewPath . '/theme1');
-        \Yii::setAlias('@testviews', $this->testViewPath);
-        \Yii::setAlias('@theme', $this->testViewPath . '/theme1');
+        Yii::setAlias('@testviews', $this->testViewPath);
+        Yii::setAlias('@theme', $this->testViewPath . '/theme1');
 
         $baseView = "{$this->testViewPath}/theme1/base.php";
         file_put_contents($baseView, <<<'PHP'
@@ -98,7 +102,7 @@ PHP
         $this->assertSame($subViewContent, $view->render('@testviews/base'));
     }
 
-    public function testAfterRender()
+    public function testAfterRender(): void
     {
         $view = new View();
         $filename = 'path/to/file';

@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework;
 
@@ -38,7 +41,7 @@ class ChangeLogTest extends TestCase
     /**
      * @dataProvider changeProvider
      */
-    public function testContributorLine($line)
+    public function testContributorLine($line): void
     {
         if ($line === '- no changes in this release.') {
             $this->markTestSkipped('Placeholder line');

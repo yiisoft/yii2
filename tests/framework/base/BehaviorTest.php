@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -55,13 +58,13 @@ class BarBehavior extends Behavior
         return parent::hasMethod($name);
     }
 
-    public function attach($owner)
+    public function attach($owner): void
     {
         self::$attachCount++;
         parent::attach($owner);
     }
 
-    public function detach()
+    public function detach(): void
     {
         self::$detachCount++;
         parent::detach();
@@ -86,7 +89,7 @@ class BehaviorTest extends TestCase
         gc_collect_cycles();
     }
 
-    public function testAttachAndAccessingWithName()
+    public function testAttachAndAccessingWithName(): void
     {
         BarBehavior::$attachCount = 0;
         BarBehavior::$detachCount = 0;
@@ -108,7 +111,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals('reattached', $bar->behaviorProperty);
     }
 
-    public function testAttachAndAccessingAnonymous()
+    public function testAttachAndAccessingAnonymous(): void
     {
         BarBehavior::$attachCount = 0;
         BarBehavior::$detachCount = 0;
@@ -122,7 +125,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals('behavior method', $bar->behaviorMethod());
     }
 
-    public function testAutomaticAttach()
+    public function testAutomaticAttach(): void
     {
         BarBehavior::$attachCount = 0;
         BarBehavior::$detachCount = 0;
@@ -136,7 +139,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals(0, BarBehavior::$detachCount);
     }
 
-    public function testMagicMethods()
+    public function testMagicMethods(): void
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
@@ -149,7 +152,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals('Magic Behavior Method Result!', $bar->magicBehaviorMethod());
     }
 
-    public function testCallUnknownMethod()
+    public function testCallUnknownMethod(): void
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
