@@ -106,7 +106,7 @@ runs:
         echo "PHPUnit command: $PHPUNIT_CMD"
 
     - name: Run PHPUnit tests on Linux.
-      shell: bash -e {0} 
+      shell: bash
       if: runner.os != 'Windows'
       run: ${{ steps.build-cmd.outputs.command }}
 

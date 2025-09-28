@@ -65,8 +65,12 @@ runs:
       shell: bash
       run: composer self-update ${{ inputs.composer-version }}
 
-    - name: Install dependencies
+    - name: Install dependencies with composer.
+      if: ${{ inputs.ignore-platform-reqs != 'true'}}
       shell: bash
       run: ${{ inputs.composer-command }}
-      env:
-        COMPOSER_IGNORE_PLATFORM_REQS: ${{ inputs.ignore-platform-reqs && '1' || '0' }}
+
+    - name: Install dependencies with composer (ignore-platform-reqs).
+      if: ${{ inputs.ignore-platform-reqs == 'true'}}
+      shell: bash
+      run: ${{ inputs.composer-command }} --ignore-platform-reqs
