@@ -25,6 +25,9 @@ jobs:
         php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
 
@@ -58,6 +61,9 @@ jobs:
         php: [8.5, 8.6]
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
 
@@ -65,7 +71,7 @@ jobs:
         uses: niden/actions-memcached@v7
 
       - name: Setup PHP with Composer.
-        uses: ./.github/workflows/actions/php-setup
+        uses: ./.github/actions/php-setup
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
           extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
@@ -74,7 +80,7 @@ jobs:
           php-version: '["${{ matrix.php }}"]'
 
       - name: Run PHPUnit tests.
-        uses: ./.github/workflows/actions/phpunit
+        uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
           coverage-file: coverage.xml
