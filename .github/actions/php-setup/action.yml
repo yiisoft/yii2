@@ -6,7 +6,7 @@ inputs:
   composer-command:
     description: Composer command to run.
     default: |-
-      composer update --prefer-dist \
+      composer install --prefer-dist \
       --no-interaction \
       --no-progress \
       --optimize-autoloader \
