@@ -21,6 +21,7 @@ jobs:
       COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
       PHP_EXTENSIONS: curl, intl, pdo, pdo_mysql
       PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: mysql
       XDEBUG_MODE: coverage
 
     runs-on: ubuntu-latest
@@ -59,7 +60,7 @@ jobs:
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
+          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
+          group: ${{ env.PHPUNIT_GROUP }}

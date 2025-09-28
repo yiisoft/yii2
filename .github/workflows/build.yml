@@ -54,8 +54,8 @@ jobs:
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
+          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
