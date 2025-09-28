@@ -13,6 +13,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PHP_EXTENSIONS: curl, dom, imagick, intl, mbstring, mcrypt, memcached
+  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+  PHPUNIT_COVERAGE_FILE: coverage.xml
+  PHPUNIT_COVERAGE_FORMAT: clover
+  PHPUNIT_EXCLUDE_GROUP: db,wincache
+  XDEBUG_MODE: coverage
+
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}
@@ -38,18 +46,18 @@ jobs:
         uses: ./.github/actions/php-setup
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-          ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          coverage-format: clover
-          coverage-file: coverage.xml
+          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
+          coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          exclude-group: db,wincache
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
   phpunit-dev:
     name: PHP ${{ matrix.php }}
@@ -75,17 +83,16 @@ jobs:
         uses: ./.github/actions/php-setup
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
           ignore-platform-reqs: true
-          ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          coverage-file: coverage.xml
-          coverage-format: clover
+          coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
+          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          exclude-group: db,wincache
-
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
