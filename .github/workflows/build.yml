@@ -70,7 +70,7 @@ jobs:
         php: [8.5, 8.6]
 
     steps:
-      - name: Checkout
+      - name: Checkout.
         uses: actions/checkout@v5
 
       - name: Generate french locale.
