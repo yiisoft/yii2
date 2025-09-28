@@ -19,7 +19,7 @@ jobs:
 
     env:
       COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
-      PHP_EXTENSIONS: curl, intl, pdo, pdo_oci
+      PHP_EXTENSIONS: curl, intl, oci8, pdo, pdo_oci
       PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
       PHPUNIT_GROUP: oci
       XDEBUG_MODE: coverage
@@ -32,10 +32,11 @@ jobs:
 
     services:
       oci:
-          image: wnameless/oracle-xe-11g-r2:latest
-          ports:
-              - 1521:1521
-          options: --name=oci
+        image: wnameless/oracle-xe-11g-r2:latest
+        ports:
+          - 1521:1521
+        options: >-
+          --name=oci
 
     steps:
       - name: Checkout.

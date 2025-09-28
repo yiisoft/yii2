@@ -43,19 +43,19 @@ jobs:
 
     services:
       mssql:
-          image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
-          env:
-              SA_PASSWORD: YourStrong!Passw0rd
-              ACCEPT_EULA: Y
-              MSSQL_PID: Developer
-          ports:
-              - 1433:1433
-          options: >-
-            --name=mssql
-            --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
-            --health-interval=10s
-            --health-retries=3
-            --health-timeout=5s
+        image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
+        env:
+          SA_PASSWORD: YourStrong!Passw0rd
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: >-
+          --name=mssql
+          --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-retries=3
+          --health-timeout=5s
 
     steps:
       - name: Checkout.

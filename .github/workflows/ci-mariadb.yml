@@ -43,6 +43,7 @@ jobs:
         ports:
           - 3306:3306
         options: >-
+          --name=mariadb
           --health-cmd="mariadb-admin ping"
           --health-interval=10s
           --health-retries=3
