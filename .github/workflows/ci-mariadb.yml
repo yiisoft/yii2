@@ -42,7 +42,12 @@ jobs:
           MARIADB_DATABASE: yiitest
         ports:
           - 3306:3306
-        options: --health-cmd="mariadb-admin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mariadb-admin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+          --mount type=tmpfs,destination=/var/lib/mysql
 
     steps:
       - name: Checkout.
