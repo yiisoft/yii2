@@ -17,12 +17,12 @@ jobs:
   phpcs:
     runs-on: ubuntu-latest
 
-    name: PHP_CodeSniffer
+    name: PHP ${{ matrix.php }}-PHP_CodeSniffer
 
     strategy:
       fail-fast: false
       matrix:
-        php: [7.4, 8.4]
+        php: [8.2]
 
     steps:
       - name: Checkout.

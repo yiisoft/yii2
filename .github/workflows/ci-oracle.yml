@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}
+    name: PHP ${{ matrix.php }}-oci
 
     env:
       COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
