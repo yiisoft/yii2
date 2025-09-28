@@ -60,7 +60,5 @@ jobs:
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
-          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           group: ${{ env.PHPUNIT_GROUP }}

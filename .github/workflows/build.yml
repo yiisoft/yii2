@@ -16,8 +16,6 @@ concurrency:
 env:
   PHP_EXTENSIONS: curl, dom, imagick, intl, mbstring, mcrypt, memcached
   PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-  PHPUNIT_COVERAGE_FILE: coverage.xml
-  PHPUNIT_COVERAGE_FORMAT: clover
   PHPUNIT_EXCLUDE_GROUP: db,wincache
   XDEBUG_MODE: coverage
 
@@ -54,8 +52,6 @@ jobs:
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
-          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
@@ -92,7 +88,5 @@ jobs:
         uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
-          coverage-file: ${{ env.PHPUNIT_COVERAGE_FILE }}
-          coverage-format: ${{ env.PHPUNIT_COVERAGE_FORMAT }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
