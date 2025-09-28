@@ -1,8 +1,13 @@
+---
+name: static analysis
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   - pull_request
   - push
-
-name: static analysis
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,8 +18,8 @@ jobs:
     name: PHP ${{ matrix.php }}
 
     env:
-        DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-        EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      PHP_EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
 
     runs-on: ubuntu-latest
 
@@ -27,25 +32,19 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v5
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: none
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
+          coverage-driver: none
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
           tools: cs2pr, pie
 
-      - name: Update composer.
-        run: composer self-update
-
-      - name: Install dependencies with composer.
-        run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
-
-      - name: Static analysis PHP 7.x
+      - name: Static analysis PHP 7.x.
         if: matrix.php == '7.3' || matrix.php == '7.4'
         run: vendor/bin/phpstan analyse --configuration=phpstan-7x.dist.neon --error-format=checkstyle | cs2pr
 
-      - name: Static analysis PHP 8.x
+      - name: Static analysis PHP 8.x.
         if: matrix.php != '7.3' && matrix.php != '7.4'
         run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
