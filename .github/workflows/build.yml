@@ -37,10 +37,10 @@ jobs:
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
         with:
-          php-version: '["${{ matrix.php }}"]'
+          coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
           extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
-          coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
+          php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
         uses: ./.github/actions/phpunit
@@ -77,7 +77,7 @@ jobs:
           extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
           ignore-platform-reqs: true
           ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
-          php-version: '["${{ matrix.php }}"]'
+          php-version: ${{ matrix.php }}
 
       - name: Run PHPUnit tests.
         uses: ./.github/actions/phpunit
