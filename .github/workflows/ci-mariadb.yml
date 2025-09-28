@@ -45,8 +45,8 @@ jobs:
         options: >-
           --health-cmd="mariadb-admin ping"
           --health-interval=10s
-          --health-timeout=5s
           --health-retries=3
+          --health-timeout=5s
           --mount type=tmpfs,destination=/var/lib/mysql
 
     steps:
