@@ -218,16 +218,71 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
             HTML,
             $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelInheritsLabelOptions(): void
+    {
+        $this->activeField->labelOptions = [
+            'class' => 'inherited-class',
+            'data-test' => 'inherited-data'
+        ];
+
+        $this->activeField->label(
+            'Test Label',
+            ['class' => 'override-class'],
         );
 
-        // label = false
-        $expectedValue = '';
-        $this->activeField->label(false);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="override-class" data-test="inherited-data" for="activefieldtestmodel-attributename">Test Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
 
-        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
+    public function testLabelPriorityOfContent(): void
+    {
+        $label = 'Parameter Label';
+        $paramLabel = 'Options Label';
 
-        // $label = 'Label Name'
+        $this->activeField->label($label, ['label' => $paramLabel]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label(null, ['label' => $paramLabel]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">{$paramLabel}</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label();
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithContent(): void
+    {
         $label = 'Label Name';
+
         $this->activeField->label($label);
 
         $this->assertEqualsWithoutLE(
@@ -235,6 +290,96 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
             HTML,
             $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithEmptyString(): void
+    {
+        $this->activeField->label('');
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename"></label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithLabelOptionsAndTagCustom(): void
+    {
+        $label = 'Label Name';
+
+        $this->activeField->label(
+            $label,
+            [
+                'class' => 'custom-class',
+                'tag' => 'h3',
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <h3 class="custom-class">{$label}</h3>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label(
+            null,
+            [
+                'class' => 'custom-class',
+                'label' => $label,
+                'tag' => 'h3',
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <h3 class="custom-class">{$label}</h3>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithLabelOptionsAndTagFalse(): void
+    {
+        $label = 'Label Name';
+
+        $this->activeField->label(
+            $label,
+            [
+                'class' => 'custom-class',
+                'tag' =>  false,
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            {$label}
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label(
+            null,
+            [
+                'class' => 'custom-class',
+                'label' => $label,
+                'tag' => false,
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            {$label}
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
         );
     }
 
@@ -779,6 +924,29 @@ class ActiveFieldTest extends \yiiunit\TestCase
         );
     }
 
+    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndLabelFalse(): void
+    {
+        $this->activeField->radio(
+            [
+                'label' => false,
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
+        );
+    }
+
     public function testRadioEnclosedByLabelFalseWithLabelOptionsAndTagLabel(): void
     {
         $this->activeField->radio(
@@ -873,6 +1041,29 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <<<HTML
             <div class="form-group field-activefieldtestmodel-attributename">
             <label class="custom-label-class" data-test="custom-label-data" for="activefieldtestmodel-attributename">Custom Label</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that checkbox renders correctly.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndLabelFalse(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => false,
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
             <div class="hint-block">Hint for attributeName attribute</div>
             <div class="help-block"></div>

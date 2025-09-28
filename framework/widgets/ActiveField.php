@@ -266,25 +266,42 @@ class ActiveField extends Component
      * @param array|null $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
      * using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * The following special option is recognized:
+     * - `tag`: string|false, specifies the tag name for the label element.
+     *   - If not specified, defaults to `'label'`.
+     *   - If set to `false`, the label content will be rendered as raw HTML without any wrapper tag.
+     *   - If set to `'label'`, uses [[Html::activeLabel()]] to generate a standard label element.
+     *   - If set to another tag name (e.g., `'span'`, `'div'`), uses [[Html::tag()]] to generate that element.
+     *
      * @return $this the field object itself.
      */
     public function label($label = null, $options = [])
     {
-        if ($label === false) {
+        if ($label === false || (isset($this->labelOptions['label']) && $this->labelOptions['label'] === false)) {
             $this->parts['{label}'] = '';
             return $this;
         }
 
         $options = array_merge($this->labelOptions, $options);
-        if ($label !== null) {
-            $options['label'] = $label;
-        }
 
-        if ($this->_skipLabelFor) {
-            $options['for'] = null;
-        }
+        $tag = ArrayHelper::remove($options, 'tag', 'label');
 
-        $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
+        $label ??= $options['label'] ?? $this->model->getAttributeLabel(Html::getAttributeName($this->attribute));
+        $options['label'] = $label;
+
+        if ($tag === false) {
+            $this->parts['{label}'] = $label;
+        } elseif ($tag === 'label') {
+            if ($this->_skipLabelFor) {
+                $options['for'] = null;
+            }
+
+            $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
+        } else {
+            unset($options['label'], $options['for']);
+
+            $this->parts['{label}'] = Html::tag($tag, $label, $options);
+        }
 
         return $this;
     }
