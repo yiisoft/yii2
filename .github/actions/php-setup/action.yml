@@ -64,9 +64,9 @@ runs:
     - name: Update composer.
       shell: bash
       run: composer self-update ${{ inputs.composer-version }}
-      env:
-        COMPOSER_IGNORE_PLATFORM_REQS: ${{ inputs.ignore-platform-reqs && '1' || '0' }}
 
     - name: Install dependencies
       shell: bash
       run: ${{ inputs.composer-command }}
+      env:
+        COMPOSER_IGNORE_PLATFORM_REQS: ${{ inputs.ignore-platform-reqs && '1' || '0' }}

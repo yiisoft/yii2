@@ -49,6 +49,7 @@ jobs:
           coverage-format: clover
           coverage-file: coverage.xml
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          exclude-group: db,wincache
 
   phpunit-dev:
     name: PHP ${{ matrix.php }}
@@ -86,4 +87,5 @@ jobs:
           coverage-file: coverage.xml
           coverage-format: clover
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          exclude-group: db,wincache
 
