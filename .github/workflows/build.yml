@@ -32,7 +32,7 @@ jobs:
         uses: niden/actions-memcached@v7
 
       - name: Setup PHP with Composer.
-        uses: ./.github/workflows/actions/php-setup
+        uses: ./.github/actions/php-setup
         with:
           php-version: '["${{ matrix.php }}"]'
           extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
@@ -40,7 +40,7 @@ jobs:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
 
       - name: Run PHPUnit tests.
-        uses: ./.github/workflows/actions/phpunit
+        uses: ./.github/actions/phpunit
         with:
           coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
           coverage-format: clover
