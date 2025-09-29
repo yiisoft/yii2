@@ -1,11 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\ar;
+
+use yii\base\InvalidArgumentException;
 
 /**
  * @property int $attr1
@@ -22,6 +27,6 @@ class NoAutoLabels extends ActiveRecord
 
     public function generateAttributeLabel($name)
     {
-        throw new \yii\base\InvalidArgumentException('Label not defined!');
+        throw new InvalidArgumentException('Label not defined!');
     }
 }

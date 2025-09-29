@@ -1,12 +1,17 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit;
 
+use ReflectionObject;
+use ReflectionClass;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -103,10 +108,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function destroyApplication()
     {
-        if (\Yii::$app && \Yii::$app->has('session', true)) {
-            \Yii::$app->session->close();
+        if (Yii::$app && Yii::$app->has('session', true)) {
+            Yii::$app->session->close();
         }
-        \Yii::$app = null;
+        Yii::$app = null;
     }
 
     /**
@@ -115,7 +120,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param string $actual
      * @param string $message
      */
-    protected function assertEqualsWithoutLE($expected, $actual, $message = '')
+    protected function assertEqualsWithoutLE($expected, $actual, $message = ''): void
     {
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
@@ -129,7 +134,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param string $actual
      * @param string $message
      */
-    protected function assertEqualsAnyWhitespace($expected, $actual, $message = ''){
+    protected function assertEqualsAnyWhitespace($expected, $actual, $message = ''): void
+    {
         $expected = $this->sanitizeWhitespaces($expected);
         $actual = $this->sanitizeWhitespaces($actual);
 
@@ -145,7 +151,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed  $actual
      * @param string $message
      */
-    protected function assertSameAnyWhitespace($expected, $actual, $message = ''){
+    protected function assertSameAnyWhitespace($expected, $actual, $message = ''): void
+    {
         if (is_string($expected)) {
             $expected = $this->sanitizeWhitespaces($expected);
         }
@@ -163,7 +170,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed $haystack
      * @param string $message
      */
-    protected function assertContainsWithoutLE($needle, $haystack, $message = '')
+    protected function assertContainsWithoutLE($needle, $haystack, $message = ''): void
     {
         $needle = str_replace("\r\n", "\n", $needle);
         $haystack = str_replace("\r\n", "\n", $haystack);
@@ -176,9 +183,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @see https://github.com/yiisoft/yii2/issues/19868 (ICU 72 changes)
      * @param $string
-     * @return string
+     * @return array|string|null
      */
-    protected function sanitizeWhitespaces($string){
+    protected function sanitizeWhitespaces($string)
+    {
         return preg_replace("/[\pZ\pC]/u", " ", $string);
     }
 
@@ -193,7 +201,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function invokeMethod($object, $method, $args = [], $revoke = true)
     {
-        $reflection = new \ReflectionObject($object);
+        $reflection = new ReflectionObject($object);
         $method = $reflection->getMethod($method);
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
@@ -221,9 +229,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param bool $revoke whether to make property inaccessible after setting
      * @since 2.0.11
      */
-    protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true)
+    protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true): void
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
         while (!$class->hasProperty($propertyName)) {
             $class = $class->getParentClass();
         }
@@ -253,7 +261,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function getInaccessibleProperty($object, $propertyName, $revoke = true)
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
         while (!$class->hasProperty($propertyName)) {
             $class = $class->getParentClass();
         }
@@ -284,7 +292,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param array $expected
      * @param string $message
      */
-    public function assertIsOneOf($actual, array $expected, $message = '')
+    public function assertIsOneOf($actual, array $expected, $message = ''): void
     {
         self::assertThat($actual, new IsOneOfAssert($expected), $message);
     }
@@ -293,7 +301,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Changes db component config
      * @param $db
      */
-    protected function switchDbConnection($db)
+    protected function switchDbConnection($db): void
     {
         $databases = $this->getParam('databases');
         if (isset($databases[$db])) {

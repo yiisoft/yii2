@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\behaviors;
 
@@ -64,7 +67,7 @@ class AttributeTypecastBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testTypecast()
+    public function testTypecast(): void
     {
         $model = new ActiveRecordAttributeTypecast();
 
@@ -83,7 +86,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('callback: foo', $model->callback);
     }
 
-    public function testTypecastEnum()
+    public function testTypecastEnum(): void
     {
         if (PHP_VERSION_ID < 80100) {
             $this->markTestSkipped('Can not be tested on PHP < 8.1');
@@ -101,7 +104,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecastEnum
      */
-    public function testTypecastEnumFromString()
+    public function testTypecastEnumFromString(): void
     {
         if (PHP_VERSION_ID < 80100) {
             $this->markTestSkipped('Can not be tested on PHP < 8.1');
@@ -118,7 +121,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecastEnum
      */
-    public function testTypecastEnumFailWithInvalidValue()
+    public function testTypecastEnumFailWithInvalidValue(): void
     {
         if (PHP_VERSION_ID < 80100) {
             $this->markTestSkipped('Can not be tested on PHP < 8.1');
@@ -135,7 +138,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecast
      */
-    public function testSkipNull()
+    public function testSkipNull(): void
     {
         $model = new ActiveRecordAttributeTypecast();
         $model->getAttributeTypecastBehavior()->skipOnNull = true;
@@ -167,7 +170,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecast
      */
-    public function testAfterFindEvent()
+    public function testAfterFindEvent(): void
     {
         $model = new ActiveRecordAttributeTypecast();
 
@@ -182,7 +185,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/17194
      */
-    public function testDirtyAttributesAreEmptyAfterFind()
+    public function testDirtyAttributesAreEmptyAfterFind(): void
     {
         $model = new ActiveRecordAttributeTypecast();
         $model->name = 123;
@@ -200,7 +203,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecast
      */
-    public function testAfterValidateEvent()
+    public function testAfterValidateEvent(): void
     {
         $model = new ActiveRecordAttributeTypecast();
 
@@ -212,7 +215,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecast
      */
-    public function testBeforeSaveEvent()
+    public function testBeforeSaveEvent(): void
     {
         $model = new ActiveRecordAttributeTypecast();
 
@@ -240,7 +243,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecast
      */
-    public function testAfterSaveEvent()
+    public function testAfterSaveEvent(): void
     {
         $model = new ActiveRecordAttributeTypecast([
             'typecastAfterSave' => true
@@ -280,7 +283,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertFalse($afterInsertHappened);
     }
 
-    public function testAutoDetectAttributeTypes()
+    public function testAutoDetectAttributeTypes(): void
     {
         $model = (new DynamicModel(['name' => null, 'amount' => null, 'price' => null, 'isActive' => null]))
             ->addRule('name', 'string')
@@ -306,7 +309,7 @@ class AttributeTypecastBehaviorTest extends TestCase
      *
      * @see https://github.com/yiisoft/yii2/issues/12880
      */
-    public function testSkipNotSelectedAttribute()
+    public function testSkipNotSelectedAttribute(): void
     {
         $model = new ActiveRecordAttributeTypecast();
         $model->name = 'skip-not-selected';
@@ -350,7 +353,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
     {
         return [
             'attributeTypecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'name' => AttributeTypecastBehavior::TYPE_STRING,
                     'amount' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -403,7 +406,7 @@ class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
     {
         return [
             'attributeTypecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'status' => StatusTypeString::class,
                 ],
