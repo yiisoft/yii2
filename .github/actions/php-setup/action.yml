@@ -73,7 +73,8 @@ runs:
     - name: Install dependencies with composer.
       shell: bash
       run: >-
-        composer ${{ inputs.composer-command }}
+        composer
+          ${{ inputs.composer-command }}
           ${{ inputs.composer-flags }}
           ${{
             inputs.ignore-platform-reqs == 'true'
