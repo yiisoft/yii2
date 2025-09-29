@@ -74,10 +74,10 @@ runs:
       shell: bash
       run: >-
         composer
-          ${{ inputs.composer-command }}
-          ${{ inputs.composer-flags }}
-          ${{
-            inputs.ignore-platform-reqs == 'true'
-            && '--ignore-platform-reqs'
-            || ''
-          }}
+        ${{ inputs.composer-command }}
+        ${{ inputs.composer-flags }}
+        ${{
+          inputs.ignore-platform-reqs == 'true'
+          && '--ignore-platform-reqs'
+          || ''
+        }}
