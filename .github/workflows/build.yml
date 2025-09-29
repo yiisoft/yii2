@@ -25,6 +25,17 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11211:11211
+        options: >-
+          --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/11211'"
+          --health-interval 10s
+          --health-retries 5
+          --health-timeout 5s
+
     strategy:
       fail-fast: false
       matrix:
