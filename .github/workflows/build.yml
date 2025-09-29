@@ -31,6 +31,9 @@ jobs:
         php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
     steps:
+      - name: Install Memcached.
+        uses: niden/actions-memcached@v7
+
       - name: Monitor action permissions.
         if: runner.os != 'Windows'
         uses: GitHubSecurityLab/actions-permissions/monitor@v1
@@ -40,9 +43,6 @@ jobs:
 
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
-
-      - name: Install Memcached.
-        uses: niden/actions-memcached@v7
 
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
