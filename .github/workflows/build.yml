@@ -34,6 +34,10 @@ jobs:
       - name: Checkout.
         uses: actions/checkout@v5
 
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
 
