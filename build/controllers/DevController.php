@@ -10,6 +10,7 @@ namespace yii\build\controllers;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -316,6 +317,8 @@ class DevController extends Controller
                 symlink("$base/extensions/$ext", $link);
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**

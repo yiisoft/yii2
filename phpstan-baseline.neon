@@ -1,31 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method yii\\\\build\\\\controllers\\\\DevController\\:\\:linkFrameworkAndExtensions\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: build/controllers/DevController.php
-
-		-
-			message: "#^Method yii\\\\console\\\\controllers\\\\CacheController\\:\\:actionFlushSchema\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: framework/console/controllers/CacheController.php
-
-		-
-			message: "#^Method yii\\\\console\\\\controllers\\\\FixtureController\\:\\:actionUnload\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: framework/console/controllers/FixtureController.php
-
-		-
-			message: "#^Method yii\\\\console\\\\controllers\\\\HelpController\\:\\:actionIndex\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: framework/console/controllers/HelpController.php
-
-		-
-			message: "#^Method yii\\\\console\\\\controllers\\\\ServeController\\:\\:actionIndex\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: framework/console/controllers/ServeController.php
-
-		-
 			message: "#^Variable \\$viaClass might not be defined\\.$#"
 			count: 5
 			path: framework/db/BaseActiveRecord.php

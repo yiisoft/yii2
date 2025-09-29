@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\widgets\Breadcrumbs;
 
 /**

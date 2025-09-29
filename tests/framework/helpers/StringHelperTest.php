@@ -536,4 +536,25 @@ class StringHelperTest extends TestCase
             ['من صالح هاشمی هستم', 'من ', ' هستم', 'صالح هاشمی'], // other languages
         ];
     }
+
+    /**
+     * @dataProvider provideConvertIniSizeToBytesData
+     */
+    public function testConvertIniSizeToBytes(string $string, int $expectedResult): void
+    {
+        $this->assertEquals($expectedResult, StringHelper::convertIniSizeToBytes($string));
+    }
+
+    public static function provideConvertIniSizeToBytesData(): array
+    {
+        return [
+            ['1024', 1024],
+            ['512K', 524288],
+            ['512k', 524288],
+            ['128M', 134217728],
+            ['128m', 134217728],
+            ['2G', 2147483648],
+            ['2g', 2147483648],
+        ];
+    }
 }
