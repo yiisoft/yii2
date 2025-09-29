@@ -8,10 +8,8 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
-use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 
 /**

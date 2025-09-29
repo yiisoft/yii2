@@ -12,8 +12,6 @@ use yii\behaviors\OptimisticLockBehavior;
 use yii\web\Request;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
-use yii\db\Expression;
-use yii\db\ExpressionInterface;
 use yiiunit\TestCase;
 
 /**

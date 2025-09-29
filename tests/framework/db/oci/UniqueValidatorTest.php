@@ -9,7 +9,6 @@ namespace yiiunit\framework\db\oci;
 
 use yii\validators\UniqueValidator;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
-use yiiunit\data\validators\models\ValidatorTestRefModel;
 
 /**
  * @group db
