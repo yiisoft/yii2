@@ -5,8 +5,7 @@ description: Setup PHP environment with composer and install dependencies.
 inputs:
   composer-command:
     description: Composer command (install or update) to run.
-    default: >-
-      update
+    default: update
     required: false
     type: string
   composer-flags:
