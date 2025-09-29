@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\ArrayCache;
 use yii\db\conditions\AndCondition;
-use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;

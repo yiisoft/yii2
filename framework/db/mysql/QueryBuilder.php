@@ -8,7 +8,6 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
-use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
 use yii\caching\DbCache;
 use yii\db\Exception;

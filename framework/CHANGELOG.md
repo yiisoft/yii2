@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.54 under development
 ------------------------
+- Bug #20542: Fix `Formatter` working with more complex ICU unit data structure (OndrejVasicek)
 - Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
 - Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
@@ -32,10 +33,12 @@ Yii Framework 2 Change Log
 - Enh #20525: Add `@template` annotations for all actions (max-s-lab)
 - Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
 - Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
+- Bug #20532: Add missing `return` statements in `CacheController::actionFlushSchema`, `FixtureController::actionUnload`, `HelpController::actionIndex` and `ServeController::actionIndex` (max-s-lab)
 - Bug #19655: Fix `LinkPager::getPageRange` when `maxButtons` is 2 (max-s-lab)
 - Enh #20539: Update minimum PHP version requirement from `7.3` to `7.4` (terabytesoftw)
 - Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
 - Bug #20548: Fix PHP `8.5` `null` array offset deprecation warnings (terabytesoftw)
+- Enh #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (max-s-lab)
 
 
 2.0.53 June 27, 2025
