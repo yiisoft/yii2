@@ -49,12 +49,12 @@ jobs:
           --mount type=tmpfs,destination=/var/lib/mysql
 
     steps:
-      - name: Checkout.
-        uses: actions/checkout@v5
-
       - name: Monitor action permissions.
         if: runner.os != 'Windows'
         uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
+      - name: Checkout.
+        uses: actions/checkout@v5
 
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
