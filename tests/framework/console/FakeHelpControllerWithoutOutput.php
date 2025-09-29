@@ -8,7 +8,6 @@
 namespace yiiunit\framework\console;
 
 use yii\console\controllers\HelpController;
-use yii\helpers\Console;
 
 class FakeHelpControllerWithoutOutput extends HelpController
 {
