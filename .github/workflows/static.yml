@@ -35,7 +35,6 @@ jobs:
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
         with:
-          coverage-driver: none
           extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
           ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}

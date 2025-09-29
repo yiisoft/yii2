@@ -25,7 +25,7 @@ inputs:
     type: string
   coverage-driver:
     description: Code coverage driver to use (pcov, xdebug).
-    default: pcov
+    default: none
     required: false
     type: string
   extensions:
@@ -71,15 +71,13 @@ runs:
       run: composer self-update ${{ inputs.composer-version }}
 
     - name: Install dependencies with composer.
-      if: ${{ inputs.ignore-platform-reqs != 'true'}}
-      shell: bash
-      run: composer ${{ inputs.composer-command }} ${{ inputs.composer-flags }}
-
-    - name: Install dependencies with composer (ignore-platform-reqs).
-      if: ${{ inputs.ignore-platform-reqs == 'true'}}
       shell: bash
       run: |-
         composer \
           ${{ inputs.composer-command }} \
           ${{ inputs.composer-flags }} \
-          --ignore-platform-reqs
+          ${{
+            inputs.ignore-platform-reqs == 'true'
+            && '--ignore-platform-reqs'
+            || ''
+          }}
