@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 
 /**
@@ -87,6 +88,8 @@ class ServeController extends Controller
         }
 
         $this->runCommand($command);
+
+        return ExitCode::OK;
     }
 
     /**
