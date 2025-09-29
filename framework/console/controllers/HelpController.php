@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Application;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
@@ -66,6 +67,8 @@ class HelpController extends Controller
         } else {
             $this->getDefaultHelp();
         }
+
+        return ExitCode::OK;
     }
 
     /**
