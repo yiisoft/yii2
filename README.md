@@ -13,18 +13,18 @@ Yii 2 is a modern framework designed to be a solid foundation for your PHP appli
 It is fast, secure and efficient and works right out of the box pre-configured with reasonable defaults.
 The framework is easy to adjust to meet your needs, because Yii has been designed to be flexible.
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg?logo=packagist&style=for-the-badge)](https://packagist.org/packages/yiisoft/yii2)
+[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg?logo=packagist&style=for-the-badge&label=Stable)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg?style=for-the-badge&logo=composer)](https://packagist.org/packages/yiisoft/yii2)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/build.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2/actions/workflows/build.yml)
-[![Static Analysis](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/static.yml?style=for-the-badge&label=PHPStan&logo=github)](https://github.com/yiisoft/yii2/actions/workflows/static.yml)
-[![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/yiisoft/yii2)
+[![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Codecov)](https://codecov.io/gh/yiisoft/yii2)
+[![Static Analysis](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/static.yml?style=for-the-badge&label=Static&logo=github)](https://github.com/yiisoft/yii2/actions/workflows/static.yml)
 
 Installation
 ------------
 
 > [!IMPORTANT]
 > - The minimum required [PHP](https://www.php.net/) version of Yii is PHP `7.4`.
-> - It works best with PHP `8.0` or later.
+> - It works best with PHP `8`.
 
 - [Follow the Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.
