@@ -159,7 +159,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
-    public function testWithTwoButtons()
+    public function testWithTwoButtons(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -192,7 +192,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
-    public function testWithOneButton()
+    public function testWithOneButton(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -223,7 +223,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
-    public function testWithNoButtons()
+    public function testWithNoButtons(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),

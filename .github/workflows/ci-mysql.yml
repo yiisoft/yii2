@@ -19,7 +19,7 @@ jobs:
 
     env:
       COVERAGE_DRIVER: ${{ matrix.php == 8.1 && 'pcov' || 'none' }}
-      PHP_EXTENSIONS: apuc, curl, intl, pdo, pdo_mysql
+      PHP_EXTENSIONS: apcu, curl, intl, pdo, pdo_mysql
       PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
       PHPUNIT_GROUP: mysql
 
