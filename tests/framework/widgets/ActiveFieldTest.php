@@ -291,17 +291,17 @@ class ActiveFieldTest extends \yiiunit\TestCase
         );
     }
 
-        public function testLabelOptionsLabelFalseWithNoParameters(): void
-        {
-            $this->activeField->labelOptions = ['label' => false];
+    public function testLabelOptionsLabelFalseWithNoParameters(): void
+    {
+        $this->activeField->labelOptions = ['label' => false];
 
-            $this->activeField->label();
+        $this->activeField->label();
 
-            $this->assertEmpty(
-                $this->activeField->parts['{label}'],
-        'Failed asserting that label does not render.',
-            );
-        }
+        $this->assertEmpty(
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label does not render.',
+        );
+    }
 
     public function testLabelOverridesLabelOptionsFalse(): void
     {
