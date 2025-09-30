@@ -87,7 +87,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     {
         // field will be the html of the model's attribute wrapped with the return string below.
         $field = $this->attributeName;
-        $content = static fn (string $field) => "<div class=\"custom-container\"> $field </div>";
+        $content = static fn (string $field): string => "<div class=\"custom-container\"> $field </div>";
 
         $this->assertEqualsWithoutLE(
             <<<HTML
