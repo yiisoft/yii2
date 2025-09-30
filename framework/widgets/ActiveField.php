@@ -267,9 +267,9 @@ class ActiveField extends Component
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using
      * [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
      * The following special options are recognized:
-     * - `label`: string|null, if specified in $options (or previously set in [[labelOptions]]), this value will be used
-     *   when $label parameter is `null`. If set to `false` in [[labelOptions]], the label will not be rendered (same
-     *   behavior as passing $label = `false`).
+     * - `label`: string|false|null, if specified in $options (or previously set in [[labelOptions]]), this value will
+     *   be used when the $label parameter is `null`. If set to `false`, the label will not be rendered (same behavior
+     *   as passing $label = `false`). The $label parameter always takes precedence over this option.
      * - `tag`: string|false, specifies the tag name for the label element.
      *   - If not specified, defaults to `'label'`.
      *   - If set to `false`, the label content will be rendered as raw HTML without any wrapper tag.
@@ -280,16 +280,26 @@ class ActiveField extends Component
      */
     public function label($label = null, $options = [])
     {
-        if ($label === false || ArrayHelper::getValue($this->labelOptions, 'label') === false) {
+        if ($label === false) {
             $this->parts['{label}'] = '';
             return $this;
         }
 
         $options = array_merge($this->labelOptions, $options);
-
         $tag = ArrayHelper::remove($options, 'tag', 'label');
 
-        $label ??= $options['label'] ?? $this->model->getAttributeLabel(Html::getAttributeName($this->attribute));
+        if ($label === null) {
+            $label = $options['label'] ?? null;
+
+            if ($label === false) {
+                $this->parts['{label}'] = '';
+
+                return $this;
+            }
+        }
+
+        $label ??= $this->model->getAttributeLabel(Html::getAttributeName($this->attribute));
+
         $options['label'] = $label;
 
         if ($tag === false) {
