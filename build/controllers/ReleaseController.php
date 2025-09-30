@@ -1032,8 +1032,8 @@ class ReleaseController extends Controller
         return $versions;
     }
 
-    const MINOR = 'minor';
-    const PATCH = 'patch';
+    public const MINOR = 'minor';
+    public const PATCH = 'patch';
 
     protected function getNextVersions(array $versions, $type)
     {

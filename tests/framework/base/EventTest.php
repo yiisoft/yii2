@@ -207,7 +207,7 @@ class User extends ActiveRecord
 
 interface SomeInterface
 {
-    const EVENT_SUPER_EVENT = 'superEvent';
+    public const EVENT_SUPER_EVENT = 'superEvent';
 }
 
 class SomeClass extends Component implements SomeInterface

@@ -315,9 +315,9 @@ class BoolAR extends ActiveRecord
 
 class UserAR extends ActiveRecord
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
-    const ROLE_USER = 10;
+    public const STATUS_DELETED = 0;
+    public const STATUS_ACTIVE = 10;
+    public const ROLE_USER = 10;
 
     public static function tableName()
     {

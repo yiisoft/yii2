@@ -20,7 +20,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     /** @var string Shared log filename for children */
     private $logFile;
 
-    const CHILD_EXIT_CODE_DEADLOCK = 15;
+    public const CHILD_EXIT_CODE_DEADLOCK = 15;
 
     /**
      * Test deadlock exception.

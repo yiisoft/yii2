@@ -19,7 +19,7 @@ use yiiunit\TestCase;
  */
 class SecurityTest extends TestCase
 {
-    const CRYPT_VECTORS = 'old';
+    public const CRYPT_VECTORS = 'old';
 
     /**
      * @var ExposedSecurity

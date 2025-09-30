@@ -49,39 +49,39 @@ abstract class Application extends Module
     /**
      * @event Event an event raised before the application starts to handle a request.
      */
-    const EVENT_BEFORE_REQUEST = 'beforeRequest';
+    public const EVENT_BEFORE_REQUEST = 'beforeRequest';
     /**
      * @event Event an event raised after the application successfully handles a request (before the response is sent out).
      */
-    const EVENT_AFTER_REQUEST = 'afterRequest';
+    public const EVENT_AFTER_REQUEST = 'afterRequest';
     /**
      * Application state used by [[state]]: application just started.
      */
-    const STATE_BEGIN = 0;
+    public const STATE_BEGIN = 0;
     /**
      * Application state used by [[state]]: application is initializing.
      */
-    const STATE_INIT = 1;
+    public const STATE_INIT = 1;
     /**
      * Application state used by [[state]]: application is triggering [[EVENT_BEFORE_REQUEST]].
      */
-    const STATE_BEFORE_REQUEST = 2;
+    public const STATE_BEFORE_REQUEST = 2;
     /**
      * Application state used by [[state]]: application is handling the request.
      */
-    const STATE_HANDLING_REQUEST = 3;
+    public const STATE_HANDLING_REQUEST = 3;
     /**
      * Application state used by [[state]]: application is triggering [[EVENT_AFTER_REQUEST]]..
      */
-    const STATE_AFTER_REQUEST = 4;
+    public const STATE_AFTER_REQUEST = 4;
     /**
      * Application state used by [[state]]: application is about to send response.
      */
-    const STATE_SENDING_RESPONSE = 5;
+    public const STATE_SENDING_RESPONSE = 5;
     /**
      * Application state used by [[state]]: application has ended.
      */
-    const STATE_END = 6;
+    public const STATE_END = 6;
 
     /**
      * @var string the namespace that controller classes are located in.
