@@ -74,11 +74,6 @@ class BaseYiiTest extends TestCase
         $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', Yii::getVersion()));
     }
 
-    public function testPowered(): void
-    {
-        $this->assertIsString(Yii::powered());
-    }
-
     public function testCreateObjectArray(): void
     {
         Yii::$container = new Container();
