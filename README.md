@@ -2,7 +2,7 @@
     <a href="https://www.yiiframework.com/" target="_blank">
         <picture>
             <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/yii_logo_dark.svg">
-            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/logo/yii_logo_light.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/yii_logo_light.svg">
             <img src="https://www.yiiframework.com/image/yii_logo_dark.svg" alt="Yii Framework" width="400">
         </picture>
     </a>
@@ -113,5 +113,5 @@ Support this project by becoming a sponsor or a backer.
 
 [![Open Collective sponsors](https://img.shields.io/opencollective/sponsors/yiisoft?style=for-the-badge)
 ](https://opencollective.com/yiisoft) 
-[![OpenCollective backers](https://img.shields.io/opencollective/backers/yiisoft?style=for-the-badge)
+[![Open Collective backers](https://img.shields.io/opencollective/backers/yiisoft?style=for-the-badge)
 ](https://opencollective.com/yiisoft)
