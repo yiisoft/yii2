@@ -479,7 +479,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
      * @param mixed $hint The hint content.
      * @param string $expectedHtml The expected HTML.
      */
-    public function testHint($hint, $expectedHtml): void
+    public function testHint(mixed $hint, string $expectedHtml): void
     {
         $this->activeField->hint($hint);
 
