@@ -12,7 +12,6 @@ namespace yiiunit\data\base;
 
 use Iterator;
 use Countable;
-use ReturnTypeWillChange;
 use Exception;
 
 /**
@@ -36,8 +35,7 @@ class TraversableObject implements Iterator, Countable
      * @throws Exception
      * @since 5.1.0
      */
-    #[ReturnTypeWillChange]
-    public function count()
+    public function count(): never
     {
         throw new Exception('Count called on object that should only be traversed.');
     }
@@ -45,8 +43,7 @@ class TraversableObject implements Iterator, Countable
     /**
      * {@inheritdoc}
      */
-    #[ReturnTypeWillChange]
-    public function current()
+    public function current(): mixed
     {
         return $this->data[$this->position];
     }
