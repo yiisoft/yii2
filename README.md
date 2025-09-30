@@ -16,8 +16,8 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg?logo=packagist&style=for-the-badge&label=Stable)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg?style=for-the-badge)](https://packagist.org/packages/yiisoft/yii2)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/build.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2/actions/workflows/build.yml)
-[![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Codecov)](https://codecov.io/gh/yiisoft/yii2)
 [![Static Analysis](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/static.yml?style=for-the-badge&label=Static&logo=github)](https://github.com/yiisoft/yii2/actions/workflows/static.yml)
+[![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Codecov)](https://codecov.io/gh/yiisoft/yii2)
 
 Installation
 ------------
