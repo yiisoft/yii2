@@ -14,9 +14,9 @@ It is fast, secure and efficient and works right out of the box pre-configured w
 The framework is easy to adjust to meet your needs, because Yii has been designed to be flexible.
 
 [![Packagist Dependency Version](https://img.shields.io/badge/%3E%3D7.4-777BB4.svg?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg?style=for-the-badge)](https://packagist.org/packages/yiisoft/yii2)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg?style=for-the-badge)](https://packagist.org/packages/yiisoft/yii2)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/build.yml?style=for-the-badge&label=Build)](https://github.com/yiisoft/yii2/actions)
+[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg?logo=packagist&style=for-the-badge)](https://packagist.org/packages/yiisoft/yii2)
+[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg?style=for-the-badge&logo=composer)](https://packagist.org/packages/yiisoft/yii2)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/build.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2/actions)
 [![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Coverage)](https://codecov.io/gh/yiisoft/yii2)
 
 Installation
@@ -111,7 +111,7 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 
 Support this project by becoming a sponsor or a backer. 
 
-[![Open Collective sponsors](https://img.shields.io/opencollective/sponsors/yiisoft?style=for-the-badge)
+[![Open Collective sponsors](https://img.shields.io/opencollective/sponsors/yiisoft?style=for-the-badge&logo=opencollective)
 ](https://opencollective.com/yiisoft) 
-[![Open Collective backers](https://img.shields.io/opencollective/backers/yiisoft?style=for-the-badge)
+[![Open Collective backers](https://img.shields.io/opencollective/backers/yiisoft?style=for-the-badge&logo=opencollective)
 ](https://opencollective.com/yiisoft)
