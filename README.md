@@ -12,13 +12,13 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 [![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
 [![Build Status](https://github.com/yiisoft/yii2/workflows/build/badge.svg)](https://github.com/yiisoft/yii2/actions)
-[![codecov](https://codecov.io/gh/yiisoft/yii2/branch/master/graph/badge.svg?token=Exm6sRwhJ6)](https://codecov.io/gh/yiisoft/yii2)
+[![codecov](https://codecov.io/gh/yiisoft/yii2/branch/22.0/graph/badge.svg?token=Exm6sRwhJ6)](https://codecov.io/gh/yiisoft/yii2)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 
 Installation
 ------------
 
-- The minimum required PHP version of Yii is PHP 7.3.
+- The minimum required PHP version of Yii is PHP 8.1.
 - It works best with PHP 8.
 - [Follow the Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.

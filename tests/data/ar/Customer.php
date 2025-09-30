@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\data\ar;
 
@@ -78,7 +81,7 @@ class Customer extends ActiveRecord
     // deeply nested table relation
     public function getOrderItems()
     {
-        $rel = $this->hasMany(Item::className(), ['id' => 'item_id']);
+        $rel = $this->hasMany(Item::class, ['id' => 'item_id']);
 
         return $rel->viaTable(
             'order_item',

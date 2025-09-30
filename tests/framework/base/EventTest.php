@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
+use stdClass;
 use yii\base\Component;
 use yii\base\Event;
 use yiiunit\TestCase;
@@ -134,7 +138,7 @@ class EventTest extends TestCase
      */
     public function testNoFalsePositivesWithHasHandlers(): void
     {
-        $this->assertFalse(Event::hasHandlers(new \stdClass(), 'foobar'));
+        $this->assertFalse(Event::hasHandlers(new stdClass(), 'foobar'));
 
         $component = new Component();
         $this->assertFalse($component->hasEventHandlers('foobar'));

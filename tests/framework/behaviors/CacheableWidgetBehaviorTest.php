@@ -2,7 +2,8 @@
 
 namespace yiiunit\framework\behaviors;
 
-use PHPUnit\Framework\MockObject\MockObject;
+use Exception;
+use PHPUnit_Framework_MockObject_MockObject;
 use yii\base\Widget;
 use yii\behaviors\CacheableWidgetBehavior;
 use yii\caching\ArrayCache;
@@ -36,7 +37,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testWidgetIsRunWhenCacheIsEmpty(): void
     {
@@ -49,7 +50,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testWidgetIsNotRunWhenCacheIsNotEmpty(): void
     {
@@ -64,7 +65,7 @@ class CacheableWidgetBehaviorTest extends TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function testDynamicContent(): void
     {
@@ -136,7 +137,7 @@ class BaseCacheableWidget extends Widget
                 $result = $this->run();
                 $out = $this->afterRun($result);
             }
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             if (ob_get_level() > 0) {
                 ob_end_clean();
             }

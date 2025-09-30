@@ -6,7 +6,6 @@
  */
 
 use yii\helpers\FileHelper;
-use yii\helpers\VarDumper;
 use yiiunit\TestCase;
 
 /**

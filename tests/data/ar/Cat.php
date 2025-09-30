@@ -1,11 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\ar;
+
+use Exception;
 
 /**
  * Class Cat.
@@ -33,7 +38,7 @@ class Cat extends Animal
      */
     public function getException(): never
     {
-        throw new \Exception('no');
+        throw new Exception('no');
     }
 
     /**

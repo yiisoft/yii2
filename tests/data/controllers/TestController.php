@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace yiiunit\data\controllers;
 
 use yii\web\Controller;
@@ -16,7 +18,7 @@ class TestController extends Controller
         $this->actionConfig = $config;
     }
 
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => array_merge([

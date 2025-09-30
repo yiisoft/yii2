@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework;
 
@@ -68,7 +71,12 @@ class BaseYiiTest extends TestCase
 
     public function testGetVersion(): void
     {
-        $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', (string) \Yii::getVersion()));
+        $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', Yii::getVersion()));
+    }
+
+    public function testPowered(): void
+    {
+        $this->assertIsString(Yii::powered());
     }
 
     public function testCreateObjectArray(): void
