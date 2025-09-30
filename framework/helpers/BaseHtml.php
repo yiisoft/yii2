@@ -2248,6 +2248,100 @@ class BaseHtml
     }
 
     /**
+     * Checks if is custom attribute of tag by prefix [[$dataAttributes]].
+     *
+     * @param string $name the attribute name
+     * @param string|null $prefix the attribute prefix returns by reference
+     * @return bool
+     * @since 2.0.44
+     */
+    public static function isCustomTagAttribute($name, &$prefix = null)
+    {
+        foreach (static::$dataAttributes as $prefix) {
+            if (StringHelper::startsWith($name, $prefix . '-')) {
+                return true;
+            }
+        }
+        $prefix = null;
+
+        return false;
+    }
+
+    /**
+     * Normalizes an array of tag attributes.
+     *
+     * ```php
+     * $attributes = Html::normalizeAttributes(['data-id' => 1, 'style' => 'height: 1px', 'class' => 'foo bar']);
+     * // $attributes: ['data' => ['id' => 1], 'style' => ['height' => '1px'], 'class' => ['foo', 'bar']]
+     * ```
+     *
+     * @param array $attributes the attributes to normalize
+     * @return array
+     * @since 2.0.44
+     */
+    public static function normalizeTagAttributes(array $attributes)
+    {
+        $result = [];
+
+        if (isset($attributes['style'])) {
+            if (is_string($attributes['style'])) {
+                $attributes['style'] = static::cssStyleToArray($attributes['style']);
+            }
+            $result['style'] = $attributes['style'];
+            unset($attributes['style']);
+        }
+        if (isset($attributes['class'])) {
+            if (is_string($attributes['class'])) {
+                $attributes['class'] = explode(' ', $attributes['class']);
+            }
+            $result['class'] = array_unique($attributes['class']);
+            unset($attributes['class']);
+        }
+        foreach ($attributes as $name => $value) {
+            if (is_array($value) && in_array($name, static::$dataAttributes, true)) {
+                $result[$name] = isset($result[$name]) ? array_merge($result[$name], $value) : $value;
+            } elseif (static::isCustomTagAttribute($name, $prefix)) {
+                if (!isset($result[$prefix])) {
+                    $result[$prefix] = [];
+                }
+                list(, $name) = explode($prefix . '-', $name, 2);
+                $result[$prefix][$name] = $value;
+            } else {
+                $result[$name] = $value;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Normalizes and merges two arrays of tag attributes.
+     *
+     * @param array $attributes The input attributes
+     * @param array $attributes2 The attributes to merge
+     * @return array
+     * @since 2.0.44
+     */
+    public static function mergeTagAttributes(array $attributes, array $attributes2)
+    {
+        $attributes = static::normalizeTagAttributes($attributes);
+        $attributes2 = static::normalizeTagAttributes($attributes2);
+        if (isset($attributes2['class'])) {
+            static::addCssClass($attributes, $attributes2['class']);
+            unset($attributes2['class']);
+        }
+        foreach ($attributes2 as $key => $value) {
+            if (in_array($key, static::$dataAttributes, true) || $key === 'style') {
+                $attributes[$key] = isset($attributes[$key]) ? array_merge($attributes[$key], $value) : $value;
+            } else {
+                $attributes[$key] = $value;
+            }
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Returns the real attribute name from the given attribute expression.
      *
      * An attribute expression is an attribute name prefixed and/or suffixed with array indexes.
