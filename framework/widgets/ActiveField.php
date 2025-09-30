@@ -280,7 +280,7 @@ class ActiveField extends Component
      */
     public function label($label = null, $options = [])
     {
-        if ($label === false || (isset($this->labelOptions['label']) && $this->labelOptions['label'] === false)) {
+        if ($label === false || ArrayHelper::getValue($this->labelOptions, 'label') === false) {
             $this->parts['{label}'] = '';
             return $this;
         }
