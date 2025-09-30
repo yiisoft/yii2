@@ -1,9 +1,9 @@
 <p align="center">
     <a href="https://www.yiiframework.com/" target="_blank">
         <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/design/logo/yii3_full_for_dark.svg">
-            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/design/logo/yii3_full_for_light.svg">
-            <img src="https://www.yiiframework.com/image/design/logo/yii3_full_for_dark.svg" alt="Yii Framework" width="400">
+            <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/yii_logo_dark.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/logo/yii_logo_light.svg">
+            <img src="https://www.yiiframework.com/image/yii_logo_dark.svg" alt="Yii Framework" width="400">
         </picture>
     </a>
 </p>
@@ -97,7 +97,7 @@ we suggest using [our logo](https://www.yiiframework.com/logo/) on your title sl
 **In projects**
 
 If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
-[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
+[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii) in your README:    
 
 ![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)
 
