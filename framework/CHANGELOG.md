@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Enh #20511: Allow `jQuery` usage in `View` class while maintaining backward compatibility (terabytesoftw)
 - Bug #20518: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
 - Enh #20537: Enhance `label()` method in `ActiveField` with `tag` option and fix `labelOptions` for `checkbox`/`radio` (terabytesoftw)
+- Bug #20547: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
 
 2.0.54 under development
 ------------------------
