@@ -264,14 +264,17 @@ class ActiveField extends Component
      * If `false`, the generated field will not contain the label part.
      * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array|null $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
-     * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     * using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
-     * The following special option is recognized:
+     * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using
+     * [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * The following special options are recognized:
+     * - `label`: string|null, if specified in $options (or previously set in [[labelOptions]]), this value will be used
+     *   when $label parameter is `null`. If set to `false` in [[labelOptions]], the label will not be rendered (same
+     *   behavior as passing $label = `false`).
      * - `tag`: string|false, specifies the tag name for the label element.
      *   - If not specified, defaults to `'label'`.
      *   - If set to `false`, the label content will be rendered as raw HTML without any wrapper tag.
      *   - If set to `'label'`, uses [[Html::activeLabel()]] to generate a standard label element.
-     *   - If set to another tag name (e.g., `'span'`, `'div'`), uses [[Html::tag()]] to generate that element.
+     *   - If set to another tag name (for example, `'span'`, `'div'`), uses [[Html::tag()]] to generate that element.
      *
      * @return $this the field object itself.
      */
