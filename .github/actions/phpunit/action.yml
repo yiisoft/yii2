@@ -5,7 +5,7 @@ description: Run PHPUnit tests with coverage and configurable options.
 inputs:
   additional-args:
     description: Additional PHPUnit arguments.
-    default: "--verbose"
+    default: "--log-junit junit.xml --verbose"
     required: false
     type: string
   configuration:
