@@ -61,7 +61,7 @@ jobs:
         run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
       - name: Create MS SQL Database.
-        run: docker exec -i mssql ${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
+        run: docker exec -i mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
