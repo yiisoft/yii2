@@ -99,12 +99,12 @@ we suggest using [our logo](https://www.yiiframework.com/logo/) on your title sl
 If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
 [use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii) in your README:    
 
-![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)](https://www.yiiframework.com/)
 
 If your code is hosted at GitHub, you can place the following in your README.md file to get the badge:
 
 ```
-[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)](https://www.yiiframework.com/)
 ```
 
 ### Sponsoring
