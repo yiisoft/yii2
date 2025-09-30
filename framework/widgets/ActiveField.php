@@ -1015,7 +1015,7 @@ class ActiveField extends Component
                 $this->parts['{label}'] = Html::activeLabel(
                     $this->model,
                     $this->attribute,
-                    ['label' => $options['label']] + $this->labelOptions,
+                    array_merge(['label' => $options['label']], $this->labelOptions),
                 );
             } else {
                 $tagOptions = $this->labelOptions;
