@@ -44,7 +44,7 @@ jobs:
           - 1433:1433
         options: >-
           --name=mssql
-          --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
           --health-interval=10s
           --health-retries=3
           --health-timeout=5s
