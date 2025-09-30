@@ -1,8 +1,13 @@
+---
+name: ci-mssql
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   - pull_request
   - push
-
-name: ci-mssql
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,8 +18,10 @@ jobs:
     name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
 
     env:
-      COVERAGE: ${{ matrix.php == '7.4' && '--coverage-clover=coverage.xml  --colors=always' || '--colors=always' }}
-      EXTENSIONS: pdo, pdo_sqlsrv, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+      COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
+      PHP_EXTENSIONS: curl, intl, pdo, pdo_sqlsrv
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: mssql
       XDEBUG_MODE: coverage
 
     runs-on: ubuntu-latest
@@ -36,46 +43,45 @@ jobs:
 
     services:
       mssql:
-          image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
-          env:
-              SA_PASSWORD: YourStrong!Passw0rd
-              ACCEPT_EULA: Y
-              MSSQL_PID: Developer
-          ports:
-              - 1433:1433
-          options: --name=mssql --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
+        image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
+        env:
+          SA_PASSWORD: YourStrong!Passw0rd
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: >-
+          --name=mssql
+          --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-retries=3
+          --health-timeout=5s
 
     steps:
-      - name: Install ODBC driver
-        run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
 
-      - name: Checkout
+      - name: Checkout.
         uses: actions/checkout@v5
 
-      - name: Create MS SQL Database
+      - name: Install ODBC driver.
+        run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+
+      - name: Create MS SQL Database.
         run: docker exec -i mssql ${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: xdebug
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: date.timezone='UTC'
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
 
-      - name: Update composer.
-        run: composer self-update
-
-      - name: Install dependencies with composer.
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run tests with PHPUnit.
-        run: vendor/bin/phpunit --group mssql ${{ env.COVERAGE }}
-
-      - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
-        uses: codecov/codecov-action@v5
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

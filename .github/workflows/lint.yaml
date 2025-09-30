@@ -1,22 +1,43 @@
+---
 name: lint
 
-on: [push, pull_request]
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  - pull_request
+  - push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-    phpcs:
-      runs-on: ubuntu-latest
-      name: PHP_CodeSniffer
-      steps:
-      - uses: actions/checkout@v4
+  phpcs:
+    runs-on: ubuntu-latest
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+    name: PHP ${{ matrix.php }}-PHP_CodeSniffer
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.4]
+
+    steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-            php-version: '8.2'
-            tools: cs2pr
+          composer-command: install
+          php-version: ${{ matrix.php }}
+          tools: cs2pr
 
-      - name: Install dependencies
-        run: composer install --prefer-dist
-
-      - name: Run phpcs
+      - name: Run PHP_CodeSniffer.
         run: vendor/bin/phpcs -q --report=checkstyle framework/ | cs2pr
