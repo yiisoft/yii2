@@ -3,7 +3,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Exception;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use yii\base\Widget;
 use yii\behaviors\CacheableWidgetBehavior;
 use yii\caching\ArrayCache;
