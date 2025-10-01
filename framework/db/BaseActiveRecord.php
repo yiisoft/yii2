@@ -834,7 +834,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
-        if (isset($values[$lock])) {
+        // using null as an array offset is deprecated in PHP `8.5`
+        if ($lock !== null && isset($values[$lock])) {
             $this->$lock = $values[$lock];
         }
 

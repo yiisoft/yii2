@@ -1,57 +1,104 @@
+---
 name: build
 
-on: [push, pull_request]
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  - pull_request
+  - push
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PHP_EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+  PHPUNIT_EXCLUDE_GROUP: db,wincache
+
 jobs:
   phpunit:
     name: PHP ${{ matrix.php }}
 
-    env:
-      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-      EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-      PHPUNIT_COMMAND: --verbose --exclude-group db,wincache,xcache,zenddata --coverage-clover=coverage.xml --colors=always
-
     runs-on: ubuntu-latest
+
+    services:
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11211:11211
+        options: >-
+          --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/11211'"
+          --health-interval 10s
+          --health-retries 5
+          --health-timeout 5s
 
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1, 8.2, 8.3, 8.4, 8.5]
+        php: [8.1, 8.2, 8.3, 8.4]
 
     steps:
-      - name: Generate french locale.
-        run: sudo locale-gen fr_FR.UTF-8
-
       - name: Checkout.
         uses: actions/checkout@v5
 
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Generate french locale.
+        run: sudo locale-gen fr_FR.UTF-8
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: pcov
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
+          coverage-driver: pcov
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
 
-      - name: Install Memcached.
-        uses: niden/actions-memcached@v7
-
-      - name: Update composer.
-        run: composer self-update
-
-      - name: Install dependencies with composer.
-        run: composer update $DEFAULT_COMPOSER_FLAGS ${{ matrix.php == 8.5 && '--ignore-platform-reqs' || '' }}
-
-      - name: Run tests with PHPUnit.
-        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
-
-      - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v5
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          file: ./coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          coverage-driver: pcov
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
+
+  phpunit-dev:
+    name: PHP ${{ matrix.php }}
+
+    runs-on: ubuntu-latest
+
+    services:
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11211:11211
+        options: >-
+          --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/11211'"
+          --health-interval 10s
+          --health-retries 5
+          --health-timeout 5s
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.5, 8.6]
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Generate french locale.
+        run: sudo locale-gen fr_FR.UTF-8
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
+        with:
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ignore-platform-reqs: true
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
+          php-version: ${{ matrix.php }}
+
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
+        with:
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}

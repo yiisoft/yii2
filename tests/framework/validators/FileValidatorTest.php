@@ -9,6 +9,7 @@ namespace yiiunit\framework\validators;
 
 use Yii;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 use yii\validators\FileValidator;
 use yii\web\UploadedFile;
 use yiiunit\data\validators\models\FakedValidationModel;
@@ -78,7 +79,11 @@ class FileValidatorTest extends TestCase
 
     public function testGetSizeLimit(): void
     {
-        $size = min($this->sizeToBytes(ini_get('upload_max_filesize')), $this->sizeToBytes(ini_get('post_max_size')));
+        $size = min(
+            StringHelper::convertIniSizeToBytes(ini_get('upload_max_filesize')),
+            StringHelper::convertIniSizeToBytes(ini_get('post_max_size'))
+        );
+
         $val = new FileValidator();
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = $size + 1; // set and test if value is overridden
@@ -91,17 +96,7 @@ class FileValidatorTest extends TestCase
         $this->assertSame($_POST['MAX_FILE_SIZE'], $val->getSizeLimit());
     }
 
-    protected function sizeToBytes($sizeStr)
-    {
-        return match (substr((string) $sizeStr, -1)) {
-            'M', 'm' => (int) $sizeStr * 1_048_576,
-            'K', 'k' => (int) $sizeStr * 1024,
-            'G', 'g' => (int) $sizeStr * 1_073_741_824,
-            default => (int) $sizeStr,
-        };
-    }
-
-    public function testValidateAttributeMultiple(): void
+    public function testValidateAttributeMultiple()
     {
         $val = new FileValidator([
             'maxFiles' => 2,
@@ -363,7 +358,7 @@ class FileValidatorTest extends TestCase
             } else {
                 $size = $param['size'] ?? random_int(
                     1,
-                    $this->sizeToBytes(ini_get('upload_max_filesize'))
+                    StringHelper::convertIniSizeToBytes(ini_get('upload_max_filesize'))
                 );
             }
             $type = $param['type'] ?? 'text/plain';

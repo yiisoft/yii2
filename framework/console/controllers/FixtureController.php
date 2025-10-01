@@ -232,6 +232,8 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($this->createFixtures($fixtures));
         $this->notifyUnloaded($fixtures);
+
+        return ExitCode::OK;
     }
 
     /**

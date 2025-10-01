@@ -1,8 +1,13 @@
+---
+name: ci-mariadb
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   - pull_request
   - push
-
-name: ci-mariadb
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,12 +15,13 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-mariadb-${{ matrix.mariadb }}
+    name: PHP ${{ matrix.php }}-${{ matrix.mariadb }}
 
     env:
-      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-      EXTENSIONS: curl, intl, pdo, pdo_mysql
-      PHPUNIT_COMMAND: --group mysql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
+      COVERAGE_DRIVER: ${{ matrix.php == 8.1 && 'pcov' || 'none' }}
+      PHP_EXTENSIONS: apcu, curl, intl, pdo, pdo_mysql
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: mysql
 
     runs-on: ubuntu-latest
 
@@ -35,33 +41,33 @@ jobs:
           MARIADB_DATABASE: yiitest
         ports:
           - 3306:3306
-        options: --health-cmd="mariadb-admin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --name=mariadb
+          --health-cmd="mariadb-admin ping"
+          --health-interval=10s
+          --health-retries=3
+          --health-timeout=5s
+          --mount type=tmpfs,destination=/var/lib/mysql
 
     steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Checkout.
         uses: actions/checkout@v5
 
-      - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: pcov
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: date.timezone='UTC'
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
 
-      - name: Update composer.
-        run: composer self-update
-
-      - name: Install dependencies.
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run MariaDB tests with PHPUnit.
-        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
-
-      - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
-        uses: codecov/codecov-action@v4
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          file: ./coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

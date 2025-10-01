@@ -1,6 +1,10 @@
 <?php
 
-return new class() extends \yii\base\Model
+declare(strict_types=1);
+
+use yii\base\Model;
+
+return new class() extends Model
 {
 
 };
