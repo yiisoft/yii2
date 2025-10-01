@@ -100,9 +100,9 @@ class Action extends Component
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
-        if ($this->beforeRun()) {
+        if ($this->beforeRun($args)) {
             $result = call_user_func_array([$this, 'run'], $args);
-            $this->afterRun();
+            $result = $this->afterRun($result);
 
             return $result;
         }
@@ -115,9 +115,10 @@ class Action extends Component
      * You may override this method to do preparation work for the action run.
      * If the method returns false, it will cancel the action.
      *
+     * @param array $args
      * @return bool whether to run the action.
      */
-    protected function beforeRun()
+    protected function beforeRun($args)
     {
         return true;
     }
@@ -125,8 +126,11 @@ class Action extends Component
     /**
      * This method is called right after `run()` is executed.
      * You may override this method to do post-processing work for the action run.
+     *
+     * @param mixed $result
      */
-    protected function afterRun()
+    protected function afterRun($result)
     {
+        return $result;
     }
 }
