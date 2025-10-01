@@ -28,7 +28,6 @@ class EmailValidatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->resetStubs();
         $this->mockWebApplication();
     }
 
@@ -36,6 +35,7 @@ class EmailValidatorTest extends TestCase
     {
         parent::tearDown();
 
+        $this->resetStubs();
         $this->destroyApplication();
     }
 
