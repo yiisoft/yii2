@@ -27,7 +27,7 @@ final class EmailValidatorProvider
      *
      * @return array test data with malicious email addresses.
      *
-     * @phpstan-return array<int, array<int, string>>
+     * @phpstan-return array<array-key, array<array-key, string>>
      */
     public static function malformedAddressesProvider(): array
     {
