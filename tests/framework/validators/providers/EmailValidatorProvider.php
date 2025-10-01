@@ -32,7 +32,7 @@ final class EmailValidatorProvider
         return [
             // this is the demo email used in the proof of concept of the exploit
             ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-            // trying more adresses
+            // trying more addresses
             ['"Attacker -Param2 -Param3"@test.com'],
             ['\'Attacker -Param2 -Param3\'@test.com'],
             ['"Attacker \" -Param2 -Param3"@test.com'],

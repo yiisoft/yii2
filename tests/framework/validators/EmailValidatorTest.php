@@ -314,7 +314,7 @@ use yiiunit\framework\validators\EmailValidatorTest;
 function dns_get_record(string $hostname, int $type = DNS_ANY): array|false
 {
     if (EmailValidatorTest::shouldDnsThrowExceptionStub()) {
-        throw new ErrorException('DNS query failed,');
+        throw new ErrorException('DNS query failed.');
     }
 
     return \dns_get_record($hostname, $type);
