@@ -12,8 +12,24 @@ namespace yiiunit\framework\validators\providers;
 
 use yii\validators\CompareValidator;
 
+/**
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ *
+ * @since 2.2.0
+ */
 final class CompareValidatorProvider
 {
+    /**
+     * Provides test cases for numeric type conversion and comparison.
+     *
+     * This provider supplies scenarios for validating numeric comparisons, including type coercion between strings,
+     * integers, and floats, strict and loose operators, closure-based compare values, and edge cases such as zero and
+     * negative numbers. It ensures that CompareValidator correctly handles numeric type conversion and operator logic.
+     *
+     * @return array test data for numeric type conversion and comparison.
+     *
+     * @phpstan-return array<string, array{array<string, mixed>, int|string, string|null, bool, string}>
+     */
     public static function numericTypeConversionProvider(): array
     {
         return [
@@ -141,6 +157,18 @@ final class CompareValidatorProvider
         ];
     }
 
+    /**
+     * Provides test cases for numeric value conversion and comparison.
+     *
+     * This data provider covers scenarios involving numeric type coercion, strict and loose comparison operators,
+     * closure-based compare values, string-to-float conversion, negative numbers, zero, and edge cases for
+     * CompareValidator with TYPE_NUMBER. It ensures that numeric values are properly converted and compared according
+     * to the specified operator, including strict equality, inequality, and relational operators.
+     *
+     * @return array test data for numeric value conversion and comparison.
+     *
+     * @phpstan-return array<string, array{array<string, mixed>, float|int|string, bool, string}>
+     */
     public static function numericValueConversionProvider(): array
     {
         return [

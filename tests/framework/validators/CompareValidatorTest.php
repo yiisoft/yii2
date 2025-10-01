@@ -66,7 +66,10 @@ class CompareValidatorTest extends TestCase
         }
     }
 
-    protected function getOperationTestData($value)
+    /**
+     * @phpstan-return array<string, array<int, array{mixed, bool}>>
+     */
+    protected function getOperationTestData(int $value): array
     {
         return [
             '===' => [
@@ -202,7 +205,10 @@ class CompareValidatorTest extends TestCase
         }
     }
 
-    protected function getTestDataForMessages()
+    /**
+     * @phpstan-return array<array-key, array{string, string, int|string, string, string}>
+     */
+    protected function getTestDataForMessages(): array
     {
         return [
             ['attr1', '==', 2, 'attr1 must be equal to "2".', 'compareValue'],
@@ -259,6 +265,8 @@ class CompareValidatorTest extends TestCase
 
     /**
      * @dataProvider \yiiunit\framework\validators\providers\CompareValidatorProvider::numericTypeConversionProvider
+     *
+     * @phpstan-param array<string, mixed> $validatorConfig
      */
     public function testValidateAttributeWithNumericTypeConversion(
         array $validatorConfig,
