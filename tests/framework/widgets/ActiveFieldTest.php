@@ -430,7 +430,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <<<HTML
             <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
             HTML,
-           $this->activeField->parts['{label}'],
+            $this->activeField->parts['{label}'],
        );
 
         // label = false
