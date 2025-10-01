@@ -28,7 +28,7 @@ final class CompareValidatorProvider
      *
      * @return array test data for numeric type conversion and comparison.
      *
-     * @phpstan-return array<string, array{array<string, mixed>, mixed, mixed, bool, string}>
+     * @phpstan-return array<string, array{array<string, mixed>, int|string, bool, string}>
      */
     public static function numericTypeConversionProvider(): array
     {
@@ -167,7 +167,7 @@ final class CompareValidatorProvider
      *
      * @return array test data for numeric value conversion and comparison.
      *
-     * @phpstan-return array<string, array{array<string, mixed>, mixed, bool, string}>
+     * @phpstan-return array<string, array{array<string, mixed>, float|int|string, bool, string}>
      */
     public static function numericValueConversionProvider(): array
     {
