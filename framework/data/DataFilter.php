@@ -125,14 +125,14 @@ use yii\validators\Validator;
  */
 class DataFilter extends Model
 {
-    const TYPE_INTEGER = 'integer';
-    const TYPE_FLOAT = 'float';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_STRING = 'string';
-    const TYPE_ARRAY = 'array';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_DATE = 'date';
-    const TYPE_TIME = 'time';
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_DATETIME = 'datetime';
+    public const TYPE_DATE = 'date';
+    public const TYPE_TIME = 'time';
 
     /**
      * @var string name of the attribute that handles filter value.

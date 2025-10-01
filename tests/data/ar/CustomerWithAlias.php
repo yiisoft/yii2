@@ -15,8 +15,8 @@ namespace yiiunit\data\ar;
  */
 class CustomerWithAlias extends ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 2;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 2;
 
     public $status2;
 

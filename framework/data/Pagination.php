@@ -75,10 +75,10 @@ use yii\web\Request;
  */
 class Pagination extends BaseObject implements Linkable
 {
-    const LINK_NEXT = 'next';
-    const LINK_PREV = 'prev';
-    const LINK_FIRST = 'first';
-    const LINK_LAST = 'last';
+    public const LINK_NEXT = 'next';
+    public const LINK_PREV = 'prev';
+    public const LINK_FIRST = 'first';
+    public const LINK_LAST = 'last';
 
     /**
      * @var string name of the parameter storing the current page index.

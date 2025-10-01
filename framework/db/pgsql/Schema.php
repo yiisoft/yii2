@@ -32,7 +32,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ViewFinderTrait;
     use ConstraintFinderTrait;
 
-    const TYPE_JSONB = 'jsonb';
+    public const TYPE_JSONB = 'jsonb';
 
     /**
      * @var string the default schema used for the current session.

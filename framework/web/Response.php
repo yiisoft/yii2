@@ -64,21 +64,21 @@ class Response extends \yii\base\Response
     /**
      * @event \yii\base\Event an event that is triggered at the beginning of [[send()]].
      */
-    const EVENT_BEFORE_SEND = 'beforeSend';
+    public const EVENT_BEFORE_SEND = 'beforeSend';
     /**
      * @event \yii\base\Event an event that is triggered at the end of [[send()]].
      */
-    const EVENT_AFTER_SEND = 'afterSend';
+    public const EVENT_AFTER_SEND = 'afterSend';
     /**
      * @event \yii\base\Event an event that is triggered right after [[prepare()]] is called in [[send()]].
      * You may respond to this event to filter the response content before it is sent to the client.
      */
-    const EVENT_AFTER_PREPARE = 'afterPrepare';
-    const FORMAT_RAW = 'raw';
-    const FORMAT_HTML = 'html';
-    const FORMAT_JSON = 'json';
-    const FORMAT_JSONP = 'jsonp';
-    const FORMAT_XML = 'xml';
+    public const EVENT_AFTER_PREPARE = 'afterPrepare';
+    public const FORMAT_RAW = 'raw';
+    public const FORMAT_HTML = 'html';
+    public const FORMAT_JSON = 'json';
+    public const FORMAT_JSONP = 'jsonp';
+    public const FORMAT_XML = 'xml';
 
     /**
      * @var string the response format. This determines how to convert [[data]] into [[content]]

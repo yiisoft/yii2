@@ -111,10 +111,10 @@ use yii\validators\StringValidator;
  */
 class AttributeTypecastBehavior extends Behavior
 {
-    const TYPE_INTEGER = 'integer';
-    const TYPE_FLOAT = 'float';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_STRING = 'string';
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
 
     /**
      * @var Model|BaseActiveRecord the owner of this behavior.

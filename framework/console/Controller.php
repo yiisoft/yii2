@@ -43,11 +43,11 @@ class Controller extends \yii\base\Controller
     /**
      * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
      */
-    const EXIT_CODE_NORMAL = 0;
+    public const EXIT_CODE_NORMAL = 0;
     /**
      * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
      */
-    const EXIT_CODE_ERROR = 1;
+    public const EXIT_CODE_ERROR = 1;
 
     /**
      * @var bool whether to run the command interactively.

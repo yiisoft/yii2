@@ -79,20 +79,20 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
-    const OP_INSERT = 0x01;
+    public const OP_INSERT = 0x01;
     /**
      * The update operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
-    const OP_UPDATE = 0x02;
+    public const OP_UPDATE = 0x02;
     /**
      * The delete operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
-    const OP_DELETE = 0x04;
+    public const OP_DELETE = 0x04;
     /**
      * All three operations: insert, update, delete.
      * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
      */
-    const OP_ALL = 0x07;
+    public const OP_ALL = 0x07;
 
 
     /**
