@@ -8,8 +8,9 @@
 namespace yii\build\controllers;
 
 use Yii;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -316,6 +317,8 @@ class DevController extends Controller
                 symlink("$base/extensions/$ext", $link);
             }
         }
+
+        return ExitCode::OK;
     }
 
     /**
@@ -329,7 +332,7 @@ class DevController extends Controller
         $list = [];
         $handle = opendir($dir);
         if ($handle === false) {
-            throw new InvalidParamException("Unable to open directory: $dir");
+            throw new InvalidArgumentException("Unable to open directory: $dir");
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {

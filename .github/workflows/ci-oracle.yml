@@ -1,8 +1,13 @@
+---
+name: ci-oracle
+
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   - pull_request
   - push
-
-name: ci-oracle
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,12 +15,13 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-oracle-11g-r2
+    name: PHP ${{ matrix.php }}-oci
 
     env:
-      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-      EXTENSIONS: oci8, pdo, pdo_oci
-      PHPUNIT_COMMAND: --group oci --colors=always --coverage-clover=coverage.xml
+      COVERAGE_DRIVER: ${{ matrix.php == 8.1 && 'pcov' || 'none' }}
+      PHP_EXTENSIONS: apcu, curl, intl, oci8, pdo, pdo_oci
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: oci
 
     runs-on: ubuntu-latest
 
@@ -28,29 +34,28 @@ jobs:
         image: wnameless/oracle-xe-11g-r2:latest
         ports:
           - 1521:1521
-        options: --name=oci
+        options: >-
+          --name=oci
 
     steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Checkout.
         uses: actions/checkout@v5
 
-      - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: pcov
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: date.timezone='UTC'
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
 
-      - name: Install dependencies with composer.
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run Oracle tests with PHPUnit.
-        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
-
-      - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v5
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          file: ./coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

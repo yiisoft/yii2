@@ -69,6 +69,12 @@ Example usage:
 ```php
   $field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
 ```
+Upgrade from Yii 2.0.53
+-----------------------
+
+* Raised minimum supported PHP version to `7.4`.
+* Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
+will need to replace them with alternative caching solutions.
 
 Upgrade from Yii 2.0.52
 -----------------------

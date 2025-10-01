@@ -1,17 +1,18 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yii\base\BaseObject;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
-use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 
 /**

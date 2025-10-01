@@ -7,9 +7,7 @@
 
 namespace yiiunit\framework\web;
 
-use Yii;
 use yii\web\UploadedFile;
-use yiiunit\framework\web\mocks\UploadedFileMock;
 use yiiunit\framework\web\stubs\ModelStub;
 use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;

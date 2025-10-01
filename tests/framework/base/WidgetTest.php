@@ -72,11 +72,11 @@ class WidgetTest extends TestCase
         $this->assertSame('<run-test>', $output);
     }
 
-    public function testDependencyInjectionWithCallableConfiguration()
+    public function testDependencyInjectionWithCallableConfiguration(): void
     {
         Yii::$container = new Container();
         Yii::$container->setDefinitions([
-            TestWidgetB::className() => function () {
+            TestWidgetB::class => function () {
                 return new TestWidget(['id' => 'test']);
             }
         ]);

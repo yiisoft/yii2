@@ -1,19 +1,21 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\behaviors;
 
+use yii\db\StaleObjectException;
 use Yii;
 use yii\behaviors\OptimisticLockBehavior;
 use yii\web\Request;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
-use yii\db\Expression;
-use yii\db\ExpressionInterface;
 use yiiunit\TestCase;
 
 /**
@@ -151,7 +153,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->save(false);
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -167,7 +169,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->save(false);
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -183,7 +185,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->save(false);
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being updated is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -232,7 +234,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->delete();
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being deleted is outdated.', $e->getMessage());
             $thrown = true;
         }
@@ -248,7 +250,7 @@ class OptimisticLockBehaviorTest extends TestCase
 
         try {
             $model->delete();
-        } catch (\yii\db\StaleObjectException $e) {
+        } catch (StaleObjectException $e) {
             $this->assertStringContainsString('The object being deleted is outdated.', $e->getMessage());
             $thrown = true;
         }

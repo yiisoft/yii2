@@ -159,6 +159,99 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
+    public function testWithTwoButtons(): void
+    {
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(0),
+            'maxButtonCount' => 2,
+        ]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev disabled"><span>&laquo;</span></li>
+            <li class="active"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>
+            <li><a href="/?r=test&amp;page=2" data-page="1">2</a></li>
+            <li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li></ul>
+            HTML,
+            $output,
+        );
+
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(1),
+            'maxButtonCount' => 2,
+        ]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>
+            <li class="active"><a href="/?r=test&amp;page=2" data-page="1">2</a></li>
+            <li><a href="/?r=test&amp;page=3" data-page="2">3</a></li>
+            <li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li></ul>
+            HTML,
+            $output,
+        );
+    }
+
+    public function testWithOneButton(): void
+    {
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(0),
+            'maxButtonCount' => 1,
+        ]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev disabled"><span>&laquo;</span></li>
+            <li class="active"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>
+            <li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li></ul>
+            HTML,
+            $output,
+        );
+
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(1),
+            'maxButtonCount' => 1,
+        ]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>
+            <li class="active"><a href="/?r=test&amp;page=2" data-page="1">2</a></li>
+            <li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li></ul>
+            HTML,
+            $output,
+        );
+    }
+
+    public function testWithNoButtons(): void
+    {
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(0),
+            'maxButtonCount' => 0,
+        ]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev disabled"><span>&laquo;</span></li>
+            <li class="next"><a href="/?r=test&amp;page=2" data-page="1">&raquo;</a></li></ul>
+            HTML,
+            $output,
+        );
+
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(1),
+            'maxButtonCount' => 0,
+        ]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <ul class="pagination"><li class="prev"><a href="/?r=test&amp;page=1" data-page="0">&laquo;</a></li>
+            <li class="next"><a href="/?r=test&amp;page=3" data-page="2">&raquo;</a></li></ul>
+            HTML,
+            $output,
+        );
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */

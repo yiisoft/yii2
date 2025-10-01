@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\db\pgsql;
 
-use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
