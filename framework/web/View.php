@@ -73,48 +73,48 @@ class View extends \yii\base\View
     /**
      * @event Event an event that is triggered by [[beginBody()]].
      */
-    const EVENT_BEGIN_BODY = 'beginBody';
+    public const EVENT_BEGIN_BODY = 'beginBody';
     /**
      * @event Event an event that is triggered by [[endBody()]].
      */
-    const EVENT_END_BODY = 'endBody';
+    public const EVENT_END_BODY = 'endBody';
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is in the head section.
      */
-    const POS_HEAD = 1;
+    public const POS_HEAD = 1;
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is at the beginning of the body section.
      */
-    const POS_BEGIN = 2;
+    public const POS_BEGIN = 2;
     /**
      * The location of registered JavaScript code block or files.
      * This means the location is at the end of the body section.
      */
-    const POS_END = 3;
+    public const POS_END = 3;
     /**
      * The location of registered JavaScript code block.
      * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
      */
-    const POS_READY = 4;
+    public const POS_READY = 4;
     /**
      * The location of registered JavaScript code block.
      * This means the JavaScript code block will be enclosed within `jQuery(window).load()`.
      */
-    const POS_LOAD = 5;
+    public const POS_LOAD = 5;
     /**
      * This is internally used as the placeholder for receiving the content registered for the head section.
      */
-    const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
+    public const PH_HEAD = '<![CDATA[YII-BLOCK-HEAD]]>';
     /**
      * This is internally used as the placeholder for receiving the content registered for the beginning of the body section.
      */
-    const PH_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
+    public const PH_BODY_BEGIN = '<![CDATA[YII-BLOCK-BODY-BEGIN]]>';
     /**
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
-    const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+    public const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
 
     /**
      * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values

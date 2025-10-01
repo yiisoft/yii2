@@ -45,35 +45,35 @@ class Logger extends Component
      * Error message level. An error message is one that indicates the abnormal termination of the
      * application and may require developer's handling.
      */
-    const LEVEL_ERROR = 0x01;
+    public const LEVEL_ERROR = 0x01;
     /**
      * Warning message level. A warning message is one that indicates some abnormal happens but
      * the application is able to continue to run. Developers should pay attention to this message.
      */
-    const LEVEL_WARNING = 0x02;
+    public const LEVEL_WARNING = 0x02;
     /**
      * Informational message level. An informational message is one that includes certain information
      * for developers to review.
      */
-    const LEVEL_INFO = 0x04;
+    public const LEVEL_INFO = 0x04;
     /**
      * Tracing message level. A tracing message is one that reveals the code execution flow.
      */
-    const LEVEL_TRACE = 0x08;
+    public const LEVEL_TRACE = 0x08;
     /**
      * Profiling message level. This indicates the message is for profiling purpose.
      */
-    const LEVEL_PROFILE = 0x40;
+    public const LEVEL_PROFILE = 0x40;
     /**
      * Profiling message level. This indicates the message is for profiling purpose. It marks the beginning
      * of a profiling block.
      */
-    const LEVEL_PROFILE_BEGIN = 0x50;
+    public const LEVEL_PROFILE_BEGIN = 0x50;
     /**
      * Profiling message level. This indicates the message is for profiling purpose. It marks the end
      * of a profiling block.
      */
-    const LEVEL_PROFILE_END = 0x60;
+    public const LEVEL_PROFILE_END = 0x60;
 
     /**
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].

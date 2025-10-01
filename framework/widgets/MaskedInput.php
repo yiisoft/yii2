@@ -48,7 +48,7 @@ class MaskedInput extends InputWidget
     /**
      * The name of the jQuery plugin to use for this widget.
      */
-    const PLUGIN_NAME = 'inputmask';
+    public const PLUGIN_NAME = 'inputmask';
 
     /**
      * @var string|array|JsExpression the input mask (e.g. '99/99/9999' for date input). The following characters

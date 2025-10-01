@@ -36,11 +36,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @event MailEvent an event raised right before send.
      * You may set [[MailEvent::isValid]] to be false to cancel the send.
      */
-    const EVENT_BEFORE_SEND = 'beforeSend';
+    public const EVENT_BEFORE_SEND = 'beforeSend';
     /**
      * @event MailEvent an event raised right after send.
      */
-    const EVENT_AFTER_SEND = 'afterSend';
+    public const EVENT_AFTER_SEND = 'afterSend';
 
     /**
      * @var string|bool HTML layout view name. This is the layout used to render HTML mail body.
