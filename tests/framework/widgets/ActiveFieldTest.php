@@ -392,7 +392,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             $label,
             [
                 'class' => 'custom-class',
-                'tag' =>  false,
+                'tag' => false,
             ],
         );
 

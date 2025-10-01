@@ -1023,9 +1023,7 @@ class ActiveField extends Component
                     array_merge(['label' => $options['label']], $this->labelOptions),
                 );
             } else {
-                $tagOptions = $this->labelOptions;
-
-                $this->parts['{label}'] = Html::tag($tag, $options['label'], $tagOptions);
+                $this->parts['{label}'] = Html::tag($tag, $options['label'], $this->labelOptions);
             }
         }
 
