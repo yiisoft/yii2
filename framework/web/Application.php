@@ -41,7 +41,7 @@ class Application extends \yii\base\Application
      * The rest of the array elements (key-value pairs) specify the parameters to be bound
      * to the action. For example,
      *
-     * ```php
+     * ```
      * [
      *     'offline/notice',
      *     'param1' => 'value1',

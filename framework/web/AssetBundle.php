@@ -75,7 +75,7 @@ class AssetBundle extends BaseObject
      *
      * For example:
      *
-     * ```php
+     * ```
      * public $depends = [
      *    'yii\web\YiiAsset',
      *    'yii\bootstrap\BootstrapAsset',

@@ -28,7 +28,7 @@ use yii\helpers\Url;
  *
  * The following example shows how to use Menu:
  *
- * ```php
+ * ```
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',

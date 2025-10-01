@@ -149,7 +149,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
@@ -169,7 +169,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to increment all customers' age by 1,
      *
-     * ```php
+     * ```
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
@@ -191,7 +191,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll('status = 3');
      * ```
      *
@@ -370,7 +370,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `country` relation for `Customer` class, we can write
      * the following code in the `Customer` class:
      *
-     * ```php
+     * ```
      * public function getCountry()
      * {
      *     return $this->hasOne(Country::class, ['id' => 'country_id']);
@@ -411,7 +411,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `orders` relation for `Customer` class, we can write
      * the following code in the `Customer` class:
      *
-     * ```php
+     * ```
      * public function getOrders()
      * {
      *     return $this->hasMany(Order::class, ['customer_id' => 'id']);
@@ -678,7 +678,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to save a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -724,7 +724,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to update a customer record:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -735,7 +735,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * In this case, this method will return 0. For this reason, you should use the following
      * code to check if update() is successful or not:
      *
-     * ```php
+     * ```
      * if ($customer->update() !== false) {
      *     // update successful
      * } else {
@@ -855,7 +855,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * An example usage is as follows:
      *
-     * ```php
+     * ```
      * $post = Post::findOne($id);
      * $post->updateCounters(['view_count' => 1]);
      * ```
@@ -972,7 +972,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is `false`.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeSave($insert)
      * {
      *     if (!parent::beforeSave($insert)) {
@@ -1028,7 +1028,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * The default implementation raises the [[EVENT_BEFORE_DELETE]] event.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeDelete()
      * {
      *     if (!parent::beforeDelete()) {
@@ -1812,7 +1812,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Helps to reduce the number of queries performed against database if some related models are only used
      * when a specific condition is met. For example:
      *
-     * ```php
+     * ```
      * $customers = Customer::find()->where(['country_id' => 123])->all();
      * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
      *     Customer::loadRelationsFor($customers, 'orders.items');
@@ -1842,7 +1842,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Helps to reduce the number of queries performed against database if some related models are only used
      * when a specific condition is met. For example:
      *
-     * ```php
+     * ```
      * $customer = Customer::find()->where(['id' => 123])->one();
      * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
      *     $customer->loadRelations('orders.items');

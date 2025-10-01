@@ -138,7 +138,7 @@ abstract class Application extends Module
      * @var array|null list of installed Yii extensions. Each array element represents a single extension
      * with the following structure:
      *
-     * ```php
+     * ```
      * [
      *     'name' => 'extension name',
      *     'version' => 'version number',

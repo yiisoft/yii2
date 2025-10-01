@@ -16,7 +16,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  *
  * Example:
  *
- * ```php
+ * ```
  * require_once 'path/to/YiiRequirementChecker.php';
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
@@ -37,7 +37,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * In this case specified PHP expression will be evaluated in the context of this class instance.
  * For example:
  *
- * ```php
+ * ```
  * $requirements = array(
  *     array(
  *         'name' => 'Upload max file size',
@@ -49,15 +49,13 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
  * and should not use features from newer PHP versions!
  *
- * @property array|null $result the check results, this property is for internal usage only.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
 class YiiRequirementChecker
 {
     /**
-     * @var Check result
+     * @var array|null the check results, this property is for internal usage only.
      */
     public $result;
 
@@ -124,7 +122,7 @@ class YiiRequirementChecker
      * Return the check results.
      * @return array|null check results in format:
      *
-     * ```php
+     * ```
      * array(
      *     'summary' => array(
      *         'total' => total number of checks,
@@ -321,6 +319,8 @@ class YiiRequirementChecker
         } else {
             require $_viewFile_;
         }
+
+        return null;
     }
 
     /**

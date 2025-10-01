@@ -309,7 +309,7 @@ class BaseYii
      *
      * Below are some usage examples:
      *
-     * ```php
+     * ```
      * // create an object using a class name
      * $object = Yii::createObject('yii\db\Connection');
      *
@@ -343,8 +343,8 @@ class BaseYii
      * @see \yii\di\Container
      *
      * @template T
-     * @phpstan-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
-     * @psalm-param class-string<T>|array{class: class-string<T>, ...}|callable(): T $type
+     * @phpstan-param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type
+     * @psalm-param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type
      * @phpstan-return T
      * @psalm-return T
      */
@@ -462,7 +462,7 @@ class BaseYii
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *
-     * ```php
+     * ```
      * \Yii::beginProfile('block1');
      * // some code to be profiled
      *     \Yii::beginProfile('block2');
@@ -501,7 +501,7 @@ class BaseYii
      * You can add parameters to a translation message that will be substituted with the corresponding value after
      * translation. The format for this is to use curly brackets around the parameter name as you can see in the following example:
      *
-     * ```php
+     * ```
      * $username = 'Alexander';
      * echo \Yii::t('app', 'Hello, {username}!', ['username' => $username]);
      * ```

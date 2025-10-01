@@ -173,7 +173,7 @@ class Application extends \yii\base\Application
      * For example, to run `public function actionTest($a, $b)` assuming that the controller has options the following
      * code should be used:
      *
-     * ```php
+     * ```
      * \Yii::$app->runAction('controller/test', ['option' => 'value', $a, $b]);
      * ```
      *

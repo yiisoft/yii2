@@ -28,7 +28,7 @@ use yii\validators\StringValidator;
  *
  * For example:
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributeTypecastBehavior;
  *
  * class Item extends \yii\db\ActiveRecord
@@ -58,7 +58,7 @@ use yii\validators\StringValidator;
  * automatically based on owner validation rules.
  * Following example will automatically create same [[attributeTypes]] value as it was configured at the above one:
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributeTypecastBehavior;
  *
  * class Item extends \yii\db\ActiveRecord
@@ -99,7 +99,7 @@ use yii\validators\StringValidator;
  *
  * Note: you can manually trigger attribute typecasting anytime invoking [[typecastAttributes()]] method:
  *
- * ```php
+ * ```
  * $model = new Item();
  * $model->price = '38.5';
  * $model->is_active = 1;
@@ -126,7 +126,7 @@ class AttributeTypecastBehavior extends Behavior
      * typecast result.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'amount' => 'integer',
      *     'price' => 'float',

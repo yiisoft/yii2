@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Chg #20464: Remove `PHP_VERSION_ID` checks from web `Response` class (terabytesoftw)
 - Enh #20511: Allow `jQuery` usage in `View` class while maintaining backward compatibility (terabytesoftw)
 - Bug #20518: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
+- Bug #20547: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
 
 2.0.54 under development
 ------------------------
@@ -51,6 +52,15 @@ Yii Framework 2 Change Log
 - Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
 - Enh #20505: `ArrayDataProvider` key handling with flexible path support (fetus-hina)
 - Bug #20508: Fix PHPDoc, add PHPStan/Psalm annotations for `yii\web\CookieCollection::getIterator`. Add missing `@property` annotation in `yii\base\Model` (max-s-lab)
+- Bug #20513: Fix code examples in PHPDoc (max-s-lab)
+- Enh #20514: Add `@property` annotations for `yii\console\Controller` (max-s-lab)
+- Bug #20515: Fix `@param` annotations in `BetweenColumnsCondition`, `InCondition` and `LikeCondition` (max-s-lab)
+- Bug #20516: Fix `@template` annotations in `ActiveRecord` (max-s-lab)
+- Bug #19506: Fix `@property` annotations in `yii\console\widgets\Table`, `yii\di\Container` and `yii\web\Session` (max-s-lab)
+- Enh #20525: Add `@template` annotations for all actions (max-s-lab)
+- Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
+- Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
+
 
 2.0.53 June 27, 2025
 --------------------

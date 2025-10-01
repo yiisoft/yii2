@@ -13,7 +13,7 @@
  * and manipulate the `$config` variable.
  * For example to change MySQL username and password your `config.local.php` should
  * contain the following:
- * ```php
+ * ```
  * <?php
  * $config['databases']['mysql']['username'] = 'yiitest';
  * $config['databases']['mysql']['password'] = 'changeme';

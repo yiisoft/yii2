@@ -21,7 +21,7 @@ use yii\validators\client\ClientValidatorScriptInterface;
  *
  * The following are examples of validation rules using this validator:
  *
- * ```php
+ * ```
  * ['ip_address', 'ip'], // IPv4 or IPv6 address
  * ['ip_address', 'ip', 'ipv6' => false], // IPv4 address (IPv6 is disabled)
  * ['ip_address', 'ip', 'subnet' => true], // requires a CIDR prefix (like 10.0.0.1/24) for the IP address
@@ -262,7 +262,7 @@ class IpValidator extends Validator
      *
      * Example:
      *
-     * ```php
+     * ```
      * [
      *      'ranges' => [
      *          '192.168.10.128'

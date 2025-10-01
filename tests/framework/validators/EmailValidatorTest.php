@@ -21,7 +21,7 @@ class EmailValidatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockWebApplication();
+        $this->mockApplication();
     }
 
     protected function tearDown(): void

@@ -8,11 +8,17 @@
 namespace yii\build\controllers;
 
 use Yii;
-use yii\console\Controller;
+use yii\base\Model;
+use yii\base\Module;
+use yii\console\Controller as ConsoleController;
+use yii\db\QueryBuilder;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
+use yii\log\Dispatcher;
+use yii\log\Target;
 use yii\web\Controller as WebController;
+use yii\web\Request as WebRequest;
 
 /**
  * PhpDocController is there to help to maintain PHPDoc annotation in class files.
@@ -21,10 +27,10 @@ use yii\web\Controller as WebController;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
-class PhpDocController extends Controller
+class PhpDocController extends ConsoleController
 {
     /**
-     * Manually added PHPDoc properties that do not need to be removed.
+     * Manually added PHPDoc properties that do not need to be removed or changed.
      *
      * @phpstan-var array<class-string, string[]>
      */
@@ -34,7 +40,32 @@ class PhpDocController extends Controller
             'response',
             'view',
         ],
+        ConsoleController::class => [
+            'request',
+            'response',
+        ],
+        Model::class => [
+            'errors',
+        ],
+        Module::class => [
+            'aliases',
+        ],
+        Dispatcher::class => [
+            'flushInterval',
+            'logger',
+        ],
+        Target::class => [
+            'enabled',
+        ],
+        WebRequest::class => [
+            'hostInfo',
+        ],
+        QueryBuilder::class => [
+            'conditionClasses',
+        ],
     ];
+
+    private const PROPERTIES_ENCLOSURE = " *\n";
 
     /**
      * {@inheritdoc}
@@ -634,6 +665,9 @@ class PhpDocController extends Controller
         $lines = explode("\n", $doc);
         $propertyPart = false;
         $propertyPosition = false;
+        $lastPropertyName = null;
+        $hasManuallyAddedProperties = false;
+
         foreach ($lines as $i => $line) {
             $line = trim($line);
             if (strncmp($line, '* @property', 11) === 0) {
@@ -647,11 +681,26 @@ class PhpDocController extends Controller
                 $propertyPart = false;
             }
             if ($propertyPart) {
-                preg_match('/@property\s+\w+\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/', $line, $matches);
-                if (!isset($matches[1]) || !in_array($matches[1], $manuallyAddedProperties)) {
+                preg_match(
+                    '/@property(?:-read|-write)?\s+([\\\\\w\|\[\]]+)\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/',
+                    $line,
+                    $matches
+                );
+
+                if (isset($matches[2])) {
+                    $lastPropertyName = $matches[2];
+                }
+
+                if (in_array($lastPropertyName, $manuallyAddedProperties)) {
+                    $hasManuallyAddedProperties = true;
+                } else {
                     unset($lines[$i]);
                 }
             }
+        }
+
+        if ($properties === '') {
+            return implode("\n", $lines);
         }
 
         // if no properties or other tags were present add properties at the end
@@ -659,9 +708,17 @@ class PhpDocController extends Controller
             $propertyPosition = \count($lines) - 2;
         }
 
+        // if there are properties that were added manually, remove start enclosure
+        if ($hasManuallyAddedProperties) {
+            $properties = substr($properties, strlen(self::PROPERTIES_ENCLOSURE));
+        }
+
         $finalDoc = '';
         foreach ($lines as $i => $line) {
-            $finalDoc .= $line . "\n";
+            if (!$hasManuallyAddedProperties || $i !== $propertyPosition) {
+                $finalDoc .= $line . "\n";
+            }
+
             if ($i == $propertyPosition) {
                 $finalDoc .= $properties;
             }
@@ -717,23 +774,33 @@ class PhpDocController extends Controller
             $className = $namespace . '\\' . $class['name'];
 
             $gets = $this->match(
-                '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content'], true);
-            $sets = $this->match(
-                '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function (?<kind>set)(?<name>\w+)\(\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)#',
-                $class['content'], true);
-            // check for @property annotations in getter and setter
-            $properties = $this->match(
-                '#\* @(?<kind>property) (?<type>[\w\\|\\\\\\[\\]]+)(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)\*/' .
-                '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}public function [g|s]et(?<name>\w+)\(((?:,? ?\$\w+ ?= ?[^,]+)*|\$\w+(?:, ?\$\w+ ?= ?[^,]+)*)\)#',
-                $class['content']);
-            $acrs = array_merge($properties, $gets, $sets);
+                '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)'
+                    . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
+                    . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
+                    . 'public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)(\:\s*[\w\\|\\\\\\[\\]]+)?#',
+                $class['content'],
+                true
+            );
 
+            $sets = $this->match(
+                '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+'
+                    . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
+                    . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
+                    . 'public function (?<kind>set)(?<name>\w+)\(([\w\\|\\\\\\[\\]]+\s*)?\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)(\:\s*[\w\\|\\\\\\[\\]]+)?#',
+                $class['content'],
+                true
+            );
+
+            $acrs = array_merge($gets, $sets);
+            $manuallyAddedProperties = self::MANUALLY_ADDED_PROPERTIES[$className] ?? [];
             $props = [];
+
             foreach ($acrs as &$acr) {
                 $acr['name'] = lcfirst($acr['name']);
+                if (in_array($acr['name'], $manuallyAddedProperties)) {
+                    continue;
+                }
+
                 $acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
                 $props[$acr['name']][$acr['kind']] = [
                     'type' => $acr['type'],
@@ -747,7 +814,6 @@ class PhpDocController extends Controller
 
             ksort($props);
 
-            $phpdoc .= " *\n";
             foreach ($props as $propName => &$prop) {
                 $docLine = ' * @property';
                 $note = '';
@@ -777,7 +843,10 @@ class PhpDocController extends Controller
 
                 $phpdoc .= $docLine;
             }
-            $phpdoc .= " *\n";
+        }
+
+        if ($phpdoc !== '') {
+            $phpdoc = self::PROPERTIES_ENCLOSURE . $phpdoc . self::PROPERTIES_ENCLOSURE;
         }
 
         return [$className, $phpdoc];

@@ -32,7 +32,7 @@ use yii\helpers\StringHelper;
  * To declare an ActiveRecord class you need to extend [[\yii\db\ActiveRecord]] and
  * implement the `tableName` method:
  *
- * ```php
+ * ```
  * <?php
  *
  * class Customer extends \yii\db\ActiveRecord
@@ -56,7 +56,7 @@ use yii\helpers\StringHelper;
  *
  * Below is an example showing some typical usage of ActiveRecord:
  *
- * ```php
+ * ```
  * $user = new User();
  * $user->name = 'Qiang';
  * $user->save();  // a new row is inserted into user table
@@ -100,7 +100,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * You may call this method to load default values after creating a new instance:
      *
-     * ```php
+     * ```
      * // class Customer extends \yii\db\ActiveRecord
      * $customer = new Customer();
      * $customer->loadDefaultValues();
@@ -146,7 +146,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * Below is an example:
      *
-     * ```php
+     * ```
      * $customers = Customer::findBySql('SELECT * FROM customer')->all();
      * ```
      *
@@ -302,7 +302,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
@@ -312,7 +312,7 @@ class ActiveRecord extends BaseActiveRecord
      * [[EVENT_AFTER_UPDATE]] to be triggered, you need to [[find()|find]] the models first and then
      * call [[update()]] on each of them. For example an equivalent of the example above would be:
      *
-     * ```php
+     * ```
      * $models = Customer::find()->where('status = 2')->all();
      * foreach ($models as $model) {
      *     $model->status = 1;
@@ -341,7 +341,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to increment all customers' age by 1,
      *
-     * ```php
+     * ```
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
@@ -373,7 +373,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll('status = 3');
      * ```
      *
@@ -383,7 +383,7 @@ class ActiveRecord extends BaseActiveRecord
      * [[EVENT_AFTER_DELETE]] to be triggered, you need to [[find()|find]] the models first and then
      * call [[delete()]] on each of them. For example an equivalent of the example above would be:
      *
-     * ```php
+     * ```
      * $models = Customer::find()->where('status = 3')->all();
      * foreach ($models as $model) {
      *     $model->delete();
@@ -486,7 +486,7 @@ class ActiveRecord extends BaseActiveRecord
      * in transactions. You can do so by overriding this method and returning the operations
      * that need to be transactional. For example,
      *
-     * ```php
+     * ```
      * return [
      *     'admin' => self::OP_INSERT,
      *     'api' => self::OP_INSERT | self::OP_UPDATE | self::OP_DELETE,
@@ -547,7 +547,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to insert a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer;
      * $customer->name = $name;
      * $customer->email = $email;
@@ -597,7 +597,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @return ActiveQuery
      *
-     * @template T
+     * @template T of self
      *
      * @phpstan-param class-string<T> $class
      * @psalm-param class-string<T> $class
@@ -615,7 +615,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * @return ActiveQuery
      *
-     * @template T
+     * @template T of self
      *
      * @phpstan-param class-string<T> $class
      * @psalm-param class-string<T> $class
@@ -678,7 +678,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * For example, to update a customer record:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -689,7 +689,7 @@ class ActiveRecord extends BaseActiveRecord
      * In this case, this method will return 0. For this reason, you should use the following
      * code to check if update() is successful or not:
      *
-     * ```php
+     * ```
      * if ($customer->update() !== false) {
      *     // update successful
      * } else {

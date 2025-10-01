@@ -51,7 +51,7 @@ class ActiveForm extends Widget
      * will add new parameters instead of replacing existing ones.
      * You may set [[action]] explicitly to avoid this:
      *
-     * ```php
+     * ```
      * $form = ActiveForm::begin([
      *     'method' => 'get',
      *     'action' => ['controller/action'],
@@ -74,7 +74,7 @@ class ActiveForm extends Widget
      * This can be either a configuration array or an anonymous function returning a configuration array.
      * If the latter, the signature should be as follows:
      *
-     * ```php
+     * ```
      * function ($model, $attribute)
      * ```
      *
@@ -354,7 +354,7 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ```php
+     * ```
      * $model = new Post;
      * $model->load(Yii::$app->request->post());
      * if (Yii::$app->request->isAjax) {
@@ -367,7 +367,7 @@ class ActiveForm extends Widget
      * To validate multiple models, simply pass each model as a parameter to this method, like
      * the following:
      *
-     * ```php
+     * ```
      * ActiveForm::validate($model1, $model2, ...);
      * ```
      *
@@ -412,7 +412,7 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ```php
+     * ```
      * // ... load $models ...
      * if (Yii::$app->request->isAjax) {
      *     Yii::$app->response->format = Response::FORMAT_JSON;
