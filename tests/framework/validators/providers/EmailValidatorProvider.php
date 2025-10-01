@@ -20,12 +20,14 @@ final class EmailValidatorProvider
     /**
      * Provides malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074.
      *
-     * This provider supplies test cases for validating email addresses that contain malicious patterns
-     * designed to exploit command injection vulnerabilities in email processing systems.
+     * This provider supplies test cases for validating email addresses that contain malicious patterns designed to
+     * exploit command injection vulnerabilities in email processing systems.
      *
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
-     * @return array<int, array<int, string>> Test data with malicious email addresses.
+     * @return array test data with malicious email addresses.
+     *
+     * @phpstan-return array<int, array<int, string>>
      */
     public static function malformedAddressesProvider(): array
     {
