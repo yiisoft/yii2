@@ -1,14 +1,20 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stub\EmailValidatorMockeryFunctionsTrait;
 use yiiunit\TestCase;
 
 /**
@@ -16,11 +22,20 @@ use yiiunit\TestCase;
  */
 class EmailValidatorTest extends TestCase
 {
+    use EmailValidatorMockeryFunctionsTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->resetStubs();
+        $this->mockWebApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -70,9 +85,8 @@ class EmailValidatorTest extends TestCase
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');
-
-            return;
         }
+
         $validator = new EmailValidator();
         $validator->enableIDN = true;
 
@@ -131,7 +145,10 @@ class EmailValidatorTest extends TestCase
             'Ivan Petrov <ipetrov@gmail.com>',
         ];
         foreach ($emails as $email) {
-            $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
+            $this->assertTrue(
+                $validator->validate($email),
+                "Email: '$email' failed to validate(checkDNS=true, allowName=true)",
+            );
         }
     }
 
@@ -144,61 +161,172 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_email'));
     }
 
-    public static function malformedAddressesProvider()
-    {
-        return [
-            // this is the demo email used in the proof of concept of the exploit
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-            // trying more adresses
-            ['"Attacker -Param2 -Param3"@test.com'],
-            ['\'Attacker -Param2 -Param3\'@test.com'],
-            ['"Attacker \" -Param2 -Param3"@test.com'],
-            ["'Attacker \\' -Param2 -Param3'@test.com"],
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-            // and even more variants
-            ['"attacker\"\ -oQ/tmp/\ -X/var/www/cache/phpcode.php"@email.com'],
-            ["\"attacker\\\"\0-oQ/tmp/\0-X/var/www/cache/phpcode.php\"@email.com"],
-            ['"attacker@cebe.cc\"-Xbeep"@email.com'],
-
-            ["'attacker\\' -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
-            ["'attacker\\\\' -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
-            ["'attacker\\\\'\\ -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
-            ["'attacker\\';touch /tmp/hackme'@email.com"],
-            ["'attacker\\\\';touch /tmp/hackme'@email.com"],
-            ["'attacker\\';touch/tmp/hackme'@email.com"],
-            ["'attacker\\\\';touch/tmp/hackme'@email.com"],
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-        ];
-    }
-
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is disabled.
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is
+     * disabled.
+     *
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
-     * @dataProvider malformedAddressesProvider
+     * @dataProvider \yiiunit\framework\validators\providers\EmailValidatorProvider::malformedAddressesProvider
      */
     public function testMalformedAddressesIdnDisabled(string $value): void
     {
         $validator = new EmailValidator();
+
         $validator->enableIDN = false;
+
         $this->assertFalse($validator->validate($value));
     }
 
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is enabled.
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is
+     * enabled.
+     *
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
-     * @dataProvider malformedAddressesProvider
+     * @dataProvider \yiiunit\framework\validators\providers\EmailValidatorProvider::malformedAddressesProvider
      */
     public function testMalformedAddressesIdnEnabled(string $value): void
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');
-            return;
         }
 
         $val = new EmailValidator();
+
         $val->enableIDN = true;
+
         $this->assertFalse($val->validate($value));
     }
+
+    public function testClientValidateAttribute(): void
+    {
+        $modelValidator = new FakedValidationModel();
+        $validator = new EmailValidator();
+
+        $modelValidator->attrA = 'test@example.com';
+
+        $this->assertSame(
+            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
+            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
+            '"enableIDN":false,"skipOnEmpty":1});',
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
+            "'clientValidateAttribute()' method should return correct validation script.",
+        );
+
+        $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
+
+        $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
+        $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
+
+        $this->assertSame(
+            [
+                'pattern' => $validator->pattern,
+                'fullPattern' => $validator->fullPattern,
+                'allowName' => false,
+                'message' => 'attrA is not a valid email address.',
+                'enableIDN' => false,
+                'skipOnEmpty' => 1,
+            ],
+            $clientOptions,
+            "'getClientOptions()' method should return correct options array.",
+        );
+
+        $validator->validate('invalid-email', $errorMessage);
+
+        $this->assertSame(
+            'the input value is not a valid email address.',
+            $errorMessage,
+            'Failed asserting that the generated error message matches the expected one.',
+        );
+    }
+
+    public function testClientValidateAttributeWithEnableIDN(): void
+    {
+        $modelValidator = new FakedValidationModel();
+        $validator = new EmailValidator(['enableIDN' => true]);
+
+        $this->assertSame(
+            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
+            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
+            '"enableIDN":true,"skipOnEmpty":1});',
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
+            "'clientValidateAttribute()' method should return correct validation script.",
+        );
+
+        $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
+
+        $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
+        $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
+
+        $this->assertSame(
+            [
+                'pattern' => $validator->pattern,
+                'fullPattern' => $validator->fullPattern,
+                'allowName' => false,
+                'message' => 'attrA is not a valid email address.',
+                'enableIDN' => true,
+                'skipOnEmpty' => 1,
+            ],
+            $clientOptions,
+            "'getClientOptions()' method should return correct options array.",
+        );
+
+        $validator->validate('invalid-email', $errorMessage);
+
+        $this->assertSame(
+            'the input value is not a valid email address.',
+            $errorMessage,
+            'Failed asserting that the generated error message matches the expected one.',
+        );
+    }
+
+    public function testDnsCheckHandlesErrorException(): void
+    {
+        $this->stubDnsGetRecordThrowsException(true);
+
+        $validator = new EmailValidator();
+
+        $validator->checkDNS = true;
+
+        $this->assertFalse(
+            $validator->validate('test@example.com'),
+            'Should return false when dns_get_record throws ErrorException'
+        );
+    }
+
+    public function testThrowExceptionWhenIdnEnabledWithoutIntlExtension(): void
+    {
+        $this->stubIdnToAsciiExists(false);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('In order to use IDN validation intl extension must be installed and enabled.');
+
+        new EmailValidator(['enableIDN' => true]);
+    }
+}
+
+namespace yii\validators;
+
+use yii\base\ErrorException;
+use yiiunit\framework\validators\EmailValidatorTest;
+
+function dns_get_record(string $hostname, int $type = DNS_ANY): array|false
+{
+    if (EmailValidatorTest::shouldDnsThrowExceptionStub()) {
+        throw new ErrorException('DNS query failed,');
+    }
+
+    return \dns_get_record($hostname, $type);
+}
+
+function function_exists(string $name): bool
+{
+    $testValue = EmailValidatorTest::getIdnToAsciiExistsStub();
+
+    if ($testValue !== null && $name === 'idn_to_ascii') {
+        return $testValue;
+    }
+
+    return \function_exists($name);
 }
