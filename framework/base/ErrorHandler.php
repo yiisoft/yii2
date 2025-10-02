@@ -30,7 +30,7 @@ abstract class ErrorHandler extends Component
      * @event Event an event that is triggered when the handler is called by shutdown function via [[handleFatalError()]].
      * @since 2.0.46
      */
-    const EVENT_SHUTDOWN = 'shutdown';
+    public const EVENT_SHUTDOWN = 'shutdown';
 
     /**
      * @var bool whether to discard any existing page output before error display. Defaults to true.

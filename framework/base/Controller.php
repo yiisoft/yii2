@@ -31,11 +31,11 @@ class Controller extends Component implements ViewContextInterface
      * @event ActionEvent an event raised right before executing a controller action.
      * You may set [[ActionEvent::isValid]] to be false to cancel the action execution.
      */
-    const EVENT_BEFORE_ACTION = 'beforeAction';
+    public const EVENT_BEFORE_ACTION = 'beforeAction';
     /**
      * @event ActionEvent an event raised right after executing a controller action.
      */
-    const EVENT_AFTER_ACTION = 'afterAction';
+    public const EVENT_AFTER_ACTION = 'afterAction';
 
     /**
      * @var string the ID of this controller.

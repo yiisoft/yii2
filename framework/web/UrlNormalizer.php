@@ -24,17 +24,17 @@ class UrlNormalizer extends BaseObject
      * Represents permament redirection during route normalization.
      * @see https://en.wikipedia.org/wiki/HTTP_301
      */
-    const ACTION_REDIRECT_PERMANENT = 301;
+    public const ACTION_REDIRECT_PERMANENT = 301;
     /**
      * Represents temporary redirection during route normalization.
      * @see https://en.wikipedia.org/wiki/HTTP_302
      */
-    const ACTION_REDIRECT_TEMPORARY = 302;
+    public const ACTION_REDIRECT_TEMPORARY = 302;
     /**
      * Represents showing 404 error page during route normalization.
      * @see https://en.wikipedia.org/wiki/HTTP_404
      */
-    const ACTION_NOT_FOUND = 404;
+    public const ACTION_NOT_FOUND = 404;
 
     /**
      * @var bool whether slashes should be collapsed, for example `site///index` will be

@@ -60,7 +60,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * Page cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
      */
-    const PAGE_CACHE_VERSION = 1;
+    public const PAGE_CACHE_VERSION = 1;
 
     /**
      * @var bool whether the content being cached should be differentiated according to the route.
