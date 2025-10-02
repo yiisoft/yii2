@@ -264,8 +264,18 @@ class ActiveField extends Component
      * If `false`, the generated field will not contain the label part.
      * Note that this will NOT be [[Html::encode()|encoded]].
      * @param array|null $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
-     * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
-     * using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded using
+     * [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
+     * The following special options are recognized:
+     * - `label`: string|false|null, if specified in $options (or previously set in [[labelOptions]]), this value will
+     *   be used when the $label parameter is `null`. If set to `false`, the label will not be rendered (same behavior
+     *   as passing $label = `false`). The $label parameter always takes precedence over this option.
+     * - `tag`: string|false, specifies the tag name for the label element.
+     *   - If not specified, defaults to `'label'`.
+     *   - If set to `false`, the label content will be rendered as raw HTML without any wrapper tag.
+     *   - If set to `'label'`, uses [[Html::activeLabel()]] to generate a standard label element.
+     *   - If set to another tag name (for example, `'span'`, `'div'`), uses [[Html::tag()]] to generate that element.
+     *
      * @return $this the field object itself.
      */
     public function label($label = null, $options = [])
@@ -276,15 +286,35 @@ class ActiveField extends Component
         }
 
         $options = array_merge($this->labelOptions, $options);
-        if ($label !== null) {
-            $options['label'] = $label;
+        $tag = ArrayHelper::remove($options, 'tag', 'label');
+
+        if ($label === null) {
+            $label = $options['label'] ?? null;
+
+            if ($label === false) {
+                $this->parts['{label}'] = '';
+
+                return $this;
+            }
         }
 
-        if ($this->_skipLabelFor) {
-            $options['for'] = null;
-        }
+        $label ??= $this->model->getAttributeLabel(Html::getAttributeName($this->attribute));
 
-        $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
+        $options['label'] = $label;
+
+        if ($tag === false) {
+            $this->parts['{label}'] = $label;
+        } elseif ($tag === 'label') {
+            if ($this->_skipLabelFor) {
+                $options['for'] = null;
+            }
+
+            $this->parts['{label}'] = Html::activeLabel($this->model, $this->attribute, $options);
+        } else {
+            unset($options['label'], $options['for']);
+
+            $this->parts['{label}'] = Html::tag($tag, $label, $options);
+        }
 
         return $this;
     }
@@ -523,11 +553,21 @@ class ActiveField extends Component
      *   it will take the default value `0`. This method will render a hidden input so that if the radio button
      *   is not checked and is submitted, the value of this attribute will still be submitted to the server
      *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as `null`.
-     * - `label`: string, a label displayed next to the radio button. It will NOT be HTML-encoded. Therefore you can pass
-     *   in HTML code such as an image tag. If this is coming from end users, you should [[Html::encode()|encode]] it to prevent XSS attacks.
-     *   When this option is specified, the radio button will be enclosed by a label tag. If you do not want any label, you should
-     *   explicitly set this option as `null`.
-     * - `labelOptions`: array, the HTML attributes for the label tag. This is only used when the `label` option is specified.
+     * - `label`: string|false|null, a label displayed next to the radio.
+     *   - If a string, it will NOT be HTML-encoded. Therefore you can pass in HTML code such as an image tag.
+     *   - If this is coming from end users, you should [[Html::encode()|encode]] it to prevent XSS attacks.
+     *   - If `false`, no label will be rendered.
+     *   - If `null`, no label will be rendered (same as `false`).
+     *   When this option is specified as a string and `enclosedByLabel` is `true`, the radio will be enclosed by a
+     *   label tag.
+     * - `labelOptions`: array, the HTML attributes for the label tag. This is only used when the `label` option is
+     *   specified and `enclosedByLabel` is `false`. The following special option is recognized:
+     *   - `tag`: string|false, specifies the tag name for the label element.
+     *     - If `labelOptions` is not provided, the label content will be rendered as raw HTML without any wrapper tag.
+     *     - If `labelOptions` is provided but `tag` is not specified, defaults to `'label'`.
+     *     - If set to `'label'`, uses [[Html::activeLabel()]] to generate a standard label element.
+     *     - If set to another tag name (for example, `'span'`, `'div'`), uses [[Html::tag()]] to generate that element.
+     *     - If set to `false`, the label content will be rendered as raw HTML without any wrapper tag.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
@@ -548,20 +588,11 @@ class ActiveField extends Component
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
-        }
+        $this->parts['{label}'] = '';
+
+        $options = $enclosedByLabel ? $options : $this->generateLabel($options);
+
+        $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
 
         return $this;
     }
@@ -571,15 +602,25 @@ class ActiveField extends Component
      * This method will generate the `checked` tag attribute according to the model attribute value.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - `uncheck`: string, the value associated with the uncheck state of the radio button. If not set,
-     *   it will take the default value `0`. This method will render a hidden input so that if the radio button
+     * - `uncheck`: string, the value associated with the uncheck state of the checkbox. If not set,
+     *   it will take the default value `0`. This method will render a hidden input so that if the checkbox
      *   is not checked and is submitted, the value of this attribute will still be submitted to the server
      *   via the hidden input. If you do not want any hidden input, you should explicitly set this option as `null`.
-     * - `label`: string, a label displayed next to the checkbox. It will NOT be HTML-encoded. Therefore you can pass
-     *   in HTML code such as an image tag. If this is coming from end users, you should [[Html::encode()|encode]] it to prevent XSS attacks.
-     *   When this option is specified, the checkbox will be enclosed by a label tag. If you do not want any label, you should
-     *   explicitly set this option as `null`.
-     * - `labelOptions`: array, the HTML attributes for the label tag. This is only used when the `label` option is specified.
+     * - `label`: string|false|null, a label displayed next to the checkbox.
+     *   - If a string, it will NOT be HTML-encoded. Therefore you can pass in HTML code such as an image tag.
+     *   - If this is coming from end users, you should [[Html::encode()|encode]] it to prevent XSS attacks.
+     *   - If `false`, no label will be rendered.
+     *   - If `null`, no label will be rendered (same as `false`).
+     *   When this option is specified as a string and `enclosedByLabel` is `true`, the checkbox will be enclosed by a
+     *   label tag.
+     * - `labelOptions`: array, the HTML attributes for the label tag. This is only used when the `label` option is
+     *   specified and `enclosedByLabel` is `false`. The following special option is recognized:
+     *   - `tag`: string|false, specifies the tag name for the label element.
+     *     - If `labelOptions` is not provided, the label content will be rendered as raw HTML without any wrapper tag.
+     *     - If `labelOptions` is provided but `tag` is not specified, defaults to `'label'`.
+     *     - If set to `'label'`, uses [[Html::activeLabel()]] to generate a standard label element.
+     *     - If set to another tag name (for example, `'span'`, `'div'`), uses [[Html::tag()]] to generate that element.
+     *     - If set to `false`, the label content will be rendered as raw HTML without any wrapper tag.
      *
      * The rest of the options will be rendered as the attributes of the resulting tag. The values will
      * be HTML-encoded using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
@@ -600,20 +641,11 @@ class ActiveField extends Component
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-        }
+        $this->parts['{label}'] = '';
+
+        $options = $enclosedByLabel ? $options : $this->generateLabel($options);
+
+        $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 
         return $this;
     }
@@ -960,5 +992,45 @@ class ActiveField extends Component
         if ($this->model->hasErrors($attributeName)) {
             Html::addCssClass($options, $this->form->errorCssClass);
         }
+    }
+
+    /**
+     * Generates the label element based on `labelOptions` configuration when `enclosedByLabel` is `false`.
+     *
+     * @param array $options the input options array
+     *
+     * @return array the cleaned options array with `labelOptions` removed
+     */
+    protected function generateLabel(array $options): array
+    {
+        if (isset($options['label']) && $options['label'] !== false && $this->parts['{label}'] === '') {
+            $tag = false;
+
+            if (!empty($options['labelOptions'])) {
+                $tag = $options['labelOptions']['tag'] ?? 'label';
+
+                unset($options['labelOptions']['tag']);
+
+                $this->labelOptions = array_merge($this->labelOptions, $options['labelOptions']);
+            }
+
+            if ($tag === false) {
+                $this->parts['{label}'] = $options['label'];
+            } elseif ($tag === 'label') {
+                $this->parts['{label}'] = Html::activeLabel(
+                    $this->model,
+                    $this->attribute,
+                    array_merge(['label' => $options['label']], $this->labelOptions),
+                );
+            } else {
+                $this->parts['{label}'] = Html::tag($tag, $options['label'], $this->labelOptions);
+            }
+        }
+
+        unset($options['labelOptions']);
+
+        $options['label'] = null;
+
+        return $options;
     }
 }
