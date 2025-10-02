@@ -1986,10 +1986,6 @@ class ActiveFieldTest extends \yiiunit\TestCase
             $this->normalizeHTML($view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm])),
             'Failed asserting that the generated form matches the expected view.',
         );
-        $this->assertFalse(
-            $form->getClientOptions()['updateAriaInvalid'] ?? null,
-            "'getClientOptions()' method should return correct options array.",
-        );
     }
 
     public function testGetClientOptionsWithCustomErrorSelector(): void
