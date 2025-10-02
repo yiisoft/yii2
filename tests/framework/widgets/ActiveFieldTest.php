@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\widgets;
 
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
@@ -65,17 +67,17 @@ final class ActiveFieldTest extends \yiiunit\TestCase
 
     public function testRenderNoContent(): void
     {
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-attributename">
-        <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     /**
@@ -85,21 +87,21 @@ final class ActiveFieldTest extends \yiiunit\TestCase
     {
         // field will be the html of the model's attribute wrapped with the return string below.
         $field = $this->attributeName;
-        $content = fn($field) => "<div class=\"custom-container\"> $field </div>";
+        $content = static fn (string $field): string => "<div class=\"custom-container\"> $field </div>";
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-attributename">
-        <div class="custom-container"> <div class="form-group field-activefieldtestmodel-attributename">
-        <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div> </div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render($content);
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <div class="custom-container"> <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div> </div>
+            </div>
+            HTML,
+            $this->activeField->render($content),
+        );
     }
 
     /**
@@ -107,39 +109,43 @@ final class ActiveFieldTest extends \yiiunit\TestCase
      */
     public function testRenderWithCustomInputId(): void
     {
-        $expectedValue = <<<HTML
-        <div class="form-group field-custom-input-id">
-        <label class="control-label" for="custom-input-id">Attribute Name</label>
-        <input type="text" id="custom-input-id" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
-
         $this->activeField->inputOptions['id'] = 'custom-input-id';
 
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-custom-input-id">
+            <label class="control-label" for="custom-input-id">Attribute Name</label>
+            <input type="text" id="custom-input-id" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testBeginHasErrors(): void
     {
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
-        $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename has-error">';
-        $actualValue = $this->activeField->begin();
-
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename has-error">
+            HTML,
+            $this->activeField->begin(),
+        );
     }
 
     public function testBeginAttributeIsRequired(): void
     {
         $this->helperModel->addRule($this->attributeName, 'required');
 
-        $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename required">';
-        $actualValue = $this->activeField->begin();
-
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename required">
+            HTML,
+            $this->activeField->begin(),
+        );
     }
 
     public function testBeginHasErrorAndRequired(): void
@@ -147,10 +153,12 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->helperModel->addError($this->attributeName, 'Error Message');
         $this->helperModel->addRule($this->attributeName, 'required');
 
-        $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename required has-error">';
-        $actualValue = $this->activeField->begin();
-
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename required has-error">
+            HTML,
+            $this->activeField->begin(),
+        );
     }
 
     public function testBegin(): void
@@ -159,19 +167,19 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = null;
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->begin();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testEnd(): void
@@ -179,72 +187,267 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $expectedValue = '</div>';
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         // other tag
         $expectedValue = '</article>';
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
 
         $expectedValue = '';
         $this->activeField->options['tag'] = null;
         $actualValue = $this->activeField->end();
 
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertSame($expectedValue, $actualValue);
     }
 
     public function testLabel(): void
     {
-        $expectedValue = '<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
 
-        // label = false
-        $expectedValue = '';
-        $this->activeField->label(false);
+    public function testLabelInheritsLabelOptions(): void
+    {
+        $this->activeField->labelOptions = [
+            'class' => 'inherited-class',
+            'data-test' => 'inherited-data'
+        ];
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->activeField->label(
+            'Test Label',
+            ['class' => 'override-class'],
+        );
 
-        // $label = 'Label Name'
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="override-class" data-test="inherited-data" for="activefieldtestmodel-attributename">Test Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelPriorityOfContent(): void
+    {
+        $label = 'Parameter Label';
+        $paramLabel = 'Options Label';
+
+        $this->activeField->label($label, ['label' => $paramLabel]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label(null, ['label' => $paramLabel]);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">{$paramLabel}</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label();
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelOptionsLabelFalseWithNullParameter(): void
+    {
+        $this->activeField->labelOptions = ['label' => false];
+
+        $this->activeField->label(null);
+
+        $this->assertEmpty(
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label does not render.',
+        );
+    }
+
+    public function testLabelOptionsLabelFalseWithNoParameters(): void
+    {
+        $this->activeField->labelOptions = ['label' => false];
+
+        $this->activeField->label();
+
+        $this->assertEmpty(
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label does not render.',
+        );
+    }
+
+    public function testLabelOverridesLabelOptionsFalse(): void
+    {
+        $this->activeField->labelOptions = ['label' => false];
+
+        $this->activeField->label('Override Label');
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label for="activefieldtestmodel-attributename">Override Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithContent(): void
+    {
         $label = 'Label Name';
-        $expectedValue = <<<HTML
-        <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
-        HTML;
         $this->activeField->label($label);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithEmptyString(): void
+    {
+        $this->activeField->label('');
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename"></label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithLabelOptionsAndTagCustom(): void
+    {
+        $label = 'Label Name';
+
+        $this->activeField->label(
+            $label,
+            [
+                'class' => 'custom-class',
+                'tag' => 'h3',
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <h3 class="custom-class">{$label}</h3>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label(
+            null,
+            [
+                'class' => 'custom-class',
+                'label' => $label,
+                'tag' => 'h3',
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <h3 class="custom-class">{$label}</h3>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+    }
+
+    public function testLabelWithLabelOptionsAndTagFalse(): void
+    {
+        $label = 'Label Name';
+
+        $this->activeField->label(
+            $label,
+            [
+                'class' => 'custom-class',
+                'tag' => false,
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            {$label}
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
+
+        $this->activeField->label(
+            null,
+            [
+                'class' => 'custom-class',
+                'label' => $label,
+                'tag' => false,
+            ],
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            {$label}
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Failed asserting that label renders correctly.',
+        );
     }
 
     public function testError(): void
     {
-        $expectedValue = '<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>';
         $this->activeField->label();
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+       );
 
         // label = false
         $expectedValue = '';
         $this->activeField->label(false);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertSame($expectedValue, $this->activeField->parts['{label}']);
 
         // $label = 'Label Name'
         $label = 'Label Name';
-        $expectedValue = <<<HTML
-        <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
-        HTML;
         $this->activeField->label($label);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+        );
     }
 
     public function testTabularInputErrors(): void
@@ -252,10 +455,12 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->attribute = '[0]'.$this->attributeName;
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
-        $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
-        $actualValue = $this->activeField->begin();
-
-        $this->assertEquals($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-0-attributename has-error">
+            HTML,
+            $this->activeField->begin(),
+        );
     }
 
     public static function hintDataProvider(): array
@@ -277,34 +482,41 @@ final class ActiveFieldTest extends \yiiunit\TestCase
     {
         $this->activeField->hint($hint);
 
-        $this->assertEquals($expectedHtml, $this->activeField->parts['{hint}']);
+        $this->assertSame($expectedHtml, $this->activeField->parts['{hint}']);
     }
 
     public function testInput(): void
     {
-        $expectedValue = <<<HTML
-        <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
-        HTML;
         $this->activeField->input('password');
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
 
         // with options
-        $expectedValue = <<<HTML
-        <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" weird="value">
-        HTML;
         $this->activeField->input('password', ['weird' => 'value']);
 
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" weird="value">
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
     }
 
     public function testTextInput(): void
     {
-        $expectedValue = <<<HTML
-        <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
-        HTML;
         $this->activeField->textInput();
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
     }
 
     public function testHiddenInput(): void
@@ -313,59 +525,77 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
         HTML;
         $this->activeField->hiddenInput();
-        $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
     }
 
     public function testListBox(): void
     {
-        $expectedValue = <<<HTML
-        <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
-        <option value="1">Item One</option>
-        <option value="2">Item 2</option>
-        </select>
-        HTML;
         $this->activeField->listBox(['1' => 'Item One', '2' => 'Item 2']);
-        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
+            <option value="1">Item One</option>
+            <option value="2">Item 2</option>
+            </select>
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
 
         // https://github.com/yiisoft/yii2/issues/8848
-        $expectedValue = <<<HTML
-        <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
-        <option value="value1" disabled>Item One</option>
-        <option value="value2" label="value 2">Item 2</option>
-        </select>
-        HTML;
         $this->activeField->listBox(['value1' => 'Item One', 'value2' => 'Item 2'], ['options' => [
             'value1' => ['disabled' => true],
             'value2' => ['label' => 'value 2'],
         ]]);
-        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
 
-        $expectedValue = <<<HTML
-        <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
-        <option value="value1" disabled>Item One</option>
-        <option value="value2" selected label="value 2">Item 2</option>
-        </select>
-        HTML;
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
+            <option value="value1" disabled>Item One</option>
+            <option value="value2" label="value 2">Item 2</option>
+            </select>
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
+
         $this->activeField->model->{$this->attributeName} = 'value2';
         $this->activeField->listBox(['value1' => 'Item One', 'value2' => 'Item 2'], ['options' => [
             'value1' => ['disabled' => true],
             'value2' => ['label' => 'value 2'],
         ]]);
-        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
+            <option value="value1" disabled>Item One</option>
+            <option value="value2" selected label="value 2">Item 2</option>
+            </select>
+            HTML,
+            $this->activeField->parts['{input}'],
+        );
     }
 
     public function testRadioList(): void
     {
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-attributename">
-        <label class="control-label">Attribute Name</label>
-        <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
         $this->activeField->radioList(['1' => 'Item One']);
-        $this->assertEqualsWithoutLE($expectedValue, $this->activeField->render());
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="control-label">Attribute Name</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testGetClientOptionsReturnEmpty(): void
@@ -375,6 +605,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
 
         // expected empty
         $actualValue = $this->activeField->getClientOptions();
+
         $this->assertEmpty($actualValue);
     }
 
@@ -387,6 +618,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
 
         // expected empty
         $actualValue = $this->activeField->getClientOptions();
+
         $this->assertEmpty($actualValue);
     }
 
@@ -435,7 +667,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $expectedJsExpression = 'function (attribute, value, messages, deferred, $form) {if ((function (attribute, value) '
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
 
-        $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
+        $this->assertSame($expectedJsExpression, $actualValue['validate']->expression);
     }
 
     /**
@@ -444,7 +676,8 @@ final class ActiveFieldTest extends \yiiunit\TestCase
     public function testEnctype(): void
     {
         $this->activeField->fileInput();
-        $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
+
+        $this->assertSame('multipart/form-data', $this->activeField->form->options['enctype']);
     }
 
     /**
@@ -481,17 +714,17 @@ final class ActiveFieldTest extends \yiiunit\TestCase
     {
         $this->activeField->addAriaAttributes = true;
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-attributename">
-        <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testAriaRequiredAttribute(): void
@@ -499,17 +732,17 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addRule([$this->attributeName], 'required');
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-attributename required">
-        <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename required">
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testAriaInvalidAttribute(): void
@@ -517,17 +750,17 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addError($this->attributeName, 'Some error');
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-attributename has-error">
-        <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block">Some error</div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename has-error">
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block">Some error</div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testTabularAriaAttributes(): void
@@ -535,17 +768,17 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->attribute = '[0]' . $this->attributeName;
         $this->activeField->addAriaAttributes = true;
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-0-attributename">
-        <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-0-attributename">
+            <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testTabularAriaRequiredAttribute(): void
@@ -554,17 +787,17 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addRule([$this->attributeName], 'required');
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-0-attributename required">
-        <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block"></div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-0-attributename required">
+            <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testTabularAriaInvalidAttribute(): void
@@ -573,40 +806,44 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addError($this->attributeName, 'Some error');
 
-        $expectedValue = <<<HTML
-        <div class="form-group field-activefieldtestmodel-0-attributename has-error">
-        <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
-        <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
-        <div class="hint-block">Hint for attributeName attribute</div>
-        <div class="help-block">Some error</div>
-        </div>
-        HTML;
-
-        $actualValue = $this->activeField->render();
-        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-0-attributename has-error">
+            <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block">Some error</div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+        );
     }
 
     public function testEmptyTag(): void
     {
         $this->activeField->options = ['tag' => false];
-        $expectedValue = '<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">';
-        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
-        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            HTML,
+            trim($this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render()),
+        );
     }
 
     public function testWidget(): void
     {
         $this->activeField->widget(TestInputWidget::class);
-        $this->assertEquals('Render: ' . TestInputWidget::class, $this->activeField->parts['{input}']);
+        $this->assertSame('Render: ' . TestInputWidget::class, $this->activeField->parts['{input}']);
         $widget = TestInputWidget::$lastInstance;
 
         $this->assertSame($this->activeField->model, $widget->model);
-        $this->assertEquals($this->activeField->attribute, $widget->attribute);
+        $this->assertSame($this->activeField->attribute, $widget->attribute);
         $this->assertSame($this->activeField->form->view, $widget->view);
         $this->assertSame($this->activeField, $widget->field);
 
         $this->activeField->widget(TestInputWidget::class, ['options' => ['id' => 'test-id']]);
-        $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+        $this->assertSame('test-id', $this->activeField->labelOptions['for']);
     }
 
     public function testWidgetOptions(): void
@@ -621,7 +858,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
             'aria-invalid' => 'true',
             'id' => 'activefieldtestmodel-attributename',
         ];
-        $this->assertEquals($expectedOptions, $widget->options);
+        $this->assertSame($expectedOptions, $widget->options);
 
         $this->activeField->inputOptions = [];
         $this->activeField->widget(TestInputWidget::class);
@@ -631,7 +868,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
             'aria-invalid' => 'true',
             'id' => 'activefieldtestmodel-attributename',
         ];
-        $this->assertEquals($expectedOptions, $widget->options);
+        $this->assertSame($expectedOptions, $widget->options);
     }
 
     /**
@@ -642,28 +879,32 @@ final class ActiveFieldTest extends \yiiunit\TestCase
     public function testOptionsClass(): void
     {
         $this->activeField->options = ['class' => 'test-wrapper'];
-        $expectedValue = <<<HTML
-        <div class="test-wrapper field-activefieldtestmodel-attributename">
 
-        <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="test-wrapper field-activefieldtestmodel-attributename">
+
+            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 
 
-        </div>
-        HTML;
-        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
-        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+            </div>
+            HTML,
+            trim($this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render()),
+        );
 
         $this->activeField->options = ['class' => ['test-wrapper', 'test-add']];
-        $expectedValue = <<<HTML
-        <div class="test-wrapper test-add field-activefieldtestmodel-attributename">
 
-        <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="test-wrapper test-add field-activefieldtestmodel-attributename">
+
+            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 
 
-        </div>
-        HTML;
-        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
-        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+            </div>
+            HTML,
+            trim($this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render()),
+        );
     }
 
     public function testInputOptionsTransferToWidget(): void
@@ -675,7 +916,7 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
 
         // use regex clientOptions instead mask
-        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+        $widget = $this->activeField->widget(TestMaskedInput::class, [
             'options' => ['placeholder' => 'pholder_direct'],
             'clientOptions' => ['regex' => '^.*$'],
         ]);
@@ -697,14 +938,258 @@ final class ActiveFieldTest extends \yiiunit\TestCase
         $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
     }
 
-    public function testExceptionToString()
+    public function testRadioEnclosedByLabelFalseWithLabelOptions(): void
     {
-        $field = new TestActiveFieldWithException();
+        $this->activeField->radio(
+            [
+                'label' => 'Select Option A',
+                'labelOptions' => [
+                    'class' => 'custom-radio-label',
+                    'data-option' => 'option-a',
+                ],
+            ],
+            false,
+        );
 
-        $this->expectException(\Exception::class);
-        $this->expectExceptionMessage('Test exception in toString.');
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="custom-radio-label" data-option="option-a" for="activefieldtestmodel-attributename">Select Option A</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
+        );
+    }
 
-        (string) $field;
+    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndLabelFalse(): void
+    {
+        $this->activeField->radio(
+            [
+                'label' => false,
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
+        );
+    }
+
+    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndTagLabel(): void
+    {
+        $this->activeField->radio(
+            [
+                'label' => 'Choose This Option',
+                'labelOptions' => [
+                    'class' => 'radio-option-label',
+                    'data-value' => 'choice-1',
+                    'tag' => 'span',
+                ],
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <span class="radio-option-label" data-value="choice-1">Choose This Option</span>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
+        );
+    }
+
+    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndTagLabelFalse(): void
+    {
+        $this->activeField->radio(
+            [
+                'label' => '<div class="custom-label-wrapper"><strong>Premium Option</strong> <em>(Recommended)</em></div>',
+                'labelOptions' => [
+                    'tag' => false,
+                ],
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <div class="custom-label-wrapper"><strong>Premium Option</strong> <em>(Recommended)</em></div>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
+        );
+    }
+
+    public function testRadioEnclosedByLabelFalseWithoutLabelOptions(): void
+    {
+        $this->activeField->radio(
+            [
+                'label' => 'Select Option A',
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            Select Option A
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithLabelOptions(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => 'Custom Label',
+                'labelOptions' => [
+                    'class' => 'custom-label-class',
+                    'data-test' => 'custom-label-data',
+                ],
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="custom-label-class" data-test="custom-label-data" for="activefieldtestmodel-attributename">Custom Label</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that checkbox renders correctly.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndLabelFalse(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => false,
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that checkbox renders correctly.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndTagLabel(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => 'Custom Label',
+                'labelOptions' => [
+                    'class' => 'custom-label-class',
+                    'data-test' => 'custom-label-data',
+                    'tag' => 'span',
+                ],
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <span class="custom-label-class" data-test="custom-label-data">Custom Label</span>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that checkbox renders correctly.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndTagLabelFalse(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => '<div class="custom-label-wrapper"><strong>Custom</strong> <em>Label</em></div>',
+                'labelOptions' => [
+                    'tag' => false,
+                ],
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <div class="custom-label-wrapper"><strong>Custom</strong> <em>Label</em></div>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that checkbox renders correctly.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithoutLabelOptions(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => 'Custom Label',
+            ],
+            false,
+        );
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            Custom Label
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that checkbox renders correctly.',
+        );
     }
 
     public function testInputWithValidationStateOnInput(): void
@@ -844,6 +1329,24 @@ final class ActiveFieldTest extends \yiiunit\TestCase
             HTML,
             $this->activeField->render(),
             'Failed asserting that textarea renders correctly with validation state.',
+        );
+    }
+
+    public function testRadioEnclosedByLabelFalse(): void
+    {
+        $this->activeField->radio([], false);
+
+        $this->assertEqualsWithoutLE(
+            <<<HTML
+            <div class="form-group field-activefieldtestmodel-attributename">
+            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
+            <div class="hint-block">Hint for attributeName attribute</div>
+            <div class="help-block"></div>
+            </div>
+            HTML,
+            $this->activeField->render(),
+            'Failed asserting that radio renders correctly.',
         );
     }
 
