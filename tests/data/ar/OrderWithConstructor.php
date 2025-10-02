@@ -1,11 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\ar;
+
+use ReflectionClass;
 
 /**
  * OrderWithConstructor.
@@ -40,22 +45,22 @@ class OrderWithConstructor extends ActiveRecord
 
     public static function instantiate($row)
     {
-        return (new \ReflectionClass(static::className()))->newInstanceWithoutConstructor();
+        return (new ReflectionClass(static::class))->newInstanceWithoutConstructor();
     }
 
     public function getCustomer()
     {
-        return $this->hasOne(CustomerWithConstructor::className(), ['id' => 'customer_id']);
+        return $this->hasOne(CustomerWithConstructor::class, ['id' => 'customer_id']);
     }
 
     public function getCustomerJoinedWithProfile()
     {
-        return $this->hasOne(CustomerWithConstructor::className(), ['id' => 'customer_id'])
+        return $this->hasOne(CustomerWithConstructor::class, ['id' => 'customer_id'])
             ->joinWith('profile');
     }
 
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItemWithConstructor::className(), ['order_id' => 'id'])->inverseOf('order');
+        return $this->hasMany(OrderItemWithConstructor::class, ['order_id' => 'id'])->inverseOf('order');
     }
 }

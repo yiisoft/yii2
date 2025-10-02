@@ -19,16 +19,16 @@ use yii\base\NotSupportedException;
  */
 class BaseIpHelper
 {
-    const IPV4 = 4;
-    const IPV6 = 6;
+    public const IPV4 = 4;
+    public const IPV6 = 6;
     /**
      * The length of IPv6 address in bits
      */
-    const IPV6_ADDRESS_LENGTH = 128;
+    public const IPV6_ADDRESS_LENGTH = 128;
     /**
      * The length of IPv4 address in bits
      */
-    const IPV4_ADDRESS_LENGTH = 32;
+    public const IPV4_ADDRESS_LENGTH = 32;
 
 
     /**
@@ -47,14 +47,14 @@ class BaseIpHelper
      *
      * For example, the following code checks whether subnet `192.168.1.0/24` is in subnet `192.168.0.0/22`:
      *
-     * ```php
+     * ```
      * IpHelper::inRange('192.168.1.0/24', '192.168.0.0/22'); // true
      * ```
      *
      * In case you need to check whether a single IP address `192.168.1.21` is in the subnet `192.168.1.0/24`,
      * you can use any of theses examples:
      *
-     * ```php
+     * ```
      * IpHelper::inRange('192.168.1.21', '192.168.1.0/24'); // true
      * IpHelper::inRange('192.168.1.21/32', '192.168.1.0/24'); // true
      * ```

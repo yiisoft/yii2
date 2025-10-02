@@ -44,43 +44,43 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * @event Event an event that is triggered when the record is initialized via [[init()]].
      */
-    const EVENT_INIT = 'init';
+    public const EVENT_INIT = 'init';
     /**
      * @event Event an event that is triggered after the record is created and populated with query result.
      */
-    const EVENT_AFTER_FIND = 'afterFind';
+    public const EVENT_AFTER_FIND = 'afterFind';
     /**
      * @event ModelEvent an event that is triggered before inserting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the insertion.
      */
-    const EVENT_BEFORE_INSERT = 'beforeInsert';
+    public const EVENT_BEFORE_INSERT = 'beforeInsert';
     /**
      * @event AfterSaveEvent an event that is triggered after a record is inserted.
      */
-    const EVENT_AFTER_INSERT = 'afterInsert';
+    public const EVENT_AFTER_INSERT = 'afterInsert';
     /**
      * @event ModelEvent an event that is triggered before updating a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the update.
      */
-    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+    public const EVENT_BEFORE_UPDATE = 'beforeUpdate';
     /**
      * @event AfterSaveEvent an event that is triggered after a record is updated.
      */
-    const EVENT_AFTER_UPDATE = 'afterUpdate';
+    public const EVENT_AFTER_UPDATE = 'afterUpdate';
     /**
      * @event ModelEvent an event that is triggered before deleting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the deletion.
      */
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
     /**
      * @event Event an event that is triggered after a record is deleted.
      */
-    const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
     /**
      * @event Event an event that is triggered after a record is refreshed.
      * @since 2.0.8
      */
-    const EVENT_AFTER_REFRESH = 'afterRefresh';
+    public const EVENT_AFTER_REFRESH = 'afterRefresh';
 
     /**
      * @var array attribute values indexed by attribute names
@@ -150,7 +150,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
      *
-     * ```php
+     * ```
      * Customer::updateAll(['status' => 1], 'status = 2');
      * ```
      *
@@ -170,7 +170,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to increment all customers' age by 1,
      *
-     * ```php
+     * ```
      * Customer::updateAllCounters(['age' => 1]);
      * ```
      *
@@ -192,7 +192,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to delete all customers whose status is 3:
      *
-     * ```php
+     * ```
      * Customer::deleteAll('status = 3');
      * ```
      *
@@ -371,7 +371,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `country` relation for `Customer` class, we can write
      * the following code in the `Customer` class:
      *
-     * ```php
+     * ```
      * public function getCountry()
      * {
      *     return $this->hasOne(Country::class, ['id' => 'country_id']);
@@ -412,7 +412,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * For example, to declare the `orders` relation for `Customer` class, we can write
      * the following code in the `Customer` class:
      *
-     * ```php
+     * ```
      * public function getOrders()
      * {
      *     return $this->hasMany(Order::class, ['customer_id' => 'id']);
@@ -679,7 +679,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to save a customer record:
      *
-     * ```php
+     * ```
      * $customer = new Customer; // or $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -725,7 +725,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to update a customer record:
      *
-     * ```php
+     * ```
      * $customer = Customer::findOne($id);
      * $customer->name = $name;
      * $customer->email = $email;
@@ -736,7 +736,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * In this case, this method will return 0. For this reason, you should use the following
      * code to check if update() is successful or not:
      *
-     * ```php
+     * ```
      * if ($customer->update() !== false) {
      *     // update successful
      * } else {
@@ -835,7 +835,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new StaleObjectException('The object being updated is outdated.');
         }
 
-        if (isset($values[$lock])) {
+        // using null as an array offset is deprecated in PHP `8.5`
+        if ($lock !== null && isset($values[$lock])) {
             $this->$lock = $values[$lock];
         }
 
@@ -856,7 +857,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * An example usage is as follows:
      *
-     * ```php
+     * ```
      * $post = Post::findOne($id);
      * $post->updateCounters(['view_count' => 1]);
      * ```
@@ -973,7 +974,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * or an [[EVENT_BEFORE_UPDATE]] event if `$insert` is `false`.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeSave($insert)
      * {
      *     if (!parent::beforeSave($insert)) {
@@ -1029,7 +1030,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * The default implementation raises the [[EVENT_BEFORE_DELETE]] event.
      * When overriding this method, make sure you call the parent implementation like the following:
      *
-     * ```php
+     * ```
      * public function beforeDelete()
      * {
      *     if (!parent::beforeDelete()) {
@@ -1813,7 +1814,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Helps to reduce the number of queries performed against database if some related models are only used
      * when a specific condition is met. For example:
      *
-     * ```php
+     * ```
      * $customers = Customer::find()->where(['country_id' => 123])->all();
      * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
      *     Customer::loadRelationsFor($customers, 'orders.items');
@@ -1843,7 +1844,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Helps to reduce the number of queries performed against database if some related models are only used
      * when a specific condition is met. For example:
      *
-     * ```php
+     * ```
      * $customer = Customer::find()->where(['id' => 123])->one();
      * if (Yii:app()->getUser()->getIdentity()->canAccessOrders()) {
      *     $customer->loadRelations('orders.items');

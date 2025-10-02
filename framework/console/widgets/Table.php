@@ -17,7 +17,7 @@ use yii\helpers\Console;
  *
  * For example,
  *
- * ```php
+ * ```
  * $table = new Table();
  *
  * echo $table
@@ -31,7 +31,7 @@ use yii\helpers\Console;
  *
  * or
  *
- * ```php
+ * ```
  * echo Table::widget([
  *     'headers' => ['test1', 'test2', 'test3'],
  *     'rows' => [
@@ -40,7 +40,10 @@ use yii\helpers\Console;
  *     ],
  * ]);
  *
+ * @property-write array $chars Table chars.
+ * @property-write array $headers Table headers.
  * @property-write string $listPrefix List prefix.
+ * @property-write array $rows Table rows.
  * @property-write int $screenWidth Screen width.
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
@@ -48,23 +51,23 @@ use yii\helpers\Console;
  */
 class Table extends Widget
 {
-    const DEFAULT_CONSOLE_SCREEN_WIDTH = 120;
-    const CONSOLE_SCROLLBAR_OFFSET = 3;
-    const CHAR_TOP = 'top';
-    const CHAR_TOP_MID = 'top-mid';
-    const CHAR_TOP_LEFT = 'top-left';
-    const CHAR_TOP_RIGHT = 'top-right';
-    const CHAR_BOTTOM = 'bottom';
-    const CHAR_BOTTOM_MID = 'bottom-mid';
-    const CHAR_BOTTOM_LEFT = 'bottom-left';
-    const CHAR_BOTTOM_RIGHT = 'bottom-right';
-    const CHAR_LEFT = 'left';
-    const CHAR_LEFT_MID = 'left-mid';
-    const CHAR_MID = 'mid';
-    const CHAR_MID_MID = 'mid-mid';
-    const CHAR_RIGHT = 'right';
-    const CHAR_RIGHT_MID = 'right-mid';
-    const CHAR_MIDDLE = 'middle';
+    public const DEFAULT_CONSOLE_SCREEN_WIDTH = 120;
+    public const CONSOLE_SCROLLBAR_OFFSET = 3;
+    public const CHAR_TOP = 'top';
+    public const CHAR_TOP_MID = 'top-mid';
+    public const CHAR_TOP_LEFT = 'top-left';
+    public const CHAR_TOP_RIGHT = 'top-right';
+    public const CHAR_BOTTOM = 'bottom';
+    public const CHAR_BOTTOM_MID = 'bottom-mid';
+    public const CHAR_BOTTOM_LEFT = 'bottom-left';
+    public const CHAR_BOTTOM_RIGHT = 'bottom-right';
+    public const CHAR_LEFT = 'left';
+    public const CHAR_LEFT_MID = 'left-mid';
+    public const CHAR_MID = 'mid';
+    public const CHAR_MID_MID = 'mid-mid';
+    public const CHAR_RIGHT = 'right';
+    public const CHAR_RIGHT_MID = 'right-mid';
+    public const CHAR_MIDDLE = 'middle';
 
     /**
      * @var array table headers

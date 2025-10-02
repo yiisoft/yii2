@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -30,7 +33,7 @@ class ErrorExceptionTest extends TestCase
         return false !== strpos(ini_get('xdebug.mode'), 'develop');
     }
 
-    public function testXdebugTrace()
+    public function testXdebugTrace(): void
     {
         if (!$this->isXdebugStackAvailable()) {
             $this->markTestSkipped('Xdebug is required.');
@@ -42,7 +45,7 @@ class ErrorExceptionTest extends TestCase
         }
     }
 
-    public function testStrictError()
+    public function testStrictError(): void
     {
         if (!defined('E_STRICT')) {
             $this->markTestSkipped('E_STRICT has been removed.');

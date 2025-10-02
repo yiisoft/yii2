@@ -18,7 +18,7 @@ namespace yii\caching;
  *
  * A typical usage pattern of cache is like the following:
  *
- * ```php
+ * ```
  * $key = 'demo';
  * $data = $cache->get($key);
  * if ($data === false) {
@@ -29,7 +29,7 @@ namespace yii\caching;
  *
  * Because CacheInterface extends the [[\ArrayAccess]] interface, it can be used like an array. For example,
  *
- * ```php
+ * ```
  * $cache['foo'] = 'some data';
  * echo $cache['foo'];
  * ```
@@ -169,7 +169,7 @@ interface CacheInterface extends \ArrayAccess
      *
      * Usage example:
      *
-     * ```php
+     * ```
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
      *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {

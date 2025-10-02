@@ -112,7 +112,12 @@ class PhpManager extends BaseManager
      */
     public function getAssignments($userId)
     {
-        return isset($this->assignments[$userId]) ? $this->assignments[$userId] : [];
+        // using null as an array offset is deprecated in PHP `8.5`
+        if ($userId !== null && isset($this->assignments[$userId])) {
+            return $this->assignments[$userId];
+        }
+
+        return [];
     }
 
     /**

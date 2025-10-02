@@ -1,8 +1,40 @@
-on:
-  - pull_request
-  - push
-
+---
 name: ci-oracle
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".eslintignore"
+      - ".eslintrc"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlabs-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -10,10 +42,13 @@ concurrency:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-${{ matrix.os }}
+    name: PHP ${{ matrix.php }}-oci
 
     env:
-      EXTENSIONS: oci8, pdo, pdo_oci, ${{ matrix.php == '8.0' && 'xdebug-3.3.2' || 'xdebug' }}
+      COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
+      PHP_EXTENSIONS: curl, intl, oci8, pdo, pdo_oci
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: oci
       XDEBUG_MODE: coverage
 
     runs-on: ubuntu-latest
@@ -24,35 +59,31 @@ jobs:
 
     services:
       oci:
-          image: wnameless/oracle-xe-11g-r2:latest
-          ports:
-              - 1521:1521
-          options: --name=oci
+        image: wnameless/oracle-xe-11g-r2:latest
+        ports:
+          - 1521:1521
+        options: >-
+          --name=oci
 
     steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Checkout.
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: xdebug
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: date.timezone='UTC'
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
 
-      - name: Update composer.
-        run: composer self-update
-
-      - name: Install dependencies with composer.
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run Oracle tests with PHPUnit.
-        run: vendor/bin/phpunit --group oci --coverage-clover=coverage.xml --colors=always
-
-      - name: Upload coverage to Codecov.
-        uses: codecov/codecov-action@v4
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

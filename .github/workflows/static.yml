@@ -1,0 +1,80 @@
+---
+name: static analysis
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".eslintignore"
+      - ".eslintrc"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlabs-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpstan:
+    name: PHP ${{ matrix.php }}-PHPStan
+
+    env:
+      PHP_EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+
+    steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
+        with:
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
+          php-version: ${{ matrix.php }}
+          tools: cs2pr, pie
+
+      - name: Static analysis PHP 7.x.
+        if: matrix.php == '7.3' || matrix.php == '7.4'
+        run: vendor/bin/phpstan analyse --configuration=phpstan-7x.dist.neon --error-format=checkstyle | cs2pr
+
+      - name: Static analysis PHP 8.x.
+        if: matrix.php != '7.3' && matrix.php != '7.4'
+        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr

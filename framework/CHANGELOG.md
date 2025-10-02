@@ -3,6 +3,8 @@ Yii Framework 2 Change Log
 
 2.0.54 under development
 ------------------------
+
+- Bug #20542: Fix `Formatter` working with more complex ICU unit data structure (OndrejVasicek)
 - Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
 - Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
@@ -23,6 +25,25 @@ Yii Framework 2 Change Log
 - Bug #20494: Fix `PHPdoc`, add `PHPStan/Psalm` annotations for `authMethods` property in `CompositeAuth` class (terabytesoftw)
 - Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
 - Enh #20047: Throw exception when fixture not found rather than ignoring (borgou)
+- Enh #20505: `ArrayDataProvider` key handling with flexible path support (fetus-hina)
+- Bug #20508: Fix PHPDoc, add PHPStan/Psalm annotations for `yii\web\CookieCollection::getIterator`. Add missing `@property` annotation in `yii\base\Model` (max-s-lab)
+- Bug #20513: Fix code examples in PHPDoc (max-s-lab)
+- Enh #20514: Add `@property` annotations for `yii\console\Controller` (max-s-lab)
+- Bug #20515: Fix `@param` annotations in `BetweenColumnsCondition`, `InCondition` and `LikeCondition` (max-s-lab)
+- Bug #20516: Fix `@template` annotations in `ActiveRecord` (max-s-lab)
+- Bug #19506: Fix `@property` annotations in `yii\console\widgets\Table`, `yii\di\Container` and `yii\web\Session` (max-s-lab)
+- Enh #20525: Add `@template` annotations for all actions (max-s-lab)
+- Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (max-s-lab)
+- Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (max-s-lab)
+- Bug #20532: Add missing `return` statements in `CacheController::actionFlushSchema`, `FixtureController::actionUnload`, `HelpController::actionIndex` and `ServeController::actionIndex` (max-s-lab)
+- Bug #19655: Fix `LinkPager::getPageRange` when `maxButtons` is 2 (max-s-lab)
+- Enh #20539: Update minimum PHP version requirement from `7.3` to `7.4` (terabytesoftw)
+- Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
+- Bug #20548: Fix PHP `8.5` `null` array offset deprecation warnings (terabytesoftw)
+- Enh #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (max-s-lab)
+- Bug #20570: Fix `@var` annotation for `UrlManager::$cache` (max-s-lab)
+- Bug #20571: Fix `@var` annotation for `yii\web\Response::$stream` (max-s-lab)
+
 
 2.0.53 June 27, 2025
 --------------------

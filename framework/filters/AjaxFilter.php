@@ -15,7 +15,7 @@ use yii\web\Request;
 /**
  * AjaxFilter allow to limit access only for ajax requests.
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [

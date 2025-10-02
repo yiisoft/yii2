@@ -436,7 +436,7 @@ class ReleaseController extends Controller
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('updating mimetype magic file and mime aliases...', Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"], ["$frameworkPath/helpers/mimeAliases.php"]);
+        $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
@@ -1032,8 +1032,8 @@ class ReleaseController extends Controller
         return $versions;
     }
 
-    const MINOR = 'minor';
-    const PATCH = 'patch';
+    public const MINOR = 'minor';
+    public const PATCH = 'patch';
 
     protected function getNextVersions(array $versions, $type)
     {

@@ -21,7 +21,7 @@ use Yii;
  * with user input values automatically according to their names.
  * For example, if the `run()` method is declared as follows:
  *
- * ```php
+ * ```
  * public function run($id, $type = 'book') { ... }
  * ```
  *
@@ -30,13 +30,15 @@ use Yii;
  *
  * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
  *
- * @template T of Controller
  * @property-read string $uniqueId The unique ID of this action among the whole application.
- * @phpstan-property T $controller
- * @psalm-property T $controller
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ *
+ * @phpstan-property T $controller
+ * @psalm-property T $controller
  */
 class Action extends Component
 {

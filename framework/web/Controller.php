@@ -52,7 +52,10 @@ class Controller extends \yii\base\Controller
      */
     public function renderAjax($view, $params = [])
     {
-        return $this->getView()->renderAjax($view, $params, $this);
+        /** @var View */
+        $viewComponent = $this->getView();
+
+        return $viewComponent->renderAjax($view, $params, $this);
     }
 
     /**
@@ -63,7 +66,7 @@ class Controller extends \yii\base\Controller
      * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
      * be formatted. A common usage will be:
      *
-     * ```php
+     * ```
      * return $this->asJson($data);
      * ```
      *
@@ -89,7 +92,7 @@ class Controller extends \yii\base\Controller
      * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
      * be formatted. A common usage will be:
      *
-     * ```php
+     * ```
      * return $this->asXml($data);
      * ```
      *
@@ -346,7 +349,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use it in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and redirect to login page
      * return $this->redirect(['login']);
      * ```
@@ -377,7 +380,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use this method in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and redirect to home page
      * return $this->goHome();
      * ```
@@ -394,7 +397,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use this method in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and redirect to last visited page
      * return $this->goBack();
      * ```
@@ -418,7 +421,7 @@ class Controller extends \yii\base\Controller
      *
      * You can use it in an action by returning the [[Response]] directly:
      *
-     * ```php
+     * ```
      * // stop executing this action and refresh the current page
      * return $this->refresh();
      * ```

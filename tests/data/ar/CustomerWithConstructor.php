@@ -1,11 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\ar;
+
+use ReflectionClass;
 
 /**
  * CustomerWithConstructor.
@@ -40,11 +45,11 @@ class CustomerWithConstructor extends ActiveRecord
 
     public static function instantiate($row)
     {
-        return (new \ReflectionClass(static::className()))->newInstanceWithoutConstructor();
+        return (new ReflectionClass(static::class))->newInstanceWithoutConstructor();
     }
 
     public function getProfile()
     {
-        return $this->hasOne(ProfileWithConstructor::className(), ['id' => 'profile_id']);
+        return $this->hasOne(ProfileWithConstructor::class, ['id' => 'profile_id']);
     }
 }

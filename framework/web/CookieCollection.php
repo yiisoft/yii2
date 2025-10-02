@@ -52,7 +52,10 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns an iterator for traversing the cookies in the collection.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return ArrayIterator<string, Cookie> an iterator for traversing the cookies in the collection.
+     * @return ArrayIterator an iterator for traversing the cookies in the collection.
+     *
+     * @phpstan-return ArrayIterator<string, Cookie>
+     * @psalm-return ArrayIterator<string, Cookie>
      */
     #[\ReturnTypeWillChange]
     public function getIterator()
@@ -113,19 +116,27 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      */
     public function has($name)
     {
-        return isset($this->_cookies[$name]) && $this->_cookies[$name]->value !== ''
-            && ($this->_cookies[$name]->expire === null
-                || $this->_cookies[$name]->expire === 0
-                || (
-                    (is_string($this->_cookies[$name]->expire) && strtotime($this->_cookies[$name]->expire) >= time())
-                    || (
-                        interface_exists('\\DateTimeInterface')
-                        && $this->_cookies[$name]->expire instanceof \DateTimeInterface
-                        && $this->_cookies[$name]->expire->getTimestamp() >= time()
-                    )
-                    || $this->_cookies[$name]->expire >= time()
-                )
-            );
+        if (!isset($this->_cookies[$name]) || $this->_cookies[$name]->value === '') {
+            return false;
+        }
+
+        $expire = $this->_cookies[$name]->expire;
+
+        if ($expire === null || $expire === 0) {
+            return true;
+        }
+
+        $currentTime = time();
+
+        if (is_numeric($expire)) {
+            return (int) $expire >= $currentTime;
+        }
+
+        if (is_string($expire)) {
+            return strtotime($expire) >= $currentTime;
+        }
+
+        return $expire->getTimestamp() >= $currentTime;
     }
 
     /**

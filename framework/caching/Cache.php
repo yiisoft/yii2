@@ -22,7 +22,7 @@ use yii\helpers\StringHelper;
  *
  * A typical usage pattern of cache is like the following:
  *
- * ```php
+ * ```
  * $key = 'demo';
  * $data = $cache->get($key);
  * if ($data === false) {
@@ -33,7 +33,7 @@ use yii\helpers\StringHelper;
  *
  * Because Cache implements the [[\ArrayAccess]] interface, it can be used like an array. For example,
  *
- * ```php
+ * ```
  * $cache['foo'] = 'some data';
  * echo $cache['foo'];
  * ```
@@ -576,7 +576,7 @@ abstract class Cache extends Component implements CacheInterface
      *
      * Usage example:
      *
-     * ```php
+     * ```
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
      *     return $cache->getOrSet(['top-n-products', 'n' => $count], function () use ($count) {

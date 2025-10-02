@@ -17,7 +17,7 @@ use yii\base\InvalidArgumentException;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * $tokenizer = new SqlTokenizer("SELECT * FROM user WHERE id = 1");
  * $root = $tokeinzer->tokenize();
  * $sqlTokens = $root->getChildren();

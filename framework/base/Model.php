@@ -37,15 +37,28 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
+ * @property-read array $errors Errors for all attributes. This is a two-dimensional
+ * array of errors for all attributes, similar to the following:
+ *
+ * ```
+ * [
+ *     'username' => [
+ *         'Username is required.',
+ *         'Username must contain only word characters.',
+ *     ],
+ *     'email' => [
+ *         'Email address is invalid.',
+ *     ]
+ * ]
+ * ```
+ *
+ * Empty array if no errors.
  * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]].
  * @property array $attributes Attribute values (name => value).
- * @property-read array $errors Errors for all attributes or the specified attribute. Empty array is returned
- * if no error. See [[getErrors()]] for detailed description. Note that when returning errors for all attributes,
- * the result is a two-dimensional array, like the following: ```php [ 'username' => [ 'Username is required.',
- * 'Username must contain only word characters.', ], 'email' => [ 'Email address is invalid.', ] ] ``` .
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
  * values are the corresponding error messages. An empty array will be returned if there is no error.
+ * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
  * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
  * model.
@@ -70,16 +83,16 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * The name of the default scenario.
      */
-    const SCENARIO_DEFAULT = 'default';
+    public const SCENARIO_DEFAULT = 'default';
     /**
      * @event ModelEvent an event raised at the beginning of [[validate()]]. You may set
      * [[ModelEvent::isValid]] to be false to stop the validation.
      */
-    const EVENT_BEFORE_VALIDATE = 'beforeValidate';
+    public const EVENT_BEFORE_VALIDATE = 'beforeValidate';
     /**
      * @event Event an event raised at the end of [[validate()]]
      */
-    const EVENT_AFTER_VALIDATE = 'afterValidate';
+    public const EVENT_AFTER_VALIDATE = 'afterValidate';
 
     /**
      * @var array validation errors (attribute name => array of errors)
@@ -103,7 +116,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * Each rule is an array with the following structure:
      *
-     * ```php
+     * ```
      * [
      *     ['attribute1', 'attribute2'],
      *     'validator type',
@@ -125,7 +138,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * A validator can be either an object of a class extending [[Validator]], or a model class method
      * (called *inline validator*) that has the following signature:
      *
-     * ```php
+     * ```
      * // $params refers to validation parameters given in the rule
      * function validatorName($attribute, $params)
      * ```
@@ -140,7 +153,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * Below are some examples:
      *
-     * ```php
+     * ```
      * [
      *     // built-in "required" validator
      *     [['username', 'password'], 'required'],
@@ -175,7 +188,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * An active attribute is one that is subject to validation in the current scenario.
      * The returned array should be in the following format:
      *
-     * ```php
+     * ```
      * [
      *     'scenario1' => ['attribute11', 'attribute12', ...],
      *     'scenario2' => ['attribute21', 'attribute22', ...],
@@ -430,7 +443,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * manipulate it by inserting or removing validators (useful in model behaviors).
      * For example,
      *
-     * ```php
+     * ```
      * $model->validators[] = $newValidator;
      * ```
      *
@@ -584,10 +597,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns the errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * See [[getErrors()]] for detailed description.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
-     * ```php
+     * ```
      * [
      *     'username' => [
      *         'Username is required.',
@@ -870,7 +882,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * This method provides a convenient shortcut for:
      *
-     * ```php
+     * ```
      * if (isset($_POST['FormName'])) {
      *     $model->attributes = $_POST['FormName'];
      *     if ($model->save()) {
@@ -881,7 +893,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * which, with `load()` can be written as:
      *
-     * ```php
+     * ```
      * if ($model->load($_POST) && $model->save()) {
      *     // handle success
      * }
@@ -988,7 +1000,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * the corresponding field definition which can be either an object property name or a PHP callable
      * returning the corresponding field value. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($model, $field) {
      *     // return field value
      * }
@@ -1002,7 +1014,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * - `fullName`: the field name is `fullName`. Its value is obtained by concatenating `first_name`
      *   and `last_name`.
      *
-     * ```php
+     * ```
      * return [
      *     'email',
      *     'firstName' => 'first_name',

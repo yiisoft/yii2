@@ -23,7 +23,7 @@ use yii\base\InvalidConfigException;
  *
  * The following example shows how to configure a DI container with Instance:
  *
- * ```php
+ * ```
  * $container = new \yii\di\Container;
  * $container->set('cache', [
  *     'class' => 'yii\caching\DbCache',
@@ -37,7 +37,7 @@ use yii\base\InvalidConfigException;
  *
  * And the following example shows how a class retrieves a component from a service locator:
  *
- * ```php
+ * ```
  * class DbCache extends Cache
  * {
  *     public $db = 'db';
@@ -97,7 +97,7 @@ class Instance
      *
      * For example,
      *
-     * ```php
+     * ```
      * use yii\db\Connection;
      *
      * // returns Yii::$app->db

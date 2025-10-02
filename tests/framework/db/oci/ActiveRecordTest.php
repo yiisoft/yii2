@@ -8,9 +8,7 @@
 namespace yiiunit\framework\db\oci;
 
 use yii\db\ActiveQuery;
-use yii\db\Expression;
 use yiiunit\data\ar\BitValues;
-use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\data\ar\DefaultMultiplePk;
 use yiiunit\data\ar\Order;

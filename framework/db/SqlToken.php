@@ -22,14 +22,14 @@ use yii\base\BaseObject;
  */
 class SqlToken extends BaseObject implements \ArrayAccess
 {
-    const TYPE_CODE = 0;
-    const TYPE_STATEMENT = 1;
-    const TYPE_TOKEN = 2;
-    const TYPE_PARENTHESIS = 3;
-    const TYPE_KEYWORD = 4;
-    const TYPE_OPERATOR = 5;
-    const TYPE_IDENTIFIER = 6;
-    const TYPE_STRING_LITERAL = 7;
+    public const TYPE_CODE = 0;
+    public const TYPE_STATEMENT = 1;
+    public const TYPE_TOKEN = 2;
+    public const TYPE_PARENTHESIS = 3;
+    public const TYPE_KEYWORD = 4;
+    public const TYPE_OPERATOR = 5;
+    public const TYPE_IDENTIFIER = 6;
+    public const TYPE_STRING_LITERAL = 7;
 
     /**
      * @var int token type. It has to be one of the following constants:
@@ -202,7 +202,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
      *
      * Usage Example:
      *
-     * ```php
+     * ```
      * $patternToken = (new \yii\db\sqlite\SqlTokenizer('SELECT any FROM any'))->tokenize();
      * if ($sqlToken->matches($patternToken, 0, $firstMatchIndex, $lastMatchIndex)) {
      *     // ...

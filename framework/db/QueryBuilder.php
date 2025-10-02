@@ -23,7 +23,10 @@ use yii\helpers\StringHelper;
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
  * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
- * ```php ['LIKE' => yii\db\condition\LikeCondition::class] ``` .
+ *
+ * ```
+ * ['LIKE' => yii\db\condition\LikeCondition::class]
+ * ```
  * @property-write string[] $expressionBuilders Array of builders that should be merged with the pre-defined
  * ones in [[expressionBuilders]] property.
  *
@@ -35,7 +38,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * The prefix for automatically generated query binding parameters.
      */
-    const PARAM_PREFIX = ':qp';
+    public const PARAM_PREFIX = ':qp';
 
     /**
      * @var Connection the database connection.
@@ -62,7 +65,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * @var array map of condition aliases to condition classes. For example:
      *
-     * ```php
+     * ```
      * return [
      *     'LIKE' => yii\db\condition\LikeCondition::class,
      * ];
@@ -82,7 +85,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *    yii\db\Expression::class => yii\db\ExpressionBuilder::class
      * ]
@@ -200,7 +203,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string[] $classes map of condition aliases to condition classes. For example:
      *
-     * ```php
+     * ```
      * ['LIKE' => yii\db\condition\LikeCondition::class]
      * ```
      *
@@ -329,7 +332,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Creates an INSERT SQL statement.
      * For example,
-     * ```php
+     * ```
      * $sql = $queryBuilder->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
@@ -430,7 +433,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
@@ -503,7 +506,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
      *     'url' => 'https://example.com/', // url is unique
@@ -610,7 +613,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $params = [];
      * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
      * ```
@@ -665,7 +668,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->delete('user', 'status = 0');
      * ```
      *
@@ -699,7 +702,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->createTable('user', [
      *  'id' => 'pk',
      *  'name' => 'string',

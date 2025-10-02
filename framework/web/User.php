@@ -38,7 +38,7 @@ use yii\rbac\CheckAccessInterface;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ```php
+ * ```
  * 'user' => [
  *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
  *     'enableAutoLogin' => true,
@@ -64,10 +64,10 @@ use yii\rbac\CheckAccessInterface;
  */
 class User extends Component
 {
-    const EVENT_BEFORE_LOGIN = 'beforeLogin';
-    const EVENT_AFTER_LOGIN = 'afterLogin';
-    const EVENT_BEFORE_LOGOUT = 'beforeLogout';
-    const EVENT_AFTER_LOGOUT = 'afterLogout';
+    public const EVENT_BEFORE_LOGIN = 'beforeLogin';
+    public const EVENT_AFTER_LOGIN = 'afterLogin';
+    public const EVENT_BEFORE_LOGOUT = 'beforeLogout';
+    public const EVENT_AFTER_LOGOUT = 'afterLogout';
 
     /**
      * @var string the class name of the [[identity]] object.
@@ -92,7 +92,7 @@ class User extends Component
      * The first element of the array should be the route to the login action, and the rest of
      * the name-value pairs are GET parameters used to construct the login URL. For example,
      *
-     * ```php
+     * ```
      * ['site/login', 'ref' => 1]
      * ```
      *
@@ -430,7 +430,7 @@ class User extends Component
      * The first element of the array should be the route, and the rest of
      * the name-value pairs are GET parameters used to construct the URL. For example,
      *
-     * ```php
+     * ```
      * ['admin/index', 'ref' => 1]
      * ```
      */
@@ -626,7 +626,10 @@ class User extends Component
         $data = json_decode($value, true);
         if (is_array($data) && count($data) == 3) {
             list($id, $authKey, $duration) = $data;
-            /** @var IdentityInterface $class */
+            /**
+             * @var IdentityInterface
+             * @phpstan-var class-string<IdentityInterface>
+             */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             if ($identity !== null) {

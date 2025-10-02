@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
  * To define your own URL parsing and creation logic you can extend from this class
  * and add it to [[UrlManager::rules]] like this:
  *
- * ```php
+ * ```
  * 'rules' => [
  *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
@@ -35,37 +35,37 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     /**
      * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
-    const PARSING_ONLY = 1;
+    public const PARSING_ONLY = 1;
     /**
      * Set [[mode]] with this value to mark that this rule is for URL creation only.
      */
-    const CREATION_ONLY = 2;
+    public const CREATION_ONLY = 2;
     /**
      * Represents the successful URL generation by last [[createUrl()]] call.
      * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_SUCCESS = 0;
+    public const CREATE_STATUS_SUCCESS = 0;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because rule does not support
      * creating URLs.
      * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_PARSING_ONLY = 1;
+    public const CREATE_STATUS_PARSING_ONLY = 1;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched route.
      * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_ROUTE_MISMATCH = 2;
+    public const CREATE_STATUS_ROUTE_MISMATCH = 2;
     /**
      * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched
      * or missing parameters.
      * @see createStatus
      * @since 2.0.12
      */
-    const CREATE_STATUS_PARAMS_MISMATCH = 4;
+    public const CREATE_STATUS_PARAMS_MISMATCH = 4;
 
     /**
      * @var string|null the name of this rule. If not set, it will use [[pattern]] as the name.

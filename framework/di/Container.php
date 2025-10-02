@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
  *
  * Below is an example of using Container:
  *
- * ```php
+ * ```
  * namespace app\models;
  *
  * use yii\base\BaseObject;
@@ -94,9 +94,11 @@ use yii\helpers\ArrayHelper;
  *
  * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
  *
- * @property-read array $definitions The list of the object definitions or the loaded shared objects (type or
- * ID => definition or instance).
+ * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
+ * definition or instance).
  * @property-write bool $resolveArrays Whether to attempt to resolve elements in array dependencies.
+ * @property-write array $singletons Array of singleton definitions. See [[setDefinitions()]] for allowed
+ * formats of array.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -212,7 +214,7 @@ class Container extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * // register a class name as is. This can be skipped.
      * $container->set('yii\db\Connection');
      *
@@ -616,7 +618,7 @@ class Container extends Component
      *
      * For example, the following callback may be invoked using the Container to resolve the formatter dependency:
      *
-     * ```php
+     * ```
      * $formatString = function($string, \yii\i18n\Formatter $formatter) {
      *    // ...
      * }
@@ -673,6 +675,7 @@ class Container extends Component
                 $class = $param->getType();
                 if ($class instanceof \ReflectionUnionType || (PHP_VERSION_ID >= 80100 && $class instanceof \ReflectionIntersectionType)) {
                     $isClass = false;
+                    /** @var ReflectionNamedType $type */
                     foreach ($class->getTypes() as $type) {
                         if (!$type->isBuiltin()) {
                             $class = $type;
@@ -681,6 +684,7 @@ class Container extends Component
                         }
                     }
                 } else {
+                    /** @var ReflectionNamedType|null $class */
                     $isClass = $class !== null && !$class->isBuiltin();
                 }
             } else {
@@ -746,7 +750,7 @@ class Container extends Component
      *    as the second argument `$definition`.
      *
      * Example:
-     * ```php
+     * ```
      * $container->setDefinitions([
      *     'yii\web\Request' => 'app\components\Request',
      *     'yii\web\Response' => [
@@ -768,7 +772,7 @@ class Container extends Component
      *    second argument `$definition`, the second one — as `$params`.
      *
      * Example:
-     * ```php
+     * ```
      * $container->setDefinitions([
      *     'foo\Bar' => [
      *          ['class' => 'app\Bar'],

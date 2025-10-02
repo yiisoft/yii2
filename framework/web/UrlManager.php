@@ -23,7 +23,7 @@ use yii\helpers\Url;
  * You can modify its configuration by adding an array to your application config under `components`
  * as it is shown in the following example:
  *
- * ```php
+ * ```
  * 'urlManager' => [
  *     'enablePrettyUrl' => true,
  *     'rules' => [
@@ -86,7 +86,7 @@ class UrlManager extends Component
      *
      * Here is an example configuration for RESTful CRUD controller:
      *
-     * ```php
+     * ```
      * [
      *     'dashboard' => 'site/index',
      *
@@ -119,7 +119,7 @@ class UrlManager extends Component
      */
     public $routeParam = 'r';
     /**
-     * @var CacheInterface|array|string|bool the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string|bool|null the cache object or the application component ID of the cache object.
      * This can also be an array that is used to create a [[CacheInterface]] instance in case you do not want to use
      * an application component.
      * Compiled URL rules will be cached through this cache object, if it is available.
@@ -144,7 +144,7 @@ class UrlManager extends Component
      * If you wish to enable URL normalization, you should configure this property manually.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\web\UrlNormalizer',
      *     'collapseSlashes' => true,
@@ -385,7 +385,7 @@ class UrlManager extends Component
      * if you want to specify additional query parameters for the URL being created. The
      * array format must be:
      *
-     * ```php
+     * ```
      * // generates: /index.php?r=site%2Findex&param1=value1&param2=value2
      * ['site/index', 'param1' => 'value1', 'param2' => 'value2']
      * ```
@@ -393,7 +393,7 @@ class UrlManager extends Component
      * If you want to create a URL with an anchor, you can use the array format with a `#` parameter.
      * For example,
      *
-     * ```php
+     * ```
      * // generates: /index.php?r=site%2Findex&param1=value1#name
      * ['site/index', 'param1' => 'value1', '#' => 'name']
      * ```

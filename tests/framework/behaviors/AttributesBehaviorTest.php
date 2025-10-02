@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\behaviors;
 
@@ -105,7 +108,7 @@ class AttributesBehaviorTest extends TestCase
         $preserveNonEmptyValues,
         $name,
         $alias
-    ) {
+    ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -150,7 +153,7 @@ class AttributesBehaviorTest extends TestCase
         $order,
         $name,
         $alias
-    ) {
+    ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->order = $order;
         $model->name = $name;
@@ -179,7 +182,7 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
     {
         return [
             'attributes' => [
-                'class' => AttributesBehavior::className(),
+                'class' => AttributesBehavior::class,
                 'attributes' => [
                     'alias' => [
                         self::EVENT_BEFORE_VALIDATE => function ($event) {

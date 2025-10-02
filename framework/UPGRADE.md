@@ -51,6 +51,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.53
+-----------------------
+
+* Raised minimum supported PHP version to `7.4`.
+* Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
+will need to replace them with alternative caching solutions.
+
 Upgrade from Yii 2.0.52
 -----------------------
 

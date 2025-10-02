@@ -62,7 +62,7 @@ class Application extends \yii\base\Application
     /**
      * The option name for specifying the application configuration file path.
      */
-    const OPTION_APPCONFIG = 'appconfig';
+    public const OPTION_APPCONFIG = 'appconfig';
 
     /**
      * @var string the default route of this application. Defaults to 'help',
@@ -164,7 +164,7 @@ class Application extends \yii\base\Application
      * For example, to run `public function actionTest($a, $b)` assuming that the controller has options the following
      * code should be used:
      *
-     * ```php
+     * ```
      * \Yii::$app->runAction('controller/test', ['option' => 'value', $a, $b]);
      * ```
      *

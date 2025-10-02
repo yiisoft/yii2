@@ -169,6 +169,8 @@ class CacheController extends Controller
         } catch (\Exception $e) {
             $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
         }
+
+        return ExitCode::OK;
     }
 
     /**

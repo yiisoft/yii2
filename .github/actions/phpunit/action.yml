@@ -1,0 +1,129 @@
+---
+name: PHPUnit Test Runner.
+description: Run PHPUnit tests with coverage and configurable options.
+
+inputs:
+  additional-args:
+    description: Additional PHPUnit arguments.
+    default: "--log-junit junit.xml --verbose"
+    required: false
+    type: string
+  configuration:
+    description: PHPUnit configuration file.
+    default: ""
+    required: false
+    type: string
+  coverage-driver:
+    description: Code coverage driver to use (pcov, xdebug, none).
+    default: none
+    required: false
+    type: string
+  coverage-file:
+    description: Coverage output file name.
+    default: coverage.xml
+    required: false
+    type: string
+  coverage-format:
+    description: Coverage report format (clover, html, xml).
+    default: clover
+    required: false
+    type: string
+  coverage-token:
+    description: Codecov token for uploading coverage.
+    default: ""
+    required: false
+    type: string
+  debug:
+    description: Display warnings in phpunit.
+    default: ""
+    required: false
+    type: string
+  exclude-group:
+    description: Exclude group from phpunit.
+    default: ""
+    required: false
+    type: string
+  group:
+    description: Include specific group in phpunit.
+    default: ""
+    required: false
+    type: string
+  path:
+    description: Path to PHPUnit executable.
+    default: vendor/bin/phpunit
+    required: false
+    type: string
+  test-suite:
+    description: Specific test suite to run.
+    default: ""
+    required: false
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Build PHPUnit command.
+      id: build-cmd
+      shell: bash
+      run: |
+        PATH_INPUT="${{ inputs.path }}"
+        CONFIG_INPUT="${{ inputs.configuration }}"
+        SUITE_INPUT="${{ inputs.test-suite }}"
+        GROUP_INPUT="${{ inputs.group }}"
+        EXCLUDE_GROUP_INPUT="${{ inputs.exclude-group }}"
+        DEBUG_INPUT="${{ inputs.debug }}"
+        ADDITIONAL_ARGS="${{ inputs.additional-args }}"
+        COVERAGE_DRIVER="${{ inputs.coverage-driver }}"
+        COVERAGE_FORMAT="${{ inputs.coverage-format }}"
+        COVERAGE_FILE="${{ inputs.coverage-file }}"
+
+        PHPUNIT_CMD="$PATH_INPUT --colors=always"
+
+        add_param() {
+          if [ -n "$2" ]; then
+            PHPUNIT_CMD="$PHPUNIT_CMD $1 $2"
+          fi
+        }
+
+        if [ -n "$COVERAGE_DRIVER" ] && [ "$COVERAGE_DRIVER" != "none" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD --coverage-$COVERAGE_FORMAT=$COVERAGE_FILE"
+        fi
+
+        add_param "--configuration" "$CONFIG_INPUT"
+        add_param "--testsuite" "$SUITE_INPUT"
+        add_param "--group" "$GROUP_INPUT"
+        add_param "--exclude-group" "$EXCLUDE_GROUP_INPUT"
+
+        if [ -n "$DEBUG_INPUT" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD $DEBUG_INPUT"
+        fi
+
+        if [ -n "$ADDITIONAL_ARGS" ]; then
+          PHPUNIT_CMD="$PHPUNIT_CMD $ADDITIONAL_ARGS"
+        fi
+
+        echo "command=$PHPUNIT_CMD" >> $GITHUB_OUTPUT
+        echo "PHPUnit command: $PHPUNIT_CMD"
+
+    - name: Run PHPUnit tests on Linux.
+      shell: bash
+      if: runner.os != 'Windows'
+      run: ${{ steps.build-cmd.outputs.command }}
+
+    - name: Run PHPUnit tests on Windows.
+      shell: pwsh
+      if: runner.os == 'Windows'
+      run: Invoke-Expression "${{ steps.build-cmd.outputs.command }}"
+
+    - name: Upload test results to Codecov.
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
+      uses: codecov/test-results-action@v1
+      with:
+        token: ${{ inputs.coverage-token }}
+
+    - name: Upload coverage to Codecov.
+      if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ inputs.coverage-token }}
+        file: ./${{ inputs.coverage-file }}

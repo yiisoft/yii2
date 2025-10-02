@@ -232,11 +232,12 @@ class FixtureController extends Controller
 
         $this->unloadFixtures($this->createFixtures($fixtures));
         $this->notifyUnloaded($fixtures);
+
+        return ExitCode::OK;
     }
 
     /**
      * Show help message.
-     * @param array $fixturesInput
      */
     private function printHelpMessage()
     {
@@ -496,7 +497,7 @@ class FixtureController extends Controller
      * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
      * if it is not prefixed it is considered as one to be loaded. Returns array:
      *
-     * ```php
+     * ```
      * [
      *     'apply' => [
      *         'User',

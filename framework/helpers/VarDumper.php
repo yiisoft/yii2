@@ -15,7 +15,7 @@ namespace yii\helpers;
  *
  * VarDumper can be used as follows,
  *
- * ```php
+ * ```
  * VarDumper::dump($var);
  * ```
  *
