@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #20518: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
 - Enh #20537: Enhance `label()` method in `ActiveField` with `tag` option and fix `labelOptions` for `checkbox`/`radio` (terabytesoftw)
 - Bug #20547: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
+- Bug #20573: Fix `checkbox`/`radio` label rendering when `enclosedByLabel` is `false` and raise code coverage `100%` in `ActiveField::class` (terabytesoftw)
 
 2.0.54 under development
 ------------------------
