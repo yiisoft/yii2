@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.54 under development
 ------------------------
+
 - Bug #20542: Fix `Formatter` working with more complex ICU unit data structure (OndrejVasicek)
 - Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
@@ -23,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #20489: Replace deprecated `strftime` with `date` in `YiiRequirementChecker` (max-s-lab)
 - Bug #20494: Fix `PHPdoc`, add `PHPStan/Psalm` annotations for `authMethods` property in `CompositeAuth` class (terabytesoftw)
 - Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
+- Enh #20047: Throw exception when fixture not found rather than ignoring (borgou)
 - Enh #20505: `ArrayDataProvider` key handling with flexible path support (fetus-hina)
 - Bug #20508: Fix PHPDoc, add PHPStan/Psalm annotations for `yii\web\CookieCollection::getIterator`. Add missing `@property` annotation in `yii\base\Model` (max-s-lab)
 - Bug #20513: Fix code examples in PHPDoc (max-s-lab)
@@ -147,7 +149,6 @@ Yii Framework 2 Change Log
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Enh #20171: Support JSON columns for MariaDB 10.4 or higher (@terabytesoftw)
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
-
 
 2.0.49.2 October 12, 2023
 -------------------------

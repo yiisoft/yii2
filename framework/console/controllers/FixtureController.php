@@ -483,6 +483,8 @@ class FixtureController extends Controller
                 $config[] = $fullClassName;
             } elseif (class_exists($fullClassName . 'Fixture')) {
                 $config[] = $fullClassName . 'Fixture';
+            } else {
+                throw new Exception('Neither fixture "' . $fullClassName . '" nor "' . $fullClassName . 'Fixture" was found.');
             }
         }
 
