@@ -42,12 +42,12 @@ use yii\base\InvalidConfigException;
 class OracleMutex extends DbMutex
 {
     /** available lock modes */
-    const MODE_X = 'X_MODE';
-    const MODE_NL = 'NL_MODE';
-    const MODE_S = 'S_MODE';
-    const MODE_SX = 'SX_MODE';
-    const MODE_SS = 'SS_MODE';
-    const MODE_SSX = 'SSX_MODE';
+    public const MODE_X = 'X_MODE';
+    public const MODE_NL = 'NL_MODE';
+    public const MODE_S = 'S_MODE';
+    public const MODE_SX = 'SX_MODE';
+    public const MODE_SS = 'SS_MODE';
+    public const MODE_SSX = 'SSX_MODE';
 
     /**
      * @var string lock mode to be used.

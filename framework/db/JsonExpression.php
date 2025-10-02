@@ -23,8 +23,8 @@ use yii\base\InvalidConfigException;
  */
 class JsonExpression implements ExpressionInterface, \JsonSerializable
 {
-    const TYPE_JSON = 'json';
-    const TYPE_JSONB = 'jsonb';
+    public const TYPE_JSON = 'json';
+    public const TYPE_JSONB = 'jsonb';
 
     /**
      * @var mixed the value to be encoded to JSON.

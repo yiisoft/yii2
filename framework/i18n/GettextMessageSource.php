@@ -29,8 +29,8 @@ use yii\base\InvalidArgumentException;
  */
 class GettextMessageSource extends MessageSource
 {
-    const MO_FILE_EXT = '.mo';
-    const PO_FILE_EXT = '.po';
+    public const MO_FILE_EXT = '.mo';
+    public const PO_FILE_EXT = '.po';
 
     /**
      * @var string base directory of messages files

@@ -22,36 +22,36 @@ use yii\base\Model;
 class BaseConsole
 {
     // foreground color control codes
-    const FG_BLACK = 30;
-    const FG_RED = 31;
-    const FG_GREEN = 32;
-    const FG_YELLOW = 33;
-    const FG_BLUE = 34;
-    const FG_PURPLE = 35;
-    const FG_CYAN = 36;
-    const FG_GREY = 37;
+    public const FG_BLACK = 30;
+    public const FG_RED = 31;
+    public const FG_GREEN = 32;
+    public const FG_YELLOW = 33;
+    public const FG_BLUE = 34;
+    public const FG_PURPLE = 35;
+    public const FG_CYAN = 36;
+    public const FG_GREY = 37;
     // background color control codes
-    const BG_BLACK = 40;
-    const BG_RED = 41;
-    const BG_GREEN = 42;
-    const BG_YELLOW = 43;
-    const BG_BLUE = 44;
-    const BG_PURPLE = 45;
-    const BG_CYAN = 46;
-    const BG_GREY = 47;
+    public const BG_BLACK = 40;
+    public const BG_RED = 41;
+    public const BG_GREEN = 42;
+    public const BG_YELLOW = 43;
+    public const BG_BLUE = 44;
+    public const BG_PURPLE = 45;
+    public const BG_CYAN = 46;
+    public const BG_GREY = 47;
     // fonts style control codes
-    const RESET = 0;
-    const NORMAL = 0;
-    const BOLD = 1;
-    const ITALIC = 3;
-    const UNDERLINE = 4;
-    const BLINK = 5;
-    const NEGATIVE = 7;
-    const CONCEALED = 8;
-    const CROSSED_OUT = 9;
-    const FRAMED = 51;
-    const ENCIRCLED = 52;
-    const OVERLINED = 53;
+    public const RESET = 0;
+    public const NORMAL = 0;
+    public const BOLD = 1;
+    public const ITALIC = 3;
+    public const UNDERLINE = 4;
+    public const BLINK = 5;
+    public const NEGATIVE = 7;
+    public const CONCEALED = 8;
+    public const CROSSED_OUT = 9;
+    public const FRAMED = 51;
+    public const ENCIRCLED = 52;
+    public const OVERLINED = 53;
 
 
     /**

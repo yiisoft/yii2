@@ -32,19 +32,19 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * @event Event an event that is triggered by [[beginPage()]].
      */
-    const EVENT_BEGIN_PAGE = 'beginPage';
+    public const EVENT_BEGIN_PAGE = 'beginPage';
     /**
      * @event Event an event that is triggered by [[endPage()]].
      */
-    const EVENT_END_PAGE = 'endPage';
+    public const EVENT_END_PAGE = 'endPage';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
      */
-    const EVENT_BEFORE_RENDER = 'beforeRender';
+    public const EVENT_BEFORE_RENDER = 'beforeRender';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right after it renders a view file.
      */
-    const EVENT_AFTER_RENDER = 'afterRender';
+    public const EVENT_AFTER_RENDER = 'afterRender';
 
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.

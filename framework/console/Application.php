@@ -62,7 +62,7 @@ class Application extends \yii\base\Application
     /**
      * The option name for specifying the application configuration file path.
      */
-    const OPTION_APPCONFIG = 'appconfig';
+    public const OPTION_APPCONFIG = 'appconfig';
 
     /**
      * @var string the default route of this application. Defaults to 'help',
