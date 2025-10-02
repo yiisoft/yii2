@@ -87,7 +87,6 @@ use yii\validators\IpValidator;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- * @SuppressWarnings(PHPMD.SuperGlobals)
  */
 class Request extends \yii\base\Request
 {
