@@ -70,7 +70,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * @param mixed $default the value to return in case the named header does not exist
      * @param bool $first whether to only return the first header of the specified name.
      * If false, all headers of the specified name will be returned.
-     * @return string|array|null the named header(s). If `$first` is true, a string will be returned;
+     * @return string|array|mixed the named header(s). If `$first` is true, a string will be returned;
      * If `$first` is false, an array will be returned.
      */
     public function get($name, $default = null, $first = true)
