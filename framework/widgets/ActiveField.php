@@ -650,8 +650,6 @@ class ActiveField extends Component
             $options = $this->generateLabel($options);
         }
 
-        $options = $enclosedByLabel ? $options : $this->generateLabel($options);
-
         $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 
         return $this;

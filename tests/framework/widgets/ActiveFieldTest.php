@@ -521,9 +521,6 @@ final class ActiveFieldTest extends \yiiunit\TestCase
 
     public function testHiddenInput(): void
     {
-        $expectedValue = <<<HTML
-        <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
-        HTML;
         $this->activeField->hiddenInput();
 
         $this->assertEqualsWithoutLE(
