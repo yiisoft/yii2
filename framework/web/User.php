@@ -64,10 +64,10 @@ use yii\rbac\CheckAccessInterface;
  */
 class User extends Component
 {
-    const EVENT_BEFORE_LOGIN = 'beforeLogin';
-    const EVENT_AFTER_LOGIN = 'afterLogin';
-    const EVENT_BEFORE_LOGOUT = 'beforeLogout';
-    const EVENT_AFTER_LOGOUT = 'afterLogout';
+    public const EVENT_BEFORE_LOGIN = 'beforeLogin';
+    public const EVENT_AFTER_LOGIN = 'afterLogin';
+    public const EVENT_BEFORE_LOGOUT = 'beforeLogout';
+    public const EVENT_AFTER_LOGOUT = 'afterLogout';
 
     /**
      * @var string the class name of the [[identity]] object.

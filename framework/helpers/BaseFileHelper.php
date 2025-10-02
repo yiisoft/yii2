@@ -24,11 +24,11 @@ use yii\base\InvalidConfigException;
  */
 class BaseFileHelper
 {
-    const PATTERN_NODIR = 1;
-    const PATTERN_ENDSWITH = 4;
-    const PATTERN_MUSTBEDIR = 8;
-    const PATTERN_NEGATIVE = 16;
-    const PATTERN_CASE_INSENSITIVE = 32;
+    public const PATTERN_NODIR = 1;
+    public const PATTERN_ENDSWITH = 4;
+    public const PATTERN_MUSTBEDIR = 8;
+    public const PATTERN_NEGATIVE = 16;
+    public const PATTERN_CASE_INSENSITIVE = 32;
 
     /**
      * @var string the path (or alias) of a PHP file containing MIME type information.

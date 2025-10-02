@@ -7,7 +7,6 @@
 
 namespace yii\captcha;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Json;

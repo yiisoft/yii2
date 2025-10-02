@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
+use ReflectionClass;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
@@ -110,7 +114,7 @@ class ActionFilterTest extends TestCase
 
         /** @var ActionFilter $filter */
         $filter = Yii::createObject($filterClass);
-        $reflection = new \ReflectionClass($filter);
+        $reflection = new ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
         $controller = new \yii\web\Controller('test', Yii::$app);
@@ -143,7 +147,7 @@ class ActionFilterTest extends TestCase
         $this->mockWebApplication();
 
         $filter = new ActionFilter();
-        $reflection = new \ReflectionClass($filter);
+        $reflection = new ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
         $controller = new \yii\web\Controller('test', Yii::$app);

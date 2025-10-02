@@ -1,8 +1,41 @@
-on:
-  - pull_request
-  - push
-
+---
 name: ci-pgsql
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".codeclimate.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".eslintignore"
+      - ".eslintrc"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlabs-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,9 +46,10 @@ jobs:
     name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
 
     env:
-      DEFAULT_COMPOSER_FLAGS: --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-      EXTENSIONS: curl, intl, pdo, pdo_pgsql
-      PHPUNIT_COMMAND: --group pgsql --colors=always ${{ matrix.php == '8.1' && '--coverage-clover=coverage.xml' || '' }}
+      COVERAGE_DRIVER: ${{ matrix.php == 8.1 && 'pcov' || 'none' }}
+      PHP_EXTENSIONS: apcu, curl, intl, pdo, pdo_pgsql
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: pgsql
 
     runs-on: ubuntu-latest
 
@@ -34,33 +68,33 @@ jobs:
           POSTGRES_DB: yiitest
         ports:
           - 5432:5432
-        options: --name=postgres --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --name=postgres
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-retries=3
+          --health-timeout=5s
+          --mount type=tmpfs,destination=/var/lib/postgresql/data
 
     steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
       - name: Checkout.
         uses: actions/checkout@v5
 
-      - name: Install PHP with extensions.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: pcov
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: date.timezone='UTC'
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pie
 
-      - name: Update composer.
-        run: composer self-update
-
-      - name: Install dependencies with composer.
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run Pgsql tests with PHPUnit.
-        run: vendor/bin/phpunit ${{ env.PHPUNIT_COMMAND }}
-
-      - name: Upload coverage to Codecov.
-        if: matrix.php == '8.1'
-        uses: codecov/codecov-action@v4
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          file: ./coverage.xml
-          token: ${{ secrets.CODECOV_TOKEN }}
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

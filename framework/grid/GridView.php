@@ -49,9 +49,9 @@ use yii\widgets\BaseListView;
  */
 class GridView extends BaseListView
 {
-    const FILTER_POS_HEADER = 'header';
-    const FILTER_POS_FOOTER = 'footer';
-    const FILTER_POS_BODY = 'body';
+    public const FILTER_POS_HEADER = 'header';
+    public const FILTER_POS_FOOTER = 'footer';
+    public const FILTER_POS_BODY = 'body';
 
     /**
      * @var string the default data column class if the class name is not explicitly specified when configuring a data column.

@@ -38,7 +38,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * The prefix for automatically generated query binding parameters.
      */
-    const PARAM_PREFIX = ':qp';
+    public const PARAM_PREFIX = ':qp';
 
     /**
      * @var Connection the database connection.

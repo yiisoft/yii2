@@ -56,27 +56,27 @@ class Formatter extends Component
     /**
      * @since 2.0.13
      */
-    const UNIT_SYSTEM_METRIC = 'metric';
+    public const UNIT_SYSTEM_METRIC = 'metric';
     /**
      * @since 2.0.13
      */
-    const UNIT_SYSTEM_IMPERIAL = 'imperial';
+    public const UNIT_SYSTEM_IMPERIAL = 'imperial';
     /**
      * @since 2.0.13
      */
-    const FORMAT_WIDTH_LONG = 'long';
+    public const FORMAT_WIDTH_LONG = 'long';
     /**
      * @since 2.0.13
      */
-    const FORMAT_WIDTH_SHORT = 'short';
+    public const FORMAT_WIDTH_SHORT = 'short';
     /**
      * @since 2.0.13
      */
-    const UNIT_LENGTH = 'length';
+    public const UNIT_LENGTH = 'length';
     /**
      * @since 2.0.13
      */
-    const UNIT_WEIGHT = 'mass';
+    public const UNIT_WEIGHT = 'mass';
 
     /**
      * @var string|null the text to be displayed when formatting a `null` value.
@@ -1679,7 +1679,7 @@ class Formatter extends Component
 
         $message = [];
         foreach ($unitBundle as $key => $value) {
-            if ($key === 'dnam') {
+            if ($key === 'dnam' || $key === 'case') {
                 continue;
             }
             $message[] = "$key{{$value}}";

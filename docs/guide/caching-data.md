@@ -131,7 +131,6 @@ Yii supports a wide range of cache storage. The following is a summary:
 * [[yii\caching\WinCache]]: uses PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
   ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
 
-
 > Tip: You may use different cache storage in the same application. A common strategy is to use memory-based
   cache storage to store data that is small but constantly used (e.g. statistical data), and use file-based
   or database-based cache storage to store data that is big and less frequently used (e.g. page content).

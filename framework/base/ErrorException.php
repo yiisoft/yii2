@@ -25,7 +25,7 @@ class ErrorException extends \ErrorException
      * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
      * @since 2.0.6
      */
-    const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
+    public const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
 
 
     /**

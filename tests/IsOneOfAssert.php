@@ -1,18 +1,22 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit;
 
+use PHPUnit\Framework\Constraint\Constraint;
 use yii\helpers\VarDumper;
 
 /**
  * IsOneOfAssert asserts that the value is one of the expected values.
  */
-class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
+class IsOneOfAssert extends Constraint
 {
     /** @psalm-param string[] $allowedValues */
     public function __construct(private array $allowedValues)

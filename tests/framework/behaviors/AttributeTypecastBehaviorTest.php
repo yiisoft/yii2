@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\behaviors;
 
@@ -83,7 +86,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('callback: foo', $model->callback);
     }
 
-    public function testTypecastEnum()
+    public function testTypecastEnum(): void
     {
         $model = new ActiveRecordAttributeTypecastWithEnum();
 
@@ -97,7 +100,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecastEnum
      */
-    public function testTypecastEnumFromString()
+    public function testTypecastEnumFromString(): void
     {
         $model = new ActiveRecordAttributeTypecastWithEnum();
         $model->status = 'active'; // Same as StatusTypeString::ACTIVE->value;
@@ -110,7 +113,7 @@ class AttributeTypecastBehaviorTest extends TestCase
     /**
      * @depends testTypecastEnum
      */
-    public function testTypecastEnumFailWithInvalidValue()
+    public function testTypecastEnumFailWithInvalidValue(): void
     {
         $model = new ActiveRecordAttributeTypecastWithEnum();
         $model->status = 'invalid';
@@ -389,7 +392,7 @@ class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
     {
         return [
             'attributeTypecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'status' => StatusTypeString::class,
                 ],

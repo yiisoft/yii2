@@ -1,12 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
+use yii\base\InvalidArgumentException;
 use yii\base\Security;
 use yiiunit\TestCase;
 
@@ -818,7 +822,7 @@ TEXT;
      */
     public function testRandomKeyInvalidInput(int|string|array $input): void
     {
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->security->generateRandomKey($input);
     }
@@ -1119,7 +1123,7 @@ TEXT;
 
     public function testMaskingInvalidStrings(): void
     {
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('First parameter ($length) must be greater than 0');
 
         $this->security->maskToken('');
