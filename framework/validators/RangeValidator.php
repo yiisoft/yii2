@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,7 +11,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Json;
+use yii\jquery\validators\RangeValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * RangeValidator validates that the attribute value is among a list of values.
@@ -25,8 +27,8 @@ use yii\helpers\Json;
 class RangeValidator extends Validator
 {
     /**
-     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
-     * such a list. The signature of the anonymous function should be as follows,
+     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous
+     * function that returns such a list. The signature of the anonymous function should be as follows,
      *
      * ```
      * function($model, $attribute) {
@@ -49,7 +51,10 @@ class RangeValidator extends Validator
      * @var bool whether to allow array type attribute.
      */
     public $allowArray = false;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -66,6 +71,11 @@ class RangeValidator extends Validator
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is invalid.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => RangeValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -107,14 +117,11 @@ class RangeValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        if ($this->range instanceof \Closure) {
-            $this->range = call_user_func($this->range, $model, $attribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.range(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -122,24 +129,10 @@ class RangeValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $range = [];
-        foreach ($this->range as $value) {
-            $range[] = (string) $value;
-        }
-        $options = [
-            'range' => $range,
-            'not' => $this->not,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->allowArray) {
-            $options['allowArray'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        return $options;
+        return [];
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,6 +17,20 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockWebApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
+    }
+
     public function testParseAcceptHeader(): void
     {
         $request = new Request();

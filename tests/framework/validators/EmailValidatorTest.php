@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
@@ -28,7 +27,7 @@ class EmailValidatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockWebApplication();
+        $this->mockApplication();
     }
 
     protected function tearDown(): void
@@ -197,88 +196,6 @@ class EmailValidatorTest extends TestCase
         $val->enableIDN = true;
 
         $this->assertFalse($val->validate($value));
-    }
-
-    public function testClientValidateAttribute(): void
-    {
-        $modelValidator = new FakedValidationModel();
-        $validator = new EmailValidator();
-
-        $modelValidator->attrA = 'test@example.com';
-
-        $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
-            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
-            '"enableIDN":false,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-
-        $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
-
-        $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
-        $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
-
-        $this->assertSame(
-            [
-                'pattern' => $validator->pattern,
-                'fullPattern' => $validator->fullPattern,
-                'allowName' => false,
-                'message' => 'attrA is not a valid email address.',
-                'enableIDN' => false,
-                'skipOnEmpty' => 1,
-            ],
-            $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
-        );
-
-        $validator->validate('invalid-email', $errorMessage);
-
-        $this->assertSame(
-            'the input value is not a valid email address.',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-    }
-
-    public function testClientValidateAttributeWithEnableIDN(): void
-    {
-        $modelValidator = new FakedValidationModel();
-        $validator = new EmailValidator(['enableIDN' => true]);
-
-        $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
-            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
-            '"enableIDN":true,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-
-        $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
-
-        $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
-        $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
-
-        $this->assertSame(
-            [
-                'pattern' => $validator->pattern,
-                'fullPattern' => $validator->fullPattern,
-                'allowName' => false,
-                'message' => 'attrA is not a valid email address.',
-                'enableIDN' => true,
-                'skipOnEmpty' => 1,
-            ],
-            $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
-        );
-
-        $validator->validate('invalid-email', $errorMessage);
-
-        $this->assertSame(
-            'the input value is not a valid email address.',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
     }
 
     public function testDnsCheckHandlesErrorException(): void

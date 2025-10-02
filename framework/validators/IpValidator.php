@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,10 +10,9 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\helpers\IpHelper;
-use yii\helpers\Json;
-use yii\web\JsExpression;
+use yii\jquery\validators\IpValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * The validator checks if the attribute value is a valid IPv4/IPv6 address or subnet.
@@ -197,12 +197,15 @@ class IpValidator extends Validator
      * @see ranges
      */
     public $notInRange;
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * @var array
      */
     private $_ranges = [];
-
 
     /**
      * {@inheritdoc}
@@ -234,6 +237,11 @@ class IpValidator extends Validator
         }
         if ($this->notInRange === null) {
             $this->notInRange = Yii::t('yii', '{attribute} is not in the allowed range.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => IpValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -512,7 +520,7 @@ class IpValidator extends Validator
      * Used to get the Regexp pattern for initial IP address parsing.
      * @return string
      */
-    private function getIpParsePattern()
+    public function getIpParsePattern()
     {
         return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
@@ -535,10 +543,11 @@ class IpValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
+        }
 
-        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -546,33 +555,10 @@ class IpValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $messages = [
-            'ipv6NotAllowed' => $this->ipv6NotAllowed,
-            'ipv4NotAllowed' => $this->ipv4NotAllowed,
-            'message' => $this->message,
-            'noSubnet' => $this->noSubnet,
-            'hasSubnet' => $this->hasSubnet,
-        ];
-        foreach ($messages as &$message) {
-            $message = $this->formatMessage($message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        $options = [
-            'ipv4Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv4Pattern)),
-            'ipv6Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv6Pattern)),
-            'messages' => $messages,
-            'ipv4' => (bool) $this->ipv4,
-            'ipv6' => (bool) $this->ipv6,
-            'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
-            'negation' => $this->negation,
-            'subnet' => $this->subnet,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        return $options;
+        return [];
     }
 }

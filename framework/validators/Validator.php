@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -479,7 +480,7 @@ class Validator extends Component
      * @since 2.0.12
      * @return string
      */
-    protected function formatMessage($message, $params)
+    public function formatMessage($message, $params)
     {
         if (Yii::$app !== null) {
             return \Yii::$app->getI18n()->format($message, $params, Yii::$app->language);

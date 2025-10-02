@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -55,7 +56,6 @@ class Application extends \yii\base\Application
      * @var Controller the currently active controller instance
      */
     public $controller;
-
 
     /**
      * {@inheritdoc}

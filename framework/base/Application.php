@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -182,7 +183,16 @@ abstract class Application extends Module
      * @var array list of loaded modules indexed by their class names.
      */
     public $loadedModules = [];
-
+    /**
+     * Indicates whether jQuery should be used for client-side validation and widgets.
+     *
+     * When enabled, jQuery assets will be registered for validators and widgets that require it.
+     *
+     * Set to `false` to disable automatic jQuery inclusion for these features.
+     *
+     * @since 2.2.0
+     */
+    public bool $useJquery = true;
 
     /**
      * Constructor.

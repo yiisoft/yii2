@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,8 +10,8 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
-use yii\helpers\Json;
+use yii\jquery\validators\CompareValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * CompareValidator compares the specified attribute value with another value.
@@ -95,7 +96,10 @@ class CompareValidator extends Validator
      * - `{compareValueOrAttribute}`: the value or the attribute label to be compared with
      */
     public $message;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -128,6 +132,11 @@ class CompareValidator extends Validator
                 default:
                     throw new InvalidConfigException("Unknown operator: {$this->operator}");
             }
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => CompareValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -239,14 +248,11 @@ class CompareValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        if ($this->compareValue != null && $this->compareValue instanceof \Closure) {
-            $this->compareValue = call_user_func($this->compareValue);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.compare(value, messages, ' . Json::htmlEncode($options) . ', $form);';
+        return null;
     }
 
     /**
@@ -254,33 +260,10 @@ class CompareValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $options = [
-            'operator' => $this->operator,
-            'type' => $this->type,
-        ];
-
-        if ($this->compareValue !== null) {
-            $options['compareValue'] = $this->compareValue;
-            $compareLabel = $compareValue = $compareValueOrAttribute = $this->compareValue;
-        } else {
-            $compareAttribute = $this->compareAttribute === null ? $attribute . '_repeat' : $this->compareAttribute;
-            $compareValue = $model->getAttributeLabel($compareAttribute);
-            $options['compareAttribute'] = Html::getInputId($model, $compareAttribute);
-            $options['compareAttributeName'] = Html::getInputName($model, $compareAttribute);
-            $compareLabel = $compareValueOrAttribute = $model->getAttributeLabel($compareAttribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        $options['message'] = $this->formatMessage($this->message, [
-            'attribute' => $model->getAttributeLabel($attribute),
-            'compareAttribute' => $compareLabel,
-            'compareValue' => $compareValue,
-            'compareValueOrAttribute' => $compareValueOrAttribute,
-        ]);
-
-        return $options;
+        return [];
     }
 }

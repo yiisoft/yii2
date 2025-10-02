@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,6 +21,22 @@ class NumberValidatorTest extends TestCase
     private array $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
     private array $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
     private string|bool $oldLocale;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockWebApplication();
+
+        $this->oldLocale = setlocale(LC_NUMERIC, 0);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
+    }
 
     private function setCommaDecimalLocale(): void
     {
@@ -46,16 +63,6 @@ class NumberValidatorTest extends TestCase
     private function restoreLocale(): void
     {
         setlocale(LC_NUMERIC, $this->oldLocale);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->oldLocale = setlocale(LC_NUMERIC, 0);
-
-        // destroy application, Validator must work without Yii::$app
-        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit(): void
