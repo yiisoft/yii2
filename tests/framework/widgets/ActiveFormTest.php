@@ -211,7 +211,6 @@ final class ActiveFormTest extends \yiiunit\TestCase
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="form-group field-dynamicmodel-name">
-
             <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
 
             <div class="help-block">I have an error!</div>
@@ -222,7 +221,6 @@ final class ActiveFormTest extends \yiiunit\TestCase
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="form-group field-dynamicmodel-name">
-
             <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
 
             <div class="help-block">I have an error!</div>
