@@ -204,7 +204,7 @@ class MessageFormatter extends Component
      * @param array $givenParams The array of values to insert into the format string.
      * @param array $resultingParams Modified array of parameters.
      * @param array $map
-     * @return string The pattern string with placeholders replaced.
+     * @return string|false The pattern string with placeholders replaced.
      */
     private function replaceNamedArguments($pattern, $givenParams, &$resultingParams = [], &$map = [])
     {
