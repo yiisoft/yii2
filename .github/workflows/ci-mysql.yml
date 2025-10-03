@@ -9,7 +9,6 @@ on:
   pull_request: &ignore-paths
     paths-ignore:
       - ".appveyor.yml"
-      - ".codeclimate.yml"
       - ".dockerignore"
       - ".editorconfig"
       - ".eslintignore"

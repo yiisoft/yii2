@@ -6,16 +6,6 @@ parameters:
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Variable \\$viaClass might not be defined\\.$#"
-			count: 5
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Variable \\$viaTable might not be defined\\.$#"
-			count: 5
-			path: framework/db/BaseActiveRecord.php
-
-		-
 			message: "#^Class BackedEnum not found\\.$#"
 			count: 2
 			path: framework/db/ColumnSchema.php
@@ -31,36 +21,26 @@ parameters:
 			path: framework/db/Command.php
 
 		-
-			message: "#^Variable \\$command might not be defined\\.$#"
+			message: "#^Call to an undefined static method BackedEnum\\:\\:from\\(\\)\\.$#"
 			count: 1
-			path: framework/db/Query.php
+			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Variable \\$rawValues in isset\\(\\) always exists and is not nullable\\.$#"
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_CONSTRAINT\\.$#"
-			count: 1
-			path: framework/db/cubrid/Schema.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_IMPORTED_KEYS\\.$#"
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
 			count: 2
-			path: framework/db/cubrid/Schema.php
+			path: framework/db/ColumnSchema.php
 
 		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_PRIMARY_KEY\\.$#"
-			count: 2
-			path: framework/db/cubrid/Schema.php
-
-		-
-			message: "#^Access to undefined constant PDO\\:\\:CUBRID_SCH_TABLE\\.$#"
-			count: 2
-			path: framework/db/cubrid/Schema.php
-
-		-
-			message: "#^Variable \\$error in isset\\(\\) always exists and is always null\\.$#"
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
 			count: 1
-			path: framework/helpers/BaseConsole.php
+			path: framework/db/Command.php
+
+		-
+			message: "#^Access to property \\$name on an unknown class UnitEnum\\.$#"
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: "#^Call to an undefined method ReflectionType\\:\\:getName\\(\\)\\.$#"
+			count: 2
+			path: framework/web/Controller.php
