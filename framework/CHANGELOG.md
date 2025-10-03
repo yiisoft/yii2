@@ -39,7 +39,7 @@ Yii Framework 2 Change Log
 - Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
 - Bug #20548: Fix PHP `8.5` `null` array offset deprecation warnings (terabytesoftw)
 - Enh #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (max-s-lab)
-- Bug #20569: Fix `@return` annotation for `HeaderCollection::get` (max-s-lab)
+- Bug #20569: Fix `@param` annotation for `$default` in `HeaderCollection::get` (max-s-lab)
 
 
 2.0.53 June 27, 2025
