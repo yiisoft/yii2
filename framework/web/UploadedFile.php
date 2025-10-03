@@ -69,7 +69,7 @@ class UploadedFile extends BaseObject
      */
     private $_tempResource;
     /**
-     * @var array[]
+     * @var array[]|null
      */
     private static $_files;
 
