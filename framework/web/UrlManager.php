@@ -119,7 +119,7 @@ class UrlManager extends Component
      */
     public $routeParam = 'r';
     /**
-     * @var CacheInterface|array|string|bool the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string|bool|null the cache object or the application component ID of the cache object.
      * This can also be an array that is used to create a [[CacheInterface]] instance in case you do not want to use
      * an application component.
      * Compiled URL rules will be cached through this cache object, if it is available.

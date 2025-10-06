@@ -134,7 +134,7 @@ class Response extends \yii\base\Response
      */
     public $content;
     /**
-     * @var resource|array|callable the stream to be sent. This can be a stream handle or an array of stream handle,
+     * @var resource|array|callable|null the stream to be sent. This can be a stream handle or an array of stream handle,
      * the begin position and the end position. Alternatively it can be set to a callable, which returns
      * (or [yields](https://www.php.net/manual/en/language.generators.syntax.php)) an array of strings that should
      * be echoed and flushed out one by one.
@@ -239,7 +239,7 @@ class Response extends \yii\base\Response
      */
     private $_statusCode = 200;
     /**
-     * @var HeaderCollection
+     * @var HeaderCollection|null
      */
     private $_headers;
 
@@ -936,6 +936,9 @@ class Response extends \yii\base\Response
         return $this->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
     }
 
+    /**
+     * @var CookieCollection|null
+     */
     private $_cookies;
 
     /**
