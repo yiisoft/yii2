@@ -100,7 +100,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <div class="custom-container">
             <div class="form-group field-activefieldtestmodel-attributename">
             <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
             <div class="hint-block">Hint for attributeName attribute</div>
             <div class="help-block"></div>
             </div>
