@@ -1570,7 +1570,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <div class="help-block"></div>
             </div>
             HTML,
-            $this->activeField->render(),
+            $this->normalizeHTML($this->activeField->render()),
             'Rendered HTML does not match expected output',
         );
     }
@@ -1711,7 +1711,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <div class="help-block"></div>
             </div>
             HTML,
-            $this->activeField->render(),
+            $this->normalizeHTML($this->activeField->render()),
             'Rendered HTML does not match expected output',
         );
     }
@@ -1782,7 +1782,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             <div class="help-block"></div>
             </div>
             HTML,
-            $this->activeField->render(),
+            $this->normalizeHTML($this->activeField->render()),
             'Rendered HTML does not match expected output',
         );
     }

@@ -583,7 +583,7 @@ class ActiveField extends Component
         $this->adjustLabelFor($options);
 
         if ($enclosedByLabel) {
-            $this->template = str_replace("{label}\n", '', $this->template);
+            $this->parts['{label}'] = '';
         } else {
             $options = $this->generateLabel($options);
         }
@@ -638,7 +638,7 @@ class ActiveField extends Component
         $this->adjustLabelFor($options);
 
         if ($enclosedByLabel) {
-            $this->template = str_replace("{label}\n", '', $this->template);
+            $this->parts['{label}'] = '';
         } else {
             $options = $this->generateLabel($options);
         }
@@ -1003,7 +1003,7 @@ class ActiveField extends Component
     {
         if (isset($options['label'])) {
             if ($options['label'] === false) {
-                $this->template = str_replace("{label}\n", '', $this->template);
+                $this->parts['{label}'] = '';
             } elseif (($this->parts['{label}'] ?? '') === '') {
                 $tag = false;
 
