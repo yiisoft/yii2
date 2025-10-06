@@ -369,3 +369,15 @@ parameters:
 			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: framework/di/Container.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:isBuiltin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/di/Container.php
