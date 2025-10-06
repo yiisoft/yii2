@@ -86,11 +86,6 @@ parameters:
 			path: framework/db/mssql/QueryBuilder.php
 
 		-
-			message: "#^Call to an undefined method PDO\\:\\:cubrid_schema\\(\\)\\.$#"
-			count: 7
-			path: framework/db/cubrid/Schema.php
-
-		-
 			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
 			count: 1
 			path: framework/db/conditions/SimpleConditionBuilder.php
