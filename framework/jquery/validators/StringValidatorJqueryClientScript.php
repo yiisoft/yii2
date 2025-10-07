@@ -73,7 +73,7 @@ class StringValidatorJqueryClientScript implements ClientValidatorScriptInterfac
             $options['notEqual'] = $validator->getFormattedClientMessage(
                 $validator->notEqual,
                 [
-                   'attribute' => $label,
+                    'attribute' => $label,
                     'length' => $validator->length,
                 ],
             );

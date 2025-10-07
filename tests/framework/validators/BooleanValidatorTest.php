@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -74,12 +73,5 @@ class BooleanValidatorTest extends TestCase
         $this->assertFalse($obj->hasErrors('attrB'));
         $val->validateAttribute($obj, 'attrD');
         $this->assertTrue($obj->hasErrors('attrD'));
-    }
-}
-
-class ViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null): void
-    {
     }
 }
