@@ -42,7 +42,7 @@ final class IpValidatorJqueryClientScriptTest extends \yiiunit\TestCase
 
         $modelValidator->attrA = '192.168.1.1';
 
-        $ipParsePattern = $validator->getIpParsePattern();
+        $ipParsePattern = $this->invokeMethod($validator, 'getIpParsePattern');
 
         $this->assertSame(
             'yii.validation.ip(value, messages, {"ipv4Pattern":' . $validator->ipv4Pattern . ',"ipv6Pattern":' .
@@ -97,7 +97,7 @@ final class IpValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator = new FakedValidationModel();
         $validator = new IpValidator(['ipv6' => false]);
 
-        $ipParsePattern = $validator->getIpParsePattern();
+        $ipParsePattern = $this->invokeMethod($validator, 'getIpParsePattern');
 
         $this->assertSame(
             'yii.validation.ip(value, messages, {"ipv4Pattern":' . $validator->ipv4Pattern . ',"ipv6Pattern":' .
@@ -152,7 +152,7 @@ final class IpValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator = new FakedValidationModel();
         $validator = new IpValidator(['ipv4' => false]);
 
-        $ipParsePattern = $validator->getIpParsePattern();
+        $ipParsePattern = $this->invokeMethod($validator, 'getIpParsePattern');
 
         $this->assertSame(
             'yii.validation.ip(value, messages, {"ipv4Pattern":' . $validator->ipv4Pattern . ',"ipv6Pattern":' .
@@ -207,7 +207,7 @@ final class IpValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $modelValidator = new FakedValidationModel();
         $validator = new IpValidator(['subnet' => true]);
 
-        $ipParsePattern = $validator->getIpParsePattern();
+        $ipParsePattern = $this->invokeMethod($validator, 'getIpParsePattern');
 
         $this->assertSame(
             'yii.validation.ip(value, messages, {"ipv4Pattern":' . $validator->ipv4Pattern . ',"ipv6Pattern":' .

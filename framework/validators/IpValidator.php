@@ -520,7 +520,7 @@ class IpValidator extends Validator
      * Used to get the Regexp pattern for initial IP address parsing.
      * @return string
      */
-    public function getIpParsePattern()
+    private function getIpParsePattern()
     {
         return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
