@@ -29,11 +29,11 @@ use function preg_split;
 /**
  * ActiveFormJqueryClientScript provides jQuery-based client script integration for ActiveForm and ActiveField widgets.
  *
- * This class is responsible for generating and registering client-side validation options and scripts
- * for Yii2 ActiveForm and ActiveField widgets, enabling AJAX and client validation via the `yii.activeForm` jQuery
- * plugin.
+ * This class is responsible for generating and registering client-side validation options and scripts for Yii2
+ * ActiveForm and ActiveField widgets, enabling AJAX and client validation via the `yii.activeForm` jQuery plugin.
  *
- * @implements ClientScriptInterface<ActiveForm|ActiveField>
+ * @template T of ActiveForm|ActiveField
+ * @implements ClientScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 2.2.0

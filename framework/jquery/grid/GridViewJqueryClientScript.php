@@ -27,7 +27,8 @@ use function array_merge;
  * This class implements {@see ClientScriptInterface} to supply client-side options and register the corresponding
  * JavaScript code for GridView widgets in Yii2 applications using jQuery.
  *
- * @implements ClientScriptInterface<GridView>
+ * @template T of GridView
+ * @implements ClientScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 2.2.0
