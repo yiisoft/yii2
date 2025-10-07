@@ -341,6 +341,7 @@ Yii Framework 2 Change Log
 - Bug #18993: Load defaults by `attributes()` in `yii\db\ActiveRecord::loadDefaultValues()` (WinterSilence)
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
+- Enh #19100: Add methods `isCustomTagAttribute`, `normalizeTagAttributes` and `mergeTagAttributes` in `yii\helper\BaseHtml` (WinterSilence)
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19096: Fix `Request::getIsConsoleRequest()` may return erroneously when testing a Web application in Codeception (WinterSilence)
 - Enh #13105: Add yiiActiveForm `validate_only` property for skipping form auto-submission (ptolomaues)
