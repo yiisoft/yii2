@@ -16,6 +16,20 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockWebApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
+    }
+
     public function testParseAcceptHeader(): void
     {
         $request = new Request();

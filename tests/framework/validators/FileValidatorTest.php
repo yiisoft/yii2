@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
@@ -24,7 +27,15 @@ class FileValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
     }
 
     public function testAssureMessagesSetOnInit(): void
@@ -528,7 +539,7 @@ class FileValidatorTest extends TestCase
     /**
      * @param string $fileName
      * @param string $mask
-     * @dataProvider validMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::validMimeTypes
      */
     public function testValidateMimeTypeMaskValid($fileName, $mask): void
     {
@@ -538,7 +549,7 @@ class FileValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider invalidMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::invalidMimeTypes
      */
     public function testValidateMimeTypeMaskInvalid(string $fileName, string $mask): void
     {
@@ -547,44 +558,10 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($validator->validate($file));
     }
 
-    public static function validMimeTypes()
-    {
-        $validMimeTypes = array_filter([
-            ['test.svg', 'image/*', 'svg'],
-            ['test.jpg', 'image/*', 'jpg'],
-            ['test.png', 'image/*', 'png'],
-            ['test.png', 'IMAGE/*', 'png'],
-            ['test.txt', 'text/*', 'txt'],
-            ['test.xml', '*/xml', 'xml'],
-            ['test.odt', 'application/vnd*', 'odt'],
-            ['test.tar.xz', 'application/x-xz', 'tar.xz'],
-        ]);
-
-        # fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
-        if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
-            $v81_zx = ['test.tar.xz', 'application/octet-stream', 'tar.xz'];
-            array_pop($validMimeTypes);
-            $validMimeTypes[] = $v81_zx;
-        }
-
-        return $validMimeTypes;
-    }
-
-    public static function invalidMimeTypes()
-    {
-        return [
-            ['test.txt', 'image/*', 'png, jpg'],
-            ['test.odt', 'text/*', 'txt'],
-            ['test.xml', '*/svg+xml', 'svg'],
-            ['test.png', 'image/x-iso9660-image', 'bmp'],
-            ['test.svg', 'application/*', 'jpg'],
-        ];
-    }
-
     /**
      * @param string $fileName
      * @param string|array $allowedExtensions
-     * @dataProvider validMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::validMimeTypes
      */
     public function testValidateFileByExtensionUsingMimeType($fileName, mixed $_, $allowedExtensions): void
     {
@@ -597,7 +574,7 @@ class FileValidatorTest extends TestCase
     /**
      * @param mixed $_
      * @param string|array $allowedExtensions
-     * @dataProvider invalidMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::invalidMimeTypes
      */
     public function testValidateFileByExtensionUsingMimeTypeInvalid(string $fileName, string $_, string $allowedExtensions): void
     {
@@ -660,7 +637,7 @@ class FileValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider mimeTypeCaseInsensitive
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::mimeTypeCaseInsensitive
      */
     public function testValidateMimeTypeCaseInsensitive(string $mask, string $fileMimeType, bool $expected): void {
         $validator = $this->getMockBuilder(\yii\validators\FileValidator::class)
@@ -671,15 +648,6 @@ class FileValidatorTest extends TestCase
 
         $file = $this->getRealTestFile('test.txt');
         $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
-    }
-
-    public static function mimeTypeCaseInsensitive() {
-        return [
-            ['Image/*', 'image/jp2', true],
-            ['image/*', 'Image/jp2', true],
-            ['application/vnd.ms-word.document.macroEnabled.12', 'application/vnd.ms-word.document.macroenabled.12', true],
-            ['image/jxra', 'image/jxrA', true],
-        ];
     }
 
     public function testValidateTypedAttributeNoErrors()
