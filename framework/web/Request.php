@@ -306,6 +306,8 @@ class Request extends \yii\base\Request
      * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
+    /** @var boolean Enable automatically inflate post requests with gzip/deflate Content-Encoding headers */
+    public $gzip = false;
 
 
     /**
@@ -562,6 +564,24 @@ class Request extends \yii\base\Request
     private $_rawBody;
 
     /**
+     * Inflate the raw body on needed.
+     * @return void
+     */
+    private function tryInflateRawBody()
+    {
+        if ($this->gzip) {
+            $contentEncoding = $this->headers->get('Content-Encoding', '', true);
+            if ($contentEncoding === 'gzip' || $contentEncoding === 'x-gzip') {
+                // 	gzip (RFC 1952)
+                $this->_rawBody = gzdecode($this->_rawBody);
+            } elseif ($contentEncoding === 'deflate') {
+                // raw deflate (RFC 1951)
+                $this->_rawBody = gzinflate($this->_rawBody);
+            }
+        }
+    }
+
+    /**
      * Returns the raw HTTP request body.
      * @return string the request body
      */
@@ -569,8 +589,8 @@ class Request extends \yii\base\Request
     {
         if ($this->_rawBody === null) {
             $this->_rawBody = file_get_contents('php://input');
+            $this->tryInflateRawBody();
         }
-
         return $this->_rawBody;
     }
 
