@@ -863,7 +863,7 @@ class ActiveField extends Component
      * @return bool
      * @since 2.0.11
      */
-    public function isClientValidationEnabled()
+    protected function isClientValidationEnabled()
     {
         return $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
     }
@@ -873,7 +873,7 @@ class ActiveField extends Component
      * @return bool
      * @since 2.0.11
      */
-    public function isAjaxValidationEnabled()
+    protected function isAjaxValidationEnabled()
     {
         return $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
     }

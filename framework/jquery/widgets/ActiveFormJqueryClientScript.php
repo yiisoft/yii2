@@ -117,8 +117,8 @@ class ActiveFormJqueryClientScript implements ClientScriptInterface
             return [];
         }
 
-        $clientValidation = $field->isClientValidationEnabled();
-        $ajaxValidation = $field->isAjaxValidationEnabled();
+        $clientValidation = $this->isClientValidationEnabled($field);
+        $ajaxValidation = $this->isAjaxValidationEnabled($field);
 
         if ($clientValidation) {
             $validators = [];
@@ -191,5 +191,23 @@ class ActiveFormJqueryClientScript implements ClientScriptInterface
                 'updateAriaInvalid' => true,
             ],
         );
+    }
+
+    private function isClientValidationEnabled(ActiveField $field): bool
+    {
+        if ($field->enableClientValidation !== null) {
+            return $field->enableClientValidation;
+        }
+
+        return $field->form->enableClientValidation;
+    }
+
+    private function isAjaxValidationEnabled(ActiveField $field): bool
+    {
+        if ($field->enableAjaxValidation !== null) {
+            return $field->enableAjaxValidation;
+        }
+
+        return $field->form->enableAjaxValidation;
     }
 }
