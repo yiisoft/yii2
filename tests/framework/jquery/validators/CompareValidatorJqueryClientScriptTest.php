@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace yii\tests\jquery\validators;
+namespace yiiunit\framework\jquery\validators;
 
 use Yii;
 use yii\validators\CompareValidator;
