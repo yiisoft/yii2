@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Bug #20571: Fix `@var` annotation for `yii\web\Response::$stream` (max-s-lab)
 - Bug #20569: Fix `@param` annotation for `$default` in `HeaderCollection::get` (max-s-lab)
 - Bug #20576: Fix `@var` annotation for `StringValidator::$length` (max-s-lab)
+- Enh #20579: Add PHPStan/Psalm annotations for `HeaderCollection::get` (max-s-lab)
 
 
 2.0.53 June 27, 2025
