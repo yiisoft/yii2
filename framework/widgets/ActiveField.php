@@ -170,13 +170,7 @@ class ActiveField extends Component
      */
     public function __toString()
     {
-        // __toString cannot throw exception
-        // use trigger_error to bypass this limitation
-        try {
-            return $this->render();
-        } catch (\Throwable $e) {
-            throw $e;
-        }
+        return $this->render();
     }
 
     /**
@@ -588,9 +582,11 @@ class ActiveField extends Component
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
-        $this->parts['{label}'] = '';
-
-        $options = $enclosedByLabel ? $options : $this->generateLabel($options);
+        if ($enclosedByLabel) {
+            $this->parts['{label}'] = '';
+        } else {
+            $options = $this->generateLabel($options);
+        }
 
         $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
 
@@ -641,9 +637,11 @@ class ActiveField extends Component
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
-        $this->parts['{label}'] = '';
-
-        $options = $enclosedByLabel ? $options : $this->generateLabel($options);
+        if ($enclosedByLabel) {
+            $this->parts['{label}'] = '';
+        } else {
+            $options = $this->generateLabel($options);
+        }
 
         $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 
@@ -1003,27 +1001,31 @@ class ActiveField extends Component
      */
     protected function generateLabel(array $options): array
     {
-        if (isset($options['label']) && $options['label'] !== false && $this->parts['{label}'] === '') {
-            $tag = false;
+        if (isset($options['label'])) {
+            if ($options['label'] === false) {
+                $this->parts['{label}'] = '';
+            } elseif (($this->parts['{label}'] ?? '') === '') {
+                $tag = false;
 
-            if (!empty($options['labelOptions'])) {
-                $tag = $options['labelOptions']['tag'] ?? 'label';
+                if (!empty($options['labelOptions'])) {
+                    $tag = $options['labelOptions']['tag'] ?? 'label';
 
-                unset($options['labelOptions']['tag']);
+                    unset($options['labelOptions']['tag']);
 
-                $this->labelOptions = array_merge($this->labelOptions, $options['labelOptions']);
-            }
+                    $this->labelOptions = array_merge($this->labelOptions, $options['labelOptions']);
+                }
 
-            if ($tag === false) {
-                $this->parts['{label}'] = $options['label'];
-            } elseif ($tag === 'label') {
-                $this->parts['{label}'] = Html::activeLabel(
-                    $this->model,
-                    $this->attribute,
-                    array_merge(['label' => $options['label']], $this->labelOptions),
-                );
-            } else {
-                $this->parts['{label}'] = Html::tag($tag, $options['label'], $this->labelOptions);
+                if ($tag === false) {
+                    $this->parts['{label}'] = $options['label'];
+                } elseif ($tag === 'label') {
+                    $this->parts['{label}'] = Html::activeLabel(
+                        $this->model,
+                        $this->attribute,
+                        array_merge(['label' => $options['label']], $this->labelOptions),
+                    );
+                } else {
+                    $this->parts['{label}'] = Html::tag($tag, $options['label'], $this->labelOptions);
+                }
             }
         }
 

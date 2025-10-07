@@ -263,4 +263,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             Yii::$app->db->password = $database['password'] ?? null;
         }
     }
+
+    /**
+     * Normalizes HTML string by removing redundant blank lines.
+     */
+    protected function normalizeHTML(string $html): string
+    {
+        return preg_replace('/^\h*\n/m', '', trim($html));
+    }
 }
