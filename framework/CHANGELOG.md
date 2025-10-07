@@ -28,9 +28,11 @@ Yii Framework 2 Change Log
 - Bug #20518: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
 - Enh #20537: Enhance `label()` method in `ActiveField` with `tag` option and fix `labelOptions` for `checkbox`/`radio` (terabytesoftw)
 - Bug #20547: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
+- Bug #20573: Fix `checkbox`/`radio` label rendering when `enclosedByLabel` is `false` and raise code coverage `100%` in `ActiveField::class` (terabytesoftw)
 
 2.0.54 under development
 ------------------------
+
 - Bug #20542: Fix `Formatter` working with more complex ICU unit data structure (OndrejVasicek)
 - Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
 - Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
@@ -52,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #20489: Replace deprecated `strftime` with `date` in `YiiRequirementChecker` (max-s-lab)
 - Bug #20494: Fix `PHPdoc`, add `PHPStan/Psalm` annotations for `authMethods` property in `CompositeAuth` class (terabytesoftw)
 - Bug #20485: Fix error `Cannot unset string offsets` in `yii\di\Instance:ensure(['__class' => ...], 'some\class\name')` (max-s-lab)
+- Enh #20047: Throw exception when fixture not found rather than ignoring (borgou)
 - Enh #20505: `ArrayDataProvider` key handling with flexible path support (fetus-hina)
 - Bug #20508: Fix PHPDoc, add PHPStan/Psalm annotations for `yii\web\CookieCollection::getIterator`. Add missing `@property` annotation in `yii\base\Model` (max-s-lab)
 - Bug #20513: Fix code examples in PHPDoc (max-s-lab)
@@ -68,6 +71,10 @@ Yii Framework 2 Change Log
 - Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
 - Bug #20548: Fix PHP `8.5` `null` array offset deprecation warnings (terabytesoftw)
 - Enh #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (max-s-lab)
+- Bug #20570: Fix `@var` annotation for `UrlManager::$cache` (max-s-lab)
+- Bug #20571: Fix `@var` annotation for `yii\web\Response::$stream` (max-s-lab)
+- Bug #20569: Fix `@param` annotation for `$default` in `HeaderCollection::get` (max-s-lab)
+- Bug #20576: Fix `@var` annotation for `StringValidator::$length` (max-s-lab)
 
 
 2.0.53 June 27, 2025
@@ -174,7 +181,6 @@ Yii Framework 2 Change Log
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Enh #20171: Support JSON columns for MariaDB 10.4 or higher (@terabytesoftw)
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
-
 
 2.0.49.2 October 12, 2023
 -------------------------

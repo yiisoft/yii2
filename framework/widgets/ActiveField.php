@@ -170,13 +170,7 @@ class ActiveField extends Component
      */
     public function __toString()
     {
-        // __toString cannot throw exception
-        // use trigger_error to bypass this limitation
-        try {
-            return $this->render();
-        } catch (\Throwable $e) {
-            throw $e;
-        }
+        return $this->render();
     }
 
     /**

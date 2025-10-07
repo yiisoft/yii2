@@ -202,33 +202,28 @@ final class ActiveFormTest extends \yiiunit\TestCase
             <div class="form-group field-dynamicmodel-name">
             <label class="control-label" for="dynamicmodel-name">Name</label>
             <input type="text" id="dynamicmodel-name" class="form-control has-error" name="DynamicModel[name]" aria-invalid="true">
-
             <div class="help-block">I have an error!</div>
             </div>
             HTML,
-            (string) $form->field($model, 'name'),
+            $this->normalizeHTML((string) $form->field($model, 'name')),
         );
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="form-group field-dynamicmodel-name">
-
             <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
-
             <div class="help-block">I have an error!</div>
             </div>
             HTML,
-            (string) $form->field($model, 'name')->checkbox(),
+            $this->normalizeHTML((string) $form->field($model, 'name')->checkbox()),
         );
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="form-group field-dynamicmodel-name">
-
             <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
-
             <div class="help-block">I have an error!</div>
             </div>
             HTML,
-            (string) $form->field($model, 'name')->radio(),
+            $this->normalizeHTML((string) $form->field($model, 'name')->radio()),
         );
     }
 
