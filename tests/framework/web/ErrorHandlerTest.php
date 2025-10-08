@@ -98,7 +98,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->invokeMethod($handler, 'renderException', [new \Exception('Some Exception')]);
         ob_get_clean();
         $out = Yii::$app->response->data;
-        $this->assertEquals('Exception View', $out);
+        $this->assertEquals("Exception View\n", $out);
     }
 
     public function testClearAssetFilesInErrorActionView()
