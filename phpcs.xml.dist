@@ -36,5 +36,6 @@
     <arg name="basepath" value="."/>
 
     <exclude-pattern>framework/views/*</exclude-pattern>
+    <exclude-pattern>tests/data/views/*</exclude-pattern>
     <exclude-pattern>tests/js/*</exclude-pattern>
 </ruleset>
