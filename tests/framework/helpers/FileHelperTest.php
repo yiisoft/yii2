@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use stdClass;
 use Yii;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
@@ -26,7 +27,7 @@ class FileHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
+        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
         $this->createDir($this->testFilePath);
         if (!file_exists($this->testFilePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
