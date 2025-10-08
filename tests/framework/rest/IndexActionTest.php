@@ -44,7 +44,8 @@ class IndexActionTest extends TestCase
         $sql = '';
         Yii::$app->controller = new RestController(
             'rest',
-            new Module('rest'), [
+            new Module('rest'),
+            [
             'modelClass' => IndexActionModel::className(),
             'actions' => [
                 'index' => [
@@ -58,7 +59,8 @@ class IndexActionTest extends TestCase
                     },
                 ],
             ],
-        ]);
+            ]
+        );
         Yii::$app->controller->run('index');
 
         $this->assertEquals(
@@ -89,7 +91,8 @@ class IndexActionTest extends TestCase
 
         $controller = new RestController(
             'rest',
-            new Module('rest'), [
+            new Module('rest'),
+            [
             'modelClass' => IndexActionModel::className(),
             'actions' => [
                 'index' => [
@@ -99,7 +102,8 @@ class IndexActionTest extends TestCase
                     'sort' => $sort,
                 ],
             ],
-        ]);
+            ]
+        );
 
         /** @var ActiveDataProvider $dataProvider */
         $dataProvider = $controller->createAction('index')->runWithParams([]);
@@ -197,7 +201,6 @@ class RestController extends ActiveController
 
 class Module extends \yii\base\Module
 {
-
 }
 
 /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -368,7 +369,8 @@ class ConsoleTest extends TestCase
         $this->assertFalse($result);
         $this->truncateStreams();
 
-        foreach ([
+        foreach (
+            [
                      'y' => true,
                      'Y' => true,
                      'yes' => true,
@@ -378,7 +380,8 @@ class ConsoleTest extends TestCase
                      'no' => false,
                      'NO' => false,
                      'WHAT?!' . PHP_EOL . 'yes' => true,
-                 ] as $currInput => $currAssertion) {
+                 ] as $currInput => $currAssertion
+        ) {
             $this->sendInput($currInput);
             $result = ConsoleStub::confirm('Are you sure?');
             $this->assertEquals($currAssertion, $result, $currInput);

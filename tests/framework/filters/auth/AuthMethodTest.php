@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -61,10 +62,14 @@ class AuthMethodTest extends TestCase
     {
         $action = $this->createAction();
 
-        $filter = $this->createFilter(function () {return new \stdClass();});
+        $filter = $this->createFilter(function () {
+            return new \stdClass();
+        });
         $this->assertTrue($filter->beforeAction($action));
 
-        $filter = $this->createFilter(function () {return null;});
+        $filter = $this->createFilter(function () {
+            return null;
+        });
         $this->expectException('yii\web\UnauthorizedHttpException');
         $this->assertTrue($filter->beforeAction($action));
     }
@@ -80,7 +85,9 @@ class AuthMethodTest extends TestCase
             $method->setAccessible(true);
         }
 
-        $filter = $this->createFilter(function () {return new \stdClass();});
+        $filter = $this->createFilter(function () {
+            return new \stdClass();
+        });
 
         $filter->optional = ['some'];
         $this->assertFalse($method->invokeArgs($filter, [$this->createAction(['id' => 'index'])]));

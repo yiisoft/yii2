@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -141,7 +142,7 @@ class CacheControllerTest extends TestCase
     {
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage('You should specify cache components names');
-        
+
         $this->_cacheController->actionFlush();
     }
 

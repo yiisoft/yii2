@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -124,34 +125,35 @@ class GridViewTest extends \yiiunit\TestCase
         }
     }
 
-	/**
-	 * @throws \Exception
-	 */
-	public function testFooter() {
-		$config = [
-			'id'           => 'grid',
-			'dataProvider' => new ArrayDataProvider(['allModels' => []]),
-			'showHeader'   => false,
-			'showFooter'   => true,
-			'options'      => [],
-			'tableOptions' => [],
-			'view'         => new View(),
-			'filterUrl'    => '/',
-		];
+    /**
+     * @throws \Exception
+     */
+    public function testFooter()
+    {
+        $config = [
+            'id'           => 'grid',
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'showHeader'   => false,
+            'showFooter'   => true,
+            'options'      => [],
+            'tableOptions' => [],
+            'view'         => new View(),
+            'filterUrl'    => '/',
+        ];
 
-		$html = GridView::widget($config);
-		$html = preg_replace("/\r|\n/", '', $html);
+        $html = GridView::widget($config);
+        $html = preg_replace("/\r|\n/", '', $html);
 
-		$this->assertTrue(preg_match("/<\/tfoot><tbody>/", $html) === 1);
+        $this->assertTrue(preg_match('/<\/tfoot><tbody>/', $html) === 1);
 
-		// Place footer after body
-		$config['placeFooterAfterBody'] = true;
+        // Place footer after body
+        $config['placeFooterAfterBody'] = true;
 
-		$html = GridView::widget($config);
-		$html = preg_replace("/\r|\n/", '', $html);
+        $html = GridView::widget($config);
+        $html = preg_replace("/\r|\n/", '', $html);
 
-		$this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
-	}
+        $this->assertTrue(preg_match('/<\/tbody><tfoot>/', $html) === 1);
+    }
 
     public function testHeaderLabels()
     {
@@ -200,5 +202,5 @@ class GridViewTest extends \yiiunit\TestCase
         // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
 
         $this->assertTrue(true);
-	}
+    }
 }

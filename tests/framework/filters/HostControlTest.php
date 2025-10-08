@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -142,7 +143,8 @@ class HostControlTest extends TestCase
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
-        $filter->denyCallback = function () {};
+        $filter->denyCallback = function () {
+        };
 
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);

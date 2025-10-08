@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,7 @@ class MenuTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockWebApplication([
-            'components'=>[
+            'components' => [
                 'urlManager' => [
                     'enablePrettyUrl' => true,
                     'showScriptName' => false,
@@ -319,7 +320,7 @@ HTML;
                         [
                             'label' => 'another item',
                             // use non relative route to avoid error in BaseUrl::normalizeRoute (missing controller)
-                            'url' => ['/test/another'], 
+                            'url' => ['/test/another'],
                             'template' => 'label: {label}; url: {url}',
                         ],
                         [
@@ -330,7 +331,7 @@ HTML;
                                 return $widget->route === 'test/logic';
                             },
                         ],
-                        
+
                     ],
                 ],
             ],
@@ -456,19 +457,19 @@ HTML;
         $output = Menu::widget([
             'route' => 'test/item2',
             'params' => [
-                'page'=>'5',
+                'page' => '5',
             ],
             'items' => [
                 [
                     'label' => 'item1',
-                    'url' => ['/test/item1'] 
+                    'url' => ['/test/item1']
                 ],
                 [
                     'label' => 'item2',
                     // use non relative route to avoid error in BaseUrl::normalizeRoute (missing controller)
-                    'url' => ['/test/item2','page'=>'5']
+                    'url' => ['/test/item2','page' => '5']
                 ],
-                
+
             ],
         ]);
 

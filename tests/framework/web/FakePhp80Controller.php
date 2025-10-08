@@ -15,11 +15,9 @@ class FakePhp80Controller extends Controller
 
     public function actionInjection(int|string $arg, int|string $second)
     {
-
     }
 
     public function actionArrayOrInt(array|int $foo)
     {
-
     }
 }

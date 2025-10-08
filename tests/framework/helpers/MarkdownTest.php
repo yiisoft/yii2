@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -47,7 +48,7 @@ TEXT;
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage("Markdown flavor 'undefined' is not defined.");
-        
+
         Markdown::process('foo', 'undefined');
     }
 

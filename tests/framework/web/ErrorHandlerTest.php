@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -143,7 +144,7 @@ Exception: yii\web\NotFoundHttpException', $out);
             ],
             [
                 "'hello world'",
-                "&apos;hello world&apos;",
+                '&apos;hello world&apos;',
             ],
             [
                 'Chip&amp;Dale',

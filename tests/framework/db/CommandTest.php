@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -205,8 +206,8 @@ SQL;
         $this->assertEquals(1, $command->execute());
 
         $command = $db->createCommand('SELECT [[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]] FROM {{type}}');
-//        $command->prepare();
-//        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
+        //        $command->prepare();
+        //        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
         $row = $command->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
@@ -401,7 +402,7 @@ SQL;
                 '{{%type}}',
                 ['int_col'],
                 [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
-                'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
+                'expected' => 'INSERT INTO `type` (`int_col`) VALUES (:qp1)',
                 'expectedParams' => [':qp1' => 42]
             ],
             'batchIsert empty rows represented by ArrayObject' => [
@@ -513,7 +514,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 '{{customer}}.[[email]] as name',
                 '[[name]] as email',
                 '[[address]]',
@@ -567,7 +569,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 'email' => '{{customer}}.[[email]]',
                 'address' => 'name',
                 'name' => 'address',
@@ -1404,7 +1407,6 @@ SQL;
     public function testAutoRefreshTableSchema()
     {
         if ($this->driverName === 'sqlsrv') {
-
             // related to https://github.com/yiisoft/yii2/pull/17364
             $this->markTestSkipped('Should be fixed');
         }
@@ -1528,26 +1530,26 @@ SQL;
     public function testBindValuesSupportsDeprecatedPDOCastingFormat()
     {
         $db = $this->getConnection();
-        $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $db->createCommand()->setSql('SELECT :p1')->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
         $this->assertTrue(true);
     }
 
     public function testBindValuesSupportsEnums()
-	{
-		if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
-		    $db = $this->getConnection();
-		    $command = $db->createCommand();
+    {
+        if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+            $db = $this->getConnection();
+            $command = $db->createCommand();
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
-		    $this->assertSame('Active', $command->params[':p1']);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
+            $this->assertSame('Active', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
-		    $this->assertSame('active', $command->params[':p1']);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
+            $this->assertSame('active', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
-		    $this->assertSame(1, $command->params[':p1']);
-		} else {
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
+            $this->assertSame(1, $command->params[':p1']);
+        } else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');
         }
-	}
+    }
 }

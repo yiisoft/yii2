@@ -67,4 +67,4 @@ jobs:
           tools: cs2pr
 
       - name: Run PHP_CodeSniffer.
-        run: vendor/bin/phpcs -q --report=checkstyle framework/ | cs2pr
+        run: vendor/bin/phpcs -q --report=checkstyle framework/ tests/ build/ | cs2pr

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -314,20 +315,20 @@ EOF;
 <script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>234
 EOF;
-            break;
+                break;
             case View::POS_BEGIN:
                 $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>34
 EOF;
-            break;
+                break;
             default:
             case View::POS_END:
                 $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
-            break;
+                break;
         }
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }

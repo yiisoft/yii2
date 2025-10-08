@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -123,7 +124,8 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $this->assertEqualsWithoutLE($expected, $head);
     }
 
-    public function messageFileCategoriesDataProvider(){
+    public function messageFileCategoriesDataProvider()
+    {
         return [
             'removeUnused:false - unused category should not be removed - normal category' => ['test_delete_category', true, false, true],
             'removeUnused:false - unused category should not be removed - nested category' => ['nested/category', true, false, true],

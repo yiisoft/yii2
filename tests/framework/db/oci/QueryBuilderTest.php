@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -271,10 +272,10 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
             "VALUES ('', NULL) SELECT 1 FROM SYS.DUAL";
 
         $data[3][3] = 'INSERT ALL  INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) ' .
-            "VALUES (NULL, now()) SELECT 1 FROM SYS.DUAL";
+            'VALUES (NULL, now()) SELECT 1 FROM SYS.DUAL';
 
         $data['bool-false, time-now()']['expected'] = 'INSERT ALL  INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) ' .
-            "VALUES (0, now()) SELECT 1 FROM SYS.DUAL";
+            'VALUES (0, now()) SELECT 1 FROM SYS.DUAL';
 
         return $data;
     }
@@ -313,5 +314,4 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
             $this->assertIsOneOf($actualParams, $expectedParams);
         }
     }
-
 }

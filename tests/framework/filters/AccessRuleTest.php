@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -240,14 +241,26 @@ class AccessRuleTest extends \yiiunit\TestCase
             ['update', true,  'unknown', ['authorID' => 'user2'], null],
 
             // user2 is author, can only edit own posts
-            ['update', true,  'user2',   function () { return ['authorID' => 'user2']; }, true],
-            ['update', true,  'user2',   function () { return ['authorID' => 'user1']; }, null],
+            ['update', true,  'user2',   function () {
+                return ['authorID' => 'user2'];
+            }, true],
+            ['update', true,  'user2',   function () {
+                return ['authorID' => 'user1'];
+            }, null],
             // user1 is admin, can update all posts
-            ['update', true,  'user1',   function () { return ['authorID' => 'user1']; }, true],
-            ['update', true,  'user1',   function () { return ['authorID' => 'user2']; }, true],
+            ['update', true,  'user1',   function () {
+                return ['authorID' => 'user1'];
+            }, true],
+            ['update', true,  'user1',   function () {
+                return ['authorID' => 'user2'];
+            }, true],
             // unknown user can not edit anything
-            ['update', true,  'unknown', function () { return ['authorID' => 'user1']; }, null],
-            ['update', true,  'unknown', function () { return ['authorID' => 'user2']; }, null],
+            ['update', true,  'unknown', function () {
+                return ['authorID' => 'user1'];
+            }, null],
+            ['update', true,  'unknown', function () {
+                return ['authorID' => 'user2'];
+            }, null],
         ];
     }
 

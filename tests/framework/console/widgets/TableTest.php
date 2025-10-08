@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -200,7 +201,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'ｔｅｓｔ３'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'ｔｅｓｔ３'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent２１', 'testcontent２２', 'testcontent２３'],
@@ -225,7 +228,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 [['key1' => 'col1', 'key2' => 'col2'], 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
@@ -249,7 +254,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
@@ -274,7 +281,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 [
@@ -301,7 +310,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent_21', 'testcontent__22', 'testcontent___23'],
@@ -362,7 +373,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2'],
                 ['testcontent21', 'testcontent22', null],
@@ -388,7 +401,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 [null, null, null],
                 [],
@@ -409,10 +424,12 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setRows([
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setRows([
             ['testcontent1', 'testcontent2'],
             ['testcontent21', 'testcontent22']
-        ])->setScreenWidth(200)->run()
+            ])->setScreenWidth(200)->run()
         );
     }
 
@@ -427,7 +444,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([])->setScreenWidth(200)->run()
         );
     }
@@ -505,9 +524,9 @@ EXPECTED;
         $columnWidths = $this->getInaccessibleProperty($table, 'columnWidths');
 
         $this->assertArrayHasKey(1, $columnWidths);
-        $this->assertEquals(4+2, $columnWidths[1]);
+        $this->assertEquals(4 + 2, $columnWidths[1]);
         $this->assertArrayHasKey(2, $columnWidths);
-        $this->assertEquals(8+2, $columnWidths[2]);
+        $this->assertEquals(8 + 2, $columnWidths[2]);
     }
 
     public function testCalculateRowHeightShouldNotThrowDivisionByZeroException()
@@ -659,7 +678,9 @@ EXPECTED;
 
 EXPECTED;
 
-        $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', Console::ansiFormat('test3', [Console::FG_RED])])
+        $this->assertEqualsWithoutLE(
+            $expected,
+            $table->setHeaders(['test1', 'test2', Console::ansiFormat('test3', [Console::FG_RED])])
             ->setRows([
                 [Console::ansiFormat('testcontent11', [Console::FG_BLUE]), Console::ansiFormat('testcontent12', [Console::FG_YELLOW]), 'testcontent13'],
                 ['testcontent21', 'testcontent22', [

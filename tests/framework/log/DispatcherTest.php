@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +18,6 @@ namespace yii\log {
 }
 
 namespace yiiunit\framework\log {
-
     use yiiunit\framework\log\mocks\TargetMock;
     use Yii;
     use yii\base\UserException;
@@ -204,7 +204,7 @@ namespace yiiunit\framework\log {
                 ->withConsecutive(
                     [$this->equalTo('messages'), $this->equalTo(true)],
                     [
-                        $this->callback(function($arg) use ($target1) {
+                        $this->callback(function ($arg) use ($target1) {
                             if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
                                 return false;
                             }
