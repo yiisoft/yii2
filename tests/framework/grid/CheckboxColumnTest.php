@@ -94,7 +94,6 @@ class CheckboxColumnTest extends TestCase
             'grid' => $this->getGrid(),
         ]);
         $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
-        ;
 
         $column = new CheckboxColumn([
             'content' => function ($model, $key, $index, $column) {

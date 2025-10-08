@@ -91,8 +91,11 @@ class ControllerTest extends TestCase
             'basePath' => __DIR__,
             'container' => [
                 'definitions' => [
-                    \yiiunit\framework\web\stubs\ModelBindingStub::className() => [ \yiiunit\framework\web\stubs\ModelBindingStub::className() , 'build'],
-                ]
+                    \yiiunit\framework\web\stubs\ModelBindingStub::className() => [
+                        \yiiunit\framework\web\stubs\ModelBindingStub::className(),
+                        'build',
+                    ],
+                ],
             ],
             'components' => [
                 'request' => [
@@ -363,15 +366,15 @@ class ControllerTest extends TestCase
         }
         // Use the PHP80 controller for this test
         $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
-             'id' => 'app',
-             'basePath' => __DIR__,
-             'components' => [
-                 'request' => [
-                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                     'scriptFile' => __DIR__ . '/index.php',
-                     'scriptUrl' => '/index.php',
-                 ],
-             ],
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
         ]));
 
         $this->mockWebApplication(['controller' => $this->controller]);

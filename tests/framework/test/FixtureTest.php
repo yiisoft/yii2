@@ -113,56 +113,56 @@ class MyTestCase
     {
         switch ($this->scenario) {
             case 0:
-return [];
+                return [];
             case 1:
-return [
-                'fixture1' => Fixture1::className(),
-            ];
+                return [
+                    'fixture1' => Fixture1::className(),
+                ];
             case 2:
-return [
-                'fixture2' => Fixture2::className(),
-            ];
+                return [
+                    'fixture2' => Fixture2::className(),
+                ];
             case 3:
-return [
-                'fixture3' => Fixture3::className(),
-            ];
+                return [
+                    'fixture3' => Fixture3::className(),
+                ];
             case 4:
-return [
-                'fixture1' => Fixture1::className(),
-                'fixture2' => Fixture2::className(),
-            ];
+                return [
+                    'fixture1' => Fixture1::className(),
+                    'fixture2' => Fixture2::className(),
+                ];
             case 5:
-return [
-                'fixture2' => Fixture2::className(),
-                'fixture3' => Fixture3::className(),
-            ];
+                return [
+                    'fixture2' => Fixture2::className(),
+                    'fixture3' => Fixture3::className(),
+                ];
             case 6:
-return [
-                'fixture1' => Fixture1::className(),
-                'fixture3' => Fixture3::className(),
-            ];
+                return [
+                    'fixture1' => Fixture1::className(),
+                    'fixture3' => Fixture3::className(),
+                ];
             case 7:
-return [
-                'fixture1' => Fixture1::className(),
-                'fixture2' => Fixture2::className(),
-                'fixture3' => Fixture3::className(),
-            ];
+                return [
+                    'fixture1' => Fixture1::className(),
+                    'fixture2' => Fixture2::className(),
+                    'fixture3' => Fixture3::className(),
+                ];
             case 8:
-return [
-                'fixture4' => Fixture4::className(),
-            ];
+                return [
+                    'fixture4' => Fixture4::className(),
+                ];
             case 9:
-return [
-                'fixture5' => Fixture5::className(),
-                'fixture4' => Fixture4::className(),
-            ];
+                return [
+                    'fixture5' => Fixture5::className(),
+                    'fixture4' => Fixture4::className(),
+                ];
             case 10:
-return [
-                'fixture3a' => Fixture3::className(), // duplicate fixtures may occur two fixtures depend on the same fixture.
-                'fixture3b' => Fixture3::className(),
-            ];
+                return [
+                    'fixture3a' => Fixture3::className(), // duplicate fixtures may occur two fixtures depend on the same fixture.
+                    'fixture3b' => Fixture3::className(),
+                ];
             default:
-return [];
+                return [];
         }
     }
 }

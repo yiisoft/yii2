@@ -46,19 +46,19 @@ class IndexActionTest extends TestCase
             'rest',
             new Module('rest'),
             [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
-                        $this->assertTrue($query instanceof Query);
-                        $sql = $query->createCommand()->getRawSql();
+                'modelClass' => IndexActionModel::className(),
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::className(),
+                        'modelClass' => IndexActionModel::className(),
+                        'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
+                            $this->assertTrue($query instanceof Query);
+                            $sql = $query->createCommand()->getRawSql();
 
-                        return $query;
-                    },
+                            return $query;
+                        },
+                    ],
                 ],
-            ],
             ]
         );
         Yii::$app->controller->run('index');
@@ -93,15 +93,15 @@ class IndexActionTest extends TestCase
             'rest',
             new Module('rest'),
             [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'pagination' => $pagination,
-                    'sort' => $sort,
+                'modelClass' => IndexActionModel::className(),
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::className(),
+                        'modelClass' => IndexActionModel::className(),
+                        'pagination' => $pagination,
+                        'sort' => $sort,
+                    ],
                 ],
-            ],
             ]
         );
 

@@ -58,12 +58,14 @@ class ListViewTest extends TestCase
         ])->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <div id="w0" class="list-view">
 
 </div>
-HTML
-            , $out);
+HTML,
+            $out
+        );
     }
 
     /**
@@ -98,14 +100,16 @@ HTML
         $this->getListView()->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
 </div>
-HTML
-            , $out);
+HTML,
+            $out
+        );
     }
 
     public function testWidgetOptions()
@@ -114,12 +118,14 @@ HTML
         $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
-HTML
-            , $out);
+HTML,
+            $out
+        );
     }
 
     public function itemViewOptions()
@@ -247,8 +253,7 @@ HTML
 <div data-key="2">2</div>
 <!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
 </div>
-HTML
-            ,
+HTML,
             $out
         );
     }

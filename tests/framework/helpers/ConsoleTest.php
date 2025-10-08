@@ -371,16 +371,16 @@ class ConsoleTest extends TestCase
 
         foreach (
             [
-                     'y' => true,
-                     'Y' => true,
-                     'yes' => true,
-                     'YeS' => true,
-                     'n' => false,
-                     'N' => false,
-                     'no' => false,
-                     'NO' => false,
-                     'WHAT?!' . PHP_EOL . 'yes' => true,
-                 ] as $currInput => $currAssertion
+                'y' => true,
+                'Y' => true,
+                'yes' => true,
+                'YeS' => true,
+                'n' => false,
+                'N' => false,
+                'no' => false,
+                'NO' => false,
+                'WHAT?!' . PHP_EOL . 'yes' => true,
+            ] as $currInput => $currAssertion
         ) {
             $this->sendInput($currInput);
             $result = ConsoleStub::confirm('Are you sure?');
@@ -416,15 +416,15 @@ class ConsoleTest extends TestCase
         $result = ConsoleStub::select('Using help', $options);
         $this->assertEquals(
             'Using help (c,d,m,?): '
-            . ' c - cat'
-            . PHP_EOL
-            . ' d - dog'
-            . PHP_EOL
-            . ' m - mouse'
-            . PHP_EOL
-            . ' ? - Show help'
-            . PHP_EOL
-            . 'Using help (c,d,m,?): ',
+                . ' c - cat'
+                . PHP_EOL
+                . ' d - dog'
+                . PHP_EOL
+                . ' m - mouse'
+                . PHP_EOL
+                . ' ? - Show help'
+                . PHP_EOL
+                . 'Using help (c,d,m,?): ',
             $this->readOutput()
         );
         $this->truncateStreams();
