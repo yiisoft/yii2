@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use Yii;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
