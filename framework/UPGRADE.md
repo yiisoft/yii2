@@ -120,7 +120,13 @@ Upgrade from Yii 2.0.x
   use yii\base\BaseObject;
   use yii\web\client\ClientScriptInterface;
   use yii\web\View;
+  use yii\widgets\ActiveField;
+  use yii\widgets\ActiveForm;  
   
+  /**
+   * @template T of ActiveForm|ActiveField
+   * @implements ClientScriptInterface<T>
+   */
   class MyCustomClientScript implements ClientScriptInterface
   {
       public function getClientOptions(BaseObject $object, array $options = []): array
