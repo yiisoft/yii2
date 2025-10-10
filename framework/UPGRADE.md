@@ -60,7 +60,7 @@ Upgrade from Yii 2.0.x
 * Support for CUBRID database has been removed.
 * `yii\widgets\ActiveField::label()` method now supports a `tag` option to control the wrapper element. This provides
   flexibility for custom label rendering while maintaining full backward compatibility:
-  
+
   - `tag => 'label'` default generates standard `<label>` element with `for` attribute.
   - `tag => false`  renders label content without any wrapper tag.
   - `tag => 'span'/'div'/etc` uses specified HTML element as wrapper.
@@ -68,7 +68,7 @@ Upgrade from Yii 2.0.x
   Example usage:
 
   ```php
-    $field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
+  $field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
   ```
 * jQuery is now optional in the framework. A new `useJquery` property has been added to `yii\console\Application` and
   `yii\web\Application` to control whether jQuery-based client scripts are used. The default value is `true`, 
