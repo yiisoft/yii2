@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,6 @@ class DbQueryDependencyTest extends DatabaseTestCase
      * {@inheritdoc}
      */
     protected $driverName = 'sqlite';
-
 
     /**
      * {@inheritdoc}

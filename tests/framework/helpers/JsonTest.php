@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -211,7 +212,7 @@ PHP
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid JSON data.');
-        
+
         Json::decode([]);
     }
 

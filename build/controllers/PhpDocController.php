@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -240,10 +241,10 @@ class PhpDocController extends ConsoleController
             $except[] = '/tests/';
             $except[] = '/docs/';
 
-//            // composer extension does not contain yii code
-//            if ($extension === 'composer') {
-//                return [];
-//            }
+            //            // composer extension does not contain yii code
+            //            if ($extension === 'composer') {
+            //                return [];
+            //            }
         } elseif (preg_match('~apps/([\w-]+)[\\\\/]?$~', $root, $matches)) {
             $extensionPath = \dirname(\dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
@@ -418,8 +419,12 @@ class PhpDocController extends ConsoleController
             $types = explode('|', $matches[2]);
             foreach ($types as $i => $type) {
                 switch ($type) {
-                    case 'integer': $types[$i] = 'int'; break;
-                    case 'boolean': $types[$i] = 'bool'; break;
+                    case 'integer':
+                        $types[$i] = 'int';
+                        break;
+                    case 'boolean':
+                        $types[$i] = 'bool';
+                        break;
                 }
             }
 
@@ -525,13 +530,15 @@ class PhpDocController extends ConsoleController
             }
         }
 
-//        $this->checkPropertyOrder($lineInfo);
+        //        $this->checkPropertyOrder($lineInfo);
         $result = [];
         foreach ($lines as $i => $line) {
             $result[] = $line;
             if (!($propertiesOnly && $i === $endofAll)) {
-                if ($i === $endofUse || $i === $endofConst || $i === $endofPublic ||
-                    $i === $endofProtected || $i === $endofPrivate) {
+                if (
+                    $i === $endofUse || $i === $endofConst || $i === $endofPublic ||
+                    $i === $endofProtected || $i === $endofPrivate
+                ) {
                     $result[] = '';
                 }
                 if ($i === $endofAll) {
@@ -820,8 +827,8 @@ class PhpDocController extends ConsoleController
                 if (isset($prop['get'], $prop['set'])) {
                     if ($prop['get']['type'] !== $prop['set']['type']) {
                         $note = ' Note that the type of this property differs in getter and setter.'
-                                . ' See [[get' . ucfirst($propName) . '()]]'
-                                . ' and [[set' . ucfirst($propName) . '()]] for details.';
+                            . ' See [[get' . ucfirst($propName) . '()]]'
+                            . ' and [[set' . ucfirst($propName) . '()]] for details.';
                     }
                 } elseif (isset($prop['get'])) {
                     if (!$this->hasSetterInParents($className, $propName)) {

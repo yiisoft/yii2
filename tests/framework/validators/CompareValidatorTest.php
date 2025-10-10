@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -42,7 +43,7 @@ class CompareValidatorTest extends TestCase
         $this->assertFalse($val->validate($value + 1));
 
         // Using a closure for compareValue
-        $val = new CompareValidator(['compareValue' => function() use ($value) {
+        $val = new CompareValidator(['compareValue' => function () use ($value) {
             return $value;
         }]);
         $this->assertTrue($val->validate($value));

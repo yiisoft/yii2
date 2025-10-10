@@ -492,7 +492,6 @@ class ComponentTest extends TestCase
         $obj->trigger('barEventOnce');
         $this->assertEquals(1, $obj->foo);
     }
-
 }
 
 class NewComponent extends Component

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -161,7 +162,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $session->set('user_id', 12345);
 
         // add mapped custom column
-        $migration = new Migration;
+        $migration = new Migration();
         $migration->compact = true;
         $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
 

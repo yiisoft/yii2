@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,6 +16,8 @@ use yii\db\Schema;
 
 abstract class QueryTest extends DatabaseTestCase
 {
+    use GetTablesAliasTestTrait;
+
     public function testSelect()
     {
         // default
@@ -118,8 +121,6 @@ abstract class QueryTest extends DatabaseTestCase
         $query->from($tables);
         $this->assertInstanceOf('\yii\db\Expression', $query->from[0]);
     }
-
-    use GetTablesAliasTestTrait;
 
     protected function createQuery()
     {
@@ -415,7 +416,6 @@ abstract class QueryTest extends DatabaseTestCase
             ->column($db);
         $this->assertEquals(['user3' => 'user3', 'user2' => 'user2', 'user1' => 'user1'], $result);
     }
-
 
     /**
      * Ensure no ambiguous column error occurs on indexBy with JOIN.
@@ -732,7 +732,6 @@ abstract class QueryTest extends DatabaseTestCase
         $update->bindValues([':id' => 3, ':name' => 'user3'])->execute();
         $this->assertEquals(null, $query->cache()->where(['id' => 3])->scalar($db), 'Null value should be cached.');
     }
-
 
     /**
      * checks that all needed properties copied from source to new query

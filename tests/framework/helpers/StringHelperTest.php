@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,7 +17,6 @@ use yiiunit\TestCase;
  */
 class StringHelperTest extends TestCase
 {
-
     protected function setUp(): void
     {
         parent::setUp();
@@ -271,7 +271,9 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode('Здесь我 multibyte我 строка', '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode('Disable,  trim  ,,,here but ignore empty', ',', false, true));
         $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode('It/, is?, a , test with rtrim', ',', 'rtrim'));
-        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode('It/, is?, a , test with closure', ',', function ($value) { return trim($value, '/?'); }));
+        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode('It/, is?, a , test with closure', ',', function ($value) {
+            return trim($value, '/?');
+        }));
     }
 
     public function testWordCount()

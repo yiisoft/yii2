@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -102,7 +103,6 @@ class ControllerTest extends TestCase
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
-
     }
 
     public function testNullableInjectedActionParams()
@@ -132,7 +132,9 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::className(), function() { throw new \RuntimeException('uh oh'); });
+        \Yii::$container->set(DummyService::className(), function () {
+            throw new \RuntimeException('uh oh');
+        });
 
         $this->expectException(get_class(new RuntimeException()));
         $this->expectExceptionMessage('uh oh');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -48,8 +49,10 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]
@@ -164,7 +167,8 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertSame(1, $inserted);
 
 
-        $found = $db->createCommand(<<<PGSQL
+        $found = $db->createCommand(
+            <<<PGSQL
             SELECT *
             FROM array_and_json_types
             WHERE jsonb_col @> '{"Some not existing key": "random value"}'
@@ -172,7 +176,8 @@ PGSQL
         )->execute();
         $this->assertSame(0, $found);
 
-        $found = $db->createCommand(<<<PGSQL
+        $found = $db->createCommand(
+            <<<PGSQL
             SELECT *
             FROM array_and_json_types
             WHERE jsonb_col @> '{"Solution date": "13.01.2011"}'

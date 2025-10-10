@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -253,7 +254,7 @@ EOT;
 
     public function testTabularInputErrors()
     {
-        $this->activeField->attribute = '[0]'.$this->attributeName;
+        $this->activeField->attribute = '[0]' . $this->attributeName;
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
         $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
@@ -845,14 +846,17 @@ class TestMaskedInput extends MaskedInput
         self::$lastInstance = $this;
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->options;
     }
 
     public function run()
     {
         return 'Options: ' . implode(', ', array_map(
-            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            function ($v, $k) {
+                return sprintf('%s="%s"', $k, $v);
+            },
             $this->options,
             array_keys($this->options)
         ));
@@ -866,4 +870,3 @@ class TestActiveFieldWithException extends ActiveField
         throw new \Exception('Test exception in toString.');
     }
 }
-

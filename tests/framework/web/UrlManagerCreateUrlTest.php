@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -67,7 +68,6 @@ class UrlManagerCreateUrlTest extends TestCase
 
         return new UrlManager($config);
     }
-
 
     public function variationsProvider()
     {
@@ -464,7 +464,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals("$prefix/site/index?param2=123", $url);
     }
 
-
     /**
      * Test createUrl() and createAbsoluteUrl()
      * with varying $showScriptName
@@ -521,7 +520,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $manager = $this->getUrlManager($config, $showScriptName);
         $assertations($manager);
     }
-
 
     public function absolutePatternsVariations()
     {

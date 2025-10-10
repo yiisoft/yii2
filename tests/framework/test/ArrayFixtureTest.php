@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -52,7 +53,7 @@ class ArrayFixtureTest extends TestCase
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
 
         $this->expectException(\yii\base\InvalidConfigException::class);
-        
+
         $this->_fixture->load();
     }
 }

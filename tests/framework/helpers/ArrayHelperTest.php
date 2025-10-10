@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -735,7 +736,8 @@ class ArrayHelperTest extends TestCase
             ],
         ], $result);
 
-        $result = ArrayHelper::map($array,
+        $result = ArrayHelper::map(
+            $array,
             static function (array $group) {
                 return $group['id'] . $group['name'];
             },
@@ -750,7 +752,8 @@ class ArrayHelperTest extends TestCase
             '345ccc' => 'cccy',
         ], $result);
 
-        $result = ArrayHelper::map($array,
+        $result = ArrayHelper::map(
+            $array,
             static function (array $group) {
                 return $group['id'] . $group['name'];
             },
@@ -1742,6 +1745,7 @@ class Post2 extends BaseObject
     public $id = 123;
     public $content = 'test';
     private $secret = 's';
+
     public function getSecret()
     {
         return $this->secret;

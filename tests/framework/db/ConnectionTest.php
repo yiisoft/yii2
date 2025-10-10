@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -416,7 +417,8 @@ abstract class ConnectionTest extends DatabaseTestCase
         } catch (\yii\db\Exception $e) {
             $this->assertStringContainsString(
                 'SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;',
-                $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string) $e,
+                $e->getMessage(),
+                'Exception message should contain raw SQL query: ' . (string) $e,
             );
             $thrown = true;
         }
@@ -474,7 +476,6 @@ abstract class ConnectionTest extends DatabaseTestCase
             $this->assertNull($conn3->pdo);
         }
     }
-
 
     /**
      * Test whether slave connection is recovered when call getSlavePdo(true) after close().

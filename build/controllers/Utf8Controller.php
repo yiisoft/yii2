@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -60,22 +61,25 @@ class Utf8Controller extends Controller
                 }
 
                 // https://unicode-table.com/en/blocks/general-punctuation/
-                if (0x2000 <= $ord && $ord <= 0x200F
-                 || 0x2028 <= $ord && $ord <= 0x202E
-                 || 0x205f <= $ord && $ord <= 0x206F
-                    ) {
+                if (
+                    0x2000 <= $ord && $ord <= 0x200F
+                    || 0x2028 <= $ord && $ord <= 0x202E
+                    || 0x205f <= $ord && $ord <= 0x206F
+                ) {
                     $this->found('UNSUPPORTED SPACE CHARACTER', $c, $line, $pos, $file);
                     continue;
                 }
-                if ($ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
-                    0x0080 <= $ord && $ord < 0x009F) {
+                if (
+                    $ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
+                    0x0080 <= $ord && $ord < 0x009F
+                ) {
                     $this->found('CONTROL CHARACTER', $c, $line, $pos, $file);
                     continue;
                 }
-//                if ($ord > 0x009F) {
-//                    $this->found("NON ASCII CHARACTER", $c, $line, $pos, $file);
-//                    continue;
-//                }
+                //                if ($ord > 0x009F) {
+                //                    $this->found("NON ASCII CHARACTER", $c, $line, $pos, $file);
+                //                    continue;
+                //                }
             }
         }
     }
@@ -114,11 +118,11 @@ class Utf8Controller extends Controller
             return ($h & 0x1F) << 6 | (\ord($c[1]) & 0x3F);
         } elseif ($h <= 0xEF) {
             return ($h & 0x0F) << 12 | (\ord($c[1]) & 0x3F) << 6
-                                     | (\ord($c[2]) & 0x3F);
+                | (\ord($c[2]) & 0x3F);
         } elseif ($h <= 0xF4) {
             return ($h & 0x0F) << 18 | (\ord($c[1]) & 0x3F) << 12
-                                     | (\ord($c[2]) & 0x3F) << 6
-                                     | (\ord($c[3]) & 0x3F);
+                | (\ord($c[2]) & 0x3F) << 6
+                | (\ord($c[3]) & 0x3F);
         }
 
         return false;

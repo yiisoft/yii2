@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -184,17 +185,18 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @dataProvider dataProviderAjaxRedirectInternetExplorer11
      */
-    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes) {
+    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes)
+    {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
-        $request= Yii::$app->request;
+        $request = Yii::$app->request;
         /** @var TestRequestComponent $request */
         $request->getIssAjaxOverride = true;
         $request->getUserAgentOverride = $userAgent;
-        foreach([true, false] as $pjaxOverride) {
+        foreach ([true, false] as $pjaxOverride) {
             $request->getIsPjaxOverride = $pjaxOverride;
-            foreach(['GET', 'POST'] as $methodOverride) {
+            foreach (['GET', 'POST'] as $methodOverride) {
                 $request->getMethodOverride = $methodOverride;
-                foreach($statusCodes as $statusCode => $expectStatusCode) {
+                foreach ($statusCodes as $statusCode => $expectStatusCode) {
                     $this->assertEquals($expectStatusCode, $this->response->redirect(['view'], $statusCode)->statusCode);
                 }
             }
@@ -208,7 +210,8 @@ class ResponseTest extends \yiiunit\TestCase
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
      * @return array
      */
-    public function dataProviderAjaxRedirectInternetExplorer11() {
+    public function dataProviderAjaxRedirectInternetExplorer11()
+    {
         return [
             ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]], // Firefox
             ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]], // IE 11
@@ -452,14 +455,14 @@ class ResponseTest extends \yiiunit\TestCase
      * @param $name
      * @return array|false
      */
-    protected function parseHeaderCookies() {
-
+    protected function parseHeaderCookies()
+    {
         if (!function_exists('xdebug_get_headers')) {
             return false;
         }
 
         $cookies = [];
-        foreach(xdebug_get_headers() as $header) {
+        foreach (xdebug_get_headers() as $header) {
             if (strpos($header, 'Set-Cookie: ') !== 0) {
                 continue;
             }
@@ -467,7 +470,7 @@ class ResponseTest extends \yiiunit\TestCase
             $name = null;
             $params = [];
             $pairs = explode(';', substr($header, 12));
-            foreach ($pairs as  $index => $pair) {
+            foreach ($pairs as $index => $pair) {
                 $pair = trim($pair);
                 if (strpos($pair, '=') === false) {
                     $params[strtolower($pair)] = true;

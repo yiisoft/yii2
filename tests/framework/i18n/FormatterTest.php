@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -86,7 +87,7 @@ class FormatterTest extends TestCase
         $this->assertSame(
             'from: ' . date('Y-m-d', $value),
             $this->formatter->format($value, function ($value, Formatter $formatter) {
-              return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
+                return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
             })
         );
     }
@@ -205,8 +206,10 @@ class FormatterTest extends TestCase
         $value = 'test@sample.com';
         $this->assertSame("<a href=\"mailto:$value\">$value</a>", $this->formatter->asEmail($value));
         $value = 'test@sample.com';
-        $this->assertSame("<a href=\"mailto:$value\" target=\"_blank\">$value</a>",
-            $this->formatter->asEmail($value, ['target' => '_blank']));
+        $this->assertSame(
+            "<a href=\"mailto:$value\" target=\"_blank\">$value</a>",
+            $this->formatter->asEmail($value, ['target' => '_blank'])
+        );
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asEmail(null));
@@ -297,8 +300,10 @@ class FormatterTest extends TestCase
         );
 
         $value = 'http://www.yiiframework.com/';
-        $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>",
-            $this->formatter->asUrl($value, ['target' => '_blank']));
+        $this->assertSame(
+            "<a href=\"$value\" target=\"_blank\">$value</a>",
+            $this->formatter->asUrl($value, ['target' => '_blank'])
+        );
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asUrl(null));

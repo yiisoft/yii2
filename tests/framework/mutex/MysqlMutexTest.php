@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -105,6 +106,6 @@ class MysqlMutexTest extends DatabaseTestCase
         $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $this->assertInstanceOf(MysqlMutex::classname(), $mutex);
         $this->assertInstanceOf(Expression::classname(), $mutex->keyPrefix);
-        $this->assertSame("1+1", $mutex->keyPrefix->expression);
+        $this->assertSame('1+1', $mutex->keyPrefix->expression);
     }
 }
