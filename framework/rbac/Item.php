@@ -33,7 +33,7 @@ class Item extends BaseObject
      */
     public $description;
     /**
-     * @var string name of the rule associated with this item
+     * @var string|null name of the rule associated with this item
      */
     public $ruleName;
     /**
