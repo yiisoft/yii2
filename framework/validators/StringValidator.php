@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,7 +9,8 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Json;
+use yii\jquery\validators\StringValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * StringValidator validates that the attribute value is of certain length.
@@ -71,7 +73,10 @@ class StringValidator extends Validator
      * @since 2.0.33
      */
     public $strict = true;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -102,6 +107,11 @@ class StringValidator extends Validator
         }
         if ($this->length !== null && $this->notEqual === null) {
             $this->notEqual = Yii::t('yii', '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => StringValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -166,10 +176,11 @@ class StringValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
+        }
 
-        return 'yii.validation.string(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -177,39 +188,10 @@ class StringValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $label = $model->getAttributeLabel($attribute);
-
-        $options = [
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $label,
-            ]),
-        ];
-
-        if ($this->min !== null) {
-            $options['min'] = $this->min;
-            $options['tooShort'] = $this->formatMessage($this->tooShort, [
-                'attribute' => $label,
-                'min' => $this->min,
-            ]);
-        }
-        if ($this->max !== null) {
-            $options['max'] = $this->max;
-            $options['tooLong'] = $this->formatMessage($this->tooLong, [
-                'attribute' => $label,
-                'max' => $this->max,
-            ]);
-        }
-        if ($this->length !== null) {
-            $options['is'] = $this->length;
-            $options['notEqual'] = $this->formatMessage($this->notEqual, [
-                'attribute' => $label,
-                'length' => $this->length,
-            ]);
-        }
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        return $options;
+        return [];
     }
 }

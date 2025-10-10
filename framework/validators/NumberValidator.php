@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,9 +9,9 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Json;
 use yii\helpers\StringHelper;
-use yii\web\JsExpression;
+use yii\jquery\validators\NumberValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * NumberValidator validates that the attribute value is a number.
@@ -60,7 +61,10 @@ class NumberValidator extends Validator
      * that matches floating numbers with optional exponential part (e.g. -1.23e-10).
      */
     public $numberPattern = '/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/';
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -77,6 +81,11 @@ class NumberValidator extends Validator
         }
         if ($this->max !== null && $this->tooBig === null) {
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => NumberValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -152,10 +161,11 @@ class NumberValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
+        }
 
-        return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -163,37 +173,10 @@ class NumberValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $label = $model->getAttributeLabel($attribute);
-
-        $options = [
-            'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $label,
-            ]),
-        ];
-
-        if ($this->min !== null) {
-            // ensure numeric value to make javascript comparison equal to PHP comparison
-            // https://github.com/yiisoft/yii2/issues/3118
-            $options['min'] = is_string($this->min) ? (float) $this->min : $this->min;
-            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
-                'attribute' => $label,
-                'min' => $this->min,
-            ]);
-        }
-        if ($this->max !== null) {
-            // ensure numeric value to make javascript comparison equal to PHP comparison
-            // https://github.com/yiisoft/yii2/issues/3118
-            $options['max'] = is_string($this->max) ? (float) $this->max : $this->max;
-            $options['tooBig'] = $this->formatMessage($this->tooBig, [
-                'attribute' => $label,
-                'max' => $this->max,
-            ]);
-        }
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        return $options;
+        return [];
     }
 }

@@ -78,7 +78,14 @@ class Application extends \yii\base\Application
      * @var Controller the currently active controller instance
      */
     public $controller;
-
+    /**
+     * Indicates whether jQuery should be used for client-side validation and widgets.
+     *
+     * When enabled, jQuery assets will be registered for validators and widgets that require it.
+     *
+     * @since 2.2.0
+     */
+    public bool $useJquery = false;
 
     /**
      * {@inheritdoc}
