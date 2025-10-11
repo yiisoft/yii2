@@ -6,3 +6,5 @@ ba0ab403b52124c941dbeb46fbd9efdc12252a5d
 9d327baa8b2c80b53d4d405678f03e6b89ff6e38
 # Add visibility for all class elements
 c82da8dc829d557e82b12edbed9e37003dfcc9a3
+# Fix codestyle in build and tests
+909396074eef92d62dd34b4709bb7351e722bec3
