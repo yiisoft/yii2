@@ -40,7 +40,7 @@ class ErrorExceptionTest extends TestCase
         }
         try {
             throw new ErrorException();
-        } catch (ErrorException $e){
+        } catch (ErrorException $e) {
             $this->assertEquals(__FUNCTION__, $e->getTrace()[0]['function']);
         }
     }

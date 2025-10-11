@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -81,7 +82,9 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test visible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {return $model['id'] == 1;},
+            'update' => function ($model, $key, $index) {
+                return $model['id'] == 1;
+            },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertStringContainsString('update_button', $columnContents);
@@ -95,7 +98,9 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {return $model['id'] != 1;},
+            'update' => function ($model, $key, $index) {
+                return $model['id'] != 1;
+            },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertStringNotContainsString('update_button', $columnContents);

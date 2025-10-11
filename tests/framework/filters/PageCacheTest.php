@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -476,7 +477,7 @@ class PageCacheTest extends TestCase
     public function testClosureVariations()
     {
         $keys = $this->invokeMethod(new PageCache([
-            'variations' => function() {
+            'variations' => function () {
                 return [
                     'foobar'
                 ];
@@ -486,7 +487,7 @@ class PageCacheTest extends TestCase
 
         // test type cast of string
         $keys = $this->invokeMethod(new PageCache([
-            'variations' => function() {
+            'variations' => function () {
                 return 'foobarstring';
             }
         ]), 'calculateCacheKey');

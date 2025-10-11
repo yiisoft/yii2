@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -29,7 +30,7 @@ class MimeTypeController extends Controller
     /**
      * @var array MIME type aliases
      */
-    private $aliases = [
+    private $_aliases = [
         'text/rtf' => 'application/rtf',
         'text/xml' => 'application/xml',
         'image/svg' => 'image/svg+xml',
@@ -48,7 +49,7 @@ class MimeTypeController extends Controller
     /**
      * @var array MIME types to add to the ones parsed from Apache files
      */
-    private $additionalMimeTypes = [
+    private $_additionalMimeTypes = [
         'apng' => 'image/apng',
         'avif' => 'image/avif',
         'jfif' => 'image/jpeg',
@@ -107,7 +108,7 @@ class MimeTypeController extends Controller
                 }
             }
         }
-        $mimeMap = array_replace($mimeMap, $this->additionalMimeTypes);
+        $mimeMap = array_replace($mimeMap, $this->_additionalMimeTypes);
         ksort($mimeMap, SORT_STRING);
         $array = VarDumper::export($mimeMap);
 
@@ -145,7 +146,7 @@ EOD;
     private function generateMimeAliasesFile($outFile)
     {
         $this->stdout("generating file $outFile...");
-        $array = VarDumper::export($this->aliases);
+        $array = VarDumper::export($this->_aliases);
         $content = <<<EOD
 <?php
 /**
@@ -189,7 +190,7 @@ EOD;
             }
         }
 
-        foreach ($this->additionalMimeTypes as $ext => $mime) {
+        foreach ($this->_additionalMimeTypes as $ext => $mime) {
             if (!array_key_exists($mime, $extensionMap)) {
                 $extensionMap[$mime] = [];
             }

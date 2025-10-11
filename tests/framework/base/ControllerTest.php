@@ -127,17 +127,14 @@ class TestController extends Controller
 
     public function actionTest3()
     {
-
     }
 
     public function actionTestTest()
     {
-
     }
 
     public function actionTest_test()
     {
-
     }
 }
 
@@ -145,16 +142,13 @@ class Test1Controller extends Controller
 {
     public function actionTest_1()
     {
-
     }
 
     public function actionTest_test()
     {
-
     }
 
     public function actionTestTest_test_2()
     {
-
     }
 }

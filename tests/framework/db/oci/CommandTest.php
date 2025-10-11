@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -117,7 +118,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             $this->assertEquals('user2', $command->bindValue(':id', 2)->queryScalar());
         }, 10);
 
-        $db->enableQueryCache =false;
+        $db->enableQueryCache = false;
 
         $db->cache(function (Connection $db) use ($update) {
             $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
@@ -289,7 +290,6 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-
         } catch (\Exception $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
@@ -339,9 +339,9 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $db = $this->getConnection();
 
-        if ($db->getSchema()->getTableSchema("testCreateTable") !== null) {
-            $db->createCommand("DROP SEQUENCE testCreateTable_SEQ")->execute();
-            $db->createCommand()->dropTable("testCreateTable")->execute();
+        if ($db->getSchema()->getTableSchema('testCreateTable') !== null) {
+            $db->createCommand('DROP SEQUENCE testCreateTable_SEQ')->execute();
+            $db->createCommand()->dropTable('testCreateTable')->execute();
         }
 
         $db->createCommand()->createTable(
@@ -404,7 +404,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db = $this->getConnection();
 
         if ($db->getSchema()->getTableSchema('testAlterTable') !== null) {
-            $db->createCommand("DROP SEQUENCE testAlterTable_SEQ")->execute();
+            $db->createCommand('DROP SEQUENCE testAlterTable_SEQ')->execute();
             $db->createCommand()->dropTable('testAlterTable')->execute();
         }
 
@@ -453,7 +453,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         }
 
         if ($db->getSchema()->getTableSchema('testCreateViewTable')) {
-            $db->createCommand("DROP SEQUENCE testCreateViewTable_SEQ")->execute();
+            $db->createCommand('DROP SEQUENCE testCreateViewTable_SEQ')->execute();
             $db->createCommand()->dropTable('testCreateViewTable')->execute();
         }
 

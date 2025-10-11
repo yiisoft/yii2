@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -104,7 +105,7 @@ class UploadedFileTest extends TestCase
         $model = new ModelStub();
         $targetFile = '@runtime/test_saved_uploaded_file_' . time();
 
-        (new MultipartFormDataParserTest)->testParse();
+        (new MultipartFormDataParserTest())->testParse();
         $_FILES['ModelStub'] = $_FILES['Item']; // $_FILES[Item] here from testParse() above
         $tmpFile = UploadedFile::getInstance($model, 'file');
 

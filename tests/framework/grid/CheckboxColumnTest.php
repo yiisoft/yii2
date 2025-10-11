@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -92,7 +93,7 @@ class CheckboxColumnTest extends TestCase
             },
             'grid' => $this->getGrid(),
         ]);
-        $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));;
+        $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = new CheckboxColumn([
             'content' => function ($model, $key, $index, $column) {

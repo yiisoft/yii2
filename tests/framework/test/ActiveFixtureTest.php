@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -84,7 +85,6 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals(1, $directory->id);
         $this->assertEquals('directory@example.com', $directory['email']);
         $test->tearDown();
-
     }
 
     public function testDataPath()

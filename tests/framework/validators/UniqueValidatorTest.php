@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -486,7 +487,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         ActiveRecord::$db = $connection;
 
         $model = null;
-        $connection->useMaster(function() use (&$model) {
+        $connection->useMaster(function () use (&$model) {
             $model = WithCustomer::find()->one();
         });
 
@@ -534,8 +535,10 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     }
 }
 
-class WithCustomer extends Customer {
-    public static function find() {
+class WithCustomer extends Customer
+{
+    public static function find()
+    {
         $res = parent::find();
 
         $res->with('profile');
@@ -544,8 +547,10 @@ class WithCustomer extends Customer {
     }
 }
 
-class JoinWithCustomer extends Customer {
-    public static function find() {
+class JoinWithCustomer extends Customer
+{
+    public static function find()
+    {
         $res = parent::find();
 
         $res->joinWith('profile');

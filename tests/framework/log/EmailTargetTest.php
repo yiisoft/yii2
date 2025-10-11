@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -48,7 +49,7 @@ class EmailTargetTest extends TestCase
     {
         $this->expectException(\yii\base\InvalidConfigException::class);
         $this->expectExceptionMessage('The "to" option must be set for EmailTarget::message.');
-                
+
         new EmailTarget(['mailer' => $this->mailer]);
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -98,8 +99,10 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]

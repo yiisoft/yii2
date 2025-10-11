@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -199,7 +200,7 @@ class AuthTest extends \yiiunit\TestCase
 
     public function testHeaders()
     {
-        Yii::$app->request->headers->set('Authorization', "Bearer wrong_token");
+        Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
         $filter = ['class' => HttpBearerAuth::className()];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -33,27 +34,33 @@ class ActiveFormTest extends \yiiunit\TestCase
         ActiveForm::end();
         ob_end_clean();
 
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required>
 </div>
-EOF
-, (string) $form->field($model, 'name', $o)->input('email', ['required' => true]));
+EOF,
+            (string) $form->field($model, 'name', $o)->input('email', ['required' => true])
+        );
 
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]">
 </div>
-EOF
-            , (string) $form->field($model, 'name', $o)->input('email', ['required' => false]));
+EOF,
+            (string) $form->field($model, 'name', $o)->input('email', ['required' => false])
+        );
 
 
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required="test">
 </div>
-EOF
-            , (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
+EOF,
+            (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test'])
+        );
     }
 
     public function testIssue5356()
@@ -68,7 +75,8 @@ EOF
         ob_end_clean();
 
         // https://github.com/yiisoft/yii2/issues/5356
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-categories">
 <input type="hidden" name="DynamicModel[categories]" value=""><select id="dynamicmodel-categories" class="form-control" name="DynamicModel[categories][]" multiple size="4">
 <option value="0">apple</option>
@@ -76,8 +84,9 @@ EOF
 <option value="2">avocado</option>
 </select>
 </div>
-EOF
-             , (string) $form->field($model, 'categories', $o)->listBox(['apple', 'banana', 'avocado'], ['multiple' => true]));
+EOF,
+            (string) $form->field($model, 'categories', $o)->listBox(['apple', 'banana', 'avocado'], ['multiple' => true])
+        );
     }
 
     public function testOutputBuffering()
@@ -95,7 +104,8 @@ EOF
 
         $this->assertEquals($obLevel, ob_get_level(), 'Output buffers not closed correctly.');
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <form id="someform" action="/someform" method="post">
 <div class="form-group field-dynamicmodel-name">
 <label class="control-label" for="dynamicmodel-name">Name</label>
@@ -104,8 +114,9 @@ EOF
 <div class="help-block"></div>
 </div>
 </form>
-HTML
-, $content);
+HTML,
+            $content
+        );
     }
 
     public function testRegisterClientScript()
@@ -175,35 +186,41 @@ HTML
         ActiveForm::end();
         ob_end_clean();
 
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 <label class="control-label" for="dynamicmodel-name">Name</label>
 <input type="text" id="dynamicmodel-name" class="form-control has-error" name="DynamicModel[name]" aria-invalid="true">
 
 <div class="help-block">I have an error!</div>
 </div>
-EOF
-        , (string) $form->field($model, 'name'));
+EOF,
+            (string) $form->field($model, 'name')
+        );
 
 
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 
 <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
 
 <div class="help-block">I have an error!</div>
 </div>
-EOF
-            , (string) $form->field($model, 'name')->checkbox());
+EOF,
+            (string) $form->field($model, 'name')->checkbox()
+        );
 
-        $this->assertEqualsWithoutLE(<<<'EOF'
+        $this->assertEqualsWithoutLE(
+            <<<'EOF'
 <div class="form-group field-dynamicmodel-name">
 
 <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
 
 <div class="help-block">I have an error!</div>
 </div>
-EOF
-            , (string) $form->field($model, 'name')->radio());
+EOF,
+            (string) $form->field($model, 'name')->radio()
+        );
     }
 }

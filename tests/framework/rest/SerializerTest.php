@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -529,8 +530,8 @@ class TestModel3 extends Model implements \JsonSerializable
     public function fields()
     {
         return [
-            'customField' => function() {
-                return $this->field3.'/'.$this->field4;
+            'customField' => function () {
+                return $this->field3 . '/' . $this->field4;
             },
         ];
     }
@@ -555,7 +556,7 @@ class TestModel4 implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'customField2' => $this->field5.'/'.$this->field6,
+            'customField2' => $this->field5 . '/' . $this->field6,
         ];
     }
 }
@@ -572,13 +573,13 @@ class TestModel5 extends Model
     public function fields()
     {
         $fields = static::$fields;
-        $fields['testModel3'] = function() {
+        $fields['testModel3'] = function () {
             return $this->getTestModel3();
         };
-        $fields['testModel4'] = function() {
+        $fields['testModel4'] = function () {
             return $this->getTestModel4();
         };
-        $fields['testModelArray'] = function() {
+        $fields['testModelArray'] = function () {
             return [$this->getTestModel3(), $this->getTestModel4()];
         };
         return $fields;

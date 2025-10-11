@@ -401,9 +401,10 @@ class PhpManager extends BaseManager
     {
         $roles = $this->getDefaultRoleInstances();
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $role = $this->items[$assignment->roleName];
-            if ($role->type === Item::TYPE_ROLE) {
-                $roles[$name] = $role;
+            $item = $this->items[$assignment->roleName];
+            if ($item->type === Item::TYPE_ROLE) {
+                /** @var Role $item */
+                $roles[$name] = $item;
             }
         }
 
@@ -490,9 +491,10 @@ class PhpManager extends BaseManager
     {
         $permissions = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $permission = $this->items[$assignment->roleName];
-            if ($permission->type === Item::TYPE_PERMISSION) {
-                $permissions[$name] = $permission;
+            $item = $this->items[$assignment->roleName];
+            if ($item->type === Item::TYPE_PERMISSION) {
+                /** @var Permission $item */
+                $permissions[$name] = $item;
             }
         }
 

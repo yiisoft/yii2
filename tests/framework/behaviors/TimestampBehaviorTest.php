@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -132,7 +133,12 @@ class TimestampBehaviorTest extends TestCase
     public function expressionProvider()
     {
         return [
-            [function () { return '2015-01-01'; }, '2015-01-01'],
+            [
+                function () {
+                    return '2015-01-01';
+                },
+                '2015-01-01',
+            ],
             [new Expression("strftime('%Y')"), date('Y')],
             ['2015-10-20', '2015-10-20'],
             [time(), time()],

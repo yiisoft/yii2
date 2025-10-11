@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -71,7 +72,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 67,
+            'line' => 68,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->',
@@ -195,18 +196,19 @@ class LoggerTest extends TestCase
             'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
             'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
         ];
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                'info' => 'token',
-                'category' => 'category',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-                'memory' => 2097152,
-                'memoryDiff' => 1048576,
+                [
+                    'info' => 'token',
+                    'category' => 'category',
+                    'timestamp' => 10,
+                    'trace' => 'trace',
+                    'level' => 0,
+                    'duration' => 5,
+                    'memory' => 2097152,
+                    'memoryDiff' => 1048576,
+                ],
             ],
-        ],
             $this->logger->calculateTimings($messages)
         );
 
@@ -214,18 +216,19 @@ class LoggerTest extends TestCase
             'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
             'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
         ];
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                'info' => ['a', 'b'],
-                'category' => 'category',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-                'memory' => 2097152,
-                'memoryDiff' => 1048576,
+                [
+                    'info' => ['a', 'b'],
+                    'category' => 'category',
+                    'timestamp' => 10,
+                    'trace' => 'trace',
+                    'level' => 0,
+                    'duration' => 5,
+                    'memory' => 2097152,
+                    'memoryDiff' => 1048576,
+                ],
             ],
-        ],
             $this->logger->calculateTimings($messages)
         );
     }
@@ -241,28 +244,29 @@ class LoggerTest extends TestCase
             ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
             ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
         ];
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                'info' => 'firstLevel',
-                'category' => 'firstLevelCategory',
-                'timestamp' => 10,
-                'trace' => 'firstTrace',
-                'level' => 0,
-                'duration' => 70,
-                'memory' => 4194304,
-                'memoryDiff' => 3145728,
+                [
+                    'info' => 'firstLevel',
+                    'category' => 'firstLevelCategory',
+                    'timestamp' => 10,
+                    'trace' => 'firstTrace',
+                    'level' => 0,
+                    'duration' => 70,
+                    'memory' => 4194304,
+                    'memoryDiff' => 3145728,
+                ],
+                [
+                    'info' => 'secondLevel',
+                    'category' => 'secondLevelCategory',
+                    'timestamp' => 15,
+                    'trace' => 'secondTrace',
+                    'level' => 1,
+                    'duration' => 40,
+                    'memory' => 3145728,
+                    'memoryDiff' => 1048576,
+                ],
             ],
-            [
-                'info' => 'secondLevel',
-                'category' => 'secondLevelCategory',
-                'timestamp' => 15,
-                'trace' => 'secondTrace',
-                'level' => 1,
-                'duration' => 40,
-                'memory' => 3145728,
-                'memoryDiff' => 1048576,
-            ],
-        ],
             $this->logger->calculateTimings($messages)
         );
     }
@@ -280,28 +284,29 @@ class LoggerTest extends TestCase
             ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
             ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
         ];
-        $this->assertEquals([
+        $this->assertEquals(
             [
-                'info' => 'firstLevel',
-                'category' => 'firstLevelCategory',
-                'timestamp' => 10,
-                'trace' => 'firstTrace',
-                'level' => 1,
-                'duration' => 70,
-                'memory' => 4194304,
-                'memoryDiff' => 3145728,
+                [
+                    'info' => 'firstLevel',
+                    'category' => 'firstLevelCategory',
+                    'timestamp' => 10,
+                    'trace' => 'firstTrace',
+                    'level' => 1,
+                    'duration' => 70,
+                    'memory' => 4194304,
+                    'memoryDiff' => 3145728,
+                ],
+                [
+                    'info' => 'secondLevel',
+                    'category' => 'secondLevelCategory',
+                    'timestamp' => 15,
+                    'trace' => 'secondTrace',
+                    'level' => 0,
+                    'duration' => 40,
+                    'memory' => 3145728,
+                    'memoryDiff' => 1048576,
+                ],
             ],
-            [
-                'info' => 'secondLevel',
-                'category' => 'secondLevelCategory',
-                'timestamp' => 15,
-                'trace' => 'secondTrace',
-                'level' => 0,
-                'duration' => 40,
-                'memory' => 3145728,
-                'memoryDiff' => 1048576,
-            ],
-        ],
             $this->logger->calculateTimings($messages)
         );
     }

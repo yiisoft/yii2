@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -42,7 +43,6 @@ trait MigrateControllerTestTrait
      * @var int|null migration controller exit code
      */
     protected $migrationExitCode;
-
 
     public function getExitCode()
     {

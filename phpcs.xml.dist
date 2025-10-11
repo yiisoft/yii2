@@ -2,6 +2,30 @@
 <ruleset name="Yii2">
     <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2"></rule>
 
+    <!-- TODO: fix errors -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- TODO: fix errors -->
+    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- TODO: fix errors -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <exclude-pattern>tests/framework/web/UserTest.php</exclude-pattern>
+    </rule>
+
+    <rule ref="Internal.NoCodeFound">
+        <exclude-pattern>tests/data/views/simple.php</exclude-pattern>
+    </rule>
+
     <!-- display progress -->
     <arg value="p"/>
     <!-- Show error codes -->
@@ -12,4 +36,6 @@
     <arg name="basepath" value="."/>
 
     <exclude-pattern>framework/views/*</exclude-pattern>
+    <exclude-pattern>tests/data/views/*</exclude-pattern>
+    <exclude-pattern>tests/js/*</exclude-pattern>
 </ruleset>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,6 @@ abstract class DatabaseTestCase extends TestCase
      * @var Connection
      */
     private $_db;
-
 
     protected function setUp(): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -74,8 +75,8 @@ class UserTest extends TestCase
         static::$time = \time();
         Yii::$app->user->login(UserIdentity::findIdentity('user1'));
 
-//        print_r(Yii::$app->session);
-//        print_r($_SESSION);
+        //        print_r(Yii::$app->session);
+        //        print_r($_SESSION);
 
         $this->mockWebApplication($appConfig);
         $this->assertFalse(Yii::$app->user->isGuest);
@@ -215,6 +216,7 @@ class UserTest extends TestCase
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
+
     public function testLoginRequired()
     {
         $appConfig = [
@@ -591,7 +593,6 @@ class MockResponse extends \yii\web\Response
 
 class AccessChecker extends BaseObject implements CheckAccessInterface
 {
-
     public function checkAccess($userId, $permissionName, $params = [])
     {
         // Implement checkAccess() method.

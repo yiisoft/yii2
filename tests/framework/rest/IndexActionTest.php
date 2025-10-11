@@ -44,21 +44,23 @@ class IndexActionTest extends TestCase
         $sql = '';
         Yii::$app->controller = new RestController(
             'rest',
-            new Module('rest'), [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
-                        $this->assertTrue($query instanceof Query);
-                        $sql = $query->createCommand()->getRawSql();
+            new Module('rest'),
+            [
+                'modelClass' => IndexActionModel::className(),
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::className(),
+                        'modelClass' => IndexActionModel::className(),
+                        'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
+                            $this->assertTrue($query instanceof Query);
+                            $sql = $query->createCommand()->getRawSql();
 
-                        return $query;
-                    },
+                            return $query;
+                        },
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
         Yii::$app->controller->run('index');
 
         $this->assertEquals(
@@ -89,17 +91,19 @@ class IndexActionTest extends TestCase
 
         $controller = new RestController(
             'rest',
-            new Module('rest'), [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'pagination' => $pagination,
-                    'sort' => $sort,
+            new Module('rest'),
+            [
+                'modelClass' => IndexActionModel::className(),
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::className(),
+                        'modelClass' => IndexActionModel::className(),
+                        'pagination' => $pagination,
+                        'sort' => $sort,
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
         /** @var ActiveDataProvider $dataProvider */
         $dataProvider = $controller->createAction('index')->runWithParams([]);
@@ -197,7 +201,6 @@ class RestController extends ActiveController
 
 class Module extends \yii\base\Module
 {
-
 }
 
 /**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -185,8 +186,10 @@ class FileValidatorTest extends TestCase
         );
         $m->setScenario('validateMultipleFiles');
         $this->assertFalse($m->validate());
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_images')),
-            'Only files with these extensions are allowed'));
+        $this->assertNotFalse(stripos(
+            current($m->getErrors('attr_images')),
+            'Only files with these extensions are allowed'
+        ));
 
         $m = FakedValidationModel::createWithAttributes(
             [
@@ -669,7 +672,8 @@ class FileValidatorTest extends TestCase
      * @param bool   $expected
      * @dataProvider mimeTypeCaseInsensitive
      */
-    public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected) {
+    public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected)
+    {
         $validator = $this->getMockBuilder(\yii\validators\FileValidator::class)
             ->onlyMethods(['getMimeTypeByFile'])
             ->getMock();
