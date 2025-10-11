@@ -6,8 +6,6 @@ on:
       - ".appveyor.yml"
       - ".dockerignore"
       - ".editorconfig"
-      - ".eslintignore"
-      - ".eslintrc"
       - ".git-blame-ignore-revs"
       - ".gitattributes"
       - ".github/CONTRIBUTING.md"
