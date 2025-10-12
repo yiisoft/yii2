@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\mutex;
 
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Expression;
 use yii\mutex\MysqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
@@ -28,11 +30,11 @@ class MysqlMutexTest extends DatabaseTestCase
     /**
      * @param array $additionalParams additional params to component create
      * @return MysqlMutex
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function createMutex($additionalParams = [])
     {
-        return \Yii::createObject(array_merge([
+        return Yii::createObject(array_merge([
             'class' => MysqlMutex::className(),
             'db' => $this->getConnection(),
         ], $additionalParams));
@@ -43,7 +45,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesString($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesString($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => 'a']);
         $mutexTwo = $this->createMutex(['keyPrefix' => 'b']);
@@ -59,7 +61,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesLongString($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesLongString($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => str_repeat('a', 40)]);
         $mutexTwo = $this->createMutex(['keyPrefix' => str_repeat('b', 40)]);
@@ -75,7 +77,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesExpression($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesExpression($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $mutexTwo = $this->createMutex(['keyPrefix' => new Expression('1+2')]);
@@ -91,7 +93,7 @@ class MysqlMutexTest extends DatabaseTestCase
      *
      * @param string $mutexName
      */
-    public function testThatMutexLocksWithKeyPrefixesExpressionCalculatedValue($mutexName)
+    public function testThatMutexLocksWithKeyPrefixesExpressionCalculatedValue($mutexName): void
     {
         $mutexOne = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $mutexTwo = $this->createMutex(['keyPrefix' => new Expression('1*2')]);
@@ -101,7 +103,7 @@ class MysqlMutexTest extends DatabaseTestCase
         $this->assertTrue($mutexOne->release($mutexName));
     }
 
-    public function testCreateMutex()
+    public function testCreateMutex(): void
     {
         $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
         $this->assertInstanceOf(MysqlMutex::classname(), $mutex);

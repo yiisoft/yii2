@@ -19,7 +19,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 {
     public $driverName = 'pgsql';
 
-    public function testAutoQuoting()
+    public function testAutoQuoting(): void
     {
         $db = $this->getConnection(false);
 
@@ -28,7 +28,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
-    public function testBooleanValuesInsert()
+    public function testBooleanValuesInsert(): void
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
@@ -45,7 +45,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->queryScalar());
     }
 
-    public function testBooleanValuesBatchInsert()
+    public function testBooleanValuesBatchInsert(): void
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
@@ -65,7 +65,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->queryScalar());
     }
 
-    public function testLastInsertId()
+    public function testLastInsertId(): void
     {
         $db = $this->getConnection();
 
@@ -94,7 +94,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * @see https://github.com/yiisoft/yii2/issues/11498
      */
-    public function testSaveSerializedObject()
+    public function testSaveSerializedObject(): void
     {
         if (\defined('HHVM_VERSION')) {
             $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob colums in the way they are used here.');
@@ -157,7 +157,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * @see https://github.com/yiisoft/yii2/issues/15827
      */
-    public function testIssue15827()
+    public function testIssue15827(): void
     {
         $db = $this->getConnection();
 

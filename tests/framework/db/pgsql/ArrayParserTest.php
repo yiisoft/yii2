@@ -39,7 +39,7 @@ class ArrayParserTest extends TestCase
     /**
      * @dataProvider convertProvider
      */
-    public function testConvert($string, $expected)
+    public function testConvert($string, $expected): void
     {
         $this->assertSame($expected, $this->arrayParser->parse($string));
     }

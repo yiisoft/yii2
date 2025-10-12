@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\filters\auth;
 
+use stdClass;
+use ReflectionClass;
 use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
@@ -58,12 +60,12 @@ class AuthMethodTest extends TestCase
 
     // Tests :
 
-    public function testBeforeAction()
+    public function testBeforeAction(): void
     {
         $action = $this->createAction();
 
         $filter = $this->createFilter(function () {
-            return new \stdClass();
+            return new stdClass();
         });
         $this->assertTrue($filter->beforeAction($action));
 
@@ -74,9 +76,9 @@ class AuthMethodTest extends TestCase
         $this->assertTrue($filter->beforeAction($action));
     }
 
-    public function testIsOptional()
+    public function testIsOptional(): void
     {
-        $reflection = new \ReflectionClass(AuthMethod::className());
+        $reflection = new ReflectionClass(AuthMethod::className());
         $method = $reflection->getMethod('isOptional');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
@@ -86,7 +88,7 @@ class AuthMethodTest extends TestCase
         }
 
         $filter = $this->createFilter(function () {
-            return new \stdClass();
+            return new stdClass();
         });
 
         $filter->optional = ['some'];

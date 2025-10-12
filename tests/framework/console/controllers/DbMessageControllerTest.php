@@ -8,6 +8,14 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\console\Application;
+use yii\console\Controller;
+use yii\helpers\ArrayHelper;
+use yii\db\Query;
+use yii\db\Expression;
+use yii\base\InvalidParamException;
+use yii\db\Exception;
+use yii\base\InvalidConfigException;
 use Yii;
 use yii\db\Connection;
 
@@ -30,7 +38,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
-            new \yii\console\Application([
+            new Application([
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
@@ -45,7 +53,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
             ob_end_clean();
@@ -83,10 +91,10 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
-     * @throws \yii\db\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @return \yii\db\Connection
+     * @throws InvalidParamException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @return Connection
      */
     public static function getConnection()
     {
@@ -150,11 +158,11 @@ class DbMessageControllerTest extends BaseMessageControllerTest
      */
     protected function loadMessages($category)
     {
-        return \yii\helpers\ArrayHelper::map((new \yii\db\Query())
+        return ArrayHelper::map((new Query())
             ->select(['message' => 't1.message', 'translation' => 't2.translation'])
             ->from(['t1' => 'source_message', 't2' => 'message'])
             ->where([
-                't1.id' => new \yii\db\Expression('[[t2.id]]'),
+                't1.id' => new Expression('[[t2.id]]'),
                 't1.category' => $category,
                 't2.language' => $this->language,
             ])->all(static::$db), 'message', 'translation');
@@ -166,7 +174,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
      * Source is marked instead of translation.
      * @depends testMerge
      */
-    public function testMarkObsoleteMessages()
+    public function testMarkObsoleteMessages(): void
     {
         $category = 'category';
 
@@ -188,7 +196,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $this->assertEquals($obsoleteTranslation, $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
     }
 
-    public function testMessagesSorting()
+    public function testMessagesSorting(): void
     {
         $this->markTestSkipped('There\'s no need to order messages for database');
     }

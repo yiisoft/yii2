@@ -151,7 +151,7 @@ class PageCacheTest extends TestCase
      * @dataProvider cacheTestCaseProvider
      * @param array $testCase
      */
-    public function testCache($testCase)
+    public function testCache($testCase): void
     {
         $testCase = ArrayHelper::merge([
             'properties' => [],
@@ -255,7 +255,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testExpired()
+    public function testExpired(): void
     {
         CacheTestCase::$time = time();
         CacheTestCase::$microtime = microtime(true);
@@ -300,7 +300,7 @@ class PageCacheTest extends TestCase
         ob_end_clean();
     }
 
-    public function testVaryByRoute()
+    public function testVaryByRoute(): void
     {
         $testCases = [
             false,
@@ -351,7 +351,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testVariations()
+    public function testVariations(): void
     {
         $testCases = [
             [true, 'name' => 'value'],
@@ -403,7 +403,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testDependency()
+    public function testDependency(): void
     {
         $testCases = [
             false,
@@ -460,7 +460,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testCalculateCacheKey()
+    public function testCalculateCacheKey(): void
     {
         $expected = ['yii\filters\PageCache', 'test', 'ru'];
         Yii::$app->requestedRoute = 'test';
@@ -474,7 +474,7 @@ class PageCacheTest extends TestCase
         $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
     }
 
-    public function testClosureVariations()
+    public function testClosureVariations(): void
     {
         $keys = $this->invokeMethod(new PageCache([
             'variations' => function () {

@@ -51,7 +51,7 @@ class FakeController extends Controller
         ];
     }
 
-    public function actionIndex()
+    public function actionIndex(): void
     {
         self::$_wasActionIndexCalled = true;
     }

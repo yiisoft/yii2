@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\filters;
 
+use yii\web\BadRequestHttpException;
 use Yii;
 use yii\base\Action;
 use yii\filters\ContentNegotiator;
@@ -39,7 +40,7 @@ class ContentNegotiatorTest extends TestCase
         return [$action, $filter];
     }
 
-    public function testWhenLanguageGETParamIsArray()
+    public function testWhenLanguageGETParamIsArray(): void
     {
         list($action, $filter) = $this->mockActionAndFilter();
 
@@ -56,7 +57,7 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals($targetLanguage, Yii::$app->language);
     }
 
-    public function testWhenFormatGETParamIsArray()
+    public function testWhenFormatGETParamIsArray(): void
     {
         list($action, $filter) = $this->mockActionAndFilter();
 
@@ -71,13 +72,13 @@ class ContentNegotiatorTest extends TestCase
             'application/xml' => Response::FORMAT_XML,
         ];
 
-        $this->expectException(\yii\web\BadRequestHttpException::class);
+        $this->expectException(BadRequestHttpException::class);
         $this->expectExceptionMessage('Invalid data received for GET parameter');
 
         $filter->beforeAction($action);
     }
 
-    public function testVaryHeader()
+    public function testVaryHeader(): void
     {
         list($action, $filter) = $this->mockActionAndFilter();
         $filter->formats = [];
@@ -118,7 +119,7 @@ class ContentNegotiatorTest extends TestCase
         $this->assertContains('Accept-Language', $varyHeader);
     }
 
-    public function testNegotiateContentType()
+    public function testNegotiateContentType(): void
     {
         $filter = new ContentNegotiator([
             'formats' => [

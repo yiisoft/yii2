@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\mutex;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\mutex\FileMutex;
 use yiiunit\TestCase;
@@ -27,7 +28,7 @@ class FileMutexTest extends TestCase
      */
     protected function createMutex()
     {
-        return \Yii::createObject([
+        return Yii::createObject([
             'class' => FileMutex::className(),
             'mutexPath' => '@yiiunit/runtime/mutex',
         ]);
@@ -39,7 +40,7 @@ class FileMutexTest extends TestCase
      * @param string $mutexName
      * @throws InvalidConfigException
      */
-    public function testDeleteLockFile($mutexName)
+    public function testDeleteLockFile($mutexName): void
     {
         $mutex = $this->createMutex();
         $fileName = $mutex->mutexPath . '/' . md5($mutexName) . '.lock';

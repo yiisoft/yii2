@@ -46,7 +46,7 @@ class UserTest extends TestCase
         parent::tearDown();
     }
 
-    public function testLoginExpires()
+    public function testLoginExpires(): void
     {
         $appConfig = [
             'components' => [
@@ -97,7 +97,7 @@ class UserTest extends TestCase
      * Make sure autologin works more than once.
      * @see https://github.com/yiisoft/yii2/issues/11825
      */
-    public function testIssue11825()
+    public function testIssue11825(): void
     {
         global $cookiesMock;
         $cookiesMock = new CookieCollection();
@@ -148,7 +148,7 @@ class UserTest extends TestCase
         $this->assertTrue(Yii::$app->user->isGuest);
     }
 
-    public function testCookieCleanup()
+    public function testCookieCleanup(): void
     {
         global $cookiesMock;
 
@@ -217,7 +217,7 @@ class UserTest extends TestCase
         Yii::$app->user->setReturnUrl(null);
     }
 
-    public function testLoginRequired()
+    public function testLoginRequired(): void
     {
         $appConfig = [
             'components' => [
@@ -343,7 +343,7 @@ class UserTest extends TestCase
         $this->assertSame($id, Yii::$app->session->id);
     }
 
-    public function testLoginRequiredException1()
+    public function testLoginRequiredException1(): void
     {
         $appConfig = [
             'components' => [
@@ -366,7 +366,7 @@ class UserTest extends TestCase
         Yii::$app->user->loginRequired();
     }
 
-    public function testAccessChecker()
+    public function testAccessChecker(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -404,7 +404,7 @@ class UserTest extends TestCase
         $this->assertInstanceOf(AccessChecker::className(), Yii::$app->user->accessChecker);
     }
 
-    public function testGetIdentityException()
+    public function testGetIdentityException(): void
     {
         $session = $this->getMockBuilder(\yii\web\Session::class)->getMock();
         $session->method('getHasSessionId')->willReturn(true);
@@ -433,7 +433,7 @@ class UserTest extends TestCase
         Yii::$app->getUser()->getIdentity();
     }
 
-    public function testSetIdentity()
+    public function testSetIdentity(): void
     {
         $appConfig = [
             'components' => [
@@ -472,7 +472,7 @@ class UserTest extends TestCase
         Yii::$app->user->setIdentity(new \stdClass());
     }
 
-    public function testSessionAuthWithNonExistingId()
+    public function testSessionAuthWithNonExistingId(): void
     {
         $appConfig = [
             'components' => [
@@ -489,7 +489,7 @@ class UserTest extends TestCase
         $this->assertNull(Yii::$app->user->getIdentity());
     }
 
-    public function testSessionAuthWithMissingKey()
+    public function testSessionAuthWithMissingKey(): void
     {
         $appConfig = [
             'components' => [
@@ -508,7 +508,7 @@ class UserTest extends TestCase
         $this->assertSame($id, Yii::$app->session->id);
     }
 
-    public function testSessionAuthWithInvalidKey()
+    public function testSessionAuthWithInvalidKey(): void
     {
         $appConfig = [
             'components' => [
@@ -528,7 +528,7 @@ class UserTest extends TestCase
         $this->assertSame($id, Yii::$app->session->id);
     }
 
-    public function testSessionAuthWithValidKey()
+    public function testSessionAuthWithValidKey(): void
     {
         $appConfig = [
             'components' => [
@@ -548,7 +548,7 @@ class UserTest extends TestCase
         $this->assertSame($id, Yii::$app->session->id);
     }
 
-    public function testSessionAuthWhenIdentityReturnsNull()
+    public function testSessionAuthWhenIdentityReturnsNull(): void
     {
         $appConfig = [
             'components' => [
@@ -593,7 +593,7 @@ class MockResponse extends \yii\web\Response
 
 class AccessChecker extends BaseObject implements CheckAccessInterface
 {
-    public function checkAccess($userId, $permissionName, $params = [])
+    public function checkAccess($userId, $permissionName, $params = []): void
     {
         // Implement checkAccess() method.
     }

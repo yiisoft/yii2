@@ -19,7 +19,7 @@ class VarbinaryTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
-    public function testVarbinary()
+    public function testVarbinary(): void
     {
         $db = $this->getConnection();
 

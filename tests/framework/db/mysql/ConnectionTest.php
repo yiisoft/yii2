@@ -21,7 +21,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     /**
      * @doesNotPerformAssertions
      */
-    public function testTransactionAutocommit()
+    public function testTransactionAutocommit(): void
     {
         /** @var Connection $connection */
         $connection = $this->getConnection(true);

@@ -8,6 +8,11 @@
 
 namespace yiiunit\framework\log;
 
+use yii\console\Application;
+use yii\console\Controller;
+use yii\base\InvalidParamException;
+use yii\db\Exception;
+use yii\base\InvalidConfigException;
 use Yii;
 use yii\db\Connection;
 use yii\db\Query;
@@ -34,7 +39,7 @@ abstract class DbTargetTest extends TestCase
     protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
-            new \yii\console\Application([
+            new Application([
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
@@ -58,7 +63,7 @@ abstract class DbTargetTest extends TestCase
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
+        if ($result !== Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
             ob_end_clean();
@@ -90,10 +95,10 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
-     * @throws \yii\db\Exception
-     * @throws \yii\base\InvalidConfigException
-     * @return \yii\db\Connection
+     * @throws InvalidParamException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @return Connection
      */
     public static function getConnection()
     {
@@ -120,7 +125,7 @@ abstract class DbTargetTest extends TestCase
      * Tests that precision isn't lost for log timestamps.
      * @see https://github.com/yiisoft/yii2/issues/7384
      */
-    public function testTimestamp()
+    public function testTimestamp(): void
     {
         $logger = Yii::getLogger();
 
@@ -143,7 +148,7 @@ abstract class DbTargetTest extends TestCase
         static::assertEquals($time, $loggedTime);
     }
 
-    public function testTransactionRollBack()
+    public function testTransactionRollBack(): void
     {
         $db = self::getConnection();
         $logger = Yii::getLogger();

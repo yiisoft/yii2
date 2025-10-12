@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\data\Pagination;
 use yii\helpers\StringHelper;
 use yii\widgets\LinkPager;
@@ -15,7 +16,7 @@ use yii\widgets\LinkPager;
 /**
  * @group widgets
  */
-class LinkPagerTest extends \yiiunit\TestCase
+class LinkPagerTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -44,7 +45,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         return $pagination;
     }
 
-    public function testFirstLastPageLabels()
+    public function testFirstLastPageLabels(): void
     {
         $pagination = $this->getPagination(5);
         $output = LinkPager::widget([
@@ -87,7 +88,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $this->assertStringNotContainsString('<li class="last">', $output);
     }
 
-    public function testDisabledPageElementOptions()
+    public function testDisabledPageElementOptions(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -97,7 +98,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $this->assertStringContainsString('<span class="foo-bar">&laquo;</span>', $output);
     }
 
-    public function testDisabledPageElementOptionsWithTagOption()
+    public function testDisabledPageElementOptionsWithTagOption(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -107,7 +108,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $this->assertStringContainsString('<div class="foo-bar">&laquo;</div>', $output);
     }
 
-    public function testDisableCurrentPageButton()
+    public function testDisableCurrentPageButton(): void
     {
         $pagination = $this->getPagination(5);
         $output = LinkPager::widget([
@@ -128,7 +129,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $this->assertStringContainsString('<li class="active disabled"><span>6</span></li>', $output);
     }
 
-    public function testOptionsWithTagOption()
+    public function testOptionsWithTagOption(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(5),
@@ -141,7 +142,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $this->assertTrue(StringHelper::endsWith($output, '</div>'));
     }
 
-    public function testLinkWrapOptions()
+    public function testLinkWrapOptions(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(1),
@@ -161,7 +162,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
-    public function testWithTwoButtons()
+    public function testWithTwoButtons(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -194,7 +195,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
-    public function testWithOneButton()
+    public function testWithOneButton(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -225,7 +226,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         );
     }
 
-    public function testWithNoButtons()
+    public function testWithNoButtons(): void
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(0),
@@ -257,7 +258,7 @@ class LinkPagerTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         $output = LinkPager::widget([
