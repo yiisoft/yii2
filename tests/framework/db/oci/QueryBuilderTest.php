@@ -309,4 +309,17 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
             $this->assertIsOneOf($actualParams, $expectedParams);
         }
     }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     *
+     * @param string $sql The SQL.
+     */
+    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    {
+        $this->expectException(\yii\base\NotSupportedException::class);
+        $this->expectExceptionMessage('oci does not support');
+
+        parent::testAddDropDefaultValue($sql, $builder);
+    }
 }
