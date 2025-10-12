@@ -90,7 +90,6 @@ class ActionFilterTest extends TestCase
         $this->assertEquals([1, 3, 2], $controller->result);
     }
 
-
     public static function actionFilterProvider(): array
     {
         return [

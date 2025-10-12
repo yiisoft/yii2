@@ -1,10 +1,15 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+namespace yiiunit\framework\helpers;
+
+use stdClass;
+use Yii;
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
@@ -22,7 +27,7 @@ class FileHelperTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . static::class;
+        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
         $this->createDir($this->testFilePath);
         if (!file_exists($this->testFilePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
@@ -906,7 +911,7 @@ class FileHelperTest extends TestCase
         $dirName = 'test_dir';
         $this->createFileStructure([
             $dirName => [
-               'test_sub_dir' => [
+                'test_sub_dir' => [
                     'file_1.txt' => 'sub dir file 1 content',
                 ],
                 'second_sub_dir' => [
@@ -987,7 +992,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected created test file owner to be current user.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected created test file group to be current group.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
 
 
         /////////////////
@@ -1000,7 +1005,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
 
         if ($currentUserId !== 0) {
             $this->markTestInComplete(__METHOD__ . ' could only run partially, chown() can only to be tested as root user. Current user: ' . $currentUserName);
@@ -1016,7 +1021,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership, fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as numeric string (should be treated as integer)
         $ownership = '10002';
@@ -1024,7 +1029,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership, fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as string
         $ownership = $currentUserName;
@@ -1032,7 +1037,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership, posix_getpwuid(fileowner($testFile))['name'], 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as numeric string with trailing colon (should be treated as integer)
         $ownership = '10003:';
@@ -1040,7 +1045,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership, fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as string with trailing colon
         $ownership = $currentUserName . ':';
@@ -1048,7 +1053,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals(substr($ownership, 0, -1), posix_getpwuid(fileowner($testFile))['name'], 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as indexed array (integer value)
         $ownership = [10004];
@@ -1056,7 +1061,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership[0], fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as indexed array (numeric string value)
         $ownership = ['10005'];
@@ -1064,7 +1069,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership[0], fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as associative array (string value)
         $ownership = ['user' => $currentUserName];
@@ -1072,7 +1077,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership['user'], posix_getpwuid(fileowner($testFile))['name'], 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         ///////////////////////
         /// Group Ownership ///
@@ -1084,7 +1089,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals((int)substr($ownership, 1), filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as string
         $ownership = ':' . $currentGroupName;
@@ -1092,7 +1097,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals(substr($ownership, 1), posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as associative array (integer value)
         $ownership = ['group' => 10007];
@@ -1100,7 +1105,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as associative array (numeric string value)
         $ownership = ['group' => '10008'];
@@ -1108,7 +1113,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals((int)$ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as associative array (string value)
         $ownership = ['group' => $currentGroupName];
@@ -1116,7 +1121,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($ownership['group'], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         /////////////////////////////////
         /// User- and Group Ownership ///
@@ -1128,7 +1133,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)explode(':', $ownership)[0], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals((int)explode(':', $ownership)[1], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as string
         $ownership = $currentUserName . ':' . $currentGroupName;
@@ -1136,7 +1141,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals(explode(':', $ownership)[0], posix_getpwuid(fileowner($testFile))['name'], 'Expected file owner to be changed.');
         $this->assertEquals(explode(':', $ownership)[1], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as indexed array (integer values)
         $ownership = [10011, 10012];
@@ -1144,7 +1149,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership[0], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals($ownership[1], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as indexed array (numeric string values)
         $ownership = ['10013', '10014'];
@@ -1152,7 +1157,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership[0], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals((int)$ownership[1], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as indexed array (string values)
         $ownership = [$currentUserName, $currentGroupName];
@@ -1160,7 +1165,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership[0], posix_getpwuid(fileowner($testFile))['name'], 'Expected file owner to be changed.');
         $this->assertEquals($ownership[1], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as associative array (integer values)
         $ownership = ['group' => 10015, 'user' => 10016]; // user/group reversed on purpose
@@ -1168,7 +1173,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership['user'], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals($ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as associative array (numeric string values)
         $ownership = ['group' => '10017', 'user' => '10018']; // user/group reversed on purpose
@@ -1176,7 +1181,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership['user'], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals((int)$ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as associative array (string values)
         $ownership = ['group' => $currentGroupName, 'user' => $currentUserName]; // user/group reversed on purpose
@@ -1184,7 +1189,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership['user'], posix_getpwuid(fileowner($testFile))['name'], 'Expected file owner to be changed.');
         $this->assertEquals($ownership['group'], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         ///////////////////////////////////////
         /// Mode, User- and Group Ownership ///
@@ -1197,8 +1202,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals(explode(':', $ownership)[0], fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals(explode(':', $ownership)[1], filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected created test file mode to be changed.');
-
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected created test file mode to be changed.');
     }
 
     public function testChangeOwnershipNonExistingUser(): void
@@ -1218,7 +1222,7 @@ class FileHelperTest extends TestCase
         try {
             FileHelper::changeOwnership($testFile, $ownership);
             throw new \Exception('FileHelper::changeOwnership() should have thrown error for non existing user.');
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->assertEquals('chown(): Unable to find uid for non_existing_user', $e->getMessage());
         }
     }

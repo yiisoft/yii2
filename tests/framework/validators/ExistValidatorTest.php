@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -205,9 +206,9 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     public function testExpresionInAttributeColumnName(): void
     {
         $val = new ExistValidator([
-           'targetClass' => OrderItem::class,
-           'targetAttribute' => ['id' => 'COALESCE([[order_id]], 0)'],
-       ]);
+            'targetClass' => OrderItem::className(),
+            'targetAttribute' => ['id' => 'COALESCE([[order_id]], 0)'],
+        ]);
 
         $m = new Order(['id' => 1]);
         $val->validateAttribute($m, 'id');
@@ -250,7 +251,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         ActiveRecord::$db = $connection;
 
         $model = null;
-        $connection->useMaster(function() use (&$model): void {
+        $connection->useMaster(function () use (&$model) {
             $model = ValidatorTestMainModel::findOne(2);
         });
 

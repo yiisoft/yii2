@@ -95,7 +95,6 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(2, $model->version, 'updated version should equal 2');
     }
 
-
     public function testNewRecord(): void
     {
         // create a record without any version
@@ -128,7 +127,6 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
         $this->assertEquals(8, $model->version, 'init version should equal 8');
     }
-
 
     public function testUpdateRecord(): void
     {
@@ -213,7 +211,7 @@ class OptimisticLockBehaviorTest extends TestCase
         $this->assertEquals(3, $model->version, 'updated version should equal 3');
     }
 
-     public function testDeleteRecord(): void
+    public function testDeleteRecord(): void
     {
         $request = new Request();
         Yii::$app->set('request', $request);

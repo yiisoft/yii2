@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -364,17 +365,19 @@ class ConsoleTest extends TestCase
         $this->assertFalse($result);
         $this->truncateStreams();
 
-        foreach ([
-                     'y' => true,
-                     'Y' => true,
-                     'yes' => true,
-                     'YeS' => true,
-                     'n' => false,
-                     'N' => false,
-                     'no' => false,
-                     'NO' => false,
-                     'WHAT?!' . PHP_EOL . 'yes' => true,
-                 ] as $currInput => $currAssertion) {
+        foreach (
+            [
+                'y' => true,
+                'Y' => true,
+                'yes' => true,
+                'YeS' => true,
+                'n' => false,
+                'N' => false,
+                'no' => false,
+                'NO' => false,
+                'WHAT?!' . PHP_EOL . 'yes' => true,
+            ] as $currInput => $currAssertion
+        ) {
             $this->sendInput($currInput);
             $result = ConsoleStub::confirm('Are you sure?');
             $this->assertEquals($currAssertion, $result, $currInput);
@@ -409,15 +412,15 @@ class ConsoleTest extends TestCase
         $result = ConsoleStub::select('Using help', $options);
         $this->assertEquals(
             'Using help (c,d,m,?): '
-            . ' c - cat'
-            . PHP_EOL
-            . ' d - dog'
-            . PHP_EOL
-            . ' m - mouse'
-            . PHP_EOL
-            . ' ? - Show help'
-            . PHP_EOL
-            . 'Using help (c,d,m,?): ',
+                . ' c - cat'
+                . PHP_EOL
+                . ' d - dog'
+                . PHP_EOL
+                . ' m - mouse'
+                . PHP_EOL
+                . ' ? - Show help'
+                . PHP_EOL
+                . 'Using help (c,d,m,?): ',
             $this->readOutput()
         );
         $this->truncateStreams();

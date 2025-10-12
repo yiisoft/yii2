@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,7 +7,6 @@
  */
 
 namespace yii\log {
-
     function openlog()
     {
         return \yiiunit\framework\log\SyslogTargetTest::openlog(func_get_args());
@@ -24,8 +24,7 @@ namespace yii\log {
 }
 
 namespace yiiunit\framework\log {
-
-    use PHPUnit\Framework\MockObject\MockObject;
+    use PHPUnit_Framework_MockObject_MockObject;
     use yii\helpers\VarDumper;
     use yii\log\Logger;
     use yii\log\SyslogTarget;

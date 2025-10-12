@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -37,7 +38,6 @@ class MssqlCacheTest extends CacheTestCase
             'expire' => 'INT',
             'data' => 'VARBINARY(MAX)',
         ])->execute();
-
     }
 
     /**

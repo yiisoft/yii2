@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -85,7 +86,6 @@ class ServiceLocatorTest extends TestCase
         $app = new ServiceLocator($config);
         $this->assertInstanceOf(TestSubclass::class, $app->get('test'));
     }
-
 
     public function testShared(): void
     {

@@ -243,5 +243,4 @@ class Order extends ActiveRecord
     {
         return $this->hasOne(Customer::class, ['id' => 'virtualCustomerId']);
     }
-
 }

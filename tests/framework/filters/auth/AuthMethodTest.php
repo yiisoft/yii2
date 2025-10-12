@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -60,11 +61,15 @@ class AuthMethodTest extends TestCase
     {
         $action = $this->createAction();
 
-        $filter = $this->createFilter(fn() => new \stdClass());
+        $filter = $this->createFilter(function () {
+            return new \stdClass();
+        });
         $this->assertTrue($filter->beforeAction($action));
 
-        $filter = $this->createFilter(fn() => null);
-        $this->expectException(UnauthorizedHttpException::class);
+        $filter = $this->createFilter(function () {
+            return null;
+        });
+        $this->expectException('yii\web\UnauthorizedHttpException');
         $this->assertTrue($filter->beforeAction($action));
     }
 
@@ -73,7 +78,15 @@ class AuthMethodTest extends TestCase
         $reflection = new \ReflectionClass(AuthMethod::class);
         $method = $reflection->getMethod('isOptional');
 
-        $filter = $this->createFilter(fn() => new \stdClass());
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
+
+        $filter = $this->createFilter(function () {
+            return new \stdClass();
+        });
 
         $filter->optional = ['some'];
         $this->assertFalse($method->invokeArgs($filter, [$this->createAction(['id' => 'index'])]));

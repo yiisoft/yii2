@@ -22,10 +22,14 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
 {
     /**
      * @var array the headers in this collection (indexed by the normalized header names)
+     *
+     * @phpstan-var array<string, string[]>
      */
     private $_headers = [];
     /**
      * @var array the original names of the headers (indexed by the normalized header names)
+     *
+     * @phpstan-var array<string, string>
      */
     private $_originalHeaderNames = [];
 
@@ -72,6 +76,12 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * If false, all headers of the specified name will be returned.
      * @return string|array|null the named header(s). If `$first` is true, a string will be returned;
      * If `$first` is false, an array will be returned.
+     *
+     * @phpstan-param ($first is true ? string|null : string[]|null) $default
+     * @psalm-param ($first is true ? string|null : string[]|null) $default
+     *
+     * @phpstan-return ($first is true ? string|null : string[]|null)
+     * @psalm-return ($first is true ? string|null : string[]|null)
      */
     public function get($name, $default = null, $first = true)
     {

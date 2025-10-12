@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -580,7 +581,11 @@ EOD;
         );
         $this->assertEqualsWithoutLE(
             $expected,
-            Html::dropDownList('test', new \ArrayObject(['1', 'value3']), $this->getDataItems3(), ['multiple' => 'true']
+            Html::dropDownList(
+                'test',
+                new \ArrayObject(['1', 'value3']),
+                $this->getDataItems3(),
+                ['multiple' => 'true']
             )
         );
     }
@@ -1510,7 +1515,6 @@ EOD;
         $this->assertEquals($expectedHtmlForAlias, Html::activeInput('text', $model, 'alias', $options));
     }
 
-
     /**
      * Data provider for [[testActivePasswordInput()]].
      * @return array test data
@@ -1928,22 +1932,22 @@ EOD;
 
         $expected = '<input type="hidden" id="specific-id" name="foo" value=""><input type="file" id="htmltestmodel-types" name="foo">';
         $model = new HtmlTestModel();
-        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'hiddenOptions'=>['id'=>'specific-id']]);
+        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'hiddenOptions' => ['id' => 'specific-id']]);
         $this->assertEqualsWithoutLE($expected, $actual);
 
         $expected = '<input type="hidden" id="specific-id" name="HtmlTestModel[types]" value=""><input type="file" id="htmltestmodel-types" name="HtmlTestModel[types]">';
         $model = new HtmlTestModel();
-        $actual = Html::activeFileInput($model, 'types', ['hiddenOptions'=>['id'=>'specific-id']]);
+        $actual = Html::activeFileInput($model, 'types', ['hiddenOptions' => ['id' => 'specific-id']]);
         $this->assertEqualsWithoutLE($expected, $actual);
 
         $expected = '<input type="hidden" name="HtmlTestModel[types]" value=""><input type="file" id="htmltestmodel-types" name="HtmlTestModel[types]">';
         $model = new HtmlTestModel();
-        $actual = Html::activeFileInput($model, 'types', ['hiddenOptions'=>[]]);
+        $actual = Html::activeFileInput($model, 'types', ['hiddenOptions' => []]);
         $this->assertEqualsWithoutLE($expected, $actual);
 
         $expected = '<input type="hidden" name="foo" value=""><input type="file" id="htmltestmodel-types" name="foo">';
         $model = new HtmlTestModel();
-        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'hiddenOptions'=>[]]);
+        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo', 'hiddenOptions' => []]);
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
@@ -2223,8 +2227,8 @@ HTML;
  * Class MyHtml
  * @package yiiunit\framework\helpers
  */
-class MyHtml extends Html{
-
+class MyHtml extends Html
+{
     /**
      * @param \yii\base\Model $model
      * @param string $attribute
@@ -2234,7 +2238,7 @@ class MyHtml extends Html{
     {
         if (isset($options['placeholder']) && $options['placeholder'] === true) {
             $attribute = static::getAttributeName($attribute);
-            $options['placeholder'] = 'My placeholder: '. $model->getAttributeLabel($attribute);
+            $options['placeholder'] = 'My placeholder: ' . $model->getAttributeLabel($attribute);
         }
     }
 }

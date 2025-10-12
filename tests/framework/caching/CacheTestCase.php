@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -47,7 +48,6 @@ abstract class CacheTestCase extends TestCase
      * Null means normal microtime() behavior.
      */
     public static $microtime;
-
 
     /**
      * @return CacheInterface
@@ -289,11 +289,15 @@ abstract class CacheTestCase extends TestCase
         $dependency = new TagDependency(['tags' => 'test']);
 
         $expected = 'SilverFire';
-        $loginClosure = fn($cache) => 'SilverFire';
+        $loginClosure = function ($cache) use (&$login) {
+            return 'SilverFire';
+        };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         // Call again with another login to make sure that value is cached
-        $loginClosure = fn($cache) => 'SamDark';
+        $loginClosure = function ($cache) use (&$login) {
+            return 'SamDark';
+        };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         $dependency->invalidate($cache, 'test');

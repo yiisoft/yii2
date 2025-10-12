@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -147,8 +148,14 @@ RESULT;
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
 
-        $var = function () {return 2;};
-        $expectedResult = 'function () {return 2;}';
+        $var = function () {
+            return 2;
+        };
+        $expectedResult = 'function () {
+
+            return 2;
+
+        }';
         $data[] = [$var, $expectedResult];
 
         return $data;
@@ -173,7 +180,9 @@ RESULT;
     public function testExportObjectFallback(): void
     {
         $var = new \StdClass();
-        $var->testFunction = function () {return 2;};
+        $var->testFunction = function () {
+            return 2;
+        };
         $exportResult = VarDumper::export($var);
         $this->assertNotEmpty($exportResult);
 
@@ -181,7 +190,9 @@ RESULT;
         $slave = new \StdClass();
         $master->slave = $slave;
         $slave->master = $master;
-        $master->function = function () {return true;};
+        $master->function = function () {
+            return true;
+        };
 
         $exportResult = VarDumper::export($master);
         $this->assertNotEmpty($exportResult);
@@ -201,4 +212,3 @@ RESULT;
         $this->assertStringNotContainsString('unitPrice', $dumpResult);
     }
 }
-

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -216,7 +217,6 @@ class UrlManagerTest extends TestCase
         $url = $manager->createUrl(['/post/view/']);
         $this->assertEquals('/index.php?r=post%2Fview', $url);
     }
-
 
     /**
      * @return array provides different names for UrlManager::$routeParam

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -62,12 +63,12 @@ class ArrayCacheTest extends CacheTestCase
 
         $firstCacheKey = $cache->buildKey([
             "First example of invalid UTF-8 sequence: \xF5",
-            "Valid UTF-8 string",
+            'Valid UTF-8 string',
         ]);
 
         $secondCacheKey = $cache->buildKey([
             "Second example of invalid UTF-8 sequence: \xF6",
-            "Valid UTF-8 string",
+            'Valid UTF-8 string',
         ]);
 
         $this->assertNotEquals($firstCacheKey, $secondCacheKey);

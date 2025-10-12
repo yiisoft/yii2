@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,6 +23,8 @@ use yiiunit\data\ar\Profile;
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
+    use GetTablesAliasTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -259,7 +262,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
 
-    use GetTablesAliasTestTrait;
     protected function createQuery()
     {
         return new ActiveQuery(null);

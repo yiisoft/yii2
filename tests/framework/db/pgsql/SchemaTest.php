@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -129,7 +130,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'size' => null,
             'precision' => null,
             'scale' => null,
-            'defaultValue' => ["a" => 1],
+            'defaultValue' => ['a' => 1],
             'dimension' => 0
         ];
         $columns['jsonb_col'] = [
@@ -217,7 +218,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $connection->schema->refreshTableSchema('item');
         $this->assertEquals('item_id_seq_2', $connection->schema->getTableSchema('item')->sequenceName);
 
-        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'' .  $sequenceName . '\')')->execute();
+        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'' . $sequenceName . '\')')->execute();
         $connection->schema->refreshTableSchema('item');
         $this->assertEquals($sequenceName, $connection->schema->getTableSchema('item')->sequenceName);
     }
@@ -230,7 +231,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $config = $this->database;
         unset($config['fixture']);
-        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres12.sql');
+        $this->prepareDatabase($config, realpath(__DIR__ . '/../../../data') . '/postgres12.sql');
 
         $table = $this->getConnection(false)->schema->getTableSchema('generated');
         $this->assertTrue($table->getColumn('id_always')->autoIncrement);
@@ -247,7 +248,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $config = $this->database;
         unset($config['fixture']);
-        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres10.sql');
+        $this->prepareDatabase($config, realpath(__DIR__ . '/../../../data') . '/postgres10.sql');
 
         $this->assertNotNull($this->getConnection(false)->schema->getTableSchema('partitioned'));
     }

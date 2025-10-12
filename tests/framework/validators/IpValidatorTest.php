@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -49,7 +50,6 @@ class IpValidatorTest extends TestCase
         $validator = new IpValidator(['ranges' => $range]);
         $this->assertEquals($expectedRange, $validator->ranges);
     }
-
 
     public function testValidateOrder(): void
     {
@@ -145,7 +145,6 @@ class IpValidatorTest extends TestCase
         $this->assertTrue($validator->validate('!192.168.5.32/32'));
         $this->assertFalse($validator->validate('!!192.168.5.32/32'));
     }
-
 
     public function testValidateValueIPv6(): void
     {
@@ -344,7 +343,6 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_ip'));
         $this->assertEquals('8.8.8.8/32', $model->attr_ip);
     }
-
 
     public function testValidateAttributeIPv6(): void
     {

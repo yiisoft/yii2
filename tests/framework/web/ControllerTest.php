@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -82,14 +83,18 @@ class ControllerTest extends TestCase
         $this->assertNull($args[1]);
     }
 
-    public function testModelBindingHttpException(): void {
+    public function testModelBindingHttpException(): void
+    {
         $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'container' => [
                 'definitions' => [
-                    \yiiunit\framework\web\stubs\ModelBindingStub::class => \yiiunit\framework\web\stubs\ModelBindingStub::build(...),
-                ]
+                    \yiiunit\framework\web\stubs\ModelBindingStub::className() => [
+                        \yiiunit\framework\web\stubs\ModelBindingStub::className(),
+                        'build',
+                    ],
+                ],
             ],
             'components' => [
                 'request' => [
@@ -102,7 +107,7 @@ class ControllerTest extends TestCase
         Yii::$container->set(VendorImage::class, VendorImage::class);
         $this->mockWebApplication(['controller' => $this->controller]);
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModelBindingInjection');
-        $this->expectException((new NotFoundHttpException("Not Found Item."))::class);
+        $this->expectException(get_class(new NotFoundHttpException('Not Found Item.')));
         $this->expectExceptionMessage('Not Found Item.');
         $this->controller->bindActionParams($injectionAction, []);
     }
@@ -126,7 +131,9 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        Yii::$container->set(VendorImage::class, function(): never { throw new \RuntimeException('uh oh'); });
+        Yii::$container->set(VendorImage::className(), function () {
+            throw new \RuntimeException('uh oh');
+        });
 
         $this->expectException((new RuntimeException())::class);
         $this->expectExceptionMessage('uh oh');
@@ -349,15 +356,15 @@ class ControllerTest extends TestCase
     {
         // Use the PHP80 controller for this test
         $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
-             'id' => 'app',
-             'basePath' => __DIR__,
-             'components' => [
-                 'request' => [
-                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                     'scriptFile' => __DIR__ . '/index.php',
-                     'scriptUrl' => '/index.php',
-                 ],
-             ],
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
         ]));
 
         $this->mockWebApplication(['controller' => $this->controller]);
@@ -366,7 +373,7 @@ class ControllerTest extends TestCase
         $params = ['foo' => 1];
 
         try {
-        $args = $this->controller->bindActionParams($injectionAction, $params);
+            $args = $this->controller->bindActionParams($injectionAction, $params);
             $this->assertSame(1, $args[0]);
         } catch (BadRequestHttpException $e) {
             $this->fail('Failed to bind int param for array|int union type!');

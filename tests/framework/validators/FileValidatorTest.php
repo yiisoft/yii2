@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -185,8 +186,10 @@ class FileValidatorTest extends TestCase
         );
         $m->setScenario('validateMultipleFiles');
         $this->assertFalse($m->validate());
-        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_images')),
-            'Only files with these extensions are allowed'));
+        $this->assertNotFalse(stripos(
+            current($m->getErrors('attr_images')),
+            'Only files with these extensions are allowed'
+        ));
 
         $m = FakedValidationModel::createWithAttributes(
             [
@@ -662,7 +665,8 @@ class FileValidatorTest extends TestCase
     /**
      * @dataProvider mimeTypeCaseInsensitive
      */
-    public function testValidateMimeTypeCaseInsensitive(string $mask, string $fileMimeType, bool $expected): void {
+    public function testValidateMimeTypeCaseInsensitive(string $mask, string $fileMimeType, bool $expected): void
+    {
         $validator = $this->getMockBuilder(\yii\validators\FileValidator::class)
             ->onlyMethods(['getMimeTypeByFile'])
             ->getMock();
@@ -673,7 +677,8 @@ class FileValidatorTest extends TestCase
         $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
     }
 
-    public static function mimeTypeCaseInsensitive() {
+    public static function mimeTypeCaseInsensitive()
+    {
         return [
             ['Image/*', 'image/jp2', true],
             ['image/*', 'Image/jp2', true],

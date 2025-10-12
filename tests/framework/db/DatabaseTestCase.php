@@ -25,7 +25,6 @@ abstract class DatabaseTestCase extends TestCase
      */
     private $_db;
 
-
     protected function setUp(): void
     {
         if ($this->driverName === null) {

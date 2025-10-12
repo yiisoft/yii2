@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -126,7 +127,6 @@ class DataColumnTest extends \yiiunit\TestCase
         $this->assertEquals($this->invokeMethod($dataColumn, 'renderFilterCellContent'), $filterInput);
     }
 
-
     /**
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
@@ -165,14 +165,16 @@ class DataColumnTest extends \yiiunit\TestCase
 
         $dataColumn = $grid->columns[0];
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="0">1</option>
 <option value="1">2</option>
 </select>
 HTML
-            , $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+            ,
+            $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
         );
     }
 
@@ -213,14 +215,16 @@ HTML
 
         $dataColumn = $grid->columns[0];
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="1">Yes</option>
 <option value="0">No</option>
 </select>
 HTML
-            , $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+            ,
+            $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
         );
     }
 

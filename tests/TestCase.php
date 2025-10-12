@@ -148,7 +148,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      *
      * @param string $message
      */
-    protected function assertSameAnyWhitespace(mixed $expected, mixed $actual, $message = ''){
+    protected function assertSameAnyWhitespace(mixed $expected, mixed $actual, $message = ''): void
+    {
         if (is_string($expected)) {
             $expected = $this->sanitizeWhitespaces($expected);
         }
@@ -181,7 +182,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function sanitizeWhitespaces($string)
     {
-        return preg_replace("/[\pZ\pC]/u", " ", $string);
+        return preg_replace('/[\pZ\pC]/u', ' ', $string);
     }
 
     /**

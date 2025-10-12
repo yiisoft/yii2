@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -97,8 +98,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->invokeMethod($handler, 'renderException', [new \Exception('Some Exception')]);
         ob_get_clean();
         $out = Yii::$app->response->data;
-        $this->assertEqualsWithoutLE('Exception View
-', $out);
+        $this->assertEquals("Exception View\n", $out);
     }
 
     public function testClearAssetFilesInErrorActionView(): void
@@ -143,7 +143,7 @@ Exception: yii\web\NotFoundHttpException', $out);
             ],
             [
                 "'hello world'",
-                "&apos;hello world&apos;",
+                '&apos;hello world&apos;',
             ],
             [
                 'Chip&amp;Dale',

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -110,7 +111,7 @@ migrate/to
 migrate/up
 
 STRING
-        , $result);
+            , $result);
     }
 
     public function testActionListActionOptions(): void
@@ -132,7 +133,7 @@ action: route to action
 --silent-exit-on-exception: if true - script finish with `ExitCode\:\:OK` in case of exception.false - `ExitCode\:\:UNSPECIFIED_ERROR`.Default\: `YII_ENV_TEST`
 
 STRING
-        , $result);
+            , $result);
     }
 
     public function testActionUsage(): void
@@ -207,10 +208,10 @@ STRING
             'controllerNamespace' => 'yiiunit\data\console\controllers',
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('index'));
-        $this->assertStringNotContainsString("- fake-empty", $result);
-        $this->assertStringContainsString("- fake-no-default", $result);
-        $this->assertStringContainsString("    fake-no-default/index", $result);
-        $this->assertStringNotContainsString("    fake-no-default/index (default)", $result);
+        $this->assertStringNotContainsString('- fake-empty', $result);
+        $this->assertStringContainsString('- fake-no-default', $result);
+        $this->assertStringContainsString('    fake-no-default/index', $result);
+        $this->assertStringNotContainsString('    fake-no-default/index (default)', $result);
     }
 }
 
