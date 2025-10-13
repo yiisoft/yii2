@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Bug #20587: Fix `@var` annotation for `yii\rbac\Item::$ruleName` (mspirkov)
 - Bug #20589: Fix `@var` annotations for `yii\rbac\DbManager` properties (mspirkov)
 - Bug #20594: Fix `@return` annotation for `Instance::get()` (mspirkov)
+- Bug #20595: Fix `@return` annotation for `BaseHtml::getAttributeValue()` (mspirkov)
 
 
 2.0.53 June 27, 2025

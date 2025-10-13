@@ -431,15 +431,15 @@ class Connection extends Component
      */
     private $_queryBuilderConfigurations = [];
     /**
-     * @var Transaction the currently active transaction
+     * @var Transaction|null the currently active transaction
      */
     private $_transaction;
     /**
-     * @var Schema the database schema
+     * @var Schema|null the database schema
      */
     private $_schema;
     /**
-     * @var string driver name
+     * @var string|null driver name
      */
     private $_driverName;
     /**
@@ -455,11 +455,11 @@ class Connection extends Component
      */
     private $_queryCacheInfo = [];
     /**
-     * @var string[] quoted table name cache for [[quoteTableName()]] calls
+     * @var string[]|null quoted table name cache for [[quoteTableName()]] calls
      */
     private $_quotedTableNames;
     /**
-     * @var string[] quoted column name cache for [[quoteColumnName()]] calls
+     * @var string[]|null quoted column name cache for [[quoteColumnName()]] calls
      */
     private $_quotedColumnNames;
 
