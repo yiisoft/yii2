@@ -28,6 +28,7 @@ on:
       - "framework/LICENSE.md"
       - "framework/README.md"
       - "framework/UPGRADE.md"
+      - "eslint.config.js"
       - "LICENSE.md"
       - "README.md"
       - "ROADMAP.md"
