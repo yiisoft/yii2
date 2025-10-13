@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -192,6 +193,4 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     {
         $this->markTestSkipped('There\'s no need to order messages for database');
     }
-
-
 }

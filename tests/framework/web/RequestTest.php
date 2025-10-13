@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -166,8 +167,8 @@ class RequestTest extends TestCase
 
         // When an empty CSRF token is given it is regenerated.
         $this->assertNotEmpty($request->getCsrfToken());
-
     }
+
     /**
      * Test CSRF token validation by POST param.
      */
@@ -545,7 +546,6 @@ class RequestTest extends TestCase
         $this->assertEquals($expected[1], $request->getHostName());
         $_SERVER = $original;
     }
-
 
     public function testSetHostInfo(): void
     {
@@ -957,28 +957,28 @@ class RequestTest extends TestCase
     /**
     * @dataProvider getUserIPWithoutTruestHostDataProvider
     */
-   public function testGetUserIPWithoutTrustedHost(array $server, string $expected): void
-   {
-       $original = $_SERVER;
-       $_SERVER = $server;
+    public function testGetUserIPWithoutTrustedHost(array $server, string $expected): void
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
 
-       $request = new Request([
-           'trustedHosts' => [
-               '192.168.0.0/24' => ['X-Forwarded-For'],
-           ],
-           'secureHeaders' => [
-               'Front-End-Https',
-               'X-Rewrite-Url',
-               'X-Forwarded-For',
-               'X-Forwarded-Host',
-               'X-Forwarded-Proto',
-               'forwarded',
-           ],
-       ]);
-       $this->assertEquals($expected, $request->getUserIP());
+        $request = new Request([
+            'trustedHosts' => [
+                '192.168.0.0/24' => ['X-Forwarded-For'],
+            ],
+            'secureHeaders' => [
+                'Front-End-Https',
+                'X-Rewrite-Url',
+                'X-Forwarded-For',
+                'X-Forwarded-Host',
+                'X-Forwarded-Proto',
+                'forwarded',
+            ],
+        ]);
+        $this->assertEquals($expected, $request->getUserIP());
 
-       $_SERVER = $original;
-   }
+        $_SERVER = $original;
+    }
 
     public static function getMethodDataProvider()
     {
@@ -1215,7 +1215,7 @@ class RequestTest extends TestCase
         $params = [
             'trustedHosts' => $trustedHosts,
         ];
-        if($ipHeaders !== null) {
+        if ($ipHeaders !== null) {
             $params['ipHeaders'] = $ipHeaders;
         }
         $request = new Request($params);
@@ -1266,7 +1266,8 @@ class RequestTest extends TestCase
         $this->assertSame($expectedMethod, $request->getMethod());
     }
 
-    public static function alreadyResolvedIpDataProvider() {
+    public static function alreadyResolvedIpDataProvider()
+    {
         return [
             'resolvedXForwardedFor' => [
                 '50.0.0.1',
@@ -1294,7 +1295,8 @@ class RequestTest extends TestCase
     /**
      * @dataProvider alreadyResolvedIpDataProvider
      */
-    public function testAlreadyResolvedIp($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $expectedRemoteAddress, $expectedUserIp, $expectedIsSecureConnection): void {
+    public function testAlreadyResolvedIp($remoteAddress, $xForwardedFor, $xForwardedProto, $trustedHosts, $expectedRemoteAddress, $expectedUserIp, $expectedIsSecureConnection): void
+    {
         $_SERVER['REMOTE_ADDR'] = $remoteAddress;
         $_SERVER['HTTP_X_FORWARDED_FOR'] = $xForwardedFor;
         $_SERVER['HTTP_X_FORWARDED_PROTO'] = $xForwardedProto;

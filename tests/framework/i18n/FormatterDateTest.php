@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -41,7 +42,6 @@ class FormatterDateTest extends TestCase
         IntlTestHelper::resetIntlStatus();
         $this->formatter = null;
     }
-
 
     public function testFormat(): void
     {
@@ -575,7 +575,6 @@ class FormatterDateTest extends TestCase
         $this->assertSame($expected, $this->formatter->asDatetime($value, 'yyyy-MM-dd HH:mm:ss'));
     }
 
-
     public static function provideTimezones()
     {
         return [
@@ -723,7 +722,6 @@ class FormatterDateTest extends TestCase
         $this->assertSame('12:41:00', $this->formatter->asTime('2014-08-10 12:41:00 UTC'));
         $this->assertSame('1407674460', $this->formatter->asTimestamp('2014-08-10 12:41:00 UTC'));
     }
-
 
     public function testIntlDateOnlyValues(): void
     {

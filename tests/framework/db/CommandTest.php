@@ -379,7 +379,7 @@ SQL;
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-        } catch (\Exception|\Throwable $e) {
+        } catch (\Exception | \Throwable $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
         }
@@ -414,7 +414,7 @@ SQL;
                 '{{%type}}',
                 ['int_col'],
                 [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
-                'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
+                'expected' => 'INSERT INTO `type` (`int_col`) VALUES (:qp1)',
                 'expectedParams' => [':qp1' => 42]
             ],
             'batchIsert empty rows represented by ArrayObject' => [
@@ -1421,7 +1421,6 @@ SQL;
     public function testAutoRefreshTableSchema(): void
     {
         if ($this->driverName === 'sqlsrv') {
-
             // related to https://github.com/yiisoft/yii2/pull/17364
             $this->markTestSkipped('Should be fixed');
         }
@@ -1545,26 +1544,26 @@ SQL;
     public function testBindValuesSupportsDeprecatedPDOCastingFormat(): void
     {
         $db = $this->getConnection();
-        $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $db->createCommand()->setSql('SELECT :p1')->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
         $this->assertTrue(true);
     }
 
     public function testBindValuesSupportsEnums(): void
-  	{
+    {
         if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
             $db = $this->getConnection();
             $command = $db->createCommand();
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
-		    $this->assertSame('Active', $command->params[':p1']);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
+            $this->assertSame('Active', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
-		    $this->assertSame('active', $command->params[':p1']);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
+            $this->assertSame('active', $command->params[':p1']);
 
-		    $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
-		    $this->assertSame(1, $command->params[':p1']);
-		} else {
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
+            $this->assertSame(1, $command->params[':p1']);
+        } else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');
         }
-	  }
+    }
 }

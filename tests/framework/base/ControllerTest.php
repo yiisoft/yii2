@@ -131,17 +131,14 @@ class TestController extends Controller
 
     public function actionTest3(): void
     {
-
     }
 
     public function actionTestTest(): void
     {
-
     }
 
     public function actionTest_test(): void
     {
-
     }
 }
 
@@ -149,16 +146,13 @@ class Test1Controller extends Controller
 {
     public function actionTest_1(): void
     {
-
     }
 
     public function actionTest_test(): void
     {
-
     }
 
     public function actionTestTest_test_2(): void
     {
-
     }
 }

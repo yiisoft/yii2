@@ -48,6 +48,6 @@ class Cat extends Animal
      */
     public function getThrowable()
     {
-        return 5/0;
+        return 5 / 0;
     }
 }

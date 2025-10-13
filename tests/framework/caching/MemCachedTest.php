@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,8 +28,7 @@ class MemCachedTest extends CacheTestCase
             $this->markTestSkipped('memcached not installed. Skipping.');
         }
 
-        if (version_compare(phpversion('memcached'), '3.1.5', '<='))
-        {
+        if (version_compare(phpversion('memcached'), '3.1.5', '<=')) {
             $php_version = phpversion();
             $memcached_version = phpversion('memcached');
             $this->markTestSkipped("memcached version $memcached_version is not ready for PHP $php_version. Skipping.");

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -196,7 +197,9 @@ class FragmentCacheTest extends \yiiunit\TestCase
 
     public function testVariations(): void
     {
-        $this->setOutputCallback(fn($output) => null);
+        $this->setOutputCallback(function ($output) {
+            return null;
+        });
 
         ob_start();
         ob_implicit_flush(false);

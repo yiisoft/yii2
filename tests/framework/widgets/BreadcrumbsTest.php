@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -68,7 +69,6 @@ class BreadcrumbsTest extends \yiiunit\TestCase
 
         $this->assertEquals($expectedHtml, $actualHtml);
     }
-
 
     public function testHomeLink(): void
     {

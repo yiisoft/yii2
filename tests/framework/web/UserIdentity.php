@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\web;
 
 use yii\base\Component;

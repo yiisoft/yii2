@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -60,7 +61,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_JSON,
                 $this->json(),
-                "jsonb",
+                'jsonb',
             ],
         ];
 
@@ -269,7 +270,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $config = $this->database;
         unset($config['fixture']);
-        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres12.sql');
+        $this->prepareDatabase($config, realpath(__DIR__ . '/../../../data') . '/postgres12.sql');
 
         $qb = $this->getQueryBuilder(false);
 

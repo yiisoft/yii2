@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -41,6 +42,5 @@ class FakePhp71Controller extends Controller
 
     public function actionModelBindingInjection(ModelBindingStub $model): void
     {
-
     }
 }

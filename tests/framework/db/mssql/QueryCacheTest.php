@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -35,12 +36,14 @@ class QueryCacheTest extends DatabaseTestCase
             'bool_col' => true,
         ])->execute();
 
-        $function = fn($db) => (new Query())
-            ->select(['blob_col'])
-            ->from('type')
-            ->where(['int_col' => $key])
-            ->createCommand($db)
-            ->queryScalar();
+        $function = function ($db) use ($key) {
+            return (new Query())
+                ->select(['blob_col'])
+                ->from('type')
+                ->where(['int_col' => $key])
+                ->createCommand($db)
+                ->queryScalar();
+        };
 
         // First run return
         $result = $db->cache($function);

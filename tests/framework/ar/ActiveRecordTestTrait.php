@@ -1115,7 +1115,8 @@ trait ActiveRecordTestTrait
 
         Event::on(
             BaseActiveRecord::className(),
-            BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
+            BaseActiveRecord::EVENT_AFTER_FIND,
+            function ($event) use (&$afterFindCalls) {
                 /** @var BaseActiveRecord $ar */
                 $ar = $event->sender;
                 $afterFindCalls[] = [

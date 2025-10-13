@@ -803,7 +803,6 @@ TEXT;
         $this->assertEquals($data, $this->security->decryptByPassword($encrypted, $password));
     }
 
-
     public static function randomKeyInvalidInputs(): array
     {
         return [
@@ -1070,7 +1069,8 @@ TEXT;
             hex2bin((string)$ikm),
             hex2bin((string)$salt),
             hex2bin((string)$info),
-            $l);
+            $l
+        );
         $this->assertEquals($okm, bin2hex($dk));
     }
 

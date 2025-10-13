@@ -1168,7 +1168,7 @@ class Request extends \yii\base\Request
             if ($this->headers->has($portHeader)) {
                 $port = $this->headers->get($portHeader);
                 if ($port !== null) {
-                    return $port;
+                    return (int) $port;
                 }
             }
         }

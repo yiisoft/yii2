@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,8 +7,8 @@
  */
 
 namespace yiiunit\framework\db\mysql;
-use yii\db\Expression;
 
+use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;
 use yiiunit\framework\db\AnyCaseValue;
@@ -214,7 +215,7 @@ SQL;
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
-            'collation' => NULL,
+            'collation' => null,
             'null' => 'NO',
             'key' => '',
             'default' => 'current_timestamp()',
@@ -240,17 +241,17 @@ SQL;
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
-            'collation' => NULL,
+            'collation' => null,
             'null' => 'NO',
             'key' => '',
-            'default' => NULL,
+            'default' => null,
             'extra' => '',
             'privileges' => 'select,insert,update,references',
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(ColumnSchema::class, $column);
-        $this->assertEquals(NULL, $column->defaultValue);
+        $this->assertInstanceOf(ColumnSchema::className(), $column);
+        $this->assertEquals(null, $column->defaultValue);
     }
 
     public function getExpectedColumns()

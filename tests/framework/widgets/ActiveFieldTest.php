@@ -459,7 +459,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
-       );
+        );
 
         // label = false
         $this->activeField->label(false);
@@ -692,23 +692,23 @@ class ActiveFieldTest extends \yiiunit\TestCase
         );
         $this->assertNotTrue(
             isset($actualValue['validateOnChange']),
-            "Should not be set by default",
+            'Should not be set by default',
         );
         $this->assertNotTrue(
             isset($actualValue['validateOnBlur']),
-            "Should not be set by default",
+            'Should not be set by default',
         );
         $this->assertNotTrue(
             isset($actualValue['validateOnType']),
-            "Should not be set by default",
+            'Should not be set by default',
         );
         $this->assertNotTrue(
             isset($actualValue['validationDelay']),
-            "Should not be set by default",
+            'Should not be set by default',
         );
         $this->assertNotTrue(
             isset($actualValue['enableAjaxValidation']),
-            "Should not be set by default",
+            'Should not be set by default',
         );
 
         $this->activeField->validateOnChange = $expectedValidateOnChange = false;
@@ -2030,7 +2030,8 @@ class TestMaskedInput extends MaskedInput
         self::$lastInstance = $this;
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->options;
     }
 

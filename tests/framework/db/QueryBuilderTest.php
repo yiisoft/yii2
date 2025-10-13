@@ -1006,14 +1006,17 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $columns = [];
         $i = 0;
         foreach ($this->columnTypes() as $item) {
-            [$column, $builder, $expected] = $item;
-            if (!(strncmp((string) $column, Schema::TYPE_PK, 2) === 0 ||
-                strncmp((string) $column, Schema::TYPE_UPK, 3) === 0 ||
-                strncmp((string) $column, Schema::TYPE_BIGPK, 5) === 0 ||
-                strncmp((string) $column, Schema::TYPE_UBIGPK, 6) === 0 ||
-                str_starts_with(substr((string) $column, -5), 'FIRST')
-            )) {
-                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', (string) $column);
+            list($column, $builder, $expected) = $item;
+            if (
+                !(
+                    strncmp($column, Schema::TYPE_PK, 2) === 0 ||
+                    strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
+                    strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
+                    strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
+                    strncmp(substr($column, -5), 'FIRST', 5) === 0
+                )
+            ) {
+                $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
@@ -1031,13 +1034,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
             // not
             [['not', 'name'], 'NOT (name)', []],
-            [['not', (new Query)->select('exists')->from('some_table')], 'NOT ((SELECT [[exists]] FROM [[some_table]]))', []],
+            [['not', (new Query())->select('exists')->from('some_table')], 'NOT ((SELECT [[exists]] FROM [[some_table]]))', []],
 
             // and
             [['and', 'id=1', 'id=2'], '(id=1) AND (id=2)', []],
             [['and', 'type=1', ['or', 'id=1', 'id=2']], '(type=1) AND ((id=1) OR (id=2))', []],
             [['and', 'id=1', new Expression('id=:qp0', [':qp0' => 2])], '(id=1) AND (id=:qp0)', [':qp0' => 2]],
-            [['and', ['expired' => false], (new Query)->select('count(*) > 1')->from('queue')], '([[expired]]=:qp0) AND ((SELECT count(*) > 1 FROM [[queue]]))', [':qp0' => false]],
+            [['and', ['expired' => false], (new Query())->select('count(*) > 1')->from('queue')], '([[expired]]=:qp0) AND ((SELECT count(*) > 1 FROM [[queue]]))', [':qp0' => false]],
 
             // or
             [['or', 'id=1', 'id=2'], '(id=1) OR (id=2)', []],
@@ -1055,7 +1058,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new BetweenColumnsCondition('2018-02-11', 'NOT BETWEEN', 'NOW()', 'update_time'), ':qp0 NOT BETWEEN NOW() AND [[update_time]]', [':qp0' => '2018-02-11']],
             [new BetweenColumnsCondition(new Expression('NOW()'), 'BETWEEN', 'create_time', 'update_time'), 'NOW() BETWEEN [[create_time]] AND [[update_time]]', []],
             [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', 'create_time', 'update_time'), 'NOW() NOT BETWEEN [[create_time]] AND [[update_time]]', []],
-            [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', (new Query)->select('min_date')->from('some_table'), 'max_date'), 'NOW() NOT BETWEEN (SELECT [[min_date]] FROM [[some_table]]) AND [[max_date]]', []],
+            [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', (new Query())->select('min_date')->from('some_table'), 'max_date'), 'NOW() NOT BETWEEN (SELECT [[min_date]] FROM [[some_table]]) AND [[max_date]]', []],
 
             // in
             [['in', 'id', [1, 2, (new Query())->select('three')->from('digits')]], '[[id]] IN (:qp0, :qp1, (SELECT [[three]] FROM [[digits]]))', [':qp0' => 1, ':qp1' => 2]],
@@ -1499,7 +1502,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
     }
-
 
     public function testBuildWhereExistsWithParameters(): void
     {
@@ -2399,7 +2401,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [new LikeCondition('name', 'or not like', [new Expression('CONCAT("test", name, "%")'), '\ab_c']), '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%']],
 
             // like with expression as columnName
-            [['like', new Expression('name'), 'teststring'], 'name LIKE :qp0', [':qp0' => "%teststring%"]],
+            [['like', new Expression('name'), 'teststring'], 'name LIKE :qp0', [':qp0' => '%teststring%']],
         ];
 
         // adjust dbms specific escaping
@@ -2446,8 +2448,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ->where([])
             ->andWhere(['in', 'id', ['1', '0']]);
 
-        [$sql, $params] = $this->getQueryBuilder()->build($query);
-        $this->assertSame(static::replaceQuotes("SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)"), $sql);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame($this->replaceQuotes('SELECT * FROM [[admin_user]] WHERE [[id]] IN (:qp0, :qp1)'), $sql);
         $this->assertSame([':qp0' => '1', ':qp1' => '0'], $params);
     }
 }

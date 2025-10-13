@@ -69,7 +69,8 @@ final class ActiveFormTest extends \yiiunit\TestCase
             <div class="form-group field-dynamicmodel-name">
             <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]">
             </div>
-            HTML, (string) $form
+            HTML,
+            (string) $form
                 ->field($model, 'name', $o)
                 ->input('email', ['required' => false]),
         );

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -196,15 +197,15 @@ class ResponseTest extends \yiiunit\TestCase
     public function testAjaxRedirectInternetExplorer11(string $userAgent, array $statusCodes): void
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
-        $request= Yii::$app->request;
+        $request = Yii::$app->request;
         /** @var TestRequestComponent $request */
         $request->getIssAjaxOverride = true;
         $request->getUserAgentOverride = $userAgent;
-        foreach([true, false] as $pjaxOverride) {
+        foreach ([true, false] as $pjaxOverride) {
             $request->getIsPjaxOverride = $pjaxOverride;
-            foreach(['GET', 'POST'] as $methodOverride) {
+            foreach (['GET', 'POST'] as $methodOverride) {
                 $request->getMethodOverride = $methodOverride;
-                foreach($statusCodes as $statusCode => $expectStatusCode) {
+                foreach ($statusCodes as $statusCode => $expectStatusCode) {
                     $this->assertEquals($expectStatusCode, $this->response->redirect(['view'], $statusCode)->statusCode);
                 }
             }
@@ -470,22 +471,22 @@ class ResponseTest extends \yiiunit\TestCase
      * @param $name
      * @return array|false
      */
-    protected function parseHeaderCookies() {
-
+    protected function parseHeaderCookies()
+    {
         if (!function_exists('xdebug_get_headers')) {
             return false;
         }
 
         $cookies = [];
-        foreach(xdebug_get_headers() as $header) {
-            if (!str_starts_with((string) $header, 'Set-Cookie: ')) {
+        foreach (xdebug_get_headers() as $header) {
+            if (strpos($header, 'Set-Cookie: ') !== 0) {
                 continue;
             }
 
             $name = null;
             $params = [];
-            $pairs = explode(';', substr((string) $header, 12));
-            foreach ($pairs as  $index => $pair) {
+            $pairs = explode(';', substr($header, 12));
+            foreach ($pairs as $index => $pair) {
                 $pair = trim($pair);
                 if (!str_contains($pair, '=')) {
                     $params[strtolower($pair)] = true;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -57,12 +58,14 @@ class ListViewTest extends TestCase
         ])->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <div id="w0" class="list-view">
 
 </div>
-HTML
-        , $out);
+HTML,
+            $out
+        );
     }
 
     /**
@@ -96,14 +99,16 @@ HTML
         $this->getListView()->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
 </div>
-HTML
-        , $out);
+HTML,
+            $out
+        );
     }
 
     public function testWidgetOptions(): void
@@ -112,12 +117,14 @@ HTML
         $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
-HTML
-        , $out);
+HTML,
+            $out
+        );
     }
 
     public static function itemViewOptions()
@@ -231,7 +238,8 @@ HTML
         ])->run();
         $out = ob_get_clean();
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(
+            <<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
 <div data-key="0">0</div>
@@ -242,9 +250,9 @@ HTML
 <div data-key="2">2</div>
 <!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
 </div>
-HTML
-    , $out
-);
+HTML,
+            $out
+        );
     }
 
     /**

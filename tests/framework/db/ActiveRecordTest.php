@@ -2068,7 +2068,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(Order::class, $orderItem->custom);
     }
 
-
     public function testRefresh_querySetAlias_findRecord(): void
     {
         $customer = new \yiiunit\data\ar\CustomerWithAlias();
@@ -2239,7 +2238,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Test eager loading relations as arrays.
         /** @var array $customers */
         $customers = Customer::find()->asArray(true)->all();
-        Customer::loadRelationsFor($customers, ['orders.items' => function ($query): void { $query->asArray(false); }], true);
+        Customer::loadRelationsFor($customers, ['orders.items' => function ($query) {
+            $query->asArray(false);
+        }], true);
         foreach ($customers as $customer) {
             $this->assertTrue(isset($customer['orders']));
             $this->assertTrue(is_array($customer['orders']));
@@ -2264,9 +2265,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         // Test eager loading previously loaded relation (relation value should be replaced with a new value loaded from database).
         /** @var Customer $customer */
-        $customer = Customer::find()->where(['id' => 2])->with(['orders' => function ($query): void { $query->orderBy(['id' => SORT_ASC]); }])->one();
+        $customer = Customer::find()->where(['id' => 2])->with(['orders' => function ($query) {
+            $query->orderBy(['id' => SORT_ASC]);
+        }])->one();
         $this->assertTrue($customer->orders[0]->id < $customer->orders[1]->id, 'Related models should be sorted by ID in ascending order.');
-        $customer->loadRelations(['orders' => function ($query): void { $query->orderBy(['id' => SORT_DESC]); }]);
+        $customer->loadRelations(['orders' => function ($query) {
+            $query->orderBy(['id' => SORT_DESC]);
+        }]);
         $this->assertTrue($customer->orders[0]->id > $customer->orders[1]->id, 'Related models should be sorted by ID in descending order.');
     }
 }

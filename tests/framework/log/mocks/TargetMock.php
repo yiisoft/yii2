@@ -6,7 +6,6 @@ use yii\log\Target;
 
 class TargetMock extends Target
 {
-
     public $collectOverride;
 
     /**
@@ -14,12 +13,11 @@ class TargetMock extends Target
      */
     public function export(): void
     {
-
     }
 
     public function collect($messages, $final): void
     {
-        if($this->collectOverride !== null) {
+        if ($this->collectOverride !== null) {
             call_user_func($this->collectOverride, $messages, $final);
             return;
         }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -157,7 +158,7 @@ class AuthTest extends \yiiunit\TestCase
         $filter = new $authClass();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
-        
+
         $controller = new \yii\web\Controller('test', Yii::$app);
 
         // active by default
@@ -197,8 +198,8 @@ class AuthTest extends \yiiunit\TestCase
 
     public function testHeaders(): void
     {
-        Yii::$app->request->headers->set('Authorization', "Bearer wrong_token");
-        $filter = ['class' => HttpBearerAuth::class];
+        Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
+        $filter = ['class' => HttpBearerAuth::className()];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {

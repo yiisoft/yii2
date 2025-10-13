@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -69,7 +70,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
                     case 'char_col2':
                         $expectedType = 'string';
                         $expectedSize = 100;
-                        $expectedDbType = "varchar(100)";
+                        $expectedDbType = 'varchar(100)';
                         break;
                     case 'char_col3':
                         $expectedType = 'text';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -81,7 +82,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
 
             // PARENT
             // nothing to do
-        } catch (\Exception|\Throwable $e) {
+        } catch (\Exception | \Throwable $e) {
             // wait all children
             while (-1 !== pcntl_wait($status)) {
                 // nothing to do
@@ -190,7 +191,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             }
             $this->log("child 1: ! sql error $sqlError: $driverError: $driverMessage");
             return 1;
-        } catch (\Exception|\Throwable $e) {
+        } catch (\Exception | \Throwable $e) {
             $this->log('child 1: ! exit <<' . $e::class . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
@@ -209,7 +210,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     private function childrenUpdateLocked()
     {
         // install no-op signal handler to prevent termination
-        if (!pcntl_signal(SIGUSR1, function (): void {}, false)) {
+        if (
+            !pcntl_signal(SIGUSR1, function () {
+            }, false)
+        ) {
             $this->log('child 2: cannot install signal handler');
             return 1;
         }
@@ -247,7 +251,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             }
             $this->log("child 2: ! sql error $sqlError: $driverError: $driverMessage");
             return 1;
-        } catch (\Exception|\Throwable $e) {
+        } catch (\Exception | \Throwable $e) {
             $this->log('child 2: ! exit <<' . $e::class . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }

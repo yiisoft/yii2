@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -43,7 +44,9 @@ class AssetConverterTest extends \yiiunit\TestCase
     public function testConvert(): void
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents($tmpPath . '/test.php', <<<EOF
+        file_put_contents(
+            $tmpPath . '/test.php',
+            <<<EOF
 <?php
 
 echo "Hello World!\n";
@@ -65,7 +68,9 @@ EOF
     public function testForceConvert(): void
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents($tmpPath . '/test.php', <<<'EOF'
+        file_put_contents(
+            $tmpPath . '/test.php',
+            <<<'EOF'
 <?php
 
 echo microtime();

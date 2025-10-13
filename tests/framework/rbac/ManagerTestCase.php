@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -427,8 +428,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertFalse($this->auth->canAddChild($reader, $author));
     }
 
-
-    public function testRemoveAllRules(): void
+    public function testRemoveAllRules()
     {
         $this->prepareData();
 

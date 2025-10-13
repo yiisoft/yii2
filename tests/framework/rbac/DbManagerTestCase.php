@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -407,7 +408,8 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->assertCount(1, $messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));
         $this->assertStringContainsString(
             'auth_assignment',
-            $messages[0][0], 'Log message should be a query to auth_assignment table',
+            $messages[0][0],
+            'Log message should be a query to auth_assignment table',
         );
         $logTarget->messages = [];
     }

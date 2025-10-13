@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -77,9 +78,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             FROM fn_listextendedproperty (
                 N'MS_description',
                 'SCHEMA', N'dbo',
-                'TABLE', N" . $db->quoteValue($table) . ",
+                'TABLE', N" . $db->quoteValue($table) . ',
                 DEFAULT, DEFAULT
-        )";
+        )';
         return $db->createCommand($sql)->queryAll();
     }
 
@@ -91,8 +92,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 N'MS_description',
                 'SCHEMA', N'dbo',
                 'TABLE', N" . $db->quoteValue($table) . ",
-                'COLUMN', N" . $db->quoteValue($column) . "
-        )";
+                'COLUMN', N" . $db->quoteValue($column) . '
+        )';
         return $db->createCommand($sql)->queryAll();
     }
 
@@ -236,12 +237,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testCommentColumn(): void
     {
-        $this->markTestSkipped("Testing the behavior, not sql generation anymore.");
+        $this->markTestSkipped('Testing the behavior, not sql generation anymore.');
     }
 
     public function testCommentTable(): void
     {
-        $this->markTestSkipped("Testing the behavior, not sql generation anymore.");
+        $this->markTestSkipped('Testing the behavior, not sql generation anymore.');
     }
 
     /**
@@ -647,13 +648,13 @@ ALTER TABLE [foo1] ADD CONSTRAINT [UQ_foo1_bar] UNIQUE ([bar])";
         $connection->createCommand($sql)->execute();
         $schema = $connection->getTableSchema('[foo1]', true);
 
-        $this->assertEquals("varchar(255)", $schema->getColumn('bar')->dbType);
+        $this->assertEquals('varchar(255)', $schema->getColumn('bar')->dbType);
         $this->assertEquals(true, $schema->getColumn('bar')->allowNull);
 
         $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(128)->notNull());
         $connection->createCommand($sql)->execute();
         $schema = $connection->getTableSchema('[foo1]', true);
-        $this->assertEquals("nvarchar(128)", $schema->getColumn('bar')->dbType);
+        $this->assertEquals('nvarchar(128)', $schema->getColumn('bar')->dbType);
         $this->assertEquals(false, $schema->getColumn('bar')->allowNull);
     }
 
@@ -685,7 +686,7 @@ WHILE 1=1 BEGIN
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
 END
 ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT NULL FOR [bar]";
-        $sql = $qb->alterColumn('foo1', 'bar', $this->integer()->null()->defaultValue(NULL));
+        $sql = $qb->alterColumn('foo1', 'bar', $this->integer()->null()->defaultValue(null));
         $this->assertEquals($expected, $sql);
     }
 
@@ -728,7 +729,7 @@ ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT CAST(GETDATE() AS INT) F
         $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(128)->null()->check('LEN(bar) > 5'));
         $connection->createCommand($sql)->execute();
         $schema = $connection->getTableSchema('[foo1]', true);
-        $this->assertEquals("nvarchar(128)", $schema->getColumn('bar')->dbType);
+        $this->assertEquals('nvarchar(128)', $schema->getColumn('bar')->dbType);
         $this->assertEquals(true, $schema->getColumn('bar')->allowNull);
 
         $sql = "INSERT INTO [foo1]([bar]) values('abcdef')";
@@ -796,14 +797,14 @@ ALTER TABLE [foo1] DROP COLUMN [bar]";
     {
         $connection = $this->getConnection();
 
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(64)->defaultValue("")->check('LEN(bar) < 5')->unique());
+        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(64)->defaultValue('')->check('LEN(bar) < 5')->unique());
         $connection->createCommand($sql)->execute();
 
         $sql = $connection->getQueryBuilder()->dropColumn('foo1', 'bar');
         $this->assertEquals(0, $connection->createCommand($sql)->execute());
 
         $schema = $connection->getTableSchema('[foo1]', true);
-        $this->assertEquals(NULL, $schema->getColumn('bar'));
+        $this->assertEquals(null, $schema->getColumn('bar'));
     }
 
     public static function buildFromDataProvider(): array

@@ -29,7 +29,7 @@ class NumberValidatorTest extends TestCase
 
         $this->mockApplication();
 
-        $this->oldLocale = setlocale(LC_NUMERIC, "0");
+        $this->oldLocale = setlocale(LC_NUMERIC, '0');
     }
 
     protected function tearDown(): void
