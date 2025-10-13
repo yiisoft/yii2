@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
@@ -19,7 +22,14 @@ class IpValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // destroy application, Validator must work without Yii::$app
+
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 

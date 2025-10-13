@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,7 +9,8 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Json;
+use yii\jquery\validators\BooleanValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * BooleanValidator checks if the attribute value is a boolean value.
@@ -35,7 +37,10 @@ class BooleanValidator extends Validator
      * Defaults to false, meaning only the value needs to be matched.
      */
     public $strict = false;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -43,8 +48,14 @@ class BooleanValidator extends Validator
     public function init()
     {
         parent::init();
+
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be either "{true}" or "{false}".');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => BooleanValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -74,10 +85,11 @@ class BooleanValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
+        }
 
-        return 'yii.validation.boolean(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -85,22 +97,10 @@ class BooleanValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $options = [
-            'trueValue' => $this->trueValue,
-            'falseValue' => $this->falseValue,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-                'true' => $this->trueValue === true ? 'true' : $this->trueValue,
-                'false' => $this->falseValue === false ? 'false' : $this->falseValue,
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->strict) {
-            $options['strict'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        return $options;
+        return [];
     }
 }

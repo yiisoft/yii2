@@ -22,10 +22,15 @@ class ConsoleTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Helper must work without Yii::$app
-        $this->destroyApplication();
-
+        $this->mockApplication();
         $this->setupStreams();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
     }
 
     /**

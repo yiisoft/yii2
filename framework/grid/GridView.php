@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,9 +13,9 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
-use yii\helpers\Json;
-use yii\helpers\Url;
 use yii\i18n\Formatter;
+use yii\jquery\grid\GridViewJqueryClientScript;
+use yii\web\client\ClientScriptInterface;
 use yii\widgets\BaseListView;
 
 /**
@@ -264,7 +265,10 @@ class GridView extends BaseListView
      * - `{pager}`: the pager. See [[renderPager()]].
      */
     public $layout = "{summary}\n{items}\n{pager}";
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientScriptInterface|null $clientScript = null;
 
     /**
      * Initializes the grid view.
@@ -285,6 +289,11 @@ class GridView extends BaseListView
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }
 
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript ??= ['class' => GridViewJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
+        }
+
         $this->initColumns();
     }
 
@@ -293,11 +302,10 @@ class GridView extends BaseListView
      */
     public function run()
     {
-        $view = $this->getView();
-        GridViewAsset::register($view);
-        $id = $this->options['id'];
-        $options = Json::htmlEncode(array_merge($this->getClientOptions(), ['filterOnFocusOut' => $this->filterOnFocusOut]));
-        $view->registerJs("jQuery('#$id').yiiGridView($options);");
+        if ($this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript->register($this, $this->getView());
+        }
+
         parent::run();
     }
 
@@ -333,17 +341,11 @@ class GridView extends BaseListView
      */
     protected function getClientOptions()
     {
-        $filterUrl = isset($this->filterUrl) ? $this->filterUrl : Yii::$app->request->url;
-        $id = $this->filterRowOptions['id'];
-        $filterSelector = "#$id input, #$id select";
-        if (isset($this->filterSelector)) {
-            $filterSelector .= ', ' . $this->filterSelector;
+        if ($this->clientScript === null) {
+            return [];
         }
 
-        return [
-            'filterUrl' => Url::to($filterUrl),
-            'filterSelector' => $filterSelector,
-        ];
+        return $this->clientScript->getClientOptions($this);
     }
 
     /**
