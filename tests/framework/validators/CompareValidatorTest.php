@@ -25,7 +25,7 @@ class CompareValidatorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockWebApplication();
+        $this->mockApplication();
     }
 
     protected function tearDown(): void
@@ -387,119 +387,6 @@ class CompareValidatorTest extends TestCase
         $this->assertTrue(
             $model2->hasErrors('attr_test'),
             "Validation should fail when '50' is not > '75'."
-        );
-    }
-
-    public function testClientValidateAttribute(): void
-    {
-        $modelValidator = new FakedValidationModel();
-        $validator = new CompareValidator(
-            [
-                'compareValue' => 'test_value',
-                'operator' => '==',
-                'type' => CompareValidator::TYPE_STRING,
-            ],
-        );
-
-        $modelValidator->attrA = 'test_value';
-
-        $this->assertSame(
-            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":' .
-            '"test_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022test_value\u0022."}, $form);',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-        $this->assertSame(
-            [
-                'operator' => '==',
-                'type' => 'string',
-                'compareValue' => 'test_value',
-                'skipOnEmpty' => 1,
-                'message' => 'attrA must be equal to "test_value".',
-            ],
-            $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
-        );
-
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertSame(
-            'the input value must be equal to "test_value".',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-    }
-
-    public function testClientValidateAttributeWithClosureCompareValue(): void
-    {
-        $modelValidator = new FakedValidationModel();
-        $validator = new CompareValidator(
-            [
-                'compareValue' => static fn(): string => 'closure_value',
-                'operator' => '==',
-                'type' => CompareValidator::TYPE_STRING,
-            ],
-        );
-
-        $this->assertSame(
-            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":' .
-            '"closure_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022closure_value\u0022."}, $form);',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-        $this->assertSame(
-            [
-                'operator' => '==',
-                'type' => 'string',
-                'compareValue' => 'closure_value',
-                'skipOnEmpty' => 1,
-                'message' => 'attrA must be equal to "closure_value".',
-            ],
-            $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
-        );
-
-        $validator->validate('someIncorrectValue', $errorMessage);
-
-        $this->assertSame(
-            'the input value must be equal to "closure_value".',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-    }
-
-    public function testClientValidateAttributeWithNullCompareAttribute(): void
-    {
-        $modelValidator = new FakedValidationModel();
-        $validator = new CompareValidator(
-            [
-                'compareAttribute' => 'attrA_repeat',
-                'operator' => '==',
-                'type' => CompareValidator::TYPE_STRING,
-            ],
-        );
-
-        $modelValidator->attrA = 'test';
-        $modelValidator->attrA_repeat = 'test';
-
-        $this->assertSame(
-            'yii.validation.compare(value, messages, {"operator":"==","type":"string","compareAttribute":' .
-            '"fakedvalidationmodel-attra_repeat","compareAttributeName":"FakedValidationModel[attrA_repeat]",' .
-            '"skipOnEmpty":1,"message":"attrA must be equal to \u0022attrA_repeat\u0022."}, $form);',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-        $this->assertSame(
-            [
-                'operator' => '==',
-                'type' => 'string',
-                'compareAttribute' => 'fakedvalidationmodel-attra_repeat',
-                'compareAttributeName' => 'FakedValidationModel[attrA_repeat]',
-                'skipOnEmpty' => 1,
-                'message' => 'attrA must be equal to "attrA_repeat".',
-            ],
-            $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
         );
     }
 }

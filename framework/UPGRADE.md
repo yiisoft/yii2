@@ -60,21 +60,124 @@ Upgrade from Yii 2.0.x
 * Support for CUBRID database has been removed.
 * `yii\widgets\ActiveField::label()` method now supports a `tag` option to control the wrapper element. This provides
   flexibility for custom label rendering while maintaining full backward compatibility:
+
   - `tag => 'label'` default generates standard `<label>` element with `for` attribute.
   - `tag => false`  renders label content without any wrapper tag.
   - `tag => 'span'/'div'/etc` uses specified HTML element as wrapper.
-  
-Example usage:
 
-```php
+  Example usage:
+
+  ```php
   $field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
-```
+  ```
+* jQuery is now optional in the framework. A new `useJquery` property has been added to `yii\console\Application` and
+  `yii\web\Application` to control whether jQuery-based client scripts are used. The default value is `true`, 
+  maintaining full backward compatibility with existing applications. When the value is `false`, jQuery is not used and framework uses plain JavaScript instead.
+  
+  To disable jQuery globally, configure your application:
+  
+  ```php
+  return [
+      'useJquery' => false,
+      // ... other config
+  ];
+  ```
+  
+  Or dynamically at runtime:
+  
+  ```php
+  Yii::$app->useJquery = false;
+  ```
+
+* Two new interfaces have been introduced to support alternative client-side script implementations:
+  
+  - `yii\web\client\ClientScriptInterface` - for widgets and components (ActiveForm, GridView, etc.)
+  - `yii\validators\client\ClientValidatorScriptInterface` - for validators
+  
+  These interfaces allow you to provide custom client-side validation and behavior without jQuery dependency.
+
+* Widgets and validators now support a `clientScript` configuration option to specify custom client script handlers:
+  
+  ```php
+  // Using default jQuery behavior (no changes needed)
+  $form = ActiveForm::begin([]);
+  
+  // Using custom client script implementation without jQuery
+  $form = ActiveForm::begin(['clientScript' => MyCustomClientScript::class]);
+  ```
+  
+  The following components support custom client scripts via the new interfaces:
+
+  - `yii\widgets\ActiveForm` and `yii\widgets\ActiveField`
+  - `yii\grid\GridView` and `yii\grid\CheckboxColumn`
+  - All built-in validators (RequiredValidator, EmailValidator, StringValidator, etc.)
+
+* If you are extending any of the following classes and overriding client-side script generation methods, you should 
+  review your code to ensure compatibility:
+  
+  - `yii\widgets\ActiveForm::getClientOptions()`
+  - `yii\widgets\ActiveField::getClientOptions()`
+  - `yii\validators\Validator::clientValidateAttribute()`
+  
+  The default implementations now delegate to the configured `clientScript` handler when jQuery is enabled.
+
+* Example of implementing a custom client script handler:
+  
+  ```php
+  use yii\base\BaseObject;
+  use yii\web\client\ClientScriptInterface;
+  use yii\web\View;
+  use yii\widgets\ActiveField;
+  use yii\widgets\ActiveForm;  
+  
+  /**
+   * @template T of ActiveForm|ActiveField
+   * @implements ClientScriptInterface<T>
+   */
+  class MyCustomClientScript implements ClientScriptInterface
+  {
+      public function getClientOptions(BaseObject $object, array $options = []): array
+      {
+          // Return client-side options for your custom implementation
+          return [
+              'myOption' => 'value',
+          ];
+      }
+      
+      public function register(BaseObject $object, View $view, array $options = []): void
+      {
+          // Register your custom JavaScript/CSS assets
+          MyCustomAsset::register($view);
+          
+          // Register initialization script
+          $view->registerJs("MyCustomLib.init('#" . $object->options['id'] . "');");
+      }
+  }
+  ```
+
+* If your application doesn't use jQuery and you want to completely remove the dependency, after setting `useJquery` to
+  `false`, you'll need to provide your own client script implementations for any widgets or validators that require 
+  client-side functionality. Alternatively, you can disable client-side validation entirely:
+  
+  ```php
+  $form = ActiveForm::begin(
+      [
+          'enableClientValidation' => false,
+          'enableAjaxValidation' => false,
+      ],
+  );
+  ```
+
+* Note: Setting `useJquery` to `false` only prevents the framework from registering jQuery-based scripts. 
+  It does not remove jQuery from your application if you've included it manually or through other extensions. 
+  You are responsible for ensuring your application works correctly without jQuery when this option is disabled.
+
 Upgrade from Yii 2.0.53
 -----------------------
 
 * Raised minimum supported PHP version to `7.4`.
 * Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
-will need to replace them with alternative caching solutions.
+  will need to replace them with alternative caching solutions.
 
 Upgrade from Yii 2.0.52
 -----------------------

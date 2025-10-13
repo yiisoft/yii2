@@ -24,7 +24,13 @@ class JsonTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, helper must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 

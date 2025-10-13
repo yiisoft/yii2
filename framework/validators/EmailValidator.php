@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,8 +11,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
-use yii\web\JsExpression;
+use yii\jquery\validators\EmailValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -69,7 +70,10 @@ class EmailValidator extends Validator
      * @since 2.0.43
      */
     public $enableLocalIDN = true;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -82,6 +86,11 @@ class EmailValidator extends Validator
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is not a valid email address.');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => EmailValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -163,13 +172,11 @@ class EmailValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
         }
-        $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -177,20 +184,11 @@ class EmailValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $options = [
-            'pattern' => new JsExpression($this->pattern),
-            'fullPattern' => new JsExpression($this->fullPattern),
-            'allowName' => $this->allowName,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-            'enableIDN' => (bool) $this->enableIDN,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        return $options;
+        return [];
     }
 
     /**

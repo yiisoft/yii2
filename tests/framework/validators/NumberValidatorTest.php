@@ -6,10 +6,11 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\NumberValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -21,6 +22,22 @@ class NumberValidatorTest extends TestCase
     private array $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
     private array $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
     private string|bool $oldLocale;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockApplication();
+
+        $this->oldLocale = setlocale(LC_NUMERIC, "0");
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
+    }
 
     private function setCommaDecimalLocale(): void
     {
@@ -47,16 +64,6 @@ class NumberValidatorTest extends TestCase
     private function restoreLocale(): void
     {
         setlocale(LC_NUMERIC, $this->oldLocale);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->oldLocale = setlocale(LC_NUMERIC, 0);
-
-        // destroy application, Validator must work without Yii::$app
-        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit(): void
@@ -507,48 +514,6 @@ class NumberValidatorTest extends TestCase
         $this->assertCount(1, $model->getErrors('attr_number'));
         $msgs = $model->getErrors('attr_number');
         $this->assertSame('attr_number is too big.', $msgs[0]);
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/3118
-     */
-    public function testClientValidateComparison(): void
-    {
-        $val = new NumberValidator([
-            'min' => 5,
-            'max' => 10,
-        ]);
-        $model = new FakedValidationModel();
-        $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertStringContainsString('"min":5', $js);
-        $this->assertStringContainsString('"max":10', $js);
-
-        $val = new NumberValidator([
-            'min' => '5',
-            'max' => '10',
-        ]);
-        $model = new FakedValidationModel();
-        $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertStringContainsString('"min":5', $js);
-        $this->assertStringContainsString('"max":10', $js);
-
-        $val = new NumberValidator([
-            'min' => 5.65,
-            'max' => 13.37,
-        ]);
-        $model = new FakedValidationModel();
-        $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertStringContainsString('"min":5.65', $js);
-        $this->assertStringContainsString('"max":13.37', $js);
-
-        $val = new NumberValidator([
-            'min' => '5.65',
-            'max' => '13.37',
-        ]);
-        $model = new FakedValidationModel();
-        $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
-        $this->assertStringContainsString('"min":5.65', $js);
-        $this->assertStringContainsString('"max":13.37', $js);
     }
 
     public function testValidateObject(): void

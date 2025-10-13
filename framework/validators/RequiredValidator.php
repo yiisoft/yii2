@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,7 +9,8 @@
 namespace yii\validators;
 
 use Yii;
-use yii\helpers\Json;
+use yii\jquery\validators\RequireValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * RequiredValidator validates that the specified attribute does not have null or empty value.
@@ -51,7 +53,10 @@ class RequiredValidator extends Validator
      * - `{requiredValue}`: the value of [[requiredValue]]
      */
     public $message;
-
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
     /**
      * {@inheritdoc}
@@ -62,6 +67,11 @@ class RequiredValidator extends Validator
         if ($this->message === null) {
             $this->message = $this->requiredValue === null ? Yii::t('yii', '{attribute} cannot be blank.')
                 : Yii::t('yii', '{attribute} must be "{requiredValue}".');
+        }
+
+        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript ??= ['class' => RequireValidatorJqueryClientScript::class];
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -91,10 +101,11 @@ class RequiredValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
+        }
 
-        return 'yii.validation.required(value, messages, ' . Json::htmlEncode($options) . ');';
+        return null;
     }
 
     /**
@@ -102,23 +113,10 @@ class RequiredValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $options = [];
-        if ($this->requiredValue !== null) {
-            $options['message'] = $this->formatMessage($this->message, [
-                'requiredValue' => $this->requiredValue,
-            ]);
-            $options['requiredValue'] = $this->requiredValue;
-        } else {
-            $options['message'] = $this->message;
-        }
-        if ($this->strict) {
-            $options['strict'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        $options['message'] = $this->formatMessage($options['message'], [
-            'attribute' => $model->getAttributeLabel($attribute),
-        ]);
-
-        return $options;
+        return [];
     }
 }

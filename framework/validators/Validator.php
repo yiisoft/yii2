@@ -473,6 +473,26 @@ class Validator extends Component
     }
 
     /**
+     * Returns the formatted validation message for client-side validation.
+     *
+     * This method can be overridden in subclasses to provide custom message formatting with validator-specific
+     * parameters.
+     *
+     * @param string $message the message template to be formatted
+     * @param array $params the parameters to be inserted into the message
+     *
+     * @return string the formatted validation message
+     *
+     * @phpstan-param array<string, mixed> $params
+     *
+     * @since 2.2.0
+     */
+    public function getFormattedClientMessage(string $message, array $params): string
+    {
+        return $this->formatMessage($message, $params);
+    }
+
+    /**
      * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
      * @param string $message
      * @param array $params
