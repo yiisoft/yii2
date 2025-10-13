@@ -72,7 +72,7 @@ Upgrade from Yii 2.0.x
   ```
 * jQuery is now optional in the framework. A new `useJquery` property has been added to `yii\console\Application` and
   `yii\web\Application` to control whether jQuery-based client scripts are used. The default value is `true`, 
-  maintaining full backward compatibility with existing applications.
+  maintaining full backward compatibility with existing applications. When the value is `false`, jQuery is not used and framework uses plain JavaScript instead.
   
   To disable jQuery globally, configure your application:
   
