@@ -173,7 +173,7 @@ class Instance
      * Returns the actual object referenced by this Instance object.
      * @param ServiceLocator|Container|null $container the container used to locate the referenced object.
      * If null, the method will first try `Yii::$app` then `Yii::$container`.
-     * @return object the actual object referenced by this Instance object.
+     * @return object|null the actual object referenced by this Instance object.
      */
     public function get($container = null)
     {
