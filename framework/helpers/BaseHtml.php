@@ -2284,7 +2284,7 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     * @return string|array the corresponding attribute value
+     * @return string|array|null the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)
