@@ -168,9 +168,8 @@ class BaseYiiTest extends TestCase
      */
     public function testLog(): void
     {
-        $logger = $this->getMockBuilder('yii\\log\\Logger')
-            ->setMethods(['log'])
-            ->getMock();
+        $logger = $this->createPartialMock(Logger::class, ['log']);
+
         BaseYii::setLogger($logger);
 
         $logger->expects($this->exactly(6))

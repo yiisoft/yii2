@@ -9,6 +9,7 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\MessageController;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -62,10 +63,11 @@ abstract class BaseMessageControllerTest extends TestCase
      */
     protected function createMessageController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $messageController = new MessageControllerMock('message', $module);
         $messageController->interactive = false;
 

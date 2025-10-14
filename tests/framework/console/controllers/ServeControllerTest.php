@@ -32,7 +32,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMocK::class)
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['isAddressTaken', 'runCommand'])
+            ->onlyMethods(['isAddressTaken', 'runCommand'])
             ->getMock();
 
         $serveController->expects($this->once())->method('isAddressTaken')->willReturn(true);
@@ -57,7 +57,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -83,7 +83,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -107,7 +107,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;
@@ -133,7 +133,7 @@ class ServeControllerTest extends TestCase
         /** @var ServeController $serveController */
         $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
-            ->setMethods(['runCommand'])
+            ->onlyMethods(['runCommand'])
             ->getMock();
 
         $serveController->docroot = $docroot;

@@ -23,6 +23,7 @@ namespace yiiunit\framework\log {
     use yii\base\UserException;
     use yii\log\Dispatcher;
     use yii\log\Logger;
+    use yii\log\Target;
     use yiiunit\TestCase;
 
     /**
@@ -154,11 +155,9 @@ namespace yiiunit\framework\log {
          */
         public function testDispatchWithDisabledTarget(): void
         {
-            $target = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
-
+            $target = $this->createPartialMock(Target::class, ['collect', 'export']);
             $target->expects($this->never())->method($this->anything());
+
             $target->enabled = false;
 
             $dispatcher = new Dispatcher(['targets' => ['fakeTarget' => $target]]);
@@ -170,10 +169,7 @@ namespace yiiunit\framework\log {
          */
         public function testDispatchWithSuccessTargetCollect(): void
         {
-            $target = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
-
+            $target = $this->createPartialMock(Target::class, ['collect', 'export']);
             $target->expects($this->once())
                 ->method('collect')
                 ->with(
@@ -191,13 +187,8 @@ namespace yiiunit\framework\log {
         public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect(): void
         {
             static::$microtimeIsMocked = true;
-            $target1 = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
-
-            $target2 = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
+            $target1 = $this->createPartialMock(Target::class, ['collect', 'export']);
+            $target2 = $this->createPartialMock(Target::class, ['collect', 'export']);
 
             $target1->expects($this->exactly(2))
                 ->method('collect')

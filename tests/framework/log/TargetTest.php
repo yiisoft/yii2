@@ -245,9 +245,7 @@ class TargetTest extends TestCase
 
     public function testBreakProfilingWithFlushWithProfilingDisabled(): void
     {
-        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
-            ->setMethods(['dispatch'])
-            ->getMock();
+        $dispatcher = $this->createPartialMock('yii\log\Dispatcher', ['dispatch']);
         $dispatcher->expects($this->once())->method('dispatch')->with($this->callback(function ($messages) {
             return count($messages) === 2
                 && $messages[0][0] === 'token.a'
@@ -267,9 +265,7 @@ class TargetTest extends TestCase
 
     public function testNotBreakProfilingWithFlushWithProfilingEnabled(): void
     {
-        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
-            ->setMethods(['dispatch'])
-            ->getMock();
+        $dispatcher = $this->createPartialMock('yii\log\Dispatcher', ['dispatch']);
         $dispatcher->expects($this->exactly(2))->method('dispatch')->withConsecutive(
             [
                 $this->callback(function ($messages) {
@@ -302,9 +298,7 @@ class TargetTest extends TestCase
 
     public function testFlushingWithProfilingEnabledAndOverflow(): void
     {
-        $dispatcher = $this->getMockBuilder('yii\log\Dispatcher')
-            ->setMethods(['dispatch'])
-            ->getMock();
+        $dispatcher = $this->createPartialMock('yii\log\Dispatcher', ['dispatch']);
         $dispatcher->expects($this->exactly(3))->method('dispatch')->withConsecutive(
             [
                 $this->callback(function ($messages) {

@@ -43,9 +43,7 @@ class AccessRuleTest extends TestCase
     protected function mockRequest($method = 'GET')
     {
         /** @var Request $request */
-        $request = $this->getMockBuilder('\yii\web\Request')
-            ->setMethods(['getMethod'])
-            ->getMock();
+        $request = $this->createPartialMock(Request::class, ['getMethod']);
         $request->method('getMethod')->willReturn($method);
 
         return $request;
