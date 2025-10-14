@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\data;
 
+use ReflectionClass;
 use yii\data\BaseDataProvider;
 use yiiunit\TestCase;
 
@@ -16,9 +17,9 @@ use yiiunit\TestCase;
  */
 class BaseDataProviderTest extends TestCase
 {
-    public function testGenerateId()
+    public function testGenerateId(): void
     {
-        $rc = new \ReflectionClass(BaseDataProvider::className());
+        $rc = new ReflectionClass(BaseDataProvider::className());
         $rp = $rc->getProperty('counter');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible

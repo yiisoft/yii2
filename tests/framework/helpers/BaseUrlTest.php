@@ -11,19 +11,19 @@ use yii\helpers\BaseUrl;
 class BaseUrlTest extends TestCase
 {
     /** @dataProvider relativeTrueUrlProvider */
-    public function testIsRelativeWillReturnTrue($url)
+    public function testIsRelativeWillReturnTrue($url): void
     {
         $this->assertTrue(BaseUrl::isRelative($url));
     }
 
     /** @dataProvider relativeFalseUrlProvider */
-    public function testIsRelativeWillReturnFalse($url)
+    public function testIsRelativeWillReturnFalse($url): void
     {
         $this->assertFalse(BaseUrl::isRelative($url));
     }
 
     /** @dataProvider ensureSchemeUrlProvider */
-    public function testEnsureScheme($url, $scheme, $expected)
+    public function testEnsureScheme($url, $scheme, $expected): void
     {
         $this->assertEquals($expected, BaseUrl::ensureScheme($url, $scheme));
     }

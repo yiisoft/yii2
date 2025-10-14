@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\db\oci;
 
+use Exception;
+use Throwable;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Query;
@@ -21,7 +23,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 {
     protected $driverName = 'oci';
 
-    public function testAutoQuoting()
+    public function testAutoQuoting(): void
     {
         $db = $this->getConnection(false);
 
@@ -30,7 +32,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
-    public function testLastInsertId()
+    public function testLastInsertId(): void
     {
         $db = $this->getConnection();
 
@@ -58,7 +60,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      *
      * @return void
      */
-    public function testCLOBStringInsertion()
+    public function testCLOBStringInsertion(): void
     {
         $db = $this->getConnection();
 
@@ -78,7 +80,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db->createCommand()->dropTable('longstring')->execute();
     }
 
-    public function testQueryCache()
+    public function testQueryCache(): void
     {
         $db = $this->getConnection(true);
 
@@ -168,7 +170,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         ];
     }
 
-    public function testInsert()
+    public function testInsert(): void
     {
         $db = $this->getConnection();
         $db->createCommand('DELETE FROM {{customer}}')->execute();
@@ -194,7 +196,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * Test INSERT INTO ... SELECT SQL statement with alias syntax.
      */
-    public function testInsertSelectAlias()
+    public function testInsertSelectAlias(): void
     {
         $db = $this->getConnection();
 
@@ -245,7 +247,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      *
      * https://github.com/yiisoft/yii2/issues/6526
      */
-    public function testBatchInsertDataTypesLocale()
+    public function testBatchInsertDataTypesLocale(): void
     {
         $locale = setlocale(LC_NUMERIC, 0);
         if (false === $locale) {
@@ -290,10 +292,10 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
         }
@@ -303,7 +305,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * verify that {{}} are not going to be replaced in parameters.
      */
-    public function testNoTablenameReplacement()
+    public function testNoTablenameReplacement(): void
     {
         $db = $this->getConnection();
 
@@ -335,7 +337,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
 
-    public function testCreateTable()
+    public function testCreateTable(): void
     {
         $db = $this->getConnection();
 
@@ -362,7 +364,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         ], $records);
     }
 
-    public function testsInsertQueryAsColumnValue()
+    public function testsInsertQueryAsColumnValue(): void
     {
         $time = time();
 
@@ -378,7 +380,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $orderId = $db->getLastInsertID('order_SEQ');
 
-        $columnValueQuery = new \yii\db\Query();
+        $columnValueQuery = new Query();
         $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();
@@ -399,7 +401,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
     }
 
-    public function testAlterTable()
+    public function testAlterTable(): void
     {
         $db = $this->getConnection();
 
@@ -439,7 +441,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         ], $records);
     }
 
-    public function testCreateView()
+    public function testCreateView(): void
     {
         $db = $this->getConnection();
 
@@ -479,7 +481,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals([['bar' => 6]], $records);
     }
 
-    public function testColumnCase()
+    public function testColumnCase(): void
     {
         $this->markTestSkipped('Should be fixed.');
     }

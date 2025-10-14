@@ -8,12 +8,13 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\widgets\Block;
 
 /**
  * @group widgets
  */
-class BlockTest extends \yiiunit\TestCase
+class BlockTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -25,7 +26,7 @@ class BlockTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
 

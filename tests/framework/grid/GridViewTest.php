@@ -8,6 +8,11 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
+use yii\db\Connection;
+use yii\web\UrlManager;
+use yii\data\ActiveDataProvider;
+use Exception;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
@@ -19,7 +24,7 @@ use yiiunit\data\ar\NoAutoLabels;
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends \yiiunit\TestCase
+class GridViewTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -53,9 +58,9 @@ class GridViewTest extends \yiiunit\TestCase
      * @dataProvider emptyDataProvider
      * @param mixed $emptyText
      * @param string $expectedText
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testEmpty($emptyText, $expectedText)
+    public function testEmpty($emptyText, $expectedText): void
     {
         $html = GridView::widget([
             'id' => 'grid',
@@ -79,7 +84,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
-    public function testGuessColumns()
+    public function testGuessColumns(): void
     {
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
@@ -126,9 +131,9 @@ class GridViewTest extends \yiiunit\TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testFooter()
+    public function testFooter(): void
     {
         $config = [
             'id'           => 'grid',
@@ -155,13 +160,13 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertTrue(preg_match('/<\/tbody><tfoot>/', $html) === 1);
     }
 
-    public function testHeaderLabels()
+    public function testHeaderLabels(): void
     {
         // Ensure GridView does not call Model::generateAttributeLabel() to generate labels unless the labels are explicitly used.
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => \yii\db\Connection::className(),
+                    'class' => Connection::className(),
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -170,13 +175,13 @@ class GridViewTest extends \yiiunit\TestCase
         NoAutoLabels::$db = Yii::$app->getDb();
         Yii::$app->getDb()->createCommand()->createTable(NoAutoLabels::tableName(), ['attr1' => 'int', 'attr2' => 'int'])->execute();
 
-        $urlManager = new \yii\web\UrlManager([
+        $urlManager = new UrlManager([
             'baseUrl' => '/',
             'scriptUrl' => '/index.php',
         ]);
 
         $grid = new GridView([
-            'dataProvider' => new \yii\data\ActiveDataProvider([
+            'dataProvider' => new ActiveDataProvider([
                 'query' => NoAutoLabels::find(),
             ]),
             'columns' => [

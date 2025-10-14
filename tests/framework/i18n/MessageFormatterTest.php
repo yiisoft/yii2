@@ -357,7 +357,7 @@ _MSG_
      * @param bool $skip
      * @param string $skipMessage
      */
-    public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = '')
+    public function testNamedArguments($pattern, $expected, $args, $skip = false, $skipMessage = ''): void
     {
         if ($skip) {
             $this->markTestSkipped($skipMessage);
@@ -374,7 +374,7 @@ _MSG_
      * @param array $args
      * @param string $locale
      */
-    public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US')
+    public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US'): void
     {
         if (!extension_loaded('intl')) {
             $this->markTestSkipped('intl not installed. Skipping.');
@@ -385,7 +385,7 @@ _MSG_
         $this->assertEquals($args, $result, $formatter->getErrorMessage() . ' Pattern: ' . $pattern);
     }
 
-    public function testInsufficientArguments()
+    public function testInsufficientArguments(): void
     {
         $expected = '{' . self::SUBJECT . '} is ' . self::N_VALUE;
 
@@ -397,7 +397,7 @@ _MSG_
         $this->assertEquals($expected, $result, $formatter->getErrorMessage());
     }
 
-    public function testNoParams()
+    public function testNoParams(): void
     {
         $pattern = '{' . self::SUBJECT . '} is ' . self::N;
         $formatter = new MessageFormatter();
@@ -405,7 +405,7 @@ _MSG_
         $this->assertEquals($pattern, $result, $formatter->getErrorMessage());
     }
 
-    public function testMalformedFormatter()
+    public function testMalformedFormatter(): void
     {
         $formatter = new MessageFormatter();
         $result = $formatter->format('{word,umber}', ['word' => 'test'], 'en-US'); // typo is intentional, message pattern should be invalid

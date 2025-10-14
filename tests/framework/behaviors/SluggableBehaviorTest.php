@@ -71,7 +71,7 @@ class SluggableBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testSlug()
+    public function testSlug(): void
     {
         $model = new ActiveRecordSluggable();
         $model->name = 'test name';
@@ -83,7 +83,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testSlugSeveralAttributes()
+    public function testSlugSeveralAttributes(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
@@ -98,7 +98,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testSlugRelatedAttribute()
+    public function testSlugRelatedAttribute(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getBehavior('sluggable')->attribute = 'related.name';
@@ -117,7 +117,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testUniqueByIncrement()
+    public function testUniqueByIncrement(): void
     {
         $name = 'test name';
 
@@ -136,7 +136,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testUniqueByIncrement
      */
-    public function testUniqueByCallback()
+    public function testUniqueByCallback(): void
     {
         $name = 'test name';
 
@@ -157,7 +157,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testUpdateUnique()
+    public function testUpdateUnique(): void
     {
         $name = 'test name';
 
@@ -177,7 +177,7 @@ class SluggableBehaviorTest extends TestCase
         $this->assertEquals('test-name', $model->slug);
     }
 
-    public function testSkipOnEmpty()
+    public function testSkipOnEmpty(): void
     {
         $model = new SkipOnEmptySluggableActiveRecord();
         $model->name = 'test name';
@@ -196,7 +196,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testImmutableByAttribute()
+    public function testImmutableByAttribute(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getSluggable()->immutable = true;
@@ -213,7 +213,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testImmutableByCallback()
+    public function testImmutableByCallback(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getSluggable()->immutable = true;

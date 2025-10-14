@@ -19,7 +19,7 @@ trait StdOutBufferControllerTrait
      */
     private $stdOutBuffer = '';
 
-    public function stdout($string)
+    public function stdout($string): void
     {
         $this->stdOutBuffer .= $string;
     }

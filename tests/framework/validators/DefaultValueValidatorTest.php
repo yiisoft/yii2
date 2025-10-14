@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\validators;
 
+use stdclass;
 use yii\validators\DefaultValueValidator;
 use yiiunit\TestCase;
 
@@ -24,11 +25,11 @@ class DefaultValueValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         $val = new DefaultValueValidator();
         $val->value = 'test_value';
-        $obj = new \stdclass();
+        $obj = new stdclass();
         $obj->attrA = 'attrA';
         $obj->attrB = null;
         $obj->attrC = '';

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use PDO;
 use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;
@@ -21,9 +22,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'mysql';
 
-    public function testLoadDefaultDatetimeColumn()
+    public function testLoadDefaultDatetimeColumn(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
             $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
         }
         $sql = <<<SQL
@@ -45,9 +46,9 @@ SQL;
         $this->assertEquals('CURRENT_TIMESTAMP', (string)$dt->defaultValue);
     }
 
-    public function testDefaultDatetimeColumnWithMicrosecs()
+    public function testDefaultDatetimeColumnWithMicrosecs(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
             $this->markTestSkipped('CURRENT_TIMESTAMP with microseconds as default column value is supported since MySQL 5.6.4.');
         }
         $sql = <<<SQL
@@ -70,7 +71,7 @@ SQL;
         $this->assertEquals('CURRENT_TIMESTAMP(3)', (string)$ts->defaultValue);
     }
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in MySQL.');
     }
@@ -95,7 +96,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraints($tableName, $type, $expected)
+    public function testTableSchemaConstraints($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -130,7 +131,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -156,7 +157,7 @@ SQL;
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -167,7 +168,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -193,7 +194,7 @@ SQL;
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -205,7 +206,7 @@ SQL;
      * @see https://mariadb.com/kb/en/library/now/#description
      * @see https://github.com/yiisoft/yii2/issues/15167
      */
-    public function testAlternativeDisplayOfDefaultCurrentTimestampInMariaDB()
+    public function testAlternativeDisplayOfDefaultCurrentTimestampInMariaDB(): void
     {
         /**
          * We do not have a real database MariaDB >= 10.2.3 for tests, so we emulate the information that database
@@ -235,7 +236,7 @@ SQL;
      *
      * @see https://github.com/yiisoft/yii2/issues/19047
      */
-    public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB()
+    public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB(): void
     {
         $schema = new Schema();
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[

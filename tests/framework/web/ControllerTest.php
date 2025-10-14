@@ -8,6 +8,10 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\Application;
+use yiiunit\framework\web\stubs\ModelBindingStub;
+use yii\base\Module;
+use yii\data\ArrayDataProvider;
 use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
@@ -31,7 +35,7 @@ class ControllerTest extends TestCase
         parent::setUp();
 
         $this->mockWebApplication();
-        $this->controller = new FakeController('fake', new \yii\web\Application([
+        $this->controller = new FakeController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -46,7 +50,7 @@ class ControllerTest extends TestCase
         Yii::$app->controller = $this->controller;
     }
 
-    public function testBindActionParams()
+    public function testBindActionParams(): void
     {
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
@@ -61,10 +65,10 @@ class ControllerTest extends TestCase
         $this->assertEquals('available', $other);
     }
 
-    public function testNullableInjectedActionParams()
+    public function testNullableInjectedActionParams(): void
     {
         // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
 
@@ -84,15 +88,15 @@ class ControllerTest extends TestCase
         $this->assertNull($args[1]);
     }
 
-    public function testModelBindingHttpException()
+    public function testModelBindingHttpException(): void
     {
-        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'container' => [
                 'definitions' => [
-                    \yiiunit\framework\web\stubs\ModelBindingStub::className() => [
-                        \yiiunit\framework\web\stubs\ModelBindingStub::className(),
+                    ModelBindingStub::className() => [
+                        ModelBindingStub::className(),
                         'build',
                     ],
                 ],
@@ -113,10 +117,10 @@ class ControllerTest extends TestCase
         $this->controller->bindActionParams($injectionAction, []);
     }
 
-    public function testInjectionContainerException()
+    public function testInjectionContainerException(): void
     {
         // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
 
@@ -133,7 +137,7 @@ class ControllerTest extends TestCase
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
         Yii::$container->set(VendorImage::className(), function () {
-            throw new \RuntimeException('uh oh');
+            throw new RuntimeException('uh oh');
         });
 
         $this->expectException(get_class(new RuntimeException()));
@@ -141,10 +145,10 @@ class ControllerTest extends TestCase
         $this->controller->bindActionParams($injectionAction, $params);
     }
 
-    public function testUnknownInjection()
+    public function testUnknownInjection(): void
     {
         // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -165,10 +169,10 @@ class ControllerTest extends TestCase
         $this->controller->bindActionParams($injectionAction, $params);
     }
 
-    public function testInjectedActionParams()
+    public function testInjectedActionParams(): void
     {
         // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -195,9 +199,9 @@ class ControllerTest extends TestCase
         $this->assertEquals($params['after'], $args[5]);
     }
 
-    public function testInjectedActionParamsFromModule()
+    public function testInjectedActionParamsFromModule(): void
     {
-        $module = new \yii\base\Module('fake', new \yii\web\Application([
+        $module = new Module('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -209,7 +213,7 @@ class ControllerTest extends TestCase
             ],
         ]));
         $module->set('yii\data\DataProviderInterface', [
-            'class' => \yii\data\ArrayDataProvider::className(),
+            'class' => ArrayDataProvider::className(),
         ]);
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', $module);
@@ -217,17 +221,17 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
         $args = $this->controller->bindActionParams($injectionAction, []);
-        $this->assertInstanceOf(\yii\data\ArrayDataProvider::className(), $args[0]);
+        $this->assertInstanceOf(ArrayDataProvider::className(), $args[0]);
         $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', Yii::$app->requestedParams['dataProvider']);
     }
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/17701
      */
-    public function testBindTypedActionParams()
+    public function testBindTypedActionParams(): void
     {
         // Use the PHP7 controller for this test
-        $this->controller = new FakePhp7Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp7Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -278,7 +282,7 @@ class ControllerTest extends TestCase
         $this->controller->bindActionParams($aksi1, $params);
     }
 
-    public function testAsJson()
+    public function testAsJson(): void
     {
         $data = [
             'test' => 123,
@@ -291,7 +295,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($data, $result->data);
     }
 
-    public function testAsXml()
+    public function testAsXml(): void
     {
         $data = [
             'test' => 123,
@@ -304,7 +308,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($data, $result->data);
     }
 
-    public function testRedirect()
+    public function testRedirect(): void
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $this->assertEquals($this->controller->redirect('')->headers->get('location'), '/');
@@ -321,7 +325,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
     }
 
-    public function testUnionBindingActionParams()
+    public function testUnionBindingActionParams(): void
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped('Can not be tested on PHP < 8.0');
@@ -329,7 +333,7 @@ class ControllerTest extends TestCase
         }
 
         // Use the PHP80 controller for this test
-        $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp80Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -358,14 +362,14 @@ class ControllerTest extends TestCase
         $this->assertSame(1, $args[1]);
     }
 
-    public function testUnionBindingActionParamsWithArray()
+    public function testUnionBindingActionParamsWithArray(): void
     {
         if (PHP_VERSION_ID < 80000) {
             $this->markTestSkipped('Can not be tested on PHP < 8.0');
             return;
         }
         // Use the PHP80 controller for this test
-        $this->controller = new FakePhp80Controller('fake', new \yii\web\Application([
+        $this->controller = new FakePhp80Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [

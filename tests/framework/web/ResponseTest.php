@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\web;
 
+use yiiunit\TestCase;
+use DateTime;
+use DateTimeImmutable;
 use Error;
 use Exception;
 use RuntimeException;
@@ -21,10 +24,10 @@ use yiiunit\framework\web\mocks\TestRequestComponent;
 /**
  * @group web
  */
-class ResponseTest extends \yiiunit\TestCase
+class ResponseTest extends TestCase
 {
     /**
-     * @var \yii\web\Response
+     * @var Response
      */
     public $response;
 
@@ -38,7 +41,7 @@ class ResponseTest extends \yiiunit\TestCase
                 ],
             ],
         ]);
-        $this->response = new \yii\web\Response();
+        $this->response = new Response();
     }
 
     public function rightRanges()
@@ -59,7 +62,7 @@ class ResponseTest extends \yiiunit\TestCase
      * @param int $length
      * @param string $expectedContent
      */
-    public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent)
+    public function testSendFileRanges($rangeHeader, $expectedHeader, $length, $expectedContent): void
     {
         $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
         $fullContent = file_get_contents($dataFile);
@@ -96,7 +99,7 @@ class ResponseTest extends \yiiunit\TestCase
      * @dataProvider wrongRanges
      * @param string $rangeHeader
      */
-    public function testSendFileWrongRanges($rangeHeader)
+    public function testSendFileWrongRanges($rangeHeader): void
     {
         $this->expectException('yii\web\RangeNotSatisfiableHttpException');
 
@@ -113,7 +116,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/7529
      */
-    public function testSendContentAsFile()
+    public function testSendContentAsFile(): void
     {
         ob_start();
         $this->response->sendContentAsFile('test', 'test.txt')->send();
@@ -127,7 +130,7 @@ class ResponseTest extends \yiiunit\TestCase
         static::assertEquals(4, $headers->get('Content-Length'));
     }
 
-    public function testRedirect()
+    public function testRedirect(): void
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $this->assertEquals('/', $this->response->redirect('')->headers->get('location'));
@@ -175,7 +178,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/19795
      */
-    public function testRedirectNewLine()
+    public function testRedirectNewLine(): void
     {
         $this->expectException('yii\base\InvalidRouteException');
 
@@ -185,7 +188,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @dataProvider dataProviderAjaxRedirectInternetExplorer11
      */
-    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes)
+    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes): void
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $request = Yii::$app->request;
@@ -239,7 +242,7 @@ class ResponseTest extends \yiiunit\TestCase
      * @param Exception $exception
      * @param int $statusCode
      */
-    public function testSetStatusCodeByException($exception, $statusCode)
+    public function testSetStatusCodeByException($exception, $statusCode): void
     {
         $this->response->setStatusCodeByException($exception);
         $this->assertEquals($statusCode, $this->response->getStatusCode());
@@ -248,7 +251,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/pull/18290
      */
-    public function testNonSeekableStream()
+    public function testNonSeekableStream(): void
     {
         $stream = fopen('php://output', 'r+');
         ob_start();
@@ -313,7 +316,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @dataProvider formatDataProvider
      */
-    public function testSkipFormatter($format, $content)
+    public function testSkipFormatter($format, $content): void
     {
         $response = new Response();
         $response->format = $format;
@@ -328,19 +331,19 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/17094
      */
-    public function testEmptyContentOn204()
+    public function testEmptyContentOn204(): void
     {
         $this->assertEmptyContentOn(204);
     }
 
-    public function testSettingContentToNullOn204()
+    public function testSettingContentToNullOn204(): void
     {
         $this->assertEmptyContentOn(204, function (Response $response) {
             $this->assertSame($response->content, '');
         });
     }
 
-    public function testSettingStreamToNullOn204()
+    public function testSettingStreamToNullOn204(): void
     {
         $this->assertSettingStreamToNullOn(204);
     }
@@ -348,7 +351,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18199
      */
-    public function testEmptyContentOn304()
+    public function testEmptyContentOn304(): void
     {
         $this->assertEmptyContentOn(304);
     }
@@ -356,19 +359,19 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18199
      */
-    public function testSettingContentToNullOn304()
+    public function testSettingContentToNullOn304(): void
     {
         $this->assertEmptyContentOn(304, function (Response $response) {
             $this->assertSame($response->content, '');
         });
     }
 
-    public function testSettingStreamToNullOn304()
+    public function testSettingStreamToNullOn304(): void
     {
         $this->assertSettingStreamToNullOn(304);
     }
 
-    public function testSendFileWithInvalidCharactersInFileName()
+    public function testSendFileWithInvalidCharactersInFileName(): void
     {
         $response = new Response();
         $dataFile = Yii::getAlias('@yiiunit/data/web/data.txt');
@@ -384,7 +387,7 @@ class ResponseTest extends \yiiunit\TestCase
     /**
      * @dataProvider cookiesTestProvider
      */
-    public function testCookies($cookieConfig, $expected)
+    public function testCookies($cookieConfig, $expected): void
     {
         $response = new Response();
         $response->cookies->add(new Cookie(array_merge(
@@ -435,11 +438,11 @@ class ResponseTest extends \yiiunit\TestCase
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
             $testCases = array_merge($testCases, [
                 'expire-as-date_time' => [
-                    ['expire' => new \DateTime('@' . $expireInt)],
+                    ['expire' => new DateTime('@' . $expireInt)],
                     ['expires' => $expireString],
                 ],
                 'expire-as-date_time_immutable' => [
-                    ['expire' => new \DateTimeImmutable('@' . $expireInt)],
+                    ['expire' => new DateTimeImmutable('@' . $expireInt)],
                     ['expires' => $expireString],
                 ],
             ]);
@@ -485,7 +488,7 @@ class ResponseTest extends \yiiunit\TestCase
                 }
             }
             if ($name === null) {
-                throw new \Exception('Could not determine cookie name for header "' . $header . '".');
+                throw new Exception('Could not determine cookie name for header "' . $header . '".');
             }
             $cookies[$name] = $params;
         }

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\Application;
 use yii\caching\ArrayCache;
 use yii\web\Request;
 use yii\web\UrlManager;
@@ -72,7 +73,7 @@ class UrlManagerParseUrlTest extends TestCase
         parent::tearDown();
     }
 
-    public function testWithoutRules()
+    public function testWithoutRules(): void
     {
         $manager = $this->getUrlManager();
 
@@ -90,7 +91,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertEquals(['module/site/index/', []], $result);
     }
 
-    public function testWithoutRulesStrict()
+    public function testWithoutRulesStrict(): void
     {
         $manager = $this->getUrlManager();
         $manager->enableStrictParsing = true;
@@ -117,7 +118,7 @@ class UrlManagerParseUrlTest extends TestCase
      * @dataProvider suffixProvider
      * @param string $suffix
      */
-    public function testWithoutRulesWithSuffix($suffix)
+    public function testWithoutRulesWithSuffix($suffix): void
     {
         $manager = $this->getUrlManager(['suffix' => $suffix]);
 
@@ -143,7 +144,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertEquals(['module/site/index/', []], $result);
     }
 
-    public function testSimpleRules()
+    public function testSimpleRules(): void
     {
         $config = [
             'rules' => [
@@ -171,7 +172,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertEquals(['module/site/index', []], $result);
     }
 
-    public function testSimpleRulesStrict()
+    public function testSimpleRulesStrict(): void
     {
         $config = [
             'rules' => [
@@ -204,7 +205,7 @@ class UrlManagerParseUrlTest extends TestCase
      * @dataProvider suffixProvider
      * @param string $suffix
      */
-    public function testSimpleRulesWithSuffix($suffix)
+    public function testSimpleRulesWithSuffix($suffix): void
     {
         $config = [
             'rules' => [
@@ -249,7 +250,7 @@ class UrlManagerParseUrlTest extends TestCase
      * @dataProvider suffixProvider
      * @param string $suffix
      */
-    public function testSimpleRulesWithSuffixStrict($suffix)
+    public function testSimpleRulesWithSuffixStrict($suffix): void
     {
         $config = [
             'rules' => [
@@ -295,7 +296,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     // TODO implement with hostinfo
 
-    public function testParseRESTRequest()
+    public function testParseRESTRequest(): void
     {
         $request = new Request();
 
@@ -340,14 +341,14 @@ class UrlManagerParseUrlTest extends TestCase
                     'baseUrl' => '/app',
                 ],
             ],
-        ], \yii\web\Application::className());
+        ], Application::className());
         $this->assertEquals('/app/post/123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);
     }
 
-    public function testAppendRules()
+    public function testAppendRules(): void
     {
         $manager = $this->getUrlManager(['rules' => ['post/<id:\d+>' => 'post/view']]);
 
@@ -363,7 +364,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertSame($firstRule, $manager->rules[0]);
     }
 
-    public function testPrependRules()
+    public function testPrependRules(): void
     {
         $manager = $this->getUrlManager(['rules' => ['post/<id:\d+>' => 'post/view']]);
 
@@ -380,7 +381,7 @@ class UrlManagerParseUrlTest extends TestCase
         $this->assertSame($firstRule, $manager->rules[2]);
     }
 
-    public function testRulesCache()
+    public function testRulesCache(): void
     {
         $arrayCache = new ArrayCache();
 
@@ -414,7 +415,7 @@ class UrlManagerParseUrlTest extends TestCase
         );
     }
 
-    public function testRulesCacheIsUsed()
+    public function testRulesCacheIsUsed(): void
     {
         $arrayCache = $this->getMockBuilder('yii\caching\ArrayCache')
             ->setMethods(['get', 'set'])
@@ -441,7 +442,7 @@ class UrlManagerParseUrlTest extends TestCase
     /**
      * Test a scenario where catch-all rule is used at the end for a CMS but module names should use the module actions and controllers.
      */
-    public function testModuleRoute()
+    public function testModuleRoute(): void
     {
         $modules = 'user|my-admin';
 

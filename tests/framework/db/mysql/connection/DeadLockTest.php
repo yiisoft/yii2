@@ -8,6 +8,10 @@
 
 namespace yiiunit\framework\db\mysql\connection;
 
+use yiiunit\framework\db\mysql\ConnectionTest;
+use Throwable;
+use RuntimeException;
+use ErrorException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Transaction;
@@ -16,7 +20,7 @@ use yii\db\Transaction;
  * @group db
  * @group mysql
  */
-class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
+class DeadLockTest extends ConnectionTest
 {
     /** @var string Shared log filename for children */
     private $logFile;
@@ -30,7 +34,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * @link https://github.com/yiisoft/yii2/issues/12715
      * @link https://github.com/yiisoft/yii2/pull/13346
      */
-    public function testDeadlockException()
+    public function testDeadlockException(): void
     {
         if (\stripos($this->getConnection(false)->getServerVersion(), 'MariaDB') !== false) {
             $this->markTestSkipped('MariaDB does not support this test');
@@ -91,7 +95,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             }
             $this->deleteLog();
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // wait all children
             while (-1 !== pcntl_wait($status)) {
                 // nothing to do
@@ -177,7 +181,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                     $this->log('child 1: send signal to child 2');
                     // let child to continue
                     if (!posix_kill($pidSecond, SIGUSR1)) {
-                        throw new \RuntimeException('Cannot send signal');
+                        throw new RuntimeException('Cannot send signal');
                     }
 
                     // now child 2 tries to do the 2nd update, and hits the lock and waits
@@ -204,7 +208,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         } catch (\Exception $e) {
             $this->log('child 1: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->log('child 1: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
@@ -267,7 +271,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         } catch (\Exception $e) {
             $this->log('child 2: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->log('child 2: ! exit <<' . \get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
             return 1;
         }
@@ -281,11 +285,11 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * all the rest tests. So, all the rest tests in this case will run both in the child
      * and parent processes. Such mess must be prevented with child's own error handler.
      */
-    private function setErrorHandler()
+    private function setErrorHandler(): void
     {
         if (PHP_VERSION_ID < 70000) {
             set_error_handler(function ($errno, $errstr, $errfile, $errline) {
-                throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+                throw new ErrorException($errstr, $errno, $errno, $errfile, $errline);
             });
         }
     }
@@ -294,7 +298,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * Sets filename for log file shared between children processes.
      * @param string $filename
      */
-    private function setLogFile($filename)
+    private function setLogFile($filename): void
     {
         $this->logFile = $filename;
     }
@@ -303,7 +307,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * Deletes shared log file.
      * Deletes the file [[logFile]] if it exists.
      */
-    private function deleteLog()
+    private function deleteLog(): void
     {
         if (null !== $this->logFile && is_file($this->logFile)) {
             unlink($this->logFile);
@@ -333,7 +337,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      * @param string $message Message to append to the log. The message will be prepended
      * with timestamp and appended with new line.
      */
-    private function log($message)
+    private function log($message): void
     {
         if (null !== $this->logFile) {
             $time = microtime(true);

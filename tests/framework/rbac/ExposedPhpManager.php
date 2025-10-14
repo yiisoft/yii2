@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\rbac\Item;
+use yii\rbac\Assignment;
+use yii\rbac\Rule;
 use yii\rbac\PhpManager;
 
 /**
@@ -16,7 +19,7 @@ use yii\rbac\PhpManager;
 class ExposedPhpManager extends PhpManager
 {
     /**
-     * @var \yii\rbac\Item[]
+     * @var Item[]
      */
     public $items = []; // itemName => item
     /**
@@ -24,20 +27,20 @@ class ExposedPhpManager extends PhpManager
      */
     public $children = []; // itemName, childName => child
     /**
-     * @var \yii\rbac\Assignment[]
+     * @var Assignment[]
      */
     public $assignments = []; // userId, itemName => assignment
     /**
-     * @var \yii\rbac\Rule[]
+     * @var Rule[]
      */
     public $rules = []; // ruleName => rule
 
-    public function load()
+    public function load(): void
     {
         parent::load();
     }
 
-    public function save()
+    public function save(): void
     {
         parent::save();
     }

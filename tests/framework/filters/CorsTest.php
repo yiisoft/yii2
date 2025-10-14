@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  */
 class CorsTest extends TestCase
 {
-    public function testPreflight()
+    public function testPreflight(): void
     {
         $this->mockWebApplication();
         $controller = new Controller('id', Yii::$app);
@@ -43,7 +43,7 @@ class CorsTest extends TestCase
         $this->assertTrue($cors->beforeAction($action));
     }
 
-    public function testWildcardOrigin()
+    public function testWildcardOrigin(): void
     {
         $this->mockWebApplication();
         $controller = new Controller('id', Yii::$app);
@@ -64,7 +64,7 @@ class CorsTest extends TestCase
         $this->assertEquals('*', $cors->response->getHeaders()->get('access-control-allow-origin'));
     }
 
-    public function testAccessControlAllowHeadersPreflight()
+    public function testAccessControlAllowHeadersPreflight(): void
     {
         $this->mockWebApplication();
         $controller = new Controller('id', Yii::$app);

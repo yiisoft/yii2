@@ -37,7 +37,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
         $db->createCommand()->insert('dependency_item', ['value' => 'initial'])->execute();
     }
 
-    public function testIsChanged()
+    public function testIsChanged(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();
@@ -62,7 +62,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
     /**
      * @depends testIsChanged
      */
-    public function testCustomMethod()
+    public function testCustomMethod(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();
@@ -86,7 +86,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
     /**
      * @depends testCustomMethod
      */
-    public function testCustomMethodCallback()
+    public function testCustomMethodCallback(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();
@@ -112,7 +112,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
     /**
      * @depends testCustomMethod
      */
-    public function testReusableAndCustomMethodCallback()
+    public function testReusableAndCustomMethodCallback(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();

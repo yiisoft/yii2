@@ -68,11 +68,11 @@ class BatchQueryResult extends Component implements \Iterator
     public $each = false;
 
     /**
-     * @var DataReader the data reader associated with this batch query.
+     * @var DataReader|null the data reader associated with this batch query.
      */
     private $_dataReader;
     /**
-     * @var array the data retrieved in the current batch
+     * @var array|null the data retrieved in the current batch
      */
     private $_batch;
     /**
@@ -80,7 +80,7 @@ class BatchQueryResult extends Component implements \Iterator
      */
     private $_value;
     /**
-     * @var string|int the key for the current iteration
+     * @var string|int|null the key for the current iteration
      */
     private $_key;
 

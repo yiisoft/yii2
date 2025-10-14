@@ -20,7 +20,7 @@ class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorT
 {
     public $driverName = 'pgsql';
 
-    public function testPrepareParams()
+    public function testPrepareParams(): void
     {
         parent::testPrepareParams();
 

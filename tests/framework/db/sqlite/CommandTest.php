@@ -18,7 +18,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 {
     protected $driverName = 'sqlite';
 
-    public function testAutoQuoting()
+    public function testAutoQuoting(): void
     {
         $db = $this->getConnection(false);
 
@@ -32,7 +32,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      * @param array $firstData
      * @param array $secondData
      */
-    public function testUpsert(array $firstData, array $secondData)
+    public function testUpsert(array $firstData, array $secondData): void
     {
         if (version_compare($this->getConnection(false)->getServerVersion(), '3.8.3', '<')) {
             $this->markTestSkipped('SQLite < 3.8.3 does not support "WITH" keyword.');
@@ -42,27 +42,27 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         parent::testUpsert($firstData, $secondData);
     }
 
-    public function testAddDropPrimaryKey()
+    public function testAddDropPrimaryKey(): void
     {
         $this->markTestSkipped('SQLite does not support adding/dropping primary keys.');
     }
 
-    public function testAddDropForeignKey()
+    public function testAddDropForeignKey(): void
     {
         $this->markTestSkipped('SQLite does not support adding/dropping foreign keys.');
     }
 
-    public function testAddDropUnique()
+    public function testAddDropUnique(): void
     {
         $this->markTestSkipped('SQLite does not support adding/dropping unique constraints.');
     }
 
-    public function testAddDropCheck()
+    public function testAddDropCheck(): void
     {
         $this->markTestSkipped('SQLite does not support adding/dropping check constraints.');
     }
 
-    public function testMultiStatementSupport()
+    public function testMultiStatementSupport(): void
     {
         $db = $this->getConnection(false);
         $sql = <<<'SQL'
@@ -113,7 +113,7 @@ SQL;
         return $parent;
     }
 
-    public function testResetSequence()
+    public function testResetSequence(): void
     {
         $db = $this->getConnection();
 
@@ -151,7 +151,7 @@ SQL;
         $this->assertEquals(5, $db->createCommand('SELECT MAX([[id]]) FROM {{reset_sequence}}')->queryScalar());
     }
 
-    public function testResetSequenceExceptionTableNoExist()
+    public function testResetSequenceExceptionTableNoExist(): void
     {
         $this->expectException('yii\base\InvalidArgumentException');
         $this->expectExceptionMessage('Table not found: no_exist_table');
@@ -160,7 +160,7 @@ SQL;
         $db->createCommand()->resetSequence('no_exist_table', 5)->execute();
     }
 
-    public function testResetSequenceExceptionSquenceNoExist()
+    public function testResetSequenceExceptionSquenceNoExist(): void
     {
         $this->expectException('yii\base\InvalidArgumentException');
         $this->expectExceptionMessage("There is not sequence associated with table 'type'.");

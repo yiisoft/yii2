@@ -8,6 +8,10 @@
 
 namespace yiiunit\framework\rest;
 
+use Yii;
+use JsonSerializable;
+use ReturnTypeWillChange;
+use yii\data\DataProviderInterface;
 use yii\base\Model;
 use yii\data\ArrayDataProvider;
 use yii\rest\Serializer;
@@ -33,7 +37,7 @@ class SerializerTest extends TestCase
         TestModel::$extraFields = [];
     }
 
-    public function testSerializeModelErrors()
+    public function testSerializeModelErrors(): void
     {
         $serializer = new Serializer();
         $model = new TestModel();
@@ -54,7 +58,7 @@ class SerializerTest extends TestCase
         ], $serializer->serialize($model));
     }
 
-    public function testSerializeModelData()
+    public function testSerializeModelData(): void
     {
         $serializer = new Serializer();
         $model = new TestModel();
@@ -79,7 +83,7 @@ class SerializerTest extends TestCase
         ], $serializer->serialize($model));
     }
 
-    public function testExpand()
+    public function testExpand(): void
     {
         $serializer = new Serializer();
         $model = new TestModel();
@@ -92,28 +96,28 @@ class SerializerTest extends TestCase
             'field2' => 2,
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(['expand' => 'extraField1']);
+        Yii::$app->request->setQueryParams(['expand' => 'extraField1']);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
             'extraField1' => 'testExtra',
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(['expand' => 'extraField1,extraField2']);
+        Yii::$app->request->setQueryParams(['expand' => 'extraField1,extraField2']);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
             'extraField1' => 'testExtra',
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(['expand' => 'field1,extraField2']);
+        Yii::$app->request->setQueryParams(['expand' => 'field1,extraField2']);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
         ], $serializer->serialize($model));
     }
 
-    public function testNestedExpand()
+    public function testNestedExpand(): void
     {
         $serializer = new Serializer();
         $model = new TestModel();
@@ -122,7 +126,7 @@ class SerializerTest extends TestCase
         TestModel::$extraFields = ['extraField3'];
         TestModel2::$extraFields = ['extraField4'];
 
-        \Yii::$app->request->setQueryParams(['expand' => 'extraField3.extraField4']);
+        Yii::$app->request->setQueryParams(['expand' => 'extraField3.extraField4']);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
@@ -134,7 +138,7 @@ class SerializerTest extends TestCase
         ], $serializer->serialize($model));
     }
 
-    public function testFields()
+    public function testFields(): void
     {
         $serializer = new Serializer();
         $model = new TestModel();
@@ -142,19 +146,19 @@ class SerializerTest extends TestCase
 
         TestModel::$extraFields = ['extraField3'];
 
-        \Yii::$app->request->setQueryParams([]);
+        Yii::$app->request->setQueryParams([]);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(['fields' => '*']);
+        Yii::$app->request->setQueryParams(['fields' => '*']);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(
+        Yii::$app->request->setQueryParams(
             [
                 'fields' => 'field1,extraField3.field3',
                 'expand' => 'extraField3.extraField4'
@@ -168,7 +172,7 @@ class SerializerTest extends TestCase
             ],
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(
+        Yii::$app->request->setQueryParams(
             [
                 'fields' => 'extraField3.*',
                 'expand' => 'extraField3',
@@ -181,7 +185,7 @@ class SerializerTest extends TestCase
             ],
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(
+        Yii::$app->request->setQueryParams(
             [
                 'fields' => 'extraField3.*',
                 'expand' => 'extraField3.extraField4'
@@ -200,7 +204,7 @@ class SerializerTest extends TestCase
             new TestModel2(),
         ];
 
-        \Yii::$app->request->setQueryParams(
+        Yii::$app->request->setQueryParams(
             [
                 'fields' => 'extraField3.*',
                 'expand' => 'extraField3',
@@ -219,7 +223,7 @@ class SerializerTest extends TestCase
             ],
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(
+        Yii::$app->request->setQueryParams(
             [
                 'fields' => '*,extraField3.*',
                 'expand' => 'extraField3',
@@ -240,7 +244,7 @@ class SerializerTest extends TestCase
             ],
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(
+        Yii::$app->request->setQueryParams(
             [
                 'fields' => 'extraField3.field3',
                 'expand' => 'extraField3',
@@ -257,24 +261,24 @@ class SerializerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12107
      */
-    public function testExpandInvalidInput()
+    public function testExpandInvalidInput(): void
     {
         $serializer = new Serializer();
         $model = new TestModel();
 
-        \Yii::$app->request->setQueryParams(['expand' => ['field1,extraField2']]);
+        Yii::$app->request->setQueryParams(['expand' => ['field1,extraField2']]);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(['fields' => ['field1,extraField2']]);
+        Yii::$app->request->setQueryParams(['fields' => ['field1,extraField2']]);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
         ], $serializer->serialize($model));
 
-        \Yii::$app->request->setQueryParams(['fields' => ['field1,extraField2'], 'expand' => ['field1,extraField2']]);
+        Yii::$app->request->setQueryParams(['fields' => ['field1,extraField2'], 'expand' => ['field1,extraField2']]);
         $this->assertSame([
             'field1' => 'test',
             'field2' => 2,
@@ -404,11 +408,11 @@ class SerializerTest extends TestCase
     /**
      * @dataProvider dataProviderSerializeDataProvider
      *
-     * @param \yii\data\DataProviderInterface $dataProvider
+     * @param DataProviderInterface $dataProvider
      * @param array $expectedResult
      * @param bool $saveKeys
      */
-    public function testSerializeDataProvider($dataProvider, $expectedResult, $saveKeys = false)
+    public function testSerializeDataProvider($dataProvider, $expectedResult, $saveKeys = false): void
     {
         $serializer = new Serializer();
         $serializer->preserveKeys = $saveKeys;
@@ -419,7 +423,7 @@ class SerializerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/16334
      */
-    public function testSerializeJsonSerializable()
+    public function testSerializeJsonSerializable(): void
     {
         $serializer = new Serializer();
         $model3 = new TestModel3();
@@ -432,7 +436,7 @@ class SerializerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/16334
      */
-    public function testSerializeArrayableWithJsonSerializableAttribute()
+    public function testSerializeArrayableWithJsonSerializableAttribute(): void
     {
         $serializer = new Serializer();
         $model = new TestModel5();
@@ -452,7 +456,7 @@ class SerializerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/17886
      */
-    public function testSerializeArray()
+    public function testSerializeArray(): void
     {
         $serializer = new Serializer();
         $model1 = new TestModel();
@@ -518,7 +522,7 @@ class TestModel2 extends Model
     }
 }
 
-class TestModel3 extends Model implements \JsonSerializable
+class TestModel3 extends Model implements JsonSerializable
 {
     public static $fields = ['field3', 'field4'];
     public static $extraFields = [];
@@ -541,18 +545,18 @@ class TestModel3 extends Model implements \JsonSerializable
         return static::$extraFields;
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->getAttributes();
     }
 }
-class TestModel4 implements \JsonSerializable
+class TestModel4 implements JsonSerializable
 {
     public $field5 = 'test5';
     public $field6 = 'test6';
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

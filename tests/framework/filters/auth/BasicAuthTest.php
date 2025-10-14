@@ -26,7 +26,7 @@ class BasicAuthTest extends AuthTest
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpBasicAuth($token, $login)
+    public function testHttpBasicAuth($token, $login): void
     {
         $original = $_SERVER;
 
@@ -42,7 +42,7 @@ class BasicAuthTest extends AuthTest
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpBasicAuthWithHttpAuthorizationHeader($token, $login)
+    public function testHttpBasicAuthWithHttpAuthorizationHeader($token, $login): void
     {
         $original = $_SERVER;
 
@@ -57,7 +57,7 @@ class BasicAuthTest extends AuthTest
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpBasicAuthWithRedirectHttpAuthorizationHeader($token, $login)
+    public function testHttpBasicAuthWithRedirectHttpAuthorizationHeader($token, $login): void
     {
         $original = $_SERVER;
 
@@ -72,7 +72,7 @@ class BasicAuthTest extends AuthTest
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpBasicAuthCustom($token, $login)
+    public function testHttpBasicAuthCustom($token, $login): void
     {
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
@@ -98,7 +98,7 @@ class BasicAuthTest extends AuthTest
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpBasicAuthIssue15658($token, $login)
+    public function testHttpBasicAuthIssue15658($token, $login): void
     {
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'y0u7h1nk175r34l?';
@@ -134,7 +134,7 @@ class BasicAuthTest extends AuthTest
      * @param string|null $token
      * @param string|null $login
      */
-    public function testAfterLoginEventIsTriggered18031($token, $login)
+    public function testAfterLoginEventIsTriggered18031($token, $login): void
     {
         $triggered = false;
         Event::on('\yii\web\User', User::EVENT_AFTER_LOGIN, function ($event) use (&$triggered) {
