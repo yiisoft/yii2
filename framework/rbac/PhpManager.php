@@ -325,7 +325,7 @@ class PhpManager extends BaseManager
         $items = [];
 
         foreach ($this->items as $name => $item) {
-            /** @var Item $item */
+            /** @var Role|Permission $item */
             if ($item->type == $type) {
                 $items[$name] = $item;
             }
