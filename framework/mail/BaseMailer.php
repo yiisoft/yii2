@@ -100,7 +100,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     public $fileTransportCallback;
 
     /**
-     * @var \yii\base\View|array view instance or its array configuration.
+     * @var View|array view instance or its array configuration.
      */
     private $_view = [];
     /**

@@ -139,7 +139,7 @@ class Pagination extends BaseObject implements Linkable
     public $pageSizeLimit = [1, 50];
 
     /**
-     * @var int number of items on each page.
+     * @var int|null number of items on each page.
      * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
      */
     private $_pageSize;
