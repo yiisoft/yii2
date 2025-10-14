@@ -45,7 +45,7 @@ interface ActiveQueryInterface extends QueryInterface
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row or model data. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * // $model is an AR instance when `asArray` is false,
      * // or an array of column values when `asArray` is true.
      * function ($model)
@@ -71,7 +71,7 @@ interface ActiveQueryInterface extends QueryInterface
      *
      * The following are some usage examples:
      *
-     * ```php
+     * ```
      * // find customers together with their orders and country
      * Customer::find()->with('orders', 'country')->all();
      * // find customers together with their orders and the orders' shipping address
@@ -96,7 +96,7 @@ interface ActiveQueryInterface extends QueryInterface
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the relation object itself.
      */
-    public function via($relationName, callable $callable = null);
+    public function via($relationName, ?callable $callable = null);
 
     /**
      * Finds the related records for the specified primary record.

@@ -93,8 +93,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 
-/* @var $this \yii\web\View instancia del componente view */
-/* @var $message \yii\mail\BaseMessage instancia del mensaje de correo recién creado */
+/** 
+ * @var \yii\web\View $this instancia del componente view
+ * @var \yii\mail\BaseMessage $message instancia del mensaje de correo recién creado
+ */
 
 ?>
 <h2>Este mensaje te permite visitar nuestro sitio con un sólo click</h2>
@@ -140,9 +142,11 @@ El layout puede utilizar estilos CSS u otros contenidos compartidos:
 <?php
 use yii\helpers\Html;
 
-/* @var $this \yii\web\View instancia del componente view */
-/* @var $message \yii\mail\MessageInterface el mensaje siendo compuesto */
-/* @var $content string el resultado de la renderización de la vista principal */
+/**
+ * @var \yii\web\View $this instancia del componente view
+ * @var \yii\mail\MessageInterface $message el mensaje siendo compuesto
+ * @var string $content el resultado de la renderización de la vista principal
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

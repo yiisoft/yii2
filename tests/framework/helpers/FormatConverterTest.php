@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +20,7 @@ use yiiunit\TestCase;
  */
 class FormatConverterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +32,7 @@ class FormatConverterTest extends TestCase
         ]);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
@@ -39,8 +40,8 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToPhpShortForm()
     {
-        $this->assertEquals('n/j/y', FormatConverter::convertDateIcuToPhp('short', 'date', 'en-US'));
-        $this->assertEquals('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
+        $this->assertEqualsAnyWhitespace('n/j/y', FormatConverter::convertDateIcuToPhp('short', 'date', 'en-US'));
+        $this->assertEqualsAnyWhitespace('d.m.y', FormatConverter::convertDateIcuToPhp('short', 'date', 'de-DE'));
     }
 
     public function testIntlIcuToPhpShortFormDefaultLang()
@@ -53,13 +54,13 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToPhpShortFormTime()
     {
-        $this->assertEquals('g:i A', FormatConverter::convertDateIcuToPhp('short', 'time', 'en-US'));
-        $this->assertEquals('H:i', FormatConverter::convertDateIcuToPhp('short', 'time', 'de-DE'));
+        $this->assertEqualsAnyWhitespace('g:i A', FormatConverter::convertDateIcuToPhp('short', 'time', 'en-US'));
+        $this->assertEqualsAnyWhitespace('H:i', FormatConverter::convertDateIcuToPhp('short', 'time', 'de-DE'));
     }
 
     public function testIntlIcuToPhpShortFormDateTime()
     {
-        $this->assertEquals('n/j/y, g:i A', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'en-US'));
+        $this->assertEqualsAnyWhitespace('n/j/y, g:i A', FormatConverter::convertDateIcuToPhp('short', 'datetime', 'en-US'));
         $this->assertEquals(
             PHP_VERSION_ID < 50600 ? 'd.m.y H:i' : 'd.m.y, H:i',
             FormatConverter::convertDateIcuToPhp('short', 'datetime', 'de-DE')
@@ -208,13 +209,13 @@ class FormatConverterTest extends TestCase
 
     public function testIntlIcuToJuiShortFormTime()
     {
-        $this->assertEquals(': ', FormatConverter::convertDateIcuToJui('short', 'time', 'en-US'));
-        $this->assertEquals(':', FormatConverter::convertDateIcuToJui('short', 'time', 'de-DE'));
+        $this->assertEqualsAnyWhitespace(': ', FormatConverter::convertDateIcuToJui('short', 'time', 'en-US'));
+        $this->assertEqualsAnyWhitespace(':', FormatConverter::convertDateIcuToJui('short', 'time', 'de-DE'));
     }
 
     public function testIntlIcuToJuiShortFormDateTime()
     {
-        $this->assertEquals('m/d/y, : ', FormatConverter::convertDateIcuToJui('short', 'datetime', 'en-US'));
+        $this->assertEqualsAnyWhitespace('m/d/y, : ', FormatConverter::convertDateIcuToJui('short', 'datetime', 'en-US'));
         $this->assertEquals(
             PHP_VERSION_ID < 50600 ? 'dd.mm.y :' : 'dd.mm.y, :',
             FormatConverter::convertDateIcuToJui('short', 'datetime', 'de-DE')
@@ -358,7 +359,7 @@ class FormatConverterTest extends TestCase
         $formatter = new Formatter(['locale' => 'ru-RU']);
         // There is a dot after month name in updated ICU data and no dot in old data. Both are acceptable.
         // See https://github.com/yiisoft/yii2/issues/9906
-        $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
+        $this->assertMatchesRegularExpression('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', "dd MMM y 'г'."));
     }
 
     public function testPhpToICUMixedPatterns()

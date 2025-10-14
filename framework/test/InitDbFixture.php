@@ -95,6 +95,11 @@ class InitDbFixture extends DbFixture
         if (!$this->db instanceof \yii\db\Connection) {
             return;
         }
+
+        if ($this->db->getDriverName() === 'oci') {
+            return;
+        }
+
         foreach ($this->schemas as $schema) {
             $this->db->createCommand()->checkIntegrity($check, $schema)->execute();
         }

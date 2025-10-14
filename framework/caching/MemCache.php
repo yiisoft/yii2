@@ -28,7 +28,7 @@ use yii\base\InvalidConfigException;
  *
  * To use MemCache as the cache application component, configure the application as follows,
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'cache' => [

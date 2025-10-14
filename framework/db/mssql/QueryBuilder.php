@@ -9,8 +9,8 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\db\TableSchema;
 
 /**
@@ -94,7 +94,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $sql .= $this->separator . $orderBy;
 
-        // http://technet.microsoft.com/en-us/library/gg699618.aspx
+        // https://technet.microsoft.com/en-us/library/gg699618.aspx
         $offset = $this->hasOffset($offset) ? $offset : '0';
         $sql .= $this->separator . "OFFSET $offset ROWS";
         if ($this->hasLimit($limit)) {
@@ -124,7 +124,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if ($this->hasLimit($limit)) {
             if ($limit instanceof Expression) {
-                $limit = '('. (string)$limit . ')';
+                $limit = '(' . (string)$limit . ')';
             }
             $sql = "SELECT TOP $limit * FROM ($sql) sub";
         } else {
@@ -199,7 +199,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if ($checkValue !== null) {
                 $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " .
                     $this->db->quoteColumnName("CK_{$constraintBase}") .
-                    " CHECK (" . ($defaultValue instanceof Expression ?  $checkValue : new Expression($checkValue)) . ")";
+                    ' CHECK (' . ($defaultValue instanceof Expression ?  $checkValue : new Expression($checkValue)) . ')';
             }
 
             if ($type->isUnique()) {
@@ -247,9 +247,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
             $tableName = $this->db->quoteTableName($tableName);
-            if ($value === null) {
+
+            if ($value === null || $value === 1) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
+                $subSql = (new Query())
+                    ->select('last_value')
+                    ->from('sys.identity_columns')
+                    ->where(['object_id' => new Expression("OBJECT_ID('{$tableName}')")])
+                    ->andWhere(['IS NOT', 'last_value', null])
+                    ->createCommand($this->db)
+                    ->getRawSql();
+                $sql = "SELECT COALESCE(MAX({$key}), CASE WHEN EXISTS({$subSql}) THEN 0 ELSE 1 END) FROM {$tableName}";
+                $value = $this->db->createCommand($sql)->queryScalar();
             } else {
                 $value = (int) $value;
             }
@@ -307,10 +316,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
             throw new InvalidArgumentException("Table not found: $table");
         }
 
-        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
-        $tableName = "N" . $this->db->quoteValue($tableSchema->name);
-        $columnName = $column ? "N" . $this->db->quoteValue($column) : null;
-        $comment = "N" . $this->db->quoteValue($comment);
+        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'" : 'SCHEMA_NAME()';
+        $tableName = 'N' . $this->db->quoteValue($tableSchema->name);
+        $columnName = $column ? 'N' . $this->db->quoteValue($column) : null;
+        $comment = 'N' . $this->db->quoteValue($comment);
 
         $functionParams = "
             @name = N'MS_description',
@@ -373,9 +382,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             throw new InvalidArgumentException("Table not found: $table");
         }
 
-        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'": 'SCHEMA_NAME()';
-        $tableName = "N" . $this->db->quoteValue($tableSchema->name);
-        $columnName = $column ? "N" . $this->db->quoteValue($column) : null;
+        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'" : 'SCHEMA_NAME()';
+        $tableName = 'N' . $this->db->quoteValue($tableSchema->name);
+        $columnName = $column ? 'N' . $this->db->quoteValue($column) : null;
 
         return "
             IF EXISTS (
@@ -423,7 +432,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $modelClass \yii\db\ActiveRecord */
+        /** @var \yii\db\ActiveRecord $modelClass */
         $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
@@ -460,10 +469,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columnSchemas = $tableSchema->columns;
             foreach ($columns as $name => $value) {
                 // @see https://github.com/yiisoft/yii2/issues/12599
-                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value) || $value === null)) {
-                    $phName = $this->bindParam($value, $params);
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && (is_string($value))) {
                     // @see https://github.com/yiisoft/yii2/issues/12599
-                    $columns[$name] = new Expression("CONVERT(VARBINARY(MAX), $phName)", $params);
+                    $columns[$name] = new Expression('CONVERT(VARBINARY(MAX), ' . ('0x' . bin2hex($value)) . ')');
                 }
             }
         }
@@ -485,27 +493,37 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
         $cols = [];
-        $columns = [];
+        $outputColumns = [];
         if ($version2005orLater) {
-            /* @var $schema TableSchema */
+            /** @var TableSchema $schema */
             $schema = $this->db->getTableSchema($table);
             foreach ($schema->columns as $column) {
                 if ($column->isComputed) {
                     continue;
                 }
+
+                $dbType = $column->dbType;
+                if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'])) {
+                    $dbType .= '(MAX)';
+                } elseif (in_array($dbType, ['char',  'nchar'])) {
+                    $dbType .= "($column->size)";
+                }
+
+                if ($column->dbType === Schema::TYPE_TIMESTAMP) {
+                    $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
+                }
+
                 $quoteColumnName = $this->db->quoteColumnName($column->name);
-                $cols[] = $quoteColumnName . ' '
-                    . $column->dbType
-                    . (in_array($column->dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary']) ? "(MAX)" : "")
-                    . ' ' . ($column->allowNull ? "NULL" : "");
-                $columns[] = 'INSERTED.' . $quoteColumnName;
+                $cols[] = $quoteColumnName . ' ' . $dbType . ' ' . ($column->allowNull ? 'NULL' : '');
+                $outputColumns[] = 'INSERTED.' . $quoteColumnName;
             }
         }
-        $countColumns = count($columns);
+
+        $countColumns = count($outputColumns);
 
         $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $columns) . ' INTO @temporary_inserted' : '')
+            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $outputColumns) . ' INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
 
         if ($version2005orLater && $countColumns) {
@@ -525,7 +543,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
 
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);
@@ -633,7 +650,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @see https://docs.microsoft.com/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
      * @return string the DROP CONSTRAINTS SQL
      */
-    private function dropConstraintsForColumn($table, $column, $type='')
+    private function dropConstraintsForColumn($table, $column, $type = '')
     {
         return "DECLARE @tableName VARCHAR(MAX) = '" . $this->db->quoteTableName($table) . "'
 DECLARE @columnName VARCHAR(MAX) = '{$column}'
@@ -653,7 +670,7 @@ WHILE 1=1 BEGIN
             WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
         ) cons
         JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
-        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : "") . ")
+        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : '') . ")
     IF @constraintName IS NULL BREAK
     EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
 END";
@@ -666,6 +683,6 @@ END";
     public function dropColumn($table, $column)
     {
         return $this->dropConstraintsForColumn($table, $column) . "\nALTER TABLE " . $this->db->quoteTableName($table)
-            . " DROP COLUMN " . $this->db->quoteColumnName($column);
+            . ' DROP COLUMN ' . $this->db->quoteColumnName($column);
     }
 }

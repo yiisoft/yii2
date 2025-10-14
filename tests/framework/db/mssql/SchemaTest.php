@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -46,10 +47,10 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     public function testGetStringFieldsSize()
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = $this->getConnection();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $columns = $schema->getTableSchema('type', false)->columns;
@@ -69,7 +70,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
                     case 'char_col2':
                         $expectedType = 'string';
                         $expectedSize = 100;
-                        $expectedDbType = "varchar(100)";
+                        $expectedDbType = 'varchar(100)';
                         break;
                     case 'char_col3':
                         $expectedType = 'text';

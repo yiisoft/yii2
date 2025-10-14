@@ -28,7 +28,7 @@ then you must [setup your Git installation to work with GitHub](https://help.git
 Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Prepare the testing environment <span id="prepare-the-test-environment"></span>
@@ -73,6 +73,18 @@ You may limit the tests to a group of tests you are working on e.g. to run only 
 
 You can execute JavaScript unit tests by running `npm test` in the repo root directory.
 
+### Static analysis
+
+We use [PHPStan](https://phpstan.org) for static analysis. It can be launched using the following commands:
+`php vendor/bin/phpstan` or `vendor\bin\phpstan.bat` in case of execution from the Windows OS.
+
+By default, PHPStan will use the configuration from `phpstan.dist.neon`. You can create
+a `phpstan.neon` file with your own configuration, and PHPStan will use it.
+
+#### Note
+
+In PHPDoc annotations, we use standard PHP types. Please use PHPStan/Psalm annotations if you want to add conditional types, array shapes, etc. This is because not all IDEs currently support PHPStan/Psalm types, and it will also break automatic documentation generation.
+
 ### Extensions
 
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
@@ -111,7 +123,7 @@ review your suggestion, and provide appropriate feedback along the way.
 ### 2. Pull the latest code from the main Yii branch
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 You should start at this point for every new contribution to make sure you are working on the latest code.
@@ -232,7 +244,7 @@ Doing so will save travis from commencing testruns on changes that are not cover
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

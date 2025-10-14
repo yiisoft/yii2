@@ -7,6 +7,7 @@
 
 namespace yii\filters;
 
+use Closure;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
@@ -27,7 +28,7 @@ use yii\web\Response;
  * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
  * It also stores different versions of the page depending on the application language.
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -59,7 +60,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * Page cache version, to detect incompatibilities in cached values when the
      * data format of the cache changes.
      */
-    const PAGE_CACHE_VERSION = 1;
+    public const PAGE_CACHE_VERSION = 1;
 
     /**
      * @var bool whether the content being cached should be differentiated according to the route.
@@ -83,7 +84,7 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\caching\DbDependency',
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
@@ -98,16 +99,30 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      */
     public $dependency;
     /**
-     * @var string[]|string list of factors that would cause the variation of the content being cached.
+     * @var string[]|string|callable list of factors that would cause the variation of the content being cached.
      * Each factor is a string representing a variation (e.g. the language, a GET parameter).
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ```php
+     * ```
      * [
      *     Yii::$app->language,
      * ]
      * ```
+     *
+     * Since version 2.0.48 you can provide an anonymous function to generate variations. This is especially helpful
+     * when you need to access the User component, which is resolved before the PageCache behavior:
+     *
+     * ```
+     * 'variations' => function() {
+     *     return [
+     *         Yii::$app->language,
+     *         Yii::$app->user->id
+     *     ];
+     * }
+     * ```
+     *
+     * The callable should return an array.
      */
     public $variations;
     /**
@@ -318,7 +333,13 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
         if ($this->varyByRoute) {
             $key[] = Yii::$app->requestedRoute;
         }
-        return array_merge($key, (array)$this->variations);
+
+        if ($this->variations instanceof Closure) {
+            $variations = call_user_func($this->variations, $this);
+        } else {
+            $variations = $this->variations;
+        }
+        return array_merge($key, (array) $variations);
     }
 
     /**

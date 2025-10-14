@@ -1,4 +1,5 @@
 <?php
+
 namespace yiiunit\framework\helpers;
 
 use yiiunit\TestCase;
@@ -12,7 +13,7 @@ use yii\helpers\BaseConsole;
  */
 class BaseConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -29,7 +30,7 @@ class BaseConsoleTest extends TestCase
         $this->assertEquals($expected, $actual);
 
         $actual = BaseConsole::renderColoredString($data, false);
-        $expected = "foo";
+        $expected = 'foo';
         $this->assertEquals($expected, $actual);
     }
 

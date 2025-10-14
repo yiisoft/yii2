@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -14,7 +15,7 @@ use yii\widgets\Block;
  */
 class BlockTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

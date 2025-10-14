@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,7 +27,7 @@ use yiiunit\framework\db\UnqueryableQueryMock;
  */
 abstract class ActiveDataProviderTest extends DatabaseTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -56,7 +57,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testActiveRelation()
     {
-        /* @var $customer Customer */
+        /** @var Customer $customer */
         $customer = Customer::findOne(2);
         $provider = new ActiveDataProvider([
             'query' => $customer->getOrders(),
@@ -79,7 +80,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testActiveRelationVia()
     {
-        /* @var $order Order */
+        /** @var Order $order */
         $order = Order::findOne(2);
         $provider = new ActiveDataProvider([
             'query' => $order->getItems(),
@@ -103,7 +104,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testActiveRelationViaTable()
     {
-        /* @var $order Order */
+        /** @var Order $order */
         $order = Order::findOne(1);
         $provider = new ActiveDataProvider([
             'query' => $order->getBooks(),
@@ -132,7 +133,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(3, $orders);
-        $this->assertInternalType('array', $orders[0]);
+        $this->assertIsArray($orders[0]);
         $this->assertEquals([0, 1, 2], $provider->getKeys());
 
         $query = new Query();

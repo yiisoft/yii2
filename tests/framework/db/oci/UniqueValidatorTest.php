@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,7 +10,6 @@ namespace yiiunit\framework\db\oci;
 
 use yii\validators\UniqueValidator;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
-use yiiunit\data\validators\models\ValidatorTestRefModel;
 
 /**
  * @group db

@@ -65,7 +65,7 @@ trait QueryTrait
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($row)
      * {
      *     // return the index value corresponding to $row
@@ -145,7 +145,7 @@ trait QueryTrait
      *
      * The following code shows the difference between this method and [[where()]]:
      *
-     * ```php
+     * ```
      * // WHERE `age`=:age
      * $query->filterWhere(['name' => null, 'age' => 20]);
      * // WHERE `age`=:age
@@ -305,7 +305,7 @@ trait QueryTrait
 
     /**
      * Sets the ORDER BY part of the query.
-     * @param string|array|ExpressionInterface $columns the columns (and the directions) to be ordered by.
+     * @param string|array|ExpressionInterface|null $columns the columns (and the directions) to be ordered by.
      * Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
      *
@@ -358,12 +358,14 @@ trait QueryTrait
     /**
      * Normalizes format of ORDER BY data.
      *
-     * @param array|string|ExpressionInterface $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
+     * @param array|string|ExpressionInterface|null $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array
      */
     protected function normalizeOrderBy($columns)
     {
-        if ($columns instanceof ExpressionInterface) {
+        if (empty($columns)) {
+            return [];
+        } elseif ($columns instanceof ExpressionInterface) {
             return [$columns];
         } elseif (is_array($columns)) {
             return $columns;

@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -20,20 +23,20 @@ class BaseObjectTest extends TestCase
      */
     protected $object;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
         $this->object = new NewObject();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->object = null;
     }
 
-    public function testHasProperty()
+    public function testHasProperty(): void
     {
         $this->assertTrue($this->object->hasProperty('Text'));
         $this->assertTrue($this->object->hasProperty('text'));
@@ -43,7 +46,7 @@ class BaseObjectTest extends TestCase
         $this->assertFalse($this->object->hasProperty('Content'));
     }
 
-    public function testCanGetProperty()
+    public function testCanGetProperty(): void
     {
         $this->assertTrue($this->object->canGetProperty('Text'));
         $this->assertTrue($this->object->canGetProperty('text'));
@@ -53,7 +56,7 @@ class BaseObjectTest extends TestCase
         $this->assertFalse($this->object->canGetProperty('Content'));
     }
 
-    public function testCanSetProperty()
+    public function testCanSetProperty(): void
     {
         $this->assertTrue($this->object->canSetProperty('Text'));
         $this->assertTrue($this->object->canSetProperty('text'));
@@ -64,14 +67,14 @@ class BaseObjectTest extends TestCase
         $this->assertFalse($this->object->canSetProperty('Content'));
     }
 
-    public function testGetProperty()
+    public function testGetProperty(): void
     {
         $this->assertSame('default', $this->object->Text);
         $this->expectException('yii\base\UnknownPropertyException');
         $value2 = $this->object->Caption;
     }
 
-    public function testSetProperty()
+    public function testSetProperty(): void
     {
         $value = 'new value';
         $this->object->Text = $value;
@@ -80,13 +83,13 @@ class BaseObjectTest extends TestCase
         $this->object->NewMember = $value;
     }
 
-    public function testSetReadOnlyProperty()
+    public function testSetReadOnlyProperty(): void
     {
         $this->expectException('yii\base\InvalidCallException');
         $this->object->object = 'test';
     }
 
-    public function testIsset()
+    public function testIsset(): void
     {
         $this->assertTrue(isset($this->object->Text));
         $this->assertNotEmpty($this->object->Text);
@@ -104,26 +107,26 @@ class BaseObjectTest extends TestCase
         $this->assertTrue($isEmpty);
     }
 
-    public function testUnset()
+    public function testUnset(): void
     {
         unset($this->object->Text);
         $this->assertFalse(isset($this->object->Text));
         $this->assertEmpty($this->object->Text);
     }
 
-    public function testUnsetReadOnlyProperty()
+    public function testUnsetReadOnlyProperty(): void
     {
         $this->expectException('yii\base\InvalidCallException');
         unset($this->object->object);
     }
 
-    public function testCallUnknownMethod()
+    public function testCallUnknownMethod(): void
     {
         $this->expectException('yii\base\UnknownMethodException');
         $this->object->unknownMethod();
     }
 
-    public function testArrayProperty()
+    public function testArrayProperty(): void
     {
         $this->assertEquals([], $this->object->items);
         // the following won't work
@@ -133,7 +136,7 @@ class BaseObjectTest extends TestCase
         */
     }
 
-    public function testObjectProperty()
+    public function testObjectProperty(): void
     {
         $this->assertInstanceOf(NewObject::className(), $this->object->object);
         $this->assertEquals('object text', $this->object->object->text);
@@ -141,36 +144,23 @@ class BaseObjectTest extends TestCase
         $this->assertEquals('new text', $this->object->object->text);
     }
 
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $object = new NewObject(['text' => 'test text']);
         $this->assertEquals('test text', $object->getText());
     }
 
-    public function testGetClassName()
+    public function testGetClassName(): void
     {
         $object = $this->object;
         $this->assertSame(get_class($object), $object::className());
     }
 
-    public function testReadingWriteOnlyProperty()
+    public function testReadingWriteOnlyProperty(): void
     {
         $this->expectException('yii\base\InvalidCallException');
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
         $this->object->writeOnly;
-    }
-
-    public function testBackwardCompatibilityWithObject()
-    {
-        if (PHP_MAJOR_VERSION > 7 || (PHP_MAJOR_VERSION == 7 && PHP_MINOR_VERSION >= 2)) {
-            $this->markTestSkipped('This test is meant to run on PHP <7.2.0 to check BC with yii\base\Object');
-        }
-        $this->assertInstanceOf('yii\base\Object', new BCObject());
-        $this->assertInstanceOf('yii\base\BaseObject', new BCObject());
-
-        BCObject::$initCalled = false;
-        new BCObject();
-        $this->assertTrue(BCObject::$initCalled);
     }
 }
 
@@ -187,7 +177,7 @@ class NewObject extends BaseObject
         return $this->_text;
     }
 
-    public function setText($value)
+    public function setText($value): void
     {
         $this->_text = $value;
     }

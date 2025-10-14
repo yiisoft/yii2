@@ -7,8 +7,6 @@
 
 namespace yii\base;
 
-use Yii;
-
 /**
  * ErrorException represents a PHP error.
  *
@@ -27,7 +25,7 @@ class ErrorException extends \ErrorException
      * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
      * @since 2.0.6
      */
-    const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
+    public const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
 
 
     /**
@@ -69,7 +67,13 @@ class ErrorException extends \ErrorException
             }
 
             $ref = new \ReflectionProperty('Exception', 'trace');
-            $ref->setAccessible(true);
+
+            // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+            // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+            if (PHP_VERSION_ID < 80100) {
+                $ref->setAccessible(true);
+            }
+
             $ref->setValue($this, $trace);
         }
     }
@@ -126,15 +130,14 @@ class ErrorException extends \ErrorException
             E_NOTICE => 'PHP Notice',
             E_PARSE => 'PHP Parse Error',
             E_RECOVERABLE_ERROR => 'PHP Recoverable Error',
-            E_STRICT => 'PHP Strict Warning',
             E_USER_DEPRECATED => 'PHP User Deprecated Warning',
             E_USER_ERROR => 'PHP User Error',
             E_USER_NOTICE => 'PHP User Notice',
             E_USER_WARNING => 'PHP User Warning',
             E_WARNING => 'PHP Warning',
             self::E_HHVM_FATAL_ERROR => 'HHVM Fatal Error',
-        ];
+        ] + (PHP_VERSION_ID < 80400 ? [E_STRICT => 'PHP Strict Warning'] : []);
 
-        return isset($names[$this->getCode()]) ? $names[$this->getCode()] : 'Error';
+        return $names[$this->getCode()] ?? 'Error';
     }
 }

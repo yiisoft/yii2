@@ -23,7 +23,10 @@ use yii\helpers\StringHelper;
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
  * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
- * ```php ['LIKE' => yii\db\condition\LikeCondition::class] ``` .
+ *
+ * ```
+ * ['LIKE' => yii\db\condition\LikeCondition::class]
+ * ```
  * @property-write string[] $expressionBuilders Array of builders that should be merged with the pre-defined
  * ones in [[expressionBuilders]] property.
  *
@@ -35,7 +38,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * The prefix for automatically generated query binding parameters.
      */
-    const PARAM_PREFIX = ':qp';
+    public const PARAM_PREFIX = ':qp';
 
     /**
      * @var Connection the database connection.
@@ -62,7 +65,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * @var array map of condition aliases to condition classes. For example:
      *
-     * ```php
+     * ```
      * return [
      *     'LIKE' => yii\db\condition\LikeCondition::class,
      * ];
@@ -82,7 +85,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @var string[]|ExpressionBuilderInterface[] maps expression class to expression builder class.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *    yii\db\Expression::class => yii\db\ExpressionBuilder::class
      * ]
@@ -200,7 +203,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string[] $classes map of condition aliases to condition classes. For example:
      *
-     * ```php
+     * ```
      * ['LIKE' => yii\db\condition\LikeCondition::class]
      * ```
      *
@@ -329,7 +332,7 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * Creates an INSERT SQL statement.
      * For example,
-     * ```php
+     * ```
      * $sql = $queryBuilder->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
@@ -430,7 +433,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
@@ -503,7 +506,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
      *     'url' => 'https://example.com/', // url is unique
@@ -610,7 +613,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $params = [];
      * $sql = $queryBuilder->update('user', ['status' => 1], 'age > 30', $params);
      * ```
@@ -648,7 +651,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
         $sets = [];
         foreach ($columns as $name => $value) {
-
             $value = isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             if ($value instanceof ExpressionInterface) {
                 $placeholder = $this->buildExpression($value, $params);
@@ -666,7 +668,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->delete('user', 'status = 0');
      * ```
      *
@@ -692,7 +694,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
      * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
+     * stands for the column type which must contain an abstract DB type.
      * The [[getColumnType()]] method will be invoked to convert any abstract type into a physical one.
      *
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
@@ -700,11 +702,12 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->createTable('user', [
      *  'id' => 'pk',
      *  'name' => 'string',
      *  'age' => 'integer',
+     *  'column_name double precision null default null', # definition only example
      * ]);
      * ```
      *
@@ -1034,13 +1037,13 @@ class QueryBuilder extends \yii\base\BaseObject
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or the maximum existing value +1.
-     * @param string $table the name of the table whose primary key sequence will be reset
+     * @param string $tableName the name of the table whose primary key sequence will be reset
      * @param array|string|null $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
      * @return string the SQL statement for resetting sequence
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      */
-    public function resetSequence($table, $value = null)
+    public function resetSequence($tableName, $value = null)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support resetting sequence.');
     }
@@ -1526,7 +1529,7 @@ class QueryBuilder extends \yii\base\BaseObject
             $result[] = $with['alias'] . ' AS (' . $with['query'] . ')';
         }
 
-        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode (', ', $result);
+        return 'WITH ' . ($recursive ? 'RECURSIVE ' : '') . implode(', ', $result);
     }
 
     /**

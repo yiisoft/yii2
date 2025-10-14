@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ use yiiunit\TestCase;
  */
 class EachValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -76,12 +77,12 @@ class EachValidatorTest extends TestCase
 
         $validator->allowMessageFromRule = true;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringContainsString('integer', $model->getFirstError('attr_one'));
 
         $model->clearErrors();
         $validator->allowMessageFromRule = false;
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertNotContains('integer', $model->getFirstError('attr_one'));
+        $this->assertStringNotContainsString('integer', $model->getFirstError('attr_one'));
     }
 
     /**
@@ -209,14 +210,11 @@ class EachValidatorTest extends TestCase
      * of different type during validation.
      * (ie: public array $dummy; where $dummy is array of booleans,
      * validator will try to assign these booleans one by one to $dummy)
+     *
+     * @requires PHP >= 7.4
      */
     public function testTypedProperties()
     {
-        if (PHP_VERSION_ID < 70400) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.4');
-            return;
-        }
-
         $model = new ValidatorTestTypedPropModel();
 
         $validator = new EachValidator(['rule' => ['boolean']]);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ class AssetConverterTest extends \yiiunit\TestCase
      */
     protected $tmpPath;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -30,7 +31,7 @@ class AssetConverterTest extends \yiiunit\TestCase
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (is_dir($this->tmpPath)) {
             FileHelper::removeDirectory($this->tmpPath);
@@ -43,7 +44,9 @@ class AssetConverterTest extends \yiiunit\TestCase
     public function testConvert()
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents($tmpPath . '/test.php', <<<EOF
+        file_put_contents(
+            $tmpPath . '/test.php',
+            <<<EOF
 <?php
 
 echo "Hello World!\n";
@@ -65,7 +68,9 @@ EOF
     public function testForceConvert()
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents($tmpPath . '/test.php', <<<'EOF'
+        file_put_contents(
+            $tmpPath . '/test.php',
+            <<<'EOF'
 <?php
 
 echo microtime();

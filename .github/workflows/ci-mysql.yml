@@ -1,80 +1,99 @@
-on:
-  - pull_request
-  - push
-
+---
 name: ci-mysql
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".eslintignore"
+      - ".eslintrc"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }}-mysql-${{ matrix.mysql-version }}
-    env:
-      extensions: curl, intl, pdo, pdo_mysql
-      key: cache-v1
+    name: PHP ${{ matrix.php }}-mysql-${{ matrix.mysql }}
 
-    runs-on: ${{ matrix.os }}
+    env:
+      COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
+      PHP_EXTENSIONS: curl, intl, pdo, pdo_mysql
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: mysql
+      XDEBUG_MODE: coverage
+
+    runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        os:
-          - ubuntu-latest
-
-        php-version:
-          - 7.4
-
-        mysql-version:
-          - latest
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
+        mysql: [5.7, latest]
 
     services:
       mysql:
-        image: mysql:${{ matrix.mysql-version }}
+        image: mysql:${{ matrix.mysql }}
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: yiitest
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --name=mysql
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-retries=3
+          --health-timeout=5s
+          --mount type=tmpfs,destination=/var/lib/mysql
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
 
-      - name: Setup cache environment
-        id: cache-env
-        uses: shivammathur/cache-extensions@v1
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          key: ${{ env.key }}
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
+          php-version: ${{ matrix.php }}
 
-      - name: Cache extensions
-        uses: actions/cache@v3
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          path: ${{ steps.cache-env.outputs.dir }}
-          key: ${{ steps.cache-env.outputs.key }}
-          restore-keys: ${{ steps.cache-env.outputs.key }}
-
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          ini-values: date.timezone='UTC'
-          coverage: pcov
-
-      - name: Determine composer cache directory
-        if: matrix.os == 'ubuntu-latest'
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
-
-      - name: Install dependencies with composer
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run mysql tests with phpunit
-        run: vendor/bin/phpunit --group mysql --colors=always
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

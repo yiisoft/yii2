@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -91,6 +92,7 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertEquals('text/plain', $_FILES['Item']['type']['file']);
         $this->assertStringEqualsFile($_FILES['Item']['tmp_name']['file'], 'item file content');
     }
+
     /**
      * @depends testParse
      */
@@ -168,7 +170,8 @@ class MultipartFormDataParserTest extends TestCase
         $this->assertEquals(UPLOAD_ERR_INI_SIZE, $_FILES['thirdFile']['error']);
     }
 
-    public function testUploadFileAsArray(){
+    public function testUploadFileAsArray()
+    {
         $parser = new MultipartFormDataParser();
 
         $boundary = '---------------------------22472926011618';

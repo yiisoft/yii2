@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,7 @@ use yiiunit\framework\filters\stubs\UserIdentity;
  */
 class AuthTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -149,11 +150,16 @@ class AuthTest extends \yiiunit\TestCase
      */
     public function testActive($authClass)
     {
-        /** @var $filter AuthMethod */
+        /** @var AuthMethod $filter */
         $filter = new $authClass();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $controller = new \yii\web\Controller('test', Yii::$app);
 
@@ -194,7 +200,7 @@ class AuthTest extends \yiiunit\TestCase
 
     public function testHeaders()
     {
-        Yii::$app->request->headers->set('Authorization', "Bearer wrong_token");
+        Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
         $filter = ['class' => HttpBearerAuth::className()];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);

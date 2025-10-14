@@ -19,7 +19,7 @@ class InlineValidator extends Validator
      * @var string|callable an anonymous function or the name of a model class method that will be
      * called to perform the actual validation. The signature of the method should be like the following:
      *
-     * ```php
+     * ```
      * function (string $attribute, mixed $params, InlineValidator $validator, mixed $current): bool {
      * }
      * ```
@@ -38,7 +38,7 @@ class InlineValidator extends Validator
      * @var string|\Closure an anonymous function or the name of a model class method that returns the client validation code.
      * The signature of the method should be like the following:
      *
-     * ```php
+     * ```
      * function (string $attribute, mixed $params, InlineValidator $validator, mixed $current, View $view): string
      * {
      *     // $view->registerJs('JS validation function');
@@ -67,7 +67,7 @@ class InlineValidator extends Validator
         if (is_string($method)) {
             $method = [$model, $method];
         } elseif ($method instanceof \Closure) {
-            $method = $this->method->bindTo($model);
+            $method = $method->bindTo($model);
         }
 
         $current = $this->current;

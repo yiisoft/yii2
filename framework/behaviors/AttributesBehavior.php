@@ -21,7 +21,7 @@ use yii\db\ActiveRecord;
  * value of enclosed arrays with a PHP callable whose return value will be used to assign to the current attribute.
  * For example,
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributesBehavior;
  *
  * public function behaviors()
@@ -73,7 +73,7 @@ class AttributesBehavior extends Behavior
      * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
      * function will be assigned to the attributes.
      *
-     * ```php
+     * ```
      * [
      *   'attribute1' => [
      *       ActiveRecord::EVENT_BEFORE_INSERT => new Expression('NOW()'),
@@ -103,7 +103,7 @@ class AttributesBehavior extends Behavior
      * The rest of the attributes are processed at the end.
      * If the [[attributes]] for this attribute do not specify this event, it is ignored
      *
-     * ```php
+     * ```
      * [
      *     ActiveRecord::EVENT_BEFORE_VALIDATE => ['attribute1', 'attribute2'],
      *     ActiveRecord::EVENT_AFTER_VALIDATE => ['attribute2', 'attribute1'],
@@ -140,7 +140,8 @@ class AttributesBehavior extends Behavior
      */
     public function evaluateAttributes($event)
     {
-        if ($this->skipUpdateOnClean
+        if (
+            $this->skipUpdateOnClean
             && $event->name === ActiveRecord::EVENT_BEFORE_UPDATE
             && empty($this->owner->dirtyAttributes)
         ) {
@@ -152,7 +153,8 @@ class AttributesBehavior extends Behavior
         if (!empty($this->order[$event->name])) {
             $attributes = array_merge(
                 array_intersect((array) $this->order[$event->name], $attributes),
-                array_diff($attributes, (array) $this->order[$event->name]));
+                array_diff($attributes, (array) $this->order[$event->name])
+            );
         }
         foreach ($attributes as $attribute) {
             if ($this->preserveNonEmptyValues && !empty($this->owner->$attribute)) {

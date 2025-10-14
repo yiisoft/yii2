@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,10 @@
  */
 return [
     ' and ' => ' et ',
+    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" ne supporte pas l\'opérateur "{operator}".',
     '(not set)' => '(non défini)',
+    'Action not found.' => '',
+    'Aliases available: {aliases}' => '',
     'An internal server error occurred.' => 'Une erreur de serveur interne s\'est produite.',
     'Are you sure you want to delete this item?' => 'Êtes-vous sûr de vouloir supprimer cet élément ?',
     'Condition for "{attribute}" should be either a value or valid operator specification.' => 'La condition pour "{atttribute}" doit être soit une valeur, soit une spécification d\'opérateur valide.',
@@ -42,10 +46,10 @@ return [
     'Only files with these extensions are allowed: {extensions}.' => 'Les extensions de fichiers autorisées sont : {extensions}.',
     'Operator "{operator}" must be used with a search attribute.' => 'L\'opérateur "{operator}" doit être utilisé avec un attribut de recherche.',
     'Operator "{operator}" requires multiple operands.' => 'L\'opérateur "{operator}" requière plusieurs opérandes.',
+    'Options available: {options}' => '',
     'Page not found.' => 'Page non trouvée.',
     'Please fix the following errors:' => 'Veuillez vérifier les erreurs suivantes :',
     'Please upload a file.' => 'Veuillez télécharger un fichier.',
-    'Powered by {yii}' => 'Propulsé par {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Affichage de <b>{begin, number}-{end, number}</b> sur <b>{totalCount, number}</b> {totalCount, plural, one{élément} other{éléments}}.',
     'The combination {values} of {attributes} has already been taken.' => 'La combinaison {values} de {attributes} est déjà utilisée.',
     'The file "{file}" is not an image.' => 'Le fichier « {file} » n\'est pas une image.',
@@ -67,7 +71,6 @@ return [
     'Update' => 'Modifier',
     'View' => 'Voir',
     'Yes' => 'Oui',
-    'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Vous n\'êtes pas autorisé à effectuer cette action.',
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Vous pouvez télécharger au maximum {limit, number} {limit, plural, one{fichier} other{fichiers}}.',
     'You should upload at least {limit, number} {limit, plural, one{file} other{files}}.' => 'Vous devez télécharger au moins {limit, number} {limit, plural, one{fichier} other{fichiers}}.',
@@ -107,6 +110,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} doit comporter au moins {min, number} {min, plural, one{caractère} other{caractères}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} doit comporter au plus {max, number} {max, plural, one{caractère} other{caractères}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute} doit comporter {length, number} {length, plural, one{caractère} other{caractères}}.',
+    '{compareAttribute} is invalid.' => '',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 jour} other{# jours}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 heure} other{# heures}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minute} other{# minutes}}',
@@ -122,7 +126,6 @@ return [
     '{nFormatted} B' => '{nFormatted} o',
     '{nFormatted} GB' => '{nFormatted} Go',
     '{nFormatted} GiB' => '{nFormatted} Gio',
-    '{nFormatted} kB' => '{nFormatted} Ko',
     '{nFormatted} KiB' => '{nFormatted} Kio',
     '{nFormatted} MB' => '{nFormatted} Mo',
     '{nFormatted} MiB' => '{nFormatted} Mio',
@@ -130,6 +133,7 @@ return [
     '{nFormatted} PiB' => '{nFormatted} Pio',
     '{nFormatted} TB' => '{nFormatted} To',
     '{nFormatted} TiB' => '{nFormatted} Tio',
+    '{nFormatted} kB' => '{nFormatted} Ko',
     '{nFormatted} {n, plural, =1{byte} other{bytes}}' => '{nFormatted} {n, plural, =1{octet} other{octets}}',
     '{nFormatted} {n, plural, =1{gibibyte} other{gibibytes}}' => '{nFormatted} {n, plural, =1{# gigaoctet} other{# gigaoctets}}',
     '{nFormatted} {n, plural, =1{gigabyte} other{gigabytes}}' => '{nFormatted} {n, plural, =1{gibioctet} other{gibioctets}}',
@@ -141,5 +145,4 @@ return [
     '{nFormatted} {n, plural, =1{petabyte} other{petabytes}}' => '{nFormatted} {n, plural, =1{# petaoctet} other{# petaoctets}}',
     '{nFormatted} {n, plural, =1{tebibyte} other{tebibytes}}' => '{nFormatted} {n, plural, =1{# teraoctet} other{# teraoctets}}',
     '{nFormatted} {n, plural, =1{terabyte} other{terabytes}}' => '{nFormatted} {n, plural, =1{# teraoctet} other{# teraoctets}}',
-    '"{attribute}" does not support operator "{operator}".' => '"{attribute}" ne supporte pas l\'opérateur "{operator}".',
 ];

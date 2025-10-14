@@ -15,7 +15,7 @@ use yii\db\BaseActiveRecord;
  *
  * To use TimestampBehavior, insert the following code to your ActiveRecord class:
  *
- * ```php
+ * ```
  * use yii\behaviors\TimestampBehavior;
  *
  * public function behaviors()
@@ -38,7 +38,7 @@ use yii\db\BaseActiveRecord;
  * If your attribute names are different or you want to use a different way of calculating the timestamp,
  * you may configure the [[createdAtAttribute]], [[updatedAtAttribute]] and [[value]] properties like the following:
  *
- * ```php
+ * ```
  * use yii\db\Expression;
  *
  * public function behaviors()
@@ -61,7 +61,7 @@ use yii\db\BaseActiveRecord;
  * TimestampBehavior also provides a method named [[touch()]] that allows you to assign the current
  * timestamp to the specified attribute(s) and save them to the database. For example,
  *
- * ```php
+ * ```
  * $model->touch('creation_time');
  * ```
  *
@@ -123,7 +123,7 @@ class TimestampBehavior extends AttributeBehavior
     /**
      * Updates a timestamp attribute to the current timestamp.
      *
-     * ```php
+     * ```
      * $model->touch('lastVisit');
      * ```
      * @param string $attribute the name of the attribute to update.
@@ -131,7 +131,7 @@ class TimestampBehavior extends AttributeBehavior
      */
     public function touch($attribute)
     {
-        /* @var $owner BaseActiveRecord */
+        /** @var BaseActiveRecord $owner */
         $owner = $this->owner;
         if ($owner->getIsNewRecord()) {
             throw new InvalidCallException('Updating the timestamp is not possible on a new record.');

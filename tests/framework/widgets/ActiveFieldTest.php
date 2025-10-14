@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
@@ -23,6 +25,8 @@ use yii\widgets\MaskedInput;
  */
 class ActiveFieldTest extends \yiiunit\TestCase
 {
+    use ArraySubsetAsserts;
+
     /**
      * @var ActiveFieldExtend
      */
@@ -37,7 +41,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
     private $helperForm;
     private $attributeName = 'attributeName';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
@@ -250,7 +254,7 @@ EOT;
 
     public function testTabularInputErrors()
     {
-        $this->activeField->attribute = '[0]'.$this->attributeName;
+        $this->activeField->attribute = '[0]' . $this->attributeName;
         $this->helperModel->addError($this->attributeName, 'Error Message');
 
         $expectedValue = '<div class="form-group field-activefieldtestmodel-0-attributename has-error">';
@@ -672,14 +676,21 @@ HTML;
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_direct'],
         ]);
-        $this->assertContains('placeholder="pholder_direct"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
+
+        // use regex clientOptions instead mask
+        $widget = $this->activeField->widget(TestMaskedInput::className(), [
+            'options' => ['placeholder' => 'pholder_direct'],
+            'clientOptions' => ['regex' => '^.*$'],
+        ]);
+        $this->assertStringContainsString('placeholder="pholder_direct"', (string) $widget);
 
         // transfer options from ActiveField to widget
         $this->activeField->inputOptions = ['placeholder' => 'pholder_input'];
         $widget = $this->activeField->widget(TestMaskedInput::className(), [
             'mask' => '999-999-9999',
         ]);
-        $this->assertContains('placeholder="pholder_input"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_input"', (string) $widget);
 
         // set both AF and widget options (second one takes precedence)
         $this->activeField->inputOptions = ['placeholder' => 'pholder_both_input'];
@@ -687,7 +698,55 @@ HTML;
             'mask' => '999-999-9999',
             'options' => ['placeholder' => 'pholder_both_direct']
         ]);
-        $this->assertContains('placeholder="pholder_both_direct"', (string) $widget);
+        $this->assertStringContainsString('placeholder="pholder_both_direct"', (string) $widget);
+    }
+
+    public function testExceptionToString()
+    {
+        if (PHP_VERSION_ID < 70400) {
+            $this->markTestSkipped('This test is for PHP 7.4+ only');
+        }
+
+        $field = new TestActiveFieldWithException();
+
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Test exception in toString.');
+
+        (string) $field;
+    }
+
+    public function testExceptionToStringLegacy()
+    {
+        if (PHP_VERSION_ID >= 70400) {
+            $this->markTestSkipped('This test is for PHP < 7.4 only');
+        }
+
+        $field = new TestActiveFieldWithException();
+
+        $errorTriggered = false;
+        $errorMessage = '';
+
+        set_error_handler(
+            function ($severity, $message, $file, $line) use (&$errorTriggered, &$errorMessage) {
+                if ($severity === E_USER_ERROR) {
+                    $errorTriggered = true;
+                    $errorMessage = $message;
+
+                    return true;
+                }
+
+                return false;
+            },
+            E_USER_ERROR,
+        );
+
+        $result = (string) $field;
+
+        restore_error_handler();
+
+        $this->assertTrue($errorTriggered, 'E_USER_ERROR should have been triggered');
+        $this->assertStringContainsString('Test exception in toString.', $errorMessage);
+        $this->assertSame('', $result, 'Result should be an empty string');
     }
 
     /**
@@ -787,17 +846,27 @@ class TestMaskedInput extends MaskedInput
         self::$lastInstance = $this;
     }
 
-    public function getOptions() {
+    public function getOptions()
+    {
         return $this->options;
     }
 
     public function run()
     {
         return 'Options: ' . implode(', ', array_map(
-            function ($v, $k) { return sprintf('%s="%s"', $k, $v); },
+            function ($v, $k) {
+                return sprintf('%s="%s"', $k, $v);
+            },
             $this->options,
             array_keys($this->options)
         ));
     }
 }
 
+class TestActiveFieldWithException extends ActiveField
+{
+    public function render($content = null)
+    {
+        throw new \Exception('Test exception in toString.');
+    }
+}

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ use yiiunit\TestCase;
  */
 class ArrayDataProviderTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -183,6 +184,25 @@ class ArrayDataProviderTest extends TestCase
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $mixedArray, 'pagination' => $pagination]);
         $this->assertEquals(['key1', 9], $dataProvider->getKeys());
+
+        $nestedArray = [
+            ['foo' => ['bar' => 'key1']],
+            ['foo' => ['bar' => 'key2']],
+            ['foo' => ['bar' => 'key3']],
+        ];
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $nestedArray,
+            'key' => ['foo', 'bar'],
+            'pagination' => $pagination,
+        ]);
+        $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $nestedArray,
+            'key' => 'foo.bar',
+            'pagination' => $pagination,
+        ]);
+        $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
     }
 
     public function testSortFlags()

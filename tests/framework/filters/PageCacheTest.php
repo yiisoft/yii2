@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,14 +26,14 @@ use yiiunit\TestCase;
  */
 class PageCacheTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         CacheTestCase::$time = null;
         CacheTestCase::$microtime = null;
@@ -471,5 +472,25 @@ class PageCacheTest extends TestCase
 
         $keys = $this->invokeMethod(new PageCache(), 'calculateCacheKey');
         $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
+    }
+
+    public function testClosureVariations()
+    {
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function () {
+                return [
+                    'foobar'
+                ];
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobar'], $keys);
+
+        // test type cast of string
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function () {
+                return 'foobarstring';
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobarstring'], $keys);
     }
 }

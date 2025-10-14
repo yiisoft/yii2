@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -194,7 +195,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'someCol3' => 'string',
         ])->execute();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));

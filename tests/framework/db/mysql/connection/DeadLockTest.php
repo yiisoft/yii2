@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     /** @var string Shared log filename for children */
     private $logFile;
 
-    const CHILD_EXIT_CODE_DEADLOCK = 15;
+    public const CHILD_EXIT_CODE_DEADLOCK = 15;
 
     /**
      * Test deadlock exception.
@@ -31,6 +32,9 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
      */
     public function testDeadlockException()
     {
+        if (\stripos($this->getConnection(false)->getServerVersion(), 'MariaDB') !== false) {
+            $this->markTestSkipped('MariaDB does not support this test');
+        }
         if (PHP_VERSION_ID >= 70400 && PHP_VERSION_ID < 70500) {
             $this->markTestSkipped('Stable failed in PHP 7.4');
         }
@@ -119,7 +123,12 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 . ($logContent ? ". Shared children log:\n$logContent" : '')
             );
         }
-        $this->assertEquals(1, $deadlockHitCount, "exactly one child must hit deadlock; shared children log:\n" . $logContent);
+
+        if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '8.0', '<')) {
+            $this->assertEquals(1, $deadlockHitCount, "exactly one child must hit deadlock; shared children log:\n" . $logContent);
+        } else {
+            $this->assertEquals(0, $deadlockHitCount, "exactly zero children must hit deadlock; shared children log:\n" . $logContent);
+        }
     }
 
     /**
@@ -214,7 +223,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
     private function childrenUpdateLocked()
     {
         // install no-op signal handler to prevent termination
-        if (!pcntl_signal(SIGUSR1, function () {}, false)) {
+        if (
+            !pcntl_signal(SIGUSR1, function () {
+            }, false)
+        ) {
             $this->log('child 2: cannot install signal handler');
             return 1;
         }

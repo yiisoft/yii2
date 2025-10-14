@@ -26,7 +26,7 @@ use yii\web\Request;
  *
  * Controller action:
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
@@ -45,7 +45,7 @@ use yii\web\Request;
  *
  * View:
  *
- * ```php
+ * ```
  * foreach ($models as $model) {
  *     // display $model here
  * }
@@ -75,10 +75,10 @@ use yii\web\Request;
  */
 class Pagination extends BaseObject implements Linkable
 {
-    const LINK_NEXT = 'next';
-    const LINK_PREV = 'prev';
-    const LINK_FIRST = 'first';
-    const LINK_LAST = 'last';
+    public const LINK_NEXT = 'next';
+    public const LINK_PREV = 'prev';
+    public const LINK_FIRST = 'first';
+    public const LINK_LAST = 'last';
 
     /**
      * @var string name of the parameter storing the current page index.
@@ -133,8 +133,8 @@ class Pagination extends BaseObject implements Linkable
      */
     public $defaultPageSize = 20;
     /**
-     * @var array|false the page size limits. The first array element stands for the minimal page size, and the second
-     * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
+     * @var array|false the page size limits. The first array element defines the minimum page size, and the second
+     * the maximum page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];
 

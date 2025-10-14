@@ -4,7 +4,7 @@ clone_folder: C:\projects\yii2
 
 environment:
     matrix:
-      - php_ver: 7.2.4
+      - php_ver: 7.4.0
 
 cache:
     - '%APPDATA%\Composer'
@@ -30,7 +30,7 @@ install:
     - echo extension=php_mbstring.dll >> php.ini
     - echo extension=php_openssl.dll >> php.ini
     - echo extension=php_pdo_sqlite.dll >> php.ini
-    - IF NOT EXIST C:\tools\composer.phar (cd C:\tools && appveyor DownloadFile https://getcomposer.org/download/1.4.1/composer.phar)
+    - IF NOT EXIST C:\tools\composer.phar (cd C:\tools && appveyor DownloadFile https://getcomposer.org/download/2.6.3/composer.phar)
 
 before_test:
     - cd C:\projects\yii2
@@ -38,4 +38,4 @@ before_test:
 
 test_script:
     - cd C:\projects\yii2
-    - vendor\bin\phpunit --exclude-group mssql,mysql,pgsql,sqlite,db,oci,wincache,xcache,zenddata,cubrid
+    - vendor\bin\phpunit --exclude-group mssql,mysql,pgsql,sqlite,db,oci,wincache,cubrid

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,9 @@ use yiiunit\data\ar\Profile;
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
-    public function setUp()
+    use GetTablesAliasTestTrait;
+
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
@@ -259,7 +262,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
 
-    use GetTablesAliasTestTrait;
     protected function createQuery()
     {
         return new ActiveQuery(null);
@@ -292,7 +294,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
      */
     public function testDeeplyNestedTableRelationWith()
     {
-        /* @var $category Category */
+        /** @var Category $category */
         $categories = Category::find()->with('orders')->indexBy('id')->all();
 
         $category = $categories[1];

@@ -80,7 +80,7 @@ public function behaviors()
 将 [Cross-Origin Resource Sharing](structure-filters.md#cors) 过滤器添加到控制器比添加到上述其他过滤器中要复杂一些，
 因为必须在认证方法之前应用 CORS 过滤器，
 因此与其他过滤器相比，需要一些稍微不同的方式来实现。
-并且还要为 [CORS Preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#preflighted_requests) 禁用身份验证，
+并且还要为 [CORS Preflight requests](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/CORS#%E9%A2%84%E6%A3%80%E8%AF%B7%E6%B1%82) 禁用身份验证，
 这样浏览器就可以安全地确定是否可以事先做出请求，
 而无需发送身份验证凭据。
 下面显示了将 [[yii\filters\Cors]] 过滤器添加到从 [[yii\rest\ActiveController]] 扩展的控制器所需的代码：

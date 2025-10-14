@@ -12,7 +12,7 @@
  * and manipulate the `$config` variable.
  * For example to change MySQL username and password your `config.local.php` should
  * contain the following:
- * ```php
+ * ```
  * <?php
  * $config['databases']['mysql']['username'] = 'yiitest';
  * $config['databases']['mysql']['password'] = 'changeme';
@@ -37,7 +37,7 @@ $config = [
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
         'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=127.0.0.1,1433;Database=yiitest',
+            'dsn' => 'sqlsrv:Server=127.0.0.1,1433;Database=yiitest;Encrypt=no',
             'username' => 'SA',
             'password' => 'YourStrong!Passw0rd',
             'fixture' => __DIR__ . '/mssql.sql',

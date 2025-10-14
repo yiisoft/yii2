@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +18,7 @@ use yii\caching\ArrayCache;
  */
 class FragmentCacheTest extends \yiiunit\TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication();
@@ -196,7 +197,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
 
     public function testVariations()
     {
-        $this->setOutputCallback(function($output) {
+        $this->setOutputCallback(function ($output) {
             return null;
         });
 

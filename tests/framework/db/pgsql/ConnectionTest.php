@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +20,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testConnection()
     {
-        $this->assertInternalType('object', $this->getConnection(true));
+        $this->assertIsObject($this->getConnection(true));
     }
 
     public function testQuoteValue()

@@ -2,6 +2,18 @@
 
 use yii\helpers\Html;
 
+/**
+ * @var \yii\web\View $this
+ * @var string $title
+ * @var string $sourcePath
+ * @var string $translationPath
+ * @var array $results
+ *
+ * @phpstan-var \yii\web\View&object{
+ *     context: \yii\build\controllers\TranslationController,
+ * } $this
+ */
+
 ?><!doctype html>
 <html>
     <head>

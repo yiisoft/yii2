@@ -1,6 +1,10 @@
 <p align="center">
     <a href="https://www.yiiframework.com/" target="_blank">
-        <img src="https://www.yiiframework.com/image/yii_logo_light.svg" width="400" alt="Yii Framework" />
+        <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/yii_logo_dark.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/yii_logo_light.svg">
+            <img src="https://www.yiiframework.com/image/yii_logo_light.svg" alt="Yii Framework" width="400">
+        </picture>
     </a>
 </p>
 
@@ -9,17 +13,19 @@ Yii 2 is a modern framework designed to be a solid foundation for your PHP appli
 It is fast, secure and efficient and works right out of the box pre-configured with reasonable defaults.
 The framework is easy to adjust to meet your needs, because Yii has been designed to be flexible.
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
-[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg)](https://packagist.org/packages/yiisoft/yii2)
-[![Build Status](https://github.com/yiisoft/yii2/workflows/build/badge.svg)](https://github.com/yiisoft/yii2/actions)
-[![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/coverage.png?s=31d80f1036099e9d6a3e4d7738f6b000b3c3d10e)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
-[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
+[![Latest Stable Version](https://img.shields.io/packagist/v/yiisoft/yii2.svg?logo=packagist&style=for-the-badge&label=Stable)](https://packagist.org/packages/yiisoft/yii2)
+[![Total Downloads](https://img.shields.io/packagist/dt/yiisoft/yii2.svg?style=for-the-badge)](https://packagist.org/packages/yiisoft/yii2)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/build.yml?style=for-the-badge&logo=github&label=Build)](https://github.com/yiisoft/yii2/actions/workflows/build.yml)
+[![Static Analysis](https://img.shields.io/github/actions/workflow/status/yiisoft/yii2/static.yml?style=for-the-badge&label=Static&logo=github)](https://github.com/yiisoft/yii2/actions/workflows/static.yml)
+[![codecov](https://img.shields.io/codecov/c/github/yiisoft/yii2.svg?style=for-the-badge&logo=codecov&logoColor=white&label=Codecov)](https://codecov.io/gh/yiisoft/yii2)
 
 Installation
 ------------
 
-- The minimum required PHP version of Yii is PHP 5.4.
-- It works best with PHP 8.
+> [!IMPORTANT]
+> - The minimum required [PHP](https://www.php.net/) version of Yii is PHP `7.4`.
+> - It works best with PHP `8`.
+
 - [Follow the Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.
 
@@ -33,6 +39,12 @@ of the framework.
 and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 - For Yii 1.1 users, there is [Upgrading from Yii 1.1](https://www.yiiframework.com/doc/guide/2.0/en/intro-upgrade-from-v1)
 to get an idea of what has changed in 2.0.
+
+Versions & PHP compatibility
+----------------------------
+
+> [!NOTE]
+> See ["Release Cycle" at the website](https://www.yiiframework.com/release-cycle) for detailed information about supported versions.
 
 Community
 ---------
@@ -58,6 +70,9 @@ You may join us and:
 
 ### Reporting Security issues
 
+> [!WARNING]
+> Please do not report security vulnerabilities through public GitHub issues.
+
 Please refer to a [special page at the website](https://www.yiiframework.com/security/)
 describing proper workflow for security issue reports.
 
@@ -82,18 +97,19 @@ we suggest using [our logo](https://www.yiiframework.com/logo/) on your title sl
 **In projects**
 
 If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
-[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
+[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii) in your README:    
 
-![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)](https://www.yiiframework.com/)
 
 If your code is hosted at GitHub, you can place the following in your README.md file to get the badge:
 
 ```
-[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=for-the-badge&logo=yii)](https://www.yiiframework.com/)
 ```
 
 ### Sponsoring
 
 Support this project by becoming a sponsor or a backer. 
 
-[![OpenCollective sponsors](https://opencollective.com/yiisoft/sponsors/badge.svg)](https://opencollective.com/yiisoft) [![OpenCollective backers](https://opencollective.com/yiisoft/backers/badge.svg)](https://opencollective.com/yiisoft)
+[![Open Collective sponsors](https://img.shields.io/opencollective/sponsors/yiisoft?style=for-the-badge&logo=opencollective)](https://opencollective.com/yiisoft) 
+[![Open Collective backers](https://img.shields.io/opencollective/backers/yiisoft?style=for-the-badge&logo=opencollective)](https://opencollective.com/yiisoft)

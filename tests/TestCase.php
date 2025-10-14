@@ -1,12 +1,17 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit;
 
+use ReflectionObject;
+use ReflectionClass;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -20,7 +25,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * Clean up after test case.
      */
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         parent::tearDownAfterClass();
         $logger = Yii::getLogger();
@@ -46,7 +51,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Clean up after test.
      * By default the application created with [[mockApplication]] will be destroyed.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->destroyApplication();
@@ -103,10 +108,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function destroyApplication()
     {
-        if (\Yii::$app && \Yii::$app->has('session', true)) {
-            \Yii::$app->session->close();
+        if (Yii::$app && Yii::$app->has('session', true)) {
+            Yii::$app->session->close();
         }
-        \Yii::$app = null;
+        Yii::$app = null;
     }
 
     /**
@@ -115,12 +120,47 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param string $actual
      * @param string $message
      */
-    protected function assertEqualsWithoutLE($expected, $actual, $message = '')
+    protected function assertEqualsWithoutLE($expected, $actual, $message = ''): void
     {
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
 
         $this->assertEquals($expected, $actual, $message);
+    }
+
+    /**
+     * Asserting two strings equality ignoring unicode whitespaces.
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    protected function assertEqualsAnyWhitespace($expected, $actual, $message = ''): void
+    {
+        $expected = $this->sanitizeWhitespaces($expected);
+        $actual = $this->sanitizeWhitespaces($actual);
+
+        $this->assertEquals($expected, $actual, $message);
+    }
+
+    /**
+     * Asserts that two variables have the same type and value and sanitizes value if it is a string.
+     * Used on objects, it asserts that two variables reference
+     * the same object.
+     *
+     * @param mixed  $expected
+     * @param mixed  $actual
+     * @param string $message
+     */
+    protected function assertSameAnyWhitespace($expected, $actual, $message = ''): void
+    {
+        if (is_string($expected)) {
+            $expected = $this->sanitizeWhitespaces($expected);
+        }
+        if (is_string($actual)) {
+            $actual = $this->sanitizeWhitespaces($actual);
+        }
+
+        $this->assertSame($expected, $actual, $message);
     }
 
     /**
@@ -130,12 +170,24 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param mixed $haystack
      * @param string $message
      */
-    protected function assertContainsWithoutLE($needle, $haystack, $message = '')
+    protected function assertContainsWithoutLE($needle, $haystack, $message = ''): void
     {
         $needle = str_replace("\r\n", "\n", $needle);
         $haystack = str_replace("\r\n", "\n", $haystack);
 
-        $this->assertContains($needle, $haystack, $message);
+        $this->assertStringContainsString($needle, $haystack, $message);
+    }
+
+    /**
+     * Replaces unicode whitespaces with standard whitespace
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19868 (ICU 72 changes)
+     * @param $string
+     * @return array|string|null
+     */
+    protected function sanitizeWhitespaces($string)
+    {
+        return preg_replace('/[\pZ\pC]/u', ' ', $string);
     }
 
     /**
@@ -149,11 +201,20 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function invokeMethod($object, $method, $args = [], $revoke = true)
     {
-        $reflection = new \ReflectionObject($object);
+        $reflection = new ReflectionObject($object);
         $method = $reflection->getMethod($method);
-        $method->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
+
         $result = $method->invokeArgs($object, $args);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $method->setAccessible(false);
         }
 
@@ -168,16 +229,25 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param bool $revoke whether to make property inaccessible after setting
      * @since 2.0.11
      */
-    protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true)
+    protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true): void
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
         while (!$class->hasProperty($propertyName)) {
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-        $property->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
+
         $property->setValue($object, $value);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $property->setAccessible(false);
         }
     }
@@ -191,14 +261,23 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function getInaccessibleProperty($object, $propertyName, $revoke = true)
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
         while (!$class->hasProperty($propertyName)) {
             $class = $class->getParentClass();
         }
         $property = $class->getProperty($propertyName);
-        $property->setAccessible(true);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $property->setAccessible(true);
+        }
+
         $result = $property->getValue($object);
-        if ($revoke) {
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if ($revoke && PHP_VERSION_ID < 80100) {
             $property->setAccessible(false);
         }
 
@@ -213,7 +292,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @param array $expected
      * @param string $message
      */
-    public function assertIsOneOf($actual, array $expected, $message = '')
+    public function assertIsOneOf($actual, array $expected, $message = ''): void
     {
         self::assertThat($actual, new IsOneOfAssert($expected), $message);
     }
@@ -222,7 +301,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * Changes db component config
      * @param $db
      */
-    protected function switchDbConnection($db)
+    protected function switchDbConnection($db): void
     {
         $databases = $this->getParam('databases');
         if (isset($databases[$db])) {

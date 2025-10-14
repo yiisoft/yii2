@@ -1,15 +1,20 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
 use yii\base\Behavior;
 use yii\base\Component;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
+use yii\base\UnknownMethodException;
 use yiiunit\TestCase;
 
 function globalEventHandler($event)
@@ -33,14 +38,14 @@ class ComponentTest extends TestCase
      */
     protected $component;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
         $this->component = new NewComponent();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->component = null;
@@ -48,7 +53,7 @@ class ComponentTest extends TestCase
         gc_collect_cycles();
     }
 
-    public function testClone()
+    public function testClone(): void
     {
         $component = new NewComponent();
         $behavior = new NewBehavior();
@@ -67,7 +72,7 @@ class ComponentTest extends TestCase
         $this->assertFalse($clone->hasEventHandlers('*'));
     }
 
-    public function testHasProperty()
+    public function testHasProperty(): void
     {
         $this->assertTrue($this->component->hasProperty('Text'));
         $this->assertTrue($this->component->hasProperty('text'));
@@ -77,7 +82,7 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->hasProperty('Content'));
     }
 
-    public function testCanGetProperty()
+    public function testCanGetProperty(): void
     {
         $this->assertTrue($this->component->canGetProperty('Text'));
         $this->assertTrue($this->component->canGetProperty('text'));
@@ -87,7 +92,7 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->canGetProperty('Content'));
     }
 
-    public function testCanSetProperty()
+    public function testCanSetProperty(): void
     {
         $this->assertTrue($this->component->canSetProperty('Text'));
         $this->assertTrue($this->component->canSetProperty('text'));
@@ -105,14 +110,14 @@ class ComponentTest extends TestCase
         $this->component->detachBehavior('a');
     }
 
-    public function testGetProperty()
+    public function testGetProperty(): void
     {
         $this->assertSame('default', $this->component->Text);
         $this->expectException('yii\base\UnknownPropertyException');
         $value2 = $this->component->Caption;
     }
 
-    public function testSetProperty()
+    public function testSetProperty(): void
     {
         $value = 'new value';
         $this->component->Text = $value;
@@ -121,7 +126,7 @@ class ComponentTest extends TestCase
         $this->component->NewMember = $value;
     }
 
-    public function testIsset()
+    public function testIsset(): void
     {
         $this->assertTrue(isset($this->component->Text));
         $this->assertNotEmpty($this->component->Text);
@@ -140,13 +145,13 @@ class ComponentTest extends TestCase
         $this->assertTrue(isset($this->component->p2));
     }
 
-    public function testCallUnknownMethod()
+    public function testCallUnknownMethod(): void
     {
         $this->expectException('yii\base\UnknownMethodException');
         $this->component->unknownMethod();
     }
 
-    public function testUnset()
+    public function testUnset(): void
     {
         unset($this->component->Text);
         $this->assertFalse(isset($this->component->Text));
@@ -160,13 +165,13 @@ class ComponentTest extends TestCase
         $this->assertNull($this->component->getP2());
     }
 
-    public function testUnsetReadonly()
+    public function testUnsetReadonly(): void
     {
         $this->expectException('yii\base\InvalidCallException');
         unset($this->component->object);
     }
 
-    public function testOn()
+    public function testOn(): void
     {
         $this->assertFalse($this->component->hasEventHandlers('click'));
         $this->component->on('click', 'foo');
@@ -181,7 +186,7 @@ class ComponentTest extends TestCase
     /**
      * @depends testOn
      */
-    public function testOff()
+    public function testOff(): void
     {
         $this->assertFalse($this->component->hasEventHandlers('click'));
         $this->component->on('click', 'foo');
@@ -202,7 +207,7 @@ class ComponentTest extends TestCase
     /**
      * @depends testOn
      */
-    public function testTrigger()
+    public function testTrigger(): void
     {
         $this->component->on('click', [$this->component, 'myEventHandler']);
         $this->assertFalse($this->component->eventHandled);
@@ -232,7 +237,7 @@ class ComponentTest extends TestCase
     /**
      * @depends testOn
      */
-    public function testOnWildcard()
+    public function testOnWildcard(): void
     {
         $this->assertFalse($this->component->hasEventHandlers('group.click'));
         $this->component->on('group.*', 'foo');
@@ -244,7 +249,7 @@ class ComponentTest extends TestCase
      * @depends testOnWildcard
      * @depends testOff
      */
-    public function testOffWildcard()
+    public function testOffWildcard(): void
     {
         $this->assertFalse($this->component->hasEventHandlers('group.click'));
         $this->component->on('group.*', 'foo');
@@ -267,7 +272,7 @@ class ComponentTest extends TestCase
     /**
      * @depends testTrigger
      */
-    public function testTriggerWildcard()
+    public function testTriggerWildcard(): void
     {
         $this->component->on('cli*', [$this->component, 'myEventHandler']);
         $this->assertFalse($this->component->eventHandled);
@@ -294,7 +299,7 @@ class ComponentTest extends TestCase
         $this->assertTrue($eventRaised);
     }
 
-    public function testHasEventHandlers()
+    public function testHasEventHandlers(): void
     {
         $this->assertFalse($this->component->hasEventHandlers('click'));
 
@@ -305,7 +310,7 @@ class ComponentTest extends TestCase
         $this->assertTrue($this->component->hasEventHandlers('some'));
     }
 
-    public function testStopEvent()
+    public function testStopEvent(): void
     {
         $component = new NewComponent();
         $component->on('click', 'yiiunit\framework\base\globalEventHandler2');
@@ -315,7 +320,7 @@ class ComponentTest extends TestCase
         $this->assertFalse($this->component->eventHandled);
     }
 
-    public function testAttachBehavior()
+    public function testAttachBehavior(): void
     {
         $component = new NewComponent();
         $this->assertFalse($component->hasProperty('p'));
@@ -331,19 +336,48 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->expectException('yii\base\UnknownMethodException');
-        $component->test();
+        try {
+            $component->test();
+            $this->fail('Expected exception ' . UnknownMethodException::class . " wasn't thrown");
+        } catch (UnknownMethodException $e) {
+            // Expected
+        }
 
-        $p = 'as b';
         $component = new NewComponent();
-        $component->$p = ['class' => 'NewBehavior'];
-        $this->assertSame($behavior, $component->getBehavior('a'));
+        $component->{'as b'} = ['class' => NewBehavior::class];
+        $this->assertInstanceOf(NewBehavior::class, $component->getBehavior('b'));
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
+
+        $component->{'as c'} = ['__class' => NewBehavior::class];
+        $this->assertNotNull($component->getBehavior('c'));
+
+        $component->{'as d'} = [
+            '__class' => NewBehavior2::class,
+            'class' => NewBehavior::class,
+        ];
+        $this->assertInstanceOf(NewBehavior2::class, $component->getBehavior('d'));
+
+        // CVE-2024-4990
+        try {
+            $component->{'as e'} = [
+                '__class' => 'NotExistsBehavior',
+                'class' => NewBehavior::class,
+            ];
+            $this->fail('Expected exception ' . InvalidConfigException::class . " wasn't thrown");
+        } catch (InvalidConfigException $e) {
+            $this->assertSame('Class is not of type yii\base\Behavior or its subclasses', $e->getMessage());
+        }
+
+        $component = new NewComponent();
+        $component->{'as f'} = function () {
+            return new NewBehavior();
+        };
+        $this->assertNotNull($component->getBehavior('f'));
     }
 
-    public function testAttachBehaviors()
+    public function testAttachBehaviors(): void
     {
         $component = new NewComponent();
         $this->assertNull($component->getBehavior('a'));
@@ -359,7 +393,7 @@ class ComponentTest extends TestCase
         $this->assertSame(['a' => $behavior, 'b' => $behavior], $component->getBehaviors());
     }
 
-    public function testDetachBehavior()
+    public function testDetachBehavior(): void
     {
         $component = new NewComponent();
         $behavior = new NewBehavior();
@@ -375,7 +409,7 @@ class ComponentTest extends TestCase
         $this->assertNull($detachedBehavior);
     }
 
-    public function testDetachBehaviors()
+    public function testDetachBehaviors(): void
     {
         $component = new NewComponent();
         $behavior = new NewBehavior();
@@ -390,14 +424,14 @@ class ComponentTest extends TestCase
         $this->assertNull($component->getBehavior('b'));
     }
 
-    public function testSetReadOnlyProperty()
+    public function testSetReadOnlyProperty(): void
     {
         $this->expectException('\yii\base\InvalidCallException');
         $this->expectExceptionMessage('Setting read-only property: yiiunit\framework\base\NewComponent::object');
         $this->component->object = 'z';
     }
 
-    public function testSetPropertyOfBehavior()
+    public function testSetPropertyOfBehavior(): void
     {
         $this->assertNull($this->component->getBehavior('a'));
 
@@ -410,7 +444,7 @@ class ComponentTest extends TestCase
         $this->assertSame('Yii is cool.', $this->component->getBehavior('a')->p);
     }
 
-    public function testSettingBehaviorWithSetter()
+    public function testSettingBehaviorWithSetter(): void
     {
         $behaviorName = 'foo';
         $this->assertNull($this->component->getBehavior($behaviorName));
@@ -419,25 +453,25 @@ class ComponentTest extends TestCase
         $this->assertSame(__NAMESPACE__ . '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
     }
 
-    public function testWriteOnlyProperty()
+    public function testWriteOnlyProperty(): void
     {
         $this->expectException('\yii\base\InvalidCallException');
         $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
         $this->component->writeOnly;
     }
 
-    public function testSuccessfulMethodCheck()
+    public function testSuccessfulMethodCheck(): void
     {
         $this->assertTrue($this->component->hasMethod('hasProperty'));
     }
 
-    public function testTurningOffNonExistingBehavior()
+    public function testTurningOffNonExistingBehavior(): void
     {
         $this->assertFalse($this->component->hasEventHandlers('foo'));
         $this->assertFalse($this->component->off('foo'));
     }
 
-    public function testDetachNotAttachedHandler()
+    public function testDetachNotAttachedHandler(): void
     {
         $obj = new NewComponent();
 
@@ -449,13 +483,8 @@ class ComponentTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/17223
      */
-    public function testEventClosureDetachesItself()
+    public function testEventClosureDetachesItself(): void
     {
-        if (PHP_VERSION_ID < 70000) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.0');
-            return;
-        }
-
         $obj = require __DIR__ . '/stub/AnonymousComponentClass.php';
 
         $obj->trigger('barEventOnce');
@@ -463,7 +492,6 @@ class ComponentTest extends TestCase
         $obj->trigger('barEventOnce');
         $this->assertEquals(1, $obj->foo);
     }
-
 }
 
 class NewComponent extends Component
@@ -478,7 +506,7 @@ class NewComponent extends Component
         return $this->_text;
     }
 
-    public function setText($value)
+    public function setText($value): void
     {
         $this->_text = $value;
     }
@@ -509,13 +537,13 @@ class NewComponent extends Component
     public $event;
     public $behaviorCalled = false;
 
-    public function myEventHandler($event)
+    public function myEventHandler($event): void
     {
         $this->eventHandled = true;
         $this->event = $event;
     }
 
-    public function raiseEvent()
+    public function raiseEvent(): void
     {
         $this->trigger('click', new Event());
     }
@@ -535,7 +563,7 @@ class NewBehavior extends Behavior
         return $this->p2;
     }
 
-    public function setP2($value)
+    public function setP2($value): void
     {
         $this->p2 = $value;
     }
@@ -546,6 +574,10 @@ class NewBehavior extends Behavior
 
         return 2;
     }
+}
+
+class NewBehavior2 extends Behavior
+{
 }
 
 class NewComponent2 extends Component

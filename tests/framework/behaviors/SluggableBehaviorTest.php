@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,14 +27,14 @@ class SluggableBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -60,7 +61,7 @@ class SluggableBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_slug_related', $columns)->execute();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -144,7 +145,9 @@ class SluggableBehaviorTest extends TestCase
         $model->save();
 
         $model = new ActiveRecordSluggableUnique();
-        $model->sluggable->uniqueSlugGenerator = function ($baseSlug, $iteration) {return $baseSlug . '-callback';};
+        $model->sluggable->uniqueSlugGenerator = function ($baseSlug, $iteration) {
+            return $baseSlug . '-callback';
+        };
         $model->name = $name;
         $model->save();
 

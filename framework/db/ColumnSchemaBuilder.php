@@ -7,7 +7,6 @@
 
 namespace yii\db;
 
-use Yii;
 use yii\base\BaseObject;
 use yii\helpers\StringHelper;
 
@@ -26,11 +25,11 @@ class ColumnSchemaBuilder extends BaseObject
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
     // @since 2.0.8
-    const CATEGORY_PK = 'pk';
-    const CATEGORY_STRING = 'string';
-    const CATEGORY_NUMERIC = 'numeric';
-    const CATEGORY_TIME = 'time';
-    const CATEGORY_OTHER = 'other';
+    public const CATEGORY_PK = 'pk';
+    public const CATEGORY_STRING = 'string';
+    public const CATEGORY_NUMERIC = 'numeric';
+    public const CATEGORY_TIME = 'time';
+    public const CATEGORY_OTHER = 'other';
 
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.

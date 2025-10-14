@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ class LocaleTest extends TestCase
      */
     protected $locale;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +32,7 @@ class LocaleTest extends TestCase
         $this->locale = new Locale(['locale' => 'en-US']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->locale = null;

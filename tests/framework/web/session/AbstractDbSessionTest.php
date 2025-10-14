@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,7 +28,7 @@ abstract class AbstractDbSessionTest extends TestCase
      */
     abstract protected function getDriverNames();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +38,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->createTableSession();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->dropTableSession();
         parent::tearDown();
@@ -127,8 +128,9 @@ abstract class AbstractDbSessionTest extends TestCase
         $session->db->createCommand()
             ->update('session', ['expire' => time() - 100], 'id = :id', ['id' => 'expire'])
             ->execute();
-        $session->gcSession(1);
+        $deleted = $session->gcSession(1);
 
+        $this->assertEquals(1, $deleted);
         $this->assertEquals('', $session->readSession('expire'));
         $this->assertEquals('new data', $session->readSession('new'));
     }
@@ -160,7 +162,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $session->set('user_id', 12345);
 
         // add mapped custom column
-        $migration = new Migration;
+        $migration = new Migration();
         $migration->compact = true;
         $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
 

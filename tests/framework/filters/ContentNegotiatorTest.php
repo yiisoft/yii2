@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ use yiiunit\TestCase;
  */
 class ContentNegotiatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -55,10 +56,6 @@ class ContentNegotiatorTest extends TestCase
         $this->assertEquals($targetLanguage, Yii::$app->language);
     }
 
-    /**
-     * @expectedException yii\web\BadRequestHttpException
-     * @expectedExceptionMessageRegExp |Invalid data received for GET parameter '.+'|
-     */
     public function testWhenFormatGETParamIsArray()
     {
         list($action, $filter) = $this->mockActionAndFilter();
@@ -73,6 +70,9 @@ class ContentNegotiatorTest extends TestCase
             'application/json' => Response::FORMAT_JSON,
             'application/xml' => Response::FORMAT_XML,
         ];
+
+        $this->expectException(\yii\web\BadRequestHttpException::class);
+        $this->expectExceptionMessage('Invalid data received for GET parameter');
 
         $filter->beforeAction($action);
     }

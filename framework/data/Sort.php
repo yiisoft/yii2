@@ -23,7 +23,7 @@ use yii\web\Request;
  *
  * A typical usage example is as follows,
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     $sort = new Sort([
@@ -52,7 +52,7 @@ use yii\web\Request;
  *
  * View:
  *
- * ```php
+ * ```
  * // display links leading to sort actions
  * echo $sort->link('name') . ' | ' . $sort->link('age');
  *
@@ -88,7 +88,7 @@ class Sort extends BaseObject
      * @var array list of attributes that are allowed to be sorted. Its syntax can be
      * described using the following example:
      *
-     * ```php
+     * ```
      * [
      *     'age',
      *     'name' => [
@@ -103,7 +103,7 @@ class Sort extends BaseObject
      * In the above, two attributes are declared: `age` and `name`. The `age` attribute is
      * a simple attribute which is equivalent to the following:
      *
-     * ```php
+     * ```
      * 'age' => [
      *     'asc' => ['age' => SORT_ASC],
      *     'desc' => ['age' => SORT_DESC],
@@ -114,7 +114,7 @@ class Sort extends BaseObject
      *
      * Since 2.0.12 particular sort direction can be also specified as direct sort expression, like following:
      *
-     * ```php
+     * ```
      * 'name' => [
      *     'asc' => '[[last_name]] ASC NULLS FIRST', // PostgreSQL specific feature
      *     'desc' => '[[last_name]] DESC NULLS LAST',
@@ -145,10 +145,10 @@ class Sort extends BaseObject
      */
     public $sortParam = 'sort';
     /**
-     * @var array the order that should be used when the current request does not specify any order.
+     * @var array|null the order that should be used when the current request does not specify any order.
      * The array keys are attribute names and the array values are the corresponding sort directions. For example,
      *
-     * ```php
+     * ```
      * [
      *     'name' => SORT_ASC,
      *     'created_at' => SORT_DESC,
@@ -191,6 +191,12 @@ class Sort extends BaseObject
      * @since 2.0.33
      */
     public $sortFlags = SORT_REGULAR;
+    /**
+     * @var string|null the name of the [[\yii\base\Model]]-based class used by the [[link()]] method to retrieve
+     * attributes' labels. See [[link]] method for details.
+     * @since 2.0.49
+     */
+    public $modelClass;
 
 
     /**
@@ -277,6 +283,8 @@ class Sort extends BaseObject
                         }
                     }
                 }
+
+                return $this->_attributeOrders;
             }
             if (empty($this->_attributeOrders) && is_array($this->defaultOrder)) {
                 $this->_attributeOrders = $this->defaultOrder;
@@ -295,7 +303,7 @@ class Sort extends BaseObject
      * For example the following return value will result in ascending sort by
      * `category` and descending sort by `created_at`:
      *
-     * ```php
+     * ```
      * [
      *     'category',
      *     '-created_at'
@@ -361,7 +369,8 @@ class Sort extends BaseObject
      * @param array $options additional HTML attributes for the hyperlink tag.
      * There is one special attribute `label` which will be used as the label of the hyperlink.
      * If this is not set, the label defined in [[attributes]] will be used.
-     * If no label is defined, [[\yii\helpers\Inflector::camel2words()]] will be called to get a label.
+     * If no label is defined, it will be retrieved from the instance of [[modelClass]] (if [[modelClass]] is not null)
+     * or generated from attribute name using [[\yii\helpers\Inflector::camel2words()]].
      * Note that it will not be HTML-encoded.
      * @return string the generated hyperlink
      * @throws InvalidConfigException if the attribute is unknown
@@ -386,6 +395,11 @@ class Sort extends BaseObject
         } else {
             if (isset($this->attributes[$attribute]['label'])) {
                 $label = $this->attributes[$attribute]['label'];
+            } elseif ($this->modelClass !== null) {
+                $modelClass = $this->modelClass;
+                /** @var \yii\base\Model $model */
+                $model = $modelClass::instance();
+                $label = $model->getAttributeLabel($attribute);
             } else {
                 $label = Inflector::camel2words($attribute);
             }

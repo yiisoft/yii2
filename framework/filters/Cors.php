@@ -21,7 +21,7 @@ use yii\web\Response;
  *
  * You may use CORS filter by attaching it as a behavior to a controller or module, like the following,
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -35,7 +35,7 @@ use yii\web\Response;
  * The CORS filter can be specialized to restrict parameters, like this,
  * [MDN CORS Information](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS)
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -123,8 +123,10 @@ class Cors extends ActionFilter
      */
     public function overrideDefaultSettings($action)
     {
-        if (isset($this->actions[$action->id])) {
-            $actionParams = $this->actions[$action->id];
+        $actionId = $this->getActionId($action);
+
+        if (isset($this->actions[$actionId])) {
+            $actionParams = $this->actions[$actionId];
             $actionParamsKeys = array_keys($actionParams);
             foreach ($this->cors as $headerField => $headerValue) {
                 if (in_array($headerField, $actionParamsKeys)) {

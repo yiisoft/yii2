@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,7 +7,6 @@
  */
 
 namespace yii\log {
-
     function openlog()
     {
         return \yiiunit\framework\log\SyslogTargetTest::openlog(func_get_args());
@@ -24,7 +24,6 @@ namespace yii\log {
 }
 
 namespace yiiunit\framework\log {
-
     use PHPUnit_Framework_MockObject_MockObject;
     use yii\helpers\VarDumper;
     use yii\log\Logger;
@@ -52,7 +51,7 @@ namespace yiiunit\framework\log {
         /**
          * Set up syslogTarget as the mock object.
          */
-        protected function setUp()
+        protected function setUp(): void
         {
             $this->syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
                 ->setMethods(['getMessagePrefix'])

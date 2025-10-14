@@ -8,7 +8,6 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
-use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
 use yii\caching\DbCache;
 use yii\db\Exception;
@@ -151,24 +150,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
-     */
-    public function addCheck($name, $table, $expression)
-    {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
-     */
-    public function dropCheck($name, $table)
-    {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
-    }
-
-    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -266,7 +247,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $columns = [reset($tableSchema->columns)->name];
                     $defaultValue = 'DEFAULT';
                 }
-                
+
                 foreach ($columns as $name) {
                     $names[] = $this->db->quoteColumnName($name);
                     $placeholders[] = $defaultValue;
@@ -312,8 +293,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addCommentOnColumn($table, $column, $comment)
     {
         // Strip existing comment which may include escaped quotes
-        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '',
-            $this->getColumnDefinition($table, $column)));
+        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '', $this->getColumnDefinition($table, $column)));
 
         $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
         $check = preg_match($checkRegex, $definition, $checkMatches);
@@ -358,6 +338,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $this->addCommentOnTable($table, '');
     }
 
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT EXISTS(' . $rawSql . ') AS ' . $this->db->quoteColumnName('result');
+    }
 
     /**
      * Gets column definition.
@@ -410,7 +398,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $version = $cache ? $cache->get($key) : null;
         if (!$version) {
-            $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            $version = $this->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
             if ($cache) {
                 $cache->set($key, $version, $this->db->schemaCacheDuration);
             }

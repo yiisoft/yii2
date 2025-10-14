@@ -15,7 +15,7 @@ use Yii;
  * A property is defined by a getter method (e.g. `getLabel`), and/or a setter method (e.g. `setLabel`). For example,
  * the following getter and setter methods define a property named `label`:
  *
- * ```php
+ * ```
  * private $_label;
  *
  * public function getLabel()
@@ -34,7 +34,7 @@ use Yii;
  * A property can be accessed like a member variable of an object. Reading or writing a property will cause the invocation
  * of the corresponding getter or setter method. For example,
  *
- * ```php
+ * ```
  * // equivalent to $label = $object->getLabel();
  * $label = $object->label;
  * // equivalent to $object->setLabel('abc');
@@ -60,7 +60,7 @@ use Yii;
  * In order to ensure the above life cycles, if a child class of BaseObject needs to override the constructor,
  * it should be done like the following:
  *
- * ```php
+ * ```
  * public function __construct($param1, $param2, ..., $config = [])
  * {
  *     ...
@@ -100,6 +100,9 @@ class BaseObject implements Configurable
      * - call the parent implementation at the end of the constructor.
      *
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($config = [])
     {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -14,7 +15,7 @@ use yiiunit\data\ar\Customer;
 
 abstract class BatchQueryResultTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();

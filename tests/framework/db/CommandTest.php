@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -193,7 +194,7 @@ SQL;
             $command->bindParam(':blob_col', $blobCol);
             $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
         } else {
-            $floatCol = 1.23;
+            $floatCol = 1.230;
             $numericCol = '1.23';
             $blobCol = "\x10\x11\x12";
             $boolCol = false;
@@ -205,18 +206,18 @@ SQL;
         $this->assertEquals(1, $command->execute());
 
         $command = $db->createCommand('SELECT [[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]] FROM {{type}}');
-//        $command->prepare();
-//        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
+        //        $command->prepare();
+        //        $command->pdoStatement->bindColumn('blob_col', $bc, \PDO::PARAM_LOB);
         $row = $command->queryOne();
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
-        $this->assertEquals($floatCol, $row['float_col']);
+        $this->assertEquals($floatCol, (float) $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
         } elseif (\defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
-            $this->assertInternalType('resource', $row['blob_col']);
+            $this->assertIsResource($row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
@@ -281,7 +282,7 @@ SQL;
         $command = $db->createCommand($sql);
         $command->fetchMode = \PDO::FETCH_OBJ;
         $result = $command->queryOne();
-        $this->assertInternalType('object', $result);
+        $this->assertIsObject($result);
 
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';
@@ -315,11 +316,7 @@ SQL;
 
     public function testBatchInsertWithYield()
     {
-        if (PHP_VERSION_ID < 50500) {
-            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
-        } else {
-            include __DIR__ . '/testBatchInsertWithYield.php';
-        }
+        include __DIR__ . '/testBatchInsertWithYield.php';
     }
 
     /**
@@ -405,7 +402,7 @@ SQL;
                 '{{%type}}',
                 ['int_col'],
                 [[new Expression(':qp1', [':qp1' => 42])]], // This example is completely useless. This feature of batchInsert is intended to be used with complex expression objects, such as JsonExpression.
-                'expected' => "INSERT INTO `type` (`int_col`) VALUES (:qp1)",
+                'expected' => 'INSERT INTO `type` (`int_col`) VALUES (:qp1)',
                 'expectedParams' => [':qp1' => 42]
             ],
             'batchIsert empty rows represented by ArrayObject' => [
@@ -517,7 +514,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 '{{customer}}.[[email]] as name',
                 '[[name]] as email',
                 '[[address]]',
@@ -571,7 +569,8 @@ SQL;
         )->execute();
 
         $query = new \yii\db\Query();
-        $query->select([
+        $query->select(
+            [
                 'email' => '{{customer}}.[[email]]',
                 'address' => 'name',
                 'name' => 'address',
@@ -623,8 +622,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
+     *
      * @param mixed $invalidSelectColumns
      */
     public function testInsertSelectFailed($invalidSelectColumns)
@@ -634,10 +632,13 @@ SQL;
 
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->insert(
-            '{{customer}}',
-            $query
-        )->execute();
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
+
+        $this->expectException('yii\base\InvalidParamException');
+        $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
+        $command->insert('{{customer}}', $query)->execute();
     }
 
     public function testInsertExpression()
@@ -1208,9 +1209,13 @@ SQL;
     public function testAddDropCheck()
     {
         $db = $this->getConnection(false);
+
+        if (version_compare($db->getServerVersion(), '8.0.16', '<')) {
+            $this->markTestSkipped('MySQL < 8.0.16 does not support CHECK constraints.');
+        }
+
         $tableName = 'test_ck';
         $name = 'test_ck_constraint';
-        /** @var \yii\db\pgsql\Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {
@@ -1222,9 +1227,13 @@ SQL;
 
         $this->assertEmpty($schema->getTableChecks($tableName, true));
         $db->createCommand()->addCheck($name, $tableName, '[[int1]] > 1')->execute();
-        $this->assertRegExp('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
+        $this->assertMatchesRegularExpression(
+            '/^.*int1.*>.*1.*$/',
+            $schema->getTableChecks($tableName, true)[0]->expression
+        );
 
         $db->createCommand()->dropCheck($name, $tableName)->execute();
+
         $this->assertEmpty($schema->getTableChecks($tableName, true));
     }
 
@@ -1398,7 +1407,6 @@ SQL;
     public function testAutoRefreshTableSchema()
     {
         if ($this->driverName === 'sqlsrv') {
-
             // related to https://github.com/yiisoft/yii2/pull/17364
             $this->markTestSkipped('Should be fixed');
         }
@@ -1522,7 +1530,26 @@ SQL;
     public function testBindValuesSupportsDeprecatedPDOCastingFormat()
     {
         $db = $this->getConnection();
-        $db->createCommand()->setSql("SELECT :p1")->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $db->createCommand()->setSql('SELECT :p1')->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
         $this->assertTrue(true);
+    }
+
+    public function testBindValuesSupportsEnums()
+    {
+        if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+            $db = $this->getConnection();
+            $command = $db->createCommand();
+
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
+            $this->assertSame('Active', $command->params[':p1']);
+
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
+            $this->assertSame('active', $command->params[':p1']);
+
+            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
+            $this->assertSame(1, $command->params[':p1']);
+        } else {
+            $this->markTestSkipped('Enums are not supported in PHP < 8.1');
+        }
     }
 }

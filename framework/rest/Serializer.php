@@ -68,7 +68,7 @@ class Serializer extends Component
      * This is used when serving a resource collection. When this is set and pagination is enabled, the serializer
      * will return a collection in the following format:
      *
-     * ```php
+     * ```
      * [
      *     'items' => [...],  // assuming collectionEnvelope is "items"
      *     '_links' => {  // pagination links as returned by Pagination::getLinks()
@@ -294,10 +294,9 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                $models[$i] = $this->serializeModel($model);
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }

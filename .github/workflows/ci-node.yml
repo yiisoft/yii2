@@ -1,0 +1,69 @@
+name: build-node
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".eslintignore"
+      - ".eslintrc"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
+
+env:
+  DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: NPM 10 on ubuntu-latest
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Install dependencies.
+        run: composer update $DEFAULT_COMPOSER_FLAGS
+
+      - name: Install JQuery `3.6.*@stable` for tests.
+        run: composer require "bower-asset/jquery:3.6.*@stable"
+
+      - name: Install node.js.
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Tests.
+        run: |
+          npm install
+          npm test
