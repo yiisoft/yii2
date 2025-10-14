@@ -58,13 +58,13 @@ abstract class AbstractDbSessionTest extends TestCase
             }
         }
         if (!isset($driverAvailable)) {
-            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
+            $this->markTestIncomplete(static::class . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
             return [];
         }
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::className(),
+            'class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 
@@ -276,11 +276,11 @@ abstract class AbstractDbSessionTest extends TestCase
 
     public function testInitUseStrictMode(): void
     {
-        $this->initStrictModeTest(DbSession::className());
+        $this->initStrictModeTest(DbSession::class);
     }
 
     public function testUseStrictMode(): void
     {
-        $this->useStrictModeTest(DbSession::className());
+        $this->useStrictModeTest(DbSession::class);
     }
 }

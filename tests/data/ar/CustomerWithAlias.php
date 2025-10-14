@@ -33,7 +33,7 @@ class CustomerWithAlias extends ActiveRecord
      */
     public static function find()
     {
-        $activeQuery = new CustomerQuery(get_called_class());
+        $activeQuery = new CustomerQuery(static::class);
         $activeQuery->alias('csr');
         return $activeQuery;
     }

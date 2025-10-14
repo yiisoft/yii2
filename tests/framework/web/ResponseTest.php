@@ -37,7 +37,7 @@ class ResponseTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'request' => [
-                    'class' => TestRequestComponent::className(),
+                    'class' => TestRequestComponent::class,
                 ],
             ],
         ]);

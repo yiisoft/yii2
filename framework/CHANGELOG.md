@@ -54,9 +54,13 @@ Yii Framework 2 Change Log
 - Enh #20591: Add PHPStan/Psalm annotations for `yii\rbac\BaseManager::getItems()` (mspirkov)
 - Bug #20594: Fix `@return` annotation for `Instance::get()` (mspirkov)
 - Bug #20595: Fix `@return` annotation for `BaseHtml::getAttributeValue()` (mspirkov)
+- Bug #20605: Fix return value in `SerialColumn::renderDataCellContent()` (mspirkov)
 - Bug #20604: Fix `@var` annotation for `yii\db\Command::$pdoStatement` (mspirkov)
 - Bug #20600: Fix `@var` annotation for `yii\test\FileFixtureTrait::$dataFile` (mspirkov)
 - Enh #20607: Add PHPStan/Psalm annotations for DB schemas (mspirkov)
+- Bug #20608: Fix `@return` annotations for `yii\rest\Serializer` methods (mspirkov)
+- Bug #20610: Fix `@var` annotation for `ActiveQueryTrait::$with` (mspirkov)
+- Bug #20611: Fix `@return` annotations for `yii\i18n\GettextMoFile` methods (mspirkov)
 
 
 2.0.53 June 27, 2025

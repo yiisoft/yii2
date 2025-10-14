@@ -36,12 +36,12 @@ class DataFilterTest extends TestCase
         $builder->setSearchModel($model);
         $this->assertSame($model, $builder->getSearchModel());
 
-        $builder->setSearchModel(Singer::className());
+        $builder->setSearchModel(Singer::class);
         $model = $builder->getSearchModel();
         $this->assertTrue($model instanceof Singer);
 
         $builder->setSearchModel([
-            'class' => Singer::className(),
+            'class' => Singer::class,
             'scenario' => 'search',
         ]);
         $model = $builder->getSearchModel();

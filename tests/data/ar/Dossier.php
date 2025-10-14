@@ -41,7 +41,7 @@ class Dossier extends ActiveRecord
     public function getEmployee()
     {
         return $this
-            ->hasOne(Employee::className(), [
+            ->hasOne(Employee::class, [
                 'department_id' => 'department_id',
                 'id' => 'employee_id',
             ])

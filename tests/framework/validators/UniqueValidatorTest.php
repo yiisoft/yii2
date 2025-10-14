@@ -129,7 +129,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeOfNonARModel(): void
     {
-        $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
+        $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'ref']);
         $m = FakedValidationModel::createWithAttributes(['attr_1' => 5, 'attr_2' => 1313]);
         $val->validateAttribute($m, 'attr_1');
         $this->assertTrue($m->hasErrors('attr_1'));
@@ -139,7 +139,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateNonDatabaseAttribute(): void
     {
-        $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'ref']);
+        $val = new UniqueValidator(['targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'ref']);
         /** @var ValidatorTestMainModel $m */
         $m = ValidatorTestMainModel::findOne(1);
         $val->validateAttribute($m, 'testMainVal');
@@ -161,7 +161,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testValidateCompositeKeys(): void
     {
         $val = new UniqueValidator([
-            'targetClass' => OrderItem::className(),
+            'targetClass' => OrderItem::class,
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
@@ -184,7 +184,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertFalse($m->hasErrors('order_id'));
 
         $val = new UniqueValidator([
-            'targetClass' => OrderItem::className(),
+            'targetClass' => OrderItem::class,
             'targetAttribute' => ['id' => 'order_id'],
         ]);
         // validate old record
@@ -216,7 +216,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         // Check whether "Description" and "name" aren't equal
         $val = new UniqueValidator([
-            'targetClass' => Customer::className(),
+            'targetClass' => Customer::class,
             'targetAttribute' => ['description' => 'name'],
         ]);
 
@@ -364,11 +364,11 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testGetTargetClassWithFilledTargetClassProperty(): void
     {
-        $validator = new UniqueValidator(['targetClass' => Profile::className()]);
+        $validator = new UniqueValidator(['targetClass' => Profile::class]);
         $model = new FakedValidationModel();
         $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
 
-        $this->assertEquals(Profile::className(), $actualTargetClass);
+        $this->assertEquals(Profile::class, $actualTargetClass);
     }
 
     public function testGetTargetClassWithNotFilledTargetClassProperty(): void
@@ -377,7 +377,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = new FakedValidationModel();
         $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
 
-        $this->assertEquals(FakedValidationModel::className(), $actualTargetClass);
+        $this->assertEquals(FakedValidationModel::class, $actualTargetClass);
     }
 
     public function testPrepareQuery(): void

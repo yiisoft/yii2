@@ -26,7 +26,7 @@ class AuthMethodTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ]);
@@ -39,7 +39,7 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMockBuilder(AuthMethod::className())
+        $filter = $this->getMockBuilder(AuthMethod::class)
             ->setMethods(['authenticate'])
             ->getMock();
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
@@ -78,7 +78,7 @@ class AuthMethodTest extends TestCase
 
     public function testIsOptional(): void
     {
-        $reflection = new ReflectionClass(AuthMethod::className());
+        $reflection = new ReflectionClass(AuthMethod::class);
         $method = $reflection->getMethod('isOptional');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
