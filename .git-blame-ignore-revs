@@ -10,3 +10,5 @@ c82da8dc829d557e82b12edbed9e37003dfcc9a3
 909396074eef92d62dd34b4709bb7351e722bec3
 # Add void return to method in tests
 d71f7309aeec1ac0fef223840cb65bbbf96f1f99
+# Use `::class` instead of `::className()` in tests
+c960f93dfeefe760eb44bcdfa4463dcc7b29cc43
