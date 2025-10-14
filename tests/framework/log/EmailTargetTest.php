@@ -159,7 +159,7 @@ class EmailTargetTest extends TestCase
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
         /** @var EmailTarget $mailTarget */
-        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
+        $mailTarget = $this->getMockBuilder(EmailTarget::class)
             ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [

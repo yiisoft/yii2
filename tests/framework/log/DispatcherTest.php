@@ -159,7 +159,6 @@ namespace yiiunit\framework\log {
             $target->expects($this->never())->method($this->anything());
 
             $target->enabled = false;
-            $target->enabled = false;
 
             $dispatcher = new Dispatcher(['targets' => ['fakeTarget' => $target]]);
             $dispatcher->dispatch('messages', true);
