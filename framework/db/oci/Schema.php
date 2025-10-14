@@ -402,6 +402,9 @@ SQL;
      *
      * @param array $column
      * @return ColumnSchema
+     *
+     * @phpstan-return T
+     * @psalm-return T
      */
     protected function createColumn($column)
     {
