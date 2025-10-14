@@ -61,7 +61,7 @@ class Command extends Component
      */
     public $db;
     /**
-     * @var \PDOStatement the PDOStatement object that this command is associated with
+     * @var \PDOStatement|null the PDOStatement object that this command is associated with
      */
     public $pdoStatement;
     /**
@@ -95,11 +95,11 @@ class Command extends Component
     protected $pendingParams = [];
 
     /**
-     * @var string the SQL statement that this command represents
+     * @var string|null the SQL statement that this command represents
      */
     private $_sql;
     /**
-     * @var string name of the table, which schema, should be refreshed after command execution.
+     * @var string|null name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
     /**

@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Enh #20591: Add PHPStan/Psalm annotations for `yii\rbac\BaseManager::getItems()` (mspirkov)
 - Bug #20594: Fix `@return` annotation for `Instance::get()` (mspirkov)
 - Bug #20595: Fix `@return` annotation for `BaseHtml::getAttributeValue()` (mspirkov)
+- Bug #20604: Fix `@var` annotation for `yii\db\Command::$pdoStatement` (mspirkov)
 - Bug #20600: Fix `@var` annotation for `yii\test\FileFixtureTrait::$dataFile` (mspirkov)
 
 
