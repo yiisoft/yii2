@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Bug #20595: Fix `@return` annotation for `BaseHtml::getAttributeValue()` (mspirkov)
 - Bug #20604: Fix `@var` annotation for `yii\db\Command::$pdoStatement` (mspirkov)
 - Bug #20600: Fix `@var` annotation for `yii\test\FileFixtureTrait::$dataFile` (mspirkov)
+- Bug #20611: Fix `@return` annotations for `yii\i18n\GettextMoFile` methods (mspirkov)
 
 
 2.0.53 June 27, 2025
