@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\filters\auth;
 
+use yiiunit\TestCase;
+use ReflectionClass;
 use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
@@ -24,7 +26,7 @@ use yiiunit\framework\filters\stubs\UserIdentity;
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
-class AuthTest extends \yiiunit\TestCase
+class AuthTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -58,7 +60,7 @@ class AuthTest extends \yiiunit\TestCase
         ];
     }
 
-    public function authOnly($token, $login, $filter)
+    public function authOnly($token, $login, $filter): void
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
@@ -69,7 +71,7 @@ class AuthTest extends \yiiunit\TestCase
         }
     }
 
-    public function authOptional($token, $login, $filter)
+    public function authOptional($token, $login, $filter): void
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
@@ -80,7 +82,7 @@ class AuthTest extends \yiiunit\TestCase
         }
     }
 
-    public function authExcept($token, $login, $filter)
+    public function authExcept($token, $login, $filter): void
     {
         /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
@@ -91,7 +93,7 @@ class AuthTest extends \yiiunit\TestCase
         }
     }
 
-    public function ensureFilterApplies($token, $login, $filter)
+    public function ensureFilterApplies($token, $login, $filter): void
     {
         $this->authOnly($token, $login, $filter);
         $this->authOptional($token, $login, $filter);
@@ -103,7 +105,7 @@ class AuthTest extends \yiiunit\TestCase
      * @param string|null $token
      * @param string|null $login
      */
-    public function testQueryParamAuth($token, $login)
+    public function testQueryParamAuth($token, $login): void
     {
         $_GET['access-token'] = $token;
         $filter = ['class' => QueryParamAuth::className()];
@@ -115,7 +117,7 @@ class AuthTest extends \yiiunit\TestCase
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpHeaderAuth($token, $login)
+    public function testHttpHeaderAuth($token, $login): void
     {
         Yii::$app->request->headers->set('X-Api-Key', $token);
         $filter = ['class' => HttpHeaderAuth::className()];
@@ -127,7 +129,7 @@ class AuthTest extends \yiiunit\TestCase
      * @param string|null $token
      * @param string|null $login
      */
-    public function testHttpBearerAuth($token, $login)
+    public function testHttpBearerAuth($token, $login): void
     {
         Yii::$app->request->headers->set('Authorization', "Bearer $token");
         $filter = ['class' => HttpBearerAuth::className()];
@@ -148,11 +150,11 @@ class AuthTest extends \yiiunit\TestCase
      * @dataProvider authMethodProvider
      * @param string $authClass
      */
-    public function testActive($authClass)
+    public function testActive($authClass): void
     {
         /** @var AuthMethod $filter */
         $filter = new $authClass();
-        $reflection = new \ReflectionClass($filter);
+        $reflection = new ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
@@ -198,7 +200,7 @@ class AuthTest extends \yiiunit\TestCase
         $this->assertFalse($method->invokeArgs($filter, [new Action('view', $controller)]));
     }
 
-    public function testHeaders()
+    public function testHeaders(): void
     {
         Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
         $filter = ['class' => HttpBearerAuth::className()];

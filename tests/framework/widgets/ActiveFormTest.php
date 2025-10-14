@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\base\DynamicModel;
 use yii\base\Widget;
 use yii\web\View;
@@ -16,7 +17,7 @@ use yii\widgets\ActiveForm;
 /**
  * @group widgets
  */
-class ActiveFormTest extends \yiiunit\TestCase
+class ActiveFormTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -24,7 +25,7 @@ class ActiveFormTest extends \yiiunit\TestCase
         $this->mockApplication();
     }
 
-    public function testBooleanAttributes()
+    public function testBooleanAttributes(): void
     {
         $o = ['template' => '{input}'];
 
@@ -63,7 +64,7 @@ EOF,
         );
     }
 
-    public function testIssue5356()
+    public function testIssue5356(): void
     {
         $o = ['template' => '{input}'];
 
@@ -89,7 +90,7 @@ EOF,
         );
     }
 
-    public function testOutputBuffering()
+    public function testOutputBuffering(): void
     {
         $obLevel = ob_get_level();
         ob_start();
@@ -119,7 +120,7 @@ HTML,
         );
     }
 
-    public function testRegisterClientScript()
+    public function testRegisterClientScript(): void
     {
         $this->mockWebApplication();
         $_SERVER['REQUEST_URI'] = 'http://example.com/';
@@ -151,7 +152,7 @@ HTML,
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         ob_start();
@@ -173,7 +174,7 @@ HTML,
      * @see https://github.com/yiisoft/yii2/issues/15476
      * @see https://github.com/yiisoft/yii2/issues/16892
      */
-    public function testValidationStateOnInput()
+    public function testValidationStateOnInput(): void
     {
         $model = new DynamicModel(['name']);
         $model->addError('name', 'I have an error!');

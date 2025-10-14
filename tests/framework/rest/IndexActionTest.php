@@ -39,7 +39,7 @@ class IndexActionTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable(IndexActionModel::tableName(), $columns)->execute();
     }
 
-    public function testPrepareSearchQueryAttribute()
+    public function testPrepareSearchQueryAttribute(): void
     {
         $sql = '';
         Yii::$app->controller = new RestController(
@@ -83,7 +83,7 @@ class IndexActionTest extends TestCase
         $expectedPaginationDefaultPageSize = null,
         $expectedSortOrders = [],
         $expectedSortDefaultOrder = null
-    ) {
+    ): void {
         Yii::$app->getRequest()->setBodyParams([
             'per-page' => 11,
             'sort' => '-test-sort'

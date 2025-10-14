@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use StdClass;
 use yii\helpers\VarDumper;
 use yiiunit\data\helpers\CustomDebugInfo;
 use yiiunit\TestCase;
@@ -25,7 +26,7 @@ class VarDumperTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testDumpIncompleteObject()
+    public function testDumpIncompleteObject(): void
     {
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
@@ -34,7 +35,7 @@ class VarDumperTest extends TestCase
         $this->assertStringContainsString('nonExistingClass', $dumpResult);
     }
 
-    public function testExportIncompleteObject()
+    public function testExportIncompleteObject(): void
     {
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
@@ -42,12 +43,12 @@ class VarDumperTest extends TestCase
         $this->assertStringContainsString('nonExistingClass', $exportResult);
     }
 
-    public function testDumpObject()
+    public function testDumpObject(): void
     {
-        $obj = new \StdClass();
+        $obj = new StdClass();
         $this->assertEquals("stdClass#1\n(\n)", VarDumper::dumpAsString($obj));
 
-        $obj = new \StdClass();
+        $obj = new StdClass();
         $obj->name = 'test-name';
         $obj->price = 19;
         $dumpResult = VarDumper::dumpAsString($obj);
@@ -143,7 +144,7 @@ RESULT;
 
         // Objects :
 
-        $var = new \StdClass();
+        $var = new StdClass();
         $var->testField = 'Test Value';
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
@@ -167,7 +168,7 @@ RESULT;
      * @param mixed $var
      * @param string $expectedResult
      */
-    public function testExport($var, $expectedResult)
+    public function testExport($var, $expectedResult): void
     {
         $exportResult = VarDumper::export($var);
         $this->assertEqualsWithoutLE($expectedResult, $exportResult);
@@ -177,17 +178,17 @@ RESULT;
     /**
      * @depends testExport
      */
-    public function testExportObjectFallback()
+    public function testExportObjectFallback(): void
     {
-        $var = new \StdClass();
+        $var = new StdClass();
         $var->testFunction = function () {
             return 2;
         };
         $exportResult = VarDumper::export($var);
         $this->assertNotEmpty($exportResult);
 
-        $master = new \StdClass();
-        $slave = new \StdClass();
+        $master = new StdClass();
+        $slave = new StdClass();
         $master->slave = $slave;
         $slave->master = $master;
         $master->function = function () {
@@ -201,7 +202,7 @@ RESULT;
     /**
      * @depends testDumpObject
      */
-    public function testDumpClassWithCustomDebugInfo()
+    public function testDumpClassWithCustomDebugInfo(): void
     {
         $object = new CustomDebugInfo();
         $object->volume = 10;

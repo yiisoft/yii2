@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\cubrid;
 
+use PDO;
 use yii\db\Expression;
 use yiiunit\framework\db\AnyCaseValue;
 
@@ -19,23 +20,23 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'cubrid';
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in CUBRID.');
     }
 
-    public function testGetPDOType()
+    public function testGetPDOType(): void
     {
         $values = [
-            [null, \PDO::PARAM_NULL],
-            ['', \PDO::PARAM_STR],
-            ['hello', \PDO::PARAM_STR],
-            [0, \PDO::PARAM_INT],
-            [1, \PDO::PARAM_INT],
-            [1337, \PDO::PARAM_INT],
-            [true, \PDO::PARAM_INT],
-            [false, \PDO::PARAM_INT],
-            [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+            [null, PDO::PARAM_NULL],
+            ['', PDO::PARAM_STR],
+            ['hello', PDO::PARAM_STR],
+            [0, PDO::PARAM_INT],
+            [1, PDO::PARAM_INT],
+            [1337, PDO::PARAM_INT],
+            [true, PDO::PARAM_INT],
+            [false, PDO::PARAM_INT],
+            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
         ];
 
         $schema = $this->getConnection()->schema;
@@ -107,12 +108,12 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function lowercaseConstraintsProvider()
+    public function lowercaseConstraintsProvider(): void
     {
         $this->markTestSkipped('This test hangs on CUBRID.');
     }
 
-    public function uppercaseConstraintsProvider()
+    public function uppercaseConstraintsProvider(): void
     {
         $this->markTestSkipped('This test hangs on CUBRID.');
     }

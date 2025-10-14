@@ -30,7 +30,7 @@ class LinkSorterTest extends DatabaseTestCase
         $this->mockWebApplication();
     }
 
-    public function testLabelsSimple()
+    public function testLabelsSimple(): void
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Order::find(),
@@ -58,7 +58,7 @@ class LinkSorterTest extends DatabaseTestCase
         ));
     }
 
-    public function testLabelsExplicit()
+    public function testLabelsExplicit(): void
     {
         $dataProvider = new ActiveDataProvider([
             'query' => Order::find(),
@@ -90,7 +90,7 @@ class LinkSorterTest extends DatabaseTestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         new LinkSorter(

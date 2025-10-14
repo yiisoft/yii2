@@ -8,13 +8,15 @@
 
 namespace yiiunit\framework\web;
 
+use yiiunit\TestCase;
+use Yii;
 use yii\helpers\FileHelper;
 use yii\web\AssetConverter;
 
 /**
  * @group web
  */
-class AssetConverterTest extends \yiiunit\TestCase
+class AssetConverterTest extends TestCase
 {
     /**
      * @var string temporary files path
@@ -25,7 +27,7 @@ class AssetConverterTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        $this->tmpPath = \Yii::$app->runtimePath . '/assetConverterTest_' . getmypid();
+        $this->tmpPath = Yii::$app->runtimePath . '/assetConverterTest_' . getmypid();
         if (!is_dir($this->tmpPath)) {
             mkdir($this->tmpPath, 0777, true);
         }
@@ -41,7 +43,7 @@ class AssetConverterTest extends \yiiunit\TestCase
 
     // Tests :
 
-    public function testConvert()
+    public function testConvert(): void
     {
         $tmpPath = $this->tmpPath;
         file_put_contents(
@@ -65,7 +67,7 @@ EOF
     /**
      * @depends testConvert
      */
-    public function testForceConvert()
+    public function testForceConvert(): void
     {
         $tmpPath = $this->tmpPath;
         file_put_contents(

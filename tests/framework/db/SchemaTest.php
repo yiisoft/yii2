@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db;
 
+use Exception;
 use PDO;
 use yii\caching\ArrayCache;
 use yii\caching\FileCache;
@@ -35,7 +36,7 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
@@ -51,7 +52,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @dataProvider pdoAttributesProvider
      * @param array $pdoAttributes
      */
-    public function testGetTableNames($pdoAttributes)
+    public function testGetTableNames($pdoAttributes): void
     {
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
@@ -84,7 +85,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @dataProvider pdoAttributesProvider
      * @param array $pdoAttributes
      */
-    public function testGetTableSchemas($pdoAttributes)
+    public function testGetTableSchemas($pdoAttributes): void
     {
         $connection = $this->getConnection();
         foreach ($pdoAttributes as $name => $value) {
@@ -103,22 +104,22 @@ abstract class SchemaTest extends DatabaseTestCase
         }
     }
 
-    public function testGetTableSchemasWithAttrCase()
+    public function testGetTableSchemasWithAttrCase(): void
     {
         $db = $this->getConnection(false);
-        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
 
-        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
     }
 
-    public function testGetNonExistingTableSchema()
+    public function testGetNonExistingTableSchema(): void
     {
         $this->assertNull($this->getConnection()->schema->getTableSchema('nonexisting_table'));
     }
 
-    public function testSchemaCache()
+    public function testSchemaCache(): void
     {
         /** @var Connection $db */
         $db = $this->getConnection();
@@ -142,7 +143,7 @@ abstract class SchemaTest extends DatabaseTestCase
     /**
      * @depends testSchemaCache
      */
-    public function testRefreshTableSchema()
+    public function testRefreshTableSchema(): void
     {
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
@@ -201,7 +202,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @dataProvider tableSchemaCachePrefixesProvider
      * @depends      testSchemaCache
      */
-    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
+    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName): void
     {
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
@@ -232,7 +233,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertNotSame($testNoCacheTable, $testRefreshedTable);
     }
 
-    public function testCompositeFk()
+    public function testCompositeFk(): void
     {
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
@@ -246,18 +247,18 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertEquals('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
     }
 
-    public function testGetPDOType()
+    public function testGetPDOType(): void
     {
         $values = [
-            [null, \PDO::PARAM_NULL],
-            ['', \PDO::PARAM_STR],
-            ['hello', \PDO::PARAM_STR],
-            [0, \PDO::PARAM_INT],
-            [1, \PDO::PARAM_INT],
-            [1337, \PDO::PARAM_INT],
-            [true, \PDO::PARAM_BOOL],
-            [false, \PDO::PARAM_BOOL],
-            [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+            [null, PDO::PARAM_NULL],
+            ['', PDO::PARAM_STR],
+            ['hello', PDO::PARAM_STR],
+            [0, PDO::PARAM_INT],
+            [1, PDO::PARAM_INT],
+            [1337, PDO::PARAM_INT],
+            [true, PDO::PARAM_BOOL],
+            [false, PDO::PARAM_BOOL],
+            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
         ];
 
         /** @var Schema $schema */
@@ -491,7 +492,7 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
-    public function testNegativeDefaultValues()
+    public function testNegativeDefaultValues(): void
     {
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
@@ -505,7 +506,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $this->assertEquals(-33.22, $table->getColumn('numeric_col')->defaultValue);
     }
 
-    public function testColumnSchema()
+    public function testColumnSchema(): void
     {
         $columns = $this->getExpectedColumns();
 
@@ -540,7 +541,7 @@ abstract class SchemaTest extends DatabaseTestCase
         }
     }
 
-    public function testColumnSchemaDbTypecastWithEmptyCharType()
+    public function testColumnSchemaDbTypecastWithEmptyCharType(): void
     {
         $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
         $this->assertSame('', $columnSchema->dbTypecast(''));
@@ -551,7 +552,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param mixed $value
      * @param bool $expected
      */
-    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected)
+    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected): void
     {
         $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
         $this->assertSame($expected, $columnSchema->dbTypecast($value));
@@ -579,7 +580,7 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
-    public function testFindUniqueIndexes()
+    public function testFindUniqueIndexes(): void
     {
         if ($this->driverName === 'sqlsrv') {
             $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
@@ -589,7 +590,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',
@@ -630,7 +631,7 @@ abstract class SchemaTest extends DatabaseTestCase
         ], $uniqueIndexes);
     }
 
-    public function testContraintTablesExistance()
+    public function testContraintTablesExistance(): void
     {
         $tableNames = [
             'T_constraints_1',
@@ -768,7 +769,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraints($tableName, $type, $expected)
+    public function testTableSchemaConstraints($tableName, $type, $expected): void
     {
         if ($expected === false) {
             $this->expectException('yii\base\NotSupportedException');
@@ -784,7 +785,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected): void
     {
         if ($expected === false) {
             $this->expectException('yii\base\NotSupportedException');
@@ -802,7 +803,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected): void
     {
         if ($expected === false) {
             $this->expectException('yii\base\NotSupportedException');
