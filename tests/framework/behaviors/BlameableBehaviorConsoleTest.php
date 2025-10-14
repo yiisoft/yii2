@@ -60,7 +60,7 @@ class BlameableBehaviorConsoleTest extends TestCase
     {
         $model = new ActiveRecordBlameableConsole([
             'as blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'defaultValue' => 2
             ],
         ]);
@@ -89,7 +89,7 @@ class ActiveRecordBlameableConsoleWithDefaultValueClosure extends ActiveRecordBl
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'defaultValue' => function () {
                     return 10 + 1;
                 }
@@ -113,7 +113,7 @@ class ActiveRecordBlameableConsole extends ActiveRecord
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
             ],
         ];
     }

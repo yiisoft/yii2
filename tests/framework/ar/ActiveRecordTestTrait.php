@@ -1118,7 +1118,7 @@ trait ActiveRecordTestTrait
         /** @var TestCase|ActiveRecordTestTrait $this */
 
         $afterFindCalls = [];
-        Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
+        Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
             /** @var BaseActiveRecord $ar */
             $ar = $event->sender;
             $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
@@ -1163,7 +1163,7 @@ trait ActiveRecordTestTrait
         ], $afterFindCalls);
         $afterFindCalls = [];
 
-        Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
+        Event::off(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND);
     }
 
     public function testAfterRefresh(): void
@@ -1173,7 +1173,7 @@ trait ActiveRecordTestTrait
         /** @var TestCase|ActiveRecordTestTrait $this */
 
         $afterRefreshCalls = [];
-        Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
+        Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
             /** @var BaseActiveRecord $ar */
             $ar = $event->sender;
             $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
@@ -1184,7 +1184,7 @@ trait ActiveRecordTestTrait
         $customer->refresh();
         $this->assertEquals([[$customerClass, false, 1, false]], $afterRefreshCalls);
         $afterRefreshCalls = [];
-        Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH);
+        Event::off(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_REFRESH);
     }
 
     public function testFindEmptyInCondition(): void

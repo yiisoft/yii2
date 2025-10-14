@@ -34,40 +34,40 @@ class Order extends ActiveRecord
 
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 
     public function getCustomerJoinedWithProfile()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id'])
+        return $this->hasOne(Customer::class, ['id' => 'customer_id'])
             ->joinWith('profile');
     }
 
     public function getCustomerJoinedWithProfileIndexOrdered()
     {
-        return $this->hasMany(Customer::className(), ['id' => 'customer_id'])
+        return $this->hasMany(Customer::class, ['id' => 'customer_id'])
             ->joinWith('profile')->orderBy(['profile.description' => SORT_ASC])->indexBy('name');
     }
 
     public function getCustomer2()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id'])->inverseOf('orders2');
+        return $this->hasOne(Customer::class, ['id' => 'customer_id'])->inverseOf('orders2');
     }
 
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getOrderItems2()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
             ->indexBy('item_id');
     }
 
     public function getOrderItems3()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id'])
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
             ->indexBy(function ($row) {
                 return $row['order_id'] . '_' . $row['item_id'];
             });
@@ -75,12 +75,12 @@ class Order extends ActiveRecord
 
     public function getOrderItemsWithNullFK()
     {
-        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItemWithNullFK::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems', function ($q) {
                 // additional query configuration
             })->orderBy('item.id');
@@ -88,7 +88,7 @@ class Order extends ActiveRecord
 
     public function getExpensiveItemsUsingViaWithCallable()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems', function (ActiveQuery $q) {
                 $q->where(['>=', 'subtotal', 10]);
             });
@@ -96,7 +96,7 @@ class Order extends ActiveRecord
 
     public function getCheapItemsUsingViaWithCallable()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems', function (ActiveQuery $q) {
                 $q->where(['<', 'subtotal', 10]);
             });
@@ -104,19 +104,19 @@ class Order extends ActiveRecord
 
     public function getItemsIndexed()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems')->indexBy('id');
     }
 
     public function getItemsWithNullFK()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item_with_null_fk', ['order_id' => 'id']);
     }
 
     public function getItemsInOrder1()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems', function ($q) {
                 $q->orderBy(['subtotal' => SORT_ASC]);
             })->orderBy('name');
@@ -124,7 +124,7 @@ class Order extends ActiveRecord
 
     public function getItemsInOrder2()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems', function ($q) {
                 $q->orderBy(['subtotal' => SORT_DESC]);
             })->orderBy('name');
@@ -132,70 +132,70 @@ class Order extends ActiveRecord
 
     public function getBooks()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems')
             ->where(['category_id' => 1]);
     }
 
     public function getBooksWithNullFK()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItemsWithNullFK')
             ->where(['category_id' => 1]);
     }
 
     public function getBooksViaTable()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id'])
             ->where(['category_id' => 1]);
     }
 
     public function getBooksWithNullFKViaTable()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item_with_null_fk', ['order_id' => 'id'])
             ->where(['category_id' => 1]);
     }
 
     public function getBooks2()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->onCondition(['category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
     public function getBooksExplicit()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->onCondition(['category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
     public function getBooksExplicitA()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('bo')
+        return $this->hasMany(Item::class, ['id' => 'item_id'])->alias('bo')
             ->onCondition(['bo.category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
     public function getBookItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('books')
+        return $this->hasMany(Item::class, ['id' => 'item_id'])->alias('books')
             ->onCondition(['books.category_id' => 1])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
     public function getMovieItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])->alias('movies')
+        return $this->hasMany(Item::class, ['id' => 'item_id'])->alias('movies')
             ->onCondition(['movies.category_id' => 2])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
     public function getLimitedItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->onCondition(['item.id' => [3, 5]])
             ->via('orderItems');
     }
@@ -228,21 +228,21 @@ class Order extends ActiveRecord
 
     public function getQuantityOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id', 'quantity' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id', 'quantity' => 'id']);
     }
 
     public function getOrderItemsFor8()
     {
-        return $this->hasMany(OrderItemWithNullFK::className(), ['order_id' => 'id'])->andOnCondition(['subtotal' => 8.0]);
+        return $this->hasMany(OrderItemWithNullFK::class, ['order_id' => 'id'])->andOnCondition(['subtotal' => 8.0]);
     }
 
     public function getItemsFor8()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])->via('orderItemsFor8');
+        return $this->hasMany(Item::class, ['id' => 'item_id'])->via('orderItemsFor8');
     }
 
     public function getVirtualCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'virtualCustomerId']);
+        return $this->hasOne(Customer::class, ['id' => 'virtualCustomerId']);
     }
 }

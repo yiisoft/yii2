@@ -38,11 +38,11 @@ class AuthTest extends TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
             'controllerMap' => [
-                'test-auth' => TestAuthController::className(),
+                'test-auth' => TestAuthController::class,
             ],
         ];
 
@@ -108,7 +108,7 @@ class AuthTest extends TestCase
     public function testQueryParamAuth($token, $login): void
     {
         $_GET['access-token'] = $token;
-        $filter = ['class' => QueryParamAuth::className()];
+        $filter = ['class' => QueryParamAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
@@ -120,7 +120,7 @@ class AuthTest extends TestCase
     public function testHttpHeaderAuth($token, $login): void
     {
         Yii::$app->request->headers->set('X-Api-Key', $token);
-        $filter = ['class' => HttpHeaderAuth::className()];
+        $filter = ['class' => HttpHeaderAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
@@ -132,7 +132,7 @@ class AuthTest extends TestCase
     public function testHttpBearerAuth($token, $login): void
     {
         Yii::$app->request->headers->set('Authorization', "Bearer $token");
-        $filter = ['class' => HttpBearerAuth::className()];
+        $filter = ['class' => HttpBearerAuth::class];
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
@@ -203,7 +203,7 @@ class AuthTest extends TestCase
     public function testHeaders(): void
     {
         Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
-        $filter = ['class' => HttpBearerAuth::className()];
+        $filter = ['class' => HttpBearerAuth::class];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
