@@ -28,7 +28,7 @@ class IndexActionTest extends TestCase
                     'dsn' => 'sqlite::memory:',
                 ],
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ]);
@@ -46,11 +46,11 @@ class IndexActionTest extends TestCase
             'rest',
             new Module('rest'),
             [
-                'modelClass' => IndexActionModel::className(),
+                'modelClass' => IndexActionModel::class,
                 'actions' => [
                     'index' => [
-                        'class' => IndexAction::className(),
-                        'modelClass' => IndexActionModel::className(),
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
                         'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
                             $this->assertTrue($query instanceof Query);
                             $sql = $query->createCommand()->getRawSql();
@@ -93,11 +93,11 @@ class IndexActionTest extends TestCase
             'rest',
             new Module('rest'),
             [
-                'modelClass' => IndexActionModel::className(),
+                'modelClass' => IndexActionModel::class,
                 'actions' => [
                     'index' => [
-                        'class' => IndexAction::className(),
-                        'modelClass' => IndexActionModel::className(),
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
                         'pagination' => $pagination,
                         'sort' => $sort,
                     ],

@@ -12,4 +12,4 @@ use yii\widgets\ListView;
  * @var int $index
  * @var ListView $widget
  */
-echo "Item #{$index}: {$model['login']} - Widget: " . $widget->className();
+echo "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
