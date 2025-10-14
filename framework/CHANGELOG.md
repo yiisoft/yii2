@@ -289,6 +289,7 @@ Yii Framework 2 Change Log
 - Bug #19407: Fix `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` to respect `skipOnError` option for target attributes (bizley)
 - Bug #19418: Fix `yii\filters\auth\CompositeAuth` ignoring `only` and `except` options (lesha724)
 - Bug #19445: Fix caching in `yii\i18n\Formatter::getUnitMessage()` (WinterSilence)
+- Bug #19447: Fix for typed attributes in `yii\helpers\BaseHtml::activeListInput()` (WinterSilence)
 - Bug #19454: Fix PDO exception code not properly passed to `yii\db\Exception` (Roguyt)
 - Bug #19462: Fix validator client options to encode HTML tags (bizley)
 - Bug #19467: Revert changes in `Inflector::camel2words()` introduced in #19204 (samdark)
