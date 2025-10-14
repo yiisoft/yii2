@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Bug #20605: Fix return value in `SerialColumn::renderDataCellContent()` (mspirkov)
 - Bug #20604: Fix `@var` annotation for `yii\db\Command::$pdoStatement` (mspirkov)
 - Bug #20600: Fix `@var` annotation for `yii\test\FileFixtureTrait::$dataFile` (mspirkov)
+- Enh #20607: Add PHPStan/Psalm annotations for DB schemas (mspirkov)
 - Bug #20608: Fix `@return` annotations for `yii\rest\Serializer` methods (mspirkov)
 - Bug #20610: Fix `@var` annotation for `ActiveQueryTrait::$with` (mspirkov)
 - Bug #20611: Fix `@return` annotations for `yii\i18n\GettextMoFile` methods (mspirkov)
