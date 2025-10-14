@@ -51,13 +51,17 @@ class SerialColumnTest extends \yiiunit\TestCase
     {
         return [
             [
-                [],
+                [
+                    'pagination' => false,
+                ],
                 null,
                 0,
                 '<td>1</td>',
             ],
             [
-                [],
+                [
+                    'pagination' => false,
+                ],
                 null,
                 5,
                 '<td>6</td>',
