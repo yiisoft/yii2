@@ -19,7 +19,7 @@ class BaseDataProviderTest extends TestCase
 {
     public function testGenerateId(): void
     {
-        $rc = new ReflectionClass(BaseDataProvider::className());
+        $rc = new ReflectionClass(BaseDataProvider::class);
         $rp = $rc->getProperty('counter');
 
         // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible

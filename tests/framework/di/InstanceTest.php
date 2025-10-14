@@ -31,12 +31,12 @@ class InstanceTest extends TestCase
     public function testOf(): void
     {
         $container = new Container();
-        $className = Component::className();
+        $className = Component::class;
         $instance = Instance::of($className);
 
         $this->assertInstanceOf('\\yii\\di\\Instance', $instance);
-        $this->assertInstanceOf(Component::className(), $instance->get($container));
-        $this->assertInstanceOf(Component::className(), Instance::ensure($instance, $className, $container));
+        $this->assertInstanceOf(Component::class, $instance->get($container));
+        $this->assertInstanceOf(Component::class, Instance::ensure($instance, $className, $container));
         $this->assertNotSame($instance->get($container), Instance::ensure($instance, $className, $container));
     }
 
@@ -48,8 +48,8 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::className(), Instance::ensure('db', 'yii\db\Connection', $container));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection(), 'yii\db\Connection', $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure('db', 'yii\db\Connection', $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection(), 'yii\db\Connection', $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
     }
@@ -84,8 +84,8 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::className(), Instance::ensure('db', null, $container));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection(), null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure('db', null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection(), null, $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container));
     }
 
@@ -96,10 +96,10 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::className(), Instance::ensure('db'));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection()));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::class, Instance::ensure('db'));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection()));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test']));
         Yii::$container = new Container();
     }
 
@@ -144,7 +144,7 @@ class InstanceTest extends TestCase
 
         $container = Instance::of('db');
 
-        $this->assertInstanceOf(Connection::className(), $container->get());
+        $this->assertInstanceOf(Connection::class, $container->get());
 
         $this->destroyApplication();
     }
@@ -197,7 +197,7 @@ class InstanceTest extends TestCase
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure([
-            'class' => Connection::className(),
+            'class' => Connection::class,
         ], 'yii\base\Widget');
     }
 }

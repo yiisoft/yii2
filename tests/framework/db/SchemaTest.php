@@ -211,7 +211,7 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema->db->tablePrefix = $tablePrefix;
         $schema->db->schemaCache = new ArrayCache();
         $noCacheTable = $schema->getTableSchema($tableName, true);
-        $this->assertInstanceOf(TableSchema::className(), $noCacheTable);
+        $this->assertInstanceOf(TableSchema::class, $noCacheTable);
 
         // Compare
         $schema->db->tablePrefix = $testTablePrefix;
@@ -221,14 +221,14 @@ abstract class SchemaTest extends DatabaseTestCase
         $schema->db->tablePrefix = $tablePrefix;
         $schema->refreshTableSchema($tableName);
         $refreshedTable = $schema->getTableSchema($tableName, false);
-        $this->assertInstanceOf(TableSchema::className(), $refreshedTable);
+        $this->assertInstanceOf(TableSchema::class, $refreshedTable);
         $this->assertNotSame($noCacheTable, $refreshedTable);
 
         // Compare
         $schema->db->tablePrefix = $testTablePrefix;
         $schema->refreshTableSchema($testTablePrefix);
         $testRefreshedTable = $schema->getTableSchema($testTableName, false);
-        $this->assertInstanceOf(TableSchema::className(), $testRefreshedTable);
+        $this->assertInstanceOf(TableSchema::class, $testRefreshedTable);
         $this->assertEquals($refreshedTable, $testRefreshedTable);
         $this->assertNotSame($testNoCacheTable, $testRefreshedTable);
     }
@@ -884,7 +884,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     protected function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
     {
-        if ($expectedConstraint::className() !== $actualConstraint::className()) {
+        if (get_class($expectedConstraint) !== get_class($actualConstraint)) {
             return;
         }
 

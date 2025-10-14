@@ -48,7 +48,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter();
 
-        $this->assertInstanceOf(Request::className(), $rateLimiter->request);
+        $this->assertInstanceOf(Request::class, $rateLimiter->request);
     }
 
     public function testInitFilledResponse(): void
@@ -62,7 +62,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter();
 
-        $this->assertInstanceOf(Response::className(), $rateLimiter->response);
+        $this->assertInstanceOf(Response::class, $rateLimiter->response);
     }
 
     public function testBeforeActionUserInstanceOfRateLimitInterface(): void
@@ -94,7 +94,7 @@ class RateLimiterTest extends TestCase
 
     public function testBeforeActionEmptyUser(): void
     {
-        $user = new User(['identityClass' => RateLimit::className()]);
+        $user = new User(['identityClass' => RateLimit::class]);
         Yii::$app->set('user', $user);
         $rateLimiter = new RateLimiter();
 
@@ -159,13 +159,13 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter();
         $rateLimiter->user = function ($action) {
-            return new User(['identityClass' => RateLimit::className()]);
+            return new User(['identityClass' => RateLimit::class]);
         };
         $rateLimiter->beforeAction('test');
 
         // testing the evaluation of user closure, which in this case returns not the expect object and therefore
         // the log message "does not implement RateLimitInterface" is expected.
-        $this->assertInstanceOf(User::className(), $rateLimiter->user);
+        $this->assertInstanceOf(User::class, $rateLimiter->user);
         $this->assertContains(
             'Rate limit skipped: "user" does not implement RateLimitInterface.',
             Yii::getLogger()->messages

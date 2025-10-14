@@ -133,7 +133,7 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        Yii::$container->set(DummyService::className(), function () {
+        Yii::$container->set(DummyService::class, function () {
             throw new RuntimeException('uh oh');
         });
 
@@ -153,7 +153,7 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        Yii::$container->clear(DummyService::className());
+        Yii::$container->clear(DummyService::class);
         $this->expectException(get_class(new Exception()));
         $this->expectExceptionMessage('Could not load required service: dummyService');
         $this->controller->bindActionParams($injectionAction, $params);
@@ -170,13 +170,13 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        Yii::$container->set(DummyService::className(), DummyService::className());
+        Yii::$container->set(DummyService::class, DummyService::class);
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals($params['before'], $args[0]);
         $this->assertEquals(Yii::$app->request, $args[1]);
         $this->assertEquals('Component: yii\console\Request $request', Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
-        $this->assertInstanceOf(DummyService::className(), $args[3]);
+        $this->assertInstanceOf(DummyService::class, $args[3]);
         $this->assertEquals('Container DI: yiiunit\framework\console\stubs\DummyService $dummyService', Yii::$app->requestedParams['dummyService']);
         $this->assertNull($args[4]);
         $this->assertEquals('Unavailable service: post', Yii::$app->requestedParams['post']);
@@ -190,7 +190,7 @@ class ControllerTest extends TestCase
             'basePath' => __DIR__,
         ]));
         $module->set('yii\data\DataProviderInterface', [
-            'class' => ArrayDataProvider::className(),
+            'class' => ArrayDataProvider::class,
         ]);
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', $module);
@@ -198,7 +198,7 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
         $args = $this->controller->bindActionParams($injectionAction, []);
-        $this->assertInstanceOf(ArrayDataProvider::className(), $args[0]);
+        $this->assertInstanceOf(ArrayDataProvider::class, $args[0]);
         $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', Yii::$app->requestedParams['dataProvider']);
     }
 

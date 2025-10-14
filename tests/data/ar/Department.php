@@ -39,7 +39,7 @@ class Department extends ActiveRecord
     public function getEmployees()
     {
         return $this
-            ->hasMany(Employee::className(), [
+            ->hasMany(Employee::class, [
                 'department_id' => 'id',
             ])
             ->inverseOf('department')
