@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ use yiiunit\TestCase;
  */
 class InflectorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -319,7 +320,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['¿Espanol?'],
+            '¿Español?' => ['¿Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];
@@ -362,7 +363,7 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => ['Espanol?'],
+            '¿Español?' => ['Espanol?', '?Espanol?'],
             // Chinese
             '美国' => ['mei guo'],
         ];

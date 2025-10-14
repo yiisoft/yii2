@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 
 /**
@@ -22,10 +23,10 @@ use yii\helpers\Console;
  */
 class ServeController extends Controller
 {
-    const EXIT_CODE_NO_DOCUMENT_ROOT = 2;
-    const EXIT_CODE_NO_ROUTING_FILE = 3;
-    const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_SERVER = 4;
-    const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
+    public const EXIT_CODE_NO_DOCUMENT_ROOT = 2;
+    public const EXIT_CODE_NO_ROUTING_FILE = 3;
+    public const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_SERVER = 4;
+    public const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
 
     /**
      * @var int port to serve on.
@@ -80,7 +81,15 @@ class ServeController extends Controller
         }
         $this->stdout("Quit the server with CTRL-C or COMMAND-C.\n");
 
-        passthru('"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\" $router");
+        $command = '"' . PHP_BINARY . '"' . " -S {$address} -t \"{$documentRoot}\"";
+
+        if ($this->router !== null && $router !== '') {
+            $command .= " \"{$router}\"";
+        }
+
+        $this->runCommand($command);
+
+        return ExitCode::OK;
     }
 
     /**
@@ -121,5 +130,10 @@ class ServeController extends Controller
         }
         fclose($fp);
         return true;
+    }
+
+    protected function runCommand($command)
+    {
+        passthru($command);
     }
 }

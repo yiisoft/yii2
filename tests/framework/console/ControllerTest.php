@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,7 +27,7 @@ class ControllerTest extends TestCase
     /** @var FakeController */
     private $controller;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -91,21 +92,21 @@ class ControllerTest extends TestCase
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
+        $params = ['a', 'b', 'c1', 'c2', 'c3'];
+        [$a, $b, $c] = $controller->run('variadic', $params);
+        $this->assertEquals('a', $a);
+        $this->assertEquals('b', $b);
+        $this->assertEquals(['c1', 'c2', 'c3'], $c);
+
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
-
     }
 
     public function testNullableInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
-
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -122,10 +123,6 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -135,7 +132,9 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::className(), function() { throw new \RuntimeException('uh oh'); });
+        \Yii::$container->set(DummyService::className(), function () {
+            throw new \RuntimeException('uh oh');
+        });
 
         $this->expectException(get_class(new RuntimeException()));
         $this->expectExceptionMessage('uh oh');
@@ -144,10 +143,6 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -165,10 +160,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
             'id' => 'app',
@@ -193,10 +184,6 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParamsFromModule()
     {
-        if (PHP_VERSION_ID < 70100) {
-            $this->markTestSkipped('Can not be tested on PHP < 7.1');
-            return;
-        }
         $module = new \yii\base\Module('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
@@ -270,7 +257,7 @@ class ControllerTest extends TestCase
 
         $helpController = new FakeHelpControllerWithoutOutput('help', Yii::$app);
         $helpController->actionIndex('fake/aksi1');
-        $this->assertContains('--test-array, -ta', $helpController->outputString);
+        $this->assertStringContainsString('--test-array, -ta', $helpController->outputString);
     }
 
     /**

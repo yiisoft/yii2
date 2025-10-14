@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -85,6 +86,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
+
+        $this->assertTrue(true);
     }
 
     /**

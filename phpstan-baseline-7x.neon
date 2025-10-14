@@ -1,0 +1,46 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 1
+			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 2
+			path: framework/db/ColumnSchema.php
+
+		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: "#^Class UnitEnum not found\\.$#"
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: "#^Call to an undefined static method BackedEnum\\:\\:from\\(\\)\\.$#"
+			count: 1
+			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
+			count: 2
+			path: framework/db/ColumnSchema.php
+
+		-
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: "#^Access to property \\$name on an unknown class UnitEnum\\.$#"
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: "#^Call to an undefined method ReflectionType\\:\\:getName\\(\\)\\.$#"
+			count: 2
+			path: framework/web/Controller.php

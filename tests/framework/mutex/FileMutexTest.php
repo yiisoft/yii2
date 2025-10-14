@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -47,6 +48,6 @@ class FileMutexTest extends TestCase
         $this->assertFileExists($fileName);
 
         $mutex->release($mutexName);
-        $this->assertFileNotExists($fileName);
+        $this->assertFileDoesNotExist($fileName);
     }
 }

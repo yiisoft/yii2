@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
      */
     public $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication();
         $this->response = new Response();

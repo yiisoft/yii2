@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,9 +8,8 @@
 
 namespace yiiunit\framework\db\oci;
 
-use yii\db\Expression;
+use yii\db\ActiveQuery;
 use yiiunit\data\ar\BitValues;
-use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\data\ar\DefaultMultiplePk;
 use yiiunit\data\ar\Order;
@@ -26,7 +26,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     public function testCastValues()
     {
         // pass, because boolean casting is not available
-        return;
         $model = new Type();
         $model->int_col = 123;
         $model->int_col2 = 456;
@@ -40,7 +39,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $model->bool_col2 = 0;
         $model->save(false);
 
-        /* @var $model Type */
+        /** @var Type $model */
         $model = Type::find()->one();
         $this->assertSame(123, $model->int_col);
         $this->assertSame(456, $model->int_col2);
@@ -48,7 +47,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame('1337', trim($model->char_col));
         $this->assertSame('test', $model->char_col2);
         $this->assertSame('test123', $model->char_col3);
-        $this->assertSame(1337.42, $model->float_col);
+        $this->assertSame(3.742, $model->float_col);
         $this->assertSame(42.1337, $model->float_col2);
         $this->assertEquals('1', $model->bool_col);
         $this->assertEquals('0', $model->bool_col2);
@@ -81,7 +80,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testFindAsArray()
     {
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        /** @var \yii\db\ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
 
         // asArray
@@ -156,9 +155,10 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
      */
     public function testBooleanAttribute()
     {
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        /** @var TestCase|ActiveRecordTestTrait $this */
+
+        /** @var \yii\db\ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
-        /* @var $this TestCase|ActiveRecordTestTrait */
         $customer = new $customerClass();
         $customer->name = 'boolean customer';
         $customer->email = 'mail@example.com';
@@ -255,8 +255,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         // joining sub relations
         $query = Order::find()->innerJoinWith([
-            'items i' => function ($q) use ($aliasMethod) {
-                /* @var $q ActiveQuery */
+            'items i' => function (ActiveQuery $q) use ($aliasMethod) {
                 if ($aliasMethod === 'explicit') {
                     $q->orderBy('{{i}}.id');
                 } elseif ($aliasMethod === 'querysyntax') {
@@ -265,8 +264,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
                     $q->orderBy($q->applyAlias('item', 'id'));
                 }
             },
-            'items.category c' => function ($q) use ($aliasMethod) {
-                /* @var $q ActiveQuery */
+            'items.category c' => function (ActiveQuery $q) use ($aliasMethod) {
                 if ($aliasMethod === 'explicit') {
                     $q->where('{{c}}.[[id]] = 2');
                 } elseif ($aliasMethod === 'querysyntax') {

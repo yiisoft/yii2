@@ -11,22 +11,22 @@ namespace yiiunit\data\ar;
  * @property string $address
  * @property int $status
  *
- * @method CustomerQuery findBySql($sql, $params = []) static
+ * @method static CustomerQuery findBySql($sql, $params = [])
  */
 class CustomerWithAlias extends ActiveRecord
 {
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 2;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 2;
 
     public $status2;
 
     public $sumTotal;
-    
+
     public static function tableName()
     {
         return 'customer';
     }
-    
+
     /**
      * {@inheritdoc}
      * @return CustomerQuery

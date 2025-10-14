@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,7 @@ use yii\validators\SafeValidator;
  */
 class ValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -45,7 +46,7 @@ class ValidatorTest extends TestCase
     public function testCreateValidator()
     {
         $model = FakedValidationModel::createWithAttributes(['attr_test1' => 'abc', 'attr_test2' => '2013']);
-        /* @var $numberVal NumberValidator */
+        /** @var NumberValidator $numberVal */
         $numberVal = TestValidator::createValidator('number', $model, ['attr_test1']);
         $this->assertInstanceOf(NumberValidator::className(), $numberVal);
         $numberVal = TestValidator::createValidator('integer', $model, ['attr_test2']);

@@ -19,6 +19,9 @@ use yii\web\ServerErrorHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends Action<T>
  */
 class UpdateAction extends Action
 {
@@ -36,7 +39,7 @@ class UpdateAction extends Action
      */
     public function run($id)
     {
-        /* @var $model ActiveRecord */
+        /** @var ActiveRecord $model */
         $model = $this->findModel($id);
 
         if ($this->checkAccess) {

@@ -7,8 +7,6 @@
 
 namespace yii\rest;
 
-use Yii;
-
 /**
  * ViewAction implements the API endpoint for returning the detailed information about a model.
  *
@@ -16,6 +14,9 @@ use Yii;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends Action<T>
  */
 class ViewAction extends Action
 {

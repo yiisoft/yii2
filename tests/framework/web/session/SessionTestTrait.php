@@ -1,6 +1,5 @@
 <?php
 
-
 namespace yiiunit\framework\web\session;
 
 use yii\web\Session;

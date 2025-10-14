@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -44,7 +45,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         }
         fclose($fp);
     }
-
 
     public function getExpectedColumns()
     {

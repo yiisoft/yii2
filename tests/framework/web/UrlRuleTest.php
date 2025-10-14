@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,7 @@ use yiiunit\TestCase;
  */
 class UrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
@@ -1292,7 +1293,8 @@ class UrlRuleTest extends TestCase
     }
 
     /**
-     * @dataProvider testGetCreateUrlStatusProvider
+     * @dataProvider getCreateUrlStatusProvider
+     *
      * @param array $config
      * @param array $tests
      */
@@ -1319,6 +1321,30 @@ class UrlRuleTest extends TestCase
         }
     }
 
+    public function testUrlRuleDefaultsWithNonStringValues()
+    {
+        $this->mockWebApplication();
+
+        $manager = new UrlManager(
+            [
+                'cache' => null,
+            ],
+        );
+
+        $rule = new UrlRule(
+            [
+                'pattern' => 'post/index',
+                'route' => 'post/index',
+                'defaults' => ['page' => 1],
+            ],
+        );
+
+        $this->assertSame(
+            'post/index',
+            $rule->createUrl($manager, 'post/index', ['page' => '1']),
+        );
+    }
+
     /**
      * Provides test cases for getCreateUrlStatus() method.
      *
@@ -1329,7 +1355,7 @@ class UrlRuleTest extends TestCase
      *   - third element is the expected URL
      *   - fourth element is the expected result of getCreateUrlStatus() method
      */
-    public function testGetCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider()
     {
         return [
             'route' => [

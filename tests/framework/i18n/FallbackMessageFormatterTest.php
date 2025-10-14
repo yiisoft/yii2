@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,17 +18,17 @@ use yiiunit\TestCase;
  */
 class FallbackMessageFormatterTest extends TestCase
 {
-    const N = 'n';
-    const N_VALUE = 42;
-    const F = 'f';
-    const F_VALUE = 2e+8;
-    const F_VALUE_FORMATTED = '200,000,000';
-    const D = 'd';
-    const D_VALUE = 200000000.101;
-    const D_VALUE_FORMATTED = '200,000,000.101';
-    const D_VALUE_FORMATTED_INTEGER = '200,000,000';
-    const SUBJECT = 'сабж';
-    const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
+    public const N = 'n';
+    public const N_VALUE = 42;
+    public const F = 'f';
+    public const F_VALUE = 2e+8;
+    public const F_VALUE_FORMATTED = '200,000,000';
+    public const D = 'd';
+    public const D_VALUE = 200000000.101;
+    public const D_VALUE_FORMATTED = '200,000,000.101';
+    public const D_VALUE_FORMATTED_INTEGER = '200,000,000';
+    public const SUBJECT = 'сабж';
+    public const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
     public function patterns()
     {

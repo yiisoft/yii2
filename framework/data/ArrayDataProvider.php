@@ -27,7 +27,7 @@ use yii\helpers\ArrayHelper;
  *
  * ArrayDataProvider may be used in the following way:
  *
- * ```php
+ * ```
  * $query = new Query;
  * $provider = new ArrayDataProvider([
  *     'allModels' => $query->from('post')->all(),
@@ -53,8 +53,9 @@ use yii\helpers\ArrayHelper;
 class ArrayDataProvider extends BaseDataProvider
 {
     /**
-     * @var string|callable|null the column that is used as the key of the data models.
-     * This can be either a column name, or a callable that returns the key value of a given data model.
+     * @var string|array|callable|null the column that is used as the key of the data models.
+     * This can be either a column name, a dot-separated path, an array of keys, or a callable
+     * that returns the key value of a given data model.
      * If this is not set, the index of the [[models]] array will be used.
      * @see getKeys()
      */
@@ -103,16 +104,7 @@ class ArrayDataProvider extends BaseDataProvider
     protected function prepareKeys($models)
     {
         if ($this->key !== null) {
-            $keys = [];
-            foreach ($models as $model) {
-                if (is_string($this->key)) {
-                    $keys[] = $model[$this->key];
-                } else {
-                    $keys[] = call_user_func($this->key, $model);
-                }
-            }
-
-            return $keys;
+            return ArrayHelper::getColumn($models, $this->key, false);
         }
 
         return array_keys($models);

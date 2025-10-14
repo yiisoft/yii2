@@ -207,40 +207,23 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles != 1 || $this->minFiles > 1) {
-            $rawFiles = $model->$attribute;
-            if (!is_array($rawFiles)) {
-                $this->addError($model, $attribute, $this->uploadRequired);
+        $files = $this->filterFiles(is_array($model->$attribute) ? $model->$attribute : [$model->$attribute]);
+        $filesCount = count($files);
+        if ($filesCount === 0) {
+            $this->addError($model, $attribute, $this->uploadRequired);
 
-                return;
-            }
+            return;
+        }
 
-            $files = $this->filterFiles($rawFiles);
-            $model->$attribute = $files;
+        if ($this->maxFiles > 0 && $filesCount > $this->maxFiles) {
+            $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
+        }
+        if ($this->minFiles > 0 && $this->minFiles > $filesCount) {
+            $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
+        }
 
-            if (empty($files)) {
-                $this->addError($model, $attribute, $this->uploadRequired);
-
-                return;
-            }
-
-            $filesCount = count($files);
-            if ($this->maxFiles && $filesCount > $this->maxFiles) {
-                $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
-            }
-
-            if ($this->minFiles && $this->minFiles > $filesCount) {
-                $this->addError($model, $attribute, $this->tooFew, ['limit' => $this->minFiles]);
-            }
-
-            foreach ($files as $file) {
-                $result = $this->validateValue($file);
-                if (!empty($result)) {
-                    $this->addError($model, $attribute, $result[0], $result[1]);
-                }
-            }
-        } else {
-            $result = $this->validateValue($model->$attribute);
+        foreach ($files as $file) {
+            $result = $this->validateValue($file);
             if (!empty($result)) {
                 $this->addError($model, $attribute, $result[0], $result[1]);
             }
@@ -342,8 +325,8 @@ class FileValidator extends Validator
     public function getSizeLimit()
     {
         // Get the lowest between post_max_size and upload_max_filesize, log a warning if the first is < than the latter
-        $limit = $this->sizeToBytes(ini_get('upload_max_filesize'));
-        $postLimit = $this->sizeToBytes(ini_get('post_max_size'));
+        $limit = StringHelper::convertIniSizeToBytes(ini_get('upload_max_filesize'));
+        $postLimit = StringHelper::convertIniSizeToBytes(ini_get('post_max_size'));
         if ($postLimit > 0 && $postLimit < $limit) {
             Yii::warning('PHP.ini\'s \'post_max_size\' is less than \'upload_max_filesize\'.', __METHOD__);
             $limit = $postLimit;
@@ -366,29 +349,6 @@ class FileValidator extends Validator
     {
         $value = is_array($value) ? reset($value) : $value;
         return !($value instanceof UploadedFile) || $value->error == UPLOAD_ERR_NO_FILE;
-    }
-
-    /**
-     * Converts php.ini style size to bytes.
-     *
-     * @param string $sizeStr $sizeStr
-     * @return int
-     */
-    private function sizeToBytes($sizeStr)
-    {
-        switch (substr($sizeStr, -1)) {
-            case 'M':
-            case 'm':
-                return (int) $sizeStr * 1048576;
-            case 'K':
-            case 'k':
-                return (int) $sizeStr * 1024;
-            case 'G':
-            case 'g':
-                return (int) $sizeStr * 1073741824;
-            default:
-                return (int) $sizeStr;
-        }
     }
 
     /**

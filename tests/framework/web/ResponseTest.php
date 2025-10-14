@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,7 +28,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public $response;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -172,19 +173,30 @@ class ResponseTest extends \yiiunit\TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/19795
+     */
+    public function testRedirectNewLine()
+    {
+        $this->expectException('yii\base\InvalidRouteException');
+
+        $this->response->redirect(urldecode('http://test-domain.com/gql.json;%0aa.html'));
+    }
+
+    /**
      * @dataProvider dataProviderAjaxRedirectInternetExplorer11
      */
-    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes) {
+    public function testAjaxRedirectInternetExplorer11($userAgent, $statusCodes)
+    {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
-        $request= Yii::$app->request;
-        /* @var $request TestRequestComponent */
+        $request = Yii::$app->request;
+        /** @var TestRequestComponent $request */
         $request->getIssAjaxOverride = true;
         $request->getUserAgentOverride = $userAgent;
-        foreach([true, false] as $pjaxOverride) {
+        foreach ([true, false] as $pjaxOverride) {
             $request->getIsPjaxOverride = $pjaxOverride;
-            foreach(['GET', 'POST'] as $methodOverride) {
+            foreach (['GET', 'POST'] as $methodOverride) {
                 $request->getMethodOverride = $methodOverride;
-                foreach($statusCodes as $statusCode => $expectStatusCode) {
+                foreach ($statusCodes as $statusCode => $expectStatusCode) {
                     $this->assertEquals($expectStatusCode, $this->response->redirect(['view'], $statusCode)->statusCode);
                 }
             }
@@ -198,7 +210,8 @@ class ResponseTest extends \yiiunit\TestCase
      * @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent/Firefox
      * @return array
      */
-    public function dataProviderAjaxRedirectInternetExplorer11() {
+    public function dataProviderAjaxRedirectInternetExplorer11()
+    {
         return [
             ['Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0', [301 => 301, 302 => 302]], // Firefox
             ['Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko', [301 => 200, 302 => 200]], // IE 11
@@ -322,8 +335,7 @@ class ResponseTest extends \yiiunit\TestCase
 
     public function testSettingContentToNullOn204()
     {
-        $this->assertEmptyContentOn(204, function ($response) {
-            /** @var $response Response */
+        $this->assertEmptyContentOn(204, function (Response $response) {
             $this->assertSame($response->content, '');
         });
     }
@@ -346,8 +358,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSettingContentToNullOn304()
     {
-        $this->assertEmptyContentOn(304, function ($response) {
-            /** @var $response Response */
+        $this->assertEmptyContentOn(304, function (Response $response) {
             $this->assertSame($response->content, '');
         });
     }
@@ -370,21 +381,116 @@ class ResponseTest extends \yiiunit\TestCase
         );
     }
 
-    public function testSameSiteCookie()
+    /**
+     * @dataProvider cookiesTestProvider
+     */
+    public function testCookies($cookieConfig, $expected)
     {
         $response = new Response();
-        $response->cookies->add(new Cookie([
-            'name'     => 'test',
-            'value'    => 'testValue',
-            'sameSite' => Cookie::SAME_SITE_STRICT,
-        ]));
+        $response->cookies->add(new Cookie(array_merge(
+            [
+                'name'     => 'test',
+                'value'    => 'testValue',
+            ],
+            $cookieConfig
+        )));
 
         ob_start();
         $response->send();
         $content = ob_get_clean();
 
-        // Only way to test is that it doesn't create any errors
-        $this->assertEquals('', $content);
+        $cookies = $this->parseHeaderCookies();
+        if ($cookies === false) {
+            // Unable to resolve cookies, only way to test is that it doesn't create any errors
+            $this->assertEquals('', $content);
+        } else {
+            $testCookie = $cookies['test'];
+            $actual = array_intersect_key($testCookie, $expected);
+            ksort($actual);
+            ksort($expected);
+            $this->assertEquals($expected, $actual);
+        }
+    }
+
+    public function cookiesTestProvider()
+    {
+        $expireInt = time() + 3600;
+        $expireString = date('D, d-M-Y H:i:s', $expireInt) . ' GMT';
+
+        $testCases = [
+            'same-site' => [
+                ['sameSite' => Cookie::SAME_SITE_STRICT],
+                ['samesite' => Cookie::SAME_SITE_STRICT],
+            ],
+            'expire-as-int' => [
+                ['expire' => $expireInt],
+                ['expires' => $expireString],
+            ],
+            'expire-as-string' => [
+                ['expire' => $expireString],
+                ['expires' => $expireString],
+            ],
+        ];
+
+        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
+            $testCases = array_merge($testCases, [
+                'expire-as-date_time' => [
+                    ['expire' => new \DateTime('@' . $expireInt)],
+                    ['expires' => $expireString],
+                ],
+                'expire-as-date_time_immutable' => [
+                    ['expire' => new \DateTimeImmutable('@' . $expireInt)],
+                    ['expires' => $expireString],
+                ],
+            ]);
+        }
+
+        return $testCases;
+    }
+
+    /**
+     * Tries to parse cookies set in the response headers.
+     * When running PHP on the CLI headers are not available (the `headers_list()` function always returns an
+     * empty array). If possible use xDebug: http://xdebug.org/docs/all_functions#xdebug_get_headers
+     * @param $name
+     * @return array|false
+     */
+    protected function parseHeaderCookies()
+    {
+        if (!function_exists('xdebug_get_headers')) {
+            return false;
+        }
+
+        $cookies = [];
+        foreach (xdebug_get_headers() as $header) {
+            if (strpos($header, 'Set-Cookie: ') !== 0) {
+                continue;
+            }
+
+            $name = null;
+            $params = [];
+            $pairs = explode(';', substr($header, 12));
+            foreach ($pairs as $index => $pair) {
+                $pair = trim($pair);
+                if (strpos($pair, '=') === false) {
+                    $params[strtolower($pair)] = true;
+                } else {
+                    list($paramName, $paramValue) = explode('=', $pair, 2);
+                    if ($index === 0) {
+                        $name = $paramName;
+                        $params['value'] = urldecode($paramValue);
+                    } else {
+                        $params[strtolower($paramName)] = urldecode($paramValue);
+                    }
+                }
+            }
+            if ($name === null) {
+                throw new \Exception('Could not determine cookie name for header "' . $header . '".');
+            }
+            $cookies[$name] = $params;
+        }
+
+        return $cookies;
     }
 
     /**

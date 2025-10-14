@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework;
 
@@ -17,13 +20,12 @@ class ChangeLogTest extends TestCase
 {
     public function changeProvider()
     {
-
-        $lines = preg_split("~\R~", file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'), -1, PREG_SPLIT_NO_EMPTY);
+        $lines = preg_split('~\R~', file_get_contents(__DIR__ . '/../../framework/CHANGELOG.md'), -1, PREG_SPLIT_NO_EMPTY);
 
         // Don't check last 1500 lines, they are old and often don't obey the standard.
         $lastIndex = count($lines) - 1500;
         $result = [];
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if (strncmp('- ', $line, 2) === 0) {
                 $result[] = [$line];
             }
@@ -38,7 +40,7 @@ class ChangeLogTest extends TestCase
     /**
      * @dataProvider changeProvider
      */
-    public function testContributorLine($line)
+    public function testContributorLine($line): void
     {
         if ($line === '- no changes in this release.') {
             $this->markTestSkipped('Placeholder line');
@@ -54,6 +56,9 @@ class ChangeLogTest extends TestCase
          * - Description ends without a "."
          * - Line ends with contributor name between "(" and ")".
          */
-        $this->assertRegExp('/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.+\)$/', $line);
+        $this->assertMatchesRegularExpression(
+            '/- (Bug|Enh|Chg|New)( #\d+(, #\d+)*)?(\s\(CVE-[\d-]+\))?: .*[^.] \(.+\)$/',
+            $line
+        );
     }
 }

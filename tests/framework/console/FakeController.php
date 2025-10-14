@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -103,5 +104,10 @@ class FakeController extends Controller
         $response = new Response();
         $response->exitStatus = (int) $status;
         return $response;
+    }
+
+    public function actionVariadic($foo, $bar, ...$baz)
+    {
+        return [$foo, $bar, $baz];
     }
 }

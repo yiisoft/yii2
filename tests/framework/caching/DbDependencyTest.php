@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,11 +22,10 @@ class DbDependencyTest extends DatabaseTestCase
      */
     protected $driverName = 'sqlite';
 
-
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -39,10 +39,13 @@ class DbDependencyTest extends DatabaseTestCase
         $db->createCommand()->insert('dependency_item', ['value' => 'initial'])->execute();
     }
 
-    public function testIsChanged()
+    public function testQueryOneIsExecutedWhenQueryCacheEnabled()
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();
+
+        // Enable the query cache
+        $db->enableQueryCache = true;
 
         $dependency = new DbDependency();
         $dependency->db = $db;
@@ -55,5 +58,40 @@ class DbDependencyTest extends DatabaseTestCase
         $db->createCommand()->insert('dependency_item', ['value' => 'new'])->execute();
 
         $this->assertTrue($dependency->isChanged($cache));
+    }
+
+    public function testQueryOneIsExecutedWhenQueryCacheDisabled()
+    {
+        $db = $this->getConnection(false);
+        $cache = new ArrayCache();
+
+        // Disable the query cache
+        $db->enableQueryCache = false;
+
+        $dependency = new DbDependency();
+        $dependency->db = $db;
+        $dependency->sql = 'SELECT [[id]] FROM {{dependency_item}} ORDER BY [[id]] DESC LIMIT 1';
+        $dependency->reusable = false;
+
+        $dependency->evaluateDependency($cache);
+        $this->assertFalse($dependency->isChanged($cache));
+
+        $db->createCommand()->insert('dependency_item', ['value' => 'new'])->execute();
+
+        $this->assertTrue($dependency->isChanged($cache));
+    }
+
+    public function testMissingSqlThrowsException()
+    {
+        $this->expectException('\yii\base\InvalidConfigException');
+
+        $db = $this->getConnection(false);
+        $cache = new ArrayCache();
+
+        $dependency = new DbDependency();
+        $dependency->db = $db;
+        $dependency->sql = null;
+
+        $dependency->evaluateDependency($cache);
     }
 }

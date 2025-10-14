@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -19,7 +20,7 @@ use yiiunit\TestCase;
  */
 class JsonTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -95,6 +96,19 @@ class JsonTest extends TestCase
         $data = new JsonModel();
         $data->data = (object) null;
         $this->assertSame('{}', Json::encode($data));
+
+        // Generator (Only supported since PHP 5.5)
+        if (PHP_VERSION_ID >= 50500) {
+            $data = eval(<<<'PHP'
+                return function () {
+                    foreach (['a' => 1, 'b' => 2] as $name => $value) {
+                        yield $name => $value;
+                    }
+                };
+PHP
+            );
+            $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
+        }
     }
 
     public function testHtmlEncode()
@@ -192,12 +206,13 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Invalid JSON data.
      * @covers ::decode
      */
-    public function testDecodeInvalidParamException()
+    public function testDecodeInvalidArgumentException()
     {
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid JSON data.');
+
         Json::decode([]);
     }
 

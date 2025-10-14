@@ -208,7 +208,7 @@ class FontAwesomeAsset extends AssetBundle
 ### Bower と NPM のアセットのインストール <span id="bower-npm-assets"></span>
 
 ほとんどの JavaScript/CSS パッケージは、[Bower](https://bower.io/) および/または [NPM](https://www.npmjs.com/) によって管理されています。
-PHP の世界には PHP の依存を管理する Composer がありますが、PHP のパッケージと全く同じように
+PHP の世界には Composer があって、PHP の依存を管理していますが、PHP のパッケージと全く同じように
 `composer.json` を使って Bower のパッケージも NPM のパッケージもロードすることが可能です。
 
 このことを達成するために Composer の構成を少し修正しなければなりません。二つの方法があります。

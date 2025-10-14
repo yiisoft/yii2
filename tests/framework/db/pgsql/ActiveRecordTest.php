@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,9 +29,10 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testBooleanAttribute()
     {
-        /* @var $customerClass ActiveRecordInterface */
+        /** @var TestCase|ActiveRecordTestTrait $this */
+
+        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
-        /* @var $this TestCase|ActiveRecordTestTrait */
         $customer = new $customerClass();
         $customer->name = 'boolean customer';
         $customer->email = 'mail@example.com';
@@ -55,7 +57,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testFindAsArray()
     {
-        /* @var $customerClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
 
         // asArray
@@ -97,8 +99,10 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]
@@ -314,9 +318,9 @@ class BoolAR extends ActiveRecord
 
 class UserAR extends ActiveRecord
 {
-    const STATUS_DELETED = 0;
-    const STATUS_ACTIVE = 10;
-    const ROLE_USER = 10;
+    public const STATUS_DELETED = 0;
+    public const STATUS_ACTIVE = 10;
+    public const ROLE_USER = 10;
 
     public static function tableName()
     {

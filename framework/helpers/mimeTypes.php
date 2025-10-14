@@ -5,10 +5,14 @@
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
+ * otherwise they will be lost on next build.
  */
 $mimeTypes = [
+    123 => 'application/vnd.lotus-1-2-3',
     '3dml' => 'text/vnd.in3d.3dml',
     '3ds' => 'image/x-3ds',
     '3g2' => 'video/3gpp2',
@@ -37,6 +41,7 @@ $mimeTypes = [
     'ait' => 'application/vnd.dvb.ait',
     'ami' => 'application/vnd.amiga.ami',
     'apk' => 'application/vnd.android.package-archive',
+    'apng' => 'image/apng',
     'appcache' => 'text/cache-manifest',
     'application' => 'application/x-ms-application',
     'apr' => 'application/vnd.lotus-approach',
@@ -53,6 +58,7 @@ $mimeTypes = [
     'atx' => 'application/vnd.antix.game-component',
     'au' => 'audio/basic',
     'avi' => 'video/x-msvideo',
+    'avif' => 'image/avif',
     'aw' => 'application/applixware',
     'azf' => 'application/vnd.airzip.filesecure.azf',
     'azs' => 'application/vnd.airzip.filesecure.azs',
@@ -279,6 +285,7 @@ $mimeTypes = [
     'geo' => 'application/vnd.dynageo',
     'gex' => 'application/vnd.geometry-explorer',
     'ggb' => 'application/vnd.geogebra.file',
+    'ggs' => 'application/vnd.geogebra.slides',
     'ggt' => 'application/vnd.geogebra.tool',
     'ghf' => 'application/vnd.groove-help',
     'gif' => 'image/gif',
@@ -366,9 +373,10 @@ $mimeTypes = [
     'jpgm' => 'video/jpm',
     'jpgv' => 'video/jpeg',
     'jpm' => 'video/jpm',
-    'js' => 'application/javascript',
+    'js' => 'text/javascript',
     'json' => 'application/json',
     'jsonml' => 'application/jsonml+json',
+    'jxl' => 'image/jxl',
     'kar' => 'audio/midi',
     'karbon' => 'application/vnd.kde.karbon',
     'kfo' => 'application/vnd.kde.kformula',
@@ -401,7 +409,6 @@ $mimeTypes = [
     'log' => 'text/plain',
     'lostxml' => 'application/lost+xml',
     'lrf' => 'application/octet-stream',
-    0 => 'application/vnd.lotus-1-2-3',
     'lrm' => 'application/vnd.ms-lrm',
     'ltf' => 'application/vnd.frogans.ltf',
     'lvp' => 'audio/vnd.lucent.voice',
@@ -412,6 +419,8 @@ $mimeTypes = [
     'm1v' => 'video/mpeg',
     'm21' => 'application/mp21',
     'm2a' => 'audio/mpeg',
+    'm2t' => 'video/mp2t',
+    'm2ts' => 'video/mp2t',
     'm2v' => 'video/mpeg',
     'm3a' => 'audio/mpeg',
     'm3u' => 'audio/x-mpegurl',
@@ -497,7 +506,7 @@ $mimeTypes = [
     'msi' => 'application/x-msdownload',
     'msl' => 'application/vnd.mobius.msl',
     'msty' => 'application/vnd.muvee.style',
-    'mts' => 'model/vnd.mts',
+    'mts' => 'video/mp2t',
     'mus' => 'application/vnd.musician',
     'musicxml' => 'application/vnd.recordare.musicxml+xml',
     'mvb' => 'application/x-msmediaview',
@@ -599,6 +608,8 @@ $mimeTypes = [
     'pgn' => 'application/x-chess-pgn',
     'pgp' => 'application/pgp-encrypted',
     'pic' => 'image/x-pict',
+    'pjp' => 'image/jpeg',
+    'pjpeg' => 'image/jpeg',
     'pkg' => 'application/octet-stream',
     'pki' => 'application/pkixcmp',
     'pkipath' => 'application/pkix-pkipath',
@@ -810,6 +821,7 @@ $mimeTypes = [
     'tr' => 'text/troff',
     'tra' => 'application/vnd.trueapp',
     'trm' => 'application/x-msterminal',
+    'ts' => 'video/mp2t',
     'tsd' => 'application/timestamped-data',
     'tsv' => 'text/tab-separated-values',
     'ttc' => 'font/collection',
@@ -883,6 +895,7 @@ $mimeTypes = [
     'vxml' => 'application/voicexml+xml',
     'w3d' => 'application/x-director',
     'wad' => 'application/x-doom',
+    'wasm' => 'application/wasm',
     'wav' => 'audio/x-wav',
     'wax' => 'audio/x-ms-wax',
     'wbmp' => 'image/vnd.wap.wbmp',
@@ -997,8 +1010,9 @@ $mimeTypes = [
     'zmm' => 'application/vnd.handheld-entertainment+xml',
 ];
 
-if (PHP_VERSION_ID >= 80100) {
-    $mimeTypes = array_replace($mimeTypes, array('xz' => 'application/octet-stream'));
+# fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
+if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
+    $mimeTypes = array_replace($mimeTypes, ['xz' => 'application/octet-stream']);
 }
 
 return $mimeTypes;

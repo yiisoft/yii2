@@ -39,13 +39,13 @@ class CompareValidator extends Validator
      * @since 2.0.11
      * @see type
      */
-    const TYPE_STRING = 'string';
+    public const TYPE_STRING = 'string';
     /**
      * Constant for specifying the comparison [[type]] by numeric values.
      * @since 2.0.11
      * @see type
      */
-    const TYPE_NUMBER = 'number';
+    public const TYPE_NUMBER = 'number';
 
     /**
      * @var string the name of the attribute to be compared with. When both this property

@@ -34,7 +34,7 @@ trait ArrayableTrait
      * the corresponding field definition which can be either an object property name or a PHP callable
      * returning the corresponding field value. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($model, $field) {
      *     // return field value
      * }
@@ -48,7 +48,7 @@ trait ArrayableTrait
      * - `fullName`: the field name is `fullName`. Its value is obtained by concatenating `first_name`
      *   and `last_name`.
      *
-     * ```php
+     * ```
      * return [
      *     'email',
      *     'firstName' => 'first_name',
@@ -123,7 +123,7 @@ trait ArrayableTrait
     {
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
-            $attribute = is_string($definition) ? $this->$definition : $definition($this, $field);
+            $attribute = is_string($definition) ? ($this->$definition ?? null) : $definition($this, $field);
 
             if ($recursive) {
                 $nestedFields = $this->extractFieldsFor($fields, $field);

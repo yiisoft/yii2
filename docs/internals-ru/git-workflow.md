@@ -26,7 +26,7 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 Перейдите в каталог куда вы склонировали Yii, как правило "yii2". Затем введите следующую команду:
 
 ```
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ### 3. Настройка тестовой среды
@@ -72,6 +72,19 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 валидаторов и redis: `phpunit --group=validators,redis`. Вы можете получить список доступных групп выполнив `phpunit --list-groups`.
 
 Вы можете запустить модульные тесты JavaScript с помощью команды `npm test` в корневой директории приложения. 
+
+### Статический анализ
+
+Мы используем [PHPStan](https://phpstan.org) для статического анализа. Он может быть запущен следующими командами:
+`php vendor/bin/phpstan` или `vendor\bin\phpstan.bat` в случае запуска на ОС Windows.
+
+По умолчанию PHPStan будет использовать конфигурацию из `phpstan.dist.neon`. Вы можете создать файл
+`phpstan.neon` с вашей собственной конфигурацией, и PHPStan будет использовать его.
+
+#### Примечание
+
+В аннотациях PHPDoc мы используем стандартные типы PHP. Пожалуйста, используйте аннотации PHPStan/Psalm,
+если хотите добавить условные типы, формы массивов и т.д. Это связано с тем, что не все IDE в настоящее время поддерживают типы PHPStan/Psalm, и это также нарушит автоматическую генерацию документации.
 
 ### Расширения
 
@@ -235,7 +248,7 @@ git push origin --delete 999-name-of-your-branch-goes-here
 
 ```
 git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
-git remote add upstream git://github.com/yiisoft/yii2.git
+git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
 ```

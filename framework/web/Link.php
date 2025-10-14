@@ -20,7 +20,7 @@ class Link extends BaseObject
     /**
      * The self link.
      */
-    const REL_SELF = 'self';
+    public const REL_SELF = 'self';
 
     /**
      * @var string a URI [RFC3986](https://tools.ietf.org/html/rfc3986) or
@@ -62,11 +62,10 @@ class Link extends BaseObject
     {
         foreach ($links as $rel => $link) {
             if (is_array($link)) {
-                foreach ($link as $i => $l) {
-                    $link[$i] = $l instanceof self ? array_filter((array) $l) : ['href' => $l];
-                }
-                $links[$rel] = $link;
-            } elseif (!$link instanceof self) {
+                $links[$rel] = self::serialize($link);
+            } elseif ($link instanceof self) {
+                $links[$rel] = array_filter((array)$link);
+            } else {
                 $links[$rel] = ['href' => $link];
             }
         }

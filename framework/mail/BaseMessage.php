@@ -38,7 +38,7 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
      * the "mailer" application component will be used instead.
      * @return bool whether this message is sent successfully.
      */
-    public function send(MailerInterface $mailer = null)
+    public function send(?MailerInterface $mailer = null)
     {
         if ($mailer === null && $this->mailer === null) {
             $mailer = Yii::$app->getMailer();
@@ -59,9 +59,14 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
         // use trigger_error to bypass this limitation
         try {
             return $this->toString();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
+        } catch (\Throwable $e) {
+            if (PHP_VERSION_ID < 70400) {
+                trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+
+                return '';
+            }
+
+            throw $e;
         }
     }
 }

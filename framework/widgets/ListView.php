@@ -33,7 +33,7 @@ class ListView extends BaseListView
      *
      * If this property is specified as an anonymous function, it should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $widget)
      * ```
      *
@@ -54,7 +54,7 @@ class ListView extends BaseListView
      *
      * If this property is specified as a callback, it should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $widget)
      * ```
      */
@@ -78,7 +78,7 @@ class ListView extends BaseListView
      * @var Closure an anonymous function that is called once BEFORE rendering each data model.
      * It should have the following signature:
      *
-     * ```php
+     * ```
      * function ($model, $key, $index, $widget)
      * ```
      *

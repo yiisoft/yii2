@@ -18,7 +18,7 @@ use yiiunit\TestCase;
  */
 class IndexActionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
@@ -44,21 +44,23 @@ class IndexActionTest extends TestCase
         $sql = '';
         Yii::$app->controller = new RestController(
             'rest',
-            new Module('rest'), [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
-                        $this->assertTrue($query instanceof Query);
-                        $sql = $query->createCommand()->getRawSql();
+            new Module('rest'),
+            [
+                'modelClass' => IndexActionModel::className(),
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::className(),
+                        'modelClass' => IndexActionModel::className(),
+                        'prepareSearchQuery' => function ($query, $requestParams) use (&$sql) {
+                            $this->assertTrue($query instanceof Query);
+                            $sql = $query->createCommand()->getRawSql();
 
-                        return $query;
-                    },
+                            return $query;
+                        },
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
         Yii::$app->controller->run('index');
 
         $this->assertEquals(
@@ -89,17 +91,19 @@ class IndexActionTest extends TestCase
 
         $controller = new RestController(
             'rest',
-            new Module('rest'), [
-            'modelClass' => IndexActionModel::className(),
-            'actions' => [
-                'index' => [
-                    'class' => IndexAction::className(),
-                    'modelClass' => IndexActionModel::className(),
-                    'pagination' => $pagination,
-                    'sort' => $sort,
+            new Module('rest'),
+            [
+                'modelClass' => IndexActionModel::className(),
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::className(),
+                        'modelClass' => IndexActionModel::className(),
+                        'pagination' => $pagination,
+                        'sort' => $sort,
+                    ],
                 ],
-            ],
-        ]);
+            ]
+        );
 
         /** @var ActiveDataProvider $dataProvider */
         $dataProvider = $controller->createAction('index')->runWithParams([]);
@@ -174,7 +178,7 @@ class IndexActionTest extends TestCase
                 ]),
                 11, // page size set as param in test
                 992,
-                ['created_at_2' => SORT_DESC], // test sort set as param in test is ignored
+                [], // sort param is set so no default sorting anymore
                 ['created_at_2' => SORT_DESC]
             ],
             [ // Disable pagination and sort
@@ -197,7 +201,6 @@ class RestController extends ActiveController
 
 class Module extends \yii\base\Module
 {
-
 }
 
 /**

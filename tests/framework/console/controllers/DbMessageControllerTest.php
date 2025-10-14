@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -51,7 +52,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         }
     }
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         $databases = static::getParam('databases');
@@ -65,7 +66,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
         if (static::$db) {
@@ -75,7 +76,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         parent::tearDownAfterClass();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::$app = null;
@@ -191,6 +192,4 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     {
         $this->markTestSkipped('There\'s no need to order messages for database');
     }
-
-
 }

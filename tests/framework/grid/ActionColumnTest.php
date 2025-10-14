@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -70,34 +71,38 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test default visible button
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $this->assertContains('update_button', $columnContents);
+        $this->assertStringContainsString('update_button', $columnContents);
 
         //test visible button
         $column->visibleButtons = [
             'update' => true,
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $this->assertContains('update_button', $columnContents);
+        $this->assertStringContainsString('update_button', $columnContents);
 
         //test visible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {return $model['id'] == 1;},
+            'update' => function ($model, $key, $index) {
+                return $model['id'] == 1;
+            },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $this->assertContains('update_button', $columnContents);
+        $this->assertStringContainsString('update_button', $columnContents);
 
         //test invisible button
         $column->visibleButtons = [
             'update' => false,
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $this->assertNotContains('update_button', $columnContents);
+        $this->assertStringNotContainsString('update_button', $columnContents);
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function ($model, $key, $index) {return $model['id'] != 1;},
+            'update' => function ($model, $key, $index) {
+                return $model['id'] != 1;
+            },
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $this->assertNotContains('update_button', $columnContents);
+        $this->assertStringNotContainsString('update_button', $columnContents);
     }
 }

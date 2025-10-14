@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -57,7 +58,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testCommentColumn()
     {
-        $version = $this->getQueryBuilder(false)->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $version = $this->getQueryBuilder(false)->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
         if (version_compare($version, '10.0', '<')) {
             $this->markTestSkipped('Comments on columns are supported starting with CUBRID 10.0.');
             return;

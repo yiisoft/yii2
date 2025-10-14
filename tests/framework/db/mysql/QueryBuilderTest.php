@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -80,7 +81,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             $columns[] = [
                 Schema::TYPE_JSON,
                 $this->json(),
-                "json",
+                'json',
             ];
         }
 
@@ -125,8 +126,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         /**
          * @link https://github.com/yiisoft/yii2/issues/14367
          */
-        $mysqlVersion = $this->getDb()->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
-        $supportsFractionalSeconds = version_compare($mysqlVersion,'5.6.4', '>=');
+        $mysqlVersion = $this->getDb()->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $supportsFractionalSeconds = version_compare($mysqlVersion, '5.6.4', '>=');
         if ($supportsFractionalSeconds) {
             $expectedValues = [
                 'datetime(0) NOT NULL',
@@ -150,7 +151,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         if (in_array('NO_ZERO_DATE', $sqlModes, true)) {
             $this->markTestIncomplete(
                 "MySQL doesn't allow the 'TIMESTAMP' column definition when the NO_ZERO_DATE mode enabled. " .
-                "This definition test was skipped."
+                'This definition test was skipped.'
             );
         } else {
             $columns[] = [
@@ -194,11 +195,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $result = parent::uniquesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
         return $result;
-    }
-
-    public function checksProvider()
-    {
-        $this->markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');
     }
 
     public function defaultValuesProvider()
@@ -272,35 +268,35 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             // json conditions
             [
                 ['=', 'jsoncol', new JsonExpression(['lang' => 'uk', 'country' => 'UA'])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"lang":"uk","country":"UA"}'],
+                '[[jsoncol]] = :qp0', [':qp0' => '{"lang":"uk","country":"UA"}'],
             ],
             [
                 ['=', 'jsoncol', new JsonExpression([false])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '[false]']
+                '[[jsoncol]] = :qp0', [':qp0' => '[false]']
             ],
             'object with type. Type is ignored for MySQL' => [
                 ['=', 'prices', new JsonExpression(['seeds' => 15, 'apples' => 25], 'jsonb')],
-                '[[prices]] = CAST(:qp0 AS JSON)', [':qp0' => '{"seeds":15,"apples":25}'],
+                '[[prices]] = :qp0', [':qp0' => '{"seeds":15,"apples":25}'],
             ],
             'nested json' => [
                 ['=', 'data', new JsonExpression(['user' => ['login' => 'silverfire', 'password' => 'c4ny0ur34d17?'], 'props' => ['mood' => 'good']])],
-                '[[data]] = CAST(:qp0 AS JSON)', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
+                '[[data]] = :qp0', [':qp0' => '{"user":{"login":"silverfire","password":"c4ny0ur34d17?"},"props":{"mood":"good"}}']
             ],
             'null value' => [
                 ['=', 'jsoncol', new JsonExpression(null)],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => 'null']
+                '[[jsoncol]] = :qp0', [':qp0' => 'null']
             ],
             'null as array value' => [
                 ['=', 'jsoncol', new JsonExpression([null])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '[null]']
+                '[[jsoncol]] = :qp0', [':qp0' => '[null]']
             ],
             'null as object value' => [
                 ['=', 'jsoncol', new JsonExpression(['nil' => null])],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"nil":null}']
+                '[[jsoncol]] = :qp0', [':qp0' => '{"nil":null}']
             ],
             'with object as value' => [
                 ['=', 'jsoncol', new JsonExpression(new DynamicModel(['a' => 1, 'b' => 2]))],
-                '[[jsoncol]] = CAST(:qp0 AS JSON)', [':qp0' => '{"a":1,"b":2}']
+                '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2}']
             ],
             'query' => [
                 ['=', 'jsoncol', new JsonExpression((new Query())->select('params')->from('user')->where(['id' => 1]))],
@@ -312,7 +308,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ],
             'nested and combined json expression' => [
                 ['=', 'jsoncol', new JsonExpression(new JsonExpression(['a' => 1, 'b' => 2, 'd' => new JsonExpression(['e' => 3])]))],
-                "[[jsoncol]] = CAST(:qp0 AS JSON)", [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
+                '[[jsoncol]] = :qp0', [':qp0' => '{"a":1,"b":2,"d":{"e":3}}']
             ],
             'search by property in JSON column (issue #15838)' => [
                 ['=', new Expression("(jsoncol->>'$.someKey')"), '42'],
@@ -333,7 +329,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=CAST(:qp0 AS JSON) WHERE [[id]]=:qp1'),
+            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -385,7 +381,7 @@ MySqlStatement;
 
         // int value should not be converted to string, when column is `bigint unsigned`
         $sql = $command->insert('{{type}}', ['bigint_col' => 22])->getRawSql();
-        $this->assertEquals("INSERT INTO `type` (`bigint_col`) VALUES (22)", $sql);
+        $this->assertEquals('INSERT INTO `type` (`bigint_col`) VALUES (22)', $sql);
 
         // string value should not be converted
         $sql = $command->insert('{{type}}', ['bigint_col' => '1000000000000'])->getRawSql();
@@ -402,10 +398,10 @@ MySqlStatement;
 
         // primary key columns should have NULL as value
         $sql = $command->insert('null_values', [])->getRawSql();
-        $this->assertEquals("INSERT INTO `null_values` (`id`) VALUES (NULL)", $sql);
-        
+        $this->assertEquals('INSERT INTO `null_values` (`id`) VALUES (NULL)', $sql);
+
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
-        $this->assertEquals("INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)", $sql);
+        $this->assertEquals('INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)', $sql);
     }
 }

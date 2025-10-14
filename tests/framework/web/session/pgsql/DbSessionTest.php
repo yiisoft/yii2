@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +18,7 @@ namespace yiiunit\framework\web\session\pgsql;
  */
 class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob columns in the way they are used here.');

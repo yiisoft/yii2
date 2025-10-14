@@ -26,7 +26,7 @@ use yii\web\User;
  * For example, the following declarations will allow authenticated users to access the "create"
  * and "update" actions and deny all other users from accessing these two actions.
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -70,7 +70,7 @@ class AccessControl extends ActionFilter
      *
      * The signature of the callback should be as follows:
      *
-     * ```php
+     * ```
      * function ($rule, $action)
      * ```
      *
@@ -118,7 +118,7 @@ class AccessControl extends ActionFilter
     {
         $user = $this->user;
         $request = Yii::$app->getRequest();
-        /* @var $rule AccessRule */
+        /** @var AccessRule $rule */
         foreach ($this->rules as $rule) {
             if ($allow = $rule->allows($action, $user, $request)) {
                 return true;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +8,6 @@
 
 namespace yiiunit\framework\db\pgsql;
 
-use yii\db\conditions\ExistsConditionBuilder;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
@@ -130,7 +130,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'size' => null,
             'precision' => null,
             'scale' => null,
-            'defaultValue' => ["a" => 1],
+            'defaultValue' => ['a' => 1],
             'dimension' => 0
         ];
         $columns['jsonb_col'] = [
@@ -218,7 +218,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $connection->schema->refreshTableSchema('item');
         $this->assertEquals('item_id_seq_2', $connection->schema->getTableSchema('item')->sequenceName);
 
-        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'' .  $sequenceName . '\')')->execute();
+        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'' . $sequenceName . '\')')->execute();
         $connection->schema->refreshTableSchema('item');
         $this->assertEquals($sequenceName, $connection->schema->getTableSchema('item')->sequenceName);
     }
@@ -231,7 +231,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $config = $this->database;
         unset($config['fixture']);
-        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres12.sql');
+        $this->prepareDatabase($config, realpath(__DIR__ . '/../../../data') . '/postgres12.sql');
 
         $table = $this->getConnection(false)->schema->getTableSchema('generated');
         $this->assertTrue($table->getColumn('id_always')->autoIncrement);
@@ -248,7 +248,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $config = $this->database;
         unset($config['fixture']);
-        $this->prepareDatabase($config, realpath(__DIR__.'/../../../data') . '/postgres10.sql');
+        $this->prepareDatabase($config, realpath(__DIR__ . '/../../../data') . '/postgres10.sql');
 
         $this->assertNotNull($this->getConnection(false)->schema->getTableSchema('partitioned'));
     }
@@ -339,6 +339,66 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $db->schema->refreshTableSchema('test_timestamp_default_null');
         $tableSchema = $db->schema->getTableSchema('test_timestamp_default_null');
         $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcNowDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, now()) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_now_default');
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, now())'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampNowDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT now()',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_now_default');
+        $this->assertEquals(new Expression('now()'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcStringDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_string_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_string_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_string_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_string_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_string_default');
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
     }
 
     public function constraintsProvider()

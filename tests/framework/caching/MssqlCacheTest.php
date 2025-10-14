@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ class MssqlCacheTest extends CacheTestCase
     private $_cacheInstance;
     private $_connection;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlsrv')) {
             $this->markTestSkipped('pdo and pdo_mssql extensions are required.');
@@ -37,7 +38,6 @@ class MssqlCacheTest extends CacheTestCase
             'expire' => 'INT',
             'data' => 'VARBINARY(MAX)',
         ])->execute();
-
     }
 
     /**

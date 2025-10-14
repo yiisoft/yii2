@@ -15,7 +15,7 @@ use yii\base\InvalidConfigException;
  *
  * Expressions of this type can be used in conditions as well:
  *
- * ```php
+ * ```
  * $query->andWhere(['@>', 'items', new ArrayExpression([1, 2, 3], 'integer')])
  * ```
  *
@@ -24,6 +24,7 @@ use yii\base\InvalidConfigException;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, \IteratorAggregate
 {

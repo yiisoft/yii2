@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -48,19 +49,18 @@ abstract class CacheTestCase extends TestCase
      */
     public static $microtime;
 
-
     /**
      * @return CacheInterface
      */
     abstract protected function getCacheInstance();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         static::$time = null;
         static::$microtime = null;
@@ -288,11 +288,15 @@ abstract class CacheTestCase extends TestCase
         $dependency = new TagDependency(['tags' => 'test']);
 
         $expected = 'SilverFire';
-        $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
+        $loginClosure = function ($cache) use (&$login) {
+            return 'SilverFire';
+        };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         // Call again with another login to make sure that value is cached
-        $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
+        $loginClosure = function ($cache) use (&$login) {
+            return 'SamDark';
+        };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         $dependency->invalidate($cache, 'test');

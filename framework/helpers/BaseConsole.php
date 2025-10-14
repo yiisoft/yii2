@@ -22,36 +22,36 @@ use yii\base\Model;
 class BaseConsole
 {
     // foreground color control codes
-    const FG_BLACK = 30;
-    const FG_RED = 31;
-    const FG_GREEN = 32;
-    const FG_YELLOW = 33;
-    const FG_BLUE = 34;
-    const FG_PURPLE = 35;
-    const FG_CYAN = 36;
-    const FG_GREY = 37;
+    public const FG_BLACK = 30;
+    public const FG_RED = 31;
+    public const FG_GREEN = 32;
+    public const FG_YELLOW = 33;
+    public const FG_BLUE = 34;
+    public const FG_PURPLE = 35;
+    public const FG_CYAN = 36;
+    public const FG_GREY = 37;
     // background color control codes
-    const BG_BLACK = 40;
-    const BG_RED = 41;
-    const BG_GREEN = 42;
-    const BG_YELLOW = 43;
-    const BG_BLUE = 44;
-    const BG_PURPLE = 45;
-    const BG_CYAN = 46;
-    const BG_GREY = 47;
+    public const BG_BLACK = 40;
+    public const BG_RED = 41;
+    public const BG_GREEN = 42;
+    public const BG_YELLOW = 43;
+    public const BG_BLUE = 44;
+    public const BG_PURPLE = 45;
+    public const BG_CYAN = 46;
+    public const BG_GREY = 47;
     // fonts style control codes
-    const RESET = 0;
-    const NORMAL = 0;
-    const BOLD = 1;
-    const ITALIC = 3;
-    const UNDERLINE = 4;
-    const BLINK = 5;
-    const NEGATIVE = 7;
-    const CONCEALED = 8;
-    const CROSSED_OUT = 9;
-    const FRAMED = 51;
-    const ENCIRCLED = 52;
-    const OVERLINED = 53;
+    public const RESET = 0;
+    public const NORMAL = 0;
+    public const BOLD = 1;
+    public const ITALIC = 3;
+    public const UNDERLINE = 4;
+    public const BLINK = 5;
+    public const NEGATIVE = 7;
+    public const CONCEALED = 8;
+    public const CROSSED_OUT = 9;
+    public const FRAMED = 51;
+    public const ENCIRCLED = 52;
+    public const OVERLINED = 53;
 
 
     /**
@@ -268,7 +268,7 @@ class BaseConsole
      * Any output after this will have default text format.
      * This is equal to calling.
      *
-     * ```php
+     * ```
      * echo Console::ansiFormatCode([Console::RESET])
      * ```
      */
@@ -676,7 +676,7 @@ class BaseConsole
      *
      * Usage:
      *
-     * ```php
+     * ```
      * list($width, $height) = ConsoleHelper::getScreenSize();
      * ```
      *
@@ -894,9 +894,7 @@ class BaseConsole
         } elseif ($options['pattern'] && !preg_match($options['pattern'], $input)) {
             static::output($options['error']);
             goto top;
-        } elseif ($options['validator'] &&
-            !call_user_func_array($options['validator'], [$input, &$error])
-        ) {
+        } elseif ($options['validator'] && !call_user_func_array($options['validator'], [$input, &$error])) {
             static::output(isset($error) ? $error : $options['error']);
             goto top;
         }
@@ -909,7 +907,7 @@ class BaseConsole
      *
      * A typical usage looks like the following:
      *
-     * ```php
+     * ```
      * if (Console::confirm("Are you sure?")) {
      *     echo "user typed yes\n";
      * } else {
@@ -948,13 +946,17 @@ class BaseConsole
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from. Key is what is inputed and used, value is
      * what's displayed to end user by help command.
+     * @param string|null $default value to use when the user doesn't provide an option.
+     * If the default is `null`, the user is required to select an option.
      *
      * @return string An option character the user chose
+     * @since 2.0.49 Added the $default argument
      */
-    public static function select($prompt, $options = [])
+    public static function select($prompt, $options = [], $default = null)
     {
         top:
-        static::stdout("$prompt [" . implode(',', array_keys($options)) . ',?]: ');
+        static::stdout("$prompt (" . implode(',', array_keys($options)) . ',?)'
+            . ($default !== null ? '[' . $default . ']' : '') . ': ');
         $input = static::stdin();
         if ($input === '?') {
             foreach ($options as $key => $value) {
@@ -962,6 +964,8 @@ class BaseConsole
             }
             static::output(' ? - Show help');
             goto top;
+        } elseif ($default !== null && $input === '') {
+            return $default;
         } elseif (!array_key_exists($input, $options)) {
             goto top;
         }
@@ -983,7 +987,7 @@ class BaseConsole
      *
      * The following example shows a simple usage of a progress bar:
      *
-     * ```php
+     * ```
      * Console::startProgress(0, 1000);
      * for ($n = 1; $n <= 1000; $n++) {
      *     usleep(1000);
@@ -994,7 +998,7 @@ class BaseConsole
      *
      * Git clone like progress (showing only status information):
      *
-     * ```php
+     * ```
      * Console::startProgress(0, 1000, 'Counting objects: ', false);
      * for ($n = 1; $n <= 1000; $n++) {
      *     usleep(1000);

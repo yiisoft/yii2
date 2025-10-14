@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
  *
  * Below is an example of using Container:
  *
- * ```php
+ * ```
  * namespace app\models;
  *
  * use yii\base\BaseObject;
@@ -94,9 +94,11 @@ use yii\helpers\ArrayHelper;
  *
  * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
  *
- * @property-read array $definitions The list of the object definitions or the loaded shared objects (type or
- * ID => definition or instance).
+ * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
+ * definition or instance).
  * @property-write bool $resolveArrays Whether to attempt to resolve elements in array dependencies.
+ * @property-write array $singletons Array of singleton definitions. See [[setDefinitions()]] for allowed
+ * formats of array.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -157,6 +159,12 @@ class Container extends Component
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     *
+     * @template T of object
+     * @psalm-param string|class-string<T>|Instance $class
+     * @phpstan-param string|class-string<T>|Instance $class
+     * @psalm-return ($class is class-string<T> ? T : object)
+     * @phpstan-return ($class is class-string<T> ? T : object)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -206,7 +214,7 @@ class Container extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * // register a class name as is. This can be skipped.
      * $container->set('yii\db\Connection');
      *
@@ -256,7 +264,7 @@ class Container extends Component
      *   parameters, `$config` the object configuration, and `$container` the container object. The return value
      *   of the callable will be returned by [[get()]] as the object instance requested.
      * - a configuration array: the array contains name-value pairs that will be used to initialize the property
-     *   values of the newly created object when [[get()]] is called. The `class` element stands for the
+     *   values of the newly created object when [[get()]] is called. The `class` element stands for
      *   the class of the object to be created. If `class` is not specified, `$class` will be used as the class name.
      * - a string: a class name, an interface name or an alias name.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
@@ -381,7 +389,7 @@ class Container extends Component
      */
     protected function build($class, $params, $config)
     {
-        /* @var $reflection ReflectionClass */
+        /** @var ReflectionClass $reflection */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
         $addDependencies = [];
@@ -610,7 +618,7 @@ class Container extends Component
      *
      * For example, the following callback may be invoked using the Container to resolve the formatter dependency:
      *
-     * ```php
+     * ```
      * $formatString = function($string, \yii\i18n\Formatter $formatter) {
      *    // ...
      * }
@@ -667,6 +675,7 @@ class Container extends Component
                 $class = $param->getType();
                 if ($class instanceof \ReflectionUnionType || (PHP_VERSION_ID >= 80100 && $class instanceof \ReflectionIntersectionType)) {
                     $isClass = false;
+                    /** @var ReflectionNamedType $type */
                     foreach ($class->getTypes() as $type) {
                         if (!$type->isBuiltin()) {
                             $class = $type;
@@ -675,9 +684,9 @@ class Container extends Component
                         }
                     }
                 } else {
+                    /** @var ReflectionNamedType|null $class */
                     $isClass = $class !== null && !$class->isBuiltin();
                 }
-
             } else {
                 $class = $param->getClass();
                 $isClass = $class !== null;
@@ -741,7 +750,7 @@ class Container extends Component
      *    as the second argument `$definition`.
      *
      * Example:
-     * ```php
+     * ```
      * $container->setDefinitions([
      *     'yii\web\Request' => 'app\components\Request',
      *     'yii\web\Response' => [
@@ -763,7 +772,7 @@ class Container extends Component
      *    second argument `$definition`, the second one — as `$params`.
      *
      * Example:
-     * ```php
+     * ```
      * $container->setDefinitions([
      *     'foo\Bar' => [
      *          ['class' => 'app\Bar'],

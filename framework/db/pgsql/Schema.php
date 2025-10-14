@@ -7,6 +7,7 @@
 
 namespace yii\db\pgsql;
 
+use Yii;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\Constraint;
@@ -31,7 +32,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     use ViewFinderTrait;
     use ConstraintFinderTrait;
 
-    const TYPE_JSONB = 'jsonb';
+    public const TYPE_JSONB = 'jsonb';
 
     /**
      * @var string the default schema used for the current session.
@@ -288,7 +289,7 @@ SQL;
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::className(), [$this->db]);
     }
 
     /**
@@ -424,7 +425,7 @@ SQL;
      *
      * Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],
@@ -551,10 +552,13 @@ SQL;
             } elseif ($column->defaultValue) {
                 if (
                     in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
-                    in_array(
-                        strtoupper($column->defaultValue),
-                        ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
-                        true
+                    (
+                        in_array(
+                            strtoupper($column->defaultValue),
+                            ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
+                            true
+                        ) ||
+                        (false !== strpos($column->defaultValue, '('))
                     )
                 ) {
                     $column->defaultValue = new Expression($column->defaultValue);
@@ -593,8 +597,7 @@ SQL;
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];
-        if ($info['type_scheme'] !== null && !in_array($info['type_scheme'], [$this->defaultSchema, 'pg_catalog'], true)
-        ) {
+        if ($info['type_scheme'] !== null && !in_array($info['type_scheme'], [$this->defaultSchema, 'pg_catalog'], true)) {
             $column->dbType = $info['type_scheme'] . '.' . $info['data_type'];
         } else {
             $column->dbType = $info['data_type'];

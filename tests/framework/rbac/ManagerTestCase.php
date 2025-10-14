@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +8,6 @@
 
 namespace yiiunit\framework\rbac;
 
-use yii\base\InvalidParamException;
 use yii\rbac\BaseManager;
 use yii\rbac\Item;
 use yii\rbac\Permission;
@@ -373,8 +373,16 @@ abstract class ManagerTestCase extends TestCase
             $roleNames[] = $role->name;
         }
 
-        $this->assertContains('reader', $roleNames, 'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames));
-        $this->assertContains('author', $roleNames, 'Roles should contain author. Currently it has: ' . implode(', ', $roleNames));
+        $this->assertContains(
+            'reader',
+            $roleNames,
+            'Roles should contain reader. Currently it has: ' . implode(', ', $roleNames)
+        );
+        $this->assertContains(
+            'author',
+            $roleNames,
+            'Roles should contain author. Currently it has: ' . implode(', ', $roleNames)
+        );
     }
 
     public function testAssignmentsToIntegerId()
@@ -418,7 +426,6 @@ abstract class ManagerTestCase extends TestCase
         $this->assertTrue($this->auth->canAddChild($author, $reader));
         $this->assertFalse($this->auth->canAddChild($reader, $author));
     }
-
 
     public function testRemoveAllRules()
     {
