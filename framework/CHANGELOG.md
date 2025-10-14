@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Enh #20591: Add PHPStan/Psalm annotations for `yii\rbac\BaseManager::getItems()` (mspirkov)
 - Bug #20594: Fix `@return` annotation for `Instance::get()` (mspirkov)
 - Bug #20595: Fix `@return` annotation for `BaseHtml::getAttributeValue()` (mspirkov)
+- Bug #20605: Fix return value in `SerialColumn::renderDataCellContent()` (mspirkov)
 
 
 2.0.53 June 27, 2025
