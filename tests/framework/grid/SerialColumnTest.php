@@ -43,7 +43,6 @@ class SerialColumnTest extends \yiiunit\TestCase
         ]);
 
         $result = $column->renderDataCell(['id' => 1], 1, $index);
-
         $this->assertSame($expectedResult, $result);
     }
 
