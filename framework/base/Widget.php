@@ -90,7 +90,7 @@ class Widget extends Component implements ViewContextInterface
     public static function begin($config = [])
     {
         $config['class'] = get_called_class();
-        /** @var self $widget */
+        /** @var static $widget */
         $widget = Yii::createObject($config);
         self::$stack[] = $widget;
         self::$_resolvedClasses[get_called_class()] = get_class($widget);
@@ -113,7 +113,7 @@ class Widget extends Component implements ViewContextInterface
             $calledClass = self::$_resolvedClasses[get_called_class()] ?? get_called_class();
 
             if (get_class($widget) === $calledClass) {
-                /** @var self $widget */
+                /** @var static $widget */
                 if ($widget->beforeRun()) {
                     $result = $widget->run();
                     $result = $widget->afterRun($result);
