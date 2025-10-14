@@ -101,7 +101,7 @@ class BlameableBehaviorTest extends TestCase
 
         $this->getUser()->login(20);
         $model = ActiveRecordBlameable::findOne(['name' => __METHOD__]);
-        $model->name = __CLASS__;
+        $model->name = self::class;
         $model->save();
 
         $this->assertEquals(10, $model->created_by);

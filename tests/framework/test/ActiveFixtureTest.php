@@ -43,7 +43,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
-        $this->assertEquals(CustomerFixture::className(), get_class($fixture));
+        $this->assertEquals(CustomerFixture::class, get_class($fixture));
         $this->assertCount(2, $fixture);
         $this->assertEquals(1, $fixture['customer1']['id']);
         $this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
@@ -62,7 +62,7 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
-        $this->assertEquals(Customer::className(), get_class($fixture->getModel('customer1')));
+        $this->assertEquals(Customer::class, get_class($fixture->getModel('customer1')));
         $this->assertEquals(1, $fixture->getModel('customer1')->id);
         $this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);
         $this->assertEquals(1, $fixture['customer1']['profile_id']);
@@ -220,7 +220,7 @@ class CustomerDbTestCase extends BaseDbTestCase
     public function fixtures()
     {
         return [
-            'customers' => CustomerFixture::className(),
+            'customers' => CustomerFixture::class,
         ];
     }
 }
@@ -230,7 +230,7 @@ class CustomDirectoryDbTestCase extends BaseDbTestCase
     public function fixtures()
     {
         return [
-            'customers' => CustomDirectoryFixture::className(),
+            'customers' => CustomDirectoryFixture::class,
         ];
     }
 }
@@ -241,7 +241,7 @@ class DataPathDbTestCase extends BaseDbTestCase
     {
         return [
             'customers' => [
-                'class' => CustomDirectoryFixture::className(),
+                'class' => CustomDirectoryFixture::class,
                 'dataFile' => '@app/framework/test/data/customer.php'
             ]
         ];
@@ -254,7 +254,7 @@ class TruncateTestCase extends BaseDbTestCase
     {
         return [
             'animals' => [
-                'class' => AnimalFixture::className(),
+                'class' => AnimalFixture::class,
             ]
         ];
     }

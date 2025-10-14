@@ -58,11 +58,11 @@ class CacheSessionTest extends TestCase
 
     public function testInitUseStrictMode(): void
     {
-        $this->initStrictModeTest(CacheSession::className());
+        $this->initStrictModeTest(CacheSession::class);
     }
 
     public function testUseStrictMode(): void
     {
-        $this->useStrictModeTest(CacheSession::className());
+        $this->useStrictModeTest(CacheSession::class);
     }
 }

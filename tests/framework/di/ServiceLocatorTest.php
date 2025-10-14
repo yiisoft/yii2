@@ -41,7 +41,7 @@ class ServiceLocatorTest extends TestCase
     {
         // anonymous function
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, function () {
             return new TestClass([
                 'prop1' => 100,
@@ -55,7 +55,7 @@ class ServiceLocatorTest extends TestCase
 
         // static method
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [__NAMESPACE__ . '\\Creator', 'create']);
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
@@ -66,7 +66,7 @@ class ServiceLocatorTest extends TestCase
     public function testObject(): void
     {
         $object = new TestClass();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container = new ServiceLocator();
         $container->set($className, $object);
         $this->assertSame($container->get($className), $object);
@@ -77,23 +77,23 @@ class ServiceLocatorTest extends TestCase
         $config = [
             'components' => [
                 'test' => [
-                    'class' => TestClass::className(),
+                    'class' => TestClass::class,
                 ],
             ],
         ];
 
         // User Defined Config
-        $config['components']['test']['__class'] = TestSubclass::className();
+        $config['components']['test']['__class'] = TestSubclass::class;
 
         $app = new ServiceLocator($config);
-        $this->assertInstanceOf(TestSubclass::className(), $app->get('test'));
+        $this->assertInstanceOf(TestSubclass::class, $app->get('test'));
     }
 
     public function testShared(): void
     {
         // with configuration: shared
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [
             'class' => $className,
             'prop1' => 10,

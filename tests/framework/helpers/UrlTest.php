@@ -42,7 +42,7 @@ class UrlTest extends TestCase
                     'hostInfo' => 'http://example.com/',
                 ],
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ], '\yii\web\Application');

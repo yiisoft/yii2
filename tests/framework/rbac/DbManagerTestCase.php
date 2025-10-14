@@ -62,7 +62,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
-                    'migrate' => EchoMigrateController::className(),
+                    'migrate' => EchoMigrateController::class,
                 ],
                 'components' => [
                     'db' => static::createConnection(),
@@ -206,7 +206,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertTrue(isset($permissions['createPost']));
-            $this->assertInstanceOf(Permission::className(), $permissions['createPost']);
+            $this->assertInstanceOf(Permission::class, $permissions['createPost']);
         } else {
             $this->assertEmpty($permissions);
         }
@@ -226,7 +226,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertTrue(isset($roles['Author']));
-            $this->assertInstanceOf(Role::className(), $roles['Author']);
+            $this->assertInstanceOf(Role::class, $roles['Author']);
         } else {
             $this->assertEmpty($roles);
         }
@@ -277,7 +277,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $assignment = $this->auth->getAssignment('createPost', $searchUserId);
 
         if ($isValid) {
-            $this->assertInstanceOf(Assignment::className(), $assignment);
+            $this->assertInstanceOf(Assignment::class, $assignment);
             $this->assertEquals($userId, $assignment->userId);
         } else {
             $this->assertEmpty($assignment);
@@ -298,8 +298,8 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertNotEmpty($assignments);
-            $this->assertInstanceOf(Assignment::className(), $assignments['createPost']);
-            $this->assertInstanceOf(Assignment::className(), $assignments['updatePost']);
+            $this->assertInstanceOf(Assignment::class, $assignments['createPost']);
+            $this->assertInstanceOf(Assignment::class, $assignments['updatePost']);
         } else {
             $this->assertEmpty($assignments);
         }
