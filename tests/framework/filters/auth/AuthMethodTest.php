@@ -39,10 +39,9 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMockBuilder(AuthMethod::class)
-            ->setMethods(['authenticate'])
-            ->getMock();
+        $filter = $this->createPartialMock(AuthMethod::class, ['authenticate']);
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
+
 
         return $filter;
     }

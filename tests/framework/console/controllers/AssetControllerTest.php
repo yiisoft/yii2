@@ -10,6 +10,7 @@ namespace yiiunit\framework\console\controllers;
 
 use Exception;
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\AssetController;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -74,10 +75,11 @@ class AssetControllerTest extends TestCase
      */
     protected function createAssetController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $assetController = new AssetControllerMock('asset', $module);
         $assetController->interactive = false;
         $assetController->jsCompressor = 'cp {from} {to}';
