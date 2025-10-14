@@ -18,7 +18,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
 {
     protected $driverName = 'sqlsrv';
 
-    public function testUnion()
+    public function testUnion(): void
     {
         $connection = $this->getConnection();
 

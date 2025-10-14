@@ -8,7 +8,7 @@ use yii\caching\CallbackDependency;
 
 class CallbackDependencyTest extends TestCase
 {
-    public function testDependencyChange()
+    public function testDependencyChange(): void
     {
         $cache = new ArrayCache();
         $dependencyValue = true;
@@ -25,7 +25,7 @@ class CallbackDependencyTest extends TestCase
         $this->assertTrue($dependency->isChanged($cache));
     }
 
-    public function testDependencyNotChanged()
+    public function testDependencyNotChanged(): void
     {
         $cache = new ArrayCache();
 

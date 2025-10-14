@@ -18,7 +18,7 @@ class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
      *
      * @dataProvider provideArrayValueWithChange
      */
-    public function testJsonDirtyAttributesWithDataChange($actual, $modified)
+    public function testJsonDirtyAttributesWithDataChange($actual, $modified): void
     {
         $createdStorage = new ArrayAndJsonType([
             'json_col' => new JsonExpression($actual),

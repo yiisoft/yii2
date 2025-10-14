@@ -46,7 +46,7 @@ class TableTest extends TestCase
     /**
      * @dataProvider getTableData
      */
-    public function testTable($headers, $rows)
+    public function testTable($headers, $rows): void
     {
         $table = new Table();
 
@@ -110,7 +110,7 @@ EXPECTED;
     /**
      * @dataProvider getMultiLineTableData
      */
-    public function testMultiLineTable($headers, $rows)
+    public function testMultiLineTable($headers, $rows): void
     {
         $table = new Table();
 
@@ -161,7 +161,7 @@ EXPECTED;
     /**
      * @dataProvider getNumericTableData
      */
-    public function testNumericTable($headers, $rows)
+    public function testNumericTable($headers, $rows): void
     {
         $table = new Table();
 
@@ -184,7 +184,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
-    public function testTableWithFullwidthChars()
+    public function testTableWithFullwidthChars(): void
     {
         $table = new Table();
 
@@ -211,7 +211,7 @@ EXPECTED;
         );
     }
 
-    public function testLists()
+    public function testLists(): void
     {
         $table = new Table();
 
@@ -238,7 +238,7 @@ EXPECTED;
         );
     }
 
-    public function testListPrefix()
+    public function testListPrefix(): void
     {
         $table = new Table();
 
@@ -264,7 +264,7 @@ EXPECTED;
         );
     }
 
-    public function testLongerListPrefix()
+    public function testLongerListPrefix(): void
     {
         $table = new Table();
 
@@ -295,7 +295,7 @@ EXPECTED;
         );
     }
 
-    public function testCustomChars()
+    public function testCustomChars(): void
     {
         $table = new Table();
 
@@ -336,7 +336,7 @@ EXPECTED;
         );
     }
 
-    public function testTableWidgetSyntax()
+    public function testTableWidgetSyntax(): void
     {
         $expected = <<<'EXPECTED'
 ╔═══════════════╤═══════════════╤═══════════════╗
@@ -362,7 +362,7 @@ EXPECTED;
         );
     }
 
-    public function testShortRow()
+    public function testShortRow(): void
     {
         $table = new Table();
 
@@ -396,7 +396,7 @@ EXPECTED;
         );
     }
 
-    public function testEmptyRow()
+    public function testEmptyRow(): void
     {
         $table = new Table();
 
@@ -421,7 +421,7 @@ EXPECTED;
         );
     }
 
-    public function testEmptyHeaders()
+    public function testEmptyHeaders(): void
     {
         $table = new Table();
 
@@ -443,7 +443,7 @@ EXPECTED;
         );
     }
 
-    public function testEmptyTable()
+    public function testEmptyTable(): void
     {
         $table = new Table();
 
@@ -461,7 +461,7 @@ EXPECTED;
         );
     }
 
-    public function testEmptyAndZeroTableCell()
+    public function testEmptyAndZeroTableCell(): void
     {
         $table = new Table();
 
@@ -489,7 +489,7 @@ EXPECTED;
         );
     }
 
-    public function testColorizedInput()
+    public function testColorizedInput(): void
     {
         $table = new Table();
 
@@ -518,7 +518,7 @@ EXPECTED;
         );
     }
 
-    public function testColorizedInputStripsANSIMarkersInternally()
+    public function testColorizedInputStripsANSIMarkersInternally(): void
     {
         $table = new Table();
 
@@ -539,7 +539,7 @@ EXPECTED;
         $this->assertEquals(8 + 2, $columnWidths[2]);
     }
 
-    public function testCalculateRowHeightShouldNotThrowDivisionByZeroException()
+    public function testCalculateRowHeightShouldNotThrowDivisionByZeroException(): void
     {
         $rows = [
             ['XXXXXX', 'XXXXXXXXXXXXXXXXXXXX', '', '', 'XXXXXXXXXXXXXXXXXX', 'X', 'XXX'],
@@ -554,7 +554,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($table, $table);
     }
 
-    public function testLineBreakTableCell()
+    public function testLineBreakTableCell(): void
     {
         $table = new Table();
 
@@ -589,7 +589,7 @@ EXPECTED;
         );
     }
 
-    public function testColorizedLineBreakTableCell()
+    public function testColorizedLineBreakTableCell(): void
     {
         $table = new Table();
 
@@ -642,7 +642,7 @@ EXPECTED;
      * @param $smallString
      * @dataProvider dataMinimumWidth
      */
-    public function testMinimumWidth($smallString)
+    public function testMinimumWidth($smallString): void
     {
         $bigString = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 
@@ -669,7 +669,7 @@ EXPECTED;
         ];
     }
 
-    public function testTableWithAnsiFormat()
+    public function testTableWithAnsiFormat(): void
     {
         $table = new Table();
 

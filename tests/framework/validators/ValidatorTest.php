@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\validators;
 
+use stdClass;
+use yii\base\View;
 use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
@@ -43,7 +45,7 @@ class ValidatorTest extends TestCase
         return FakedValidationModel::createWithAttributes($attributes);
     }
 
-    public function testCreateValidator()
+    public function testCreateValidator(): void
     {
         $model = FakedValidationModel::createWithAttributes(['attr_test1' => 'abc', 'attr_test2' => '2013']);
         /** @var NumberValidator $numberVal */
@@ -79,7 +81,7 @@ class ValidatorTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/14370
      */
-    public function testCreateBuiltInValidatorWithSameNameFunction()
+    public function testCreateBuiltInValidatorWithSameNameFunction(): void
     {
         $model = new ValidatorTestFunctionModel();
 
@@ -88,7 +90,7 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(RequiredValidator::className(), $validator);
     }
 
-    public function testValidateAttributes()
+    public function testValidateAttributes(): void
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);
         $model = $this->getTestModel();
@@ -98,7 +100,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse($val->isAttributeValidated('attr_skip'));
     }
 
-    public function testValidateWithAttributeIntersect()
+    public function testValidateWithAttributeIntersect(): void
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);
         $model = $this->getTestModel();
@@ -108,7 +110,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse($val->isAttributeValidated('attr_skip'));
     }
 
-    public function testValidateWithEmptyAttributes()
+    public function testValidateWithEmptyAttributes(): void
     {
         $val = new TestValidator();
         $model = $this->getTestModel();
@@ -122,7 +124,7 @@ class ValidatorTest extends TestCase
         $this->assertFalse($val->isAttributeValidated('attr_skip'));
     }
 
-    public function testValidateWithError()
+    public function testValidateWithError(): void
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2'], 'skipOnError' => false]);
         $model = $this->getTestModel();
@@ -152,7 +154,7 @@ class ValidatorTest extends TestCase
         $this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
     }
 
-    public function testValidateWithEmpty()
+    public function testValidateWithEmpty(): void
     {
         $model = $this->getTestModel(['attr_empty1' => '', 'attr_empty2' => ' ']);
         $attributes = ['attr_runMe1', 'attr_runMe2', 'attr_empty1', 'attr_empty2'];
@@ -179,7 +181,7 @@ class ValidatorTest extends TestCase
         $this->assertTrue($validator->isAttributeValidated('attr_empty1'));
     }
 
-    public function testIsEmpty()
+    public function testIsEmpty(): void
     {
         $val = new TestValidator();
         $this->assertTrue($val->isEmpty(null));
@@ -187,11 +189,11 @@ class ValidatorTest extends TestCase
         $this->assertTrue($val->isEmpty(''));
         $this->assertFalse($val->isEmpty(5));
         $this->assertFalse($val->isEmpty(0));
-        $this->assertFalse($val->isEmpty(new \stdClass()));
+        $this->assertFalse($val->isEmpty(new stdClass()));
         $this->assertFalse($val->isEmpty('  '));
     }
 
-    public function testValidateValue()
+    public function testValidateValue(): void
     {
         $this->expectException('yii\base\NotSupportedException');
         $this->expectExceptionMessage(TestValidator::className() . ' does not support validateValue().');
@@ -199,7 +201,7 @@ class ValidatorTest extends TestCase
         $val->validate('abc');
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
 
@@ -216,9 +218,9 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::className(), $args[2]);
     }
 
-    public function testClientValidateAttribute()
+    public function testClientValidateAttribute(): void
     {
-        $view = new \yii\base\View();
+        $view = new View();
         $val = new TestValidator();
         $this->assertNull(
             $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', $view)
@@ -237,7 +239,7 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::className(), $args[2]);
     }
 
-    public function testIsActive()
+    public function testIsActive(): void
     {
         $val = new TestValidator();
         $this->assertTrue($val->isActive('scenA'));
@@ -251,7 +253,7 @@ class ValidatorTest extends TestCase
         $this->assertTrue($val->isActive('scenC'));
     }
 
-    public function testAddError()
+    public function testAddError(): void
     {
         $val = new TestValidator();
         $m = $this->getTestModel(['attr_msg_val' => 'abc']);
@@ -268,7 +270,7 @@ class ValidatorTest extends TestCase
         $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
     }
 
-    public function testGetAttributeNames()
+    public function testGetAttributeNames(): void
     {
         $validator = new TestValidator();
         $validator->attributes = ['id', 'name', '!email'];
@@ -278,7 +280,7 @@ class ValidatorTest extends TestCase
     /**
      * @depends  testGetAttributeNames
      */
-    public function testGetActiveValidatorsForSafeAttributes()
+    public function testGetActiveValidatorsForSafeAttributes(): void
     {
         $model = $this->getTestModel();
         $validators = $model->getActiveValidators('safe_attr');
@@ -297,7 +299,7 @@ class ValidatorTest extends TestCase
      * @see https://github.com/yiisoft/yii2/issues/13979
      * @see https://github.com/yiisoft/yii2/pull/14413
      */
-    public function testAttributeNamesDynamic()
+    public function testAttributeNamesDynamic(): void
     {
         $model = new DynamicModel(['email1' => 'invalid', 'email2' => 'invalid']);
         $validator = new TestValidator();
@@ -316,7 +318,7 @@ class ValidatorTest extends TestCase
      * @see https://github.com/yiisoft/yii2/issues/17233
      * @see https://github.com/yiisoft/yii2/pull/17234
      */
-    public function testScalarAttributeNames()
+    public function testScalarAttributeNames(): void
     {
         $model = new DynamicModel();
         $model->defineAttribute(1);

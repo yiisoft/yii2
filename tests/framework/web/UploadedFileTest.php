@@ -47,7 +47,7 @@ class UploadedFileTest extends TestCase
         ];
     }
 
-    private function generateFakeFiles()
+    private function generateFakeFiles(): void
     {
         $_FILES['ModelStub[prod_image]'] = $this->generateFakeFileData();
         $_FILES['ModelStub[prod_images][]'] = $this->generateFakeFileData();
@@ -64,7 +64,7 @@ class UploadedFileTest extends TestCase
 
     // Tests :
 
-    public function testGetInstance()
+    public function testGetInstance(): void
     {
         $productImage = UploadedFile::getInstance(new ModelStub(), 'prod_image');
         $vendorImage = VendorImage::getInstance(new ModelStub(), 'vendor_image');
@@ -73,7 +73,7 @@ class UploadedFileTest extends TestCase
         $this->assertInstanceOf(VendorImage::className(), $vendorImage);
     }
 
-    public function testGetInstances()
+    public function testGetInstances(): void
     {
         $productImages = UploadedFile::getInstances(new ModelStub(), 'prod_images');
         $vendorImages = VendorImage::getInstances(new ModelStub(), 'vendor_images');
@@ -87,7 +87,7 @@ class UploadedFileTest extends TestCase
         }
     }
 
-    public function testSaveAs()
+    public function testSaveAs(): void
     {
         $tmpImage = UploadedFile::getInstance(new ModelStub(), 'temp_image');
         $targetFile = '@runtime/test_saved_uploaded_file_' . time();
@@ -98,7 +98,7 @@ class UploadedFileTest extends TestCase
         @unlink($targetFile);
     }
 
-    public function testSaveFileFromMultipartFormDataParser()
+    public function testSaveFileFromMultipartFormDataParser(): void
     {
         $_FILES = [];
         UploadedFile::reset();

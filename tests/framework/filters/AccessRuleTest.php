@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\filters;
 
+use yiiunit\TestCase;
+use yii\rbac\BaseManager;
 use Closure;
 use Yii;
 use yii\base\Action;
@@ -22,7 +24,7 @@ use yiiunit\framework\rbac\AuthorRule;
 /**
  * @group filters
  */
-class AccessRuleTest extends \yiiunit\TestCase
+class AccessRuleTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -76,7 +78,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * @return \yii\rbac\BaseManager
+     * @return BaseManager
      */
     protected function mockAuthManager()
     {
@@ -121,7 +123,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         return $auth;
     }
 
-    public function testMatchAction()
+    public function testMatchAction(): void
     {
         $action = $this->mockAction();
         $user = false;
@@ -149,7 +151,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
     }
 
-    public function testMatchController()
+    public function testMatchController(): void
     {
         $action = $this->mockAction();
         $user = false;
@@ -181,7 +183,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     /**
      * @depends testMatchController
      */
-    public function testMatchControllerWildcard()
+    public function testMatchControllerWildcard(): void
     {
         $action = $this->mockAction();
         $user = false;
@@ -310,7 +312,7 @@ class AccessRuleTest extends \yiiunit\TestCase
      * @param array|Closure $roleParams params for $roleParams
      * @param bool $expected the expected result or null
      */
-    public function testMatchRole($actionid, $allow, $userid, $roleParams, $expected)
+    public function testMatchRole($actionid, $allow, $userid, $roleParams, $expected): void
     {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
@@ -335,7 +337,7 @@ class AccessRuleTest extends \yiiunit\TestCase
      *
      * @see https://github.com/yiisoft/yii2/issues/4793
      */
-    public function testMatchRoleWithoutUser()
+    public function testMatchRoleWithoutUser(): void
     {
         $action = $this->mockAction();
         $request = $this->mockRequest();
@@ -349,7 +351,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->allows($action, false, $request);
     }
 
-    public function testMatchRoleSpecial()
+    public function testMatchRoleSpecial(): void
     {
         $action = $this->mockAction();
         $request = $this->mockRequest();
@@ -375,7 +377,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertTrue($rule->allows($action, $guest, $request));
     }
 
-    public function testMatchRolesAndPermissions()
+    public function testMatchRolesAndPermissions(): void
     {
         $action = $this->mockAction();
         $user = $this->getMockBuilder('\yii\web\User')->getMock();
@@ -415,7 +417,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     /**
      * Test that callable object can be used as roleParams values
      */
-    public function testMatchRoleWithRoleParamsCallable()
+    public function testMatchRoleWithRoleParamsCallable(): void
     {
         $action = $this->mockAction();
         $action->id = 'update';
@@ -436,7 +438,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertEquals(true, $rule->allows($action, $user, $request));
     }
 
-    public function testMatchVerb()
+    public function testMatchVerb(): void
     {
         $action = $this->mockAction();
         $user = false;
@@ -467,7 +469,7 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     // TODO test match custom callback
 
-    public function testMatchIP()
+    public function testMatchIP(): void
     {
         $action = $this->mockAction();
         $user = false;
@@ -567,7 +569,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
     }
 
-    public function testMatchIPWildcard()
+    public function testMatchIPWildcard(): void
     {
         $action = $this->mockAction();
         $user = false;
@@ -611,7 +613,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
     }
 
-    public function testMatchIPMask()
+    public function testMatchIPMask(): void
     {
         $action = $this->mockAction();
         $user = false;

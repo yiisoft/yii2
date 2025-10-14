@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
 use yii\grid\ActionColumn;
 use yii\helpers\Html;
 
@@ -16,9 +17,9 @@ use yii\helpers\Html;
  *
  * @group grid
  */
-class ActionColumnTest extends \yiiunit\TestCase
+class ActionColumnTest extends TestCase
 {
-    public function testInit()
+    public function testInit(): void
     {
         $column = new ActionColumn();
         $this->assertEquals(['view', 'update', 'delete'], array_keys($column->buttons));
@@ -36,7 +37,7 @@ class ActionColumnTest extends \yiiunit\TestCase
         $this->assertEquals(['view'], array_keys($column->buttons));
     }
 
-    public function testRenderDataCell()
+    public function testRenderDataCell(): void
     {
         $column = new ActionColumn();
         $column->urlCreator = function ($model, $key, $index) {

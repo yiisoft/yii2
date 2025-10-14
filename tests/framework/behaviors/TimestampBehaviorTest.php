@@ -72,7 +72,7 @@ class TimestampBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testNewRecord()
+    public function testNewRecord(): void
     {
         $currentTime = time();
 
@@ -89,7 +89,7 @@ class TimestampBehaviorTest extends TestCase
     /**
      * @depends testNewRecord
      */
-    public function testUpdateRecord()
+    public function testUpdateRecord(): void
     {
         $currentTime = time();
 
@@ -112,7 +112,7 @@ class TimestampBehaviorTest extends TestCase
     /**
      * @depends testNewRecord
      */
-    public function testUpdateCleanRecord()
+    public function testUpdateCleanRecord(): void
     {
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::className(),
@@ -151,7 +151,7 @@ class TimestampBehaviorTest extends TestCase
      * @param mixed $expression
      * @param mixed $expected
      */
-    public function testNewRecordExpression($expression, $expected)
+    public function testNewRecordExpression($expression, $expected): void
     {
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
@@ -179,7 +179,7 @@ class TimestampBehaviorTest extends TestCase
     /**
      * @depends testNewRecord
      */
-    public function testUpdateRecordExpression()
+    public function testUpdateRecordExpression(): void
     {
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
@@ -203,7 +203,7 @@ class TimestampBehaviorTest extends TestCase
         $this->assertEquals(date('Y'), $model->updated_at);
     }
 
-    public function testTouchingNewRecordGeneratesException()
+    public function testTouchingNewRecordGeneratesException(): void
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
@@ -218,7 +218,7 @@ class TimestampBehaviorTest extends TestCase
         $model->touch('created_at');
     }
 
-    public function testTouchingNotNewRecord()
+    public function testTouchingNotNewRecord(): void
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [

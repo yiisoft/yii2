@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use Yii;
 use yii\web\Request;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
@@ -25,7 +26,7 @@ class ListViewTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testEmptyListShown()
+    public function testEmptyListShown(): void
     {
         ob_start();
         $this->getListView([
@@ -37,7 +38,7 @@ class ListViewTest extends TestCase
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $out);
     }
 
-    public function testEmpty()
+    public function testEmpty(): void
     {
         ob_start();
         $this->getListView([
@@ -49,7 +50,7 @@ class ListViewTest extends TestCase
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $out);
     }
 
-    public function testEmptyListNotShown()
+    public function testEmptyListNotShown(): void
     {
         ob_start();
         $this->getListView([
@@ -94,7 +95,7 @@ HTML,
         ], $additionalConfig));
     }
 
-    public function testSimplyListView()
+    public function testSimplyListView(): void
     {
         ob_start();
         $this->getListView()->run();
@@ -112,7 +113,7 @@ HTML,
         );
     }
 
-    public function testWidgetOptions()
+    public function testWidgetOptions(): void
     {
         ob_start();
         $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
@@ -165,7 +166,7 @@ HTML,
      * @param mixed $itemView
      * @param string $expected
      */
-    public function testItemViewOptions($itemView, $expected)
+    public function testItemViewOptions($itemView, $expected): void
     {
         ob_start();
         $this->getListView(['itemView' => $itemView])->run();
@@ -211,7 +212,7 @@ HTML,
      * @param mixed $itemOptions
      * @param string $expected
      */
-    public function testItemOptions($itemOptions, $expected)
+    public function testItemOptions($itemOptions, $expected): void
     {
         ob_start();
         $this->getListView(['itemOptions' => $itemOptions])->run();
@@ -220,7 +221,7 @@ HTML,
         $this->assertEqualsWithoutLE($expected, $out);
     }
 
-    public function testBeforeAndAfterItem()
+    public function testBeforeAndAfterItem(): void
     {
         $before = function ($model, $key, $index, $widget) {
             $widget = get_class($widget);
@@ -261,7 +262,7 @@ HTML,
     /**
      * @see https://github.com/yiisoft/yii2/pull/14596
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         $this->getListView([
@@ -273,7 +274,7 @@ HTML,
         $this->assertTrue($initTriggered);
     }
 
-    public function testNoDataProvider()
+    public function testNoDataProvider(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('The "dataProvider" property must be set.');
@@ -291,7 +292,7 @@ HTML,
     /**
      * @dataProvider providerForNoSorter
      */
-    public function testRenderNoSorter($additionalConfig)
+    public function testRenderNoSorter($additionalConfig): void
     {
         $config = array_merge(['layout' => '{sorter}'], $additionalConfig);
 
@@ -302,7 +303,7 @@ HTML,
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $out);
     }
 
-    public function testRenderSorterOnlyWithNoItems()
+    public function testRenderSorterOnlyWithNoItems(): void
     {
         // by default sorter is skipped when there are no items during run()
         $out = (new ListView([
@@ -313,9 +314,9 @@ HTML,
         $this->assertEquals('', $out);
     }
 
-    public function testRenderSorter()
+    public function testRenderSorter(): void
     {
-        \Yii::$app->set('request', new Request(['scriptUrl' => '/']));
+        Yii::$app->set('request', new Request(['scriptUrl' => '/']));
 
         ob_start();
         $this->getListView([
@@ -334,7 +335,7 @@ HTML,
 </ul></div>', $out);
     }
 
-    public function testRenderSummaryWhenPaginationIsFalseAndSummaryIsNull()
+    public function testRenderSummaryWhenPaginationIsFalseAndSummaryIsNull(): void
     {
         ob_start();
         $this->getListView(['dataProvider' => $this->getDataProvider(['pagination' => false])])->run();
@@ -366,7 +367,7 @@ HTML,
     /**
      * @dataProvider providerForSummary
      */
-    public function testRenderSummaryWhenSummaryIsCustom($summary, $result)
+    public function testRenderSummaryWhenSummaryIsCustom($summary, $result): void
     {
         ob_start();
         $this->getListView(['summary' => $summary])->run();

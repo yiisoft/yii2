@@ -16,12 +16,12 @@ class Fixture1 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture2'];
 
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '1';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '1';
     }
@@ -31,12 +31,12 @@ class Fixture2 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture3'];
 
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '2';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '2';
     }
@@ -44,12 +44,12 @@ class Fixture2 extends Fixture
 
 class Fixture3 extends Fixture
 {
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '3';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '3';
     }
@@ -59,12 +59,12 @@ class Fixture4 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture5'];
 
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '4';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '4';
     }
@@ -74,12 +74,12 @@ class Fixture5 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture4'];
 
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '5';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '5';
     }
@@ -172,7 +172,7 @@ class MyTestCase
  */
 class FixtureTest extends TestCase
 {
-    public function testDependencies()
+    public function testDependencies(): void
     {
         foreach ($this->getDependencyTests() as $scenario => $result) {
             $test = new MyTestCase();
@@ -184,7 +184,7 @@ class FixtureTest extends TestCase
         }
     }
 
-    public function testLoadSequence()
+    public function testLoadSequence(): void
     {
         foreach ($this->getLoadSequenceTests() as $scenario => $result) {
             $test = new MyTestCase();

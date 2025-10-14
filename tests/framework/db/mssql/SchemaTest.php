@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\base\NotSupportedException;
 use yii\db\DefaultValueConstraint;
 use yii\db\mssql\Schema;
 use yiiunit\framework\db\AnyValue;
@@ -45,7 +46,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function testGetStringFieldsSize()
+    public function testGetStringFieldsSize(): void
     {
         /** @var Connection $db */
         $db = $this->getConnection();
@@ -90,9 +91,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @dataProvider quoteTableNameDataProvider
      * @param $name
      * @param $expectedName
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
-    public function testQuoteTableName($name, $expectedName)
+    public function testQuoteTableName($name, $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $quotedName = $schema->quoteTableName($name);
@@ -117,9 +118,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @dataProvider getTableSchemaDataProvider
      * @param $name
      * @param $expectedName
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
-    public function testGetTableSchema($name, $expectedName)
+    public function testGetTableSchema($name, $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $tableSchema = $schema->getTableSchema($name);
@@ -183,7 +184,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function testGetPrimaryKey()
+    public function testGetPrimaryKey(): void
     {
         $db = $this->getConnection();
 

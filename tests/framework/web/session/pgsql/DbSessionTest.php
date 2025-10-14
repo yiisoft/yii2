@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\web\session\pgsql;
 
+use yiiunit\framework\web\session\AbstractDbSessionTest;
+
 /**
  * Class DbSessionTest.
  *
@@ -16,7 +18,7 @@ namespace yiiunit\framework\web\session\pgsql;
  * @group db
  * @group pgsql
  */
-class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
+class DbSessionTest extends AbstractDbSessionTest
 {
     protected function setUp(): void
     {

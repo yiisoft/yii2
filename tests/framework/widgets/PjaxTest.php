@@ -15,7 +15,7 @@ use yiiunit\TestCase;
 
 class PjaxTest extends TestCase
 {
-    public function testGeneratedIdByPjaxWidget()
+    public function testGeneratedIdByPjaxWidget(): void
     {
         ListView::$counter = 0;
         Pjax::$counter = 0;
@@ -43,7 +43,7 @@ class PjaxTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/15536
      */
-    public function testShouldTriggerInitEvent()
+    public function testShouldTriggerInitEvent(): void
     {
         $initTriggered = false;
         ob_start();

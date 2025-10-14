@@ -18,7 +18,7 @@ class EchoMigrateController extends MigrateController
     /**
      * {@inheritdoc}
      */
-    public function stdout($string)
+    public function stdout($string): void
     {
         echo $string;
     }

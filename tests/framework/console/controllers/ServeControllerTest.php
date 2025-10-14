@@ -25,7 +25,7 @@ class ServeControllerTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testAddressTaken()
+    public function testAddressTaken(): void
     {
         $docroot = __DIR__ . '/stub';
 
@@ -50,7 +50,7 @@ class ServeControllerTest extends TestCase
         $this->assertStringContainsString('http://localhost:8080 is taken by another process.', $result);
     }
 
-    public function testDefaultValues()
+    public function testDefaultValues(): void
     {
         $docroot = __DIR__ . '/stub';
 
@@ -76,7 +76,7 @@ class ServeControllerTest extends TestCase
         $this->assertStringContainsString('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
 
-    public function testDoocRootWithNoExistValue()
+    public function testDoocRootWithNoExistValue(): void
     {
         $docroot = '/not/exist/path';
 
@@ -99,7 +99,7 @@ class ServeControllerTest extends TestCase
         $this->assertStringContainsString("Document root \"{$docroot}\" does not exist.", $result);
     }
 
-    public function testWithRouterNoExistValue()
+    public function testWithRouterNoExistValue(): void
     {
         $docroot = __DIR__ . '/stub';
         $router = '/not/exist/path';
@@ -125,7 +125,7 @@ class ServeControllerTest extends TestCase
         $this->assertStringContainsString("Routing file \"$router\" does not exist.", $result);
     }
 
-    public function testWithRouterValue()
+    public function testWithRouterValue(): void
     {
         $docroot = __DIR__ . '/stub';
         $router = __DIR__ . '/stub/index.php';

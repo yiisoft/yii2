@@ -19,7 +19,7 @@ class BooleanTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
-    public function testBoolean()
+    public function testBoolean(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -60,7 +60,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertTrue($phpTypeCast);
     }
 
-    public function testBooleanWithValueInteger()
+    public function testBooleanWithValueInteger(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -101,7 +101,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertTrue($phpTypeCast);
     }
 
-    public function testBooleanValueNegative()
+    public function testBooleanValueNegative(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -133,7 +133,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertTrue($phpTypeCast);
     }
 
-    public function testBooleanWithValueNull()
+    public function testBooleanWithValueNull(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -165,7 +165,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertNull($phpTypeCast);
     }
 
-    public function testBooleanWithValueOverflow()
+    public function testBooleanWithValueOverflow(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();

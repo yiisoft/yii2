@@ -16,7 +16,7 @@ use yiiunit\TestCase;
  */
 class UnsetArrayValueTest extends TestCase
 {
-    public function testSetState()
+    public function testSetState(): void
     {
         $object = new UnsetArrayValue();
         $result = $object::__set_state([]);

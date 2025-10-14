@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use Yii;
 use yii\caching\FileCache;
 use yii\web\View;
 use yiiunit\TestCase;
@@ -22,7 +23,7 @@ class ViewTest extends TestCase
         parent::setUp();
     }
 
-    public function testRegisterJsVar()
+    public function testRegisterJsVar(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -53,7 +54,7 @@ class ViewTest extends TestCase
         );
     }
 
-    public function testRegisterJsFileWithAlias()
+    public function testRegisterJsFileWithAlias(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -86,7 +87,7 @@ class ViewTest extends TestCase
         $this->assertStringContainsString('<script src="/baseUrl/js/somefile.js"></script></body>', $html);
     }
 
-    public function testRegisterCssFileWithAlias()
+    public function testRegisterCssFileWithAlias(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -112,7 +113,7 @@ class ViewTest extends TestCase
         $this->assertStringContainsString('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
 
-    public function testRegisterregisterCsrfMetaTags()
+    public function testRegisterregisterCsrfMetaTags(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -135,7 +136,7 @@ class ViewTest extends TestCase
         $csrfToken1 = $this->getCSRFTokenValue($html);
 
         // regenerate token
-        \Yii::$app->request->getCsrfToken(true);
+        Yii::$app->request->getCsrfToken(true);
         $view->registerCsrfMetaTags();
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertStringContainsString('<meta name="csrf-param" content="_csrf">', $html);
@@ -160,16 +161,16 @@ class ViewTest extends TestCase
         return $matches[1];
     }
 
-    private function setUpAliases()
+    private function setUpAliases(): void
     {
-        \Yii::setAlias('@web', '/');
-        \Yii::setAlias('@webroot', '@yiiunit/data/web');
-        \Yii::setAlias('@testAssetsPath', '@webroot/assets');
-        \Yii::setAlias('@testAssetsUrl', '@web/assets');
-        \Yii::setAlias('@testSourcePath', '@webroot/assetSources');
+        Yii::setAlias('@web', '/');
+        Yii::setAlias('@webroot', '@yiiunit/data/web');
+        Yii::setAlias('@testAssetsPath', '@webroot/assets');
+        Yii::setAlias('@testAssetsUrl', '@web/assets');
+        Yii::setAlias('@testSourcePath', '@webroot/assetSources');
     }
 
-    public function testAppendTimestampForRegisterJsFile()
+    public function testAppendTimestampForRegisterJsFile(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -184,7 +185,7 @@ class ViewTest extends TestCase
 
         $pattern = '/assetSources\/js\/jquery\.js\?v\=\d+"/';
 
-        \Yii::$app->assetManager->appendTimestamp = true;
+        Yii::$app->assetManager->appendTimestamp = true;
 
         // will be used AssetManager and timestamp
         $view = new View();
@@ -196,20 +197,20 @@ class ViewTest extends TestCase
         $this->assertMatchesRegularExpression($pattern, $html);
 
         // test append timestamp when @web is prefixed in url
-        \Yii::setAlias('@web', '/test-app');
+        Yii::setAlias('@web', '/test-app');
         $view = new View();
         $view->registerJsFile(
-            \Yii::getAlias('@web/assetSources/js/jquery.js'),
+            Yii::getAlias('@web/assetSources/js/jquery.js'),
             ['depends' => 'yii\web\AssetBundle']
         ); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertMatchesRegularExpression($pattern, $html);
 
         // test append timestamp when @web has the same name as the asset-source folder
-        \Yii::setAlias('@web', '/assetSources/');
+        Yii::setAlias('@web', '/assetSources/');
         $view = new View();
         $view->registerJsFile(
-            \Yii::getAlias('@web/assetSources/js/jquery.js'),
+            Yii::getAlias('@web/assetSources/js/jquery.js'),
             ['depends' => 'yii\web\AssetBundle']
         ); // <script src="/assetSources/js/jquery.js?v=1541056962"></script>
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
@@ -299,7 +300,7 @@ class ViewTest extends TestCase
             $html
         );
 
-        \Yii::$app->assetManager->appendTimestamp = false;
+        Yii::$app->assetManager->appendTimestamp = false;
 
         $view = new View();
         $view->registerJsFile(
@@ -374,7 +375,7 @@ class ViewTest extends TestCase
         );
     }
 
-    public function testAppendTimestampForRegisterCssFile()
+    public function testAppendTimestampForRegisterCssFile(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -389,7 +390,7 @@ class ViewTest extends TestCase
 
         $pattern = '/assetSources\/css\/stub\.css\?v\=\d+"/';
 
-        \Yii::$app->assetManager->appendTimestamp = true;
+        Yii::$app->assetManager->appendTimestamp = true;
 
         // will be used AssetManager and timestamp
         $view = new View();
@@ -401,20 +402,20 @@ class ViewTest extends TestCase
         $this->assertMatchesRegularExpression($pattern, $html);
 
         // test append timestamp when @web is prefixed in url
-        \Yii::setAlias('@web', '/test-app');
+        Yii::setAlias('@web', '/test-app');
         $view = new View();
         $view->registerCssFile(
-            \Yii::getAlias('@web/assetSources/css/stub.css'),
+            Yii::getAlias('@web/assetSources/css/stub.css'),
             ['depends' => 'yii\web\AssetBundle']
         ); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertMatchesRegularExpression($pattern, $html);
 
         // test append timestamp when @web has the same name as the asset-source folder
-        \Yii::setAlias('@web', '/assetSources/');
+        Yii::setAlias('@web', '/assetSources/');
         $view = new View();
         $view->registerCssFile(
-            \Yii::getAlias('@web/assetSources/css/stub.css'),
+            Yii::getAlias('@web/assetSources/css/stub.css'),
             ['depends' => 'yii\web\AssetBundle']
         ); // <link href="/assetSources/css/stub.css?v=1541056962" rel="stylesheet" >
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
@@ -504,7 +505,7 @@ class ViewTest extends TestCase
             $html
         );
 
-        \Yii::$app->assetManager->appendTimestamp = false;
+        Yii::$app->assetManager->appendTimestamp = false;
 
         $view = new View();
         $view->registerCssFile(
