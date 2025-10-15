@@ -40,7 +40,7 @@ Yii Framework 2 Change Log
 - Enh #20539: Update minimum PHP version requirement from `7.3` to `7.4` (terabytesoftw)
 - Bug #20541: Remove deprecated caching components: `XCache` and `ZendDataCache`, and update related tests and documentation (terabytesoftw)
 - Bug #20548: Fix PHP `8.5` `null` array offset deprecation warnings (terabytesoftw)
-- Enh #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (mspirkov)
+- New #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (mspirkov)
 - Bug #20570: Fix `@var` annotation for `UrlManager::$cache` (mspirkov)
 - Bug #20571: Fix `@var` annotation for `yii\web\Response::$stream` (mspirkov)
 - Bug #20569: Fix `@param` annotation for `$default` in `HeaderCollection::get` (mspirkov)
