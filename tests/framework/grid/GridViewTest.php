@@ -44,7 +44,7 @@ class GridViewTest extends TestCase
     /**
      * @return array
      */
-    public function emptyDataProvider()
+    public static function emptyDataProvider(): array
     {
         return [
             [null, 'No results found.'],

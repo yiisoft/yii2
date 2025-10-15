@@ -389,7 +389,7 @@ class RequestTest extends TestCase
         $this->assertEquals($_GET, ['id' => 63]);
     }
 
-    public function getHostInfoDataProvider()
+    public static function getHostInfoDataProvider(): array
     {
         return [
             // empty
@@ -593,7 +593,7 @@ class RequestTest extends TestCase
         $this->assertNull($request->getServerPort());
     }
 
-    public function isSecureServerDataProvider()
+    public static function isSecureServerDataProvider(): array
     {
         return [
             [['HTTPS' => 1], true],
@@ -721,7 +721,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function isSecureServerWithoutTrustedHostDataProvider()
+    public static function isSecureServerWithoutTrustedHostDataProvider(): array
     {
         return [
             // RFC 7239 forwarded header is not enabled
@@ -760,7 +760,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getUserIPDataProvider()
+    public static function getUserIPDataProvider(): array
     {
         return [
             [
@@ -938,7 +938,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getUserIPWithoutTruestHostDataProvider()
+    public static function getUserIPWithoutTruestHostDataProvider(): array
     {
         return [
             // RFC 7239 forwarded is not enabled
@@ -980,7 +980,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getMethodDataProvider()
+    public static function getMethodDataProvider(): array
     {
         return [
             [
@@ -1014,7 +1014,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getIsAjaxDataProvider()
+    public static function getIsAjaxDataProvider(): array
     {
         return [
             [
@@ -1046,7 +1046,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getIsPjaxDataProvider()
+    public static function getIsPjaxDataProvider(): array
     {
         return [
             [
@@ -1090,7 +1090,7 @@ class RequestTest extends TestCase
         $this->assertNull($request->getOrigin());
     }
 
-    public function httpAuthorizationHeadersProvider()
+    public static function httpAuthorizationHeadersProvider(): array
     {
         return [
             ['not a base64 at all', [base64_decode('not a base64 at all'), null]],
@@ -1169,7 +1169,7 @@ class RequestTest extends TestCase
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 
-    public function getBodyParamsDataProvider()
+    public static function getBodyParamsDataProvider(): array
     {
         return [
             'json' => ['application/json', '{"foo":"bar","baz":1}', ['foo' => 'bar', 'baz' => 1]],
@@ -1193,7 +1193,7 @@ class RequestTest extends TestCase
         $this->assertSame($expected, $request->getBodyParams());
     }
 
-    public function trustedHostAndInjectedXForwardedForDataProvider()
+    public static function trustedHostAndInjectedXForwardedForDataProvider(): array
     {
         return [
             'emptyIPs' => ['1.1.1.1', '', null, ['10.10.10.10'], '1.1.1.1'],
@@ -1230,7 +1230,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedUserIp, $request->getUserIP());
     }
 
-    public function trustedHostAndXForwardedPortDataProvider()
+    public static function trustedHostAndXForwardedPortDataProvider(): array
     {
         return [
             'defaultPlain' => ['1.1.1.1', 80, null, null, 80],
@@ -1274,7 +1274,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedMethod, $request->getMethod());
     }
 
-    public function alreadyResolvedIpDataProvider()
+    public static function alreadyResolvedIpDataProvider(): array
     {
         return [
             'resolvedXForwardedFor' => [
@@ -1317,7 +1317,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
     }
 
-    public function parseForwardedHeaderDataProvider()
+    public static function parseForwardedHeaderDataProvider(): array
     {
         return [
             [

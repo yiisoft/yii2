@@ -592,7 +592,7 @@ class ContainerTest extends TestCase
         ]);
     }
 
-    public function dataNotInstantiableException()
+    public static function dataNotInstantiableException(): array
     {
         return [
             [Bar::class],

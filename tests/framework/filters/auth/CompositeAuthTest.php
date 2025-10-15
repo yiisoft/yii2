@@ -178,7 +178,7 @@ class CompositeAuthTest extends TestCase
         $this->assertEquals('success', $controller->run('a'));
     }
 
-    public function compositeAuthDataProvider()
+    public static function compositeAuthDataProvider(): array
     {
         return [
             //base usage

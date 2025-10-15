@@ -49,7 +49,7 @@ class AuthTest extends TestCase
         $this->mockWebApplication($appConfig);
     }
 
-    public function tokenProvider()
+    public static function tokenProvider(): array
     {
         return [
             ['token1', 'user1'],
@@ -136,7 +136,7 @@ class AuthTest extends TestCase
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
-    public function authMethodProvider()
+    public static function authMethodProvider(): array
     {
         return [
             ['yii\filters\auth\CompositeAuth'],

@@ -129,7 +129,7 @@ HTML,
         );
     }
 
-    public function itemViewOptions()
+    public static function itemViewOptions(): array
     {
         return [
             [
@@ -175,7 +175,7 @@ HTML,
         $this->assertEqualsWithoutLE($expected, $out);
     }
 
-    public function itemOptions()
+    public static function itemOptions(): array
     {
         return [
             [
@@ -348,7 +348,7 @@ HTML,
 </div>', $out);
     }
 
-    public function providerForSummary()
+    public static function providerForSummary(): array
     {
         return [
             'empty' => ['', '<div id="w0" class="list-view">

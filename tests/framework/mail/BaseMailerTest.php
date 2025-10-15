@@ -216,7 +216,7 @@ class BaseMailerTest extends TestCase
         $this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
     }
 
-    public function htmlAndPlainProvider()
+    public static function htmlAndPlainProvider(): array
     {
         return [
             [

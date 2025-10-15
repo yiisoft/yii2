@@ -61,7 +61,7 @@ class VarDumperTest extends TestCase
      * Data provider for [[testExport()]].
      * @return array test data
      */
-    public function dataProviderExport()
+    public static function dataProviderExport(): array
     {
         // Regular :
 

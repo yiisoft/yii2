@@ -23,7 +23,7 @@ class TableTest extends TestCase
         $this->mockApplication();
     }
 
-    public function getTableData()
+    public static function getTableData(): array
     {
         return [
             [
@@ -69,7 +69,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
-    public function getMultiLineTableData()
+    public static function getMultiLineTableData(): array
     {
         return [
             [
@@ -138,7 +138,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
-    public function getNumericTableData()
+    public static function getNumericTableData(): array
     {
         return [
             [
@@ -658,7 +658,7 @@ EXPECTED;
         $this->assertTrue(true);
     }
 
-    public function dataMinimumWidth()
+    public static function dataMinimumWidth(): array
     {
         return [
             ['X'],

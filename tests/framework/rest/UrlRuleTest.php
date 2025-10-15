@@ -224,7 +224,7 @@ class UrlRuleTest extends TestCase
      *   - first element is the route to create
      *   - second element is the expected URL
      */
-    public function createUrlDataProvider()
+    public static function createUrlDataProvider(): array
     {
         return [
             // with pluralize
@@ -415,7 +415,7 @@ class UrlRuleTest extends TestCase
      *   - second element is the expected URL
      *   - third element is the expected result of getCreateUrlStatus() method
      */
-    public static function getCreateUrlStatusProvider()
+    public static function getCreateUrlStatusProvider(): array
     {
         return [
             'single controller' => [

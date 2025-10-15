@@ -218,7 +218,7 @@ class AccessRuleTest extends TestCase
      *           test user id
      *           expected match result (true, false, null)
      */
-    public function matchRoleProvider()
+    public static function matchRoleProvider(): array
     {
         return [
             ['create', true,  'user1',   [], true],

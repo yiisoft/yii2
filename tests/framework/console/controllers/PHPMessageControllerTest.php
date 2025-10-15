@@ -124,7 +124,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $this->assertEqualsWithoutLE($expected, $head);
     }
 
-    public function messageFileCategoriesDataProvider()
+    public static function messageFileCategoriesDataProvider(): array
     {
         return [
             'removeUnused:false - unused category should not be removed - normal category' => ['test_delete_category', true, false, true],

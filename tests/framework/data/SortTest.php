@@ -209,7 +209,7 @@ class SortTest extends TestCase
         $this->assertEquals('/index.php?r=site%2Findex&sort=age', $sort->createUrl('name'));
     }
 
-    public function providerForLinkWithParams()
+    public static function providerForLinkWithParams(): array
     {
         return [
             [true, null, '<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>'],
@@ -251,7 +251,7 @@ class SortTest extends TestCase
         $this->assertEquals($link, $sort->link('age'));
     }
 
-    public function providerForLinkWithParamsAndPassedButEmptySort()
+    public static function providerForLinkWithParamsAndPassedButEmptySort(): array
     {
         return [
             [null],
@@ -295,7 +295,7 @@ class SortTest extends TestCase
         );
     }
 
-    public function providerForLinkWithoutParams()
+    public static function providerForLinkWithoutParams(): array
     {
         return [
             [false, null, '<a href="/index.php?r=site%2Findex&amp;sort=age" data-sort="age">Age</a>'],
