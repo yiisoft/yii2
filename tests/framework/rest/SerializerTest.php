@@ -285,7 +285,7 @@ class SerializerTest extends TestCase
         ], $serializer->serialize($model));
     }
 
-    public function dataProviderSerializeDataProvider()
+    public static function dataProviderSerializeDataProvider(): array
     {
         return [
             [

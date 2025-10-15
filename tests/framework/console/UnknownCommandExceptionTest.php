@@ -32,7 +32,7 @@ class UnknownCommandExceptionTest extends TestCase
         ]);
     }
 
-    public function suggestedCommandsProvider()
+    public static function suggestedCommandsProvider(): array
     {
         return [
             ['migate', ['migrate']],

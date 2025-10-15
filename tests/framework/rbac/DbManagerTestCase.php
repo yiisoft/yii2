@@ -183,7 +183,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->auth->assign($updatePost, $userId);
     }
 
-    public function emptyValuesProvider()
+    public static function emptyValuesProvider(): array
     {
         return [
             [0, 0, true],

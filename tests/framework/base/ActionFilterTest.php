@@ -90,7 +90,7 @@ class ActionFilterTest extends TestCase
         $this->assertEquals([1, 3, 2], $controller->result);
     }
 
-    public function actionFilterProvider()
+    public static function actionFilterProvider(): array
     {
         return [
             [['class' => 'yii\filters\AccessControl', 'user' => 'yiiunit\framework\base\MockUser']],

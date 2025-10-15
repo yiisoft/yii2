@@ -205,7 +205,7 @@ class HtmlTest extends TestCase
      * Data provider for [[testBeginFormSimulateViaPost()]].
      * @return array test data
      */
-    public function dataProviderBeginFormSimulateViaPost()
+    public static function dataProviderBeginFormSimulateViaPost(): array
     {
         return [
           ['<form action="/foo" method="GET">', 'GET'],
@@ -255,7 +255,7 @@ class HtmlTest extends TestCase
     /**
      * @return array
      */
-    public function imgDataProvider()
+    public static function imgDataProvider(): array
     {
         return [
             [
@@ -426,7 +426,7 @@ class HtmlTest extends TestCase
     /**
      * @return array
      */
-    public function textareaDataProvider()
+    public static function textareaDataProvider(): array
     {
         return [
             [
@@ -618,7 +618,7 @@ EOD;
         );
     }
 
-    public function providerForNonStrictBooleanDropDownList()
+    public static function providerForNonStrictBooleanDropDownList(): array
     {
         return [
             [null, false, false, false],
@@ -653,7 +653,7 @@ HTML;
         );
     }
 
-    public function providerForStrictBooleanDropDownList()
+    public static function providerForStrictBooleanDropDownList(): array
     {
         return [
             [null, false, false, false],
@@ -1480,7 +1480,7 @@ EOD;
      * Data provider for [[testActiveTextInput()]].
      * @return array test data
      */
-    public function dataProviderActiveTextInput()
+    public static function dataProviderActiveTextInput(): array
     {
         return [
             [
@@ -1523,7 +1523,7 @@ EOD;
      * Data provider for [[testActiveTextInputMaxLength]].
      * @return array test data
      */
-    public function dataProviderActiveTextInputMaxLength()
+    public static function dataProviderActiveTextInputMaxLength(): array
     {
         return [
             [
@@ -1572,7 +1572,7 @@ EOD;
      * Data provider for [[testActivePasswordInput()]].
      * @return array test data
      */
-    public function dataProviderActivePasswordInput()
+    public static function dataProviderActivePasswordInput(): array
     {
         return [
             [
@@ -1615,7 +1615,7 @@ EOD;
      * Data provider for [[testActiveInput_TypeText]].
      * @return array test data
      */
-    public function dataProviderActiveInput_TypeText()
+    public static function dataProviderActiveInput_TypeText(): array
     {
         return [
             [
@@ -1654,7 +1654,7 @@ EOD;
         $this->assertEquals($expectedHtml, Html::activeInput('text', $model, 'name', $options));
     }
 
-    public function errorSummaryDataProvider()
+    public static function errorSummaryDataProvider(): array
     {
         return [
             [
@@ -1781,7 +1781,7 @@ EOD;
      * Data provider for [[testActiveTextArea()]].
      * @return array test data
      */
-    public function dataProviderActiveTextArea()
+    public static function dataProviderActiveTextArea(): array
     {
         return [
             [
@@ -1850,7 +1850,7 @@ EOD;
      * Data provider for [[testActiveRadio()]].
      * @return array test data
      */
-    public function dataProviderActiveRadio()
+    public static function dataProviderActiveRadio(): array
     {
         return [
             [
@@ -1894,7 +1894,7 @@ EOD;
      * Data provider for [[testActiveCheckbox()]].
      * @return array test data
      */
-    public function dataProviderActiveCheckbox()
+    public static function dataProviderActiveCheckbox(): array
     {
         return [
             [
@@ -1938,7 +1938,7 @@ EOD;
      * Data provider for [[testAttributeNameValidation()]].
      * @return array test data
      */
-    public function validAttributeNamesProvider()
+    public static function validAttributeNamesProvider(): array
     {
         $data = [
             ['asd]asdf.asdfa[asdfa', 'asdf.asdfa'],
@@ -1964,7 +1964,7 @@ EOD;
      * Data provider for [[testAttributeNameValidation()]].
      * @return array test data
      */
-    public function invalidAttributeNamesProvider()
+    public static function invalidAttributeNamesProvider(): array
     {
         return [
             ['. ..'],
@@ -2216,7 +2216,7 @@ HTML;
         $this->assertStringContainsString('placeholder="My placeholder: Name"', $html);
     }
 
-    public static function getInputIdDataProvider()
+    public static function getInputIdDataProvider(): array
     {
         return [
             [
@@ -2255,7 +2255,7 @@ HTML;
         ];
     }
 
-    public static function getInputIdByNameDataProvider()
+    public static function getInputIdByNameDataProvider(): array
     {
         return [
             [

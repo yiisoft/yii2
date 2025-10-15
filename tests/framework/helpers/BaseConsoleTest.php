@@ -71,7 +71,7 @@ class BaseConsoleTest extends TestCase
         $this->assertEquals($ansiExpected, $ansiActual);
     }
 
-    public function ansiColorizedSubstr_withColors_data()
+    public static function ansiColorizedSubstr_withColors_data(): array
     {
         return [
             ['%rFoo%gBar%n', 0, 3, '%rFoo%n'],

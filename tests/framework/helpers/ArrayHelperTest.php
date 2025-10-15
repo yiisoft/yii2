@@ -862,7 +862,7 @@ class ArrayHelperTest extends TestCase
         ArrayHelper::keyExists('a', $array, false);
     }
 
-    public function valueProvider()
+    public static function valueProvider(): array
     {
         return [
             ['name', 'test'],
@@ -995,7 +995,7 @@ class ArrayHelperTest extends TestCase
      * Data provider for [[testSetValue()]].
      * @return array test data
      */
-    public function dataProviderSetValue()
+    public static function dataProviderSetValue(): array
     {
         return [
             [
@@ -1571,7 +1571,7 @@ class ArrayHelperTest extends TestCase
      * Data provider for [[testRecursiveSort()]].
      * @return array test data
      */
-    public function dataProviderRecursiveSort()
+    public static function dataProviderRecursiveSort(): array
     {
         return [
             //Normal index array

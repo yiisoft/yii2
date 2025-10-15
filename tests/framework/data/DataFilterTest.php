@@ -87,7 +87,7 @@ class DataFilterTest extends TestCase
      * Data provider for [[testValidate()]].
      * @return array test data.
      */
-    public function dataProviderValidate()
+    public static function dataProviderValidate(): array
     {
         return [
             [
@@ -295,7 +295,7 @@ class DataFilterTest extends TestCase
      * Data provider for [[testNormalize()]].
      * @return array test data.
      */
-    public function dataProviderNormalize()
+    public static function dataProviderNormalize(): array
     {
         return [
             [

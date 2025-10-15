@@ -39,7 +39,7 @@ class PageCacheTest extends TestCase
         CacheTestCase::$microtime = null;
     }
 
-    public function cacheTestCaseProvider()
+    public static function cacheTestCaseProvider(): array
     {
         return [
             // Basic

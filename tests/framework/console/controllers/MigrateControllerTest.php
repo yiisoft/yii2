@@ -159,7 +159,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateMigrationDataProvider()
+    public static function generateMigrationDataProvider(): array
     {
         $params = [
             'create_fields' => [
@@ -359,7 +359,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateJunctionMigrationDataProvider()
+    public static function generateJunctionMigrationDataProvider(): array
     {
         return [
             ['create_junction_post_and_tag_tables', 'post_tag', 'post', 'tag'],
@@ -487,7 +487,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('No new migrations found. Your system is up-to-date.', $result);
     }
 
-    public function refreshMigrationDataProvider()
+    public static function refreshMigrationDataProvider(): array
     {
         return [
             ['default'],

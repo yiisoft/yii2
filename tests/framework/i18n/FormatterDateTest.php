@@ -548,7 +548,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDuration(null));
     }
 
-    public function dateInputs()
+    public static function dateInputs(): array
     {
         return [
             ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
@@ -584,7 +584,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame($expected, $this->formatter->asDatetime($value, 'yyyy-MM-dd HH:mm:ss'));
     }
 
-    public function provideTimezones()
+    public static function provideTimezones(): array
     {
         return [
             ['UTC'],

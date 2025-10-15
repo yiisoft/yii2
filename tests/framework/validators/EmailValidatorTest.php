@@ -144,7 +144,7 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_email'));
     }
 
-    public function malformedAddressesProvider()
+    public static function malformedAddressesProvider(): array
     {
         return [
             // this is the demo email used in the proof of concept of the exploit

@@ -130,7 +130,7 @@ class TimestampBehaviorTest extends TestCase
         $model->save(false);
     }
 
-    public function expressionProvider()
+    public static function expressionProvider(): array
     {
         return [
             [
@@ -142,7 +142,7 @@ class TimestampBehaviorTest extends TestCase
             [new Expression("strftime('%Y')"), date('Y')],
             ['2015-10-20', '2015-10-20'],
             [time(), time()],
-            [[$this, 'arrayCallable'], '2015-10-20'],
+            [[null, 'arrayCallable'], '2015-10-20'],
         ];
     }
 
@@ -153,6 +153,10 @@ class TimestampBehaviorTest extends TestCase
      */
     public function testNewRecordExpression($expression, $expected): void
     {
+        if (is_array($expression)) {
+            $expression[0] ??= $this;
+        }
+
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [

@@ -129,7 +129,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertStringContainsString('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 
-    public function dataHtmlEncode()
+    public static function dataHtmlEncode(): array
     {
         return [
             [
