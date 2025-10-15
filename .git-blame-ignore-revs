@@ -12,3 +12,7 @@ c82da8dc829d557e82b12edbed9e37003dfcc9a3
 d71f7309aeec1ac0fef223840cb65bbbf96f1f99
 # Use `::class` instead of `::className()` in tests
 c960f93dfeefe760eb44bcdfa4463dcc7b29cc43
+# Replace deprecated PHPUnit mock builder `setMethods()` usage with `createPartialMock()`, `onlyMethods()` and `addMethods()` methods
+80545100b3f40423118b5cd413fcdb9c7dd7fa5e
+# Make test data providers static and declare array return types
+da20adc82aef3eb5ae0bad3889fe6695e6424f06
