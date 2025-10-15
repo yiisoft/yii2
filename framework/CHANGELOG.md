@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Bug #20608: Fix `@return` annotations for `yii\rest\Serializer` methods (mspirkov)
 - Bug #20610: Fix `@var` annotation for `ActiveQueryTrait::$with` (mspirkov)
 - Bug #20611: Fix `@return` annotations for `yii\i18n\GettextMoFile` methods (mspirkov)
+- Bug #20620: Fix `@var` annotation for `RateLimiter::$user` (mspirkov)
 
 
 2.0.53 June 27, 2025
