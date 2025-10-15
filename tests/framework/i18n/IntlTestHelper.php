@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ namespace yiiunit\framework\i18n {
          * Enable it only for tests prefixed with testIntl.
          * @param Testcase $test
          */
-        public static function setIntlStatus($test)
+        public static function setIntlStatus($test): void
         {
             static::$enableIntl = null;
             if (strncmp($test->getName(false), 'testIntl', 8) === 0) {
@@ -33,7 +34,7 @@ namespace yiiunit\framework\i18n {
             }
         }
 
-        public static function resetIntlStatus()
+        public static function resetIntlStatus(): void
         {
             static::$enableIntl = null;
         }

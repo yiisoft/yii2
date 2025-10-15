@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -6,8 +7,9 @@
  */
 
 namespace yiiunit\framework\db\mysql;
-use yii\db\Expression;
 
+use PDO;
+use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;
 use yiiunit\framework\db\AnyCaseValue;
@@ -20,9 +22,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'mysql';
 
-    public function testLoadDefaultDatetimeColumn()
+    public function testLoadDefaultDatetimeColumn(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
             $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
         }
         $sql = <<<SQL
@@ -40,13 +42,13 @@ SQL;
 
         $dt = $schema->columns['dt'];
 
-        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertInstanceOf(Expression::class, $dt->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP', (string)$dt->defaultValue);
     }
 
-    public function testDefaultDatetimeColumnWithMicrosecs()
+    public function testDefaultDatetimeColumnWithMicrosecs(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
             $this->markTestSkipped('CURRENT_TIMESTAMP with microseconds as default column value is supported since MySQL 5.6.4.');
         }
         $sql = <<<SQL
@@ -61,15 +63,15 @@ SQL;
         $schema = $this->getConnection()->getTableSchema('current_timestamp_test');
 
         $dt = $schema->columns['dt'];
-        $this->assertInstanceOf(Expression::className(), $dt->defaultValue);
+        $this->assertInstanceOf(Expression::class, $dt->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP(2)', (string)$dt->defaultValue);
 
         $ts = $schema->columns['ts'];
-        $this->assertInstanceOf(Expression::className(), $ts->defaultValue);
+        $this->assertInstanceOf(Expression::class, $ts->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP(3)', (string)$ts->defaultValue);
     }
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in MySQL.');
     }
@@ -94,7 +96,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraints($tableName, $type, $expected)
+    public function testTableSchemaConstraints($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -129,7 +131,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -155,7 +157,7 @@ SQL;
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -166,7 +168,7 @@ SQL;
      * @param string $type
      * @param mixed $expected
      */
-    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected): void
     {
         $version = $this->getConnection(false)->getServerVersion();
 
@@ -192,7 +194,7 @@ SQL;
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -204,7 +206,7 @@ SQL;
      * @see https://mariadb.com/kb/en/library/now/#description
      * @see https://github.com/yiisoft/yii2/issues/15167
      */
-    public function testAlternativeDisplayOfDefaultCurrentTimestampInMariaDB()
+    public function testAlternativeDisplayOfDefaultCurrentTimestampInMariaDB(): void
     {
         /**
          * We do not have a real database MariaDB >= 10.2.3 for tests, so we emulate the information that database
@@ -214,7 +216,7 @@ SQL;
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
-            'collation' => NULL,
+            'collation' => null,
             'null' => 'NO',
             'key' => '',
             'default' => 'current_timestamp()',
@@ -223,8 +225,8 @@ SQL;
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(ColumnSchema::className(), $column);
-        $this->assertInstanceOf(Expression::className(), $column->defaultValue);
+        $this->assertInstanceOf(ColumnSchema::class, $column);
+        $this->assertInstanceOf(Expression::class, $column->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
     }
 
@@ -234,23 +236,23 @@ SQL;
      *
      * @see https://github.com/yiisoft/yii2/issues/19047
      */
-    public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB()
+    public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB(): void
     {
         $schema = new Schema();
         $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
             'field' => 'emulated_MariaDB_field',
             'type' => 'timestamp',
-            'collation' => NULL,
+            'collation' => null,
             'null' => 'NO',
             'key' => '',
-            'default' => NULL,
+            'default' => null,
             'extra' => '',
             'privileges' => 'select,insert,update,references',
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(ColumnSchema::className(), $column);
-        $this->assertEquals(NULL, $column->defaultValue);
+        $this->assertInstanceOf(ColumnSchema::class, $column);
+        $this->assertEquals(null, $column->defaultValue);
     }
 
     public function getExpectedColumns()

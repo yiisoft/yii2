@@ -9,8 +9,8 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\db\TableSchema;
 
 /**
@@ -247,9 +247,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $table = $this->db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
             $tableName = $this->db->quoteTableName($tableName);
-            if ($value === null) {
+
+            if ($value === null || $value === 1) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
+                $subSql = (new Query())
+                    ->select('last_value')
+                    ->from('sys.identity_columns')
+                    ->where(['object_id' => new Expression("OBJECT_ID('{$tableName}')")])
+                    ->andWhere(['IS NOT', 'last_value', null])
+                    ->createCommand($this->db)
+                    ->getRawSql();
+                $sql = "SELECT COALESCE(MAX({$key}), CASE WHEN EXISTS({$subSql}) THEN 0 ELSE 1 END) FROM {$tableName}";
+                $value = $this->db->createCommand($sql)->queryScalar();
             } else {
                 $value = (int) $value;
             }
@@ -423,7 +432,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $modelClass \yii\db\ActiveRecord */
+        /** @var \yii\db\ActiveRecord $modelClass */
         $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
@@ -486,7 +495,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $cols = [];
         $outputColumns = [];
         if ($version2005orLater) {
-            /* @var $schema TableSchema */
+            /** @var TableSchema $schema */
             $schema = $this->db->getTableSchema($table);
             foreach ($schema->columns as $column) {
                 if ($column->isComputed) {
@@ -494,9 +503,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
 
                 $dbType = $column->dbType;
-                if (in_array($dbType, ['char', 'varchar', 'nchar', 'nvarchar', 'binary', 'varbinary'])) {
+                if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'])) {
                     $dbType .= '(MAX)';
+                } elseif (in_array($dbType, ['char',  'nchar'])) {
+                    $dbType .= "($column->size)";
                 }
+
                 if ($column->dbType === Schema::TYPE_TIMESTAMP) {
                     $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
                 }
@@ -531,7 +543,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
 
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);

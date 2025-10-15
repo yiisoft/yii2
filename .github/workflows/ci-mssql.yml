@@ -1,8 +1,39 @@
-on:
-  - pull_request
-  - push
-
+---
 name: ci-mssql
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "eslint.config.js"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -13,32 +44,24 @@ jobs:
     name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
 
     env:
-      EXTENSIONS: pdo, pdo_sqlsrv
-      XDEBUG_MODE: coverage, develop
+      COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
+      PHP_EXTENSIONS: curl, intl, pdo, pdo_sqlsrv
+      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+      PHPUNIT_GROUP: mssql
+      XDEBUG_MODE: coverage
 
-    runs-on: ${{ matrix.mssql.os || 'ubuntu-latest' }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php:
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
-          - 8.3
-          - 8.4
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
         mssql:
           - version: server:2022-latest
             mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
 
         include:
-          - php: 7.4
-            mssql:
-              version: server:2017-latest
-              mssql-tool: /opt/mssql-tools/bin/sqlcmd
-              os: ubuntu-22.04
           - php: 8.0
             mssql:
               version: server:2019-latest
@@ -46,51 +69,45 @@ jobs:
 
     services:
       mssql:
-          image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
-          env:
-              SA_PASSWORD: YourStrong!Passw0rd
-              ACCEPT_EULA: Y
-              MSSQL_PID: Developer
-          ports:
-              - 1433:1433
-          options: --name=mssql --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
+        image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
+        env:
+          SA_PASSWORD: YourStrong!Passw0rd
+          ACCEPT_EULA: Y
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: >-
+          --name=mssql
+          --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-retries=3
+          --health-timeout=5s
 
     steps:
-      - name: Install ODBC driver
+      - name: Monitor action permissions.
+        if: runner.os != 'Windows'
+        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Install ODBC driver.
         run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Create MS SQL Database
+      - name: Create MS SQL Database.
         run: docker exec -i mssql ${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: xdebug
-          extensions: ${{ env.EXTENSIONS }}
-          ini-values: date.timezone='UTC'
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: composer:v2, pecl
 
-      - name: Update composer
-        run: composer self-update
-
-      - name: Install dependencies with composer
-        if: matrix.php != '8.4'
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Install dependencies with PHP 8.4.
-        if: matrix.php == '8.4'
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ignore-platform-reqs --ansi
-
-      - name: Run MSSQL tests with PHPUnit and generate coverage.
-        run: vendor/bin/phpunit --group mssql --coverage-clover=coverage.xml --colors=always
-
-      - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
-        uses: codecov/codecov-action@v4
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          group: ${{ env.PHPUNIT_GROUP }}

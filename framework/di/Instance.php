@@ -23,7 +23,7 @@ use yii\base\InvalidConfigException;
  *
  * The following example shows how to configure a DI container with Instance:
  *
- * ```php
+ * ```
  * $container = new \yii\di\Container;
  * $container->set('cache', [
  *     'class' => 'yii\caching\DbCache',
@@ -37,7 +37,7 @@ use yii\base\InvalidConfigException;
  *
  * And the following example shows how a class retrieves a component from a service locator:
  *
- * ```php
+ * ```
  * class DbCache extends Cache
  * {
  *     public $db = 'db';
@@ -97,7 +97,7 @@ class Instance
      *
      * For example,
      *
-     * ```php
+     * ```
      * use yii\db\Connection;
      *
      * // returns Yii::$app->db
@@ -114,15 +114,28 @@ class Instance
      * @param ServiceLocator|Container|null $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid
+     *
+     * @template T of object
+     * @psalm-param class-string<T>|null $type
+     * @phpstan-param class-string<T>|null $type
+     * @psalm-return ($type is null ? object : T)
+     * @phpstan-return ($type is null ? object : T)
      */
     public static function ensure($reference, $type = null, $container = null)
     {
         if (is_array($reference)) {
-            $class = isset($reference['class']) ? $reference['class'] : $type;
             if (!$container instanceof Container) {
                 $container = Yii::$container;
             }
-            unset($reference['class']);
+            if (isset($reference['__class'])) {
+                $class = $reference['__class'];
+                unset($reference['__class'], $reference['class']);
+            } elseif (isset($reference['class'])) {
+                $class = $reference['class'];
+                unset($reference['class']);
+            } else {
+                $class = $type;
+            }
             $component = $container->get($class, [], $reference);
             if ($type === null || $component instanceof $type) {
                 return $component;
@@ -160,7 +173,7 @@ class Instance
      * Returns the actual object referenced by this Instance object.
      * @param ServiceLocator|Container|null $container the container used to locate the referenced object.
      * If null, the method will first try `Yii::$app` then `Yii::$container`.
-     * @return object the actual object referenced by this Instance object.
+     * @return object|null the actual object referenced by this Instance object.
      */
     public function get($container = null)
     {

@@ -49,3 +49,6 @@ phpunit.phar
 /node_modules
 .env
 package-lock.json
+
+# local phpstan config
+phpstan.neon

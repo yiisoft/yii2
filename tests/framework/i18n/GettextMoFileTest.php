@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ use yiiunit\TestCase;
  */
 class GettextMoFileTest extends TestCase
 {
-    public function testLoad()
+    public function testLoad(): void
     {
         $moFile = new GettextMoFile();
         $moFilePath = __DIR__ . '/../../data/i18n/test.mo';
@@ -45,7 +46,7 @@ class GettextMoFileTest extends TestCase
         $this->assertTrue(in_array("тест1\\nтест2\n\\\nтест3", $context2));
     }
 
-    public function testSave()
+    public function testSave(): void
     {
         // initial data
         $s = chr(4);

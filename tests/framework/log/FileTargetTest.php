@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -30,7 +31,7 @@ class FileTargetTest extends TestCase
      * Tests that log directory isn't created during init process
      * @see https://github.com/yiisoft/yii2/issues/15662
      */
-    public function testInit()
+    public function testInit(): void
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         FileHelper::removeDirectory(dirname($logFile));
@@ -43,7 +44,7 @@ class FileTargetTest extends TestCase
         );
     }
 
-    public function testRotate()
+    public function testRotate(): void
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         FileHelper::removeDirectory(dirname($logFile));
@@ -112,7 +113,7 @@ class FileTargetTest extends TestCase
         $this->assertFileDoesNotExist($logFile . '.4');
     }
 
-    public function testLogEmptyStrings()
+    public function testLogEmptyStrings(): void
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         $this->clearLogFile($logFile);
@@ -155,7 +156,7 @@ class FileTargetTest extends TestCase
         $this->assertFileDoesNotExist($logFile);
     }
 
-    private function clearLogFile($logFile)
+    private function clearLogFile($logFile): void
     {
         FileHelper::removeDirectory(dirname($logFile));
         mkdir(dirname($logFile), 0777, true);

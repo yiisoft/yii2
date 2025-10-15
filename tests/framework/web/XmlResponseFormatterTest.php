@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use SplStack;
 use yii\web\XmlResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
 
@@ -92,7 +94,7 @@ class XmlResponseFormatterTest extends FormatterTest
     {
         $expectedXmlForStack = '';
 
-        $postsStack = new \SplStack();
+        $postsStack = new SplStack();
 
         $postsStack->push(new Post(915, 'record1'));
         $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .
@@ -134,7 +136,7 @@ class XmlResponseFormatterTest extends FormatterTest
         ]);
     }
 
-    public function testCustomRootTag()
+    public function testCustomRootTag(): void
     {
         $rootTag = 'custom';
         $formatter = $this->getFormatterInstance([
@@ -146,7 +148,7 @@ class XmlResponseFormatterTest extends FormatterTest
         $this->assertEquals($this->xmlHead . "<$rootTag>1</$rootTag>\n", $this->response->content);
     }
 
-    public function testRootTagRemoval()
+    public function testRootTagRemoval(): void
     {
         $formatter = $this->getFormatterInstance([
             'rootTag' => null,
@@ -157,7 +159,7 @@ class XmlResponseFormatterTest extends FormatterTest
         $this->assertEquals($this->xmlHead . "1\n", $this->response->content);
     }
 
-    public function testNoObjectTags()
+    public function testNoObjectTags(): void
     {
         $formatter = $this->getFormatterInstance([
             'useObjectTags' => false,
@@ -168,7 +170,7 @@ class XmlResponseFormatterTest extends FormatterTest
         $this->assertEquals($this->xmlHead . "<response><id>123</id><title>abc</title></response>\n", $this->response->content);
     }
 
-    public function testObjectTagToLowercase()
+    public function testObjectTagToLowercase(): void
     {
         $formatter = $this->getFormatterInstance(['objectTagToLowercase' => true]);
 

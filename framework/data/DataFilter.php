@@ -24,7 +24,7 @@ use yii\validators\Validator;
  *
  * Filter example:
  *
- * ```json
+ * ```
  * {
  *     "or": [
  *         {
@@ -51,7 +51,7 @@ use yii\validators\Validator;
  * In the request the filter should be specified using a key name equal to [[filterAttributeName]]. Thus actual HTTP request body
  * will look like following:
  *
- * ```json
+ * ```
  * {
  *     "filter": {"or": {...}},
  *     "page": 2,
@@ -62,7 +62,7 @@ use yii\validators\Validator;
  * Raw filter value should be assigned to [[filter]] property of the model.
  * You may populate it from request data via [[load()]] method:
  *
- * ```php
+ * ```
  * use yii\data\DataFilter;
  *
  * $dataFilter = new DataFilter();
@@ -72,7 +72,7 @@ use yii\validators\Validator;
  * In order to function this class requires a search model specified via [[searchModel]]. This search model should declare
  * all available search attributes and their validation rules. For example:
  *
- * ```php
+ * ```
  * class SearchModel extends \yii\base\Model
  * {
  *     public $id;
@@ -92,7 +92,7 @@ use yii\validators\Validator;
  * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as a [[searchModel]].
  * In this case you should specify [[searchModel]] using a PHP callable:
  *
- * ```php
+ * ```
  * function () {
  *     return (new \yii\base\DynamicModel(['id' => null, 'name' => null]))
  *         ->addRule(['id', 'name'], 'trim')
@@ -125,14 +125,14 @@ use yii\validators\Validator;
  */
 class DataFilter extends Model
 {
-    const TYPE_INTEGER = 'integer';
-    const TYPE_FLOAT = 'float';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_STRING = 'string';
-    const TYPE_ARRAY = 'array';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_DATE = 'date';
-    const TYPE_TIME = 'time';
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_DATETIME = 'datetime';
+    public const TYPE_DATE = 'date';
+    public const TYPE_TIME = 'time';
 
     /**
      * @var string name of the attribute that handles filter value.
@@ -156,7 +156,7 @@ class DataFilter extends Model
      *
      * You may specify several keywords for the same filter build key, creating multiple aliases. For example:
      *
-     * ```php
+     * ```
      * [
      *     'eq' => '=',
      *     '=' => '=',
@@ -230,7 +230,7 @@ class DataFilter extends Model
      * @var array actual attribute names to be used in searched condition, in format: [filterAttribute => actualAttribute].
      * For example, in case of using table joins in the search query, attribute map may look like the following:
      *
-     * ```php
+     * ```
      * [
      *     'authorName' => '{{author}}.[[name]]'
      * ]
@@ -387,6 +387,8 @@ class DataFilter extends Model
             }
             return self::TYPE_DATE;
         }
+
+        return null;
     }
 
     /**

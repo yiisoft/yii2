@@ -30,7 +30,7 @@ abstract class ErrorHandler extends Component
      * @event Event an event that is triggered when the handler is called by shutdown function via [[handleFatalError()]].
      * @since 2.0.46
      */
-    const EVENT_SHUTDOWN = 'shutdown';
+    public const EVENT_SHUTDOWN = 'shutdown';
 
     /**
      * @var bool whether to discard any existing page output before error display. Defaults to true.
@@ -55,7 +55,7 @@ abstract class ErrorHandler extends Component
     public $silentExitOnException;
 
     /**
-     * @var string Used to reserve memory for fatal error handler.
+     * @var string|null Used to reserve memory for fatal error handler.
      */
     private $_memoryReserve;
     /**
@@ -67,7 +67,7 @@ abstract class ErrorHandler extends Component
      */
     private $_registered = false;
     /**
-     * @var string the current working directory
+     * @var string|null the current working directory
      */
     private $_workingDirectory;
 
@@ -222,7 +222,13 @@ abstract class ErrorHandler extends Component
         if (E_ERROR & $code) {
             $exception = new ErrorException($message, $code, $code, $file, $line);
             $ref = new \ReflectionProperty('\Exception', 'trace');
-            $ref->setAccessible(true);
+
+            // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+            // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+            if (PHP_VERSION_ID < 80100) {
+                $ref->setAccessible(true);
+            }
+
             $ref->setValue($exception, $backtrace);
             $this->_hhvmException = $exception;
         }
@@ -378,6 +384,11 @@ abstract class ErrorHandler extends Component
      * to PHP errors because exceptions cannot be thrown inside of them.
      * @param \Throwable $exception the exception to convert to a PHP error.
      * @return never
+     *
+     * @deprecated since 2.0.53. Use conditional exception throwing in `__toString()` methods instead.
+     * For PHP < 7.4: use `trigger_error()` directly with `convertExceptionToString()` method.
+     * For PHP >= 7.4: throw the exception directly as `__toString()` supports exceptions.
+     * This method will be removed in 2.2.0.
      */
     public static function convertExceptionToError($exception)
     {

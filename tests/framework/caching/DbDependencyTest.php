@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -38,7 +39,7 @@ class DbDependencyTest extends DatabaseTestCase
         $db->createCommand()->insert('dependency_item', ['value' => 'initial'])->execute();
     }
 
-    public function testQueryOneIsExecutedWhenQueryCacheEnabled()
+    public function testQueryOneIsExecutedWhenQueryCacheEnabled(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();
@@ -59,7 +60,7 @@ class DbDependencyTest extends DatabaseTestCase
         $this->assertTrue($dependency->isChanged($cache));
     }
 
-    public function testQueryOneIsExecutedWhenQueryCacheDisabled()
+    public function testQueryOneIsExecutedWhenQueryCacheDisabled(): void
     {
         $db = $this->getConnection(false);
         $cache = new ArrayCache();
@@ -80,7 +81,7 @@ class DbDependencyTest extends DatabaseTestCase
         $this->assertTrue($dependency->isChanged($cache));
     }
 
-    public function testMissingSqlThrowsException()
+    public function testMissingSqlThrowsException(): void
     {
         $this->expectException('\yii\base\InvalidConfigException');
 

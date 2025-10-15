@@ -8,7 +8,6 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
-use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
 use yii\caching\DbCache;
 use yii\db\Exception;
@@ -339,6 +338,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $this->addCommentOnTable($table, '');
     }
 
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT EXISTS(' . $rawSql . ') AS ' . $this->db->quoteColumnName('result');
+    }
 
     /**
      * Gets column definition.

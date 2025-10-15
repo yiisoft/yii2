@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +8,9 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use Exception;
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\AssetController;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
@@ -72,10 +75,11 @@ class AssetControllerTest extends TestCase
      */
     protected function createAssetController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $assetController = new AssetControllerMock('asset', $module);
         $assetController->interactive = false;
         $assetController->jsCompressor = 'cp {from} {to}';
@@ -133,13 +137,13 @@ class AssetControllerTest extends TestCase
      * @param string $fileName output file name.
      * @param array[] $bundles asset bundles config.
      * @param array $config additional config parameters.
-     * @throws \Exception on failure.
+     * @throws Exception on failure.
      */
     protected function createCompressConfigFile($fileName, array $bundles, array $config = [])
     {
         $content = '<?php return ' . var_export($this->createCompressConfig($bundles, $config), true) . ';';
         if (file_put_contents($fileName, $content) <= 0) {
-            throw new \Exception("Unable to create file '{$fileName}'!");
+            throw new Exception("Unable to create file '{$fileName}'!");
         }
     }
 
@@ -148,7 +152,7 @@ class AssetControllerTest extends TestCase
      * @param string $fileRelativeName file name relative to [[testFilePath]]
      * @param string $content file content
      * @param string $fileBasePath base path for the created files, if not set [[testFilePath]] is used.
-     * @throws \Exception on failure.
+     * @throws Exception on failure.
      */
     protected function createAssetSourceFile($fileRelativeName, $content, $fileBasePath = null)
     {
@@ -158,7 +162,7 @@ class AssetControllerTest extends TestCase
         $fileFullName = $fileBasePath . DIRECTORY_SEPARATOR . $fileRelativeName;
         $this->createDir(dirname($fileFullName));
         if (file_put_contents($fileFullName, $content) <= 0) {
-            throw new \Exception("Unable to create file '{$fileFullName}'!");
+            throw new Exception("Unable to create file '{$fileFullName}'!");
         }
     }
 
@@ -183,13 +187,8 @@ class AssetControllerTest extends TestCase
     protected function invokeAssetControllerMethod($methodName, array $args = [])
     {
         $controller = $this->createAssetController();
-        $controllerClassReflection = new \ReflectionClass(get_class($controller));
-        $methodReflection = $controllerClassReflection->getMethod($methodName);
-        $methodReflection->setAccessible(true);
-        $result = $methodReflection->invokeArgs($controller, $args);
-        $methodReflection->setAccessible(false);
 
-        return $result;
+        return $this->invokeMethod($controller, $methodName, $args);
     }
 
     /**
@@ -252,7 +251,7 @@ EOL;
 
     // Tests :
 
-    public function testActionTemplate()
+    public function testActionTemplate(): void
     {
         $configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
         $this->runAssetControllerAction('template', [$configFileName]);
@@ -261,7 +260,7 @@ EOL;
         $this->assertIsArray($config, 'Invalid config created!');
     }
 
-    public function testActionCompress()
+    public function testActionCompress(): void
     {
         // Given :
         $cssFiles = [
@@ -341,7 +340,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/5194
      */
-    public function testCompressExternalAsset()
+    public function testCompressExternalAsset(): void
     {
         // Given :
         $externalAssetConfig = [
@@ -412,7 +411,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/7539
      */
-    public function testDetectCircularDependency()
+    public function testDetectCircularDependency(): void
     {
         // Given :
         $namespace = __NAMESPACE__;
@@ -575,7 +574,7 @@ EOL;
      * @param $outputFilePath
      * @param $expectedCssContent
      */
-    public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent)
+    public function testAdjustCssUrl($cssContent, $inputFilePath, $outputFilePath, $expectedCssContent): void
     {
         $adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', [$cssContent, $inputFilePath, $outputFilePath]);
 
@@ -622,7 +621,7 @@ EOL;
      * @param string $sourcePath
      * @param string $expectedRealPath
      */
-    public function testFindRealPath($sourcePath, $expectedRealPath)
+    public function testFindRealPath($sourcePath, $expectedRealPath): void
     {
         $expectedRealPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $expectedRealPath);
         $realPath = $this->invokeAssetControllerMethod('findRealPath', [$sourcePath]);
@@ -634,7 +633,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/9708
      */
-    public function testActionCompressDeleteSource()
+    public function testActionCompressDeleteSource(): void
     {
         // Given :
         $cssFiles = [
@@ -704,7 +703,7 @@ EOL;
      *
      * @see https://github.com/yiisoft/yii2/issues/10567
      */
-    public function testActionCompressOverrideAsExternal()
+    public function testActionCompressOverrideAsExternal(): void
     {
         // Given :
         $cssFiles = [

@@ -9,6 +9,7 @@ namespace yii\db\cubrid;
 
 use Yii;
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
@@ -18,14 +19,18 @@ use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @template T of ColumnSchema
+ * @extends BaseSchema<T>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -255,7 +260,10 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return \yii\db\ColumnSchema the column schema object
+     * @return ColumnSchema the column schema object
+     *
+     * @phpstan-return T
+     * @psalm-return T
      */
     protected function loadColumnSchema($info)
     {

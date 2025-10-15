@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -98,7 +99,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     // By default phpunit runs inherited test after inline tests, so `testCreateTranslation()` would be run after
     // `testCustomFileHeaderAndDocBlock()` (that would break `@depends` annotation). This ensures that
     // `testCreateTranslation() will be run before `testCustomFileHeaderAndDocBlock()`.
-    public function testCreateTranslation()
+    public function testCreateTranslation(): void
     {
         parent::testCreateTranslation();
     }
@@ -106,7 +107,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     /**
      * @depends testCreateTranslation
      */
-    public function testCustomFileHeaderAndDocBlock()
+    public function testCustomFileHeaderAndDocBlock(): void
     {
         $category = 'test_headers_category';
         $message = 'test message';
@@ -123,7 +124,8 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         $this->assertEqualsWithoutLE($expected, $head);
     }
 
-    public function messageFileCategoriesDataProvider(){
+    public function messageFileCategoriesDataProvider()
+    {
         return [
             'removeUnused:false - unused category should not be removed - normal category' => ['test_delete_category', true, false, true],
             'removeUnused:false - unused category should not be removed - nested category' => ['nested/category', true, false, true],
@@ -146,7 +148,7 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
     /**
      * @dataProvider messageFileCategoriesDataProvider
      */
-    public function testRemoveUnusedBehavior($category, $isUnused, $removeUnused, $isExpectedToExist)
+    public function testRemoveUnusedBehavior($category, $isUnused, $removeUnused, $isExpectedToExist): void
     {
         $this->saveMessages(['test message' => 'test translation'], $category);
         $filePath = $this->getMessageFilePath($category);

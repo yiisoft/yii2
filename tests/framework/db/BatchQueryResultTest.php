@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,7 +21,7 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         ActiveRecord::$db = $this->getConnection();
     }
 
-    public function testQuery()
+    public function testQuery(): void
     {
         $db = $this->getConnection();
 
@@ -28,7 +29,7 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $query = new Query();
         $query->from('customer')->orderBy('id');
         $result = $query->batch(2, $db);
-        $this->assertInstanceOf(BatchQueryResult::className(), $result);
+        $this->assertInstanceOf(BatchQueryResult::class, $result);
         $this->assertEquals(2, $result->batchSize);
         $this->assertSame($result->query, $query);
 
@@ -85,7 +86,7 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $this->assertEquals('address3', $allRows['user3']['address']);
     }
 
-    public function testActiveQuery()
+    public function testActiveQuery(): void
     {
         $db = $this->getConnection();
 
@@ -108,7 +109,7 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $this->assertCount(0, $customers[2]->orders);
     }
 
-    public function testBatchWithoutDbParameter()
+    public function testBatchWithoutDbParameter(): void
     {
         $query = Customer::find()->orderBy('id')->limit(3);
         $customers = $this->getAllRowsFromBatch($query->batch(2));
@@ -118,7 +119,7 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $this->assertEquals('user3', $customers[2]->name);
     }
 
-    public function testBatchWithIndexBy()
+    public function testBatchWithIndexBy(): void
     {
         $query = Customer::find()->orderBy('id')->limit(3)->indexBy('id');
         $customers = $this->getAllRowsFromBatch($query->batch(2));

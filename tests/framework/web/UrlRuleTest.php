@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,7 +29,7 @@ class UrlRuleTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testCreateUrl()
+    public function testCreateUrl(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
@@ -43,7 +44,7 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequest()
+    public function testParseRequest(): void
     {
         $manager = new UrlManager([
             'cache' => null,
@@ -67,11 +68,11 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequestWithNormalizer()
+    public function testParseRequestWithNormalizer(): void
     {
         $manager = new UrlManager([
             'cache' => null,
-            'normalizer' => UrlNormalizer::className(),
+            'normalizer' => UrlNormalizer::class,
         ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
@@ -95,12 +96,12 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequestWithUrlManagerCustomNormalizer()
+    public function testParseRequestWithUrlManagerCustomNormalizer(): void
     {
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
@@ -129,7 +130,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
@@ -158,7 +159,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
@@ -186,7 +187,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => null,
             ],
         ]);
@@ -215,7 +216,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => $normalizerAction,
             ],
         ]);
@@ -237,7 +238,7 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequestWithUrlRuleCustomNormalizer()
+    public function testParseRequestWithUrlRuleCustomNormalizer(): void
     {
         $manager = new UrlManager([
             'cache' => null,
@@ -279,7 +280,7 @@ class UrlRuleTest extends TestCase
         $this->assertEquals(['post/index', ['page' => 1, 'tag' => 'a']], $result);
     }
 
-    public function testToString()
+    public function testToString(): void
     {
         $suites = $this->getTestsForToString();
         foreach ($suites as $i => $suite) {
@@ -1297,7 +1298,7 @@ class UrlRuleTest extends TestCase
      * @param array $config
      * @param array $tests
      */
-    public function testGetCreateUrlStatus($config, $tests)
+    public function testGetCreateUrlStatus($config, $tests): void
     {
         foreach ($tests as $test) {
             list($route, $params, $expected, $status) = $test;
@@ -1318,6 +1319,30 @@ class UrlRuleTest extends TestCase
                 $this->assertSame($status, $rule->getCreateUrlStatus(), $errorMessage);
             }
         }
+    }
+
+    public function testUrlRuleDefaultsWithNonStringValues(): void
+    {
+        $this->mockWebApplication();
+
+        $manager = new UrlManager(
+            [
+                'cache' => null,
+            ],
+        );
+
+        $rule = new UrlRule(
+            [
+                'pattern' => 'post/index',
+                'route' => 'post/index',
+                'defaults' => ['page' => 1],
+            ],
+        );
+
+        $this->assertSame(
+            'post/index',
+            $rule->createUrl($manager, 'post/index', ['page' => '1']),
+        );
     }
 
     /**

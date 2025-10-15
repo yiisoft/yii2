@@ -26,7 +26,7 @@ use yii\db\QueryInterface;
  *
  * The following are examples of validation rules using this validator:
  *
- * ```php
+ * ```
  * // a1 needs to exist
  * ['a1', 'exist']
  * // a1 needs to exist, but its value will use a2 to check for the existence
@@ -299,7 +299,7 @@ class ExistValidator extends Validator
      */
     protected function createQuery($targetClass, $condition)
     {
-        /* @var $targetClass \yii\db\ActiveRecordInterface */
+        /** @var \yii\db\ActiveRecordInterface $targetClass */
         $query = $targetClass::find()->andWhere($condition);
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,8 @@
 
 namespace yiiunit\framework\filters\auth;
 
+use stdClass;
+use ReflectionClass;
 use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
@@ -23,7 +26,7 @@ class AuthMethodTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ]);
@@ -36,10 +39,9 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMockBuilder(AuthMethod::className())
-            ->setMethods(['authenticate'])
-            ->getMock();
+        $filter = $this->createPartialMock(AuthMethod::class, ['authenticate']);
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
+
 
         return $filter;
     }
@@ -57,25 +59,36 @@ class AuthMethodTest extends TestCase
 
     // Tests :
 
-    public function testBeforeAction()
+    public function testBeforeAction(): void
     {
         $action = $this->createAction();
 
-        $filter = $this->createFilter(function () {return new \stdClass();});
+        $filter = $this->createFilter(function () {
+            return new stdClass();
+        });
         $this->assertTrue($filter->beforeAction($action));
 
-        $filter = $this->createFilter(function () {return null;});
+        $filter = $this->createFilter(function () {
+            return null;
+        });
         $this->expectException('yii\web\UnauthorizedHttpException');
         $this->assertTrue($filter->beforeAction($action));
     }
 
-    public function testIsOptional()
+    public function testIsOptional(): void
     {
-        $reflection = new \ReflectionClass(AuthMethod::className());
+        $reflection = new ReflectionClass(AuthMethod::class);
         $method = $reflection->getMethod('isOptional');
-        $method->setAccessible(true);
 
-        $filter = $this->createFilter(function () {return new \stdClass();});
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
+
+        $filter = $this->createFilter(function () {
+            return new stdClass();
+        });
 
         $filter->optional = ['some'];
         $this->assertFalse($method->invokeArgs($filter, [$this->createAction(['id' => 'index'])]));

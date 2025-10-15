@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,7 @@ class RequiredValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateValueWithDefaults()
+    public function testValidateValueWithDefaults(): void
     {
         $val = new RequiredValidator();
         $this->assertFalse($val->validate(null));
@@ -34,7 +35,7 @@ class RequiredValidatorTest extends TestCase
         $this->assertTrue($val->validate(['with', 'elements']));
     }
 
-    public function testValidateValueWithValue()
+    public function testValidateValueWithValue(): void
     {
         $val = new RequiredValidator(['requiredValue' => 55]);
         $this->assertTrue($val->validate(55));
@@ -49,7 +50,7 @@ class RequiredValidatorTest extends TestCase
         $this->assertFalse($val->validate(true));
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         // empty req-value
         $val = new RequiredValidator();
@@ -68,7 +69,7 @@ class RequiredValidatorTest extends TestCase
         $this->assertFalse($m->hasErrors('attr_val'));
     }
 
-    public function testErrorClientMessage()
+    public function testErrorClientMessage(): void
     {
         $validator = new RequiredValidator(['message' => '<strong>error</strong> for {attribute}']);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -89,7 +90,7 @@ class HostControlTest extends TestCase
      * @param string $host
      * @param bool $allowed
      */
-    public function testFilter($allowedHosts, $host, $allowed)
+    public function testFilter($allowedHosts, $host, $allowed): void
     {
         $_SERVER['HTTP_HOST'] = $host;
 
@@ -122,7 +123,7 @@ class HostControlTest extends TestCase
 
     public $denyCallBackCalled = false;
 
-    public function testDenyCallback()
+    public function testDenyCallback(): void
     {
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
@@ -137,12 +138,13 @@ class HostControlTest extends TestCase
         $this->assertTrue($this->denyCallBackCalled, 'denyCallback should have been called.');
     }
 
-    public function testDefaultHost()
+    public function testDefaultHost(): void
     {
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
-        $filter->denyCallback = function () {};
+        $filter->denyCallback = function () {
+        };
 
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
@@ -151,7 +153,7 @@ class HostControlTest extends TestCase
         $this->assertSame('yiiframework.com', Yii::$app->getRequest()->getHostName());
     }
 
-    public function testErrorHandlerWithDefaultHost()
+    public function testErrorHandlerWithDefaultHost(): void
     {
         $this->expectException('yii\web\NotFoundHttpException');
         $this->expectExceptionMessage('Page not found.');

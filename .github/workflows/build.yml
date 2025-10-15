@@ -1,15 +1,49 @@
+---
 name: build
 
-on: [push, pull_request]
+permissions:
+  contents: read
+  pull-requests: write
 
-env:
-  DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  PHPUNIT_EXCLUDE_GROUP: db,wincache,xcache,zenddata
-  XDEBUG_MODE: coverage, develop
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "eslint.config.js"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  PHP_EXTENSIONS: curl, dom, imagick, intl, mbstring, mcrypt, memcached
+  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+  PHPUNIT_EXCLUDE_GROUP: db,wincache
+  XDEBUG_MODE: coverage
 
 jobs:
   phpunit:
@@ -17,72 +51,81 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11211:11211
+        options: >-
+          --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/11211'"
+          --health-interval 10s
+          --health-retries 5
+          --health-timeout 5s
+
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - php: 7.3
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 7.4
-            extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: xdebug
-          - php: 8.0
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 8.1
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 8.2
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-          - php: 8.3
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-            os: ubuntu-latest
-          - php: 8.4
-            extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-            coverage: none
-            os: ubuntu-latest
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
 
     steps:
+      - name: Checkout.
+        uses: actions/checkout@v5
+
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
 
-      - name: Checkout.
-        uses: actions/checkout@v4
-
-      - name: Install PHP.
-        uses: shivammathur/setup-php@v2
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
         with:
-          coverage: ${{ matrix.coverage }}
-          extensions: ${{ matrix.extensions }}
-          ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', session.save_path="${{ runner.temp }}"
+          coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
-          tools: pecl
 
-      - name: Install Memcached.
-        uses: niden/actions-memcached@v7
-
-      - name: Install dependencies.
-        if: matrix.php != '8.4'
-        run: composer update $DEFAULT_COMPOSER_FLAGS
-
-      - name: Install dependencies with PHP 8.4.
-        if: matrix.php == '8.4'
-        run: composer update $DEFAULT_COMPOSER_FLAGS --ignore-platform-reqs
-
-      - name: Run tests with PHPUnit and generate coverage.
-        if: matrix.php == '7.4'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --coverage-clover=coverage.xml --colors=always
-
-      - name: Run tests with PHPUnit.
-        if: matrix.php != '7.4'
-        run: vendor/bin/phpunit --verbose --exclude-group $PHPUNIT_EXCLUDE_GROUP --colors=always
-
-      - name: Upload coverage to Codecov.
-        if: matrix.php == '7.4'
-        uses: codecov/codecov-action@v4
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
         with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage.xml
+          coverage-driver: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
+
+  phpunit-dev:
+    name: PHP ${{ matrix.php }}
+
+    runs-on: ubuntu-latest
+
+    services:
+      memcached:
+        image: memcached:latest
+        ports:
+          - 11211:11211
+        options: >-
+          --health-cmd "timeout 5 bash -c 'cat < /dev/null > /dev/tcp/127.0.0.1/11211'"
+          --health-interval 10s
+          --health-retries 5
+          --health-timeout 5s
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.5, 8.6]
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@v5
+
+      - name: Generate french locale.
+        run: sudo locale-gen fr_FR.UTF-8
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
+        with:
+          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          ignore-platform-reqs: true
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
+          php-version: ${{ matrix.php }}
+
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
+        with:
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}

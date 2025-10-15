@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,7 @@ class BooleanTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlite';
 
-    public function testBoolean()
+    public function testBoolean(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -71,7 +72,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertTrue($phpTypeCastBoolColBit);
     }
 
-    public function testBooleanWithValueInteger()
+    public function testBooleanWithValueInteger(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -124,7 +125,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertTrue($phpTypeCastBoolColBit);
     }
 
-    public function testBooleanWithValueNegative()
+    public function testBooleanWithValueNegative(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -165,7 +166,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertTrue($phpTypeCastBoolColBit);
     }
 
-    public function testBooleanWithValueNull()
+    public function testBooleanWithValueNull(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();
@@ -206,7 +207,7 @@ class BooleanTest extends DatabaseTestCase
         $this->assertNull($phpTypeCastBoolColBit);
     }
 
-    public function testBooleanWithValueOverflow()
+    public function testBooleanWithValueOverflow(): void
     {
         $db = $this->getConnection(true);
         $schema = $db->getSchema();

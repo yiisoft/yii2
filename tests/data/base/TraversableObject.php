@@ -1,11 +1,19 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\base;
+
+use Iterator;
+use Countable;
+use ReturnTypeWillChange;
+use Exception;
 
 /**
  * TraversableObject
@@ -14,7 +22,7 @@ namespace yiiunit\data\base;
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.8
  */
-class TraversableObject implements \Iterator, \Countable
+class TraversableObject implements Iterator, Countable
 {
     protected $data;
     private $position = 0;
@@ -25,19 +33,19 @@ class TraversableObject implements \Iterator, \Countable
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      * @since 5.1.0
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function count()
     {
-        throw new \Exception('Count called on object that should only be traversed.');
+        throw new Exception('Count called on object that should only be traversed.');
     }
 
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function current()
     {
         return $this->data[$this->position];
@@ -46,8 +54,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
@@ -55,8 +62,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function key()
+    public function key(): int
     {
         return $this->position;
     }
@@ -64,8 +70,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function valid()
+    public function valid(): bool
     {
         return array_key_exists($this->position, $this->data);
     }
@@ -73,8 +78,7 @@ class TraversableObject implements \Iterator, \Countable
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\console;
 
+use yii\data\ArrayDataProvider;
 use RuntimeException;
 use yii\console\Exception;
 use yiiunit\framework\console\stubs\DummyService;
@@ -37,7 +39,7 @@ class ControllerTest extends TestCase
         ];
     }
 
-    public function testBindArrayToActionParams()
+    public function testBindArrayToActionParams(): void
     {
         $controller = new FakeController('fake', Yii::$app);
 
@@ -46,7 +48,7 @@ class ControllerTest extends TestCase
         $this->assertEquals([], $controller->runAction('aksi4', $params));
     }
 
-    public function testBindActionParams()
+    public function testBindActionParams(): void
     {
         $controller = new FakeController('fake', Yii::$app);
 
@@ -102,10 +104,9 @@ class ControllerTest extends TestCase
         $this->expectException('yii\console\Exception');
         $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
-
     }
 
-    public function testNullableInjectedActionParams()
+    public function testNullableInjectedActionParams(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -117,11 +118,11 @@ class ControllerTest extends TestCase
         $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
         $params = [];
         $args = $this->controller->bindActionParams($injectionAction, $params);
-        $this->assertEquals(\Yii::$app->request, $args[0]);
+        $this->assertEquals(Yii::$app->request, $args[0]);
         $this->assertNull($args[1]);
     }
 
-    public function testInjectionContainerException()
+    public function testInjectionContainerException(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -132,14 +133,16 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::className(), function() { throw new \RuntimeException('uh oh'); });
+        Yii::$container->set(DummyService::class, function () {
+            throw new RuntimeException('uh oh');
+        });
 
         $this->expectException(get_class(new RuntimeException()));
         $this->expectExceptionMessage('uh oh');
         $this->controller->bindActionParams($injectionAction, $params);
     }
 
-    public function testUnknownInjection()
+    public function testUnknownInjection(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -150,13 +153,13 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->clear(DummyService::className());
+        Yii::$container->clear(DummyService::class);
         $this->expectException(get_class(new Exception()));
         $this->expectExceptionMessage('Could not load required service: dummyService');
         $this->controller->bindActionParams($injectionAction, $params);
     }
 
-    public function testInjectedActionParams()
+    public function testInjectedActionParams(): void
     {
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', new Application([
@@ -167,27 +170,27 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
-        \Yii::$container->set(DummyService::className(), DummyService::className());
+        Yii::$container->set(DummyService::class, DummyService::class);
         $args = $this->controller->bindActionParams($injectionAction, $params);
         $this->assertEquals($params['before'], $args[0]);
-        $this->assertEquals(\Yii::$app->request, $args[1]);
-        $this->assertEquals('Component: yii\console\Request $request', \Yii::$app->requestedParams['request']);
+        $this->assertEquals(Yii::$app->request, $args[1]);
+        $this->assertEquals('Component: yii\console\Request $request', Yii::$app->requestedParams['request']);
         $this->assertEquals($params['between'], $args[2]);
-        $this->assertInstanceOf(DummyService::className(), $args[3]);
-        $this->assertEquals('Container DI: yiiunit\framework\console\stubs\DummyService $dummyService', \Yii::$app->requestedParams['dummyService']);
+        $this->assertInstanceOf(DummyService::class, $args[3]);
+        $this->assertEquals('Container DI: yiiunit\framework\console\stubs\DummyService $dummyService', Yii::$app->requestedParams['dummyService']);
         $this->assertNull($args[4]);
-        $this->assertEquals('Unavailable service: post', \Yii::$app->requestedParams['post']);
+        $this->assertEquals('Unavailable service: post', Yii::$app->requestedParams['post']);
         $this->assertEquals($params['after'], $args[5]);
     }
 
-    public function testInjectedActionParamsFromModule()
+    public function testInjectedActionParamsFromModule(): void
     {
-        $module = new \yii\base\Module('fake', new Application([
+        $module = new Module('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
         ]));
         $module->set('yii\data\DataProviderInterface', [
-            'class' => \yii\data\ArrayDataProvider::className(),
+            'class' => ArrayDataProvider::class,
         ]);
         // Use the PHP71 controller for this test
         $this->controller = new FakePhp71Controller('fake', $module);
@@ -195,11 +198,11 @@ class ControllerTest extends TestCase
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
         $args = $this->controller->bindActionParams($injectionAction, []);
-        $this->assertInstanceOf(\yii\data\ArrayDataProvider::className(), $args[0]);
-        $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', \Yii::$app->requestedParams['dataProvider']);
+        $this->assertInstanceOf(ArrayDataProvider::class, $args[0]);
+        $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', Yii::$app->requestedParams['dataProvider']);
     }
 
-    public function assertResponseStatus($status, $response)
+    public function assertResponseStatus($status, $response): void
     {
         $this->assertInstanceOf('yii\console\Response', $response);
         $this->assertSame($status, $response->exitStatus);
@@ -212,7 +215,7 @@ class ControllerTest extends TestCase
         return Yii::$app->handleRequest($request);
     }
 
-    public function testResponse()
+    public function testResponse(): void
     {
         $status = 123;
 
@@ -232,7 +235,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12028
      */
-    public function testHelpOptionNotSet()
+    public function testHelpOptionNotSet(): void
     {
         $controller = new FakeController('posts', Yii::$app);
         $controller->runAction('index');
@@ -244,7 +247,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12028
      */
-    public function testHelpOption()
+    public function testHelpOption(): void
     {
         $controller = new FakeController('posts', Yii::$app);
         $controller->help = true;
@@ -261,7 +264,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/13071
      */
-    public function testHelpOptionWithModule()
+    public function testHelpOptionWithModule(): void
     {
         $controller = new FakeController('posts', new Module('news'));
         $controller->help = true;
@@ -274,7 +277,7 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/19028
      */
-    public function testGetActionArgsHelp()
+    public function testGetActionArgsHelp(): void
     {
         $controller = new FakeController('fake', Yii::$app);
         $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
@@ -291,7 +294,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('string', $help['value']['type']);
     }
 
-    public function testGetActionHelpSummaryOnNull()
+    public function testGetActionHelpSummaryOnNull(): void
     {
         $controller = new FakeController('fake', Yii::$app);
 

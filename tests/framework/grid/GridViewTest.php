@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,11 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
+use yii\db\Connection;
+use yii\web\UrlManager;
+use yii\data\ActiveDataProvider;
+use Exception;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
@@ -18,7 +24,7 @@ use yiiunit\data\ar\NoAutoLabels;
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends \yiiunit\TestCase
+class GridViewTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -52,9 +58,9 @@ class GridViewTest extends \yiiunit\TestCase
      * @dataProvider emptyDataProvider
      * @param mixed $emptyText
      * @param string $expectedText
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testEmpty($emptyText, $expectedText)
+    public function testEmpty($emptyText, $expectedText): void
     {
         $html = GridView::widget([
             'id' => 'grid',
@@ -78,7 +84,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertEquals($expectedHtml, $html);
     }
 
-    public function testGuessColumns()
+    public function testGuessColumns(): void
     {
         $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
@@ -96,7 +102,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertCount(count($row), $columns);
 
         foreach ($columns as $index => $column) {
-            $this->assertInstanceOf(DataColumn::className(), $column);
+            $this->assertInstanceOf(DataColumn::class, $column);
             $this->assertArrayHasKey($column->attribute, $row);
         }
 
@@ -117,49 +123,50 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertCount(count($row) - 2, $columns);
 
         foreach ($columns as $index => $column) {
-            $this->assertInstanceOf(DataColumn::className(), $column);
+            $this->assertInstanceOf(DataColumn::class, $column);
             $this->assertArrayHasKey($column->attribute, $row);
             $this->assertNotEquals('relation', $column->attribute);
             $this->assertNotEquals('otherRelation', $column->attribute);
         }
     }
 
-	/**
-	 * @throws \Exception
-	 */
-	public function testFooter() {
-		$config = [
-			'id'           => 'grid',
-			'dataProvider' => new ArrayDataProvider(['allModels' => []]),
-			'showHeader'   => false,
-			'showFooter'   => true,
-			'options'      => [],
-			'tableOptions' => [],
-			'view'         => new View(),
-			'filterUrl'    => '/',
-		];
+    /**
+     * @throws Exception
+     */
+    public function testFooter(): void
+    {
+        $config = [
+            'id'           => 'grid',
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'showHeader'   => false,
+            'showFooter'   => true,
+            'options'      => [],
+            'tableOptions' => [],
+            'view'         => new View(),
+            'filterUrl'    => '/',
+        ];
 
-		$html = GridView::widget($config);
-		$html = preg_replace("/\r|\n/", '', $html);
+        $html = GridView::widget($config);
+        $html = preg_replace("/\r|\n/", '', $html);
 
-		$this->assertTrue(preg_match("/<\/tfoot><tbody>/", $html) === 1);
+        $this->assertTrue(preg_match('/<\/tfoot><tbody>/', $html) === 1);
 
-		// Place footer after body
-		$config['placeFooterAfterBody'] = true;
+        // Place footer after body
+        $config['placeFooterAfterBody'] = true;
 
-		$html = GridView::widget($config);
-		$html = preg_replace("/\r|\n/", '', $html);
+        $html = GridView::widget($config);
+        $html = preg_replace("/\r|\n/", '', $html);
 
-		$this->assertTrue(preg_match("/<\/tbody><tfoot>/", $html) === 1);
-	}
+        $this->assertTrue(preg_match('/<\/tbody><tfoot>/', $html) === 1);
+    }
 
-    public function testHeaderLabels()
+    public function testHeaderLabels(): void
     {
         // Ensure GridView does not call Model::generateAttributeLabel() to generate labels unless the labels are explicitly used.
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => \yii\db\Connection::className(),
+                    'class' => Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -168,13 +175,13 @@ class GridViewTest extends \yiiunit\TestCase
         NoAutoLabels::$db = Yii::$app->getDb();
         Yii::$app->getDb()->createCommand()->createTable(NoAutoLabels::tableName(), ['attr1' => 'int', 'attr2' => 'int'])->execute();
 
-        $urlManager = new \yii\web\UrlManager([
+        $urlManager = new UrlManager([
             'baseUrl' => '/',
             'scriptUrl' => '/index.php',
         ]);
 
         $grid = new GridView([
-            'dataProvider' => new \yii\data\ActiveDataProvider([
+            'dataProvider' => new ActiveDataProvider([
                 'query' => NoAutoLabels::find(),
             ]),
             'columns' => [
@@ -200,5 +207,5 @@ class GridViewTest extends \yiiunit\TestCase
         // If NoAutoLabels::generateAttributeLabel() has not been called no exception will be thrown meaning this test passed successfully.
 
         $this->assertTrue(true);
-	}
+    }
 }

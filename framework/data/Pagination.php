@@ -26,7 +26,7 @@ use yii\web\Request;
  *
  * Controller action:
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
@@ -45,7 +45,7 @@ use yii\web\Request;
  *
  * View:
  *
- * ```php
+ * ```
  * foreach ($models as $model) {
  *     // display $model here
  * }
@@ -75,10 +75,10 @@ use yii\web\Request;
  */
 class Pagination extends BaseObject implements Linkable
 {
-    const LINK_NEXT = 'next';
-    const LINK_PREV = 'prev';
-    const LINK_FIRST = 'first';
-    const LINK_LAST = 'last';
+    public const LINK_NEXT = 'next';
+    public const LINK_PREV = 'prev';
+    public const LINK_FIRST = 'first';
+    public const LINK_LAST = 'last';
 
     /**
      * @var string name of the parameter storing the current page index.
@@ -139,7 +139,7 @@ class Pagination extends BaseObject implements Linkable
     public $pageSizeLimit = [1, 50];
 
     /**
-     * @var int number of items on each page.
+     * @var int|null number of items on each page.
      * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
      */
     private $_pageSize;

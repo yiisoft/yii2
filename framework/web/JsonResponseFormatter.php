@@ -19,7 +19,7 @@ use yii\helpers\Json;
  * To configure properties like [[encodeOptions]] or [[prettyPrint]], you can configure the `response`
  * application component like the following:
  *
- * ```php
+ * ```
  * 'response' => [
  *     // ...
  *     'formatters' => [
@@ -42,17 +42,17 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      * JSON Content Type
      * @since 2.0.14
      */
-    const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
+    public const CONTENT_TYPE_JSONP = 'application/javascript; charset=UTF-8';
     /**
      * JSONP Content Type
      * @since 2.0.14
      */
-    const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
+    public const CONTENT_TYPE_JSON = 'application/json; charset=UTF-8';
     /**
      * HAL JSON Content Type
      * @since 2.0.14
      */
-    const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
+    public const CONTENT_TYPE_HAL_JSON = 'application/hal+json; charset=UTF-8';
 
     /**
      * @var string|null custom value of the `Content-Type` header of the response.

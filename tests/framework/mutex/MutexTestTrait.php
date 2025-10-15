@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,7 +27,7 @@ trait MutexTestTrait
      *
      * @param string $mutexName
      */
-    public function testMutexAcquire($mutexName)
+    public function testMutexAcquire($mutexName): void
     {
         $mutex = $this->createMutex();
 
@@ -39,7 +40,7 @@ trait MutexTestTrait
      *
      * @param string $mutexName
      */
-    public function testThatMutexLockIsWorking($mutexName)
+    public function testThatMutexLockIsWorking($mutexName): void
     {
         $mutexOne = $this->createMutex();
         $mutexTwo = $this->createMutex();
@@ -58,7 +59,7 @@ trait MutexTestTrait
      *
      * @param string $mutexName
      */
-    public function testThatMutexLockIsWorkingOnTheSameComponent($mutexName)
+    public function testThatMutexLockIsWorkingOnTheSameComponent($mutexName): void
     {
         $mutex = $this->createMutex();
 
@@ -69,7 +70,7 @@ trait MutexTestTrait
         $this->assertFalse($mutex->release($mutexName));
     }
 
-    public function testTimeout()
+    public function testTimeout(): void
     {
         $mutexName = __FUNCTION__;
         $mutexOne = $this->createMutex();
@@ -89,7 +90,7 @@ trait MutexTestTrait
      *
      * @param string $mutexName
      */
-    public function testMutexIsAcquired($mutexName)
+    public function testMutexIsAcquired($mutexName): void
     {
         $mutexOne = $this->createMutex();
         $mutexTwo = $this->createMutex();

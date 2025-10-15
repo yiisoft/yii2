@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,7 @@ class RetryAcquireTraitTest extends TestCase
     /**
      * @throws InvalidConfigException
      */
-    public function testRetryAcquire()
+    public function testRetryAcquire(): void
     {
         $mutexName = __FUNCTION__;
         $mutexOne = $this->createMutex();
@@ -89,7 +90,7 @@ class RetryAcquireTraitTest extends TestCase
     {
         return Yii::createObject(
             [
-                'class' => DumbMutex::className(),
+                'class' => DumbMutex::class,
             ]
         );
     }

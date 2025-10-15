@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
+use yii\web\Controller;
 use yii\web\Response;
 
 /**
@@ -35,13 +36,16 @@ use yii\web\Response;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends Action<T>
  */
 class CaptchaAction extends Action
 {
     /**
      * The name of the GET parameter indicating whether the CAPTCHA image should be regenerated.
      */
-    const REFRESH_GET_VAR = 'refresh';
+    public const REFRESH_GET_VAR = 'refresh';
 
     /**
      * @var int how many times should the same CAPTCHA be displayed. Defaults to 3.

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\rbac\ManagerInterface;
 use yii\caching\FileCache;
 use yii\rbac\DbManager;
 
@@ -21,7 +23,7 @@ class PgSQLManagerCacheTest extends DbManagerTestCase
     protected static $driverName = 'pgsql';
 
     /**
-     * @return \yii\rbac\ManagerInterface
+     * @return ManagerInterface
      */
     protected function createManager()
     {

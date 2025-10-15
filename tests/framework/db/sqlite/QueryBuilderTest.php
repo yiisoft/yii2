@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use PDO;
 use yii\db\Query;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;
@@ -52,12 +54,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function primaryKeysProvider()
+    public function primaryKeysProvider(): void
     {
         $this->markTestSkipped('Adding/dropping primary keys is not supported in SQLite.');
     }
 
-    public function foreignKeysProvider()
+    public function foreignKeysProvider(): void
     {
         $this->markTestSkipped('Adding/dropping foreign keys is not supported in SQLite.');
     }
@@ -81,27 +83,27 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function uniquesProvider()
+    public function uniquesProvider(): void
     {
         $this->markTestSkipped('Adding/dropping unique constraints is not supported in SQLite.');
     }
 
-    public function checksProvider()
+    public function checksProvider(): void
     {
         $this->markTestSkipped('Adding/dropping check constraints is not supported in SQLite.');
     }
 
-    public function defaultValuesProvider()
+    public function defaultValuesProvider(): void
     {
         $this->markTestSkipped('Adding/dropping default constraints is not supported in SQLite.');
     }
 
-    public function testCommentColumn()
+    public function testCommentColumn(): void
     {
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
-    public function testCommentTable()
+    public function testCommentTable(): void
     {
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
@@ -113,17 +115,17 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $data;
     }
 
-    public function testBatchInsertOnOlderVersions()
+    public function testBatchInsertOnOlderVersions(): void
     {
         $db = $this->getConnection();
-        if (version_compare($db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
+        if (version_compare($db->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
             $this->markTestSkipped('This test is only relevant for SQLite < 3.7.11');
         }
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
         $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
     }
 
-    public function testRenameTable()
+    public function testRenameTable(): void
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
         $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
@@ -132,7 +134,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     /**
      * {@inheritdoc}
      */
-    public function testBuildUnion()
+    public function testBuildUnion(): void
     {
         $expectedQuerySql = $this->replaceQuotes(
             'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
@@ -156,7 +158,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals([], $queryParams);
     }
 
-    public function testBuildWithQuery()
+    public function testBuildWithQuery(): void
     {
         $expectedQuerySql = $this->replaceQuotes(
             'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS (SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2 UNION  SELECT [[id]] FROM [[t3]] WHERE expr = 3) SELECT * FROM [[a2]]'
@@ -187,7 +189,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals([], $queryParams);
     }
 
-    public function testResetSequence()
+    public function testResetSequence(): void
     {
         $qb = $this->getQueryBuilder(true, true);
 

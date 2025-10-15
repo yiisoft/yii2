@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link      https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -33,7 +34,7 @@ class BarSetter extends BaseObject
     /**
      * @param mixed $qux
      */
-    public function setQux(QuxInterface $qux)
+    public function setQux(QuxInterface $qux): void
     {
         $this->qux = $qux;
     }

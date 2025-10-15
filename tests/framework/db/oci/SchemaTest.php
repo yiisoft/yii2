@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\db\oci;
 
+use Exception;
 use yii\db\CheckConstraint;
 use yiiunit\framework\db\AnyValue;
 
@@ -102,7 +104,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * Autoincrement columns detection should be disabled for Oracle
      * because there is no way of associating a column with a sequence.
      */
-    public function testAutoincrementDisabled()
+    public function testAutoincrementDisabled(): void
     {
         $table = $this->getConnection(false)->schema->getTableSchema('order', true);
         $this->assertFalse($table->columns['id']->autoIncrement);
@@ -176,7 +178,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function testFindUniqueIndexes()
+    public function testFindUniqueIndexes(): void
     {
         if ($this->driverName === 'sqlsrv') {
             $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
@@ -186,7 +188,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',
@@ -194,7 +196,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'someCol3' => 'string',
         ])->execute();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
@@ -228,7 +230,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         ], $uniqueIndexes);
     }
 
-    public function testCompositeFk()
+    public function testCompositeFk(): void
     {
         $this->markTestSkipped('Should be fixed.');
     }

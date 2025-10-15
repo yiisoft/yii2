@@ -94,15 +94,15 @@ class DbManager extends BaseManager
     public $rolesCacheSuffix = 'roles';
 
     /**
-     * @var Item[] all auth items (name => Item)
+     * @var Item[]|null all auth items (name => Item)
      */
     protected $items;
     /**
-     * @var Rule[] all auth rules (name => Rule)
+     * @var Rule[]|null all auth rules (name => Rule)
      */
     protected $rules;
     /**
-     * @var array auth item parent-child relationships (childName => list of parents)
+     * @var array|null auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
     /**
@@ -436,7 +436,9 @@ class DbManager extends BaseManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row);
+            /** @var Role|Permission */
+            $item = $this->populateItem($row);
+            $items[$row['name']] = $item;
         }
 
         return $items;
@@ -492,7 +494,9 @@ class DbManager extends BaseManager
 
         $roles = $this->getDefaultRoleInstances();
         foreach ($query->all($this->db) as $row) {
-            $roles[$row['name']] = $this->populateItem($row);
+            /** @var Role */
+            $role = $this->populateItem($row);
+            $roles[$row['name']] = $role;
         }
 
         if ($this->cache !== null) {
@@ -542,7 +546,9 @@ class DbManager extends BaseManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            /** @var Permission */
+            $permission = $this->populateItem($row);
+            $permissions[$row['name']] = $permission;
         }
 
         return $permissions;
@@ -579,7 +585,9 @@ class DbManager extends BaseManager
 
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            /** @var Permission */
+            $permission = $this->populateItem($row);
+            $permissions[$row['name']] = $permission;
         }
 
         return $permissions;
@@ -613,7 +621,9 @@ class DbManager extends BaseManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            /** @var Permission */
+            $permission = $this->populateItem($row);
+            $permissions[$row['name']] = $permission;
         }
 
         return $permissions;

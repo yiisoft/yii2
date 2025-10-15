@@ -514,7 +514,7 @@ class Security extends Component
      * Later when a password needs to be validated, the hash can be fetched and passed
      * to [[validatePassword()]]. For example,
      *
-     * ```php
+     * ```
      * // generates the hash (usually done during user registration or when the password is changed)
      * $hash = Yii::$app->getSecurity()->generatePasswordHash($password);
      * // ...save $hash in database...

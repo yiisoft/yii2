@@ -5,10 +5,10 @@
  * This file contains most commonly used MIME types
  * according to file extension names.
  * Its content is generated from the apache http mime.types file.
- * https://svn.apache.org/viewvc/httpd/httpd/trunk/docs/conf/mime.types?view=markup
+ * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
- * All extra changes made to this file must be comitted to /build/controllers/MimeTypeController.php
+ * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
 $mimeTypes = [
@@ -376,6 +376,7 @@ $mimeTypes = [
     'js' => 'text/javascript',
     'json' => 'application/json',
     'jsonml' => 'application/jsonml+json',
+    'jxl' => 'image/jxl',
     'kar' => 'audio/midi',
     'karbon' => 'application/vnd.kde.karbon',
     'kfo' => 'application/vnd.kde.kformula',

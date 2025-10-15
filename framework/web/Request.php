@@ -23,6 +23,9 @@ use yii\validators\IpValidator;
  *
  * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
  *
+ * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
+ * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
+ * [[getHostInfo()]] for security related notes on this property.
  * @property-read string $absoluteUrl The currently requested absolute URL.
  * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
  * highest scores will be returned first. The array keys are the content types, while the array values are the
@@ -41,14 +44,12 @@ use yii\validators\IpValidator;
  * @property-read string $contentType Request content-type. Empty string is returned if this information is
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
- * @property-read string $csrfToken The token used to perform CSRF validation.
+ * @property-read null|string $csrfToken The token used to perform CSRF validation. Null is returned if the
+ * [[validateCsrfHeaderOnly]] is true.
  * @property-read string|null $csrfTokenFromHeader The CSRF token sent via [[csrfHeader]] by browser. Null is
  * returned if no such header is sent.
  * @property-read array $eTags The entity tags.
  * @property-read HeaderCollection $headers The header collection.
- * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
- * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
- * [[getHostInfo()]] for security related notes on this property.
  * @property-read string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`).
  * @property-read bool $isAjax Whether this is an AJAX (XMLHttpRequest) request.
  * @property-read bool $isDelete Whether this is a DELETE request.
@@ -86,19 +87,18 @@ use yii\validators\IpValidator;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- * @SuppressWarnings(PHPMD.SuperGlobals)
  */
 class Request extends \yii\base\Request
 {
     /**
      * Default name of the HTTP header for sending CSRF token.
      */
-    const CSRF_HEADER = 'X-CSRF-Token';
+    public const CSRF_HEADER = 'X-CSRF-Token';
     /**
      * The length of the CSRF token mask.
      * @deprecated since 2.0.12. The mask length is now equal to the token length.
      */
-    const CSRF_MASK_LENGTH = 8;
+    public const CSRF_MASK_LENGTH = 8;
 
     /**
      * @var bool whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
@@ -211,7 +211,7 @@ class Request extends \yii\base\Request
      * For example, to trust all headers listed in [[secureHeaders]] for IP addresses
      * in range `192.168.0.0-192.168.0.254` write the following:
      *
-     * ```php
+     * ```
      * [
      *     '192.168.0.0/24',
      * ]
@@ -775,9 +775,6 @@ class Request extends \yii\base\Request
      * > If you don't have access to the server configuration, you can setup [[\yii\filters\HostControl]] filter at
      * > application level in order to protect against such kind of attack.
      *
-     * @property string|null schema and hostname part (with port number if needed) of the request URL
-     * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
-     * See [[getHostInfo()]] for security related notes on this property.
      * @return string|null schema and hostname part (with port number if needed) of the request URL
      * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
@@ -1176,7 +1173,7 @@ class Request extends \yii\base\Request
             if ($this->headers->has($portHeader)) {
                 $port = $this->headers->get($portHeader);
                 if ($port !== null) {
-                    return $port;
+                    return (int) $port;
                 }
             }
         }
@@ -1489,7 +1486,7 @@ class Request extends \yii\base\Request
      *
      * This is determined by the `Accept` HTTP header. For example,
      *
-     * ```php
+     * ```
      * $_SERVER['HTTP_ACCEPT'] = 'text/plain; q=0.5, application/json; version=1.0, application/xml; version=2.0;';
      * $types = $request->getAcceptableContentTypes();
      * print_r($types);
@@ -1589,7 +1586,7 @@ class Request extends \yii\base\Request
      * while the array values consisting of the corresponding quality scores and parameters. The acceptable
      * values with the highest quality scores will be returned first. For example,
      *
-     * ```php
+     * ```
      * $header = 'text/plain; q=0.5, application/json; version=1.0, application/xml; version=2.0;';
      * $accepts = $request->parseAcceptHeader($header);
      * print_r($accepts);
@@ -1723,7 +1720,7 @@ class Request extends \yii\base\Request
      *
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
-     * ```php
+     * ```
      * $cookie = $request->cookies['name']
      * if ($cookie !== null) {
      *     $value = $cookie->value;

@@ -16,7 +16,7 @@ use yii\base\Component;
  * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the [[\Iterator]] interface,
  * you can iterate it to obtain a batch of data in each iteration. For example,
  *
- * ```php
+ * ```
  * $query = (new Query)->from('user');
  * foreach ($query->batch() as $i => $users) {
  *     // $users represents the rows in the $i-th batch
@@ -35,17 +35,17 @@ class BatchQueryResult extends Component implements \Iterator
      * @see reset()
      * @since 2.0.41
      */
-    const EVENT_RESET = 'reset';
+    public const EVENT_RESET = 'reset';
     /**
      * @event Event an event that is triggered when the last batch has been fetched.
      * @since 2.0.41
      */
-    const EVENT_FINISH = 'finish';
+    public const EVENT_FINISH = 'finish';
     /**
      * MSSQL error code for exception that is thrown when last batch is size less than specified batch size
      * @see https://github.com/yiisoft/yii2/issues/10023
      */
-    const MSSQL_NO_MORE_ROWS_ERROR_CODE = -13;
+    public const MSSQL_NO_MORE_ROWS_ERROR_CODE = -13;
 
     /**
      * @var Connection|null the DB connection to be used when performing batch query.
@@ -68,11 +68,11 @@ class BatchQueryResult extends Component implements \Iterator
     public $each = false;
 
     /**
-     * @var DataReader the data reader associated with this batch query.
+     * @var DataReader|null the data reader associated with this batch query.
      */
     private $_dataReader;
     /**
-     * @var array the data retrieved in the current batch
+     * @var array|null the data retrieved in the current batch
      */
     private $_batch;
     /**
@@ -80,7 +80,7 @@ class BatchQueryResult extends Component implements \Iterator
      */
     private $_value;
     /**
-     * @var string|int the key for the current iteration
+     * @var string|int|null the key for the current iteration
      */
     private $_key;
 

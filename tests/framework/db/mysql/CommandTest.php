@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +18,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
 
-    public function testAddDropCheckSeveral()
+    public function testAddDropCheckSeveral(): void
     {
         $db = $this->getConnection(false);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -85,7 +86,7 @@ class ConsoleTest extends TestCase
         rewind(ConsoleStub::$inputStream);
     }
 
-    public function testStripAnsiFormat()
+    public function testStripAnsiFormat(): void
     {
         ob_start();
         ob_implicit_flush(false);
@@ -200,12 +201,12 @@ class ConsoleTest extends TestCase
      * @param string $ansi
      * @param string $html
      */
-    public function testAnsi2Html($ansi, $html)
+    public function testAnsi2Html($ansi, $html): void
     {
         $this->assertEquals($html, Console::ansiToHtml($ansi));
     }
 
-    public function testErrorSummary()
+    public function testErrorSummary(): void
     {
         $model = new TestConsoleModel();
         $model->name = 'not_an_integer';
@@ -220,7 +221,7 @@ class ConsoleTest extends TestCase
     /**
      * @covers \yii\helpers\BaseConsole::input()
      */
-    public function testInput()
+    public function testInput(): void
     {
         $this->sendInput('test1');
         $result = ConsoleStub::input();
@@ -238,7 +239,7 @@ class ConsoleTest extends TestCase
     /**
      * @covers \yii\helpers\BaseConsole::output()
      */
-    public function testOutput()
+    public function testOutput(): void
     {
         $result = ConsoleStub::output('Smth');
         $this->assertEquals('Smth' . PHP_EOL, $this->readOutput());
@@ -248,7 +249,7 @@ class ConsoleTest extends TestCase
     /**
      * @covers \yii\helpers\BaseConsole::error()
      */
-    public function testError()
+    public function testError(): void
     {
         $result = ConsoleStub::error('SomeError');
         $this->assertEquals('SomeError' . PHP_EOL, $this->readOutput(ConsoleStub::$errorStream));
@@ -258,7 +259,7 @@ class ConsoleTest extends TestCase
     /**
      * @covers \yii\helpers\BaseConsole::prompt()
      */
-    public function testPrompt()
+    public function testPrompt(): void
     {
         // testing output variations
 
@@ -349,7 +350,7 @@ class ConsoleTest extends TestCase
     /**
      * @covers \yii\helpers\BaseConsole::confirm()
      */
-    public function testConfirm()
+    public function testConfirm(): void
     {
         $this->sendInput('y');
         ConsoleStub::confirm('Are you sure?');
@@ -368,17 +369,19 @@ class ConsoleTest extends TestCase
         $this->assertFalse($result);
         $this->truncateStreams();
 
-        foreach ([
-                     'y' => true,
-                     'Y' => true,
-                     'yes' => true,
-                     'YeS' => true,
-                     'n' => false,
-                     'N' => false,
-                     'no' => false,
-                     'NO' => false,
-                     'WHAT?!' . PHP_EOL . 'yes' => true,
-                 ] as $currInput => $currAssertion) {
+        foreach (
+            [
+                'y' => true,
+                'Y' => true,
+                'yes' => true,
+                'YeS' => true,
+                'n' => false,
+                'N' => false,
+                'no' => false,
+                'NO' => false,
+                'WHAT?!' . PHP_EOL . 'yes' => true,
+            ] as $currInput => $currAssertion
+        ) {
             $this->sendInput($currInput);
             $result = ConsoleStub::confirm('Are you sure?');
             $this->assertEquals($currAssertion, $result, $currInput);
@@ -389,7 +392,7 @@ class ConsoleTest extends TestCase
     /**
      * @covers \yii\helpers\BaseConsole::select()
      */
-    public function testSelect()
+    public function testSelect(): void
     {
         $options = [
             'c' => 'cat',
@@ -413,15 +416,15 @@ class ConsoleTest extends TestCase
         $result = ConsoleStub::select('Using help', $options);
         $this->assertEquals(
             'Using help (c,d,m,?): '
-            . ' c - cat'
-            . PHP_EOL
-            . ' d - dog'
-            . PHP_EOL
-            . ' m - mouse'
-            . PHP_EOL
-            . ' ? - Show help'
-            . PHP_EOL
-            . 'Using help (c,d,m,?): ',
+                . ' c - cat'
+                . PHP_EOL
+                . ' d - dog'
+                . PHP_EOL
+                . ' m - mouse'
+                . PHP_EOL
+                . ' ? - Show help'
+                . PHP_EOL
+                . 'Using help (c,d,m,?): ',
             $this->readOutput()
         );
         $this->truncateStreams();
@@ -454,7 +457,7 @@ class TestConsoleModel extends DynamicModel
         ];
     }
 
-    public function init()
+    public function init(): void
     {
         $this->defineAttribute('name');
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use Yii;
 use yii\base\View;
 use yii\caching\ArrayCache;
@@ -15,18 +17,18 @@ use yii\caching\ArrayCache;
  * @group widgets
  * @group caching
  */
-class FragmentCacheTest extends \yiiunit\TestCase
+class FragmentCacheTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication();
         Yii::$app->set('cache', [
-            'class' => ArrayCache::className(),
+            'class' => ArrayCache::class,
         ]);
     }
 
-    public function testCacheEnabled()
+    public function testCacheEnabled(): void
     {
         $expectedLevel = ob_get_level();
         ob_start();
@@ -46,7 +48,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
-    public function testCacheDisabled1()
+    public function testCacheDisabled1(): void
     {
         $expectedLevel = ob_get_level();
         ob_start();
@@ -68,7 +70,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
-    public function testCacheDisabled2()
+    public function testCacheDisabled2(): void
     {
         $expectedLevel = ob_get_level();
         ob_start();
@@ -90,7 +92,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
-    public function testSingleDynamicFragment()
+    public function testSingleDynamicFragment(): void
     {
         Yii::$app->params['counter'] = 0;
 
@@ -121,7 +123,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
-    public function testMultipleDynamicFragments()
+    public function testMultipleDynamicFragments(): void
     {
         Yii::$app->params['counter'] = 0;
 
@@ -154,7 +156,7 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
-    public function testNestedDynamicFragments()
+    public function testNestedDynamicFragments(): void
     {
         Yii::$app->params['counter'] = 0;
 
@@ -194,9 +196,9 @@ class FragmentCacheTest extends \yiiunit\TestCase
         }
     }
 
-    public function testVariations()
+    public function testVariations(): void
     {
-        $this->setOutputCallback(function($output) {
+        $this->setOutputCallback(function ($output) {
             return null;
         });
 

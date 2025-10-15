@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.52-dev';
+        return '2.0.54-dev';
     }
 
     /**
@@ -127,6 +127,9 @@ class BaseYii
      * @return string|false the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
+     *
+     * @phpstan-return ($throwException is true ? string : string|false)
+     * @psalm-return ($throwException is true ? string : string|false)
      */
     public static function getAlias($alias, $throwException = true)
     {
@@ -306,7 +309,7 @@ class BaseYii
      *
      * Below are some usage examples:
      *
-     * ```php
+     * ```
      * // create an object using a class name
      * $object = Yii::createObject('yii\db\Connection');
      *
@@ -338,6 +341,12 @@ class BaseYii
      * @return object the created object
      * @throws InvalidConfigException if the configuration is invalid.
      * @see \yii\di\Container
+     *
+     * @template T
+     * @phpstan-param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type
+     * @psalm-param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type
+     * @phpstan-return T
+     * @psalm-return T
      */
     public static function createObject($type, array $params = [])
     {
@@ -465,7 +474,7 @@ class BaseYii
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *
-     * ```php
+     * ```
      * \Yii::beginProfile('block1');
      * // some code to be profiled
      *     \Yii::beginProfile('block2');
@@ -516,7 +525,7 @@ class BaseYii
      * You can add parameters to a translation message that will be substituted with the corresponding value after
      * translation. The format for this is to use curly brackets around the parameter name as you can see in the following example:
      *
-     * ```php
+     * ```
      * $username = 'Alexander';
      * echo \Yii::t('app', 'Hello, {username}!', ['username' => $username]);
      * ```

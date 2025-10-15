@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,9 +8,10 @@
 
 namespace yiiunit\framework\di\stubs;
 
+use yii\base\BaseObject;
 use yii\di\Container;
 
-class QuxFactory extends \yii\base\BaseObject
+class QuxFactory extends BaseObject
 {
     public static function create(Container $container)
     {

@@ -172,12 +172,12 @@ class DataColumn extends Column
             if ($this->attribute === null) {
                 $label = '';
             } elseif ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
-                /* @var $modelClass Model */
+                /** @var Model $modelClass */
                 $modelClass = $provider->query->modelClass;
                 $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
-                /* @var $modelClass Model */
+                /** @var Model $modelClass */
                 $modelClass = $provider->modelClass;
                 $model = $modelClass::instance();
                 $label = $model->getAttributeLabel($this->attribute);
@@ -186,7 +186,7 @@ class DataColumn extends Column
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
-                    /* @var $model Model */
+                    /** @var Model $model */
                     $label = $model->getAttributeLabel($this->attribute);
                 } else {
                     $label = Inflector::camel2words($this->attribute);

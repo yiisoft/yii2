@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,9 @@
 
 namespace yiiunit\framework\db\oci;
 
+use Closure;
+use Exception;
+use yii\base\NotSupportedException;
 use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
 use yii\helpers\ArrayHelper;
@@ -80,12 +84,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
      * @dataProvider defaultValuesProvider
      * @param string $sql
      */
-    public function testAddDropDefaultValue($sql, \Closure $builder)
+    public function testAddDropDefaultValue($sql, Closure $builder): void
     {
         $this->markTestSkipped('Adding/dropping default constraints is not supported in Oracle.');
     }
 
-    public function testCommentColumn()
+    public function testCommentColumn(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -98,7 +102,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 
-    public function testCommentTable()
+    public function testCommentTable(): void
     {
         $qb = $this->getQueryBuilder();
 
@@ -111,7 +115,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 
-    public function testExecuteResetSequence()
+    public function testExecuteResetSequence(): void
     {
         $db = $this->getConnection();
         $qb = $this->getQueryBuilder();
@@ -135,7 +139,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         try {
             $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
             $this->likeParameterReplacements[$encodedBackslash] = '\\';
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->markTestSkipped('Could not execute Connection::quoteValue() method: ' . $e->getMessage());
         }
 
@@ -271,10 +275,10 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
             "VALUES ('', NULL) SELECT 1 FROM SYS.DUAL";
 
         $data[3][3] = 'INSERT ALL  INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) ' .
-            "VALUES (NULL, now()) SELECT 1 FROM SYS.DUAL";
+            'VALUES (NULL, now()) SELECT 1 FROM SYS.DUAL';
 
         $data['bool-false, time-now()']['expected'] = 'INSERT ALL  INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) ' .
-            "VALUES (0, now()) SELECT 1 FROM SYS.DUAL";
+            'VALUES (0, now()) SELECT 1 FROM SYS.DUAL';
 
         return $data;
     }
@@ -282,7 +286,7 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
     /**
      * Dummy test to speed up QB's tests which rely on DB schema
      */
-    public function testInitFixtures()
+    public function testInitFixtures(): void
     {
         $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
     }
@@ -295,10 +299,10 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
      * @param array|null $updateColumns
      * @param string|string[] $expectedSQL
      * @param array $expectedParams
-     * @throws \yii\base\NotSupportedException
-     * @throws \Exception
+     * @throws NotSupportedException
+     * @throws Exception
      */
-    public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams)
+    public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams): void
     {
         $actualParams = [];
         $actualSQL = $this->getQueryBuilder(true, $this->driverName === 'sqlite')->upsert($table, $insertColumns, $updateColumns, $actualParams);
@@ -313,5 +317,4 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
             $this->assertIsOneOf($actualParams, $expectedParams);
         }
     }
-
 }

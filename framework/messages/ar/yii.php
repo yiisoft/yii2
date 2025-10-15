@@ -63,7 +63,7 @@ return [
     'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.' => 'الصورة "{file}" كبيرة جداً. عرضها لا يمكن أن يقل عن  {limit, number} {limit, plural, other{بكسل}}.',
     'The requested view "{name}" was not found.' => '',
     'The verification code is incorrect.' => 'رمز التحقق غير صحيح',
-    'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'مجموع <b>{count, number}</b> {count, plural, one{مُدخل} few{مُدخلات} many{مُدخل}}.',
+    'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'مجموع <b>{count, number}</b> {count, plural, one{مُدخل} few{مُدخلات} many{مُدخل} other{مُدخلات}}.',
     'Unable to verify your data submission.' => 'لم نستطع التأكد من البيانات المقدمة.',
     'Unknown alias: -{name}' => '',
     'Unknown filter attribute "{attribute}"' => '',

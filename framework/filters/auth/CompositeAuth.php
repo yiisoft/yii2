@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +20,7 @@ use yii\base\InvalidConfigException;
  *
  * The following example shows how to support three authentication methods:
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -48,6 +47,9 @@ class CompositeAuth extends AuthMethod
      * If this property is empty, no authentication will be performed.
      *
      * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interface.
+     *
+     * @phpstan-var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})>
+     * @psalm-var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})>
      */
     public $authMethods = [];
 
@@ -86,25 +88,27 @@ class CompositeAuth extends AuthMethod
                 continue;
             }
 
-            $authUser = $auth->user;
-            if ($authUser != null && !$authUser instanceof \yii\web\User) {
-                throw new InvalidConfigException(get_class($authUser) . ' must implement yii\web\User');
-            } elseif ($authUser != null) {
-                $user = $authUser;
-            }
+            if ($auth instanceof AuthMethod) {
+                $authUser = $auth->user;
+                if ($authUser != null && !$authUser instanceof \yii\web\User) {
+                    throw new InvalidConfigException(get_class($authUser) . ' must implement yii\web\User');
+                } elseif ($authUser != null) {
+                    $user = $authUser;
+                }
 
-            $authRequest = $auth->request;
-            if ($authRequest != null && !$authRequest instanceof \yii\web\Request) {
-                throw new InvalidConfigException(get_class($authRequest) . ' must implement yii\web\Request');
-            } elseif ($authRequest != null) {
-                $request = $authRequest;
-            }
+                $authRequest = $auth->request ?? null;
+                if ($authRequest != null && !$authRequest instanceof \yii\web\Request) {
+                    throw new InvalidConfigException(get_class($authRequest) . ' must implement yii\web\Request');
+                } elseif ($authRequest != null) {
+                    $request = $authRequest;
+                }
 
-            $authResponse = $auth->response;
-            if ($authResponse != null && !$authResponse instanceof \yii\web\Response) {
-                throw new InvalidConfigException(get_class($authResponse) . ' must implement yii\web\Response');
-            } elseif ($authResponse != null) {
-                $response = $authResponse;
+                $authResponse = $auth->response;
+                if ($authResponse != null && !$authResponse instanceof \yii\web\Response) {
+                    throw new InvalidConfigException(get_class($authResponse) . ' must implement yii\web\Response');
+                } elseif ($authResponse != null) {
+                    $response = $authResponse;
+                }
             }
 
             $identity = $auth->authenticate($user, $request, $response);

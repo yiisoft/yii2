@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yiiunit\framework\db\AnyValue;
 
@@ -18,7 +20,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     protected $driverName = 'sqlite';
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in SQLite.');
     }
@@ -43,7 +45,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function testCompositeFk()
+    public function testCompositeFk(): void
     {
         $schema = $this->getConnection()->schema;
 
@@ -87,9 +89,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @dataProvider quoteTableNameDataProvider
      * @param $name
      * @param $expectedName
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
-    public function testQuoteTableName($name, $expectedName)
+    public function testQuoteTableName($name, $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $quotedName = $schema->quoteTableName($name);

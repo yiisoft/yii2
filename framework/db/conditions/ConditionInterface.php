@@ -26,7 +26,7 @@ interface ConditionInterface extends ExpressionInterface
      * @param string $operator operator in uppercase.
      * @param array $operands array of corresponding operands
      *
-     * @return $this
+     * @return static
      * @throws InvalidParamException if input parameters are not suitable for this condition
      */
     public static function fromArrayDefinition($operator, $operands);

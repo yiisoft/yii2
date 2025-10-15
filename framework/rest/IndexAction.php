@@ -21,6 +21,9 @@ use yii\helpers\ArrayHelper;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends Action<T>
  */
 class IndexAction extends Action
 {
@@ -29,7 +32,7 @@ class IndexAction extends Action
      * should return a collection of the models. If not set, [[prepareDataProvider()]] will be used instead.
      * The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function (IndexAction $action) {
      *     // $action is the action object currently running
      * }
@@ -40,7 +43,7 @@ class IndexAction extends Action
      * If [[dataFilter]] is set the result of [[DataFilter::build()]] will be passed to the callable as a second parameter.
      * In this case the signature of the callable should be the following:
      *
-     * ```php
+     * ```
      * function (IndexAction $action, mixed $filter) {
      *     // $action is the action object currently running
      *     // $filter the built filter condition
@@ -53,7 +56,7 @@ class IndexAction extends Action
      * Should return $query.
      * For example:
      *
-     * ```php
+     * ```
      * function ($query, $requestParams) {
      *     $query->andFilterWhere(['id' => 1]);
      *     ...
@@ -69,7 +72,7 @@ class IndexAction extends Action
      * You must set up this field explicitly in order to enable filter processing.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'class' => 'yii\data\ActiveDataFilter',
      *     'searchModel' => function () {
@@ -143,7 +146,7 @@ class IndexAction extends Action
             return call_user_func($this->prepareDataProvider, $this, $filter);
         }
 
-        /* @var $modelClass \yii\db\BaseActiveRecord */
+        /** @var \yii\db\BaseActiveRecord $modelClass */
         $modelClass = $this->modelClass;
 
         $query = $modelClass::find();

@@ -15,7 +15,7 @@ use yii\db\BaseActiveRecord;
  *
  * To use BlameableBehavior, insert the following code to your ActiveRecord class:
  *
- * ```php
+ * ```
  * use yii\behaviors\BlameableBehavior;
  *
  * public function behaviors()
@@ -36,7 +36,7 @@ use yii\db\BaseActiveRecord;
  * If your attribute names are different, you may configure the [[createdByAttribute]] and [[updatedByAttribute]]
  * properties like the following:
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [

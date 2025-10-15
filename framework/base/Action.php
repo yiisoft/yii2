@@ -21,7 +21,7 @@ use Yii;
  * with user input values automatically according to their names.
  * For example, if the `run()` method is declared as follows:
  *
- * ```php
+ * ```
  * public function run($id, $type = 'book') { ... }
  * ```
  *
@@ -34,6 +34,11 @@ use Yii;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ *
+ * @phpstan-property T $controller
+ * @psalm-property T $controller
  */
 class Action extends Component
 {
@@ -43,6 +48,9 @@ class Action extends Component
     public $id;
     /**
      * @var Controller|\yii\web\Controller|\yii\console\Controller the controller that owns this action
+     *
+     * @phpstan-var T
+     * @psalm-var T
      */
     public $controller;
 
@@ -53,6 +61,9 @@ class Action extends Component
      * @param string $id the ID of this action
      * @param Controller $controller the controller that owns this action
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
+     * @phpstan-param array<string, mixed> $config
+     * @psalm-param array<string, mixed> $config
      */
     public function __construct($id, $controller, $config = [])
     {

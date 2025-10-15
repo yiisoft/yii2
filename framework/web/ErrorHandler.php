@@ -105,7 +105,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
-            Yii::$app->view->clear();
+            /** @var View */
+            $view = Yii::$app->view;
+            $view->clear();
             $result = Yii::$app->runAction($this->errorAction);
             if ($result instanceof Response) {
                 $response = $result;
@@ -264,6 +266,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             return ob_get_clean();
         }
 
+        /** @var View */
         $view = Yii::$app->getView();
         $view->clear();
 

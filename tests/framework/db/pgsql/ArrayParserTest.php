@@ -27,7 +27,7 @@ class ArrayParserTest extends TestCase
             ['{,,}', [null, null, null]],
             ['{1,2,}', ['1','2',null]],
             ['{{},,1}', [[], null, '1']],
-            ['{"{\"key\":\"value\"}",NULL,"NULL","{}"}', ['{"key":"value"}', null, "NULL", '{}']],
+            ['{"{\"key\":\"value\"}",NULL,"NULL","{}"}', ['{"key":"value"}', null, 'NULL', '{}']],
             ['{boo,",",,test}', ['boo', ',', null, 'test']],
             ['{"string1","str\\\\in\\"g2","str,ing3"}', ['string1','str\\in"g2','str,ing3']],
             ['{{1,2,3},{4,5,6},{7,8,9}}', [['1','2','3'], ['4','5','6'], ['7','8','9']]],
@@ -39,7 +39,7 @@ class ArrayParserTest extends TestCase
     /**
      * @dataProvider convertProvider
      */
-    public function testConvert($string, $expected)
+    public function testConvert($string, $expected): void
     {
         $this->assertSame($expected, $this->arrayParser->parse($string));
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,11 +18,15 @@ class FakePhp7Controller extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionAksi1(int $foo, ?float $bar, bool $true, bool $false)
+    public function actionAksi1(int $foo, ?float $bar, bool $true, bool $false, string $string)
     {
     }
 
     public function actionStringy(?string $foo = null)
+    {
+    }
+
+    public function actionMixedParameter(mixed $foo)
     {
     }
 }

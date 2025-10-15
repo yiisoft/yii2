@@ -48,7 +48,7 @@ class DbQueryDependency extends Dependency
      *
      * This field can be specified as a PHP callback of following signature:
      *
-     * ```php
+     * ```
      * function (QueryInterface $query, mixed $db) {
      *     //return mixed;
      * }

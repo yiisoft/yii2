@@ -23,7 +23,7 @@ use yii\helpers\Inflector;
  *
  * The following are examples of validation rules using this validator:
  *
- * ```php
+ * ```
  * // a1 needs to be unique
  * ['a1', 'unique']
  * // a1 needs to be unique, but column a2 will be used to check the uniqueness of the a1 value
@@ -142,7 +142,7 @@ class UniqueValidator extends Validator
             $conditions[] = [$key => $value];
         }
 
-        /* @var $targetClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $targetClass */
         $targetClass = $this->getTargetClass($model);
         $db = $targetClass::getDb();
 

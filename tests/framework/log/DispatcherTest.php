@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,12 +18,12 @@ namespace yii\log {
 }
 
 namespace yiiunit\framework\log {
-
     use yiiunit\framework\log\mocks\TargetMock;
     use Yii;
     use yii\base\UserException;
     use yii\log\Dispatcher;
     use yii\log\Logger;
+    use yii\log\Target;
     use yiiunit\TestCase;
 
     /**
@@ -59,7 +60,7 @@ namespace yiiunit\framework\log {
             $this->logger = new Logger();
         }
 
-        public function testConfigureLogger()
+        public function testConfigureLogger(): void
         {
             $dispatcher = new Dispatcher();
             $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
@@ -92,7 +93,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::setLogger()
          */
-        public function testSetLogger()
+        public function testSetLogger(): void
         {
             $this->dispatcher->setLogger($this->logger);
             $this->assertSame($this->logger, $this->dispatcher->getLogger());
@@ -112,7 +113,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::getTraceLevel()
          */
-        public function testGetTraceLevel()
+        public function testGetTraceLevel(): void
         {
             $this->logger->traceLevel = 123;
             $this->dispatcher->setLogger($this->logger);
@@ -122,7 +123,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::setTraceLevel()
          */
-        public function testSetTraceLevel()
+        public function testSetTraceLevel(): void
         {
             $this->dispatcher->setLogger($this->logger);
             $this->dispatcher->setTraceLevel(123);
@@ -132,7 +133,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::getFlushInterval()
          */
-        public function testGetFlushInterval()
+        public function testGetFlushInterval(): void
         {
             $this->logger->flushInterval = 99;
             $this->dispatcher->setLogger($this->logger);
@@ -142,7 +143,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::setFlushInterval()
          */
-        public function testSetFlushInterval()
+        public function testSetFlushInterval(): void
         {
             $this->dispatcher->setLogger($this->logger);
             $this->dispatcher->setFlushInterval(99);
@@ -152,13 +153,11 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::dispatch()
          */
-        public function testDispatchWithDisabledTarget()
+        public function testDispatchWithDisabledTarget(): void
         {
-            $target = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
-
+            $target = $this->createPartialMock(Target::class, ['collect', 'export']);
             $target->expects($this->never())->method($this->anything());
+
             $target->enabled = false;
 
             $dispatcher = new Dispatcher(['targets' => ['fakeTarget' => $target]]);
@@ -168,12 +167,9 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::dispatch()
          */
-        public function testDispatchWithSuccessTargetCollect()
+        public function testDispatchWithSuccessTargetCollect(): void
         {
-            $target = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
-
+            $target = $this->createPartialMock(Target::class, ['collect', 'export']);
             $target->expects($this->once())
                 ->method('collect')
                 ->with(
@@ -188,23 +184,18 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::dispatch()
          */
-        public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect()
+        public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect(): void
         {
             static::$microtimeIsMocked = true;
-            $target1 = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
-
-            $target2 = $this->getMockBuilder('yii\\log\\Target')
-                ->setMethods(['collect'])
-                ->getMockForAbstractClass();
+            $target1 = $this->createPartialMock(Target::class, ['collect', 'export']);
+            $target2 = $this->createPartialMock(Target::class, ['collect', 'export']);
 
             $target1->expects($this->exactly(2))
                 ->method('collect')
                 ->withConsecutive(
                     [$this->equalTo('messages'), $this->equalTo(true)],
                     [
-                        $this->callback(function($arg) use ($target1) {
+                        $this->callback(function ($arg) use ($target1) {
                             if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
                                 return false;
                             }
@@ -255,7 +246,7 @@ namespace yiiunit\framework\log {
         /**
          * @covers \yii\log\Dispatcher::init()
          */
-        public function testInitWithCreateTargetObject()
+        public function testInitWithCreateTargetObject(): void
         {
             $dispatcher = new Dispatcher(
                 [
@@ -287,7 +278,7 @@ namespace yiiunit\framework\log {
         private $targetThrowFirstCount;
         private $targetThrowSecondOutputs;
 
-        public function testTargetThrow()
+        public function testTargetThrow(): void
         {
             $this->targetThrowFirstCount = 0;
             $this->targetThrowSecondOutputs = [];

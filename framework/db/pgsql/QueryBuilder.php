@@ -8,7 +8,6 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidArgumentException;
-use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\Query;
@@ -27,27 +26,27 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Defines a UNIQUE index for [[createIndex()]].
      * @since 2.0.6
      */
-    const INDEX_UNIQUE = 'unique';
+    public const INDEX_UNIQUE = 'unique';
     /**
      * Defines a B-tree index for [[createIndex()]].
      * @since 2.0.6
      */
-    const INDEX_B_TREE = 'btree';
+    public const INDEX_B_TREE = 'btree';
     /**
      * Defines a hash index for [[createIndex()]].
      * @since 2.0.6
      */
-    const INDEX_HASH = 'hash';
+    public const INDEX_HASH = 'hash';
     /**
      * Defines a GiST index for [[createIndex()]].
      * @since 2.0.6
      */
-    const INDEX_GIST = 'gist';
+    public const INDEX_GIST = 'gist';
     /**
      * Defines a GIN index for [[createIndex()]].
      * @since 2.0.6
      */
-    const INDEX_GIN = 'gin';
+    public const INDEX_GIN = 'gin';
 
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
@@ -368,7 +367,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function oldUpsert($table, $insertColumns, $updateColumns, &$params)
     {
-        /** @var Constraint[] $constraints */
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
             return $this->insert($table, $insertColumns, $params);

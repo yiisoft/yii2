@@ -12,7 +12,7 @@ namespace yii\grid;
  *
  * To add a SerialColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
  *
- * ```php
+ * ```
  * 'columns' => [
  *     // ...
  *     [
@@ -42,9 +42,9 @@ class SerialColumn extends Column
     {
         $pagination = $this->grid->dataProvider->getPagination();
         if ($pagination !== false) {
-            return $pagination->getOffset() + $index + 1;
+            return (string) ($pagination->getOffset() + $index + 1);
         }
 
-        return $index + 1;
+        return (string) ($index + 1);
     }
 }

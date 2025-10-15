@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework;
 
@@ -38,7 +41,7 @@ class BaseYiiTest extends TestCase
         Yii::$aliases = $this->aliases;
     }
 
-    public function testAlias()
+    public function testAlias(): void
     {
         $this->assertEquals(YII2_PATH, Yii::getAlias('@yii'));
 
@@ -65,30 +68,30 @@ class BaseYiiTest extends TestCase
         $this->assertEquals('/www', Yii::getAlias('@some/alias'));
     }
 
-    public function testGetVersion()
+    public function testGetVersion(): void
     {
-        $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
+        $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', Yii::getVersion()));
     }
 
-    public function testPowered()
+    public function testPowered(): void
     {
         $this->assertIsString(Yii::powered());
     }
 
-    public function testCreateObjectArray()
+    public function testCreateObjectArray(): void
     {
         Yii::$container = new Container();
 
         $qux = Yii::createObject([
-            '__class' => Qux::className(),
+            '__class' => Qux::class,
             'a' => 42,
         ]);
 
-        $this->assertInstanceOf(Qux::className(), $qux);
+        $this->assertInstanceOf(Qux::class, $qux);
         $this->assertSame(42, $qux->a);
     }
 
-    public function testCreateObjectCallable()
+    public function testCreateObjectCallable(): void
     {
         Yii::$container = new Container();
 
@@ -112,7 +115,7 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(Yii::createObject(new CallableClass()));
     }
 
-    public function testCreateObjectEmptyArrayException()
+    public function testCreateObjectEmptyArrayException(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('Object configuration must be an array containing a "class" or "__class" element.');
@@ -120,7 +123,7 @@ class BaseYiiTest extends TestCase
         Yii::createObject([]);
     }
 
-    public function testCreateObjectInvalidConfigException()
+    public function testCreateObjectInvalidConfigException(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('Unsupported configuration type: ' . gettype(null));
@@ -128,22 +131,22 @@ class BaseYiiTest extends TestCase
         Yii::createObject(null);
     }
 
-    public function testDi3CompatibilityCreateDependentObject()
+    public function testDi3CompatibilityCreateDependentObject(): void
     {
         $object = Yii::createObject([
-            '__class' => FooBaz::className(),
-            'fooDependent' => ['__class' => FooDependentSubclass::className()],
+            '__class' => FooBaz::class,
+            'fooDependent' => ['__class' => FooDependentSubclass::class],
         ]);
 
-        $this->assertInstanceOf(FooBaz::className(), $object);
-        $this->assertInstanceOf(FooDependentSubclass::className(), $object->fooDependent);
+        $this->assertInstanceOf(FooBaz::class, $object);
+        $this->assertInstanceOf(FooDependentSubclass::class, $object->fooDependent);
     }
 
     /**
      * @covers \yii\BaseYii::setLogger()
      * @covers \yii\BaseYii::getLogger()
      */
-    public function testSetupLogger()
+    public function testSetupLogger(): void
     {
         $logger = new Logger();
         BaseYii::setLogger($logger);
@@ -152,7 +155,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
-        $this->assertInstanceOf(Logger::className(), $defaultLogger);
+        $this->assertInstanceOf(Logger::class, $defaultLogger);
     }
 
     /**
@@ -163,11 +166,10 @@ class BaseYiiTest extends TestCase
      * @covers \yii\BaseYii::beginProfile()
      * @covers \yii\BaseYii::endProfile()
      */
-    public function testLog()
+    public function testLog(): void
     {
-        $logger = $this->getMockBuilder('yii\\log\\Logger')
-            ->setMethods(['log'])
-            ->getMock();
+        $logger = $this->createPartialMock(Logger::class, ['log']);
+
         BaseYii::setLogger($logger);
 
         $logger->expects($this->exactly(6))

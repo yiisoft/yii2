@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -70,7 +71,7 @@ class SluggableBehaviorTest extends TestCase
 
     // Tests :
 
-    public function testSlug()
+    public function testSlug(): void
     {
         $model = new ActiveRecordSluggable();
         $model->name = 'test name';
@@ -82,7 +83,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testSlugSeveralAttributes()
+    public function testSlugSeveralAttributes(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
@@ -97,7 +98,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testSlugRelatedAttribute()
+    public function testSlugRelatedAttribute(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getBehavior('sluggable')->attribute = 'related.name';
@@ -116,7 +117,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testUniqueByIncrement()
+    public function testUniqueByIncrement(): void
     {
         $name = 'test name';
 
@@ -135,7 +136,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testUniqueByIncrement
      */
-    public function testUniqueByCallback()
+    public function testUniqueByCallback(): void
     {
         $name = 'test name';
 
@@ -144,7 +145,9 @@ class SluggableBehaviorTest extends TestCase
         $model->save();
 
         $model = new ActiveRecordSluggableUnique();
-        $model->sluggable->uniqueSlugGenerator = function ($baseSlug, $iteration) {return $baseSlug . '-callback';};
+        $model->sluggable->uniqueSlugGenerator = function ($baseSlug, $iteration) {
+            return $baseSlug . '-callback';
+        };
         $model->name = $name;
         $model->save();
 
@@ -154,7 +157,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testUpdateUnique()
+    public function testUpdateUnique(): void
     {
         $name = 'test name';
 
@@ -174,7 +177,7 @@ class SluggableBehaviorTest extends TestCase
         $this->assertEquals('test-name', $model->slug);
     }
 
-    public function testSkipOnEmpty()
+    public function testSkipOnEmpty(): void
     {
         $model = new SkipOnEmptySluggableActiveRecord();
         $model->name = 'test name';
@@ -193,7 +196,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testImmutableByAttribute()
+    public function testImmutableByAttribute(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getSluggable()->immutable = true;
@@ -210,7 +213,7 @@ class SluggableBehaviorTest extends TestCase
     /**
      * @depends testSlug
      */
-    public function testImmutableByCallback()
+    public function testImmutableByCallback(): void
     {
         $model = new ActiveRecordSluggable();
         $model->getSluggable()->immutable = true;
@@ -245,7 +248,7 @@ class ActiveRecordSluggable extends ActiveRecord
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
             ],
         ];
@@ -266,7 +269,7 @@ class ActiveRecordSluggable extends ActiveRecord
 
     public function getRelated()
     {
-        return $this->hasOne(ActiveRecordRelated::className(), ['id' => 'belongs_to_id']);
+        return $this->hasOne(ActiveRecordRelated::class, ['id' => 'belongs_to_id']);
     }
 }
 
@@ -284,7 +287,7 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'ensureUnique' => true,
             ],
@@ -298,7 +301,7 @@ class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'slugAttribute' => 'slug',
                 'ensureUnique' => true,
