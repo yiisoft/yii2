@@ -68,7 +68,7 @@ COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml
 
 > Note: The files `docker-compose.caching.yml` and `docker-compose.mssql.yml` cannot be merged with `docker-compose.yml`.
 
-#### Running tests via shell script
+### Running tests via shell script
 
 You need to go to the `tests` directory and run the `test-local.sh` script. The first argument can be: `default`, `caching`, `mssql`, `pgsql`, `mysql`. You can pass additional arguments to this script to control the behavior of PHPUnit. For example:
 
@@ -77,7 +77,7 @@ cd tests
 sh test-local.sh default --exclude caching,db
 ```
 
-#### Manually running the tests
+### Manually running the tests
 
 You can also run tests manually. To do this, you need to start the container and run the tests. For example:
 
