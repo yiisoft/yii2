@@ -1,14 +1,15 @@
-FROM yiisoftware/yii2-php:7.4-apache
+FROM php:8.4-apache
 
-RUN apt-get update && apt-get install -y curl apt-transport-https unixodbc unixodbc-dev
-
-RUN pecl install sqlsrv-5.10.1 pdo_sqlsrv-5.10.1
+RUN apt-get update && apt-get install -y curl apt-transport-https unixodbc unixodbc-dev libzip-dev
+RUN pecl install sqlsrv pdo_sqlsrv
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
+RUN docker-php-ext-install zip
 
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc
-RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
+RUN curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | tee /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
 WORKDIR /project
 COPY ./ /project
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 RUN composer install --prefer-dist
