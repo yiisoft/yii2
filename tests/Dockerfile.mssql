@@ -1,9 +1,8 @@
 FROM yiisoftware/yii2-php:7.4-apache
 
-RUN apt-get update
-RUN apt-get install -y curl apt-transport-https
+RUN apt-get update && apt-get install -y curl apt-transport-https unixodbc unixodbc-dev
 
-RUN apt-get install -y unixodbc unixodbc-dev && pecl install sqlsrv-5.10.1 pdo_sqlsrv-5.10.1
+RUN pecl install sqlsrv-5.10.1 pdo_sqlsrv-5.10.1
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | tee /etc/apt/trusted.gpg.d/microsoft.asc
