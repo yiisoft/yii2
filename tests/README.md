@@ -1,17 +1,13 @@
-Yii 2.0 Unit tests
-==================
+# Yii 2.0 Unit tests
 
-DIRECTORY STRUCTURE
--------------------
+## DIRECTORY STRUCTURE
 
     data/            models, config and other test data
         config.php   this file contains configuration for database and caching backends
     framework/       the framework unit tests
     runtime/         the application runtime dir for the yii test app
 
-
-HOW TO RUN THE TESTS
---------------------
+## HOW TO RUN THE TESTS
 
 Make sure you have PHPUnit installed and that you installed all composer dependencies (run `composer update` in the repo base directory).
 
@@ -35,8 +31,7 @@ A single test class could be run like the following:
 phpunit tests/framework/base/ObjectTest.php
 ```
 
-TEST CONFIGURATION
-------------------
+## TEST CONFIGURATION
 
 PHPUnit configuration is in `phpunit.xml.dist` in repository root folder.
 You can create your own phpunit.xml to override dist config.
@@ -54,118 +49,39 @@ $config['databases']['mysql']['username'] = 'yiitest';
 $config['databases']['mysql']['password'] = 'changeme';
 ```
 
-
-DOCKERIZED TESTING
-------------------
+## DOCKERIZED TESTING
 
 Get started by going to the `tests` directory and copy the environment configuration.
 
-    cd tests
-    cp .env-dist .env
+```bash
+cd tests
+cp .env-dist .env
+```
 
-The newly created `.env` file defines the configuration files used by `docker-compose`. By default MySQL, Postgres and Caching services are enabled.
+The newly created `.env` file defines the configuration files used by `docker-compose`. By default MySQL, Postgres etc. services are disabled.
 
-> You can choose services available for testing by merging `docker-compose.[...].yml` files in `.env`. For example, if you only want to test with MySQL, you can modify the `COMPOSE_FILE` variable as follows 
+> You can choose services available for testing by merging `docker-compose.[...].yml` files in `.env`. For example, if you only want to test with MySQL, you can modify the `COMPOSE_FILE` variable as follows:
 
->     COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml
+```env
+COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml
+```
 
-When starting the stack now, you get containers for databases and caching servers to test with.
+> Note: The files `docker-compose.caching.yml` and `docker-compose.mssql.yml` cannot be merged with `docker-compose.yml`.
 
-    docker-compose up -d
+### Running tests via shell script
 
-After all services have been initialized and the stack is fully up and running enter the PHP container    
-    
-    docker-compose exec php bash
+You need to go to the `tests` directory and run the `test-local.sh` script. The first argument can be: `default`, `caching`, `mssql`, `pgsql`, `mysql`. You can pass additional arguments to this script to control the behavior of PHPUnit. For example:
 
-Run a group of unit tests
-    
-    $ vendor/bin/phpunit -v --group base --debug
+```bash
+cd tests
+sh test-local.sh default --exclude caching,db
+```
 
-#### Examples for running phpunit in a separate container
-    
-    docker-compose run php vendor/bin/phpunit -v --group caching,db   
-    docker-compose run php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
-    docker-compose run php vendor/bin/phpunit -v --exclude mssql,oci,wincache,cubrid
+### Manually running the tests
 
-> Note: Documentation about [installing additional extensions](https://github.com/yiisoft/yii2-docker/blob/master/docs/install-extensions.md) can be found at `yiisoft/yii2-docker`.
+You can also run tests manually. To do this, you need to start the container and run the tests. For example:
 
-### Cubrid
-
-> Note: Images for testing Cubrid are based on PHP 5, due to incompatibilities with PHP 7 
-
-    cd tests/cubrid
-    docker-compose up -d
-    docker-compose run php vendor/bin/phpunit -v --group cubrid
-
-### MSSQL
-
-> Note: Images for testing MSSQL are based on `bylexus/apache-php7` (Ubuntu) since drivers are not available for Debian or Alpine.     
-
-**experimental**
-
-- needs 3.5 GB RAM, Docker-host with >4.5 GB is recommended for testing
-- database CLI `tsgkadot/mssql-tools`   
-
-Example commands    
-    
-    cd tests/mssql
-
-Using a shell    
-    
-    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -P Microsoft-12345
-
-Create database with sqlcmd     
-     
-    $ sqlcmd -S mssql -U sa -P Microsoft-12345 -Q "CREATE DATABASE yii2test"
-
-Create database (one-liner)
-
-    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -P Microsoft-12345 -Q "CREATE DATABASE yii2test"
-
-Run MSSQL tests
-
-    docker-compose run php 
-    $ vendor/bin/phpunit --group mssql
-
-### Build triggers
-
-    curl -X POST \
-         -F token=${TOKEN} \
-         -F ref=travis \
-         -F "variables[DOCKER_MYSQL_IMAGE]=mysql:5.6" \
-         -F "variables[DOCKER_POSTGRES_IMAGE]=postgres:9.5" \
-         ${TRIGGER_URL}
-
-### Run tests locally
-
-#### Via shell script
-    
-    cd tests
-    sh test-local.sh default
-
-#### Via runner
-
-*experimental*
-
-docker-compose configuration
-
-    runner:
-      image: schmunk42/gitlab-runner
-      entrypoint: bash
-      working_dir: /project
-      volumes:
-        - ../:/project
-        - /var/run/docker.sock:/var/run/docker.sock
-      environment:
-        - RUNNER_BUILDS_DIR=${PWD}/..    
-
-Start runner bash        
-        
-    docker-compose -f docker-compose.runner.yml run runner
-
-Execute jobs via shell runner (with docker-compose support)    
-    
-    $ gitlab-runner exec shell build
-    $ gitlab-runner exec shell test
-    
-        
+```bash
+docker compose up -d
+docker compose exec php vendor/bin/phpunit -v
+```
