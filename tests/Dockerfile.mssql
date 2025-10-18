@@ -1,6 +1,6 @@
 FROM yiisoftware/yii2-php:8.4-apache
 
-RUN apt-get update && apt-get install -y curl gnupg ca-certificates unixodbc unixodbc-dev
+RUN apt-get update && apt-get install -y curl gnupg ca-certificates unixodbc-dev
 RUN pecl install sqlsrv pdo_sqlsrv
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
