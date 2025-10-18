@@ -1,13 +1,13 @@
 FROM yiisoftware/yii2-php:8.4-apache
 
-RUN apt-get update && apt-get install -y curl gnupg ca-certificates unixodbc-dev
+RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg unixodbc-dev
 RUN pecl install sqlsrv pdo_sqlsrv
 RUN docker-php-ext-enable sqlsrv pdo_sqlsrv
 
 # Note: Using Debian 12 (bookworm) repo since Trixie (13) is not yet officially supported by Microsoft
 RUN curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
 RUN echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/debian/12/prod bookworm main" > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql18
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18
 
 WORKDIR /project
 COPY ./ /project
