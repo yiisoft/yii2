@@ -65,6 +65,7 @@ Yii Framework 2 Change Log
 - Bug #20619: Fix `@return` annotation for `yii\db\Query::prepare()` (mspirkov)
 - Bug #20618: Fix `@var` annotation for `yii\web\Response::$acceptMimeType` (mspirkov)
 - Bug #20617: Fix `@return` annotation for `DataColumn::getDataCellValue()` (mspirkov)
+- Bug #20630: Fix `@var` annotations for `yii\web\CompositeUrlRule::$rules` and `yii\web\GroupUrlRule::$rules` (mspirkov)
 
 
 2.0.53 June 27, 2025
