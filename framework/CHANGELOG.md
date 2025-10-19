@@ -65,7 +65,7 @@ Yii Framework 2 Change Log
 - Bug #20619: Fix `@return` annotation for `yii\db\Query::prepare()` (mspirkov)
 - Bug #20618: Fix `@var` annotation for `yii\web\Response::$acceptMimeType` (mspirkov)
 - Bug #20617: Fix `@return` annotation for `DataColumn::getDataCellValue()` (mspirkov)
-- Bug #20621: Fix `@return` annotations for `lastInsertId` methods in `yii\db\mssql` namespace (mspirkov)
+- Bug #20628: Fix `@return` annotations for `lastInsertId` methods in `yii\db\mssql` namespace (mspirkov)
 
 
 2.0.53 June 27, 2025
