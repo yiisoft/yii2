@@ -1,13 +1,22 @@
-version: '2'
 services:
-
   php:
+    build:
+      context: ..
+      dockerfile: tests/Dockerfile.caching
+    ports:
+      - 80
+    volumes:
+      - ../tests/data/config-docker.php:/project/tests/data/config.php
+    environment:
+      IS_LOCAL_TESTS: 1
     depends_on:
-      - redis
-      - memcached
-
-  redis:
-    image: redis
+      memcached:
+        condition: service_healthy
 
   memcached:
-    image: memcached
+    image: ${DOCKER_MEMCACHED_IMAGE}
+    healthcheck:
+      test: ["CMD", "timeout", "5", "bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/11211"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
