@@ -91,7 +91,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     {
         $result = parent::constraintsProvider();
         foreach ($result as $name => $constraints) {
-            $result[$name][2] = self::convertPropertiesToAnycase($constraints[2]);
+            $result[$name][2] = static::convertPropertiesToAnycase($constraints[2]);
         }
         $result['1: check'][2] = false;
         unset($result['1: index'][2][0]);
@@ -118,7 +118,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         if (!$isProperty && \is_array($object)) {
             $result = [];
             foreach ($object as $name => $value) {
-                $result[] = self::convertPropertiesToAnycase($value);
+                $result[] = static::convertPropertiesToAnycase($value);
             }
 
             return $result;
@@ -126,12 +126,34 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         if (\is_object($object)) {
             foreach (array_keys((array) $object) as $name) {
-                $object->$name = self::convertPropertiesToAnycase($object->$name, true);
+                $object->$name = static::convertPropertiesToAnycase($object->$name, true);
             }
         } elseif (\is_array($object) || \is_string($object)) {
             $object = new AnyCaseValue($object);
         }
 
         return $object;
+    }
+
+    /**
+     * @dataProvider lowercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected): void
+    {
+        $this->markTestSkipped('This test hangs on CUBRID.');
+    }
+
+    /**
+     * @dataProvider uppercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected): void
+    {
+        $this->markTestSkipped('This test hangs on CUBRID.');
     }
 }
