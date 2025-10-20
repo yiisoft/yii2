@@ -32,7 +32,7 @@ Yii Framework 2 Change Log
 - Bug #20515: Fix `@param` annotations in `BetweenColumnsCondition`, `InCondition` and `LikeCondition` (mspirkov)
 - Bug #20516: Fix `@template` annotations in `ActiveRecord` (mspirkov)
 - Bug #19506: Fix `@property` annotations in `yii\console\widgets\Table`, `yii\di\Container` and `yii\web\Session` (mspirkov)
-- Enh #20525: Add `@template` annotations for all actions (mspirkov)
+- Enh #20525, #20529, #20629: Add `@template` annotations for all actions (mspirkov)
 - Bug #20524: Fix PHPStan/Psalm annotations in `Yii::createObject` (mspirkov)
 - Bug #20530: Fix notice "Object of class DateTimeImmutable could not be converted to int" in `CookieCollection::has` (mspirkov)
 - Bug #20532: Add missing `return` statements in `CacheController::actionFlushSchema`, `FixtureController::actionUnload`, `HelpController::actionIndex` and `ServeController::actionIndex` (mspirkov)
@@ -66,6 +66,7 @@ Yii Framework 2 Change Log
 - Bug #20618: Fix `@var` annotation for `yii\web\Response::$acceptMimeType` (mspirkov)
 - Bug #20617: Fix `@return` annotation for `DataColumn::getDataCellValue()` (mspirkov)
 - Bug #20628: Fix `@return` annotations for `lastInsertId` methods in `yii\db\mssql` namespace (mspirkov)
+- Bug #20630: Fix `@var` annotations for `yii\web\CompositeUrlRule::$rules` and `yii\web\GroupUrlRule::$rules` (mspirkov)
 
 
 2.0.53 June 27, 2025
