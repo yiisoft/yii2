@@ -42,7 +42,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertSame('3', $db->getSchema()->getLastInsertID('profile_SEQ'));
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT ALL  INTO "type" ("int_col", "float_col", "char_col") ' .
@@ -161,7 +161,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         }, 10);
     }
 
-    public function paramsNonWhereProvider()
+    public static function paramsNonWhereProvider(): array
     {
         return [
             ['SELECT SUBSTR([[name]], :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR([[name]], :len)'],

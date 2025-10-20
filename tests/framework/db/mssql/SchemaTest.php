@@ -25,7 +25,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         'dbo',
     ];
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: check'][2][0]->expression = '([C_check]<>\'\')';
@@ -100,7 +100,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals($expectedName, $quotedName);
     }
 
-    public function quoteTableNameDataProvider()
+    public static function quoteTableNameDataProvider(): array
     {
         return [
             ['test', '[test]'],
@@ -127,7 +127,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals($expectedName, $tableSchema->name);
     }
 
-    public function getTableSchemaDataProvider()
+    public static function getTableSchemaDataProvider(): array
     {
         return [
             ['[dbo].[profile]', 'profile'],

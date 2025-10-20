@@ -245,7 +245,7 @@ SQL;
         $this->assertEquals('user5@example.com', $command->queryScalar());
     }
 
-    public function paramsNonWhereProvider()
+    public static function paramsNonWhereProvider(): array
     {
         return [
             ['SELECT SUBSTR(name, :len) FROM {{customer}} WHERE [[email]] = :email GROUP BY SUBSTR(name, :len)'],
@@ -380,7 +380,7 @@ SQL;
         setlocale(LC_NUMERIC, $locale);
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         return [
             'issue11242' => [
@@ -615,7 +615,7 @@ SQL;
      * Data provider for testInsertSelectFailed.
      * @return array
      */
-    public function invalidSelectColumns()
+    public static function invalidSelectColumns(): array
     {
         return [
             [[]],
@@ -805,7 +805,7 @@ SQL;
         $this->assertNotNull($db->getSchema()->getTableSchema($toTableName, true));
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         return [
             'regular values' => [
@@ -1343,7 +1343,7 @@ SQL;
      * Data provider for [[testGetRawSql()]].
      * @return array test data
      */
-    public function dataProviderGetRawSql()
+    public static function dataProviderGetRawSql(): array
     {
         return [
             [

@@ -87,11 +87,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         foreach ($result as $name => $constraints) {
-            $result[$name][2] = $this->convertPropertiesToAnycase($constraints[2]);
+            $result[$name][2] = self::convertPropertiesToAnycase($constraints[2]);
         }
         $result['1: check'][2] = false;
         unset($result['1: index'][2][0]);
@@ -108,27 +108,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function lowercaseConstraintsProvider(): void
-    {
-        $this->markTestSkipped('This test hangs on CUBRID.');
-    }
-
-    public function uppercaseConstraintsProvider(): void
-    {
-        $this->markTestSkipped('This test hangs on CUBRID.');
-    }
-
     /**
      * @param array|object|string $object
      * @param bool $isProperty
      * @return array|object|string
      */
-    private function convertPropertiesToAnycase($object, $isProperty = false)
+    private static function convertPropertiesToAnycase($object, $isProperty = false)
     {
         if (!$isProperty && \is_array($object)) {
             $result = [];
             foreach ($object as $name => $value) {
-                $result[] = $this->convertPropertiesToAnycase($value);
+                $result[] = self::convertPropertiesToAnycase($value);
             }
 
             return $result;
@@ -136,7 +126,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         if (\is_object($object)) {
             foreach (array_keys((array) $object) as $name) {
-                $object->$name = $this->convertPropertiesToAnycase($object->$name, true);
+                $object->$name = self::convertPropertiesToAnycase($object->$name, true);
             }
         } elseif (\is_array($object) || \is_string($object)) {
             $object = new AnyCaseValue($object);
