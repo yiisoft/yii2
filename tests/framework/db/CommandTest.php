@@ -1267,7 +1267,7 @@ SQL;
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID());
+        $this->assertSame('3', $db->getSchema()->getLastInsertID());
     }
 
     public function testQueryCache(): void

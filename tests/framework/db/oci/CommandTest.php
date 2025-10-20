@@ -39,7 +39,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('profile_SEQ'));
+        $this->assertSame('3', $db->getSchema()->getLastInsertID('profile_SEQ'));
     }
 
     public function batchInsertSqlProvider()

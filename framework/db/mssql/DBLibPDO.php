@@ -19,7 +19,7 @@ class DBLibPDO extends \PDO
     /**
      * Returns value of the last inserted ID.
      * @param string|null $name the sequence name. Defaults to null.
-     * @return int last inserted ID value.
+     * @return string|false last inserted ID value.
      */
     #[\ReturnTypeWillChange]
     public function lastInsertId($name = null)
