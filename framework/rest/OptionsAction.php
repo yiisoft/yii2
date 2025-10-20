@@ -7,6 +7,7 @@
 
 namespace yii\rest;
 
+use yii\base\Action as BaseAction;
 use Yii;
 
 /**
@@ -16,8 +17,11 @@ use Yii;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Controller
+ * @extends BaseAction<T>
  */
-class OptionsAction extends \yii\base\Action
+class OptionsAction extends BaseAction
 {
     /**
      * @var array the HTTP verbs that are supported by the collection URL
