@@ -18,12 +18,12 @@ final class DbHelper
     /**
      * Adjust dbms specific escaping.
      *
-     * @param string $sql string SQL statement to adjust.
+     * @param array|string $sql string SQL statement to adjust.
      * @param string $driverName string DBMS name.
      *
      * @return string adjusted SQL statement.
      */
-    public static function replaceQuotes(string $sql, string $driverName): string
+    public static function replaceQuotes($sql, string $driverName): string
     {
         switch ($driverName) {
             case 'mysql':
