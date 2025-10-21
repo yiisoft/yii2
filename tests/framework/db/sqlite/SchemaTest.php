@@ -58,7 +58,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: primary key'][2]->name = null;

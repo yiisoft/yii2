@@ -105,7 +105,7 @@ SQL;
         ])->queryAll());
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $parent = parent::batchInsertSqlProvider();
         unset($parent['wrongBehavior']); // Produces SQL syntax error: General error: 1 near ".": syntax error

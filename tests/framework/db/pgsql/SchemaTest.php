@@ -261,7 +261,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertCount(3, $schema->getSchemaNames());
     }
 
-    public function bigintValueProvider()
+    public static function bigintValueProvider(): array
     {
         return [
             [8817806877],
@@ -402,7 +402,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: check'][2][0]->expression = 'CHECK ((("C_check")::text <> \'\'::text))';

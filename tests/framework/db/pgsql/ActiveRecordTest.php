@@ -215,7 +215,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertSame(1, $type->update(), 'The record got updated');
     }
 
-    public function arrayValuesProvider()
+    public static function arrayValuesProvider(): array
     {
         return [
             'simple arrays values' => [[
