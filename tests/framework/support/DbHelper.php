@@ -21,9 +21,9 @@ final class DbHelper
      * @param array|string $sql string SQL statement to adjust.
      * @param string $driverName string DBMS name.
      *
-     * @return string adjusted SQL statement.
+     * @return array|string adjusted SQL statement.
      */
-    public static function replaceQuotes($sql, string $driverName): string
+    public static function replaceQuotes($sql, string $driverName)
     {
         switch ($driverName) {
             case 'mysql':
