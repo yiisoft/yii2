@@ -2017,7 +2017,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array $params
      * @param string $expectedSQL
      * @param array $expectedParams
-     * @param array $replaceQuotes
+     * @param bool $replaceQuotes
      */
     public function testInsert($table, $columns, $params, $expectedSQL, $expectedParams, $replaceQuotes = true): void
     {
