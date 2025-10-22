@@ -67,6 +67,7 @@ Yii Framework 2 Change Log
 - Bug #20617: Fix `@return` annotation for `DataColumn::getDataCellValue()` (mspirkov)
 - Bug #20628: Fix `@return` annotations for `lastInsertId` methods in `yii\db\mssql` namespace (mspirkov)
 - Bug #20630: Fix `@var` annotations for `yii\web\CompositeUrlRule::$rules` and `yii\web\GroupUrlRule::$rules` (mspirkov)
+- Bug #20633: Fix PHPDoc annotations in `yii\db` namespace. Add PHPStan/Psalm annotations in `yii\db` namespace (mspirkov)
 
 
 2.0.53 June 27, 2025
