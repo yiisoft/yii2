@@ -8,14 +8,15 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use Closure;
 use yii\base\DynamicModel;
+use yii\base\NotSupportedException;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
 use yiiunit\data\base\TraversableObject;
-use yiiunit\framework\support\DbHelper;
 
 /**
  * @group db
@@ -70,7 +71,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public static function conditionProvider(): array
     {
-        $data = array_merge(
+        return array_merge(
             parent::conditionProvider(),
             [
                 [
@@ -202,13 +203,6 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 [['&&', 'id', new ArrayExpression([1])], '"id" && ARRAY[:qp0]', [':qp0' => 1]],
             ],
         );
-
-        // adjust dbms specific escaping
-        foreach ($data as $i => $condition) {
-            $data[$i][1] = DbHelper::replaceQuotes($condition[1], 'pgsql');
-        }
-
-        return $data;
     }
 
     public function testAlterColumn(): void
@@ -260,16 +254,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
         return $result;
-    }
-
-    public function defaultValuesProvider(): void
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in PostgreSQL.');
     }
 
     public function testCommentColumn(): void
@@ -298,7 +287,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
 
-    public function batchInsertProvider()
+    public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
 
@@ -343,7 +332,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -443,7 +432,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $newData;
     }
 
-    public function updateProvider()
+    public static function updateProvider(): array
     {
         $items = parent::updateProvider();
 
@@ -455,7 +444,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
+            'UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1',
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -488,5 +477,19 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = 'DROP INDEX {{%schema.index}}';
         $sql = $qb->dropIndex('index', '{{%schema.table}}');
         $this->assertEquals($expected, $sql);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     * @param string $sql
+     */
+    public function testAddDropDefaultValue($sql, Closure $builder): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^pgsql does not support (adding|dropping) default value constraints\.$/',
+        );
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }
