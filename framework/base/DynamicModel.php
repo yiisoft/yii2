@@ -223,7 +223,7 @@ class DynamicModel extends Model
      */
     public static function validateData(array $data, $rules = [])
     {
-        /** @var self $model */
+        /** @var static $model */
         $model = new static($data);
         if (!empty($rules)) {
             $validators = $model->getValidators();
