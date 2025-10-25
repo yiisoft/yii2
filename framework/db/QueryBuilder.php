@@ -319,6 +319,7 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         if ($this->expressionBuilders[$className] === __CLASS__) {
+            /** @phpstan-var $this&ExpressionBuilderInterface */
             return $this;
         }
 
