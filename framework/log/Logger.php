@@ -144,7 +144,7 @@ class Logger extends Component
      * Logs a message with the given type and category.
      * If [[traceLevel]] is greater than 0, additional call stack information about
      * the application code will be logged as well.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure that will be handled by a [[Target|log target]].
      * @param int $level the level of the message. This must be one of the following:
      * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`, `Logger::LEVEL_PROFILE`,

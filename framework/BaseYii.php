@@ -433,7 +433,7 @@ class BaseYii
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
@@ -446,7 +446,7 @@ class BaseYii
      * Logs a warning message.
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
@@ -459,7 +459,7 @@ class BaseYii
      * Logs an informative message.
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
