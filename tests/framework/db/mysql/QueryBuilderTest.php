@@ -8,13 +8,14 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use Closure;
 use PDO;
 use yii\base\DynamicModel;
+use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
-use yiiunit\framework\support\DbHelper;
 
 /**
  * @group db
@@ -166,7 +167,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $columns;
     }
 
-    public function primaryKeysProvider()
+    public static function primaryKeysProvider(): array
     {
         $result = parent::primaryKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_1}} DROP PRIMARY KEY';
@@ -175,14 +176,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function foreignKeysProvider()
+    public static function foreignKeysProvider(): array
     {
         $result = parent::foreignKeysProvider();
         $result['drop'][0] = 'ALTER TABLE {{T_constraints_3}} DROP FOREIGN KEY [[CN_constraints_3]]';
         return $result;
     }
 
-    public function indexesProvider()
+    public static function indexesProvider(): array
     {
         $result = parent::indexesProvider();
         $result['create'][0] = 'ALTER TABLE {{T_constraints_2}} ADD INDEX [[CN_constraints_2_single]] ([[C_index_1]])';
@@ -192,16 +193,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
-    public function uniquesProvider()
+    public static function uniquesProvider(): array
     {
         $result = parent::uniquesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
         return $result;
-    }
-
-    public function defaultValuesProvider(): void
-    {
-        $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
     }
 
     public function testResetSequence(): void
@@ -217,7 +213,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    public function upsertProvider()
+    public static function upsertProvider(): array
     {
         $concreteData = [
             'regular values' => [
@@ -266,7 +262,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public static function conditionProvider(): array
     {
-        $data = array_merge(
+        return array_merge(
             parent::conditionProvider(),
             [
                 [
@@ -365,16 +361,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 ]
             ],
         );
-
-        // adjust dbms specific escaping
-        foreach ($data as $i => $condition) {
-            $data[$i][1] = DbHelper::replaceQuotes($condition[1], 'mysql');
-        }
-
-        return $data;
     }
 
-    public function updateProvider()
+    public static function updateProvider(): array
     {
         $items = parent::updateProvider();
 
@@ -386,7 +375,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 'id' => 1,
             ],
-            $this->replaceQuotes('UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1'),
+            'UPDATE [[profile]] SET [[description]]=:qp0 WHERE [[id]]=:qp1',
             [
                 ':qp0' => '{"abc":"def","0":123,"1":null}',
                 ':qp1' => 1,
@@ -460,5 +449,19 @@ MySqlStatement;
         // non-primary key columns should have DEFAULT as value
         $sql = $command->insert('negative_default_values', [])->getRawSql();
         $this->assertEquals('INSERT INTO `negative_default_values` (`tinyint_col`) VALUES (DEFAULT)', $sql);
+    }
+
+    /**
+     * @dataProvider defaultValuesProvider
+     * @param string $sql
+     */
+    public function testAddDropDefaultValue($sql, Closure $builder): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^mysql does not support (adding|dropping) default value constraints\.$/',
+        );
+
+        parent::testAddDropDefaultValue($sql, $builder);
     }
 }
