@@ -20,7 +20,10 @@ use yii\base\InvalidConfigException;
  *
  * @method ActiveRecordInterface|array|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
- * @property ActiveRecord $modelClass
+ * @property string $modelClass
+ *
+ * @phpstan-property class-string<ActiveRecordInterface> $modelClass
+ * @psalm-property class-string<ActiveRecordInterface> $modelClass
  */
 trait ActiveRelationTrait
 {

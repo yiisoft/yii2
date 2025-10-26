@@ -18,6 +18,9 @@ trait ActiveQueryTrait
 {
     /**
      * @var string the name of the ActiveRecord class.
+     *
+     * @phpstan-var class-string<ActiveRecordInterface>
+     * @psalm-var class-string<ActiveRecordInterface>
      */
     public $modelClass;
     /**
