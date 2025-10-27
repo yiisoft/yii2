@@ -1,41 +1,43 @@
 {
-    "name": "yii2",
-    "description": "a modern PHP framework designed for professional Web development",
-    "main": "index.js",
-    "directories": {
-        "doc": "docs",
-        "test": "tests/js/tests"
-    },
-    "dependencies": {
-        "inputmask": "^5.0.8",
-        "jquery": "~3.6.4",
-        "jquery-pjax": "^2.0.1",
-        "punycode": "^1.4.0",
-        "yii2-pjax": "^2.0.8"
-    },
-    "devDependencies": {
-        "chai": "^3.5.0",
-        "jsdom": "24.1.0",
-        "leche": "^2.3.0",
-        "mocha": "^6.2.3",
-        "mocha-jsdom": "^2.0.0",
-        "sinon": "^1.17.6"
-    },
-    "scripts": {
-        "test": "./node_modules/.bin/mocha tests/js/tests/*.test.js --timeout 0 --colors"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/yiisoft/yii2.git"
-    },
-    "keywords": [
-        "php",
-        "framework"
-    ],
-    "author": "",
-    "license": "BSD-3-Clause",
-    "bugs": {
-        "url": "https://github.com/yiisoft/yii2/issues"
-    },
-    "homepage": "https://github.com/yiisoft/yii2"
+  "name": "yii2",
+  "description": "a modern PHP framework designed for professional Web development",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests/js/tests"
+  },
+  "dependencies": {
+    "inputmask": "^5.0.8",
+    "jquery": "~3.6.4",
+    "jquery-pjax": "^2.0.1",
+    "punycode": "^1.4.0",
+    "yii2-pjax": "^2.0.8"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^9.37.0",
+    "jsdom": "24.1.0",
+    "leche": "^2.3.0",
+    "mocha": "^6.2.3",
+    "mocha-jsdom": "^2.0.0",
+    "sinon": "^1.17.6"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha tests/js/tests/*.test.js --timeout 0 --colors",
+    "lint": "eslint --max-warnings=79 ./framework/assets ./tests/js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yiisoft/yii2.git"
+  },
+  "keywords": [
+    "php",
+    "framework"
+  ],
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/yiisoft/yii2/issues"
+  },
+  "homepage": "https://github.com/yiisoft/yii2"
 }
