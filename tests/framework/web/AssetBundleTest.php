@@ -80,11 +80,11 @@ class AssetBundleTest extends TestCase
         $bundle->publish($am);
 
         $this->assertTrue(is_dir($bundle->basePath));
-        $this->sourcesPublish_VerifyFiles('css', $bundle);
-        $this->sourcesPublish_VerifyFiles('js', $bundle);
+        $this->sourcesPublishVerifyFiles('css', $bundle);
+        $this->sourcesPublishVerifyFiles('js', $bundle);
     }
 
-    private function sourcesPublish_VerifyFiles($type, $bundle): void
+    private function sourcesPublishVerifyFiles($type, $bundle): void
     {
         foreach ($bundle->$type as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
@@ -101,7 +101,7 @@ class AssetBundleTest extends TestCase
         $this->verifySourcesPublishedBySymlink($view);
     }
 
-    public function testSourcesPublishedBySymlink_Issue9333(): void
+    public function testSourcesPublishedBySymlinkIssue9333(): void
     {
         $view = $this->getView([
             'linkAssets' => true,
@@ -113,7 +113,7 @@ class AssetBundleTest extends TestCase
         $this->assertTrue(is_dir(dirname($bundle->basePath)));
     }
 
-    public function testSourcesPublish_AssetManagerBeforeCopy(): void
+    public function testSourcesPublishAssetManagerBeforeCopy(): void
     {
         $view = $this->getView([
             'beforeCopy' => function ($from, $to) {
@@ -132,7 +132,7 @@ class AssetBundleTest extends TestCase
         }
     }
 
-    public function testSourcesPublish_AssetBeforeCopy(): void
+    public function testSourcesPublishAssetBeforeCopy(): void
     {
         $view = $this->getView();
         $am = $view->assetManager;
@@ -152,7 +152,7 @@ class AssetBundleTest extends TestCase
         }
     }
 
-    public function testSourcesPublish_publishOptions_Only(): void
+    public function testSourcesPublishPublishOptionsOnly(): void
     {
         $view = $this->getView();
         $am = $view->assetManager;

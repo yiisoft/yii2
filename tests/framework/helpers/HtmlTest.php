@@ -1612,10 +1612,10 @@ EOD;
     }
 
     /**
-     * Data provider for [[testActiveInput_TypeText]].
+     * Data provider for [[testActiveInputTypeText]].
      * @return array test data
      */
-    public static function dataProviderActiveInput_TypeText(): array
+    public static function dataProviderActiveInputTypeText(): array
     {
         return [
             [
@@ -1641,13 +1641,13 @@ EOD;
     }
 
     /**
-     * @dataProvider dataProviderActiveInput_TypeText
+     * @dataProvider dataProviderActiveInputTypeText
      *
      * @param string $value
      * @param array $options
      * @param string $expectedHtml
      */
-    public function testActiveInput_TypeText($value, array $options, $expectedHtml): void
+    public function testActiveInputTypeText($value, array $options, $expectedHtml): void
     {
         $model = new HtmlTestModel();
         $model->name = $value;
@@ -2169,7 +2169,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    public function testActiveCheckboxList_options(): void
+    public function testActiveCheckboxListOptions(): void
     {
         $model = new HtmlTestModel();
 
@@ -2180,7 +2180,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $actual);
     }
 
-    public function testActiveTextInput_placeholderFillFromModel(): void
+    public function testActiveTextInputPlaceholderFillFromModel(): void
     {
         $model = new HtmlTestModel();
 
@@ -2189,7 +2189,7 @@ HTML;
         $this->assertStringContainsString('placeholder="Name"', $html);
     }
 
-    public function testActiveTextInput_customPlaceholder(): void
+    public function testActiveTextInputCustomPlaceholder(): void
     {
         $model = new HtmlTestModel();
 
@@ -2198,7 +2198,7 @@ HTML;
         $this->assertStringContainsString('placeholder="Custom placeholder"', $html);
     }
 
-    public function testActiveTextInput_placeholderFillFromModelTabular(): void
+    public function testActiveTextInputPlaceholderFillFromModelTabular(): void
     {
         $model = new HtmlTestModel();
 

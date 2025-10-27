@@ -110,7 +110,9 @@ class ControllerTest extends TestCase
     }
 }
 
-
+/**
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ */
 class TestController extends Controller
 {
     public function actionTest1()
@@ -138,6 +140,9 @@ class TestController extends Controller
     }
 }
 
+/**
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ */
 class Test1Controller extends Controller
 {
     public function actionTest_1()
