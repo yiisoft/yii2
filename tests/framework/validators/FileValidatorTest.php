@@ -228,7 +228,7 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($m->validate());
     }
 
-    public function testValidateAttribute_minFilesGreaterThanOneMaxFilesUnlimited_notError(): void
+    public function testValidateAttributeMinFilesGreaterThanOneMaxFilesUnlimitedNotError(): void
     {
         $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 0]);
         $model = FakedValidationModel::createWithAttributes(
@@ -255,7 +255,7 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_images'));
     }
 
-    public function testValidateAttribute_minFilesTwoMaxFilesFour_notError(): void
+    public function testValidateAttributeMinFilesTwoMaxFilesFourNotError(): void
     {
         $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 4]);
         $model = FakedValidationModel::createWithAttributes(
@@ -282,7 +282,7 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_images'));
     }
 
-    public function testValidateAttribute_minFilesTwoMaxFilesUnlimited_hasError(): void
+    public function testValidateAttributeMinFilesTwoMaxFilesUnlimitedHasError(): void
     {
         $validator = new FileValidator(['minFiles' => 2, 'maxFiles' => 0]);
         $model = FakedValidationModel::createWithAttributes(

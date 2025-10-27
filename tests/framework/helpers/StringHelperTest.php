@@ -404,7 +404,7 @@ class StringHelperTest extends TestCase
         $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
     }
 
-    public static function dataProviderMb_ucfirst(): array
+    public static function dataProviderMbUcfirst(): array
     {
         return [
             ['foo', 'Foo'],
@@ -419,14 +419,14 @@ class StringHelperTest extends TestCase
     /**
      * @param string $string
      * @param string $expectedResult
-     * @dataProvider dataProviderMb_ucfirst
+     * @dataProvider dataProviderMbUcfirst
      */
-    public function testMb_ucfirst($string, $expectedResult): void
+    public function testMbUcfirst($string, $expectedResult): void
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucfirst($string));
     }
 
-    public static function dataProviderMb_ucwords(): array
+    public static function dataProviderMbUcwords(): array
     {
         return [
             ['foo', 'Foo'],
@@ -448,9 +448,9 @@ class StringHelperTest extends TestCase
     /**
      * @param string $string
      * @param string $expectedResult
-     * @dataProvider dataProviderMb_ucwords
+     * @dataProvider dataProviderMbUcwords
      */
-    public function testMb_ucwords($string, $expectedResult): void
+    public function testMbUcwords($string, $expectedResult): void
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }

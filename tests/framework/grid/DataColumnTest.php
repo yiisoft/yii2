@@ -29,7 +29,7 @@ class DataColumnTest extends TestCase
     /**
      * @see DataColumn::getHeaderCellLabel()
      */
-    public function testColumnLabels_OnEmpty_ArrayProvider(): void
+    public function testColumnLabelsOnEmptyArrayProvider(): void
     {
         $this->mockApplication();
         $grid = new GridView([
@@ -50,7 +50,7 @@ class DataColumnTest extends TestCase
     /**
      * @see DataColumn::getHeaderCellLabel()
      */
-    public function testColumnLabels_OnEmpty_ArrayProvider_WithFilterModel(): void
+    public function testColumnLabelsOnEmptyArrayProviderWithFilterModel(): void
     {
         $this->mockApplication();
         $grid = new GridView([
@@ -72,7 +72,7 @@ class DataColumnTest extends TestCase
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_String(): void
+    public function testFilterInputString(): void
     {
         $this->mockApplication();
         $filterInput = '<input type="text"/>';
@@ -133,7 +133,7 @@ class DataColumnTest extends TestCase
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_Array(): void
+    public function testFilterInputArray(): void
     {
         $this->mockApplication([
             'components' => [
@@ -184,7 +184,7 @@ HTML
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_FormatBoolean(): void
+    public function testFilterInputFormatBoolean(): void
     {
         $this->mockApplication([
             'components' => [
