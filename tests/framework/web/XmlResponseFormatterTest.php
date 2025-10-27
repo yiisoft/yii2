@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use SplStack;
 use yii\web\XmlResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
 
@@ -93,7 +94,7 @@ class XmlResponseFormatterTest extends FormatterTest
     {
         $expectedXmlForStack = '';
 
-        $postsStack = new \SplStack();
+        $postsStack = new SplStack();
 
         $postsStack->push(new Post(915, 'record1'));
         $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .

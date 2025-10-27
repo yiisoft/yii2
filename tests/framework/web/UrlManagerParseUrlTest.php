@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\Application;
 use yii\caching\ArrayCache;
 use yii\web\Request;
 use yii\web\UrlManager;
@@ -340,7 +341,7 @@ class UrlManagerParseUrlTest extends TestCase
                     'baseUrl' => '/app',
                 ],
             ],
-        ], \yii\web\Application::class);
+        ], Application::class);
         $this->assertEquals('/app/post/123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 
@@ -416,7 +417,13 @@ class UrlManagerParseUrlTest extends TestCase
 
     public function testRulesCacheIsUsed(): void
     {
-        $arrayCache = $this->createPartialMock(ArrayCache::class, ['get', 'set']);
+        $arrayCache = $this->createPartialMock(
+            ArrayCache::class,
+            [
+                'get',
+                'set',
+            ],
+        );
 
         $manager = $this->getUrlManager([
             'rules' => ['post/<id:\d+>' => 'post/view'],

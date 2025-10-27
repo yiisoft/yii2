@@ -39,7 +39,7 @@ class Animal extends ActiveRecord
 
     /**
      * @param type $row
-     * @return \yiiunit\data\ar\Animal
+     * @return Animal
      */
     public static function instantiate($row)
     {

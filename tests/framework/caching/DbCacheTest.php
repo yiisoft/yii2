@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\caching;
 
+use yii\db\Connection;
 use yii\caching\DbCache;
 
 /**
@@ -41,14 +42,14 @@ class DbCacheTest extends CacheTestCase
 
     /**
      * @param  bool            $reset whether to clean up the test database
-     * @return \yii\db\Connection
+     * @return Connection
      */
     public function getConnection($reset = true)
     {
         if ($this->_connection === null) {
             $databases = self::getParam('databases');
             $params = $databases['mysql'];
-            $db = new \yii\db\Connection();
+            $db = new Connection();
             $db->dsn = $params['dsn'];
             $db->username = $params['username'];
             $db->password = $params['password'];

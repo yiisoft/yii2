@@ -30,7 +30,7 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
 
         /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMocK::className())
+        $serveController = $this->getMockBuilder(ServeControllerMocK::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['isAddressTaken', 'runCommand'])
             ->getMock();
@@ -55,7 +55,7 @@ class ServeControllerTest extends TestCase
         $docroot = __DIR__ . '/stub';
 
         /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
             ->getMock();
@@ -81,7 +81,7 @@ class ServeControllerTest extends TestCase
         $docroot = '/not/exist/path';
 
         /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
             ->getMock();
@@ -105,7 +105,7 @@ class ServeControllerTest extends TestCase
         $router = '/not/exist/path';
 
         /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
             ->getMock();
@@ -131,7 +131,7 @@ class ServeControllerTest extends TestCase
         $router = __DIR__ . '/stub/index.php';
 
         /** @var ServeController $serveController */
-        $serveController = $this->getMockBuilder(ServeControllerMock::className())
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
             ->setConstructorArgs(['serve', Yii::$app])
             ->onlyMethods(['runCommand'])
             ->getMock();

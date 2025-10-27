@@ -28,7 +28,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->markTestSkipped('MSSQL does not support explicit value for an IDENTITY column.');
     }
 
-    public function testCastValues()
+    public function testCastValues(): void
     {
         $model = new Type();
         $model->int_col = 123;

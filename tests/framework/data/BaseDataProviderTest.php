@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\data;
 
+use ReflectionClass;
 use yii\data\BaseDataProvider;
 use yiiunit\TestCase;
 
@@ -18,7 +19,7 @@ class BaseDataProviderTest extends TestCase
 {
     public function testGenerateId(): void
     {
-        $rc = new \ReflectionClass(BaseDataProvider::class);
+        $rc = new ReflectionClass(BaseDataProvider::class);
         $rp = $rc->getProperty('counter');
 
         $rp->setValue(new ConcreteDataProvider(), null);

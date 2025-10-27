@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\base\NotSupportedException;
+use yii\db\Connection;
 use yii\db\DefaultValueConstraint;
 use yii\db\mssql\Schema;
 use yiiunit\framework\db\AnyValue;
@@ -92,7 +94,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @param string $name Table name.
      * @param string $expectedName Expected result.
      *
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     public function testQuoteTableName(string $name, string $expectedName): void
     {
@@ -121,7 +123,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @param string $name Table name.
      * @param string $expectedName Expected result.
      *
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     public function testGetTableSchema(string $name, string $expectedName): void
     {

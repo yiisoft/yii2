@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\db;
 
+use Yii;
+use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecordInterface;
 use yii\db\Query;
@@ -133,7 +136,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(3, Customer::find()->select('COUNT(*)')->scalar());
     }
 
-    public function testFindScalar()
+    public function testFindScalar(): void
     {
         // query scalar
         $customerName = Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->scalar();
@@ -148,7 +151,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertFalse(Customer::find()->where(['[[id]]' => 42])->select('[[name]]')->exists());
     }
 
-    public function testFindColumn()
+    public function testFindColumn(): void
     {
         /** @var TestCase|ActiveRecordTestTrait $this */
         $this->assertEquals(['user1', 'user2', 'user3'], Customer::find()->select('[[name]]')->column());
@@ -813,9 +816,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         return [
             ['explicit'], // c
-            //['querysyntax'], // {{@customer}}
-            //['applyAlias'], // $query->applyAlias('customer', 'id') // _aliases are currently not being populated
-            //later getRelationAlias() could be added
+            // ['querysyntax'], // {{@customer}}
+            // ['applyAlias'], // $query->applyAlias('customer', 'id') // _aliases are currently not being populated
+            // later getRelationAlias() could be added
         ];
     }
 
@@ -1421,7 +1424,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(5, $itemClass::find()->count());
     }
 
-    public function testCastValues()
+    public function testCastValues(): void
     {
         $model = new Type();
         $model->int_col = 123;
@@ -1672,7 +1675,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertTrue(isset($order->orderItems3['1_3']));
     }
 
-    public function testUpdateAttributes()
+    public function testUpdateAttributes(): void
     {
         $order = Order::findOne(1);
         $newTotal = 978;
@@ -1883,12 +1886,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      * @param array|string $fromParams The table name or the alias.
      * @param array $expectedAliases The expected aliases.
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function testFilterTableNamesFromAliases(array|string $fromParams, array $expectedAliases): void
     {
         $query = Customer::find()->from($fromParams);
-        $aliases = $this->invokeMethod(\Yii::createObject(Customer::class), 'filterValidAliases', [$query]);
+        $aliases = $this->invokeMethod(Yii::createObject(Customer::class), 'filterValidAliases', [$query]);
 
         $this->assertEquals($expectedAliases, $aliases);
     }
@@ -1933,7 +1936,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testLegalValuesForFindByCondition(string $modelClassName, array $validFilter): void
     {
         /** @var Query $query */
-        $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
+        $query = $this->invokeMethod(Yii::createObject($modelClassName), 'findByCondition', [$validFilter]);
         Customer::getDb()->queryBuilder->build($query);
 
         $this->assertTrue(true);
@@ -1976,10 +1979,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testValueEscapingInFindByCondition(string $modelClassName, array $filterWithInjection): void
     {
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/^Key "(.+)?" is not a column name and can not be used as a filter$/');
         /** @var Query $query */
-        $query = $this->invokeMethod(\Yii::createObject($modelClassName), 'findByCondition', $filterWithInjection);
+        $query = $this->invokeMethod(Yii::createObject($modelClassName), 'findByCondition', $filterWithInjection);
         Customer::getDb()->queryBuilder->build($query);
     }
 
@@ -2068,9 +2071,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(Order::class, $orderItem->custom);
     }
 
-    public function testRefresh_querySetAlias_findRecord(): void
+    public function testRefreshQuerySetAliasFindRecord(): void
     {
-        $customer = new \yiiunit\data\ar\CustomerWithAlias();
+        $customer = new CustomerWithAlias();
         $customer->id = 1;
 
         $customer->refresh();
@@ -2092,7 +2095,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(1, sizeof($order->orderItems));
     }
 
-    public function testIssetThrowable()
+    public function testIssetThrowable(): void
     {
         $cat = new Cat();
         $this->assertFalse(isset($cat->throwable));
@@ -2188,7 +2191,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotNull($order->virtualCustomer);
     }
 
-    public function labelTestModelProvider()
+    public static function labelTestModelProvider(): array
     {
         $data = [];
 

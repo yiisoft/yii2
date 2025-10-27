@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use StdClass;
 use yii\helpers\VarDumper;
 use yiiunit\data\helpers\CustomDebugInfo;
 use yiiunit\TestCase;
@@ -44,10 +45,10 @@ class VarDumperTest extends TestCase
 
     public function testDumpObject(): void
     {
-        $obj = new \StdClass();
+        $obj = new StdClass();
         $this->assertEquals("stdClass#1\n(\n)", VarDumper::dumpAsString($obj));
 
-        $obj = new \StdClass();
+        $obj = new StdClass();
         $obj->name = 'test-name';
         $obj->price = 19;
         $dumpResult = VarDumper::dumpAsString($obj);
@@ -143,7 +144,7 @@ RESULT;
 
         // Objects :
 
-        $var = new \StdClass();
+        $var = new StdClass();
         $var->testField = 'Test Value';
         $expectedResult = "unserialize('" . serialize($var) . "')";
         $data[] = [$var, $expectedResult];
@@ -179,15 +180,15 @@ RESULT;
      */
     public function testExportObjectFallback(): void
     {
-        $var = new \StdClass();
+        $var = new StdClass();
         $var->testFunction = function () {
             return 2;
         };
         $exportResult = VarDumper::export($var);
         $this->assertNotEmpty($exportResult);
 
-        $master = new \StdClass();
-        $slave = new \StdClass();
+        $master = new StdClass();
+        $slave = new StdClass();
         $master->slave = $slave;
         $slave->master = $master;
         $master->function = function () {

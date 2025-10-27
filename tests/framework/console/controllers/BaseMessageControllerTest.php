@@ -68,6 +68,7 @@ abstract class BaseMessageControllerTest extends TestCase
             ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $messageController = new MessageControllerMock('message', $module);
         $messageController->interactive = false;
 

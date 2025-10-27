@@ -75,6 +75,7 @@ namespace yiiunit\framework\log {
                 ['profile end message', Logger::LEVEL_PROFILE_END],
             ];
 
+            /** @var SyslogTarget $syslogTarget */
             $syslogTarget = $this->getMockBuilder(SyslogTarget::class)
                 ->addMethods(['openlog', 'syslog', 'closelog'])
                 ->onlyMethods(['formatMessage'])
@@ -152,6 +153,7 @@ namespace yiiunit\framework\log {
          */
         public function testFailedExport(): void
         {
+            /** @var SyslogTarget $syslogTarget */
             $syslogTarget = $this->getMockBuilder(SyslogTarget::class)
                 ->addMethods(['openlog', 'syslog', 'closelog'])
                 ->onlyMethods(['formatMessage'])

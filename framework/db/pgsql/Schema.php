@@ -19,6 +19,7 @@ use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -26,8 +27,11 @@ use yii\helpers\ArrayHelper;
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
+ *
+ * @template T of ColumnSchema
+ * @extends BaseSchema<T>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
@@ -589,6 +593,9 @@ SQL;
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
      * @return ColumnSchema the column schema object
+     *
+     * @phpstan-return T
+     * @psalm-return T
      */
     protected function loadColumnSchema($info)
     {

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\filters;
 
+use yii\web\BadRequestHttpException;
 use Yii;
 use yii\base\Action;
 use yii\filters\ContentNegotiator;
@@ -71,7 +72,7 @@ class ContentNegotiatorTest extends TestCase
             'application/xml' => Response::FORMAT_XML,
         ];
 
-        $this->expectException(\yii\web\BadRequestHttpException::class);
+        $this->expectException(BadRequestHttpException::class);
         $this->expectExceptionMessage('Invalid data received for GET parameter');
 
         $filter->beforeAction($action);

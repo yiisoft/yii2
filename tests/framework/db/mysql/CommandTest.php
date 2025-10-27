@@ -18,7 +18,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
 
-    public function testAddDropCheck(): void
+    public function testAddDropCheckSeveral(): void
     {
         $db = $this->getConnection(false);
 

@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\web\session\mysql;
 
+use yiiunit\framework\web\session\AbstractDbSessionTest;
+
 /**
  * Class DbSessionTest.
  *
@@ -17,7 +19,7 @@ namespace yiiunit\framework\web\session\mysql;
  * @group db-session
  * @group mysql
  */
-class DbSessionTest extends \yiiunit\framework\web\session\AbstractDbSessionTest
+class DbSessionTest extends AbstractDbSessionTest
 {
     protected function getDriverNames()
     {

@@ -120,6 +120,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Constructor.
      * @param string $modelClass the model class associated with this query
      * @param array $config configurations to be applied to the newly created query object
+     *
+     * @phpstan-param class-string<ActiveRecordInterface> $modelClass
+     * @psalm-param class-string<ActiveRecordInterface> $modelClass
      */
     public function __construct($modelClass, $config = [])
     {

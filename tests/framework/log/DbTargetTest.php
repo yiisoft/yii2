@@ -8,7 +8,13 @@
 
 namespace yiiunit\framework\log;
 
+use yii\console\Application;
+use yii\console\Controller;
+use yii\base\InvalidParamException;
+use yii\db\Exception;
+use yii\base\InvalidConfigException;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\db\Query;
@@ -35,7 +41,7 @@ abstract class DbTargetTest extends TestCase
     protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
-            new \yii\console\Application([
+            new Application([
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
@@ -91,10 +97,10 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * @throws \yii\db\Exception
-     * @throws \yii\base\InvalidArgumentException
-     * @throws \yii\base\InvalidConfigException
-     * @return \yii\db\Connection
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @return Connection
      */
     public static function getConnection()
     {

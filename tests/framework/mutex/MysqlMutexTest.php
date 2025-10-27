@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\mutex;
 
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Expression;
 use yii\mutex\MysqlMutex;
 use yiiunit\framework\db\DatabaseTestCase;
@@ -28,11 +30,11 @@ class MysqlMutexTest extends DatabaseTestCase
     /**
      * @param array $additionalParams additional params to component create
      * @return MysqlMutex
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     protected function createMutex($additionalParams = [])
     {
-        return \Yii::createObject(array_merge([
+        return Yii::createObject(array_merge([
             'class' => MysqlMutex::class,
             'db' => $this->getConnection(),
         ], $additionalParams));
@@ -104,8 +106,8 @@ class MysqlMutexTest extends DatabaseTestCase
     public function testCreateMutex(): void
     {
         $mutex = $this->createMutex(['keyPrefix' => new Expression('1+1')]);
-        $this->assertInstanceOf(MysqlMutex::classname(), $mutex);
-        $this->assertInstanceOf(Expression::classname(), $mutex->keyPrefix);
+        $this->assertInstanceOf(MysqlMutex::class, $mutex);
+        $this->assertInstanceOf(Expression::class, $mutex->keyPrefix);
         $this->assertSame('1+1', $mutex->keyPrefix->expression);
     }
 }

@@ -8,6 +8,11 @@
 
 namespace yiiunit\framework\helpers;
 
+use stdClass;
+use SplStack;
+use yii\base\InvalidArgumentException;
+use DateTime;
+use DateTimeZone;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
@@ -71,7 +76,7 @@ class JsonTest extends TestCase
         // empty data encoding
         $data = [];
         $this->assertSame('[]', Json::encode($data));
-        $data = new \stdClass();
+        $data = new stdClass();
         $this->assertSame('{}', Json::encode($data));
 
         // expression encoding
@@ -181,7 +186,7 @@ PHP
         $document = simplexml_load_string($xml);
         $this->assertSame('{"child1":{},"child2":{"subElement":"sub"}}', Json::encode($document));
 
-        $postsStack = new \SplStack();
+        $postsStack = new SplStack();
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
@@ -214,7 +219,7 @@ PHP
      */
     public function testDecodeInvalidArgumentException(): void
     {
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid JSON data.');
 
         Json::decode([]);
@@ -229,7 +234,7 @@ PHP
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
 
@@ -239,7 +244,7 @@ PHP
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
         }
     }
@@ -262,7 +267,7 @@ PHP
      */
     public function testEncodeDateTime(): void
     {
-        $input = new \DateTime('October 12, 2014', new \DateTimeZone('UTC'));
+        $input = new DateTime('October 12, 2014', new DateTimeZone('UTC'));
         $output = Json::encode($input);
         $this->assertEquals('{"date":"2014-10-12 00:00:00.000000","timezone_type":3,"timezone":"UTC"}', $output);
     }

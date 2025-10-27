@@ -8,12 +8,13 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\widgets\Menu;
 
 /**
  * @group widgets
  */
-class MenuTest extends \yiiunit\TestCase
+class MenuTest extends TestCase
 {
     protected function setUp(): void
     {

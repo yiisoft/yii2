@@ -257,7 +257,7 @@ class CompareValidatorTest extends TestCase
             new CompareValidator(['operator' => '<>']);
         } catch (InvalidConfigException) {
             return;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->fail('InvalidConfigException expected' . $e::class . 'received');
 
             return;

@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use Exception;
+use Yii;
 use yii\db\Connection;
 use yii\db\Transaction;
 use yiiunit\data\ar\ActiveRecord;
@@ -156,11 +158,11 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $db = $this->prepareMasterSlave(1, 1);
         $this->assertTrue($db->enableSlaves);
         try {
-            $db->useMaster(function (Connection $db): never {
-                throw new \Exception('fail');
+            $db->useMaster(function (Connection $db) {
+                throw new Exception('fail');
             });
             $this->fail('Exception was caught somewhere');
-        } catch (\Exception) {
+        } catch (Exception $e) {
             // ok
         }
         $this->assertTrue($db->enableSlaves);
@@ -175,7 +177,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     {
         $databases = self::getParam('databases');
         $fixture = $databases[$this->driverName]['fixture'];
-        $basePath = \Yii::getAlias('@yiiunit/runtime');
+        $basePath = Yii::getAlias('@yiiunit/runtime');
 
         $config = [
             'class' => 'yii\db\Connection',
@@ -197,7 +199,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $config['slaves'][] = $slave;
         }
 
-        return \Yii::createObject($config);
+        return Yii::createObject($config);
     }
 
     public function testAliasDbPath(): void

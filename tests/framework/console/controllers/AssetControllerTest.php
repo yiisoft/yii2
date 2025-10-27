@@ -80,6 +80,7 @@ class AssetControllerTest extends TestCase
             ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $assetController = new AssetControllerMock('asset', $module);
         $assetController->interactive = false;
         $assetController->jsCompressor = 'cp {from} {to}';
@@ -137,13 +138,13 @@ class AssetControllerTest extends TestCase
      * @param string $fileName output file name.
      * @param array[] $bundles asset bundles config.
      * @param array $config additional config parameters.
-     * @throws \Exception on failure.
+     * @throws Exception on failure.
      */
     protected function createCompressConfigFile($fileName, array $bundles, array $config = [])
     {
         $content = '<?php return ' . var_export($this->createCompressConfig($bundles, $config), true) . ';';
         if (file_put_contents($fileName, $content) <= 0) {
-            throw new \Exception("Unable to create file '{$fileName}'!");
+            throw new Exception("Unable to create file '{$fileName}'!");
         }
     }
 
@@ -152,7 +153,7 @@ class AssetControllerTest extends TestCase
      * @param string $fileRelativeName file name relative to [[testFilePath]]
      * @param string $content file content
      * @param string $fileBasePath base path for the created files, if not set [[testFilePath]] is used.
-     * @throws \Exception on failure.
+     * @throws Exception on failure.
      */
     protected function createAssetSourceFile($fileRelativeName, $content, $fileBasePath = null)
     {
@@ -162,7 +163,7 @@ class AssetControllerTest extends TestCase
         $fileFullName = $fileBasePath . DIRECTORY_SEPARATOR . $fileRelativeName;
         $this->createDir(dirname($fileFullName));
         if (file_put_contents($fileFullName, $content) <= 0) {
-            throw new \Exception("Unable to create file '{$fileFullName}'!");
+            throw new Exception("Unable to create file '{$fileFullName}'!");
         }
     }
 

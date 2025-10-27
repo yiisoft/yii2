@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\ActiveRecordInterface;
 use yii\db\ActiveQuery;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\DefaultPk;
@@ -81,7 +82,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
     public function testFindAsArray(): void
     {
-        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
 
         // asArray
@@ -157,8 +158,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     public function testBooleanAttribute(): void
     {
         /** @var TestCase|ActiveRecordTestTrait $this */
-
-        /** @var \yii\db\ActiveRecordInterface $customerClass */
+        /** @var ActiveRecordInterface $customerClass */
         $customerClass = $this->getCustomerClass();
         $customer = new $customerClass();
         $customer->name = 'boolean customer';

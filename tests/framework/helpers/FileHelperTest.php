@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use Exception;
 use stdClass;
 use Yii;
 use yii\helpers\FileHelper;
@@ -1221,8 +1222,8 @@ class FileHelperTest extends TestCase
         $ownership = 'non_existing_user';
         try {
             FileHelper::changeOwnership($testFile, $ownership);
-            throw new \Exception('FileHelper::changeOwnership() should have thrown error for non existing user.');
-        } catch (\Exception $e) {
+            throw new Exception('FileHelper::changeOwnership() should have thrown error for non existing user.');
+        } catch (Exception $e) {
             $this->assertEquals('chown(): Unable to find uid for non_existing_user', $e->getMessage());
         }
     }
@@ -1270,7 +1271,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extensions, FileHelper::getExtensionsByMimeType($mimeType));
     }
 
-    public static function getExtensionsByMimeTypeProvider()
+    public static function getExtensionsByMimeTypeProvider(): array
     {
         return [
             [
@@ -1303,7 +1304,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($extension, FileHelper::getExtensionByMimeType($mimeType, $preferShort));
     }
 
-    public static function getExtensionByMimeTypeProvider()
+    public static function getExtensionByMimeTypeProvider(): array
     {
         return [
             ['application/json', true, 'json'],

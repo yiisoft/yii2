@@ -240,7 +240,7 @@ class DataColumn extends Column
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
      * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
-     * @return string the data cell value
+     * @return string|null the data cell value
      */
     public function getDataCellValue($model, $key, $index)
     {

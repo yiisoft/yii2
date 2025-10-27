@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
+use stdClass;
 use yii\validators\StringValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
@@ -153,7 +154,7 @@ class StringValidatorTest extends TestCase
 
         // non-scalar
         $this->assertFalse($val->validate(['array']));
-        $this->assertFalse($val->validate(new \stdClass()));
+        $this->assertFalse($val->validate(new stdClass()));
         $this->assertFalse($val->validate(null));
 
         // bool

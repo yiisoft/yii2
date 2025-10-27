@@ -16,6 +16,8 @@ use yii\db\Schema;
 
 abstract class QueryTest extends DatabaseTestCase
 {
+    use GetTablesAliasTestTrait;
+
     public function testSelect(): void
     {
         // default
@@ -660,7 +662,7 @@ abstract class QueryTest extends DatabaseTestCase
         $db = $this->getConnection();
         $query = (new Query())
             ->from(
-                new \yii\db\Expression(
+                new Expression(
                     '(SELECT [[id]], [[name]], [[email]], [[address]], [[status]] FROM {{customer}}) c'
                 )
             )

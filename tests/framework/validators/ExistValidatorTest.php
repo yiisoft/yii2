@@ -206,7 +206,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     public function testExpresionInAttributeColumnName(): void
     {
         $val = new ExistValidator([
-            'targetClass' => OrderItem::className(),
+            'targetClass' => OrderItem::class,
             'targetAttribute' => ['id' => 'COALESCE([[order_id]], 0)'],
         ]);
 

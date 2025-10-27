@@ -38,6 +38,7 @@ class HelpControllerTest extends TestCase
             ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         return new BufferedHelpController('help', $module);
     }
 

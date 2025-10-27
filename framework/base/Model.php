@@ -95,11 +95,11 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     public const EVENT_AFTER_VALIDATE = 'afterValidate';
 
     /**
-     * @var array validation errors (attribute name => array of errors)
+     * @var array|null validation errors (attribute name => array of errors)
      */
     private $_errors;
     /**
-     * @var ArrayObject list of validators
+     * @var ArrayObject|null list of validators
      */
     private $_validators;
     /**

@@ -8,12 +8,13 @@
 
 namespace yiiunit\framework\filters;
 
+use yiiunit\TestCase;
+use yii\rbac\BaseManager;
 use Closure;
 use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\filters\AccessRule;
-use yii\rbac\BaseManager;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\User;
@@ -24,7 +25,7 @@ use yiiunit\framework\rbac\AuthorRule;
 /**
  * @group filters
  */
-class AccessRuleTest extends \yiiunit\TestCase
+class AccessRuleTest extends TestCase
 {
     protected function setUp(): void
     {

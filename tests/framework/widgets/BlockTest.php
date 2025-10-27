@@ -8,12 +8,13 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\widgets\Block;
 
 /**
  * @group widgets
  */
-class BlockTest extends \yiiunit\TestCase
+class BlockTest extends TestCase
 {
     protected function setUp(): void
     {

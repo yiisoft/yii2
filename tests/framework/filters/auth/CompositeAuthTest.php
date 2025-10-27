@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\filters\auth;
 
+use yiiunit\TestCase;
 use Yii;
 use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
@@ -102,7 +103,7 @@ class TestController extends Controller
 /**
  * @group filters
  */
-class CompositeAuthTest extends \yiiunit\TestCase
+class CompositeAuthTest extends TestCase
 {
     protected function setUp(): void
     {

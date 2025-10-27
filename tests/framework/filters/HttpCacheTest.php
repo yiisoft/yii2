@@ -8,13 +8,15 @@
 
 namespace yiiunit\framework\filters;
 
+use yiiunit\TestCase;
+use ReflectionMethod;
 use Yii;
 use yii\filters\HttpCache;
 
 /**
  * @group filters
  */
-class HttpCacheTest extends \yiiunit\TestCase
+class HttpCacheTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -51,7 +53,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     {
         $httpCache = new HttpCache();
         $request = Yii::$app->getRequest();
-        $method = new \ReflectionMethod($httpCache, 'validateCache');
+        $method = new ReflectionMethod($httpCache, 'validateCache');
 
         $request->headers->remove('If-Modified-Since');
         $request->headers->remove('If-None-Match');

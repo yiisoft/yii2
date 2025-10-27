@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use PDO;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
@@ -179,15 +180,15 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     public function testGetPDOType(): void
     {
         $values = [
-            [null, \PDO::PARAM_NULL],
-            ['', \PDO::PARAM_STR],
-            ['hello', \PDO::PARAM_STR],
-            [0, \PDO::PARAM_INT],
-            [1, \PDO::PARAM_INT],
-            [1337, \PDO::PARAM_INT],
-            [true, \PDO::PARAM_BOOL],
-            [false, \PDO::PARAM_BOOL],
-            [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+            [null, PDO::PARAM_NULL],
+            ['', PDO::PARAM_STR],
+            ['hello', PDO::PARAM_STR],
+            [0, PDO::PARAM_INT],
+            [1, PDO::PARAM_INT],
+            [1337, PDO::PARAM_INT],
+            [true, PDO::PARAM_BOOL],
+            [false, PDO::PARAM_BOOL],
+            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
         ];
 
         $schema = $this->getConnection()->schema;
@@ -340,6 +341,66 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $db->schema->refreshTableSchema('test_timestamp_default_null');
         $tableSchema = $db->schema->getTableSchema('test_timestamp_default_null');
         $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcNowDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, now()) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_now_default');
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, now())'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampNowDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_now_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_now_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_now_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT now()',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_now_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_now_default');
+        $this->assertEquals(new Expression('now()'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20329
+     */
+    public function testTimestampUtcStringDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_utc_string_default') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_utc_string_default')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_utc_string_default', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone) NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_utc_string_default');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_string_default');
+        $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
     }
 
     public static function constraintsProvider(): array

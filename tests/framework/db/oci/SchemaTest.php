@@ -8,7 +8,9 @@
 
 namespace yiiunit\framework\db\oci;
 
+use Exception;
 use yii\db\CheckConstraint;
+use yii\db\oci\Schema;
 use yiiunit\framework\db\AnyValue;
 
 /**
@@ -187,7 +189,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (\Exception) {
+        } catch (Exception $e) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',

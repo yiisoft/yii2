@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yiiunit\framework\db\AnyValue;
 
@@ -90,7 +91,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @param string $name Table name.
      * @param string $expectedName Expected quoted table name.
      *
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
     public function testQuoteTableName(string $name, string $expectedName): void
     {

@@ -156,8 +156,8 @@ namespace yiiunit\framework\log {
         public function testDispatchWithDisabledTarget(): void
         {
             $target = $this->createPartialMock(Target::class, ['collect', 'export']);
-
             $target->expects($this->never())->method($this->anything());
+
             $target->enabled = false;
 
             $dispatcher = new Dispatcher(['targets' => ['fakeTarget' => $target]]);
@@ -170,7 +170,6 @@ namespace yiiunit\framework\log {
         public function testDispatchWithSuccessTargetCollect(): void
         {
             $target = $this->createPartialMock(Target::class, ['collect', 'export']);
-
             $target->expects($this->once())
                 ->method('collect')
                 ->with(

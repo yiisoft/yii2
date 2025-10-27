@@ -48,7 +48,7 @@ use yii\base\InvalidConfigException;
 class GroupUrlRule extends CompositeUrlRule
 {
     /**
-     * @var array the rules contained within this composite rule. Please refer to [[UrlManager::rules]]
+     * @var UrlRuleInterface[]|array[]|string[] the rules contained within this composite rule. Please refer to [[UrlManager::rules]]
      * for the format of this property.
      * @see prefix
      * @see routePrefix

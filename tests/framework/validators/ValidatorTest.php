@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
+use stdClass;
+use yii\base\View;
 use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
@@ -195,7 +197,7 @@ class ValidatorTest extends TestCase
         $this->assertTrue($val->isEmpty(''));
         $this->assertFalse($val->isEmpty(5));
         $this->assertFalse($val->isEmpty(0));
-        $this->assertFalse($val->isEmpty(new \stdClass()));
+        $this->assertFalse($val->isEmpty(new stdClass()));
         $this->assertFalse($val->isEmpty('  '));
     }
 
@@ -226,7 +228,7 @@ class ValidatorTest extends TestCase
 
     public function testClientValidateAttribute(): void
     {
-        $view = new \yii\base\View();
+        $view = new View();
         $val = new TestValidator();
         $this->assertNull(
             $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', $view)

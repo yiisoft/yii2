@@ -159,7 +159,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter();
         $rateLimiter->user = function ($action) {
-            return new User(['identityClass' => RateLimit::className()]);
+            return new User(['identityClass' => RateLimit::class]);
         };
         $rateLimiter->beforeAction('test');
 

@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\web;
 
+use yiiunit\TestCase;
+use Exception;
+use yii\base\InvalidConfigException;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\web\AssetBundle;
@@ -17,7 +20,7 @@ use yii\web\View;
 /**
  * @group web
  */
-class AssetBundleTest extends \yiiunit\TestCase
+class AssetBundleTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -33,7 +36,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         // clean up assets directory
         $handle = opendir($dir = Yii::getAlias('@testAssetsPath'));
         if ($handle === false) {
-            throw new \Exception("Unable to open directory: $dir");
+            throw new Exception("Unable to open directory: $dir");
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..' || $file === '.gitignore') {
@@ -77,11 +80,11 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle->publish($am);
 
         $this->assertTrue(is_dir($bundle->basePath));
-        $this->sourcesPublish_VerifyFiles('css', $bundle);
-        $this->sourcesPublish_VerifyFiles('js', $bundle);
+        $this->sourcesPublishVerifyFiles('css', $bundle);
+        $this->sourcesPublishVerifyFiles('js', $bundle);
     }
 
-    private function sourcesPublish_VerifyFiles(string $type, $bundle): void
+    private function sourcesPublishVerifyFiles(string $type, $bundle): void
     {
         foreach ($bundle->$type as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
@@ -98,7 +101,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->verifySourcesPublishedBySymlink($view);
     }
 
-    public function testSourcesPublishedBySymlink_Issue9333(): void
+    public function testSourcesPublishedBySymlinkIssue9333(): void
     {
         $view = $this->getView([
             'linkAssets' => true,
@@ -108,7 +111,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertTrue(is_dir(dirname($bundle->basePath)));
     }
 
-    public function testSourcesPublish_AssetManagerBeforeCopy(): void
+    public function testSourcesPublishAssetManagerBeforeCopy(): void
     {
         $view = $this->getView([
             'beforeCopy' => fn($from, $to) => false,
@@ -125,7 +128,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         }
     }
 
-    public function testSourcesPublish_AssetBeforeCopy(): void
+    public function testSourcesPublishAssetBeforeCopy(): void
     {
         $view = $this->getView();
         $am = $view->assetManager;
@@ -143,7 +146,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         }
     }
 
-    public function testSourcesPublish_publishOptions_Only(): void
+    public function testSourcesPublishPublishOptionsOnly(): void
     {
         $view = $this->getView();
         $am = $view->assetManager;
@@ -184,7 +187,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $view = $this->getView(['basePath' => '@testReadOnlyAssetPath']);
         $bundle = new TestSourceAsset();
 
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('The directory is not writable by the Web process');
 
         $bundle->publish($view->getAssetManager());
@@ -254,7 +257,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public static function positionProvider()
+    public static function positionProvider(): array
     {
         return [
             [View::POS_HEAD, true],
@@ -401,7 +404,7 @@ EOF;
         $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
-    public static function registerFileDataProvider()
+    public static function registerFileDataProvider(): array
     {
         return [
             // JS files registration

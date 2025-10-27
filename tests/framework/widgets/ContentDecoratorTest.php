@@ -8,12 +8,13 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\widgets\ContentDecorator;
 
 /**
  * @group widgets
  */
-class ContentDecoratorTest extends \yiiunit\TestCase
+class ContentDecoratorTest extends TestCase
 {
     protected function setUp(): void
     {

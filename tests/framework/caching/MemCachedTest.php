@@ -34,13 +34,23 @@ class MemCachedTest extends CacheTestCase
             $this->markTestSkipped("memcached version $memcached_version is not ready for PHP $php_version. Skipping.");
         }
 
+        $memcachedHost = getenv('IS_LOCAL_TESTS') ? 'memcached' : '127.0.0.1';
+
         // check whether memcached is running and skip tests if not.
-        if (!@stream_socket_client('127.0.0.1:11211', $errorNumber, $errorDescription, 0.5)) {
-            $this->markTestSkipped('No memcached server running at ' . '127.0.0.1:11211' . ' : ' . $errorNumber . ' - ' . $errorDescription);
+        if (!@stream_socket_client("$memcachedHost:11211", $errorNumber, $errorDescription, 0.5)) {
+            $this->markTestSkipped('No memcached server running at ' . "$memcachedHost:11211" . ' : ' . $errorNumber . ' - ' . $errorDescription);
         }
 
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new MemCache(['useMemcached' => true]);
+            $this->_cacheInstance = new MemCache([
+                'useMemcached' => true,
+                'servers' => [
+                    [
+                        'host' => $memcachedHost,
+                        'port' => 11211,
+                    ],
+                ],
+            ]);
         }
 
         return $this->_cacheInstance;

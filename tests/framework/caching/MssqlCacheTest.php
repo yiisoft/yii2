@@ -42,7 +42,7 @@ class MssqlCacheTest extends CacheTestCase
 
     /**
      * @param  bool            $reset whether to clean up the test database
-     * @return \yii\db\Connection
+     * @return Connection
      */
     public function getConnection($reset = true)
     {

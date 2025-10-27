@@ -40,7 +40,7 @@ class IpValidatorTest extends TestCase
         new IpValidator(['ipv4' => false, 'ipv6' => false]);
     }
 
-    public static function provideRangesForSubstitution()
+    public static function provideRangesForSubstitution(): array
     {
         return [
             ['10.0.0.1', ['10.0.0.1']],
@@ -73,7 +73,7 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('babe::cafe'));
     }
 
-    public static function provideBadIps()
+    public static function provideBadIps(): array
     {
         return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false], ['bad:forSure']];
     }

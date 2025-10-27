@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
+use stdClass;
 use yii\validators\NumberValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
@@ -342,7 +343,7 @@ class NumberValidatorTest extends TestCase
 
         // @see https://github.com/yiisoft/yii2/issues/11672
         $model = new FakedValidationModel();
-        $model->attr_number = new \stdClass();
+        $model->attr_number = new stdClass();
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
     }
@@ -398,7 +399,7 @@ class NumberValidatorTest extends TestCase
 
         // @see https://github.com/yiisoft/yii2/issues/11672
         $model = new FakedValidationModel();
-        $model->attr_number = new \stdClass();
+        $model->attr_number = new stdClass();
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
         $this->assertSame('attr_number must be a number.', $model->getFirstError('attr_number'));
@@ -451,7 +452,7 @@ class NumberValidatorTest extends TestCase
 
         // @see https://github.com/yiisoft/yii2/issues/11672
         $model = new FakedValidationModel();
-        $model->attr_number = new \stdClass();
+        $model->attr_number = new stdClass();
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
         $this->assertSame('attr_number must be a number.', $model->getFirstError('attr_number'));
@@ -519,7 +520,7 @@ class NumberValidatorTest extends TestCase
     public function testValidateObject(): void
     {
         $val = new NumberValidator();
-        $value = new \stdClass();
+        $value = new stdClass();
         $this->assertFalse($val->validate($value));
     }
 

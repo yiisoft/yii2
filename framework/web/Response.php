@@ -103,7 +103,7 @@ class Response extends \yii\base\Response
      */
     public $format = self::FORMAT_HTML;
     /**
-     * @var string the MIME type (e.g. `application/json`) from the request ACCEPT header chosen for this response.
+     * @var string|null the MIME type (e.g. `application/json`) from the request ACCEPT header chosen for this response.
      * This property is mainly set by [[\yii\filters\ContentNegotiator]].
      */
     public $acceptMimeType;

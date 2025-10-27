@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db;
 
+use Exception;
 use PDO;
 use yii\caching\ArrayCache;
 use yii\caching\FileCache;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
+use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
@@ -106,10 +108,10 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetTableSchemasWithAttrCase(): void
     {
         $db = $this->getConnection(false);
-        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
 
-        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
     }
 
@@ -207,7 +209,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param string $testTablePrefix Test table prefix.
      * @param string $testTableName Test table name.
      */
-    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName)
+    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName): void
     {
         /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
@@ -255,15 +257,15 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetPDOType(): void
     {
         $values = [
-            [null, \PDO::PARAM_NULL],
-            ['', \PDO::PARAM_STR],
-            ['hello', \PDO::PARAM_STR],
-            [0, \PDO::PARAM_INT],
-            [1, \PDO::PARAM_INT],
-            [1337, \PDO::PARAM_INT],
-            [true, \PDO::PARAM_BOOL],
-            [false, \PDO::PARAM_BOOL],
-            [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+            [null, PDO::PARAM_NULL],
+            ['', PDO::PARAM_STR],
+            ['hello', PDO::PARAM_STR],
+            [0, PDO::PARAM_INT],
+            [1, PDO::PARAM_INT],
+            [1337, PDO::PARAM_INT],
+            [true, PDO::PARAM_BOOL],
+            [false, PDO::PARAM_BOOL],
+            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
         ];
 
         /** @var Schema $schema */
@@ -557,13 +559,13 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param mixed $value
      * @param bool $expected
      */
-    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected)
+    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected): void
     {
         $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
         $this->assertSame($expected, $columnSchema->dbTypecast($value));
     }
 
-    public function columnSchemaDbTypecastBooleanPhpTypeProvider()
+    public static function columnSchemaDbTypecastBooleanPhpTypeProvider(): array
     {
         return [
             [1, true],
@@ -585,7 +587,7 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
-    public function testFindUniqueIndexes()
+    public function testFindUniqueIndexes(): void
     {
         if ($this->driverName === 'sqlsrv') {
             $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
@@ -595,7 +597,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (\Exception) {
+        } catch (Exception) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',
@@ -775,7 +777,7 @@ abstract class SchemaTest extends DatabaseTestCase
      * @param string $type The constraint type.
      * @param mixed $expected The expected constraint.
      */
-    public function testTableSchemaConstraints(string $tableName, string $type, \yii\db\Constraint|bool|array|null $expected): void
+    public function testTableSchemaConstraints(string $tableName, string $type, Constraint|bool|array|null $expected): void
     {
         if ($expected === false) {
             $this->expectException(\yii\base\NotSupportedException::class);

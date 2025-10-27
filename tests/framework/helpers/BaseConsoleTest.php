@@ -37,7 +37,7 @@ class BaseConsoleTest extends TestCase
     /**
      * @test
      */
-    public function ansiColorizedSubstr_withoutColors(): void
+    public function ansiColorizedSubstrWithoutColors(): void
     {
         $str = 'FooBar';
 
@@ -56,7 +56,7 @@ class BaseConsoleTest extends TestCase
 
     /**
      * @test
-     * @dataProvider ansiColorizedSubstr_withColors_data
+     * @dataProvider ansiColorizedSubstrWithColorsData
      * @param $str
      * @param $start
      * @param $length
@@ -71,7 +71,7 @@ class BaseConsoleTest extends TestCase
         $this->assertEquals($ansiExpected, $ansiActual);
     }
 
-    public static function ansiColorizedSubstr_withColors_data()
+    public static function ansiColorizedSubstrWithColorsData(): array
     {
         return [
             ['%rFoo%gBar%n', 0, 3, '%rFoo%n'],

@@ -83,10 +83,12 @@ trait MigrateControllerTestTrait
             ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $class = $this->migrateControllerClass;
         $migrateController = new $class('migrate', $module);
         $migrateController->interactive = false;
         $migrateController->migrationPath = $this->migrationPath;
+
         return Yii::configure($migrateController, $config);
     }
 

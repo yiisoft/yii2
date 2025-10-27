@@ -8,6 +8,12 @@
 
 namespace yiiunit\framework\db;
 
+use PDO;
+use Throwable;
+use yii\base\InvalidArgumentException;
+use yiiunit\framework\db\enums\Status;
+use yiiunit\framework\db\enums\StatusTypeString;
+use yiiunit\framework\db\enums\StatusTypeInt;
 use ArrayObject;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
@@ -178,7 +184,7 @@ SQL;
         $command = $db->createCommand($sql);
         $intCol = 123;
         $charCol = str_repeat('abc', 33) . 'x'; // a 100 char string
-        $command->bindParam(':int_col', $intCol, \PDO::PARAM_INT);
+        $command->bindParam(':int_col', $intCol, PDO::PARAM_INT);
         $command->bindParam(':char_col', $charCol);
         if ($this->driverName === 'oci') {
             // can't bind floats without support from a custom PDO driver
@@ -189,10 +195,10 @@ SQL;
             // You can create a table with a column of datatype CHAR(1) and store either “Y” or “N” in that column
             // to indicate TRUE or FALSE.
             $boolCol = '0';
-            $command->bindParam(':float_col', $floatCol, \PDO::PARAM_INT);
-            $command->bindParam(':numeric_col', $numericCol, \PDO::PARAM_INT);
+            $command->bindParam(':float_col', $floatCol, PDO::PARAM_INT);
+            $command->bindParam(':numeric_col', $numericCol, PDO::PARAM_INT);
             $command->bindParam(':blob_col', $blobCol);
-            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
+            $command->bindParam(':bool_col', $boolCol, PDO::PARAM_BOOL);
         } else {
             $floatCol = 1.230;
             $numericCol = '1.23';
@@ -201,7 +207,7 @@ SQL;
             $command->bindParam(':float_col', $floatCol);
             $command->bindParam(':numeric_col', $numericCol);
             $command->bindParam(':blob_col', $blobCol);
-            $command->bindParam(':bool_col', $boolCol, \PDO::PARAM_BOOL);
+            $command->bindParam(':bool_col', $boolCol, PDO::PARAM_BOOL);
         }
         $this->assertEquals(1, $command->execute());
 
@@ -282,14 +288,14 @@ SQL;
         // FETCH_OBJ, customized via fetchMode property
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
-        $command->fetchMode = \PDO::FETCH_OBJ;
+        $command->fetchMode = PDO::FETCH_OBJ;
         $result = $command->queryOne();
         $this->assertIsObject($result);
 
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
-        $result = $command->queryOne([]);
+        $result = $command->queryOne([], PDO::FETCH_NUM);
         $this->assertTrue(\is_array($result) && isset($result[0]));
     }
 
@@ -379,7 +385,10 @@ SQL;
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-        } catch (\Exception | \Throwable $e) {
+        } catch (\Exception $e) {
+            setlocale(LC_NUMERIC, $locale);
+            throw $e;
+        } catch (Throwable $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
         }
@@ -532,7 +541,7 @@ SQL;
             ]
         )->execute();
 
-        $query = new \yii\db\Query();
+        $query = new Query();
         $query->select(
             [
                 '{{customer}}.[[email]] as name',
@@ -587,7 +596,7 @@ SQL;
             ]
         )->execute();
 
-        $query = new \yii\db\Query();
+        $query = new Query();
         $query->select(
             [
                 'email' => '{{customer}}.[[email]]',
@@ -646,13 +655,13 @@ SQL;
      */
     public function testInsertSelectFailed(array|string $invalidSelectColumns): void
     {
-        $query = new \yii\db\Query();
+        $query = new Query();
         $query->select($invalidSelectColumns)->from('{{customer}}');
 
         $db = $this->getConnection();
         $command = $db->createCommand();
 
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Expected select query object with enumerated (named) parameters');
 
         $command->insert('{{customer}}', $query)->execute();
@@ -714,7 +723,7 @@ SQL;
             $orderId = $db->getLastInsertID();
         }
 
-        $columnValueQuery = new \yii\db\Query();
+        $columnValueQuery = new Query();
         $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();
@@ -1275,7 +1284,7 @@ SQL;
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID());
+        $this->assertSame('3', $db->getSchema()->getLastInsertID());
     }
 
     public function testQueryCache(): void
@@ -1326,7 +1335,7 @@ SQL;
     public function testColumnCase(): void
     {
         $db = $this->getConnection(false);
-        $this->assertEquals(\PDO::CASE_NATURAL, $db->slavePdo->getAttribute(\PDO::ATTR_CASE));
+        $this->assertEquals(PDO::CASE_NATURAL, $db->slavePdo->getAttribute(PDO::ATTR_CASE));
 
         $sql = 'SELECT [[customer_id]], [[total]] FROM {{order}}';
         $rows = $db->createCommand($sql)->queryAll();
@@ -1334,13 +1343,13 @@ SQL;
         $this->assertTrue(isset($rows[0]['customer_id']));
         $this->assertTrue(isset($rows[0]['total']));
 
-        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $rows = $db->createCommand($sql)->queryAll();
         $this->assertTrue(isset($rows[0]));
         $this->assertTrue(isset($rows[0]['customer_id']));
         $this->assertTrue(isset($rows[0]['total']));
 
-        $db->slavePdo->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $rows = $db->createCommand($sql)->queryAll();
         $this->assertTrue(isset($rows[0]));
         $this->assertTrue(isset($rows[0]['CUSTOMER_ID']));
@@ -1508,7 +1517,7 @@ SQL;
     public function testCreateView(): void
     {
         $db = $this->getConnection();
-        $subquery = (new \yii\db\Query())
+        $subquery = (new Query())
             ->select('bar')
             ->from('testCreateViewTable')
             ->where(['>', 'bar', '5']);
@@ -1544,7 +1553,7 @@ SQL;
     public function testBindValuesSupportsDeprecatedPDOCastingFormat(): void
     {
         $db = $this->getConnection();
-        $db->createCommand()->setSql('SELECT :p1')->bindValues([':p1' => [2, \PDO::PARAM_STR]]);
+        $db->createCommand()->setSql('SELECT :p1')->bindValues([':p1' => [2, PDO::PARAM_STR]]);
         $this->assertTrue(true);
     }
 
@@ -1554,13 +1563,13 @@ SQL;
             $db = $this->getConnection();
             $command = $db->createCommand();
 
-            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\Status::Active]);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => Status::Active]);
             $this->assertSame('Active', $command->params[':p1']);
 
-            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeString::Active]);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => StatusTypeString::Active]);
             $this->assertSame('active', $command->params[':p1']);
 
-            $command->setSql('SELECT :p1')->bindValues([':p1' => enums\StatusTypeInt::Active]);
+            $command->setSql('SELECT :p1')->bindValues([':p1' => StatusTypeInt::Active]);
             $this->assertSame(1, $command->params[':p1']);
         } else {
             $this->markTestSkipped('Enums are not supported in PHP < 8.1');

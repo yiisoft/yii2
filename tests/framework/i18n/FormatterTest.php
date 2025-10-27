@@ -8,6 +8,11 @@
 
 namespace yiiunit\framework\i18n;
 
+use DateTime;
+use DateTimeZone;
+use NumberFormatter;
+use ResourceBundle;
+use IntlException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
@@ -343,14 +348,14 @@ class FormatterTest extends TestCase
 
         $this->assertSame('1451606400', $this->formatter->asTimestamp('2016-01-01 00:00:00'));
 
-        $dateTime = new \DateTime('2016-01-01 00:00:00.000');
+        $dateTime = new DateTime('2016-01-01 00:00:00.000');
         $this->assertSame('1451606400', $this->formatter->asTimestamp($dateTime));
 
-        $dateTime = new \DateTime('2016-01-01 00:00:00.000', new \DateTimeZone('Europe/Berlin'));
+        $dateTime = new DateTime('2016-01-01 00:00:00.000', new DateTimeZone('Europe/Berlin'));
         $this->assertSame('1451602800', $this->formatter->asTimestamp($dateTime));
     }
 
-    public static function lengthDataProvider()
+    public static function lengthDataProvider(): array
     {
         return [
             [
@@ -401,13 +406,13 @@ class FormatterTest extends TestCase
             [
                 'It is possible to change number formatting options',
                 [100, null, [
-                    \NumberFormatter::MIN_FRACTION_DIGITS => 4,
+                    NumberFormatter::MIN_FRACTION_DIGITS => 4,
                 ]], '100.0000 meters', '100.0000 m',
             ],
             [
                 'It is possible to change text options',
                 [-19913.13, null, null, [
-                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
+                    NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
                 ]], 'MINUS19.913 kilometers', 'MINUS19.913 km',
             ],
         ];
@@ -449,7 +454,7 @@ class FormatterTest extends TestCase
         $this->assertSame($expected, call_user_func_array($this->formatter->asShortLength(...), $arguments), 'Failed asserting that ' . $message);
     }
 
-    public static function weightDataProvider()
+    public static function weightDataProvider(): array
     {
         return [
             [
@@ -500,13 +505,13 @@ class FormatterTest extends TestCase
             [
                 'It is possible to change number formatting options',
                 [100, null, [
-                    \NumberFormatter::MIN_FRACTION_DIGITS => 4,
+                    NumberFormatter::MIN_FRACTION_DIGITS => 4,
                 ]], '100.0000 kilograms', '100.0000 kg',
             ],
             [
                 'It is possible to change text options',
                 [-19913.13, null, null, [
-                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
+                    NumberFormatter::NEGATIVE_PREFIX => 'MINUS',
                 ]], 'MINUS19.913 tons', 'MINUS19.913 tn',
             ],
         ];
@@ -573,14 +578,14 @@ class FormatterTest extends TestCase
         }
 
         try {
-            $bundle = new \ResourceBundle($this->formatter->locale, 'ICUDATA-unit');
+            $bundle = new ResourceBundle($this->formatter->locale, 'ICUDATA-unit');
             $massUnits = $bundle['units']['mass'];
             $lengthUnits = $bundle['units']['length'];
 
             if ($massUnits === null || $lengthUnits === null) {
                 $skip();
             }
-        } catch (\IntlException) {
+        } catch (IntlException $e) {
             $skip();
         }
     }

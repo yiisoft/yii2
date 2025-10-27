@@ -64,7 +64,7 @@ class UrlTest extends TestCase
      */
     protected function mockAction($controllerId, $actionID, $moduleID = null, $params = [])
     {
-        \Yii::$app->controller = $controller = new Controller($controllerId, \Yii::$app);
+        Yii::$app->controller = $controller = new Controller($controllerId, Yii::$app);
         $controller->actionParams = $params;
         $controller->action = new Action($actionID, $controller);
 
@@ -75,7 +75,7 @@ class UrlTest extends TestCase
 
     protected function removeMockedAction()
     {
-        \Yii::$app->controller = null;
+        Yii::$app->controller = null;
     }
 
     public function testToRoute(): void
@@ -108,9 +108,9 @@ class UrlTest extends TestCase
         $this->assertEquals('//example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], ''));
 
         // alias support
-        \Yii::setAlias('@userView', 'user/view');
+        Yii::setAlias('@userView', 'user/view');
         $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview', Url::toRoute('@userView'));
-        \Yii::setAlias('@userView', null);
+        Yii::setAlias('@userView', null);
 
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
@@ -163,9 +163,9 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=page%2Fview', Url::to(['']));
 
         // alias support
-        \Yii::setAlias('@pageEdit', 'edit');
+        Yii::setAlias('@pageEdit', 'edit');
         $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', Url::to(['@pageEdit', 'id' => 20]));
-        \Yii::setAlias('@pageEdit', null);
+        Yii::setAlias('@pageEdit', null);
 
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', Url::to(['edit', 'id' => 20], true));
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit', Url::to(['edit'], true));
@@ -184,11 +184,11 @@ class UrlTest extends TestCase
         // is a non-empty string: it will first be processed by [[Yii::getAlias()]]. If the result
         // is an absolute URL, it will be returned either without any change or, if schema was specified, with schema
         // replaced; Otherwise, the result will be prefixed with [[\yii\web\Request::baseUrl]] and returned.
-        \Yii::setAlias('@web1', 'http://test.example.com/test/me1');
-        \Yii::setAlias('@web2', 'test/me2');
-        \Yii::setAlias('@web3', '');
-        \Yii::setAlias('@web4', '/test');
-        \Yii::setAlias('@web5', '#test');
+        Yii::setAlias('@web1', 'http://test.example.com/test/me1');
+        Yii::setAlias('@web2', 'test/me2');
+        Yii::setAlias('@web3', '');
+        Yii::setAlias('@web4', '/test');
+        Yii::setAlias('@web5', '#test');
 
         $this->assertEquals('test/me1', Url::to('test/me1'));
         $this->assertEquals('javascript:test/me1', Url::to('javascript:test/me1'));
@@ -226,11 +226,11 @@ class UrlTest extends TestCase
         $this->assertEquals('//example.com/#test', Url::to('@web5', ''));
 
         // @see https://github.com/yiisoft/yii2/issues/13156
-        \Yii::setAlias('@cdn', '//cdn.example.com');
+        Yii::setAlias('@cdn', '//cdn.example.com');
         $this->assertEquals('http://cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', 'http'));
         $this->assertEquals('//cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', ''));
         $this->assertEquals('https://cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', 'https'));
-        \Yii::setAlias('@cdn', null);
+        Yii::setAlias('@cdn', null);
 
         //In case there is no controller, throw an exception
         $this->removeMockedAction();

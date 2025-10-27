@@ -165,7 +165,7 @@ class StringHelperTest extends TestCase
     /**
      * Rules that should work the same for case-sensitive and case-insensitive `startsWith()`.
      */
-    public static function providerStartsWith()
+    public static function providerStartsWith(): array
     {
         return [
             // positive check
@@ -219,7 +219,7 @@ class StringHelperTest extends TestCase
     /**
      * Rules that should work the same for case-sensitive and case-insensitive `endsWith()`.
      */
-    public static function providerEndsWith()
+    public static function providerEndsWith(): array
     {
         return [
             // positive check
@@ -303,7 +303,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals($output, $decoded);
     }
 
-    public static function base64UrlEncodedStringsProvider()
+    public static function base64UrlEncodedStringsProvider(): array
     {
         return [
             ['This is an encoded string', 'VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw=='],
@@ -317,7 +317,7 @@ class StringHelperTest extends TestCase
      * Data provider for [[testMatchWildcard()]]
      * @return array test data.
      */
-    public static function dataProviderMatchWildcard()
+    public static function dataProviderMatchWildcard(): array
     {
         return [
             // *
@@ -395,7 +395,7 @@ class StringHelperTest extends TestCase
         $this->assertSame($expectedResult, StringHelper::matchWildcard($pattern, $string, $options));
     }
 
-    public static function dataProviderMb_ucfirst()
+    public static function dataProviderMbUcfirst(): array
     {
         return [
             ['foo', 'Foo'],
@@ -409,14 +409,14 @@ class StringHelperTest extends TestCase
 
     /**
      * @param string $string
-     * @dataProvider dataProviderMb_ucfirst
+     * @dataProvider dataProviderMbUcfirst
      */
-    public function testMb_ucfirst(?string $string, string $expectedResult): void
+    public function testMbUcfirst(string|null $string, string $expectedResult): void
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucfirst($string));
     }
 
-    public static function dataProviderMb_ucwords()
+    public static function dataProviderMbUcwords(): array
     {
         return [
             ['foo', 'Foo'],
@@ -437,9 +437,9 @@ class StringHelperTest extends TestCase
 
     /**
      * @param string $string
-     * @dataProvider dataProviderMb_ucwords
+     * @dataProvider dataProviderMbUcwords
      */
-    public function testMb_ucwords(?string $string, string $expectedResult): void
+    public function testMbUcwords(string|null $string, string $expectedResult): void
     {
         $this->assertSame($expectedResult, StringHelper::mb_ucwords($string));
     }
@@ -452,7 +452,7 @@ class StringHelperTest extends TestCase
         $this->assertSame($expectedResult, StringHelper::dirname($string));
     }
 
-    public static function dataProviderDirname()
+    public static function dataProviderDirname(): array
     {
         return [
             ['\\foo\\bar\\test', '\foo\bar'],
@@ -464,7 +464,7 @@ class StringHelperTest extends TestCase
         ];
     }
 
-    public function testMask()
+    public function testMask(): void
     {
         // Standard masking
         $this->assertSame('12******90', StringHelper::mask('1234567890', 2, 6));
@@ -503,12 +503,12 @@ class StringHelperTest extends TestCase
      * @param string $expectedResult
      * @dataProvider dataProviderFindBetween
      */
-    public function testFindBetween($string, $start, $end, $expectedResult)
+    public function testFindBetween($string, $start, $end, $expectedResult): void
     {
         $this->assertSame($expectedResult, StringHelper::findBetween($string, $start, $end));
     }
 
-    public function dataProviderFindBetween()
+    public static function dataProviderFindBetween(): array
     {
         return [
             ['hello world hello', ' hello', ' world', null],  // end before start

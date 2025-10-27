@@ -8,12 +8,13 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\widgets\Spaceless;
 
 /**
  * @group widgets
  */
-class SpacelessTest extends \yiiunit\TestCase
+class SpacelessTest extends TestCase
 {
     public function testWidget(): void
     {

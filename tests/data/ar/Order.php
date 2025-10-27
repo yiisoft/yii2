@@ -68,7 +68,9 @@ class Order extends ActiveRecord
     public function getOrderItems3()
     {
         return $this->hasMany(OrderItem::class, ['order_id' => 'id'])
-            ->indexBy(fn($row) => $row['order_id'] . '_' . $row['item_id']);
+            ->indexBy(function ($row) {
+                return $row['order_id'] . '_' . $row['item_id'];
+            });
     }
 
     public function getOrderItemsWithNullFK()
@@ -79,7 +81,7 @@ class Order extends ActiveRecord
     public function getItems()
     {
         return $this->hasMany(Item::class, ['id' => 'item_id'])
-            ->via('orderItems', function ($q): void {
+            ->via('orderItems', function ($q) {
                 // additional query configuration
             })->orderBy('item.id');
     }
@@ -87,7 +89,7 @@ class Order extends ActiveRecord
     public function getExpensiveItemsUsingViaWithCallable()
     {
         return $this->hasMany(Item::class, ['id' => 'item_id'])
-            ->via('orderItems', function (ActiveQuery $q): void {
+            ->via('orderItems', function (ActiveQuery $q) {
                 $q->where(['>=', 'subtotal', 10]);
             });
     }
@@ -95,7 +97,7 @@ class Order extends ActiveRecord
     public function getCheapItemsUsingViaWithCallable()
     {
         return $this->hasMany(Item::class, ['id' => 'item_id'])
-            ->via('orderItems', function (ActiveQuery $q): void {
+            ->via('orderItems', function (ActiveQuery $q) {
                 $q->where(['<', 'subtotal', 10]);
             });
     }
@@ -115,7 +117,7 @@ class Order extends ActiveRecord
     public function getItemsInOrder1()
     {
         return $this->hasMany(Item::class, ['id' => 'item_id'])
-            ->via('orderItems', function ($q): void {
+            ->via('orderItems', function ($q) {
                 $q->orderBy(['subtotal' => SORT_ASC]);
             })->orderBy('name');
     }
@@ -123,7 +125,7 @@ class Order extends ActiveRecord
     public function getItemsInOrder2()
     {
         return $this->hasMany(Item::class, ['id' => 'item_id'])
-            ->via('orderItems', function ($q): void {
+            ->via('orderItems', function ($q) {
                 $q->orderBy(['subtotal' => SORT_DESC]);
             })->orderBy('name');
     }

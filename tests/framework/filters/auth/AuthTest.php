@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\filters\auth;
 
+use yiiunit\TestCase;
+use ReflectionClass;
 use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
@@ -24,7 +26,7 @@ use yiiunit\framework\filters\stubs\UserIdentity;
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
-class AuthTest extends \yiiunit\TestCase
+class AuthTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -137,7 +139,7 @@ class AuthTest extends \yiiunit\TestCase
         $this->ensureFilterApplies($token, $login, $filter);
     }
 
-    public static function authMethodProvider()
+    public static function authMethodProvider(): array
     {
         return [
             ['yii\filters\auth\CompositeAuth'],
@@ -156,7 +158,7 @@ class AuthTest extends \yiiunit\TestCase
     {
         /** @var AuthMethod $filter */
         $filter = new $authClass();
-        $reflection = new \ReflectionClass($filter);
+        $reflection = new ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
 
         $controller = new \yii\web\Controller('test', Yii::$app);
@@ -199,7 +201,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testHeaders(): void
     {
         Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
-        $filter = ['class' => HttpBearerAuth::className()];
+        $filter = ['class' => HttpBearerAuth::class];
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {

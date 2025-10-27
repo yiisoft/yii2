@@ -72,7 +72,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
-    public function getMultiLineTableData()
+    public static function getMultiLineTableData(): array
     {
         return [
             [
@@ -141,7 +141,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $tableContent);
     }
 
-    public function getNumericTableData()
+    public static function getNumericTableData(): array
     {
         return [
             [

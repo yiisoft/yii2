@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\validators;
 
+use Exception;
 use Yii;
 use yii\validators\UniqueValidator;
 use yiiunit\data\ar\ActiveRecord;
@@ -458,7 +459,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         try {
             $validator->validateAttribute($model, 'email');
             $this->assertTrue(true);
-        } catch (\Exception) {
+        } catch (Exception) {
             $this->fail('Query is crashed because "with" relation cannot be loaded');
         }
     }
@@ -476,7 +477,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         try {
             $validator->validateAttribute($model, 'email');
             $this->assertTrue(true);
-        } catch (\Exception) {
+        } catch (Exception) {
             $this->fail('Query is crashed because "joinWith" relation cannot be loaded');
         }
     }

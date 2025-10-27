@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
+use ReflectionMethod;
 use yii\widgets\Breadcrumbs;
 
 /**
@@ -15,7 +17,7 @@ use yii\widgets\Breadcrumbs;
  *
  * @group widgets
  */
-class BreadcrumbsTest extends \yiiunit\TestCase
+class BreadcrumbsTest extends TestCase
 {
     private \yii\widgets\Breadcrumbs $breadcrumbs;
 
@@ -193,6 +195,6 @@ class BreadcrumbsTest extends \yiiunit\TestCase
      */
     protected function reflectMethod($class = '\yii\widgets\Breadcrumbs', $method = 'renderItem')
     {
-        return new \ReflectionMethod($class, $method);
+        return new ReflectionMethod($class, $method);
     }
 }

@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\web;
 
+use Exception;
+use yii\BaseYii;
+use yii\web\Application;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\View;
@@ -51,7 +54,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $handler = Yii::$app->getErrorHandler();
 
         ob_start(); // suppress response output
-        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $this->invokeMethod($handler, 'renderException', [new Exception('Test Exception')]);
         $out = ob_get_clean();
 
         $this->assertStringContainsString('Test Exception', $out);
@@ -71,7 +74,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $handler = Yii::$app->getErrorHandler();
 
         ob_start(); // suppress response output
-        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $this->invokeMethod($handler, 'renderException', [new Exception('Test Exception')]);
         $out = ob_get_clean();
 
         $this->assertStringContainsString('Test Exception', $out);
@@ -95,7 +98,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
         ob_start(); // suppress response output
-        $this->invokeMethod($handler, 'renderException', [new \Exception('Some Exception')]);
+        $this->invokeMethod($handler, 'renderException', [new Exception('Some Exception')]);
         ob_get_clean();
         $out = Yii::$app->response->data;
         $this->assertEquals("Exception View\n", $out);
@@ -119,9 +122,9 @@ Exception: yii\web\NotFoundHttpException', $out);
     {
         $handler = Yii::$app->getErrorHandler();
         $handler->traceLine = '<a href="netbeans://open?file={file}&line={line}">{html}</a>';
-        $file = \yii\BaseYii::getAlias('@yii/web/Application.php');
+        $file = BaseYii::getAlias('@yii/web/Application.php');
 
-        $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::class, null, null, null);
+        $out = $handler->renderCallStackItem($file, 63, Application::class, null, null, null);
 
         $this->assertStringContainsString('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }

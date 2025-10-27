@@ -8,6 +8,11 @@
 
 namespace yiiunit\framework\di;
 
+use yii\console\Request;
+use yii\console\Response;
+use Exception;
+use yii\di\NotInstantiableException;
+use yii\web\Application;
 use Yii;
 use yii\di\Container;
 use yii\di\Instance;
@@ -91,7 +96,9 @@ class ContainerTest extends TestCase
         // wiring by closure which uses container
         $container = new Container();
         $container->set($QuxInterface, $Qux);
-        $container->set('foo', fn(Container $c, $params, $config) => $c->get(Foo::class));
+        $container->set('foo', function (Container $c, $params, $config) {
+            return $c->get(Foo::class);
+        });
         $foo = $container->get('foo');
         $this->assertInstanceOf($Foo, $foo);
         $this->assertInstanceOf($Bar, $foo->bar);
@@ -158,17 +165,23 @@ class ContainerTest extends TestCase
         ]);
 
         // use component of application
-        $callback = fn($param, stubs\QuxInterface $qux, Bar $bar) => [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
+        $callback = function ($param, QuxInterface $qux, Bar $bar) {
+            return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
+        };
         $result = Yii::$container->invoke($callback, ['D426']);
         $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
 
         // another component of application
-        $callback = fn($param, stubs\QuxInterface $qux2, $other = 'default') => [$param, $qux2 instanceof Qux, $qux2->a, $other];
+        $callback = function ($param, QuxInterface $qux2, $other = 'default') {
+            return [$param, $qux2 instanceof Qux, $qux2->a, $other];
+        };
         $result = Yii::$container->invoke($callback, ['M2792684']);
         $this->assertEquals(['M2792684', true, 'belongAppQux2', 'default'], $result);
 
         // component not belong application
-        $callback = fn($param, stubs\QuxInterface $notBelongApp, $other) => [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
+        $callback = function ($param, QuxInterface $notBelongApp, $other) {
+            return [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
+        };
         $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);
         $this->assertEquals(['MDM', true, 'independent', 'not_default'], $result);
 
@@ -188,8 +201,10 @@ class ContainerTest extends TestCase
         $this->assertFalse(Yii::$container->invoke(['yii\helpers\ArrayHelper', 'isAssociative'], [$array]));
 
 
-        $myFunc = fn(\yii\console\Request $request, \yii\console\Response $response) => [$request, $response];
-        [$request, $response] = Yii::$container->invoke($myFunc);
+        $myFunc = function (Request $request, Response $response) {
+            return [$request, $response];
+        };
+        list($request, $response) = Yii::$container->invoke($myFunc);
         $this->assertEquals($request, Yii::$app->request);
         $this->assertEquals($response, Yii::$app->response);
     }
@@ -269,7 +284,7 @@ class ContainerTest extends TestCase
         try {
             $container->get('rollbar');
             $this->fail('InvalidConfigException was not thrown');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
         }
     }
@@ -278,7 +293,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->setDefinitions([
-            'qux' => QuxFactory::create(...),
+            'qux' => [QuxFactory::class, 'create'],
         ]);
 
         $qux = $container->get('qux');
@@ -426,7 +441,7 @@ class ContainerTest extends TestCase
 
     public function testThrowingNotFoundException(): void
     {
-        $this->expectException(\yii\di\NotInstantiableException::class);
+        $this->expectException(NotInstantiableException::class);
 
         $container = new Container();
         $container->get('non_existing');
@@ -473,7 +488,7 @@ class ContainerTest extends TestCase
         ];
 
         $application = Yii::createObject([
-            '__class' => \yii\web\Application::class,
+            '__class' => Application::class,
             'basePath' => __DIR__,
             'id' => 'test',
             'components' => [

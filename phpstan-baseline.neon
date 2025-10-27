@@ -66,16 +66,6 @@ parameters:
 			path: framework/db/mysql/JsonExpressionBuilder.php
 
 		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ColumnSchema\\:\\:\\$isComputed\\.$#"
-			count: 1
-			path: framework/db/mssql/Schema.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ColumnSchema\\:\\:defaultPhpTypecast\\(\\)\\.$#"
-			count: 1
-			path: framework/db/mssql/Schema.php
-
-		-
 			message: "#^Call to an undefined method yii\\\\db\\\\Schema\\:\\:getViewNames\\(\\)\\.$#"
 			count: 1
 			path: framework/db/mssql/QueryBuilder.php
