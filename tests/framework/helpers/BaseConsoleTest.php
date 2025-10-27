@@ -62,7 +62,7 @@ class BaseConsoleTest extends TestCase
      * @param $length
      * @param $expected
      */
-    public function ansiColorizedSubstr_withColors(string $str, int $start, int $length, string $expected): void
+    public function ansiColorizedSubstrWithColors(string $str, int $start, int $length, string $expected): void
     {
         $ansiStr = BaseConsole::renderColoredString($str);
 
