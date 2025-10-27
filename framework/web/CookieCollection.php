@@ -22,6 +22,12 @@ use yii\base\InvalidCallException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \IteratorAggregate<string, Cookie>
+ * @implements \ArrayAccess<string, Cookie|null>
+ *
+ * @phpstan-property-read ArrayIterator<string, Cookie> $iterator
+ * @psalm-property-read ArrayIterator<string, Cookie> $iterator
  */
 class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
@@ -32,6 +38,8 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
 
     /**
      * @var Cookie[] the cookies in this collection (indexed by the cookie names)
+     *
+     * @phpstan-var array<string, Cookie>
      */
     private $_cookies;
 

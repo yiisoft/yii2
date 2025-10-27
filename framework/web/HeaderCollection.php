@@ -17,6 +17,12 @@ use yii\base\BaseObject;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \IteratorAggregate<string, string[]>
+ * @implements \ArrayAccess<string, string|null>
+ *
+ * @phpstan-property-read \ArrayIterator<string, string[]> $iterator
+ * @psalm-property-read \ArrayIterator<string, string[]> $iterator
  */
 class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
@@ -39,6 +45,9 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
      * @return \ArrayIterator an iterator for traversing the headers in the collection.
+     *
+     * @phpstan-return \ArrayIterator<string, string[]>
+     * @psalm-return \ArrayIterator<string, string[]>
      */
     #[\ReturnTypeWillChange]
     public function getIterator()

@@ -70,6 +70,9 @@ use yii\base\InvalidConfigException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \IteratorAggregate<array-key, mixed>
+ * @implements \ArrayAccess<array-key, mixed>
  */
 class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Countable
 {
