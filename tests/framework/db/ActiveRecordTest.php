@@ -2064,7 +2064,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertInstanceOf(Order::class, $orderItem->custom);
     }
 
-    public function testRefresh_querySetAlias_findRecord(): void
+    public function testRefreshQuerySetAliasFindRecord(): void
     {
         $customer = new CustomerWithAlias();
         $customer->id = 1;

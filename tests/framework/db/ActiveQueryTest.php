@@ -66,7 +66,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\Query', $result);
     }
 
-    public function testPopulate_EmptyRows(): void
+    public function testPopulateEmptyRows(): void
     {
         $query = new ActiveQuery(Customer::class);
         $rows = [];
@@ -77,7 +77,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     /**
      * @todo tests for internal logic of populate()
      */
-    public function testPopulate_FilledRows(): void
+    public function testPopulateFilledRows(): void
     {
         $query = new ActiveQuery(Customer::class);
         $rows = $query->all();
@@ -162,14 +162,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     /**
      * @todo tests for the regex inside getQueryTableName
      */
-    public function testGetQueryTableName_from_not_set(): void
+    public function testGetQueryTableNameFromNotSet(): void
     {
         $query = new ActiveQuery(Customer::class);
         $result = $this->invokeMethod($query, 'getTableNameAndAlias');
         $this->assertEquals(['customer', 'customer'], $result);
     }
 
-    public function testGetQueryTableName_from_set(): void
+    public function testGetQueryTableNameFromSet(): void
     {
         $options = ['from' => ['alias' => 'customer']];
         $query = new ActiveQuery(Customer::class, $options);
@@ -187,7 +187,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testAndOnCondition_on_not_set(): void
+    public function testAndOnConditionOnNotSet(): void
     {
         $query = new ActiveQuery(Customer::class);
         $on = ['active' => true];
@@ -197,7 +197,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testAndOnCondition_on_set(): void
+    public function testAndOnConditionOnSet(): void
     {
         $onOld = ['active' => true];
         $query = new ActiveQuery(Customer::class);
@@ -210,7 +210,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testOrOnCondition_on_not_set(): void
+    public function testOrOnConditionOnNotSet(): void
     {
         $query = new ActiveQuery(Customer::class);
         $on = ['active' => true];
@@ -220,7 +220,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testOrOnCondition_on_set(): void
+    public function testOrOnConditionOnSet(): void
     {
         $onOld = ['active' => true];
         $query = new ActiveQuery(Customer::class);
@@ -244,7 +244,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\ActiveQuery', $result->via);
     }
 
-    public function testAlias_not_set(): void
+    public function testAliasNotSet(): void
     {
         $query = new ActiveQuery(Customer::class);
         $result = $query->alias('alias');
@@ -252,7 +252,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals(['alias' => 'customer'], $result->from);
     }
 
-    public function testAlias_yet_set(): void
+    public function testAliasYetSet(): void
     {
         $aliasOld = ['old'];
         $query = new ActiveQuery(Customer::class);
@@ -267,7 +267,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         return new ActiveQuery(null);
     }
 
-    public function testGetTableNames_notFilledFrom(): void
+    public function testGetTableNamesNotFilledFrom(): void
     {
         $query = new ActiveQuery(Profile::class);
 
@@ -278,7 +278,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $tables);
     }
 
-    public function testGetTableNames_wontFillFrom(): void
+    public function testGetTableNamesWontFillFrom(): void
     {
         $query = new ActiveQuery(Profile::class);
         $this->assertEquals($query->from, null);

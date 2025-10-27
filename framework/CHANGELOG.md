@@ -70,6 +70,7 @@ Yii Framework 2 Change Log
 - Bug #20634: Fix PHPDoc annotations in `yii\db` namespace. Add PHPStan/Psalm annotations for `yii\db\SqlTokenizer::startsWithAnyLongest()` (mspirkov)
 - Bug #20636: Fix `@param` annotations for `$message` in logging methods (mspirkov)
 - Bug #20637: Fix PHPDoc annotations in `ActiveRelationTrait`. Add PHPStan/Psalm annotations for `$modelClass` in `ActiveQuery`, `ActiveQueryTrait` and `ActiveRelationTrait` (mspirkov)
+- Bug #20639: Add missing generics in `yii\web` namespace (mspirkov)
 
 
 2.0.53 June 27, 2025
