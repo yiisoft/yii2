@@ -25,6 +25,11 @@ use yii\helpers\Url;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template TIdentity of IdentityInterface
+ *
+ * @phpstan-property-read User<TIdentity> $user
+ * @psalm-property-read User<TIdentity> $user
  */
 class Application extends \yii\base\Application
 {
@@ -181,6 +186,9 @@ class Application extends \yii\base\Application
     /**
      * Returns the user component.
      * @return User the user component.
+     *
+     * @phpstan-return User<TIdentity>
+     * @psalm-return User<TIdentity>
      */
     public function getUser()
     {
