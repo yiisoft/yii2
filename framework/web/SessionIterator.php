@@ -12,6 +12,8 @@ namespace yii\web;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \Iterator<array-key, mixed>
  */
 class SessionIterator implements \Iterator
 {
