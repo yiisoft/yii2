@@ -18,8 +18,8 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @implements \IteratorAggregate<string, array<string, mixed>|null>
- * @implements \ArrayAccess<string, array<string, mixed>>
+ * @implements \IteratorAggregate<string, array<string, mixed>>
+ * @implements \ArrayAccess<string, array<string, mixed>|null>
  */
 abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate, \ArrayAccess, \Countable
 {
