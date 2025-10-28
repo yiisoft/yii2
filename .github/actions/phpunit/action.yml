@@ -125,5 +125,5 @@ runs:
       if: ${{ !cancelled() && inputs.coverage-driver != 'none' }}
       uses: codecov/codecov-action@v5
       with:
+        files: ./${{ inputs.coverage-file }}
         token: ${{ inputs.coverage-token }}
-        file: ./${{ inputs.coverage-file }}
