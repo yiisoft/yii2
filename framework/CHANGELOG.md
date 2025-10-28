@@ -73,6 +73,7 @@ Yii Framework 2 Change Log
 - Bug #20639: Add missing generics in `yii\web` namespace (mspirkov)
 - Bug #20645: Add missing generics in `yii\helpers` and `yii\test` namespaces. Fix PHPDoc annotations in `ArrayAccessTrait` (mspirkov)
 - Bug #20640: Fix `@param` annotation for `$block` in `yii\console\Markdown::renderParagraph()` (mspirkov)
+- Enh #20642: Pass `$model` and `$attribute` in Compare Validator's compareValue property closure (samuelrajan747)
 
 
 2.0.53 June 27, 2025
