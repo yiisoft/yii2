@@ -228,7 +228,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db->createCommand()->resetSequence('no_exist_table', 5)->execute();
     }
 
-    public function testResetSequenceExceptionSquenceNoExist(): void
+    public function testResetSequenceExceptionSequenceNoExist(): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("There is not sequence associated with table 'type'.");

@@ -1323,7 +1323,7 @@ SQL;
 
         $db->createCommand()->addUnique($name, $tableName, $columns)->execute();
 
-        $this->assertEquals((array) $columns, $schema->getTableUniques($tableName, true)[0]->columnNames);
+        $this->assertSame((array) $columns, $schema->getTableUniques($tableName, true)[0]->columnNames);
 
         $db->createCommand()->dropUnique($name, $tableName)->execute();
 
