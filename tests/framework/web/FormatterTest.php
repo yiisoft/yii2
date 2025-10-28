@@ -8,10 +8,11 @@
 
 namespace yiiunit\framework\web;
 
+use yiiunit\TestCase;
 use yii\web\Response;
 use yii\web\ResponseFormatterInterface;
 
-abstract class FormatterTest extends \yiiunit\TestCase
+abstract class FormatterTest extends TestCase
 {
     /**
      * @var Response

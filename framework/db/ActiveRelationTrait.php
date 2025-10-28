@@ -20,7 +20,10 @@ use yii\base\InvalidConfigException;
  *
  * @method ActiveRecordInterface|array|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
- * @property ActiveRecord $modelClass
+ * @property string $modelClass
+ *
+ * @phpstan-property class-string<ActiveRecordInterface> $modelClass
+ * @psalm-property class-string<ActiveRecordInterface> $modelClass
  */
 trait ActiveRelationTrait
 {
@@ -45,7 +48,7 @@ trait ActiveRelationTrait
      */
     public $link;
     /**
-     * @var array|object the query associated with the junction table. Please call [[via()]]
+     * @var array|object|null the query associated with the junction table. Please call [[via()]]
      * to set this property instead of directly setting it.
      * This property is only used in relational context.
      * @see via()

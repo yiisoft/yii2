@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use PDO;
 use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;
@@ -23,7 +24,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     public function testLoadDefaultDatetimeColumn(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
             $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
         }
         $sql = <<<SQL
@@ -47,7 +48,7 @@ SQL;
 
     public function testDefaultDatetimeColumnWithMicrosecs(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
+        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
             $this->markTestSkipped('CURRENT_TIMESTAMP with microseconds as default column value is supported since MySQL 5.6.4.');
         }
         $sql = <<<SQL
@@ -156,7 +157,7 @@ SQL;
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_UPPER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -193,7 +194,7 @@ SQL;
         }
 
         $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(\PDO::ATTR_CASE, \PDO::CASE_LOWER);
+        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -250,7 +251,7 @@ SQL;
             'comment' => '',
         ]]);
 
-        $this->assertInstanceOf(ColumnSchema::className(), $column);
+        $this->assertInstanceOf(ColumnSchema::class, $column);
         $this->assertEquals(null, $column->defaultValue);
     }
 

@@ -37,6 +37,8 @@ use yii\caching\TagDependency;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
+ *
+ * @template T of ColumnSchema
  */
 abstract class Schema extends BaseObject
 {
@@ -87,6 +89,9 @@ abstract class Schema extends BaseObject
     /**
      * @var string|array column schema class or class config
      * @since 2.0.11
+     *
+     * @phpstan-var class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}
+     * @psalm-var class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}
      */
     public $columnSchemaClass = 'yii\db\ColumnSchema';
 
@@ -175,6 +180,9 @@ abstract class Schema extends BaseObject
      * This method may be overridden by child classes to create a DBMS-specific column schema.
      * @return ColumnSchema column schema instance.
      * @throws InvalidConfigException if a column schema class cannot be created.
+     *
+     * @phpstan-return T
+     * @psalm-return T
      */
     protected function createColumnSchema()
     {

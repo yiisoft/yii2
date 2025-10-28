@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\base\Arrayable;
 use yii\base\ArrayableTrait;
 use yii\base\Model;
@@ -16,7 +17,7 @@ use yii\widgets\DetailView;
 /**
  * @group widgets
  */
-class DetailViewTest extends \yiiunit\TestCase
+class DetailViewTest extends TestCase
 {
     /** @var DetailView */
     public $detailView;

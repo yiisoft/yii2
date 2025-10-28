@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use InvalidArgumentException;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\UserException;
@@ -66,7 +67,7 @@ Exception: yii\base\UserException', $this->getController()->runAction('error'));
 
     public function testGenericException(): void
     {
-        Yii::$app->getErrorHandler()->exception = new \InvalidArgumentException('This message will not be shown to the user');
+        Yii::$app->getErrorHandler()->exception = new InvalidArgumentException('This message will not be shown to the user');
 
         $this->assertEquals('Name: Error
 Code: 500
@@ -76,7 +77,7 @@ Exception: InvalidArgumentException', $this->getController()->runAction('error')
 
     public function testGenericExceptionCustomNameAndMessage(): void
     {
-        Yii::$app->getErrorHandler()->exception = new \InvalidArgumentException('This message will not be shown to the user');
+        Yii::$app->getErrorHandler()->exception = new InvalidArgumentException('This message will not be shown to the user');
 
         $controller = $this->getController([
             'defaultName' => 'Oops...',

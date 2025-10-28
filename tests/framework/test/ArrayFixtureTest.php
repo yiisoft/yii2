@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\test;
 
+use yii\base\InvalidConfigException;
 use yii\test\ArrayFixture;
 use yiiunit\TestCase;
 
@@ -16,7 +17,10 @@ use yiiunit\TestCase;
  */
 class ArrayFixtureTest extends TestCase
 {
-    private \yii\test\ArrayFixture $_fixture;
+    /**
+     * @var ArrayFixture
+     */
+    private $_fixture;
 
     protected function setUp(): void
     {
@@ -45,11 +49,12 @@ class ArrayFixtureTest extends TestCase
         $this->assertEmpty($this->_fixture->data, 'fixture data should not be loaded');
     }
 
-    public function testWrongDataFileException()
+    public function testWrongDataFileException(): void
     {
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
 
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
+
         $this->_fixture->load();
     }
 }

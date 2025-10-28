@@ -57,7 +57,7 @@ class InstanceTest extends TestCase
     /**
      * ensure an InvalidConfigException is thrown when a component does not exist.
      */
-    public function testEnsure_NonExistingComponentException(): void
+    public function testEnsureNonExistingComponentException(): void
     {
         $container = new Container();
         $this->expectException(\yii\base\InvalidConfigException::class);
@@ -68,7 +68,7 @@ class InstanceTest extends TestCase
     /**
      * ensure an InvalidConfigException is thrown when a class does not exist.
      */
-    public function testEnsure_NonExistingClassException(): void
+    public function testEnsureNonExistingClassException(): void
     {
         $container = new Container();
         $this->expectException(\yii\base\InvalidConfigException::class);
@@ -76,7 +76,7 @@ class InstanceTest extends TestCase
         Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
     }
 
-    public function testEnsure_WithoutType(): void
+    public function testEnsureWithoutType(): void
     {
         $container = new Container();
         $container->set('db', [
@@ -89,7 +89,7 @@ class InstanceTest extends TestCase
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container));
     }
 
-    public function testEnsure_MinimalSettings(): void
+    public function testEnsureMinimalSettings(): void
     {
         Yii::$container->set('db', [
             'class' => 'yii\db\Connection',
@@ -99,6 +99,7 @@ class InstanceTest extends TestCase
         $this->assertInstanceOf(Connection::class, Instance::ensure('db'));
         $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection()));
         $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['__class' => 'yii\db\Connection', 'dsn' => 'test']));
         Yii::$container = new Container();
     }
 

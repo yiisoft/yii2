@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\ar;
 
+use yiiunit\extensions\redis\ActiveRecordTest;
+use Exception;
 use yii\base\Event;
 use yii\db\ActiveRecordInterface;
 use yii\db\BaseActiveRecord;
@@ -1112,21 +1114,11 @@ trait ActiveRecordTestTrait
         /** @var TestCase|ActiveRecordTestTrait $this */
 
         $afterFindCalls = [];
-
-        Event::on(
-            BaseActiveRecord::className(),
-            BaseActiveRecord::EVENT_AFTER_FIND,
-            function ($event) use (&$afterFindCalls) {
-                /** @var BaseActiveRecord $ar */
-                $ar = $event->sender;
-                $afterFindCalls[] = [
-                    $ar::class,
-                    $ar->getIsNewRecord(),
-                    $ar->getPrimaryKey(),
-                    $ar->isRelationPopulated('orders'),
-                ];
-            }
-        );
+        Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function ($event) use (&$afterFindCalls) {
+            /** @var BaseActiveRecord $ar */
+            $ar = $event->sender;
+            $afterFindCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+        });
 
         $customer = $customerClass::findOne(1);
         $this->assertNotNull($customer);
@@ -1151,7 +1143,7 @@ trait ActiveRecordTestTrait
         ], $afterFindCalls);
         $afterFindCalls = [];
 
-        if ($this instanceof \yiiunit\extensions\redis\ActiveRecordTest) { // TODO redis does not support orderBy() yet
+        if ($this instanceof ActiveRecordTest) { // TODO redis does not support orderBy() yet
             $customer = $customerClass::find()->where(['id' => [1, 2]])->with('orders')->all();
         } else {
             // orderBy is needed to avoid random test failure
@@ -1177,21 +1169,11 @@ trait ActiveRecordTestTrait
         /** @var TestCase|ActiveRecordTestTrait $this */
 
         $afterRefreshCalls = [];
-
-        Event::on(
-            BaseActiveRecord::className(),
-            BaseActiveRecord::EVENT_AFTER_REFRESH,
-            function ($event) use (&$afterRefreshCalls) {
-                /** @var BaseActiveRecord $ar */
-                $ar = $event->sender;
-                $afterRefreshCalls[] = [
-                    $ar::class,
-                    $ar->getIsNewRecord(),
-                    $ar->getPrimaryKey(),
-                    $ar->isRelationPopulated('orders'),
-                ];
-            }
-        );
+        Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
+            /** @var BaseActiveRecord $ar */
+            $ar = $event->sender;
+            $afterRefreshCalls[] = [\get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+        });
 
         $customer = $customerClass::findOne(1);
         $this->assertNotNull($customer);
@@ -1294,7 +1276,7 @@ trait ActiveRecordTestTrait
             $itemClass = $this->getItemClass();
             $customer->orderItems = [new $itemClass()];
             $this->fail('setter call above MUST throw Exception');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // catch exception "Setting read-only property"
             $this->assertInstanceOf('yii\base\InvalidCallException', $e);
         }

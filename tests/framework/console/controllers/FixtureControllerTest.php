@@ -25,7 +25,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 class FixtureControllerTest extends DatabaseTestCase
 {
     /**
-     * @var \yiiunit\framework\console\controllers\FixtureConsoledController
+     * @var FixtureConsoledController
      */
     private $_fixtureController;
 
@@ -36,7 +36,7 @@ class FixtureControllerTest extends DatabaseTestCase
         parent::setUp();
 
         $db = $this->getConnection();
-        \Yii::$app->set('db', $db);
+        Yii::$app->set('db', $db);
         ActiveRecord::$db = $db;
 
         $this->_fixtureController = Yii::createObject([

@@ -11,24 +11,24 @@ use yii\helpers\BaseUrl;
 class BaseUrlTest extends TestCase
 {
     /** @dataProvider relativeTrueUrlProvider */
-    public function testIsRelativeWillReturnTrue($url)
+    public function testIsRelativeWillReturnTrue($url): void
     {
         $this->assertTrue(BaseUrl::isRelative($url));
     }
 
     /** @dataProvider relativeFalseUrlProvider */
-    public function testIsRelativeWillReturnFalse($url)
+    public function testIsRelativeWillReturnFalse($url): void
     {
         $this->assertFalse(BaseUrl::isRelative($url));
     }
 
     /** @dataProvider ensureSchemeUrlProvider */
-    public function testEnsureScheme($url, $scheme, $expected)
+    public function testEnsureScheme($url, $scheme, $expected): void
     {
         $this->assertEquals($expected, BaseUrl::ensureScheme($url, $scheme));
     }
 
-    public function ensureSchemeUrlProvider()
+    public static function ensureSchemeUrlProvider(): array
     {
         return [
             'relative url and https scheme will return input url' => [
@@ -69,7 +69,7 @@ class BaseUrlTest extends TestCase
         ];
     }
 
-    public function relativeTrueUrlProvider()
+    public static function relativeTrueUrlProvider(): array
     {
         return [
             'url url without protocol' => [
@@ -87,7 +87,7 @@ class BaseUrlTest extends TestCase
         ];
     }
 
-    public function relativeFalseUrlProvider()
+    public static function relativeFalseUrlProvider(): array
     {
         return [
             'url with https protocol' => [

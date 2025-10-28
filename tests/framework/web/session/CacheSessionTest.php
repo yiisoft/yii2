@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web\session;
 
+use yiiunit\TestCase;
 use Yii;
 use yii\caching\FileCache;
 use yii\web\CacheSession;
@@ -15,7 +16,7 @@ use yii\web\CacheSession;
 /**
  * @group web
  */
-class CacheSessionTest extends \yiiunit\TestCase
+class CacheSessionTest extends TestCase
 {
     use SessionTestTrait;
 

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\db\Exception;
 use Yii;
 use yii\console\controllers\MigrateController;
 use yii\console\ExitCode;
@@ -456,7 +457,7 @@ class MigrateControllerTest extends TestCase
      * Test the migrate:fresh command.
      * @dataProvider refreshMigrationDataProvider
      * @param $db
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function testRefreshMigration($db): void
     {
@@ -482,7 +483,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('No new migrations found. Your system is up-to-date.', $result);
     }
 
-    public static function refreshMigrationDataProvider()
+    public static function refreshMigrationDataProvider(): array
     {
         return [
             ['default'],

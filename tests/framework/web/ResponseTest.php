@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\web;
 
+use yiiunit\TestCase;
+use DateTime;
+use DateTimeImmutable;
 use Error;
 use Exception;
 use RuntimeException;
@@ -21,10 +24,10 @@ use yiiunit\framework\web\mocks\TestRequestComponent;
 /**
  * @group web
  */
-class ResponseTest extends \yiiunit\TestCase
+class ResponseTest extends TestCase
 {
     /**
-     * @var \yii\web\Response
+     * @var Response
      */
     public $response;
 
@@ -38,7 +41,7 @@ class ResponseTest extends \yiiunit\TestCase
                 ],
             ],
         ]);
-        $this->response = new \yii\web\Response();
+        $this->response = new Response();
     }
 
     public static function rightRanges(): array
@@ -431,7 +434,7 @@ class ResponseTest extends \yiiunit\TestCase
         }
     }
 
-    public function cookiesTestProvider()
+    public static function cookiesTestProvider(): array
     {
         $expireInt = time() + 3600;
         $expireString = date('D, d-M-Y H:i:s', $expireInt) . ' GMT';
@@ -453,10 +456,10 @@ class ResponseTest extends \yiiunit\TestCase
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
             $testCases = [...$testCases, 'expire-as-date_time' => [
-                ['expire' => new \DateTime('@' . $expireInt)],
+                ['expire' => new DateTime('@' . $expireInt)],
                 ['expires' => $expireString],
             ], 'expire-as-date_time_immutable' => [
-                ['expire' => new \DateTimeImmutable('@' . $expireInt)],
+                ['expire' => new DateTimeImmutable('@' . $expireInt)],
                 ['expires' => $expireString],
             ]];
         }
@@ -501,7 +504,7 @@ class ResponseTest extends \yiiunit\TestCase
                 }
             }
             if ($name === null) {
-                throw new \Exception('Could not determine cookie name for header "' . $header . '".');
+                throw new Exception('Could not determine cookie name for header "' . $header . '".');
             }
             $cookies[$name] = $params;
         }

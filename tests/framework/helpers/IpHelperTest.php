@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use Exception;
 use yii\helpers\IpHelper;
 use yiiunit\TestCase;
 
@@ -23,7 +24,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $version, $message);
     }
 
-    public static function getIpVersionProvider()
+    public static function getIpVersionProvider(): array
     {
         return [
             ['192.168.0.1', IpHelper::IPV4],
@@ -43,7 +44,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $expanded, $message);
     }
 
-    public static function expandIpv6Provider()
+    public static function expandIpv6Provider(): array
     {
         return [
             ['fa01::1', 'fa01:0000:0000:0000:0000:0000:0000:0001'],
@@ -53,9 +54,12 @@ class IpHelperTest extends TestCase
 
     public function testIpv6ExpandingWithInvalidValue(): void
     {
-        $this->markTestSkipped('Should be fixed in 2.2.');
-
-        IpHelper::expandIPv6('fa01::1/64');
+        try {
+            IpHelper::expandIPv6('fa01::1/64');
+            $this->assertTrue(true);
+        } catch (Exception $exception) {
+            $this->assertStringEndsWith('Unrecognized address fa01::1/64', $exception->getMessage());
+        }
     }
 
     /**
@@ -71,7 +75,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $result, $message);
     }
 
-    public static function ip2binProvider()
+    public static function ip2binProvider(): array
     {
         return [
             ['192.168.1.1', '11000000101010000000000100000001'],
@@ -95,7 +99,7 @@ class IpHelperTest extends TestCase
         $this->assertSame($expected, $result);
     }
 
-    public static function inRangeProvider()
+    public static function inRangeProvider(): array
     {
         return [
             ['192.168.1.1/24', '192.168.0.0/23', true],

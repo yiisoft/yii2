@@ -436,7 +436,9 @@ class DbManager extends BaseManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row);
+            /** @var Role|Permission */
+            $item = $this->populateItem($row);
+            $items[$row['name']] = $item;
         }
 
         return $items;

@@ -42,10 +42,12 @@ class ServiceLocatorTest extends TestCase
         // anonymous function
         $container = new ServiceLocator();
         $className = TestClass::class;
-        $container->set($className, fn() => new TestClass([
-            'prop1' => 100,
-            'prop2' => 200,
-        ]));
+        $container->set($className, function () {
+            return new TestClass([
+                'prop1' => 100,
+                'prop2' => 200,
+            ]);
+        });
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
         $this->assertEquals(100, $object->prop1);

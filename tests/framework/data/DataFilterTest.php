@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\data;
 
+use stdClass;
 use yii\base\DynamicModel;
 use yii\data\DataFilter;
 use yiiunit\data\base\Singer;
@@ -54,7 +55,7 @@ class DataFilterTest extends TestCase
         $this->assertTrue($model instanceof DynamicModel);
 
         $this->expectException('yii\base\InvalidConfigException');
-        $builder->setSearchModel(new \stdClass());
+        $builder->setSearchModel(new stdClass());
     }
 
     public function testLoad(): void

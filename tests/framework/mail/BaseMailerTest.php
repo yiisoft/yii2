@@ -216,7 +216,7 @@ class BaseMailerTest extends TestCase
         $this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
     }
 
-    public static function htmlAndPlainProvider()
+    public static function htmlAndPlainProvider(): array
     {
         return [
             [
@@ -296,10 +296,18 @@ TEXT
     {
         $message = new Message();
 
-        $mailerMock = $this->createPartialMock(Mailer::class, ['beforeSend', 'afterSend']);
+        /** @var Mailer $mailerMock */
+        $mailerMock = $this->createPartialMock(
+            Mailer::class,
+            [
+                'afterSend',
+                'beforeSend',
+            ],
+        );
 
         $mailerMock->expects($this->once())->method('beforeSend')->with($message)->will($this->returnValue(true));
         $mailerMock->expects($this->once())->method('afterSend')->with($message, true);
+
         $mailerMock->send($message);
     }
 }

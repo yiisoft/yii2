@@ -8,6 +8,11 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
+use yii\db\Connection;
+use yii\web\UrlManager;
+use yii\data\ActiveDataProvider;
+use Exception;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
@@ -19,7 +24,7 @@ use yiiunit\data\ar\NoAutoLabels;
  * @author Evgeniy Tkachenko <et.coder@gmail.com>
  * @group grid
  */
-class GridViewTest extends \yiiunit\TestCase
+class GridViewTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -55,7 +60,7 @@ class GridViewTest extends \yiiunit\TestCase
      * @param bool|string|null $emptyText The empty text.
      * @param string $expectedText The expected text.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testEmpty(bool|string|null $emptyText, mixed $expectedText): void
     {
@@ -128,9 +133,9 @@ class GridViewTest extends \yiiunit\TestCase
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testFooter()
+    public function testFooter(): void
     {
         $config = [
             'id'           => 'grid',
@@ -163,7 +168,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->mockApplication([
             'components' => [
                 'db' => [
-                    'class' => \yii\db\Connection::class,
+                    'class' => Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],
@@ -172,13 +177,13 @@ class GridViewTest extends \yiiunit\TestCase
         NoAutoLabels::$db = Yii::$app->getDb();
         Yii::$app->getDb()->createCommand()->createTable(NoAutoLabels::tableName(), ['attr1' => 'int', 'attr2' => 'int'])->execute();
 
-        $urlManager = new \yii\web\UrlManager([
+        $urlManager = new UrlManager([
             'baseUrl' => '/',
             'scriptUrl' => '/index.php',
         ]);
 
         $grid = new GridView([
-            'dataProvider' => new \yii\data\ActiveDataProvider([
+            'dataProvider' => new ActiveDataProvider([
                 'query' => NoAutoLabels::find(),
             ]),
             'columns' => [

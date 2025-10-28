@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\mutex;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\mutex\FileMutex;
 use yiiunit\TestCase;
@@ -27,7 +28,7 @@ class FileMutexTest extends TestCase
      */
     protected function createMutex()
     {
-        return \Yii::createObject([
+        return Yii::createObject([
             'class' => FileMutex::class,
             'mutexPath' => '@yiiunit/runtime/mutex',
         ]);

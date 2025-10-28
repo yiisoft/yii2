@@ -8,6 +8,14 @@
 
 namespace yiiunit\framework\helpers;
 
+use DateTime;
+use DateTimeZone;
+use stdClass;
+use yii\helpers\UnsetArrayValue;
+use yii\helpers\ReplaceArrayValue;
+use ArrayObject;
+use Throwable;
+use ReturnTypeWillChange;
 use ArrayAccess;
 use Iterator;
 use yii\base\BaseObject;
@@ -113,7 +121,7 @@ class ArrayHelperTest extends TestCase
             'date' => '2021-09-13 15:16:17.000000',
             'timezone_type' => 3,
             'timezone' => 'UTC',
-        ], ArrayHelper::toArray(new \DateTime('2021-09-13 15:16:17', new \DateTimeZone('UTC'))));
+        ], ArrayHelper::toArray(new DateTime('2021-09-13 15:16:17', new DateTimeZone('UTC'))));
     }
 
     public function testRemove(): void
@@ -244,15 +252,15 @@ class ArrayHelperTest extends TestCase
 
     public function testMultisortNestedObjects(): void
     {
-        $obj1 = new \stdClass();
+        $obj1 = new stdClass();
         $obj1->type = 'def';
         $obj1->owner = $obj1;
 
-        $obj2 = new \stdClass();
+        $obj2 = new stdClass();
         $obj2->type = 'abc';
         $obj2->owner = $obj2;
 
-        $obj3 = new \stdClass();
+        $obj3 = new stdClass();
         $obj3->type = 'abc';
         $obj3->owner = $obj3;
 
@@ -433,7 +441,7 @@ class ArrayHelperTest extends TestCase
         ];
         $b = [
             'version' => '1.1',
-            'options' => new \yii\helpers\UnsetArrayValue(),
+            'options' => new UnsetArrayValue(),
             'features' => [
                 'gii',
             ],
@@ -470,7 +478,7 @@ class ArrayHelperTest extends TestCase
             'options' => [
                 'unittest' => true,
             ],
-            'features' => new \yii\helpers\ReplaceArrayValue([
+            'features' => new ReplaceArrayValue([
                 'gii',
             ]),
         ];
@@ -897,7 +905,7 @@ class ArrayHelperTest extends TestCase
 
     public function testGetValueObjects(): void
     {
-        $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
+        $arrayObject = new ArrayObject(['id' => 23], ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'id'));
 
         $object = new Post1();
@@ -909,14 +917,14 @@ class ArrayHelperTest extends TestCase
         try {
             $object = new Post1();
             ArrayHelper::getValue($object, 'nonExisting');
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->assertEquals('Undefined property: yiiunit\framework\helpers\Post1::$nonExisting', $th->getMessage());
         }
     }
 
     public function testGetValueNonexistingPropertiesForArrayObject(): void
     {
-        $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
+        $arrayObject = new ArrayObject(['id' => 23], ArrayObject::ARRAY_AS_PROPS);
         $this->assertNull(ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
 
@@ -1299,27 +1307,27 @@ class ArrayHelperTest extends TestCase
 
     public function testIsIn(): void
     {
-        $this->assertTrue(ArrayHelper::isIn('a', new \ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::isIn('a', new ArrayObject(['a', 'b'])));
         $this->assertTrue(ArrayHelper::isIn('a', ['a', 'b']));
 
-        $this->assertTrue(ArrayHelper::isIn('1', new \ArrayObject([1, 'b'])));
+        $this->assertTrue(ArrayHelper::isIn('1', new ArrayObject([1, 'b'])));
         $this->assertTrue(ArrayHelper::isIn('1', [1, 'b']));
 
-        $this->assertFalse(ArrayHelper::isIn('1', new \ArrayObject([1, 'b']), true));
+        $this->assertFalse(ArrayHelper::isIn('1', new ArrayObject([1, 'b']), true));
         $this->assertFalse(ArrayHelper::isIn('1', [1, 'b'], true));
 
-        $this->assertTrue(ArrayHelper::isIn(['a'], new \ArrayObject([['a'], 'b'])));
-        $this->assertFalse(ArrayHelper::isIn('a', new \ArrayObject([['a'], 'b'])));
+        $this->assertTrue(ArrayHelper::isIn(['a'], new ArrayObject([['a'], 'b'])));
+        $this->assertFalse(ArrayHelper::isIn('a', new ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', [['a'], 'b']));
     }
 
     public function testIsInStrict(): void
     {
         // strict comparison
-        $this->assertTrue(ArrayHelper::isIn(1, new \ArrayObject([1, 'a']), true));
+        $this->assertTrue(ArrayHelper::isIn(1, new ArrayObject([1, 'a']), true));
         $this->assertTrue(ArrayHelper::isIn(1, [1, 'a'], true));
 
-        $this->assertFalse(ArrayHelper::isIn('1', new \ArrayObject([1, 'a']), true));
+        $this->assertFalse(ArrayHelper::isIn('1', new ArrayObject([1, 'a']), true));
         $this->assertFalse(ArrayHelper::isIn('1', [1, 'a'], true));
     }
 
@@ -1332,28 +1340,28 @@ class ArrayHelperTest extends TestCase
 
     public function testIsSubset(): void
     {
-        $this->assertTrue(ArrayHelper::isSubset(['a'], new \ArrayObject(['a', 'b'])));
-        $this->assertTrue(ArrayHelper::isSubset(new \ArrayObject(['a']), ['a', 'b']));
+        $this->assertTrue(ArrayHelper::isSubset(['a'], new ArrayObject(['a', 'b'])));
+        $this->assertTrue(ArrayHelper::isSubset(new ArrayObject(['a']), ['a', 'b']));
 
-        $this->assertTrue(ArrayHelper::isSubset([1], new \ArrayObject(['1', 'b'])));
-        $this->assertTrue(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b']));
+        $this->assertTrue(ArrayHelper::isSubset([1], new ArrayObject(['1', 'b'])));
+        $this->assertTrue(ArrayHelper::isSubset(new ArrayObject([1]), ['1', 'b']));
 
-        $this->assertFalse(ArrayHelper::isSubset([1], new \ArrayObject(['1', 'b']), true));
-        $this->assertFalse(ArrayHelper::isSubset(new \ArrayObject([1]), ['1', 'b'], true));
+        $this->assertFalse(ArrayHelper::isSubset([1], new ArrayObject(['1', 'b']), true));
+        $this->assertFalse(ArrayHelper::isSubset(new ArrayObject([1]), ['1', 'b'], true));
     }
 
     public function testIsSubsetException(): void
     {
         $this->expectException(\yii\base\InvalidArgumentException::class);
         $this->expectExceptionMessage('Argument $needles must be an array or implement Traversable');
-        ArrayHelper::isSubset('a', new \ArrayObject(['a', 'b']));
+        ArrayHelper::isSubset('a', new ArrayObject(['a', 'b']));
     }
 
     public function testIsArray(): void
     {
         $this->assertTrue(ArrayHelper::isTraversable(['a']));
-        $this->assertTrue(ArrayHelper::isTraversable(new \ArrayObject(['1'])));
-        $this->assertFalse(ArrayHelper::isTraversable(new \stdClass()));
+        $this->assertTrue(ArrayHelper::isTraversable(new ArrayObject(['1'])));
+        $this->assertFalse(ArrayHelper::isTraversable(new stdClass()));
         $this->assertFalse(ArrayHelper::isTraversable('A,B,C'));
         $this->assertFalse(ArrayHelper::isTraversable(12));
         $this->assertFalse(ArrayHelper::isTraversable(false));
@@ -1498,7 +1506,7 @@ class ArrayHelperTest extends TestCase
     {
         $array = ['a' => 'b'];
 
-        $this->assertEquals([], ArrayHelper::filter($array, [new \stdClass()]));
+        $this->assertEquals([], ArrayHelper::filter($array, [new stdClass()]));
         $this->assertEquals([], ArrayHelper::filter($array, [['a']]));
     }
 
@@ -1591,7 +1599,7 @@ class ArrayHelperTest extends TestCase
         ];
     }
 
-    public function testFlatten()
+    public function testFlatten(): void
     {
         // Test with deeply nested arrays
         $array = [
@@ -1680,7 +1688,7 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testFlattenEdgeCases()
+    public function testFlattenEdgeCases(): void
     {
         // Empty array
         $array = [];

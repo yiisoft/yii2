@@ -8,6 +8,10 @@
 
 namespace yiiunit\framework\db\mysql\connection;
 
+use yiiunit\framework\db\mysql\ConnectionTest;
+use Throwable;
+use RuntimeException;
+use ErrorException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Transaction;
@@ -17,7 +21,7 @@ use yii\db\Transaction;
  * @group mysql
  * @group deadlock
  */
-class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
+class DeadLockTest extends ConnectionTest
 {
     /** @var string Shared log filename for children */
     private $logFile;
@@ -167,7 +171,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                     $this->log('child 1: send signal to child 2');
                     // let child to continue
                     if (!posix_kill($pidSecond, SIGUSR1)) {
-                        throw new \RuntimeException('Cannot send signal');
+                        throw new RuntimeException('Cannot send signal');
                     }
 
                     // now child 2 tries to do the 2nd update, and hits the lock and waits

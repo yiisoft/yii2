@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\web\session;
 
+use PDO;
+use Exception;
+use stdClass;
 use Yii;
 use yii\db\Connection;
 use yii\db\Migration;
@@ -49,7 +52,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $driverNames = $this->getDriverNames();
         $databases = self::getParam('databases');
         foreach ($driverNames as $driverName) {
-            if (in_array($driverName, \PDO::getAvailableDrivers()) && array_key_exists($driverName, $databases)) {
+            if (in_array($driverName, PDO::getAvailableDrivers()) && array_key_exists($driverName, $databases)) {
                 $driverAvailable = $driverName;
                 break;
             }
@@ -84,7 +87,7 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         try {
             $this->runMigrate('down', ['all']);
-        } catch (\Exception) {
+        } catch (Exception $e) {
             // Table may not exist for different reasons, but since this method
             // reverts DB changes to make next test pass, this exception is skipped.
         }
@@ -178,7 +181,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
     protected function buildObjectForSerialization()
     {
-        $object = new \stdClass();
+        $object = new stdClass();
         $object->nullValue = null;
         $object->floatValue = pi();
         $object->textValue = str_repeat('QweåßƒТест', 200);

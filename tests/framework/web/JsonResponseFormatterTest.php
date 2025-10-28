@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use SplStack;
 use yii\helpers\Json;
 use yii\web\JsonResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
@@ -28,7 +29,7 @@ class JsonResponseFormatterTest extends FormatterTest
         return new JsonResponseFormatter($configuration);
     }
 
-    public function formatScalarDataProvider()
+    public static function formatScalarDataProvider(): array
     {
         return [
             [1, 1],
@@ -38,7 +39,7 @@ class JsonResponseFormatterTest extends FormatterTest
         ];
     }
 
-    public static function formatArrayDataProvider()
+    public static function formatArrayDataProvider(): array
     {
         return [
             // input, json, pretty json
@@ -75,7 +76,7 @@ class JsonResponseFormatterTest extends FormatterTest
         ];
     }
 
-    public function formatObjectDataProvider()
+    public static function formatObjectDataProvider(): array
     {
         return [
             [new Post(123, 'abc'), '{"id":123,"title":"abc"}'],
@@ -90,9 +91,9 @@ class JsonResponseFormatterTest extends FormatterTest
         ];
     }
 
-    public function formatTraversableObjectDataProvider()
+    public static function formatTraversableObjectDataProvider(): array
     {
-        $postsStack = new \SplStack();
+        $postsStack = new SplStack();
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
@@ -101,14 +102,14 @@ class JsonResponseFormatterTest extends FormatterTest
         ];
     }
 
-    public function formatModelDataProvider()
+    public static function formatModelDataProvider(): array
     {
         return [
             [new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']), '{"id":123,"title":"abc"}'],
         ];
     }
 
-    public static function contentTypeGenerationDataProvider()
+    public static function contentTypeGenerationDataProvider(): array
     {
         return [
             [

@@ -230,7 +230,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTimezones()
+    public static function provideTimezones(): array
     {
         return [
             ['UTC'],
@@ -1062,7 +1062,7 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatIntlFail()
+    public static function provideTestStrictDateFormatIntlFail(): array
     {
         return [
             ['yyyy-MM-dd', '13-Mar-19', true],
@@ -1099,7 +1099,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatIntlPass()
+    public static function provideTestStrictDateFormatIntlPass(): array
     {
         return [
             ['yyyy-MM-dd', '0013-03-19', true],
@@ -1131,7 +1131,7 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatPhpFail()
+    public static function provideTestStrictDateFormatPhpFail(): array
     {
         return [
             ['php:Y-m-d', '13-Mar-19', true],
@@ -1167,7 +1167,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatPhpPass()
+    public static function provideTestStrictDateFormatPhpPass(): array
     {
         return [
             ['php:Y-m-d', '0013-03-19', true],

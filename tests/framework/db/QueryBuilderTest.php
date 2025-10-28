@@ -8,6 +8,10 @@
 
 namespace yiiunit\framework\db;
 
+use Yii;
+use Exception;
+use Closure;
+use yii\base\NotSupportedException;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
 use yii\db\conditions\LikeCondition;
@@ -48,21 +52,27 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param bool $reset
      * @param bool $open
      * @return QueryBuilder
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getQueryBuilder($reset = true, $open = false)
     {
         $connection = $this->getConnection($reset, $open);
 
-        \Yii::$container->set('db', $connection);
-        return match ($this->driverName) {
-            'mysql' => new MysqlQueryBuilder($connection),
-            'sqlite' => new SqliteQueryBuilder($connection),
-            'sqlsrv' => new MssqlQueryBuilder($connection),
-            'pgsql' => new PgsqlQueryBuilder($connection),
-            'oci' => new OracleQueryBuilder($connection),
-            default => throw new \Exception('Test is not implemented for ' . $this->driverName),
-        };
+        Yii::$container->set('db', $connection);
+
+        switch ($this->driverName) {
+            case 'mysql':
+                return new MysqlQueryBuilder($connection);
+            case 'sqlite':
+                return new SqliteQueryBuilder($connection);
+            case 'sqlsrv':
+                return new MssqlQueryBuilder($connection);
+            case 'pgsql':
+                return new PgsqlQueryBuilder($connection);
+            case 'oci':
+                return new OracleQueryBuilder($connection);
+        }
+        throw new Exception('Test is not implemented for ' . $this->driverName);
     }
 
     /**
@@ -1025,7 +1035,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
     public static function conditionProvider(): array
     {
-        $conditions = [
+        return [
             // empty values
             [['like', 'name', []], '0=1', []],
             [['not like', 'name', []], '', []],
@@ -1154,34 +1164,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['not', new Expression('any_expression(:a)', [':a' => 1])], 'NOT (any_expression(:a))', [':a' => 1]],
             [new Expression('NOT (any_expression(:a))', [':a' => 1]), 'NOT (any_expression(:a))', [':a' => 1]],
         ];
-        $conditions = match (static::$driverNameStatic) {
-            'sqlsrv', 'sqlite' => array_merge($conditions, [
-                [['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                [['in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                [['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '(([[id]] != :qp0 OR [[name]] != :qp1) AND ([[id]] != :qp2 OR [[name]] != :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id AND a.]]name[[ = ]]name`)', [':qp0' => 1] ],
-                //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id]] AND a.[[name = ]]name`)', [':qp0' => 1] ],
-            ]),
-            default => array_merge($conditions, [
-                [['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                [['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                [['not in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]], '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))', [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar']],
-                [['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
-                [['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
-            ]),
-        };
-
-        // adjust dbms specific escaping
-        foreach ($conditions as $i => $condition) {
-            $conditions[$i][1] = static::replaceQuotes($condition[1]);
-        }
-
-        return $conditions;
     }
 
     public static function filterConditionProvider(): array
     {
-        $conditions = [
+        return [
             // like
             [['like', 'name', []], '', []],
             [['not like', 'name', []], '', []],
@@ -1219,13 +1206,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['<>', 'a', ''], '', []],
             [['!=', 'a', ''], '', []],
         ];
-
-        // adjust dbms specific escaping
-        foreach ($conditions as $i => $condition) {
-            $conditions[$i][1] = static::replaceQuotes($condition[1]);
-        }
-
-        return $conditions;
     }
 
     /**
@@ -1233,7 +1213,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      *
      * @param string $table The table name.
      * @param $expected The expected SQL.
-     * @throws \Exception
+     * @throws Exception
      */
     public function testBuildFrom(string $table, string $expected): void
     {
@@ -1259,7 +1239,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param string $expected The expected SQL.
      * @param array $expectedParams The expected params.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testBuildCondition(
         array|ExpressionInterface|string $condition,
@@ -1382,7 +1362,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      *
      * @param string $sql The SQL.
      */
-    public function testCreateDropIndex(string $sql, \Closure $builder): void
+    public function testCreateDropIndex(string $sql, Closure $builder): void
     {
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
@@ -1414,7 +1394,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      *
      * @param string $sql The Sql.
      */
-    public function testAddDropUnique(string $sql, \Closure $builder): void
+    public function testAddDropUnique(string $sql, Closure $builder): void
     {
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
@@ -1440,7 +1420,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      *
      * @param string $sql The SQL.
      */
-    public function testAddDropCheck(string $sql, \Closure $builder): void
+    public function testAddDropCheck(string $sql, Closure $builder): void
     {
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
@@ -1471,11 +1451,17 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertSame($this->getConnection(false)->quoteSql($sql), $builder($this->getQueryBuilder(false)));
     }
 
-    public function existsParamsProvider(): array
+    public static function existsParamsProvider(): array
     {
         return [
-            ['exists', static::replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')],
-            ['not exists', static::replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE NOT EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')],
+            [
+                'exists',
+                'SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE EXISTS (SELECT [[1]] FROM [[Website]] [[w]])',
+            ],
+            [
+                'not exists',
+                'SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE NOT EXISTS (SELECT [[1]] FROM [[Website]] [[w]])',
+            ],
         ];
     }
 
@@ -1490,16 +1476,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $expectedQueryParams = [];
 
         $subQuery = new Query();
-        $subQuery->select('1')
-            ->from('Website w');
+        $subQuery->select('1')->from('Website w');
 
         $query = new Query();
-        $query->select('id')
-            ->from('TotalExample t')
-            ->where([$cond, $subQuery]);
+        $query->select('id')->from('TotalExample t')->where([$cond, $subQuery]);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
+        list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+
+        $this->assertEquals($this->replaceQuotes($expectedQuerySql), $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
     }
 
@@ -1849,7 +1833,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'related_id' => null,
                 ],
                 [],
-                static::replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) VALUES (:qp0, :qp1, :qp2, :qp3, :qp4)'),
+                'INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) VALUES (:qp0, :qp1, :qp2, :qp3, :qp4)',
                 [
                     ':qp0' => 'test@example.com',
                     ':qp1' => 'silverfire',
@@ -1869,6 +1853,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     ':qp0' => null,
                 ],
+                false,
             ],
             'carry passed params' => [
                 'customer',
@@ -1881,7 +1866,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
                 ],
                 [':phBar' => 'bar'],
-                static::replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]], [[col]]) VALUES (:qp1, :qp2, :qp3, :qp4, :qp5, CONCAT(:phFoo, :phBar))'),
+                'INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]], [[col]]) VALUES (:qp1, :qp2, :qp3, :qp4, :qp5, CONCAT(:phFoo, :phBar))',
                 [
                     ':phBar' => 'bar',
                     ':qp1' => 'test@example.com',
@@ -1912,7 +1897,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                         'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
                     ]),
                 [':phBar' => 'bar'],
-                static::replaceQuotes('INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) SELECT [[email]], [[name]], [[address]], [[is_active]], [[related_id]] FROM [[customer]] WHERE ([[email]]=:qp1) AND ([[name]]=:qp2) AND ([[address]]=:qp3) AND ([[is_active]]=:qp4) AND ([[related_id]] IS NULL) AND ([[col]]=CONCAT(:phFoo, :phBar))'),
+                'INSERT INTO [[customer]] ([[email]], [[name]], [[address]], [[is_active]], [[related_id]]) SELECT [[email]], [[name]], [[address]], [[is_active]], [[related_id]] FROM [[customer]] WHERE ([[email]]=:qp1) AND ([[name]]=:qp2) AND ([[address]]=:qp3) AND ([[is_active]]=:qp4) AND ([[related_id]] IS NULL) AND ([[col]]=CONCAT(:phFoo, :phBar))',
                 [
                     ':phBar' => 'bar',
                     ':qp1' => 'test@example.com',
@@ -1933,16 +1918,23 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array $params The binding parameters that will be generated by this method.
      * @param string $expectedSQL The expected SQL statement.
      * @param array|string $expectedParams The expected binding parameters.
+     * @param bool $replaceQuotes whether to replace quotes in the expected SQL. Default is `true`.
      */
     public function testInsert(
         string $table,
         array|Query $columns,
         array $params,
         string $expectedSQL,
-        array|string $expectedParams
+        array|string $expectedParams,
+        bool $replaceQuotes = true,
     ): void {
         $actualParams = $params;
         $actualSQL = $this->getQueryBuilder()->insert($table, $columns, $actualParams);
+
+        if ($replaceQuotes) {
+            $expectedSQL = $this->replaceQuotes($expectedSQL);
+        }
+
         $this->assertSame($expectedSQL, $actualSQL);
         $this->assertSame($expectedParams, $actualParams);
     }
@@ -2166,8 +2158,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param string|string[] $expectedSQL The expected SQL statement(s).
      * @param array $expectedParams The expected binding parameters.
      *
-     * @throws \yii\base\NotSupportedException
-     * @throws \Exception
+     * @throws NotSupportedException
+     * @throws Exception
      */
     public function testUpsert(
         string $table,
@@ -2197,43 +2189,46 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 'customer',
                 ['email', 'name', 'address'],
                 [['test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine']],
-                static::replaceQuotes("INSERT INTO [[customer]] ([[email]], [[name]], [[address]]) VALUES ('test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')"),
+                "INSERT INTO [[customer]] ([[email]], [[name]], [[address]]) VALUES ('test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')",
             ],
             'escape-danger-chars' => [
                 'customer',
                 ['address'],
                 [["SQL-danger chars are escaped: '); --"]],
-                'expected' => static::replaceQuotes("INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')"),
+                'expected' => "INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')",
             ],
             [
                 'customer',
                 ['address'],
                 [],
                 '',
+                false,
             ],
             [
                 'customer',
                 [],
                 [['no columns passed']],
-                static::replaceQuotes("INSERT INTO [[customer]] () VALUES ('no columns passed')"),
+                "INSERT INTO [[customer]] () VALUES ('no columns passed')",
             ],
             'bool-false, bool2-null' => [
                 'type',
                 ['bool_col', 'bool_col2'],
                 [[false, null]],
-                'expected' => static::replaceQuotes('INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)'),
+                'expected' => 'INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)',
             ],
             [
                 '{{%type}}',
                 ['{{%type}}.[[float_col]]', '[[time]]'],
                 [[null, new Expression('now()')]],
                 'INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) VALUES (NULL, now())',
+                false,
             ],
             'bool-false, time-now()' => [
                 '{{%type}}',
                 ['{{%type}}.[[bool_col]]', '[[time]]'],
                 [[false, new Expression('now()')]],
                 'expected' => 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())',
+                false,
             ],
         ];
     }
@@ -2246,13 +2241,23 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @param array $value The rows to be batch inserted into the table.
      * @param string $expected The expected SQL statement.
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function testBatchInsert(string $table, array $columns, array $value, string $expected): void
-    {
+    public function testBatchInsert(
+        string $table,
+        array $columns,
+        array $value,
+        string $expected,
+        bool $replaceQuotes = true,
+    ): void {
         $queryBuilder = $this->getQueryBuilder();
 
         $sql = $queryBuilder->batchInsert($table, $columns, $value);
+
+        if ($replaceQuotes) {
+            $expected = $this->replaceQuotes($expected);
+        }
+
         $this->assertEquals($expected, $sql);
     }
 
@@ -2268,7 +2273,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'id' => 100,
                 ],
-                static::replaceQuotes('UPDATE [[customer]] SET [[status]]=:qp0, [[updated_at]]=now() WHERE [[id]]=:qp1'),
+                'UPDATE [[customer]] SET [[status]]=:qp0, [[updated_at]]=now() WHERE [[id]]=:qp1',
                 [
                     ':qp0' => 1,
                     ':qp1' => 100,
@@ -2295,11 +2300,11 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     ): void {
         $actualParams = [];
         $actualSQL = $this->getQueryBuilder()->update($table, $columns, $condition, $actualParams);
-        $this->assertSame($expectedSQL, $actualSQL);
+        $this->assertSame($this->replaceQuotes($expectedSQL), $actualSQL);
         $this->assertSame($expectedParams, $actualParams);
     }
 
-    public function deleteProvider()
+    public static function deleteProvider(): array
     {
         return [
             [
@@ -2308,7 +2313,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'is_enabled' => false,
                     'power' => new Expression('WRONG_POWER()'),
                 ],
-                static::replaceQuotes('DELETE FROM [[user]] WHERE ([[is_enabled]]=:qp0) AND ([[power]]=WRONG_POWER())'),
+                'DELETE FROM [[user]] WHERE ([[is_enabled]]=:qp0) AND ([[power]]=WRONG_POWER())',
                 [
                     ':qp0' => false,
                 ],
@@ -2324,10 +2329,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $actualParams = [];
         $actualSQL = $this->getQueryBuilder()->delete($table, $condition, $actualParams);
-        $this->assertSame($expectedSQL, $actualSQL);
+        $this->assertSame($this->replaceQuotes($expectedSQL), $actualSQL);
         $this->assertSame($expectedParams, $actualParams);
     }
-
 
     public function testCommentColumn(): void
     {
@@ -2359,9 +2363,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals(static::replaceQuotes($expected), $sql);
     }
 
-    public function likeConditionProvider()
+    public static function likeConditionProvider(): array
     {
-        $conditions = [
+        return [
             // simple like
             [['like', 'name', 'foo%'], '[[name]] LIKE :qp0', [':qp0' => '%foo\%%']],
             [['not like', 'name', 'foo%'], '[[name]] NOT LIKE :qp0', [':qp0' => '%foo\%%']],
@@ -2403,22 +2407,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             // like with expression as columnName
             [['like', new Expression('name'), 'teststring'], 'name LIKE :qp0', [':qp0' => '%teststring%']],
         ];
-
-        // adjust dbms specific escaping
-        foreach ($conditions as $i => $condition) {
-            $conditions[$i][1] = static::replaceQuotes($condition[1]);
-            if (!empty($this->likeEscapeCharSql)) {
-                preg_match_all('/(?P<condition>LIKE.+?)( AND| OR|$)/', $conditions[$i][1], $matches, PREG_SET_ORDER);
-                foreach ($matches as $match) {
-                    $conditions[$i][1] = str_replace($match['condition'], $match['condition'] . $this->likeEscapeCharSql, $conditions[$i][1]);
-                }
-            }
-            foreach ($conditions[$i][2] as $name => $value) {
-                $conditions[$i][2][$name] = strtr($conditions[$i][2][$name], $this->likeParameterReplacements);
-            }
-        }
-
-        return $conditions;
     }
 
     /**
@@ -2429,9 +2417,29 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      */
     public function testBuildLikeCondition($condition, $expected, $expectedParams): void
     {
+        $expected = $this->replaceQuotes($expected);
+
+        if (!empty($this->likeEscapeCharSql)) {
+            preg_match_all(
+                '/(?P<condition>LIKE.+?)( AND| OR|$)/',
+                $expected,
+                $matches,
+                PREG_SET_ORDER,
+            );
+
+            foreach ($matches as $match) {
+                $expected = str_replace($match['condition'], $match['condition'] . $this->likeEscapeCharSql, $expected);
+            }
+        }
+
+        foreach ($expectedParams as $name => $value) {
+            $expectedParams[$name] = strtr($expectedParams[$name], $this->likeParameterReplacements);
+        }
+
         $query = (new Query())->where($condition);
-        [$sql, $params] = $this->getQueryBuilder()->build($query);
-        $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . static::replaceQuotes($expected)), $sql);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+
+        $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
     }
 

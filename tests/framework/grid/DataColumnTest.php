@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
+use yiiunit\data\base\RulesModel;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -22,12 +24,12 @@ use yiiunit\data\base\Singer;
  *
  * @group grid
  */
-class DataColumnTest extends \yiiunit\TestCase
+class DataColumnTest extends TestCase
 {
     /**
      * @see DataColumn::getHeaderCellLabel()
      */
-    public function testColumnLabels_OnEmpty_ArrayProvider(): void
+    public function testColumnLabelsOnEmptyArrayProvider(): void
     {
         $this->mockApplication();
         $grid = new GridView([
@@ -48,7 +50,7 @@ class DataColumnTest extends \yiiunit\TestCase
     /**
      * @see DataColumn::getHeaderCellLabel()
      */
-    public function testColumnLabels_OnEmpty_ArrayProvider_WithFilterModel(): void
+    public function testColumnLabelsOnEmptyArrayProviderWithFilterModel(): void
     {
         $this->mockApplication();
         $grid = new GridView([
@@ -70,7 +72,7 @@ class DataColumnTest extends \yiiunit\TestCase
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_String(): void
+    public function testFilterInputString(): void
     {
         $this->mockApplication();
         $filterInput = '<input type="text"/>';
@@ -131,7 +133,7 @@ class DataColumnTest extends \yiiunit\TestCase
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_Array(): void
+    public function testFilterInputArray(): void
     {
         $this->mockApplication([
             'components' => [
@@ -182,7 +184,7 @@ HTML
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_FormatBoolean(): void
+    public function testFilterInputFormatBoolean(): void
     {
         $this->mockApplication([
             'components' => [
@@ -246,7 +248,7 @@ HTML
                     'filterAttribute' => 'user_id',
                 ],
             ],
-            'filterModel' => new \yiiunit\data\base\RulesModel(['rules' => [['user_id', 'safe']]]),
+            'filterModel' => new RulesModel(['rules' => [['user_id', 'safe']]]),
         ]);
 
         $dataColumn = $grid->columns[0];

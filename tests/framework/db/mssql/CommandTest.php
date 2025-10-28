@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\pgsql\Schema;
 use yii\db\Query;
 
 /**
@@ -103,7 +104,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $db = $this->getConnection(false);
         $tableName = 'test_def';
         $name = 'test_def_constraint';
-        /** @var \yii\db\pgsql\Schema $schema */
+        /** @var Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {

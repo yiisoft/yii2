@@ -8,7 +8,14 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\console\Application;
+use yii\helpers\ArrayHelper;
+use yii\db\Query;
+use yii\db\Expression;
+use yii\db\Exception;
+use yii\base\InvalidConfigException;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\console\ExitCode;
 use yii\db\Connection;
 
@@ -31,7 +38,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
-            new \yii\console\Application([
+            new Application([
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
@@ -84,10 +91,10 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @return \yii\db\Connection
-     * @throws \yii\base\InvalidArgumentException
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\db\Exception
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @return Connection
      */
     public static function getConnection()
     {
@@ -151,11 +158,11 @@ class DbMessageControllerTest extends BaseMessageControllerTest
      */
     protected function loadMessages($category)
     {
-        return \yii\helpers\ArrayHelper::map((new \yii\db\Query())
+        return ArrayHelper::map((new Query())
             ->select(['message' => 't1.message', 'translation' => 't2.translation'])
             ->from(['t1' => 'source_message', 't2' => 'message'])
             ->where([
-                't1.id' => new \yii\db\Expression('[[t2.id]]'),
+                't1.id' => new Expression('[[t2.id]]'),
                 't1.category' => $category,
                 't2.language' => $this->language,
             ])->all(static::$db), 'message', 'translation');

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\mail;
 
+use Exception;
 use Yii;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
@@ -62,11 +63,11 @@ class BaseMessageTest extends TestCase
         $this->assertEquals($message->toString(), '' . $message);
     }
 
-    public function testExceptionToString()
+    public function testExceptionToString(): void
     {
         $message = new TestMessageWithException();
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Test exception in toString.');
 
         (string) $message;
@@ -194,6 +195,6 @@ class TestMessageWithException extends TestMessage
 {
     public function toString()
     {
-        throw new \Exception('Test exception in toString.');
+        throw new Exception('Test exception in toString.');
     }
 }

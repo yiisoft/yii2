@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\grid;
 
+use yii\base\InvalidConfigException;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
@@ -25,7 +26,7 @@ class RadiobuttonColumnTest extends TestCase
 {
     public function testException(): void
     {
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('The "name" property must be set.');
 
         new RadioButtonColumn(['name' => null]);
@@ -87,10 +88,12 @@ class RadiobuttonColumnTest extends TestCase
             'columns' => [
                 [
                     'class' => RadioButtonColumn::class,
-                    'radioOptions' => fn($model) => [
-                        'value' => $model['value'],
-                        'checked' => $model['value'] == 2,
-                    ],
+                    'radioOptions' => function ($model) {
+                        return [
+                            'value' => $model['value'],
+                            'checked' => $model['value'] == 2,
+                        ];
+                    },
                 ],
             ],
         ]);

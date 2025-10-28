@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
+use Exception;
+use yii\validators\Validator;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
@@ -25,7 +28,7 @@ use yii\widgets\MaskedInput;
  *
  * @group widgets
  */
-class ActiveFieldTest extends \yiiunit\TestCase
+class ActiveFieldTest extends TestCase
 {
     use ArraySubsetAsserts;
 
@@ -1002,7 +1005,6 @@ class ActiveFieldTest extends \yiiunit\TestCase
         $this->activeField->model->addError('attributeName', 'error');
 
         $this->activeField->widget(TestInputWidget::class);
-
         $widget = TestInputWidget::$lastInstance;
 
         $expectedOptions = [
@@ -1985,7 +1987,7 @@ class ActiveFieldExtend extends ActiveField
     }
 }
 
-class TestValidator extends \yii\validators\Validator
+class TestValidator extends Validator
 {
     public function clientValidateAttribute($object, $attribute, $view)
     {
@@ -2049,6 +2051,6 @@ class TestActiveFieldWithException extends ActiveField
 {
     public function render($content = null)
     {
-        throw new \Exception('Test exception in toString.');
+        throw new Exception('Test exception in toString.');
     }
 }

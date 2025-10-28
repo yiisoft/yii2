@@ -8,6 +8,10 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use Closure;
+use PDO;
+use yii\base\NotSupportedException;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;
@@ -37,21 +41,58 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public static function conditionProvider(): array
     {
-        return array_merge(parent::conditionProvider(), [
-            'composite in using array objects' => [
-                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
-                    ['id' => 1, 'name' => 'oy'],
-                    ['id' => 2, 'name' => 'yo'],
-                ])],
-                '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
-                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
+        return array_merge(
+            parent::conditionProvider(),
+            [
+                [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'in',
+                        [new Expression('id'), 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                [
+                    [
+                        'not in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                    ],
+                    '(([[id]] != :qp0 OR [[name]] != :qp1) AND ([[id]] != :qp2 OR [[name]] != :qp3))',
+                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+                ],
+                //[ ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id AND a.]]name[[ = ]]name`)', [':qp0' => 1] ],
+                //[ ['not in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1])], 'NOT EXISTS (SELECT 1 FROM (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0) AS a WHERE a.[[id]] = [[id]] AND a.[[name = ]]name`)', [':qp0' => 1] ],
+                'composite in' => [
+                    [
+                        'in',
+                        ['id', 'name'],
+                        [['id' => 1, 'name' => 'oy']],
+                    ],
+                    '(([[id]] = :qp0 AND [[name]] = :qp1))',
+                    [':qp0' => 1, ':qp1' => 'oy'],
+                ],
+                'composite in using array objects' => [
+                    [
+                        'in',
+                        new TraversableObject(['id', 'name']),
+                        new TraversableObject([['id' => 1, 'name' => 'oy'], ['id' => 2, 'name' => 'yo']]),
+                    ],
+                    '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
+                    [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
+                ],
             ],
-            'composite in' => [
-                ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
-                '(([[id]] = :qp0 AND [[name]] = :qp1))',
-                [':qp0' => 1, ':qp1' => 'oy'],
-            ],
-        ]);
+        );
     }
 
     public static function indexesProvider(): array
@@ -91,7 +132,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testBatchInsertOnOlderVersions(): void
     {
         $db = $this->getConnection();
-        if (version_compare($db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
+        if (version_compare($db->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
             $this->markTestSkipped('This test is only relevant for SQLite < 3.7.11');
         }
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
@@ -224,65 +265,70 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     /**
      * @dataProvider primaryKeysProvider
-     *
-     * @param string $sql The SQL.
+     * @param string $sql
      */
-    public function testAddDropPrimaryKey(string $sql, \Closure $builder): void
+    public function testAddDropPrimaryKey($sql, Closure $builder): void
     {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by SQLite.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addPrimaryKey|dropPrimaryKey) is not supported by SQLite\.$/',
+        );
 
         parent::testAddDropPrimaryKey($sql, $builder);
     }
 
     /**
      * @dataProvider foreignKeysProvider
-     *
-     * @param string $sql The SQL.
+     * @param string $sql
      */
-    public function testAddDropForeignKey(string $sql, \Closure $builder): void
+    public function testAddDropForeignKey($sql, Closure $builder): void
     {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by SQLite.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addForeignKey|dropForeignKey) is not supported by SQLite\.$/',
+        );
 
         parent::testAddDropForeignKey($sql, $builder);
     }
 
     /**
      * @dataProvider uniquesProvider
-     *
-     * @param string $sql The Sql.
+     * @param string $sql
      */
-    public function testAddDropUnique(string $sql, \Closure $builder): void
+    public function testAddDropUnique($sql, Closure $builder): void
     {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by SQLite.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addUnique|dropUnique) is not supported by SQLite\.$/',
+        );
 
-        parent::testAddDropPrimaryKey($sql, $builder);
+        parent::testAddDropUnique($sql, $builder);
     }
 
     /**
      * @dataProvider checksProvider
-     *
-     * @param string $sql The SQL.
+     * @param string $sql
      */
-    public function testAddDropCheck(string $sql, \Closure $builder): void
+    public function testAddDropCheck($sql, Closure $builder): void
     {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by SQLite.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addCheck|dropCheck) is not supported by SQLite\.$/',
+        );
 
         parent::testAddDropCheck($sql, $builder);
     }
 
     /**
      * @dataProvider defaultValuesProvider
-     *
-     * @param string $sql The SQL.
+     * @param string $sql
      */
-    public function testAddDropDefaultValue(string $sql, \Closure $builder): void
+    public function testAddDropDefaultValue($sql, Closure $builder): void
     {
-        $this->expectException(\yii\base\NotSupportedException::class);
-        $this->expectExceptionMessage('is not supported by SQLite.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addDefaultValue|dropDefaultValue) is not supported by SQLite\.$/',
+        );
 
         parent::testAddDropDefaultValue($sql, $builder);
     }

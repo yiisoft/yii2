@@ -116,7 +116,7 @@ class BasicAuthTest extends AuthTest
 
         $filter = [
             'class' => HttpBasicAuth::class,
-            'auth' => function ($username, $password): void {
+            'auth' => function ($username, $password) {
                 $this->fail('Authentication closure should not be called when user is already authenticated');
             },
         ];

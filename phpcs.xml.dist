@@ -17,11 +17,6 @@
     </rule>
 
     <!-- TODO: fix errors -->
-    <rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
-        <exclude-pattern>tests/*</exclude-pattern>
-    </rule>
-
-    <!-- TODO: fix errors -->
     <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore">
         <exclude-pattern>tests/*</exclude-pattern>
     </rule>

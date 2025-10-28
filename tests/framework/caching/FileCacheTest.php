@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\caching;
 
+use ReflectionClass;
 use yii\caching\FileCache;
 
 /**
@@ -68,7 +69,7 @@ class FileCacheTest extends CacheTestCase
 
         $value = \time();
 
-        $refClass = new \ReflectionClass($cache);
+        $refClass = new ReflectionClass($cache);
 
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
 
@@ -90,7 +91,7 @@ class FileCacheTest extends CacheTestCase
         $cache->set(__FUNCTION__, 'cache1', 2);
 
         $normalizeKey = $cache->buildKey(__FUNCTION__);
-        $refClass = new \ReflectionClass($cache);
+        $refClass = new ReflectionClass($cache);
         $refMethodGetCacheFile = $refClass->getMethod('getCacheFile');
 
         $cacheFile = $refMethodGetCacheFile->invoke($cache, $normalizeKey);

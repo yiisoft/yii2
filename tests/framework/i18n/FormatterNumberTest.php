@@ -46,7 +46,7 @@ class FormatterNumberTest extends TestCase
     /**
      * Provides some configuration that should not affect Integer formatter.
      */
-    public static function differentConfigProvider()
+    public static function differentConfigProvider(): array
     {
         // make this test not break when intl is not installed
         if (!extension_loaded('intl')) {
@@ -123,7 +123,7 @@ class FormatterNumberTest extends TestCase
     public function testIntlAsIntegerOptions(): void
     {
         $this->formatter->numberFormatterTextOptions = [
-            \NumberFormatter::POSITIVE_PREFIX => '+',
+            NumberFormatter::POSITIVE_PREFIX => '+',
         ];
         $this->assertSame('+2', $this->formatter->asInteger(2));
         $this->assertSame('+10', $this->formatter->asInteger(10));
@@ -178,7 +178,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter->thousandSeparator = '';
         $this->assertSame('123123,1', $this->formatter->asDecimal($value, 1));
         $this->formatter->thousandSeparator = ' ';
-        $this->assertSame('12 31 23,1', $this->formatter->asDecimal($value, 1, [\NumberFormatter::GROUPING_SIZE => 2]));
+        $this->assertSame('12 31 23,1', $this->formatter->asDecimal($value, 1, [NumberFormatter::GROUPING_SIZE => 2]));
 
         $value = 123123.123;
         $this->formatter->decimalSeparator = ',';
@@ -391,7 +391,7 @@ class FormatterNumberTest extends TestCase
 
         // decimal formatting
         $this->formatter->locale = 'de-DE';
-        $this->assertSame("100\xc2\xa0$", \Yii::$app->formatter->asCurrency(100, 'USD', [
+        $this->assertSame("100\xc2\xa0$", Yii::$app->formatter->asCurrency(100, 'USD', [
             NumberFormatter::MAX_FRACTION_DIGITS => 0,
         ]));
         $this->assertSame("100,00\xc2\xa0$", $this->formatter->asCurrency(100, 'USD', [
@@ -468,10 +468,10 @@ class FormatterNumberTest extends TestCase
     {
         $this->formatter->locale = 'en-US';
         $this->formatter->numberFormatterOptions = [
-            \NumberFormatter::FRACTION_DIGITS => 0,
+            NumberFormatter::FRACTION_DIGITS => 0,
         ];
         $this->formatter->numberFormatterTextOptions = [
-            \NumberFormatter::CURRENCY_CODE => 'EUR',
+            NumberFormatter::CURRENCY_CODE => 'EUR',
         ];
         $this->assertSame('€100', $this->formatter->asCurrency(100, 'EUR'));
     }
@@ -603,8 +603,8 @@ class FormatterNumberTest extends TestCase
     public function testIntlAsShortSize(): void
     {
         $this->formatter->numberFormatterOptions = [
-            \NumberFormatter::MIN_FRACTION_DIGITS => 0,
-            \NumberFormatter::MAX_FRACTION_DIGITS => 2,
+            NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            NumberFormatter::MAX_FRACTION_DIGITS => 2,
         ];
 
         // tests for base 1000
@@ -688,8 +688,8 @@ class FormatterNumberTest extends TestCase
     public function testIntlAsSize(): void
     {
         $this->formatter->numberFormatterOptions = [
-            \NumberFormatter::MIN_FRACTION_DIGITS => 0,
-            \NumberFormatter::MAX_FRACTION_DIGITS => 2,
+            NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            NumberFormatter::MAX_FRACTION_DIGITS => 2,
         ];
 
         // tests for base 1000
@@ -722,8 +722,8 @@ class FormatterNumberTest extends TestCase
     public function testIntlAsSizeNegative(): void
     {
         $this->formatter->numberFormatterOptions = [
-            \NumberFormatter::MIN_FRACTION_DIGITS => 0,
-            \NumberFormatter::MAX_FRACTION_DIGITS => 2,
+            NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            NumberFormatter::MAX_FRACTION_DIGITS => 2,
         ];
 
         // tests for base 1000
@@ -824,7 +824,7 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('1023 B', $this->formatter->asShortSize(1023));
     }
 
-    public static function providerForDirectWrongTypeAttributes()
+    public static function providerForDirectWrongTypeAttributes(): array
     {
         return [
             'not-int key for int options' => [
@@ -870,7 +870,7 @@ class FormatterNumberTest extends TestCase
         $this->formatter->asInteger(1, $intOptions, $textOptions);
     }
 
-    public static function providerForConfiguredWrongTypeAttributes()
+    public static function providerForConfiguredWrongTypeAttributes(): array
     {
         return [
             'not-int key for int options' => [

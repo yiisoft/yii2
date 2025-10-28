@@ -19,7 +19,7 @@ class ActiveFixtureTest extends \yiiunit\framework\test\ActiveFixtureTest
 {
     public $driverName = 'pgsql';
 
-    public function testFixturesLoadingResetsSeqence()
+    public function testFixturesLoadingResetsSeqence(): void
     {
         $test = new CustomerDbTestCase();
         $test->setUp();

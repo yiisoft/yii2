@@ -8,9 +8,11 @@
 
 namespace yiiunit\framework\rbac;
 
+use Yii;
 use yii\base\InvalidArgumentException;
 use yii\rbac\BaseManager;
 use yii\rbac\Item;
+use yii\rbac\ManagerInterface;
 use yii\rbac\Permission;
 use yii\rbac\Role;
 use yiiunit\TestCase;
@@ -21,12 +23,12 @@ use yiiunit\TestCase;
 abstract class ManagerTestCase extends TestCase
 {
     /**
-     * @var \yii\rbac\ManagerInterface|BaseManager
+     * @var ManagerInterface|BaseManager
      */
     protected $auth;
 
     /**
-     * @return \yii\rbac\ManagerInterface
+     * @return ManagerInterface
      */
     abstract protected function createManager();
 
@@ -428,7 +430,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertFalse($this->auth->canAddChild($reader, $author));
     }
 
-    public function testRemoveAllRules()
+    public function testRemoveAllRules(): void
     {
         $this->prepareData();
 
@@ -464,7 +466,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertNotEmpty($this->auth->getRoles());
     }
 
-    public static function RBACItemsProvider()
+    public static function RBACItemsProvider(): array
     {
         return [
             [Item::TYPE_ROLE],
@@ -476,7 +478,7 @@ abstract class ManagerTestCase extends TestCase
      * @dataProvider RBACItemsProvider
      * @param mixed $RBACItemType
      */
-    public function testAssignRule(int $RBACItemType): void
+    public function testAssignRule($RBACItemType): void
     {
         $auth = $this->auth;
         $userId = 3;
@@ -508,9 +510,9 @@ abstract class ManagerTestCase extends TestCase
         $this->assertFalse($auth->checkAccess($userId, 'Reader', ['action' => 'write']));
 
         // using DI
-        \Yii::$container->set('write_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
-        \Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
-        \Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
+        Yii::$container->set('write_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'write']);
+        Yii::$container->set('delete_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'delete']);
+        Yii::$container->set('all_rule', ['class' => 'yiiunit\framework\rbac\ActionRule', 'action' => 'all']);
 
         $item = $this->createRBACItem($RBACItemType, 'Writer');
         $item->ruleName = 'write_rule';
@@ -544,7 +546,7 @@ abstract class ManagerTestCase extends TestCase
      * @dataProvider RBACItemsProvider
      * @param mixed $RBACItemType
      */
-    public function testRevokeRule(int $RBACItemType): void
+    public function testRevokeRule($RBACItemType): void
     {
         $userId = 3;
         $auth = $this->auth;
@@ -584,7 +586,7 @@ abstract class ManagerTestCase extends TestCase
             return $this->auth->createPermission($name);
         }
 
-        throw new \InvalidArgumentException();
+        throw new InvalidArgumentException();
     }
 
     /**
@@ -601,7 +603,7 @@ abstract class ManagerTestCase extends TestCase
             return $this->auth->getPermission($name);
         }
 
-        throw new \InvalidArgumentException();
+        throw new InvalidArgumentException();
     }
 
     /**

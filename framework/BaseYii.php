@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\log\Logger;
+use yii\web\IdentityInterface;
 
 /**
  * Gets the application start timestamp.
@@ -56,6 +57,8 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template TUserIdentity of IdentityInterface
  */
 class BaseYii
 {
@@ -69,6 +72,9 @@ class BaseYii
     public static $classMap = [];
     /**
      * @var \yii\console\Application|\yii\web\Application the application instance
+     *
+     * @phpstan-var \yii\console\Application|\yii\web\Application<TUserIdentity>
+     * @psalm-var \yii\console\Application|\yii\web\Application<TUserIdentity>
      */
     public static $app;
     /**
@@ -421,7 +427,7 @@ class BaseYii
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
@@ -434,7 +440,7 @@ class BaseYii
      * Logs a warning message.
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as an array.
      * @param string $category the category of the message.
      */
@@ -447,7 +453,7 @@ class BaseYii
      * Logs an informative message.
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as an array.
      * @param string $category the category of the message.
      */

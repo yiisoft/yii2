@@ -184,7 +184,7 @@ class Serializer extends Component
     /**
      * Serializes a data provider.
      * @param DataProviderInterface $dataProvider
-     * @return array the array representation of the data provider.
+     * @return array|null the array representation of the data provider.
      */
     protected function serializeDataProvider($dataProvider)
     {
@@ -256,7 +256,7 @@ class Serializer extends Component
     /**
      * Serializes a model object.
      * @param Arrayable $model
-     * @return array the array representation of the model
+     * @return array|null the array representation of the model
      */
     protected function serializeModel($model)
     {

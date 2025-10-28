@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use Yii;
 use yii\web\Request;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
@@ -127,7 +128,7 @@ HTML,
         );
     }
 
-    public static function itemViewOptions()
+    public static function itemViewOptions(): array
     {
         return [
             [
@@ -139,7 +140,9 @@ HTML,
 </div>',
             ],
             [
-                fn($model, $key, $index, $widget) => "Item #{$index}: {$model['login']} - Widget: " . $widget::class,
+                function ($model, $key, $index, $widget) {
+                    return "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
+                },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: yii\widgets\ListView</div>
@@ -314,7 +317,7 @@ HTML,
 
     public function testRenderSorter(): void
     {
-        \Yii::$app->set('request', new Request(['scriptUrl' => '/']));
+        Yii::$app->set('request', new Request(['scriptUrl' => '/']));
 
         ob_start();
         $this->getListView([

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\helpers;
 
+use yii\base\InvalidArgumentException;
 use yii\helpers\Markdown;
 use yiiunit\TestCase;
 
@@ -46,7 +47,7 @@ TEXT;
 
     public function testProcessInvalidArgumentException(): void
     {
-        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Markdown flavor 'undefined' is not defined.");
 
         Markdown::process('foo', 'undefined');

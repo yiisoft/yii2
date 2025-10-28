@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\db;
 
+use Exception;
+use Yii;
 use yii\caching\DummyCache;
 use yii\db\Connection;
 use yiiunit\TestCase;
@@ -28,7 +30,7 @@ abstract class DatabaseTestCase extends TestCase
     protected function setUp(): void
     {
         if ($this->driverName === null) {
-            throw new \Exception('driverName is not set for a DatabaseTestCase.');
+            throw new Exception('driverName is not set for a DatabaseTestCase.');
         }
 
         parent::setUp();
@@ -56,7 +58,7 @@ abstract class DatabaseTestCase extends TestCase
     /**
      * @param  bool $reset whether to clean up the test database
      * @param  bool $open  whether to open and populate test database
-     * @return \yii\db\Connection
+     * @return Connection
      */
     public function getConnection($reset = true, $open = true)
     {
@@ -72,7 +74,7 @@ abstract class DatabaseTestCase extends TestCase
         }
         try {
             $this->_db = $this->prepareDatabase($config, $fixture, $open);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->markTestSkipped('Something wrong when preparing database: ' . $e->getMessage());
         }
 
@@ -84,8 +86,8 @@ abstract class DatabaseTestCase extends TestCase
         if (!isset($config['class'])) {
             $config['class'] = 'yii\db\Connection';
         }
-        /** @var \yii\db\Connection $db */
-        $db = \Yii::createObject($config);
+        /** @var Connection $db */
+        $db = Yii::createObject($config);
         if (!$open) {
             return $db;
         }
@@ -127,7 +129,7 @@ abstract class DatabaseTestCase extends TestCase
     }
 
     /**
-     * @return \yii\db\Connection
+     * @return Connection
      */
     protected function getConnectionWithInvalidSlave()
     {

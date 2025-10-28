@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use yii\data\Pagination;
 use yii\helpers\StringHelper;
 use yii\widgets\LinkPager;
@@ -15,7 +16,7 @@ use yii\widgets\LinkPager;
 /**
  * @group widgets
  */
-class LinkPagerTest extends \yiiunit\TestCase
+class LinkPagerTest extends TestCase
 {
     protected function setUp(): void
     {

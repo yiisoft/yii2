@@ -1321,7 +1321,7 @@ class UrlRuleTest extends TestCase
         }
     }
 
-    public function testUrlRuleDefaultsWithNonStringValues()
+    public function testUrlRuleDefaultsWithNonStringValues(): void
     {
         $this->mockWebApplication();
 

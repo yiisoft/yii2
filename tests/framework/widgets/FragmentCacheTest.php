@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use yiiunit\TestCase;
 use Yii;
 use yii\base\View;
 use yii\caching\ArrayCache;
@@ -16,7 +17,7 @@ use yii\caching\ArrayCache;
  * @group widgets
  * @group caching
  */
-class FragmentCacheTest extends \yiiunit\TestCase
+class FragmentCacheTest extends TestCase
 {
     protected function setUp(): void
     {

@@ -8,7 +8,11 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\db\Exception;
+use yii\base\InvalidConfigException;
+use yii\rbac\ManagerInterface;
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\caching\ArrayCache;
 use yii\console\Application;
 use yii\console\ExitCode;
@@ -122,10 +126,10 @@ abstract class DbManagerTestCase extends ManagerTestCase
     }
 
     /**
-     * @throws \yii\db\Exception
-     * @throws \yii\base\InvalidArgumentException
-     * @throws \yii\base\InvalidConfigException
-     * @return \yii\db\Connection
+     * @throws InvalidArgumentException
+     * @throws Exception
+     * @throws InvalidConfigException
+     * @return Connection
      */
     public function getConnection()
     {
@@ -155,7 +159,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     }
 
     /**
-     * @return \yii\rbac\ManagerInterface
+     * @return ManagerInterface
      */
     protected function createManager()
     {
@@ -179,7 +183,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->auth->assign($updatePost, $userId);
     }
 
-    public static function emptyValuesProvider()
+    public static function emptyValuesProvider(): array
     {
         return [
             [0, 0, true],
@@ -194,7 +198,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetPermissionsByUserWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
+    public function testGetPermissionsByUserWithEmptyValue(int|string $userId, int|UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -214,7 +218,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetRolesByUserWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
+    public function testGetRolesByUserWithEmptyValue(int|string $userId, int|UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -266,7 +270,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetAssignmentWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
+    public function testGetAssignmentWithEmptyValue(int|string $userId, int|UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -286,7 +290,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testGetAssignmentsWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
+    public function testGetAssignmentsWithEmptyValue(int|string $userId, int|UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -307,7 +311,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testRevokeWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
+    public function testRevokeWithEmptyValue(int|string $userId, int|UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
         $role = $this->auth->getRole('Author');
@@ -327,7 +331,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @param mixed $searchUserId
      * @param mixed $isValid
      */
-    public function testRevokeAllWithEmptyValue(int|string $userId, int|\yiiunit\data\rbac\UserID|string $searchUserId, bool $isValid): void
+    public function testRevokeAllWithEmptyValue(int|string $userId, int|UserID|string $searchUserId, bool $isValid): void
     {
         $this->prepareRoles($userId);
 
@@ -402,7 +406,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->assertSingleQueryToAssignmentsTable($logTarget);
     }
 
-    private function assertSingleQueryToAssignmentsTable(\yiiunit\framework\log\ArrayTarget $logTarget): void
+    private function assertSingleQueryToAssignmentsTable(ArrayTarget $logTarget): void
     {
         $messages = array_filter($logTarget->messages, fn($message) => str_contains((string) $message[0], 'auth_assignment'));
         $this->assertCount(1, $messages, 'Only one query should have been performed, but there are the following logs: ' . print_r($logTarget->messages, true));

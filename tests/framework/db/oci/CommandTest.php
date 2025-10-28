@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\db\oci;
 
+use Exception;
+use Throwable;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Query;
@@ -37,7 +39,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('profile_SEQ'));
+        $this->assertSame('3', $db->getSchema()->getLastInsertID('profile_SEQ'));
     }
 
     public static function batchInsertSqlProvider(): array
@@ -290,10 +292,10 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;
         }
@@ -378,7 +380,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $orderId = $db->getLastInsertID('order_SEQ');
 
-        $columnValueQuery = new \yii\db\Query();
+        $columnValueQuery = new Query();
         $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();

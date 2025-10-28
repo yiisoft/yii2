@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
 use yii\grid\ActionColumn;
 use yii\helpers\Html;
 
@@ -16,7 +17,7 @@ use yii\helpers\Html;
  *
  * @group grid
  */
-class ActionColumnTest extends \yiiunit\TestCase
+class ActionColumnTest extends TestCase
 {
     public function testInit(): void
     {

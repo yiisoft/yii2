@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\i18n;
 
+use DateTimeImmutable;
+use IntlDateFormatter;
+use DateTimeZone;
 use DateInterval;
 use DateTime;
 use yii\i18n\Formatter;
@@ -74,7 +77,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('n/j/y', $value->getTimestamp()), $this->formatter->asDate($value, 'short'));
         $this->assertSame(date('F j, Y', $value->getTimestamp()), $this->formatter->asDate($value, 'long'));
 
-        $value = new \DateTimeImmutable();
+        $value = new DateTimeImmutable();
         $this->assertSame(date('M j, Y', $value->getTimestamp()), $this->formatter->asDate($value));
         $this->assertSame(date('Y/m/d', $value->getTimestamp()), $this->formatter->asDate($value, 'php:Y/m/d'));
         $this->assertSame(date('m/d/Y', $value->getTimestamp()), $this->formatter->asDate($value, 'MM/dd/yyyy'));
@@ -94,7 +97,7 @@ class FormatterDateTest extends TestCase
     {
         // Persian calendar
         $this->formatter->locale = 'fa_IR@calendar=persian';
-        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->calendar = IntlDateFormatter::TRADITIONAL;
         $this->formatter->timeZone = 'UTC';
 
         $value = 1_451_606_400; // Fri, 01 Jan 2016 00:00:00 (UTC)
@@ -105,13 +108,13 @@ class FormatterDateTest extends TestCase
         $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $value = new DateTimeImmutable('2016-01-01 00:00:00', new DateTimeZone('UTC'));
             $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
         }
 
         // Buddhist calendar
         $this->formatter->locale = 'fr_FR@calendar=buddhist';
-        $this->formatter->calendar = \IntlDateFormatter::TRADITIONAL;
+        $this->formatter->calendar = IntlDateFormatter::TRADITIONAL;
         $this->formatter->timeZone = 'UTC';
 
         $value = 1_451_606_400; // Fri, 01 Jan 2016 00:00:00 (UTC)
@@ -122,7 +125,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $value = new \DateTimeImmutable('2016-01-01 00:00:00', new \DateTimeZone('UTC'));
+            $value = new DateTimeImmutable('2016-01-01 00:00:00', new DateTimeZone('UTC'));
             $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
         }
     }
@@ -149,7 +152,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
 
         if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $value = new \DateTimeImmutable();
+            $value = new DateTimeImmutable();
             $this->assertSameAnyWhitespace(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
             $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
         }
@@ -199,7 +202,7 @@ class FormatterDateTest extends TestCase
         );
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($date, 'php:Y/m/d h:i:s A'));
 
-        $value = new \DateTimeImmutable();
+        $value = new DateTimeImmutable();
         $this->assertMatchesRegularExpression(
             $this->sanitizeWhitespaces(date('~M j, Y,? g:i:s A~', $value->getTimestamp())),
             $this->sanitizeWhitespaces($this->formatter->asDatetime($value))
@@ -539,12 +542,12 @@ class FormatterDateTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asDuration(null));
     }
 
-    public static function dateInputs()
+    public static function dateInputs(): array
     {
         return [
             ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
             [false, 'asdfg', \yii\base\InvalidArgumentException::class],
-//            [(string)strtotime('now'), 'now'], // fails randomly
+            // [(string)strtotime('now'), 'now'], // fails randomly
         ];
     }
 
@@ -575,7 +578,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame($expected, $this->formatter->asDatetime($value, 'yyyy-MM-dd HH:mm:ss'));
     }
 
-    public static function provideTimezones()
+    public static function provideTimezones(): array
     {
         return [
             ['UTC'],
@@ -592,8 +595,8 @@ class FormatterDateTest extends TestCase
      */
     public static function provideTimesAndTz()
     {
-        $utc = new \DateTimeZone('UTC');
-        $berlin = new \DateTimeZone('Europe/Berlin');
+        $utc = new DateTimeZone('UTC');
+        $berlin = new DateTimeZone('Europe/Berlin');
         $result = [];
         foreach (self::provideTimezones() as $tz) {
             $result[] = [$tz[0], 1_407_674_460,                          1_388_580_060];
@@ -609,8 +612,8 @@ class FormatterDateTest extends TestCase
             $result[] = [$tz[0], new DateTime('2014-08-10 12:41:00', $utc), new DateTime('2014-01-01 12:41:00', $utc)];
             $result[] = [$tz[0], new DateTime('2014-08-10 14:41:00', $berlin), new DateTime('2014-01-01 13:41:00', $berlin)];
             if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-                $result[] = [$tz[0], new \DateTimeImmutable('2014-08-10 12:41:00', $utc), new \DateTimeImmutable('2014-01-01 12:41:00', $utc)];
-                $result[] = [$tz[0], new \DateTimeImmutable('2014-08-10 14:41:00', $berlin), new \DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
+                $result[] = [$tz[0], new DateTimeImmutable('2014-08-10 12:41:00', $utc), new DateTimeImmutable('2014-01-01 12:41:00', $utc)];
+                $result[] = [$tz[0], new DateTimeImmutable('2014-08-10 14:41:00', $berlin), new DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
             }
         }
 

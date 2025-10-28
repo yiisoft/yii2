@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\web;
 
+use Yii;
+use yii\base\InvalidConfigException;
+use stdClass;
 use yii\web\Request;
 use yiiunit\TestCase;
 
@@ -162,7 +165,7 @@ class RequestTest extends TestCase
         $request->enableCookieValidation = false;
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
-        \Yii::$app->security->unmaskToken('');
+        Yii::$app->security->unmaskToken('');
         $this->assertFalse($request->validateCsrfToken(''));
 
         // When an empty CSRF token is given it is regenerated.
@@ -226,7 +229,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testCustomSafeMethodsCsrfTokenValidation()
+    public function testCustomSafeMethodsCsrfTokenValidation(): void
     {
         $this->mockWebApplication();
 
@@ -262,7 +265,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testCsrfHeaderValidation()
+    public function testCsrfHeaderValidation(): void
     {
         $this->mockWebApplication();
 
@@ -287,7 +290,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testCustomHeaderCsrfHeaderValidation()
+    public function testCustomHeaderCsrfHeaderValidation(): void
     {
         $this->mockWebApplication();
 
@@ -307,7 +310,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testCustomUnsafeMethodsCsrfHeaderValidation()
+    public function testCustomUnsafeMethodsCsrfHeaderValidation(): void
     {
         $this->mockWebApplication();
 
@@ -334,7 +337,7 @@ class RequestTest extends TestCase
         }
     }
 
-    public function testNoCsrfTokenCsrfHeaderValidation()
+    public function testNoCsrfTokenCsrfHeaderValidation(): void
     {
         $this->mockWebApplication();
 
@@ -344,7 +347,7 @@ class RequestTest extends TestCase
         $this->assertEquals($request->getCsrfToken(), null);
     }
 
-    public function testResolve()
+    public function testResolve(): void
     {
         $this->mockWebApplication([
             'components' => [
@@ -400,7 +403,7 @@ class RequestTest extends TestCase
         $this->assertEquals($_GET, ['id' => 63]);
     }
 
-    public static function getHostInfoDataProvider()
+    public static function getHostInfoDataProvider(): array
     {
         return [
             // empty
@@ -565,7 +568,7 @@ class RequestTest extends TestCase
         $request = new Request();
         $_SERVER = [];
 
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
 
         $request->getScriptFile();
     }
@@ -575,7 +578,8 @@ class RequestTest extends TestCase
         $request = new Request();
         $_SERVER = [];
 
-        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
+
         $request->getScriptUrl();
     }
 
@@ -601,7 +605,7 @@ class RequestTest extends TestCase
         $this->assertNull($request->getServerPort());
     }
 
-    public static function isSecureServerDataProvider()
+    public static function isSecureServerDataProvider(): array
     {
         return [
             [['HTTPS' => 1], true],
@@ -727,7 +731,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public static function isSecureServerWithoutTrustedHostDataProvider()
+    public static function isSecureServerWithoutTrustedHostDataProvider(): array
     {
         return [
             // RFC 7239 forwarded header is not enabled
@@ -764,7 +768,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public static function getUserIPDataProvider()
+    public static function getUserIPDataProvider(): array
     {
         return [
             [
@@ -940,7 +944,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public static function getUserIPWithoutTruestHostDataProvider()
+    public static function getUserIPWithoutTruestHostDataProvider(): array
     {
         return [
             // RFC 7239 forwarded is not enabled
@@ -980,7 +984,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public static function getMethodDataProvider()
+    public static function getMethodDataProvider(): array
     {
         return [
             [
@@ -1012,7 +1016,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public static function getIsAjaxDataProvider()
+    public static function getIsAjaxDataProvider(): array
     {
         return [
             [
@@ -1042,7 +1046,7 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public static function getIsPjaxDataProvider()
+    public static function getIsPjaxDataProvider(): array
     {
         return [
             [
@@ -1084,7 +1088,7 @@ class RequestTest extends TestCase
         $this->assertNull($request->getOrigin());
     }
 
-    public static function httpAuthorizationHeadersProvider()
+    public static function httpAuthorizationHeadersProvider(): array
     {
         return [
             ['not a base64 at all', [base64_decode('not a base64 at all'), null]],
@@ -1151,7 +1155,7 @@ class RequestTest extends TestCase
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
 
         // @see https://github.com/yiisoft/yii2/issues/14135
-        $bodyParams = new \stdClass();
+        $bodyParams = new stdClass();
         $bodyParams->someParam = 'some value';
         $bodyParams->{'param.dot'} = 'value.dot';
         $request->setBodyParams($bodyParams);
@@ -1161,7 +1165,7 @@ class RequestTest extends TestCase
         $this->assertSame('default', $request->getBodyParam('unexisting', 'default'));
     }
 
-    public static function getBodyParamsDataProvider()
+    public static function getBodyParamsDataProvider(): array
     {
         return [
             'json' => ['application/json', '{"foo":"bar","baz":1}', ['foo' => 'bar', 'baz' => 1]],
@@ -1185,7 +1189,7 @@ class RequestTest extends TestCase
         $this->assertSame($expected, $request->getBodyParams());
     }
 
-    public function trustedHostAndInjectedXForwardedForDataProvider()
+    public static function trustedHostAndInjectedXForwardedForDataProvider(): array
     {
         return [
             'emptyIPs' => ['1.1.1.1', '', null, ['10.10.10.10'], '1.1.1.1'],
@@ -1222,7 +1226,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedUserIp, $request->getUserIP());
     }
 
-    public static function trustedHostAndXForwardedPortDataProvider()
+    public static function trustedHostAndXForwardedPortDataProvider(): array
     {
         return [
             'defaultPlain' => ['1.1.1.1', 80, null, null, 80],
@@ -1266,7 +1270,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedMethod, $request->getMethod());
     }
 
-    public static function alreadyResolvedIpDataProvider()
+    public static function alreadyResolvedIpDataProvider(): array
     {
         return [
             'resolvedXForwardedFor' => [
@@ -1309,7 +1313,7 @@ class RequestTest extends TestCase
         $this->assertSame($expectedIsSecureConnection, $request->isSecureConnection, 'Secure connection fail!');
     }
 
-    public static function parseForwardedHeaderDataProvider()
+    public static function parseForwardedHeaderDataProvider(): array
     {
         return [
             [

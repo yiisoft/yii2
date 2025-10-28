@@ -18,10 +18,13 @@ trait ActiveQueryTrait
 {
     /**
      * @var string the name of the ActiveRecord class.
+     *
+     * @phpstan-var class-string<ActiveRecordInterface>
+     * @psalm-var class-string<ActiveRecordInterface>
      */
     public $modelClass;
     /**
-     * @var array a list of relations that this query should be performed with
+     * @var array|null a list of relations that this query should be performed with
      */
     public $with;
     /**

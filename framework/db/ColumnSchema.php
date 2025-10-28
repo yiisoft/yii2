@@ -62,7 +62,7 @@ class ColumnSchema extends BaseObject
      */
     public $scale;
     /**
-     * @var bool whether this column is a primary key
+     * @var bool|null whether this column is a primary key
      */
     public $isPrimaryKey;
     /**
