@@ -628,6 +628,9 @@ class BaseArrayHelper
      * @param array|ArrayAccess $array the array with keys to check
      * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return bool whether the array contains the specified key
+     *
+     * @phpstan-param array<array-key, mixed>|ArrayAccess<array-key, mixed> $array
+     * @psalm-param array<array-key, mixed>|ArrayAccess<array-key, mixed> $array
      */
     public static function keyExists($key, $array, $caseSensitive = true)
     {
