@@ -384,3 +384,58 @@ parameters:
 			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
+			message: "#^Method yii\\\\helpers\\\\BaseFileHelper\\:\\:filterPath\\(\\) should return bool but returns int\\<0\\, 16\\>\\.$#"
+			count: 1
+			path: framework/helpers/BaseFileHelper.php
+
+		-
+			message: "#^Parameter \\&\\$length by\\-ref type of method yii\\\\db\\\\sqlite\\\\SqlTokenizer\\:\\:isOperator\\(\\) expects int\\, int\\|null given\\.$#"
+			count: 1
+			path: framework/db/sqlite/SqlTokenizer.php
+
+		-
+			message: "#^Method yii\\\\db\\\\BaseActiveRecord\\:\\:findOne\\(\\) should return static\\(yii\\\\db\\\\BaseActiveRecord\\)\\|null but returns array\\|yii\\\\db\\\\ActiveRecordInterface\\|null\\.$#"
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: "#^Property yii\\\\db\\\\ActiveQuery\\<array\\|yii\\\\db\\\\ActiveRecord\\>\\:\\:\\$primaryModel \\(yii\\\\db\\\\ActiveRecord\\) does not accept \\$this\\(yii\\\\db\\\\BaseActiveRecord\\)\\.$#"
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: "#^Parameter \\&\\$models by\\-ref type of method yii\\\\db\\\\ActiveQuery\\:\\:findWith\\(\\) expects array\\<yii\\\\db\\\\ActiveRecord\\>\\, array given\\.$#"
+			count: 1
+			path: framework/db/ActiveQueryTrait.php
+
+		-
+			message: "#^Method yii\\\\captcha\\\\CaptchaAction\\:\\:generateValidationHash\\(\\) should return string but returns int\\.$#"
+			count: 1
+			path: framework/captcha/CaptchaAction.php
+
+		-
+			message: "#^Method yii\\\\caching\\\\WinCache\\:\\:setValues\\(\\) should return array but returns bool\\.$#"
+			count: 1
+			path: framework/caching/WinCache.php
+
+		-
+			message: "#^Method yii\\\\caching\\\\WinCache\\:\\:addValues\\(\\) should return array but returns bool\\.$#"
+			count: 1
+			path: framework/caching/WinCache.php
+
+		-
+			message: "#^Argument of an invalid type \\$this\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
+			count: 1
+			path: framework/caching/Dependency.php
+
+		-
+			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\) does not accept yii\\\\base\\\\Controller\\.$#"
+			count: 1
+			path: framework/base/Module.php
+
+		-
+			message: "#^Offset null does not exist on array\\{\\}\\.$#"
+			count: 1
+			path: build/controllers/ReleaseController.php
