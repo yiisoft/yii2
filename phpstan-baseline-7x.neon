@@ -44,3 +44,8 @@ parameters:
 			message: "#^Call to an undefined method ReflectionType\\:\\:getName\\(\\)\\.$#"
 			count: 2
 			path: framework/web/Controller.php
+
+		-
+			message: "#^Parameter \\&\\$constraints by\\-ref type of method yii\\\\db\\\\QueryBuilder\\:\\:getTableUniqueColumnNames\\(\\) expects array\\<yii\\\\db\\\\Constraint\\>\\, array\\<string\\, yii\\\\db\\\\Constraint\\>\\|false given\\.$#"
+			count: 1
+			path: framework/db/QueryBuilder.php

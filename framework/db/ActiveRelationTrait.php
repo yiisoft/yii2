@@ -331,10 +331,12 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecordInterface[] $primaryModels primary models
+     * @param array $primaryModels primary models
      * @param ActiveRecordInterface[] $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
+     *
+     * @phpstan-param ActiveRecordInterface[]|array<array-key, array<string, mixed>> $primaryModels
      */
     private function populateInverseRelation(&$primaryModels, $models, $primaryName, $name)
     {
