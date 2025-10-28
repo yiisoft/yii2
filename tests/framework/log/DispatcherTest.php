@@ -215,7 +215,7 @@ namespace yiiunit\framework\log {
                                     !str_starts_with(
                                         (string) $arg[0][0],
                                         'Unable to send log via ' .
-                                        $target1::class .
+                                        get_class($target1) .
                                         ': Exception (Exception) \'yii\base\UserException\' with message \'some error\''
                                     )
                                 ) {
