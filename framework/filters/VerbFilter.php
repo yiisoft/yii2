@@ -44,6 +44,8 @@ use yii\web\MethodNotAllowedHttpException;
  * @see https://tools.ietf.org/html/rfc2616#section-14.7
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Behavior<Controller>
  */
 class VerbFilter extends Behavior
 {

@@ -27,6 +27,8 @@ use yii\base\Component;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \Iterator<int, mixed>
  */
 class BatchQueryResult extends Component implements \Iterator
 {
