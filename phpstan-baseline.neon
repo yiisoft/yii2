@@ -56,11 +56,6 @@ parameters:
 			path: framework/grid/DataColumn.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\db\\\\Schema\\:\\:getViewNames\\(\\)\\.$#"
-			count: 1
-			path: framework/db/pgsql/QueryBuilder.php
-
-		-
 			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
 			count: 1
 			path: framework/db/pgsql/JsonExpressionBuilder.php
@@ -84,11 +79,6 @@ parameters:
 			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
 			count: 1
 			path: framework/db/mysql/JsonExpressionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\Schema\\:\\:getViewNames\\(\\)\\.$#"
-			count: 1
-			path: framework/db/mssql/QueryBuilder.php
 
 		-
 			message: "#^Access to an undefined property yii\\\\db\\\\ColumnSchema\\:\\:\\$isComputed\\.$#"
@@ -401,7 +391,7 @@ parameters:
 			path: framework/db/BaseActiveRecord.php
 
 		-
-			message: "#^Property yii\\\\db\\\\ActiveQuery\\<array\\|yii\\\\db\\\\ActiveRecord\\>\\:\\:\\$primaryModel \\(yii\\\\db\\\\ActiveRecord\\) does not accept \\$this\\(yii\\\\db\\\\BaseActiveRecord\\)\\.$#"
+			message: "#^Property yii\\\\db\\\\ActiveQuery\\<yii\\\\db\\\\ActiveRecord\\>\\:\\:\\$primaryModel \\(yii\\\\db\\\\ActiveRecord\\) does not accept \\$this\\(yii\\\\db\\\\BaseActiveRecord\\)\\.$#"
 			count: 1
 			path: framework/db/BaseActiveRecord.php
 
