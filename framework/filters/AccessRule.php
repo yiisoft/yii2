@@ -14,6 +14,7 @@ use yii\base\Controller;
 use yii\base\InvalidConfigException;
 use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
+use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\User;
 
@@ -166,6 +167,12 @@ class AccessRule extends Component
      * @param User|false $user the user object or `false` in case of detached User component
      * @param Request $request
      * @return bool|null `true` if the user is allowed, `false` if the user is denied, `null` if the rule does not apply to the user
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
+     *
+     * @phpstan-param User<IdentityInterface>|false $user
+     * @psalm-param User<IdentityInterface>|false $user
      */
     public function allows($action, $user, $request)
     {
@@ -186,6 +193,9 @@ class AccessRule extends Component
     /**
      * @param Action $action the action
      * @return bool whether the rule applies to the action
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     protected function matchAction($action)
     {
@@ -216,6 +226,9 @@ class AccessRule extends Component
      * @param User $user the user object
      * @return bool whether the rule applies to the role
      * @throws InvalidConfigException if User component is detached
+     *
+     * @phpstan-param User<IdentityInterface> $user
+     * @psalm-param User<IdentityInterface> $user
      */
     protected function matchRole($user)
     {
@@ -297,6 +310,9 @@ class AccessRule extends Component
     /**
      * @param Action $action the action to be performed
      * @return bool whether the rule should be applied
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     protected function matchCustom($action)
     {
