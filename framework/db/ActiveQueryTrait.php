@@ -149,7 +149,10 @@ trait ActiveQueryTrait
             $primaryModel = $modelClass::instance();
         }
         $relations = $this->normalizeRelations($primaryModel, $with);
-        /** @var ActiveQuery $relation */
+        /**
+         * @var ActiveQuery $relation
+         * @phpstan-var ActiveQuery<ActiveRecord|array<string, mixed>> $relation
+         */
         foreach ($relations as $name => $relation) {
             if ($relation->asArray === null) {
                 // inherit asArray from primary query

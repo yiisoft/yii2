@@ -62,6 +62,9 @@ class Action extends Component
      * @param Controller $controller the controller that owns this action
      * @param array $config name-value pairs that will be used to initialize the object properties
      *
+     * @phpstan-param T $controller
+     * @psalm-param T $controller
+     *
      * @phpstan-param array<string, mixed> $config
      * @psalm-param array<string, mixed> $config
      */
