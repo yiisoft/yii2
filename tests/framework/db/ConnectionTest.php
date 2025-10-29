@@ -403,6 +403,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $sqlAssertLog = 'INSERT INTO qlog1(a) VALUES(1);';
 
         if ($connection->getDriverName() === 'sqlite') {
+            // SQLite shows placeholders (`:a`), other drivers show values (`1`) in error messages.
             $sqlAssertLog = 'INSERT INTO qlog1(a) VALUES(:a);';
         }
 
@@ -422,6 +423,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $sqlAssertLog = 'SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;';
 
         if ($connection->getDriverName() === 'sqlite') {
+            // SQLite shows placeholders (`:a`), other drivers show values (`1`) in error messages.
             $sqlAssertLog = 'SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;';
         }
 
