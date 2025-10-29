@@ -119,11 +119,15 @@ class Container extends Component
     private $_params = [];
     /**
      * @var array cached ReflectionClass objects indexed by class/interface names
+     *
+     * @phpstan-var array<class-string, ReflectionClass<object>>
      */
     private $_reflections = [];
     /**
      * @var array cached dependencies indexed by class/interface names. Each class name
      * is associated with a list of constructor parameter types or default values.
+     *
+     * @phpstan-var array<class-string, array<string, mixed>>
      */
     private $_dependencies = [];
     /**
