@@ -10,7 +10,9 @@ namespace yii\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Controller;
 use yii\helpers\StringHelper;
+use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -26,6 +28,9 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 {
     /**
      * @var User|null the user object representing the user authentication status. If not set, the `user` application component will be used.
+     *
+     * @phpstan-var User<IdentityInterface>
+     * @psalm-var User<IdentityInterface>
      */
     public $user;
     /**
@@ -100,6 +105,9 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @return bool whether authentication is optional or not.
      * @see optional
      * @since 2.0.7
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     protected function isOptional($action)
     {
