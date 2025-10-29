@@ -107,6 +107,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @since 2.0.7
      *
      * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     protected function isOptional($action)
     {
