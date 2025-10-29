@@ -46,6 +46,8 @@ abstract class SqlTokenizer extends Component
 
     /**
      * @var \SplStack stack of active tokens.
+     *
+     * @phpstan-var \SplStack<SqlToken>
      */
     private $_tokenStack;
     /**
