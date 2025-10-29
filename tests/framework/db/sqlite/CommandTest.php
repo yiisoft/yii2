@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yii\db\sqlite\Schema;
 
 /**
@@ -42,67 +44,133 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         parent::testUpsert($firstData, $secondData);
     }
 
-    public function testAddDropPrimaryKey(): void
+    /**
+     * @dataProvider addPrimaryKeyProvider
+     *
+     * @param string $name
+     * @param string $tableName
+     * @param array|string $pk
+     *
+     * @phpstan-param list<string> $pk
+     */
+    public function testAddDropPrimaryKey(string $name, string $tableName, $pk): void
     {
-        $this->markTestSkipped('SQLite does not support adding/dropping primary keys.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addPrimaryKey|dropPrimaryKey) is not supported by SQLite\.$/',
+        );
+
+        parent::testAddDropPrimaryKey($name, $tableName, $pk);
     }
 
-    public function testAddDropForeignKey(): void
+    /**
+     * @dataProvider addForeignKeyProvider
+     *
+     * @param string $name
+     * @param string $tableName
+     * @param array|string $fkColumns
+     * @param array|string $refColumns
+     *
+     * @phpstan-param list<string> $fkColumns
+     * @phpstan-param list<string> $refColumns
+     */
+    public function testAddDropForeignKey(string $name, string $tableName, $fkColumns, $refColumns): void
     {
-        $this->markTestSkipped('SQLite does not support adding/dropping foreign keys.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addForeignKey|dropForeignKey) is not supported by SQLite\.$/',
+        );
+
+        parent::testAddDropForeignKey($name, $tableName, $fkColumns, $refColumns);
     }
 
-    public function testAddDropUnique(): void
+    /**
+     * @dataProvider addUniqueProvider
+     *
+     * @param string $name
+     * @param string $tableName
+     * @param array|string $columns
+     *
+     * @phpstan-param list<string> $columns
+     */
+    public function testAddDropUnique(string $name, string $tableName, $columns): void
     {
-        $this->markTestSkipped('SQLite does not support adding/dropping unique constraints.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addUnique|dropUnique) is not supported by SQLite\.$/',
+        );
+
+        parent::testAddDropUnique($name, $tableName, $columns);
     }
 
     public function testAddDropCheck(): void
     {
-        $this->markTestSkipped('SQLite does not support adding/dropping check constraints.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/^.*::(addCheck|dropCheck) is not supported by SQLite\.$/',
+        );
+
+        parent::testAddDropCheck();
     }
 
     public function testMultiStatementSupport(): void
     {
         $db = $this->getConnection(false);
-        $sql = <<<'SQL'
-DROP TABLE IF EXISTS {{T_multistatement}};
-CREATE TABLE {{T_multistatement}} (
-    [[intcol]] INTEGER,
-    [[textcol]] TEXT
-);
-INSERT INTO {{T_multistatement}} VALUES(41, :val1);
-INSERT INTO {{T_multistatement}} VALUES(42, :val2);
-SQL;
-        $db->createCommand($sql, [
-            'val1' => 'foo',
-            'val2' => 'bar',
-        ])->execute();
-        $this->assertSame([
+
+        $sql = <<<SQL
+        DROP TABLE IF EXISTS {{T_multistatement}};
+        CREATE TABLE {{T_multistatement}} (
+            [[intcol]] INTEGER,
+            [[textcol]] TEXT
+        );
+        INSERT INTO {{T_multistatement}} VALUES(41, :val1);
+        INSERT INTO {{T_multistatement}} VALUES(42, :val2);
+        SQL;
+
+        $db->createCommand(
+            $sql,
             [
-                'intcol' => '41',
-                'textcol' => 'foo',
+                'val1' => 'foo',
+                'val2' => 'bar',
             ],
+        )->execute();
+
+        $this->assertSame(
             [
-                'intcol' => '42',
-                'textcol' => 'bar',
+                [
+                    'intcol' => '41',
+                    'textcol' => 'foo',
+                ],
+                [
+                    'intcol' => '42',
+                    'textcol' => 'bar',
+                ],
             ],
-        ], $db->createCommand('SELECT * FROM {{T_multistatement}}')->queryAll());
-        $sql = <<<'SQL'
-UPDATE {{T_multistatement}} SET [[intcol]] = :newInt WHERE [[textcol]] = :val1;
-DELETE FROM {{T_multistatement}} WHERE [[textcol]] = :val2;
-SELECT * FROM {{T_multistatement}}
-SQL;
-        $this->assertSame([
+            $db->createCommand('SELECT * FROM {{T_multistatement}}')->queryAll(),
+        );
+
+        $sql = <<<SQL
+        UPDATE {{T_multistatement}} SET [[intcol]] = :newInt WHERE [[textcol]] = :val1;
+        DELETE FROM {{T_multistatement}} WHERE [[textcol]] = :val2;
+        SELECT * FROM {{T_multistatement}}
+        SQL;
+
+        $this->assertSame(
             [
-                'intcol' => '410',
-                'textcol' => 'foo',
+                [
+                    'intcol' => '410',
+                    'textcol' => 'foo',
+                ],
             ],
-        ], $db->createCommand($sql, [
-            'newInt' => 410,
-            'val1' => 'foo',
-            'val2' => 'bar',
-        ])->queryAll());
+            $db->createCommand(
+                $sql,
+                [
+                    'newInt' => 410,
+                    'val1' => 'foo',
+                    'val2' => 'bar',
+                ],
+            )->queryAll(),
+        );
     }
 
     public static function batchInsertSqlProvider(): array
@@ -153,19 +221,65 @@ SQL;
 
     public function testResetSequenceExceptionTableNoExist(): void
     {
-        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Table not found: no_exist_table');
 
-        $db = $this->getConnection();
+        $db = $this->getConnection(false);
         $db->createCommand()->resetSequence('no_exist_table', 5)->execute();
     }
 
-    public function testResetSequenceExceptionSquenceNoExist(): void
+    public function testResetSequenceExceptionSequenceNoExist(): void
     {
-        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("There is not sequence associated with table 'type'.");
 
-        $db = $this->getConnection();
+        $db = $this->getConnection(false);
         $db->createCommand()->resetSequence('type', 5)->execute();
+    }
+
+    public function testAlterTable(): void
+    {
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            'yii\db\sqlite\QueryBuilder::alterColumn is not supported by SQLite.',
+        );
+
+        $db = $this->getConnection(false);
+        $db->createCommand()->alterColumn('table1', 'column1', 'INTEGER')->execute();
+    }
+
+    public function testAddDropDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+
+        try {
+            $db->createCommand()->addDefaultValue(
+                'test_def_constraint',
+                'test_def',
+                'int1',
+                41,
+            )->execute();
+
+            $this->fail("Expected 'NotSupportedException' for 'addDefaultValue' not thrown.");
+        } catch (NotSupportedException $e) {
+            $this->assertStringContainsString(
+                'yii\db\sqlite\QueryBuilder::addDefaultValue is not supported by SQLite.',
+                $e->getMessage(),
+            );
+        }
+
+        try {
+            $db->createCommand()->dropDefaultValue(
+                'test_def_constraint',
+                'test_def',
+            )->execute();
+
+            $this->fail("Expected 'NotSupportedException' for 'dropDefaultValue' not thrown.");
+        } catch (NotSupportedException $e) {
+            $this->assertStringContainsString(
+                'yii\db\sqlite\QueryBuilder::dropDefaultValue is not supported by SQLite.',
+                $e->getMessage(),
+            );
+        }
     }
 }
