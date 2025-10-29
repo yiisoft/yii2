@@ -9,7 +9,9 @@ namespace yii\filters;
 
 use Closure;
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Controller;
 use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
@@ -113,8 +115,11 @@ class RateLimiter extends ActionFilter
      * @param RateLimitInterface $user the current user
      * @param Request $request
      * @param Response $response
-     * @param \yii\base\Action $action the action to be executed
+     * @param Action $action the action to be executed
      * @throws TooManyRequestsHttpException if rate limit exceeds
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     public function checkRateLimit($user, $request, $response, $action)
     {
