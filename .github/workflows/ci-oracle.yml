@@ -45,7 +45,7 @@ jobs:
 
     env:
       COVERAGE_DRIVER: xdebug
-      PHP_EXTENSIONS: apcu, curl, intl, oci8, pdo, pdo_oci
+      PHP_EXTENSIONS: apcu, curl, intl, oci8
       PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
       PHPUNIT_GROUP: oci
       XDEBUG_MODE: coverage
