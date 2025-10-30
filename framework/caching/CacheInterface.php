@@ -39,6 +39,8 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.13. Previous framework versions used abstract class [[yii\caching\Cache]] as interface.
+ *
+ * @extends \ArrayAccess<string, mixed>
  */
 interface CacheInterface extends \ArrayAccess
 {
