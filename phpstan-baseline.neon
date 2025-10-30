@@ -351,27 +351,12 @@ parameters:
 			path: framework/console/Controller.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Component\\:\\:isAttributeChanged\\(\\)\\.$#"
-			count: 1
-			path: framework/behaviors/SluggableBehavior.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Component\\:\\:formName\\(\\)\\.$#"
-			count: 1
-			path: framework/behaviors/OptimisticLockBehavior.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\base\\\\Component\\:\\:\\$view\\.$#"
-			count: 2
-			path: framework/behaviors/CacheableWidgetBehavior.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
+			message: "#^Call to an undefined method T of yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
+			message: "#^Call to an undefined method T of yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 

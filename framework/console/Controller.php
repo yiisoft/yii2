@@ -545,6 +545,9 @@ class Controller extends \yii\base\Controller
      * Returns a one-line short summary describing the specified action.
      * @param Action $action action to get summary for
      * @return string a one-line short summary describing the specified action.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function getActionHelpSummary($action)
     {
@@ -559,6 +562,9 @@ class Controller extends \yii\base\Controller
      * Returns the detailed help information for the specified action.
      * @param Action $action action to get help for
      * @return string the detailed help information for the specified action.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function getActionHelp($action)
     {
@@ -581,6 +587,9 @@ class Controller extends \yii\base\Controller
      *
      * @param Action $action the action instance
      * @return array the help information of the action arguments
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function getActionArgsHelp($action)
     {
@@ -654,6 +663,9 @@ class Controller extends \yii\base\Controller
      *
      * @param Action $action
      * @return array the help information of the action options
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function getActionOptionsHelp($action)
     {
@@ -709,6 +721,9 @@ class Controller extends \yii\base\Controller
     /**
      * @param Action $action
      * @return \ReflectionFunctionAbstract
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     protected function getActionMethodReflection($action)
     {
@@ -727,6 +742,9 @@ class Controller extends \yii\base\Controller
      * Parses the comment block into tags.
      * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection the comment block
      * @return array the parsed tags
+     *
+     * @phpstan-param \ReflectionClass<object>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<object>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentTags($reflection)
     {
@@ -755,6 +773,9 @@ class Controller extends \yii\base\Controller
      *
      * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
+     *
+     * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentSummary($reflection)
     {
@@ -771,6 +792,9 @@ class Controller extends \yii\base\Controller
      *
      * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
+     *
+     * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentDetail($reflection)
     {
