@@ -58,8 +58,17 @@ class CompareValidator extends Validator
      */
     public $compareAttribute;
     /**
-     * @var mixed the constant value to be compared with. When both this property
-     * and [[compareAttribute]] are set, this property takes precedence.
+     * @var mixed the constant value to be compared with  or an anonymous function
+     * that returns the constant value. When both this property and
+     * [[compareAttribute]] are set, this property takes precedence.
+     * The signature of the anonymous function should be as follows,
+     *
+     * ```
+     * function($model, $attribute) {
+     *     // compute value to compare with
+     *     return $value;
+     * }
+     * ```
      * @see compareAttribute
      */
     public $compareValue;
@@ -153,7 +162,7 @@ class CompareValidator extends Validator
         }
         if ($this->compareValue !== null) {
             if ($this->compareValue instanceof \Closure) {
-                $this->compareValue = call_user_func($this->compareValue);
+                $this->compareValue = call_user_func($this->compareValue, $model, $attribute);
             }
             $compareLabel = $compareValue = $compareValueOrAttribute = $this->compareValue;
         } else {

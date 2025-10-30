@@ -110,6 +110,12 @@ Yii Framework 2 Change Log
 - Bug #20636: Fix `@param` annotations for `$message` in logging methods (mspirkov)
 - Bug #20637: Fix PHPDoc annotations in `ActiveRelationTrait`. Add PHPStan/Psalm annotations for `$modelClass` in `ActiveQuery`, `ActiveQueryTrait` and `ActiveRelationTrait` (mspirkov)
 - Bug #20639: Add missing generics in `yii\web` namespace (mspirkov)
+- Bug #20645: Add missing generics in `yii\helpers` and `yii\test` namespaces. Fix PHPDoc annotations in `ArrayAccessTrait` (mspirkov)
+- Bug #20640: Fix `@param` annotation for `$block` in `yii\console\Markdown::renderParagraph()` (mspirkov)
+- Enh #20642: Pass `$model` and `$attribute` in Compare Validator's compareValue property closure (samuelrajan747)
+- Enh #20650: Add PHPStan/Psalm annotations for `yii\di\Container` (mspirkov)
+- Bug #20654: Add missing generics in `yii\db` namespace. Fix PHPDoc annotations in `yii\db\ArrayExpression` (mspirkov)
+- Bug #20651: Add missing generics in `yii\filters` namespace (mspirkov)
 
 
 2.0.53 June 27, 2025

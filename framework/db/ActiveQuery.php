@@ -191,7 +191,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /** @var self $viaQuery */
+                /**
+                 * @var self $viaQuery
+                 * @phpstan-var self<ActiveRecord|array<string, mixed>> $viaQuery
+                 */
                 list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
                     if ($viaCallableUsed) {
@@ -458,7 +461,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /** @var self $query */
+                    /**
+                     * @var self $query
+                     * @phpstan-var self<ActiveRecord|array<string, mixed>> $query
+                     */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -648,6 +654,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param ActiveQuery $parent
      * @param ActiveQuery $child
      * @param string $joinType
+     *
+     * @phpstan-param ActiveQuery<ActiveRecord|array<string, mixed>> $parent
+     * @phpstan-param ActiveQuery<ActiveRecord|array<string, mixed>> $child
      */
     private function joinWithRelation($parent, $child, $joinType)
     {

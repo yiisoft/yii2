@@ -19,6 +19,8 @@ use yii\base\BaseObject;
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
+ *
+ * @implements \ArrayAccess<int, SqlToken>
  */
 class SqlToken extends BaseObject implements \ArrayAccess
 {

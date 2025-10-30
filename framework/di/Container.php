@@ -124,6 +124,8 @@ class Container extends Component
     /**
      * @var array cached dependencies indexed by class/interface names. Each class name
      * is associated with a list of constructor parameter types or default values.
+     *
+     * @phpstan-var array<class-string, array<string, mixed>>
      */
     private $_dependencies = [];
     /**
@@ -386,10 +388,21 @@ class Container extends Component
      * @param array $config configurations to be applied to the new instance
      * @return object the newly created instance of the specified class
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     *
+     * @template T of object
+     *
+     * @phpstan-param class-string<T> $class
+     * @psalm-param class-string<T> $class
+     *
+     * @phpstan-return T
+     * @psalm-return T
      */
     protected function build($class, $params, $config)
     {
-        /** @var ReflectionClass $reflection */
+        /**
+         * @var ReflectionClass $reflection
+         * @phpstan-var ReflectionClass<T> $reflection
+         */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
         $addDependencies = [];
@@ -503,6 +516,14 @@ class Container extends Component
      * @param string $class class name, interface name or alias name
      * @return array the dependencies of the specified class.
      * @throws NotInstantiableException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     *
+     * @template T of object
+     *
+     * @phpstan-param class-string<T> $class
+     * @psalm-param class-string<T> $class
+     *
+     * @phpstan-return array{ReflectionClass<T>, array<string, mixed>}
+     * @psalm-return array{ReflectionClass<T>, array<string, mixed>}
      */
     protected function getDependencies($class)
     {
@@ -569,6 +590,9 @@ class Container extends Component
      * @param ReflectionClass|null $reflection the class reflection associated with the dependencies
      * @return array the resolved dependencies
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     *
+     * @phpstan-param ReflectionClass<object>|null $reflection
+     * @psalm-param ReflectionClass<object>|null $reflection
      */
     protected function resolveDependencies($dependencies, $reflection = null)
     {

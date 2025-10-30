@@ -98,6 +98,9 @@ class ActionFilter extends Behavior
      * You may override this method to do last-minute preparation for the action.
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     public function beforeAction($action)
     {

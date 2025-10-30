@@ -17,6 +17,9 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-property array<array-key, mixed> $data
+ * @psalm-property array<array-key, mixed> $data
  */
 trait ArrayAccessTrait
 {
@@ -45,7 +48,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to check on
+     * @param int|string $offset the offset to check on
      * @return bool
      */
     #[\ReturnTypeWillChange]
@@ -56,7 +59,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to retrieve element.
+     * @param int|string $offset the offset to retrieve element.
      * @return mixed the element at the offset, null if no element is found at the offset
      */
     #[\ReturnTypeWillChange]
@@ -67,7 +70,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param int $offset the offset to set element
+     * @param int|string $offset the offset to set element
      * @param mixed $item the element value
      */
     #[\ReturnTypeWillChange]
@@ -78,7 +81,7 @@ trait ArrayAccessTrait
 
     /**
      * This method is required by the interface [[\ArrayAccess]].
-     * @param mixed $offset the offset to unset element
+     * @param int|string $offset the offset to unset element
      */
     #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
