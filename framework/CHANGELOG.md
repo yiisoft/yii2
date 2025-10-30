@@ -80,7 +80,6 @@ Yii Framework 2 Change Log
 - Bug #20659: Fix PHP `8.5` `null` array offset deprecation warnings in `MariaDB` driver (terabytesoftw)
 - Bug #20665: Fix PHP `8.5` `null` array offset deprecation warnings in `yii\build\controllers\ReleaseController` class (terabytesoftw)
 - Bug #20658: Add missing generics in `yii\console`, `yii\captcha`, `yii\caching` and `yii\behaviors` namespaces (mspirkov)
-- Bug #20659: Fix `PHP` `8.5` `null` array offset deprecation warnings in `MariaDB` driver (terabytesoftw)
 
 
 2.0.53 June 27, 2025
