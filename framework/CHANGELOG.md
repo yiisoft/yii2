@@ -77,6 +77,7 @@ Yii Framework 2 Change Log
 - Enh #20650: Add PHPStan/Psalm annotations for `yii\di\Container` (mspirkov)
 - Bug #20654: Add missing generics in `yii\db` namespace. Fix PHPDoc annotations in `yii\db\ArrayExpression` (mspirkov)
 - Bug #20651: Add missing generics in `yii\filters` namespace (mspirkov)
+- Bug #20659: Fix `PHP` `8.5` `null` array offset deprecation warnings in `MariaDB` driver (terabytesoftw)
 
 
 2.0.53 June 27, 2025
