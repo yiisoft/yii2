@@ -512,7 +512,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
-        // using null as an array offset is deprecated in PHP `8.5`
+        // using null as an array offset is deprecated in PHP 8.5
         if ($name === null || $name === '') {
             return false;
         }
