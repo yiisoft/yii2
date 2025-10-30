@@ -424,8 +424,3 @@ parameters:
 			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\) does not accept yii\\\\base\\\\Controller\\.$#"
 			count: 1
 			path: framework/base/Module.php
-
-		-
-			message: "#^Offset null does not exist on array\\{\\}\\.$#"
-			count: 1
-			path: build/controllers/ReleaseController.php
