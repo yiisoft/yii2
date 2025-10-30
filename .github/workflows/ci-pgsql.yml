@@ -39,26 +39,28 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  PHP_EXTENSIONS: curl, intl, pdo, pdo_pgsql
+  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+  PHPUNIT_GROUP: pgsql
+  XDEBUG_MODE: coverage
+
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
 
     env:
-      COVERAGE_DRIVER: ${{ matrix.php == 7.4 && 'xdebug' || 'none' }}
-      PHP_EXTENSIONS: curl, intl, pdo, pdo_pgsql
-      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-      PHPUNIT_GROUP: pgsql
-      XDEBUG_MODE: coverage
+      COVERAGE_DRIVER: xdebug
 
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
-        pgsql: [10, 11, 12, 13, 14, 15]
+        php: [7.4, 8.5]
+        pgsql: [10, 11, 12, 13, 14, 15, 16, 17, latest]
 
-    services:
+    services: &pgsql-service
       postgres:
         image: postgres:${{ matrix.pgsql }}
         env:
@@ -75,7 +77,7 @@ jobs:
           --health-timeout=5s
           --mount type=tmpfs,destination=/var/lib/postgresql/data
 
-    steps:
+    steps: &pgsql-steps
       - name: Monitor action permissions.
         if: runner.os != 'Windows'
         uses: GitHubSecurityLab/actions-permissions/monitor@v1
@@ -97,3 +99,22 @@ jobs:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           group: ${{ env.PHPUNIT_GROUP }}
+
+  tests-dev:
+    name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
+
+    env:
+      COVERAGE_DRIVER: none
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.0, 8.1, 8.2, 8.3, 8.4]
+        pgsql:
+          - latest
+
+    services: *pgsql-service
+
+    steps: *pgsql-steps
