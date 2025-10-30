@@ -233,13 +233,19 @@ trait ActiveRelationTrait
 
         if ($this->via instanceof self) {
             // via junction table
-            /** @var self $viaQuery */
+            /**
+             * @var self $viaQuery
+             * @phpstan-var self<ActiveRecord|array<string, mixed>> $viaQuery
+             */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findJunctionRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /** @var self|ActiveQueryTrait $viaQuery */
+            /**
+             * @var self|ActiveQueryTrait $viaQuery
+             * @phpstan-var self<ActiveRecord|array<string, mixed>>|ActiveQueryTrait $viaQuery
+             */
             list($viaName, $viaQuery) = $this->via;
             if ($viaQuery->asArray === null) {
                 // inherit asArray from primary query
@@ -331,10 +337,12 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecordInterface[] $primaryModels primary models
+     * @param array $primaryModels primary models
      * @param ActiveRecordInterface[] $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
+     *
+     * @phpstan-param ActiveRecordInterface[]|array<array-key, array<string, mixed>> $primaryModels
      */
     private function populateInverseRelation(&$primaryModels, $models, $primaryName, $name)
     {
@@ -399,6 +407,8 @@ trait ActiveRelationTrait
      * @param self|null $viaQuery
      * @param bool $checkMultiple
      * @return array
+     *
+     * @phpstan-param self<ActiveRecord|array<string, mixed>> $viaQuery
      */
     private function buildBuckets($models, $link, $viaModels = null, $viaQuery = null, $checkMultiple = true)
     {

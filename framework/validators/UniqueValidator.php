@@ -245,6 +245,8 @@ class UniqueValidator extends Validator
      * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format
      *
      * @return ActiveQueryInterface|ActiveQuery
+     *
+     * @phpstan-return ActiveQueryInterface|ActiveQuery<ActiveRecord>
      */
     private function prepareQuery($targetClass, $conditions)
     {
@@ -323,6 +325,8 @@ class UniqueValidator extends Validator
      * @param array $conditions array of condition, keys to be modified
      * @param string|null $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array
+     *
+     * @phpstan-param ActiveQuery<ActiveRecord> $query
      */
     private function applyTableAlias($query, $conditions, $alias = null)
     {

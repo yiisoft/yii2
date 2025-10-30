@@ -1,364 +1,466 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Variable \\$viaClass might not be defined\\.$#"
-			count: 5
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Variable \\$viaTable might not be defined\\.$#"
-			count: 5
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Variable \\$command might not be defined\\.$#"
+			message: '#^Offset null does not exist on array\{\}\.$#'
+			identifier: offsetAccess.notFound
 			count: 1
-			path: framework/db/Query.php
+			path: build/controllers/ReleaseController.php
 
 		-
-			message: "#^Variable \\$rawValues in isset\\(\\) always exists and is not nullable\\.$#"
+			message: '#^Property yii\\console\\Application\:\:\$controller \(yii\\console\\Controller\|yii\\web\\Controller\) does not accept yii\\base\\Controller\.$#'
+			identifier: assign.propertyType
 			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
+			path: framework/base/Module.php
 
 		-
-			message: "#^Variable \\$error in isset\\(\\) always exists and is always null\\.$#"
+			message: '#^Call to an undefined method yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
+			identifier: method.notFound
 			count: 1
-			path: framework/helpers/BaseConsole.php
+			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Unsafe call to private method yii\\\\helpers\\\\BaseConsole::getProgressbarWidth\\(\\) through static\\:\\:\\.$#"
+			message: '#^Call to an undefined method yii\\base\\Model\:\:setOldAttribute\(\)\.$#'
+			identifier: method.notFound
 			count: 1
-			path: framework/helpers/BaseConsole.php
+			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$modelClass\\.$#"
-			count: 1
-			path: framework/grid/DataColumn.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\Schema\\:\\:getViewNames\\(\\)\\.$#"
-			count: 1
-			path: framework/db/pgsql/QueryBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
-			count: 1
-			path: framework/db/pgsql/JsonExpressionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
-			count: 2
-			path: framework/db/pgsql/ArrayExpressionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getDimension\\(\\)\\.$#"
-			count: 1
-			path: framework/db/pgsql/ArrayExpressionBuilder.php
-
-		-
-			message: "#^PHPDoc tag @param for parameter \\$condition with type yii\\\\db\\\\ExpressionInterface is not subtype of native type yii\\\\db\\\\conditions\\\\InCondition\\.$#"
-			count: 1
-			path: framework/db/oci/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
-			count: 1
-			path: framework/db/mysql/JsonExpressionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\Schema\\:\\:getViewNames\\(\\)\\.$#"
-			count: 1
-			path: framework/db/mssql/QueryBuilder.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ColumnSchema\\:\\:\\$isComputed\\.$#"
-			count: 1
-			path: framework/db/mssql/QueryBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/SimpleConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/SimpleConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/SimpleConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getCondition\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/NotConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/LikeConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/LikeConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/LikeConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getEscapingReplacements\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/LikeConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValues\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method Traversable\\:\\:rewind\\(\\)\\.$#"
-			count: 2
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method Traversable\\:\\:current\\(\\)\\.$#"
-			count: 2
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\conditions\\\\ConditionInterface\\:\\:getColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getHash\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/HashConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/ExistsConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getQuery\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/ExistsConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/ConjunctionConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getExpressions\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/ConjunctionConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getIntervalStart\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getIntervalEnd\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getOperator\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getIntervalStartColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getIntervalEndColumn\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
-			count: 1
-			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ExpressionInterface\\:\\:\\$params\\.$#"
-			count: 1
-			path: framework/db/ExpressionBuilder.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:__toString\\(\\)\\.$#"
-			count: 1
-			path: framework/db/ExpressionBuilder.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$via\\.$#"
-			count: 4
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$link\\.$#"
-			count: 16
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$multiple\\.$#"
-			count: 2
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$indexBy\\.$#"
-			count: 1
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$modelClass\\.$#"
-			count: 3
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ActiveRecordInterface\\:\\:attributeLabels\\(\\)\\.$#"
-			count: 1
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ActiveRecordInterface\\:\\:isRelationPopulated\\(\\)\\.$#"
-			count: 2
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ActiveRecordInterface\\:\\:attributeHints\\(\\)\\.$#"
-			count: 1
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ActiveQueryInterface\\:\\:findWith\\(\\)\\.$#"
-			count: 1
-			path: framework/db/BaseActiveRecord.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$multiple\\.$#"
-			count: 3
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$link\\.$#"
-			count: 4
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^PHPDoc tag \\@var for variable \\$viaQuery has invalid type yii\\\\db\\\\ActiveQueryTrait\\.$#"
-			count: 1
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^Access to property \\$asArray on an unknown class yii\\\\db\\\\ActiveQueryTrait\\.$#"
-			count: 1
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^Access to property \\$primaryModel on an unknown class yii\\\\db\\\\ActiveQueryTrait\\.$#"
-			count: 2
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^Call to method asArray\\(\\) on an unknown class yii\\\\db\\\\ActiveQueryTrait\\.$#"
-			count: 1
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^Call to method populateRelation\\(\\) on an unknown class yii\\\\db\\\\ActiveQueryTrait\\.$#"
-			count: 1
-			path: framework/db/ActiveRelationTrait.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$primaryModel\\.$#"
-			count: 1
-			path: framework/db/ActiveQueryTrait.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$with\\.$#"
-			count: 1
-			path: framework/db/ActiveQueryTrait.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$modelClass\\.$#"
-			count: 1
-			path: framework/db/ActiveQuery.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\db\\\\ActiveQueryInterface\\:\\:buildJoinWith\\(\\)\\.$#"
-			count: 1
-			path: framework/db/ActiveQuery.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\db\\\\ActiveQueryInterface\\:\\:\\$modelClass\\.$#"
-			count: 2
-			path: framework/data/ActiveDataProvider.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\base\\\\BaseObject\\&yii\\\\db\\\\MigrationInterface\\:\\:\\$compact\\.$#"
-			count: 1
-			path: framework/console/controllers/BaseMigrateController.php
-
-		-
-			message: "#^PHPDoc tag \\@param references unknown parameter\\: \\$args$#"
-			count: 2
-			path: framework/console/Controller.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Component\\:\\:isAttributeChanged\\(\\)\\.$#"
-			count: 1
-			path: framework/behaviors/SluggableBehavior.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Component\\:\\:formName\\(\\)\\.$#"
-			count: 1
-			path: framework/behaviors/OptimisticLockBehavior.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\base\\\\Component\\:\\:\\$view\\.$#"
+			message: '#^Access to an undefined property yii\\base\\Component\:\:\$view\.$#'
+			identifier: property.notFound
 			count: 2
 			path: framework/behaviors/CacheableWidgetBehavior.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
+			message: '#^Call to an undefined method yii\\base\\Component\:\:formName\(\)\.$#'
+			identifier: method.notFound
 			count: 1
-			path: framework/behaviors/AttributeTypecastBehavior.php
+			path: framework/behaviors/OptimisticLockBehavior.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
+			message: '#^Call to an undefined method yii\\base\\Component\:\:isAttributeChanged\(\)\.$#'
+			identifier: method.notFound
 			count: 1
-			path: framework/behaviors/AttributeTypecastBehavior.php
+			path: framework/behaviors/SluggableBehavior.php
+
+		-
+			message: '#^Argument of an invalid type \$this\(yii\\caching\\Dependency\) supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 1
+			path: framework/caching/Dependency.php
+
+		-
+			message: '#^Method yii\\caching\\WinCache\:\:addValues\(\) should return array but returns bool\.$#'
+			identifier: return.type
+			count: 1
+			path: framework/caching/WinCache.php
+
+		-
+			message: '#^Method yii\\caching\\WinCache\:\:setValues\(\) should return array but returns bool\.$#'
+			identifier: return.type
+			count: 1
+			path: framework/caching/WinCache.php
+
+		-
+			message: '#^Method yii\\captcha\\CaptchaAction\:\:generateValidationHash\(\) should return string but returns int\.$#'
+			identifier: return.type
+			count: 1
+			path: framework/captcha/CaptchaAction.php
+
+		-
+			message: '#^PHPDoc tag @param references unknown parameter\: \$args$#'
+			identifier: parameter.notFound
+			count: 2
+			path: framework/console/Controller.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\BaseObject&yii\\db\\MigrationInterface\:\:\$compact\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/console/controllers/BaseMigrateController.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
+			identifier: property.notFound
+			count: 2
+			path: framework/data/ActiveDataProvider.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$link\.$#'
+			identifier: property.notFound
+			count: 4
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$multiple\.$#'
+			identifier: property.notFound
+			count: 3
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$primaryModel\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$with\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to property \$asArray on an unknown class yii\\db\\ActiveQueryTrait\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to property \$primaryModel on an unknown class yii\\db\\ActiveQueryTrait\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveQueryInterface\:\:buildJoinWith\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Call to method asArray\(\) on an unknown class yii\\db\\ActiveQueryTrait\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Call to method populateRelation\(\) on an unknown class yii\\db\\ActiveQueryTrait\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$viaQuery has invalid type yii\\db\\ActiveQueryTrait\.$#'
+			identifier: varTag.trait
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Parameter &\$models by\-ref type of method yii\\db\\ActiveQuery\:\:findWith\(\) expects array\<yii\\db\\ActiveRecord\>, array given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: framework/db/ActiveQuery.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$indexBy\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$link\.$#'
+			identifier: property.notFound
+			count: 16
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
+			identifier: property.notFound
+			count: 3
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$multiple\.$#'
+			identifier: property.notFound
+			count: 2
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$via\.$#'
+			identifier: property.notFound
+			count: 4
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveQueryInterface\:\:findWith\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:attributeHints\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:attributeLabels\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:isRelationPopulated\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Method yii\\db\\BaseActiveRecord\:\:findOne\(\) should return static\(yii\\db\\BaseActiveRecord\)\|null but returns array\|yii\\db\\ActiveRecordInterface\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yii\\db\\ActiveQuery\<yii\\db\\ActiveRecord\>\:\:\$primaryModel \(yii\\db\\ActiveRecord\) does not accept \$this\(yii\\db\\BaseActiveRecord\)\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Variable \$viaClass might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Variable \$viaTable might not be defined\.$#'
+			identifier: variable.undefined
+			count: 5
+			path: framework/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ExpressionInterface\:\:\$params\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/db/ExpressionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:__toString\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/ExpressionBuilder.php
+
+		-
+			message: '#^Variable \$command might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: framework/db/Query.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getIntervalEndColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getIntervalStartColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenColumnsConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getIntervalEnd\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getIntervalStart\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/BetweenConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getExpressions\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/ConjunctionConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/ConjunctionConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/ExistsConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getQuery\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/ExistsConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getHash\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/HashConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method Traversable\:\:current\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method Traversable\:\:rewind\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValues\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\conditions\\ConditionInterface\:\:getColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Variable \$rawValues in isset\(\) always exists and is not nullable\.$#'
+			identifier: isset.variable
+			count: 1
+			path: framework/db/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/LikeConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getEscapingReplacements\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/LikeConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/LikeConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/LikeConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getCondition\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/NotConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/SimpleConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getOperator\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/SimpleConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/conditions/SimpleConditionBuilder.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ColumnSchema\:\:\$isComputed\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/db/mssql/QueryBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/mysql/JsonExpressionBuilder.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$condition with type yii\\db\\ExpressionInterface is not subtype of native type yii\\db\\conditions\\InCondition\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: framework/db/oci/conditions/InConditionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getDimension\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/pgsql/ArrayExpressionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: framework/db/pgsql/ArrayExpressionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: framework/db/pgsql/JsonExpressionBuilder.php
+
+		-
+			message: '#^Parameter &\$length by\-ref type of method yii\\db\\sqlite\\SqlTokenizer\:\:isOperator\(\) expects int, int\|null given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: framework/db/sqlite/SqlTokenizer.php
 
 		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
@@ -371,3 +473,33 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: framework/di/Container.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
+			identifier: property.notFound
+			count: 1
+			path: framework/grid/DataColumn.php
+
+		-
+			message: '#^Unsafe call to private method yii\\helpers\\BaseConsole\:\:getProgressbarWidth\(\) through static\:\:\.$#'
+			identifier: staticClassAccess.privateMethod
+			count: 1
+			path: framework/helpers/BaseConsole.php
+
+		-
+			message: '#^Variable \$error in isset\(\) always exists and is always null\.$#'
+			identifier: isset.variable
+			count: 1
+			path: framework/helpers/BaseConsole.php
+
+		-
+			message: '#^Method yii\\helpers\\BaseFileHelper\:\:filterPath\(\) should return bool but returns int\<0, 16\>\.$#'
+			identifier: return.type
+			count: 1
+			path: framework/helpers/BaseFileHelper.php
+
+		-
+			message: '#^Property yii\\test\\DbFixture\:\:\$db \(array\|string\|yii\\db\\Connection\) does not accept yii\\base\\BaseObject\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: framework/test/DbFixture.php

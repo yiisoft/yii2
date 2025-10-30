@@ -8,10 +8,10 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
+use yii\web\IdentityInterface;
 use yii\web\User;
 
 /**
@@ -60,6 +60,9 @@ class AccessControl extends ActionFilter
      * @var User|array|string|false the user object representing the authentication status or the ID of the user application component.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      * Starting from version 2.0.12, you can set it to `false` to explicitly switch this component support off for the filter.
+     *
+     * @phpstan-var User<IdentityInterface>|array|string|false
+     * @psalm-var User<IdentityInterface>|array|string|false
      */
     public $user = 'user';
     /**
@@ -109,10 +112,7 @@ class AccessControl extends ActionFilter
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
@@ -149,6 +149,9 @@ class AccessControl extends ActionFilter
      * if the user is already logged, a 403 HTTP exception will be thrown.
      * @param User|false $user the current user or boolean `false` in case of detached User component
      * @throws ForbiddenHttpException if the user is already logged in or in case of detached User component.
+     *
+     * @phpstan-param User<IdentityInterface>|false $user
+     * @psalm-param User<IdentityInterface>|false $user
      */
     protected function denyAccess($user)
     {
