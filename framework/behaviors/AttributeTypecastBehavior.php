@@ -120,6 +120,13 @@ class AttributeTypecastBehavior extends Behavior
     public const TYPE_STRING = 'string';
 
     /**
+     * @var Model|BaseActiveRecord the owner of this behavior.
+     *
+     * @phpstan-var T
+     * @psalm-var T
+     */
+    public $owner;
+    /**
      * @var array|null attribute typecast map in format: attributeName => type.
      * Type can be set via PHP callable, which accept raw value as an argument and should return
      * typecast result.
