@@ -120,10 +120,10 @@ class AttributeTypecastBehavior extends Behavior
     public const TYPE_STRING = 'string';
 
     /**
-     * @var Model|BaseActiveRecord the owner of this behavior.
+     * @var Model|BaseActiveRecord|null the owner of this behavior.
      *
-     * @phpstan-var T
-     * @psalm-var T
+     * @phpstan-var T|null
+     * @psalm-var T|null
      */
     public $owner;
     /**
