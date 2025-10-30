@@ -21,9 +21,6 @@ namespace yii\base;
  * @since 2.0
  *
  * @template T of Component
- *
- * @phpstan-property T|null $owner
- * @psalm-property T|null $owner
  */
 class Behavior extends BaseObject
 {
