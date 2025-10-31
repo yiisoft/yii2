@@ -717,6 +717,9 @@ class Module extends ServiceLocator
      *
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     public function beforeAction($action)
     {
@@ -745,6 +748,9 @@ class Module extends ServiceLocator
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     public function afterAction($action, $result)
     {

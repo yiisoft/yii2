@@ -28,6 +28,9 @@ trait ArrayAccessTrait
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
      * @return \ArrayIterator an iterator for traversing the cookies in the collection.
+     *
+     * @phpstan-return \ArrayIterator<array-key, mixed>
+     * @psalm-return \ArrayIterator<array-key, mixed>
      */
     #[\ReturnTypeWillChange]
     public function getIterator()

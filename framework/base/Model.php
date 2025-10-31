@@ -53,14 +53,14 @@ use yii\validators\Validator;
  * ```
  *
  * Empty array if no errors.
- * @property-read \yii\validators\Validator[] $activeValidators The validators applicable to the current
+ * @property-read Validator[] $activeValidators The validators applicable to the current
  * [[scenario]].
  * @property array $attributes Attribute values (name => value).
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
  * values are the corresponding error messages. An empty array will be returned if there is no error.
  * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property-read ArrayObject|\yii\validators\Validator[] $validators All the validators declared in the
+ * @property-read ArrayObject|Validator[] $validators All the validators declared in the
  * model.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -74,6 +74,15 @@ use yii\validators\Validator;
  *
  * @phpstan-property-read array<string, string> $firstErrors
  * @psalm-property-read array<string, string> $firstErrors
+ *
+ * @phpstan-property-read ArrayIterator<string, mixed> $iterator
+ * @psalm-property-read ArrayIterator<string, mixed> $iterator
+ *
+ * @phpstan-property-read ArrayObject<int, Validator>|Validator[] $validators
+ * @psalm-property-read ArrayObject<int, Validator>|Validator[] $validators
+ *
+ * @implements IteratorAggregate<string, mixed>
+ * @implements ArrayAccess<string, mixed>
  */
 class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
@@ -100,6 +109,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     private $_errors;
     /**
      * @var ArrayObject|null list of validators
+     *
+     * @phpstan-var ArrayObject<int, Validator>|null
      */
     private $_validators;
     /**
@@ -449,7 +460,10 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * $model->validators[] = $newValidator;
      * ```
      *
-     * @return ArrayObject|\yii\validators\Validator[] all the validators declared in the model.
+     * @return ArrayObject|Validator[] all the validators declared in the model.
+     *
+     * @phpstan-return ArrayObject<int, Validator>|Validator[]
+     * @psalm-return ArrayObject<int, Validator>|Validator[]
      */
     public function getValidators()
     {
@@ -464,7 +478,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns the validators applicable to the current [[scenario]].
      * @param string|null $attribute the name of the attribute whose applicable validators should be returned.
      * If this is null, the validators for ALL attributes in the model will be returned.
-     * @return \yii\validators\Validator[] the validators applicable to the current [[scenario]].
+     * @return Validator[] the validators applicable to the current [[scenario]].
      */
     public function getActiveValidators($attribute = null)
     {
@@ -494,6 +508,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
      * @return ArrayObject validators
      * @throws InvalidConfigException if any validation rule configuration is invalid
+     *
+     * @phpstan-return ArrayObject<int, Validator>
+     * @psalm-return ArrayObject<int, Validator>
      */
     public function createValidators()
     {
@@ -1047,6 +1064,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns an iterator for traversing the attributes in the model.
      * This method is required by the interface [[\IteratorAggregate]].
      * @return ArrayIterator an iterator for traversing the items in the list.
+     *
+     * @phpstan-return ArrayIterator<string, mixed>
+     * @psalm-return ArrayIterator<string, mixed>
      */
     #[\ReturnTypeWillChange]
     public function getIterator()

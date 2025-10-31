@@ -10,6 +10,7 @@ namespace yii\filters;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
 use yii\web\Request;
@@ -68,6 +69,9 @@ use yii\web\Response;
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class Cors extends ActionFilter
 {

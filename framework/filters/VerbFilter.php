@@ -8,6 +8,7 @@
 namespace yii\filters;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
 use yii\web\Controller;
@@ -89,6 +90,9 @@ class VerbFilter extends Behavior
      * @param ActionEvent $event
      * @return bool
      * @throws MethodNotAllowedHttpException when the request method is not allowed.
+     *
+     * @phpstan-param ActionEvent<Action<Controller>> $event
+     * @psalm-param ActionEvent<Action<Controller>> $event
      */
     public function beforeAction($event)
     {
