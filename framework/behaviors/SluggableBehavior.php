@@ -60,6 +60,9 @@ use yii\validators\UniqueValidator;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class SluggableBehavior extends AttributeBehavior
 {

@@ -114,16 +114,50 @@ namespace yiiunit\framework\log {
                     [$messages[6], 'formatted message 7'],
                 ]);
 
-            $syslogTarget->expects($this->exactly(7))
+            /**
+             * @link https://github.com/sebastianbergmann/phpunit/issues/5063
+             */
+            $matcher = $this->exactly(7);
+            $syslogTarget
+                ->expects($matcher)
                 ->method('syslog')
-                ->withConsecutive(
-                    [$this->equalTo(LOG_INFO), $this->equalTo('formatted message 1')],
-                    [$this->equalTo(LOG_ERR), $this->equalTo('formatted message 2')],
-                    [$this->equalTo(LOG_WARNING), $this->equalTo('formatted message 3')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 4')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 5')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 6')],
-                    [$this->equalTo(LOG_DEBUG), $this->equalTo('formatted message 7')]
+                ->willReturnCallback(
+                    function (...$parameters) use ($matcher): void {
+                        if ($matcher->getInvocationCount() === 1) {
+                            $this->assertEquals(LOG_INFO, $parameters[0]);
+                            $this->assertEquals('formatted message 1', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 2) {
+                            $this->assertEquals(LOG_ERR, $parameters[0]);
+                            $this->assertEquals('formatted message 2', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 3) {
+                            $this->assertEquals(LOG_WARNING, $parameters[0]);
+                            $this->assertEquals('formatted message 3', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 4) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 4', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 5) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 5', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 6) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 6', $parameters[1]);
+                        }
+
+                        if ($matcher->getInvocationCount() === 7) {
+                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
+                            $this->assertEquals('formatted message 7', $parameters[1]);
+                        }
+                    }
                 );
 
             $syslogTarget->expects($this->once())->method('closelog');

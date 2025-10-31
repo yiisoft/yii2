@@ -68,6 +68,9 @@ use yii\db\BaseActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class TimestampBehavior extends AttributeBehavior
 {
