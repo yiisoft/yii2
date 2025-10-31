@@ -280,7 +280,7 @@ class TargetTest extends TestCase
                         $callback = fn($messages): bool => count($messages) === 1 && $messages[0][0] === 'info';
 
                         $this->assertTrue($callback($parameters[0]));
-                        $this->assertSame(false, $parameters[1]);
+                        $this->assertFalse($parameters[1]);
                     }
 
                     if ($matcher->getInvocationCount() === 2) {
@@ -291,7 +291,7 @@ class TargetTest extends TestCase
                             && $messages[1][1] == Logger::LEVEL_PROFILE_END;
 
                         $this->assertTrue($callback($parameters[0]));
-                        $this->assertSame(false, $parameters[1]);
+                        $this->assertFalse($parameters[1]);
                     }
                 },
             );
@@ -328,7 +328,7 @@ class TargetTest extends TestCase
                             && $messages[1][1] == Logger::LEVEL_PROFILE_BEGIN;
 
                         $this->assertTrue($callback($parameters[0]));
-                        $this->assertSame(false, $parameters[1]);
+                        $this->assertFalse($parameters[1]);
                     }
 
                     if ($matcher->getInvocationCount() === 2) {
@@ -336,7 +336,7 @@ class TargetTest extends TestCase
                             && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
 
                         $this->assertTrue($callback($parameters[0]));
-                        $this->assertSame(false, $parameters[1]);
+                        $this->assertFalse($parameters[1]);
                     }
 
                     if ($matcher->getInvocationCount() === 3) {
@@ -347,7 +347,7 @@ class TargetTest extends TestCase
                             && $messages[1][1] == Logger::LEVEL_PROFILE_END;
 
                         $this->assertTrue($callback($parameters[0]));
-                        $this->assertSame(false, $parameters[1]);
+                        $this->assertFalse($parameters[1]);
                     }
                 },
             );

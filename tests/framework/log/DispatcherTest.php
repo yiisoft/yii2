@@ -202,7 +202,7 @@ namespace yiiunit\framework\log {
                     function (...$parameters) use ($matcher): void {
                         if ($matcher->getInvocationCount() === 1) {
                             $this->assertEquals('messages', $parameters[0]);
-                            $this->assertEquals(true, $parameters[1]);
+                            $this->assertTrue($parameters[1]);
                         }
 
                         if ($matcher->getInvocationCount() === 2) {
@@ -242,7 +242,7 @@ namespace yiiunit\framework\log {
                             };
 
                             $this->assertTrue($callback($parameters[0]));
-                            $this->assertSame(true, $parameters[1]);
+                            $this->assertTrue($parameters[1]);
                         }
                     },
                 );
