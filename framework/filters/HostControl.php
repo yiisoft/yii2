@@ -10,6 +10,7 @@ namespace yii\filters;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
 use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
@@ -65,6 +66,9 @@ use yii\web\NotFoundHttpException;
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.11
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class HostControl extends ActionFilter
 {

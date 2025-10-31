@@ -21,6 +21,9 @@ use yii\helpers\StringHelper;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends Behavior<T>
  */
 class ActionFilter extends Behavior
 {
@@ -67,6 +70,9 @@ class ActionFilter extends Behavior
 
     /**
      * @param ActionEvent $event
+     *
+     * @phpstan-param ActionEvent<Action<Controller>> $event
+     * @psalm-param ActionEvent<Action<Controller>> $event
      */
     public function beforeFilter($event)
     {
@@ -86,6 +92,9 @@ class ActionFilter extends Behavior
 
     /**
      * @param ActionEvent $event
+     *
+     * @phpstan-param ActionEvent<Action<Controller>> $event
+     * @psalm-param ActionEvent<Action<Controller>> $event
      */
     public function afterFilter($event)
     {
@@ -113,6 +122,9 @@ class ActionFilter extends Behavior
      * @param Action $action the action just executed.
      * @param mixed $result the action execution result
      * @return mixed the processed action result.
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     public function afterAction($action, $result)
     {
@@ -124,6 +136,9 @@ class ActionFilter extends Behavior
      * @param Action $action
      * @return string
      * @since 2.0.7
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     protected function getActionId($action)
     {
@@ -144,6 +159,9 @@ class ActionFilter extends Behavior
      * Returns a value indicating whether the filter is active for the given action.
      * @param Action $action the action being filtered
      * @return bool whether the filter is active for the given action.
+     *
+     * @phpstan-param Action<Controller> $action
+     * @psalm-param Action<Controller> $action
      */
     protected function isActive($action)
     {

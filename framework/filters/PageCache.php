@@ -10,6 +10,7 @@ namespace yii\filters;
 use Closure;
 use Yii;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\DynamicContentAwareInterface;
 use yii\base\DynamicContentAwareTrait;
 use yii\caching\CacheInterface;
@@ -50,6 +51,9 @@ use yii\web\Response;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class PageCache extends ActionFilter implements DynamicContentAwareInterface
 {
