@@ -47,7 +47,7 @@ env:
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
+    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
 
     env:
       COVERAGE_DRIVER: xdebug
@@ -59,12 +59,12 @@ jobs:
       matrix:
         php: [7.4, 8.5]
         mssql:
-          - version: server:2022-latest
-            mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
+          - server:2019-latest
+          - server:2022-latest
 
     services: &mssql-service
       mssql:
-        image: mcr.microsoft.com/mssql/${{ matrix.mssql.version }}
+        image: mcr.microsoft.com/mssql/${{ matrix.mssql }}
         env:
           SA_PASSWORD: YourStrong!Passw0rd
           ACCEPT_EULA: Y
@@ -73,7 +73,7 @@ jobs:
           - 1433:1433
         options: >-
           --name=mssql
-          --health-cmd="${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'"
           --health-interval=10s
           --health-retries=3
           --health-timeout=5s
@@ -90,7 +90,7 @@ jobs:
         run: sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
 
       - name: Create MS SQL Database.
-        run: docker exec -i mssql ${{ matrix.mssql.mssql-tool }} -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
+        run: docker exec -i mssql /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
 
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
@@ -108,7 +108,7 @@ jobs:
           group: ${{ env.PHPUNIT_GROUP }}
 
   tests-dev:
-    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
+    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
 
     env:
       COVERAGE_DRIVER: none
@@ -120,13 +120,7 @@ jobs:
       matrix:
         php: [8.0, 8.1, 8.2, 8.3, 8.4]
         mssql:
-          - version: server:2022-latest
-            mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
-        include:
-          - php: 8.0
-            mssql:
-              version: server:2019-latest
-              mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
+          - server:2022-latest
 
     services: *mssql-service
 
