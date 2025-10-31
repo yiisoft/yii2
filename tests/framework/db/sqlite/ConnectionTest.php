@@ -8,9 +8,9 @@
 
 namespace yiiunit\framework\db\sqlite;
 
-use Exception;
 use Yii;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\db\Transaction;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
@@ -213,10 +213,5 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals($config['dsn'], $connection->dsn);
 
         $connection->close();
-    }
-
-    public function testExceptionContainsRawQuery(): void
-    {
-        $this->markTestSkipped('This test does not work on sqlite because preparing the failing query fails');
     }
 }

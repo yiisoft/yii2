@@ -1,46 +1,22 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Offset null does not exist on array\{\}\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: build/controllers/ReleaseController.php
-
-		-
 			message: '#^Property yii\\console\\Application\:\:\$controller \(yii\\console\\Controller\|yii\\web\\Controller\) does not accept yii\\base\\Controller\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: framework/base/Module.php
 
 		-
-			message: '#^Call to an undefined method yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
+			message: '#^Call to an undefined method T of yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: '#^Call to an undefined method yii\\base\\Model\:\:setOldAttribute\(\)\.$#'
+			message: '#^Call to an undefined method T of yii\\base\\Model\:\:setOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
-
-		-
-			message: '#^Access to an undefined property yii\\base\\Component\:\:\$view\.$#'
-			identifier: property.notFound
-			count: 2
-			path: framework/behaviors/CacheableWidgetBehavior.php
-
-		-
-			message: '#^Call to an undefined method yii\\base\\Component\:\:formName\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: framework/behaviors/OptimisticLockBehavior.php
-
-		-
-			message: '#^Call to an undefined method yii\\base\\Component\:\:isAttributeChanged\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: framework/behaviors/SluggableBehavior.php
 
 		-
 			message: '#^Argument of an invalid type \$this\(yii\\caching\\Dependency\) supplied for foreach, only iterables are supported\.$#'

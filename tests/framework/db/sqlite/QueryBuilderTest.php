@@ -114,12 +114,22 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testCommentColumn(): void
     {
-        $this->markTestSkipped('Comments are not supported in SQLite');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            'yii\db\sqlite\QueryBuilder::addCommentOnColumn is not supported by SQLite.',
+        );
+
+        parent::testCommentColumn();
     }
 
     public function testCommentTable(): void
     {
-        $this->markTestSkipped('Comments are not supported in SQLite');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            'yii\db\sqlite\QueryBuilder::addCommentOnTable is not supported by SQLite.',
+        );
+
+        parent::testCommentTable();
     }
 
     public static function batchInsertProvider(): array

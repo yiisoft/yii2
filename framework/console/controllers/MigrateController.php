@@ -8,6 +8,7 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\Action;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -174,8 +175,11 @@ class MigrateController extends BaseMigrateController
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param \yii\base\Action $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<static> $action
      */
     public function beforeAction($action)
     {
