@@ -964,6 +964,8 @@ class PhpDocController extends ConsoleController
      * @param string $className
      * @param \ReflectionClass $ref
      * @return bool
+     *
+     * @phpstan-param \ReflectionClass<object> $ref
      */
     protected function isBaseObject($className, \ReflectionClass $ref)
     {

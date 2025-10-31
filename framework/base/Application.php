@@ -127,6 +127,9 @@ abstract class Application extends Module
     public $requestedRoute;
     /**
      * @var Action|null the requested Action. If null, it means the request cannot be resolved into an action.
+     *
+     * @phpstan-var Action<covariant Controller>|null
+     * @psalm-var Action<covariant Controller>|null
      */
     public $requestedAction;
     /**

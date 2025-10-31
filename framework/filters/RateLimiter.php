@@ -11,6 +11,7 @@ use Closure;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
 use yii\web\IdentityInterface;
 use yii\web\Request;
@@ -40,6 +41,9 @@ use yii\web\TooManyRequestsHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class RateLimiter extends ActionFilter
 {

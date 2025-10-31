@@ -9,6 +9,7 @@ namespace yii\filters\auth;
 
 use Yii;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
 
@@ -37,6 +38,9 @@ use yii\base\InvalidConfigException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends AuthMethod<T>
  */
 class CompositeAuth extends AuthMethod
 {
