@@ -397,14 +397,21 @@ abstract class ConnectionTest extends DatabaseTestCase
     /**
      * @param Connection $connection
      */
-    private function runExceptionTest($connection): void
+    private function runExceptionTest(Connection $connection): void
     {
         $thrown = false;
+        $sqlAssertLog = 'INSERT INTO qlog1(a) VALUES(1);';
+
+        if ($connection->getDriverName() === 'sqlite') {
+            // SQLite shows placeholders (`:a`), other drivers show values (`1`) in error messages.
+            $sqlAssertLog = 'INSERT INTO qlog1(a) VALUES(:a);';
+        }
+
         try {
             $connection->createCommand('INSERT INTO qlog1(a) VALUES(:a);', [':a' => 1])->execute();
         } catch (\yii\db\Exception $e) {
             $this->assertStringContainsString(
-                'INSERT INTO qlog1(a) VALUES(1);',
+                $sqlAssertLog,
                 $e->getMessage(),
                 'Exception message should contain raw SQL query: ' . (string) $e
             );
@@ -413,11 +420,18 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
 
         $thrown = false;
+        $sqlAssertLog = 'SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;';
+
+        if ($connection->getDriverName() === 'sqlite') {
+            // SQLite shows placeholders (`:a`), other drivers show values (`1`) in error messages.
+            $sqlAssertLog = 'SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;';
+        }
+
         try {
             $connection->createCommand('SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;', [':a' => 1])->queryAll();
         } catch (\yii\db\Exception $e) {
             $this->assertStringContainsString(
-                'SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;',
+                $sqlAssertLog,
                 $e->getMessage(),
                 'Exception message should contain raw SQL query: ' . (string) $e,
             );
