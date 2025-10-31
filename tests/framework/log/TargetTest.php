@@ -342,9 +342,9 @@ class TargetTest extends TestCase
                     if ($matcher->getInvocationCount() === 3) {
                         $callback = fn($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.b'
-                            && $messages[0][1] == Logger::LEVEL_PROFILE_END
+                            && $messages[0][1] === Logger::LEVEL_PROFILE_END
                             && $messages[1][0] === 'token.a'
-                            && $messages[1][1] == Logger::LEVEL_PROFILE_END;
+                            && $messages[1][1] === Logger::LEVEL_PROFILE_END;
 
                         $this->assertTrue($callback($parameters[0]));
                         $this->assertFalse($parameters[1]);
