@@ -212,12 +212,12 @@ namespace yiiunit\framework\log {
                                 }
 
                                 if (
-                                    !str_starts_with(
+                                    strpos(
                                         (string) $arg[0][0],
                                         'Unable to send log via ' .
                                         get_class($target1) .
                                         ': Exception (Exception) \'yii\base\UserException\' with message \'some error\''
-                                    )
+                                    ) !== 0
                                 ) {
                                     return false;
                                 }
