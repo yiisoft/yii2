@@ -187,43 +187,64 @@ namespace yiiunit\framework\log {
         public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect(): void
         {
             static::$microtimeIsMocked = true;
+
             $target1 = $this->createPartialMock(Target::class, ['collect', 'export']);
             $target2 = $this->createPartialMock(Target::class, ['collect', 'export']);
 
-            $target1->expects($this->exactly(2))
+            /**
+             * @link https://github.com/sebastianbergmann/phpunit/issues/5063
+             */
+            $matcher = $this->exactly(2);
+            $target1
+                ->expects($matcher)
                 ->method('collect')
-                ->withConsecutive(
-                    [$this->equalTo('messages'), $this->equalTo(true)],
-                    [
-                        $this->callback(function ($arg) use ($target1) {
-                            if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
-                                return false;
-                            }
+                ->willReturnCallback(
+                    function (...$parameters) use ($matcher): void {
+                        if ($matcher->getInvocationCount() === 1) {
+                            $this->assertEquals('messages', $parameters[0]);
+                            $this->assertTrue($parameters[1]);
+                        }
 
-                            if (strpos($arg[0][0], 'Unable to send log via ' . get_class($target1) . ': Exception (Exception) \'yii\base\UserException\' with message \'some error\'') !== 0) {
-                                return false;
-                            }
+                        if ($matcher->getInvocationCount() === 2) {
+                            $callback = function ($arg) use ($target1): bool {
+                                if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
+                                    return false;
+                                }
 
-                            if ($arg[0][1] !== Logger::LEVEL_WARNING) {
-                                return false;
-                            }
+                                if (
+                                    strpos(
+                                        (string) $arg[0][0],
+                                        'Unable to send log via ' .
+                                        get_class($target1) .
+                                        ': Exception (Exception) \'yii\base\UserException\' with message \'some error\''
+                                    ) !== 0
+                                ) {
+                                    return false;
+                                }
 
-                            if ($arg[0][2] !== 'yii\log\Dispatcher::dispatch') {
-                                return false;
-                            }
+                                if ($arg[0][1] !== Logger::LEVEL_WARNING) {
+                                    return false;
+                                }
 
-                            if ($arg[0][3] !== 'time data') {
-                                return false;
-                            }
+                                if ($arg[0][2] !== 'yii\log\Dispatcher::dispatch') {
+                                    return false;
+                                }
 
-                            if ($arg[0][4] !== []) {
-                                return false;
-                            }
+                                if ($arg[0][3] !== 'time data') {
+                                    return false;
+                                }
 
-                            return true;
-                        }),
-                        true,
-                    ]
+                                if ($arg[0][4] !== []) {
+                                    return false;
+                                }
+
+                                return true;
+                            };
+
+                            $this->assertTrue($callback($parameters[0]));
+                            $this->assertTrue($parameters[1]);
+                        }
+                    },
                 );
 
             $target2->expects($this->once())
