@@ -36,9 +36,6 @@ use Yii;
  * @since 2.0
  *
  * @template T of Controller
- *
- * @phpstan-property T $controller
- * @psalm-property T $controller
  */
 class Action extends Component
 {

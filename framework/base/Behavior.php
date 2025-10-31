@@ -77,6 +77,9 @@ class Behavior extends BaseObject
      * and attach event handlers as declared in [[events]].
      * Make sure you call the parent implementation if you override this method.
      * @param Component $owner the component that this behavior is to be attached to.
+     *
+     * @phpstan-param T $owner
+     * @psalm-param T $owner
      */
     public function attach($owner)
     {

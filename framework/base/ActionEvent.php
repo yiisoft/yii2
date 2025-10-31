@@ -14,11 +14,16 @@ namespace yii\base;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Action
  */
 class ActionEvent extends Event
 {
     /**
      * @var Action the action currently being executed
+     *
+     * @phpstan-var T
+     * @psalm-var T
      */
     public $action;
     /**
@@ -37,6 +42,9 @@ class ActionEvent extends Event
      * Constructor.
      * @param Action $action the action associated with this action event.
      * @param array $config name-value pairs that will be used to initialize the object properties
+     *
+     * @phpstan-param T $action
+     * @psalm-param T $action
      *
      * @phpstan-param array<string, mixed> $config
      * @psalm-param array<string, mixed> $config

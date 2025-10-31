@@ -178,8 +178,8 @@ class MigrateController extends BaseMigrateController
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function beforeAction($action)
     {

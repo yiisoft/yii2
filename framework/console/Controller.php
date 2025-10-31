@@ -183,8 +183,8 @@ class Controller extends \yii\base\Controller
      * @return array the valid parameters that the action can run with.
      * @throws Exception if there are unknown options or missing arguments
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params
@@ -532,8 +532,8 @@ class Controller extends \yii\base\Controller
      * @param Action $action action to get summary for
      * @return string a one-line short summary describing the specified action.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function getActionHelpSummary($action)
     {
@@ -549,8 +549,8 @@ class Controller extends \yii\base\Controller
      * @param Action $action action to get help for
      * @return string the detailed help information for the specified action.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function getActionHelp($action)
     {
@@ -574,8 +574,8 @@ class Controller extends \yii\base\Controller
      * @param Action $action the action instance
      * @return array the help information of the action arguments
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function getActionArgsHelp($action)
     {
@@ -646,8 +646,8 @@ class Controller extends \yii\base\Controller
      * @param Action $action
      * @return array the help information of the action options
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function getActionOptionsHelp($action)
     {
@@ -704,8 +704,8 @@ class Controller extends \yii\base\Controller
      * @param Action $action
      * @return \ReflectionFunctionAbstract
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     protected function getActionMethodReflection($action)
     {

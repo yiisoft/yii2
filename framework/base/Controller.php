@@ -60,6 +60,9 @@ class Controller extends Component implements ViewContextInterface
     /**
      * @var Action|null the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
+     *
+     * @phpstan-var Action<$this>|null
+     * @psalm-var Action<$this>|null
      */
     public $action;
     /**
@@ -234,8 +237,8 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters to be bound to the action.
      * @return array the valid parameters that the action can run with.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params
@@ -257,6 +260,9 @@ class Controller extends Component implements ViewContextInterface
      * method will be created and returned.
      * @param string $id the action ID.
      * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
+     *
+     * @phpstan-return Action<$this>|null
+     * @psalm-return Action<$this>|null
      */
     public function createAction($id)
     {
@@ -312,8 +318,8 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to run.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function beforeAction($action)
     {
@@ -343,8 +349,8 @@ class Controller extends Component implements ViewContextInterface
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function afterAction($action, $result)
     {
