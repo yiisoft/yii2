@@ -122,7 +122,7 @@ jobs:
           - version: server:2022-latest
             mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
         include:
-          - php: 8.0
+          - php: 8.2
             mssql:
               version: server:2019-latest
               mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
