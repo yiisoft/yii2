@@ -58,8 +58,8 @@ jobs:
       matrix:
         php: [8.1, 8.5]
         mssql:
-          - version: server:2022-latest
-            mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
+          - server:2019-latest
+          - server:2022-latest
 
     services: &mssql-service
       mssql:
@@ -119,14 +119,8 @@ jobs:
       matrix:
         php: [8.2, 8.3, 8.4]
         mssql:
-          - version: server:2022-latest
-            mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
-        include:
-          - php: 8.2
-            mssql:
-              version: server:2019-latest
-              mssql-tool: /opt/mssql-tools18/bin/sqlcmd -C
-
+          - server:2022-latest
+          
     services: *mssql-service
 
     steps: *mssql-steps
