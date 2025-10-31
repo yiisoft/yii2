@@ -107,7 +107,7 @@ jobs:
           group: ${{ env.PHPUNIT_GROUP }}
 
   tests-dev:
-    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql.version }}
+    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
 
     env:
       COVERAGE_DRIVER: none
@@ -120,7 +120,7 @@ jobs:
         php: [8.2, 8.3, 8.4]
         mssql:
           - server:2022-latest
-          
+
     services: *mssql-service
 
     steps: *mssql-steps
