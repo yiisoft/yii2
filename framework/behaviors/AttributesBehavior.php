@@ -11,6 +11,7 @@ use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\db\ActiveRecord;
+use yii\db\BaseActiveRecord;
 
 /**
  * AttributesBehavior automatically assigns values specified to one or multiple attributes of an ActiveRecord
@@ -60,6 +61,9 @@ use yii\db\ActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Bogdan Stepanenko <bscheshirwork@gmail.com>
  * @since 2.0.13
+ *
+ * @template T of BaseActiveRecord
+ * @extends Behavior<T>
  */
 class AttributesBehavior extends Behavior
 {

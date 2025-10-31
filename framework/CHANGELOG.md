@@ -73,6 +73,13 @@ Yii Framework 2 Change Log
 - Bug #20639: Add missing generics in `yii\web` namespace (mspirkov)
 - Bug #20645: Add missing generics in `yii\helpers` and `yii\test` namespaces. Fix PHPDoc annotations in `ArrayAccessTrait` (mspirkov)
 - Bug #20640: Fix `@param` annotation for `$block` in `yii\console\Markdown::renderParagraph()` (mspirkov)
+- Enh #20642: Pass `$model` and `$attribute` in Compare Validator's compareValue property closure (samuelrajan747)
+- Enh #20650: Add PHPStan/Psalm annotations for `yii\di\Container` (mspirkov)
+- Bug #20654: Add missing generics in `yii\db` namespace. Fix PHPDoc annotations in `yii\db\ArrayExpression` (mspirkov)
+- Bug #20651: Add missing generics in `yii\filters` namespace (mspirkov)
+- Bug #20659: Fix PHP `8.5` `null` array offset deprecation warnings in `MariaDB` driver (terabytesoftw)
+- Bug #20665: Fix PHP `8.5` `null` array offset deprecation warnings in `yii\build\controllers\ReleaseController` class (terabytesoftw)
+- Bug #20658: Add missing generics in `yii\console`, `yii\captcha`, `yii\caching` and `yii\behaviors` namespaces (mspirkov)
 
 
 2.0.53 June 27, 2025
@@ -176,7 +183,7 @@ Yii Framework 2 Change Log
 - Enh #20042: Add empty array check to `ActiveQueryTrait::findWith()` (renkas)
 - Enh #20087: Add custom attributes to script tags (skepticspriggan)
 - Enh #20121: Added `yiisoft/yii2-coding-standards` to composer `require-dev` and lint code to comply with PSR12 (razvanphp)
-- Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
+- Enh #20134: Raise minimum PHP version to `7.3` (@terabytesoftw)
 - Enh #20171: Support JSON columns for MariaDB 10.4 or higher (@terabytesoftw)
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
 

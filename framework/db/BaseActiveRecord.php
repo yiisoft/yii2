@@ -454,8 +454,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     protected function createRelationQuery($class, $link, $multiple)
     {
-        /** @var ActiveRecordInterface $class */
-        /** @var ActiveQuery $query */
+        /**
+         * @var ActiveRecordInterface $class
+         * @var ActiveQuery $query
+         *
+         * @phpstan-var ActiveQuery<ActiveRecord> $query
+         */
+
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
@@ -507,6 +512,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasAttribute($name)
     {
+        // using null as an array offset is deprecated in PHP 8.5
+        if ($name === null || $name === '') {
+            return false;
+        }
+
         return isset($this->_attributes[$name]) || in_array($name, $this->attributes(), true);
     }
 
@@ -1321,7 +1331,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 throw new InvalidCallException('Unable to link models: the models being linked cannot be newly created.');
             }
             if (is_array($relation->via)) {
-                /** @var ActiveQuery $viaRelation */
+                /**
+                 * @var ActiveQuery $viaRelation
+                 * @phpstan-var ActiveQuery<ActiveRecord|array<string, mixed>> $viaRelation
+                 */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 // unset $viaName so that it can be reloaded to reflect the change
@@ -1414,7 +1427,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /** @var ActiveQuery $viaRelation */
+                /**
+                 * @var ActiveQuery $viaRelation
+                 * @phpstan-var ActiveQuery<ActiveRecord> $viaRelation
+                 */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
@@ -1517,7 +1533,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
-                /** @var ActiveQuery $viaRelation */
+                /**
+                 * @var ActiveQuery $viaRelation
+                 * @phpstan-var ActiveQuery<ActiveRecord|array<string, mixed>> $viaRelation
+                 */
                 list($viaName, $viaRelation) = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);

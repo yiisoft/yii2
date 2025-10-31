@@ -888,7 +888,10 @@ class ReleaseController extends Controller
             // add continued lines to the last item to keep them together
             if (!empty(${$state}) && trim($line) !== '' && strncmp($line, '- ', 2) !== 0) {
                 end(${$state});
-                ${$state}[key(${$state})] .= "\n" . $line;
+
+                if (($k = key(${$state})) !== null) {
+                    ${$state}[$k] .= "\n" . $line;
+                }
             } else {
                 ${$state}[] = $line;
             }
