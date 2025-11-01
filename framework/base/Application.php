@@ -113,7 +113,7 @@ abstract class Application extends Module
      */
     public $sourceLanguage = 'en-US';
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
     /**
