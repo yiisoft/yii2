@@ -491,4 +491,22 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     {
         return strncmp($identifier, 'sqlite_', 7) === 0;
     }
+
+    /**
+     * @inheritdoc
+     *
+     * Since PHP 8.5, `PDO::quote()` throws a ValueError when the string contains null bytes ("\0").
+     *
+     * This method sanitizes such bytes before calling the parent implementation to avoid exceptions while maintaining
+     * backward compatibility.
+     */
+    public function quoteValue($value)
+    {
+        if (PHP_VERSION_ID >= 80500 && is_string($value) && strpos($value, "\0") !== false) {
+            // Sanitize null bytes to prevent PDO ValueError on PHP 8.5+
+            $value = str_replace("\0", '', $value);
+        }
+
+        return parent::quoteValue($value);
+    }
 }
