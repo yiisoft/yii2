@@ -499,6 +499,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      *
      * This method sanitizes such bytes before calling the parent implementation to avoid exceptions while maintaining
      * backward compatibility.
+     *
+     * @link https://github.com/php/php-src/commit/0a10f6db26875e0f1d0f867307cee591d29a43c7
      */
     public function quoteValue($value)
     {
