@@ -202,7 +202,7 @@ abstract class ManagerTestCase extends TestCase
             ],
         ];
 
-        // using null as an array offset is deprecated in PHP 8.5
+        // using null as an array key is deprecated in PHP 8.5
         $invalidKey = PHP_VERSION_ID >= 80500 ? '' : null;
         $testSuites['admin C'][$invalidKey] = false;
         $testSuites['guest'][$invalidKey] = false;
