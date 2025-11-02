@@ -82,6 +82,7 @@ Yii Framework 2 Change Log
 - Bug #20658: Add missing generics in `yii\console`, `yii\captcha`, `yii\caching` and `yii\behaviors` namespaces (mspirkov)
 - Bug #20666: Add missing generics in `yii\base`, `yii\console`, `yii\filters` and `yii\web` namespaces (mspirkov)
 - Bug #20673: Sanitize `null` bytes before `quoteValue()` on PHP 8.5+ in SQLite (terabytesoftw)
+- Bug #20671: Fix PHPDoc annotations in `yii\base`, `yii\console`, `yii\web` and `yii\widgets` namespaces (mspirkov)
 
 
 2.0.53 June 27, 2025

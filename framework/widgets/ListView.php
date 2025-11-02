@@ -75,7 +75,7 @@ class ListView extends BaseListView
      */
     public $options = ['class' => 'list-view'];
     /**
-     * @var Closure an anonymous function that is called once BEFORE rendering each data model.
+     * @var Closure|null an anonymous function that is called once BEFORE rendering each data model.
      * It should have the following signature:
      *
      * ```
@@ -94,7 +94,7 @@ class ListView extends BaseListView
      */
     public $beforeItem;
     /**
-     * @var Closure an anonymous function that is called once AFTER rendering each data model.
+     * @var Closure|null an anonymous function that is called once AFTER rendering each data model.
      *
      * It should have the same signature as [[beforeItem]].
      *
