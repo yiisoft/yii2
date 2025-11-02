@@ -504,7 +504,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public function quoteValue($value)
     {
-        if (PHP_VERSION_ID >= 80500 && is_string($value) && strpos($value, "\0") !== false) {
+        if (PHP_VERSION_ID >= 80500 && is_string($value) && str_contains($value, "\0")) {
             // Sanitize null bytes to prevent PDO ValueError on PHP 8.5+
             $value = str_replace("\0", '', $value);
         }
