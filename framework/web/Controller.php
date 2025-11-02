@@ -12,6 +12,8 @@ use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 use yii\base\Action;
+use yii\base\Controller as BaseController;
+use yii\base\Module;
 
 /**
  * Controller is the base class of web controllers.
@@ -24,8 +26,11 @@ use yii\base\Action;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module
+ * @extends BaseController<T>
  */
-class Controller extends \yii\base\Controller
+class Controller extends BaseController
 {
     /**
      * @var bool whether to enable CSRF validation for the actions in this controller.

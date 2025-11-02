@@ -9,6 +9,7 @@ namespace yii\console;
 
 use Yii;
 use yii\base\InvalidRouteException;
+use yii\base\Module;
 
 // define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
 // https://www.php.net/manual/en/features.commandline.io-streams.php
@@ -76,6 +77,9 @@ class Application extends \yii\base\Application
     public $enableCoreCommands = true;
     /**
      * @var Controller|null the currently active controller instance
+     *
+     * @phpstan-var Controller<Module>|null
+     * @psalm-var Controller<Module>|null
      */
     public $controller;
 

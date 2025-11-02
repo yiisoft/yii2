@@ -404,8 +404,3 @@ parameters:
 			message: "#^Argument of an invalid type \\$this\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
 			count: 1
 			path: framework/caching/Dependency.php
-
-		-
-			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\|null\\) does not accept yii\\\\base\\\\Controller\\.$#"
-			count: 1
-			path: framework/base/Module.php

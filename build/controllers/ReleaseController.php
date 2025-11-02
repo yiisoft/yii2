@@ -10,6 +10,7 @@ namespace yii\build\controllers;
 
 use Yii;
 use yii\base\Exception;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
@@ -40,6 +41,8 @@ use yii\helpers\FileHelper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class ReleaseController extends Controller
 {

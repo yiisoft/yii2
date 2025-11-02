@@ -114,6 +114,9 @@ abstract class Application extends Module
     public $sourceLanguage = 'en-US';
     /**
      * @var Controller|null the currently active controller instance
+     *
+     * @phpstan-var Controller<Module>|null
+     * @psalm-var Controller<Module>|null
      */
     public $controller;
     /**
@@ -128,8 +131,8 @@ abstract class Application extends Module
     /**
      * @var Action|null the requested Action. If null, it means the request cannot be resolved into an action.
      *
-     * @phpstan-var Action<covariant Controller>|null
-     * @psalm-var Action<covariant Controller>|null
+     * @phpstan-var Action<covariant Controller<Module>>|null
+     * @psalm-var Action<covariant Controller<Module>>|null
      */
     public $requestedAction;
     /**
