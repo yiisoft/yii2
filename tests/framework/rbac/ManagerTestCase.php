@@ -206,7 +206,6 @@ abstract class ManagerTestCase extends TestCase
         $invalidKey = PHP_VERSION_ID >= 80500 ? '' : null;
         $testSuites['admin C'][$invalidKey] = false;
         $testSuites['guest'][$invalidKey] = false;
-
         $params = ['authorID' => 'author B'];
 
         foreach ($testSuites as $user => $tests) {
