@@ -24,6 +24,8 @@ use yii\di\NotInstantiableException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module
  */
 class Controller extends Component implements ViewContextInterface
 {
@@ -43,6 +45,9 @@ class Controller extends Component implements ViewContextInterface
     public $id;
     /**
      * @var Module the module that this controller belongs to.
+     *
+     * @phpstan-var T
+     * @psalm-var T
      */
     public $module;
     /**
@@ -90,6 +95,9 @@ class Controller extends Component implements ViewContextInterface
      * @param string $id the ID of this controller.
      * @param Module $module the module that this controller belongs to.
      * @param array $config name-value pairs that will be used to initialize the object properties.
+     *
+     * @phpstan-param T $module
+     * @psalm-param T $module
      *
      * @phpstan-param array<string, mixed> $config
      * @psalm-param array<string, mixed> $config

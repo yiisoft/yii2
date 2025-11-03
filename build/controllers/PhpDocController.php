@@ -11,6 +11,7 @@ namespace yii\build\controllers;
 use Yii;
 use yii\base\Model;
 use yii\base\Module;
+use yii\console\Application;
 use yii\console\Controller as ConsoleController;
 use yii\db\QueryBuilder;
 use yii\helpers\Console;
@@ -27,6 +28,8 @@ use yii\web\Request as WebRequest;
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
+ *
+ * @extends ConsoleController<Application>
  */
 class PhpDocController extends ConsoleController
 {

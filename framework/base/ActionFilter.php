@@ -71,8 +71,8 @@ class ActionFilter extends Behavior
     /**
      * @param ActionEvent $event
      *
-     * @phpstan-param ActionEvent<Action<Controller>> $event
-     * @psalm-param ActionEvent<Action<Controller>> $event
+     * @phpstan-param ActionEvent<Action<Controller<Module>>> $event
+     * @psalm-param ActionEvent<Action<Controller<Module>>> $event
      */
     public function beforeFilter($event)
     {
@@ -93,8 +93,8 @@ class ActionFilter extends Behavior
     /**
      * @param ActionEvent $event
      *
-     * @phpstan-param ActionEvent<Action<Controller>> $event
-     * @psalm-param ActionEvent<Action<Controller>> $event
+     * @phpstan-param ActionEvent<Action<Controller<Module>>> $event
+     * @psalm-param ActionEvent<Action<Controller<Module>>> $event
      */
     public function afterFilter($event)
     {
@@ -108,8 +108,8 @@ class ActionFilter extends Behavior
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     public function beforeAction($action)
     {
@@ -123,8 +123,8 @@ class ActionFilter extends Behavior
      * @param mixed $result the action execution result
      * @return mixed the processed action result.
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     public function afterAction($action, $result)
     {
@@ -137,8 +137,8 @@ class ActionFilter extends Behavior
      * @return string
      * @since 2.0.7
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     protected function getActionId($action)
     {
@@ -160,8 +160,8 @@ class ActionFilter extends Behavior
      * @param Action $action the action being filtered
      * @return bool whether the filter is active for the given action.
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     protected function isActive($action)
     {

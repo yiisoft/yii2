@@ -13,6 +13,8 @@ use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
+use yii\base\Controller as BaseController;
+use yii\base\Module;
 
 /**
  * Controller is the base class of console command classes.
@@ -37,8 +39,11 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module
+ * @extends BaseController<T>
  */
-class Controller extends \yii\base\Controller
+class Controller extends BaseController
 {
     /**
      * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
