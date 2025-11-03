@@ -18,3 +18,7 @@ c960f93dfeefe760eb44bcdfa4463dcc7b29cc43
 da20adc82aef3eb5ae0bad3889fe6695e6424f06
 # Fix codestyle in `tests`
 2f8e62d6b64324099b44cbac69395fef0e53b13e
+# Short array syntax
+1f6a8230732d829cdf2f3ca6755e4ac32f2c6f4f
+# CS fixes.
+7a7d2a9c06c099de8064729ca3fc95fb24241b75
