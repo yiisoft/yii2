@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\Action;
+use yii\console\Application;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -72,6 +73,9 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application
+ * @extends BaseMigrateController<T>
  */
 class MigrateController extends BaseMigrateController
 {

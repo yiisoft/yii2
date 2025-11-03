@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Property yii\\console\\Application\:\:\$controller \(yii\\console\\Controller\|yii\\web\\Controller\) does not accept yii\\base\\Controller\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: framework/base/Module.php
-
-		-
 			message: '#^Call to an undefined method T of yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1

@@ -228,6 +228,29 @@ Upgrade from Yii 2.0.50
 
 * Correcting the behavior for `JSON` column type in `MariaDb`.
 
+  Columns that are created as `JSON` now automatically add a Check constraint for `json_valid` to the according column.
+  If Yii2 detects that a column has this `json_valid` constraint, data passed into or fetched from it is automatically serialized/deserialized.
+
+  While this does affect migrations created before the update when running them afterwards, it doesn't retroactively change tables created through migrations before the update!
+  This means that running a migration script that invokes `yii\db\Migration::json()` for a MariaDb database will create a different database schema after the update than it did before.
+
+  To preserve the old behavior, migrations need to be changed to instead create a `LONGTEXT` column without a constraint:
+
+```php
+<?php
+class m251103_091000_example_migration extends Migration {
+    public function up() {
+        // before
+        $this->addColumn('MyTable', 'json_data', $this->json()->null()->after('other_column'));
+        // after
+        $this->addColumn('MyTable', 'json_data', "LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin' AFTER other_column");
+    }
+}
+```
+ 
+  To make use of the new behavior, add the json_valid constraint to according columns on pre-existing databases
+  and remove any JSON serialization/deserialization logic that was in place before this change (as (de)serialization is now done by Yii2).
+
   Example usage of `JSON` column type in `db`:
   
   ```php

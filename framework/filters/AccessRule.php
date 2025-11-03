@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
 use yii\web\IdentityInterface;
@@ -168,8 +169,8 @@ class AccessRule extends Component
      * @param Request $request
      * @return bool|null `true` if the user is allowed, `false` if the user is denied, `null` if the rule does not apply to the user
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      *
      * @phpstan-param User<IdentityInterface>|false $user
      * @psalm-param User<IdentityInterface>|false $user
@@ -194,8 +195,8 @@ class AccessRule extends Component
      * @param Action $action the action
      * @return bool whether the rule applies to the action
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     protected function matchAction($action)
     {
@@ -205,6 +206,9 @@ class AccessRule extends Component
     /**
      * @param Controller $controller the controller
      * @return bool whether the rule applies to the controller
+     *
+     * @phpstan-param Controller<Module> $controller
+     * @psalm-param Controller<Module> $controller
      */
     protected function matchController($controller)
     {
@@ -311,8 +315,8 @@ class AccessRule extends Component
      * @param Action $action the action to be performed
      * @return bool whether the rule should be applied
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     protected function matchCustom($action)
     {

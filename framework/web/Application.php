@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidRouteException;
+use yii\base\Module;
 use yii\helpers\Url;
 
 /**
@@ -57,7 +58,10 @@ class Application extends \yii\base\Application
      */
     public $catchAll;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller|null the currently active controller instance
+     *
+     * @phpstan-var Controller<Module>|null
+     * @psalm-var Controller<Module>|null
      */
     public $controller;
     /**

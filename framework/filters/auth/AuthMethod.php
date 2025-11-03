@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\base\Component;
 use yii\base\Controller;
+use yii\base\Module;
 use yii\helpers\StringHelper;
 use yii\web\IdentityInterface;
 use yii\web\Request;
@@ -110,8 +111,8 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @see optional
      * @since 2.0.7
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     protected function isOptional($action)
     {
