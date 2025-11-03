@@ -190,7 +190,6 @@ abstract class ManagerTestCase extends TestCase
                 'updatePost' => false,
                 'updateAnyPost' => true,
                 'blablabla' => false,
-                null => false,
             ],
             'guest' => [
                 // all actions denied for guest (user not exists)
@@ -200,10 +199,13 @@ abstract class ManagerTestCase extends TestCase
                 'deletePost' => false,
                 'updateAnyPost' => false,
                 'blablabla' => false,
-                null => false,
             ],
         ];
 
+        // using null as an array key is deprecated in PHP 8.5
+        $invalidKey = PHP_VERSION_ID >= 80500 ? '' : null;
+        $testSuites['admin C'][$invalidKey] = false;
+        $testSuites['guest'][$invalidKey] = false;
         $params = ['authorID' => 'author B'];
 
         foreach ($testSuites as $user => $tests) {
