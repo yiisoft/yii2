@@ -12,6 +12,7 @@ use yii\base\Action;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -25,6 +26,9 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application
+ * @extends Controller<T>
  */
 abstract class BaseMigrateController extends Controller
 {

@@ -8,6 +8,7 @@
 namespace yii\build\controllers;
 
 use DirectoryIterator;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\Html;
 
@@ -17,6 +18,8 @@ use yii\helpers\Html;
  * build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
+ *
+ * @extends Controller<Application>
  */
 class TranslationController extends Controller
 {
