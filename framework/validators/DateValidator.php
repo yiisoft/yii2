@@ -475,4 +475,16 @@ class DateValidator extends Validator
 
         return $date->format($format);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isEmpty($value)
+    {
+        if ($this->isEmpty !== null) {
+            return call_user_func($this->isEmpty, $value);
+        }
+
+        return $value === null || $value === '';
+    }
 }
