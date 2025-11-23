@@ -116,8 +116,8 @@ class Controller extends Component implements ViewContextInterface
     public function init()
     {
         parent::init();
-        $this->request = Instance::ensure($this->request, Request::className());
-        $this->response = Instance::ensure($this->response, Response::className());
+        $this->request = Instance::ensure($this->request, Request::class);
+        $this->response = Instance::ensure($this->response, Response::class);
     }
 
     /**

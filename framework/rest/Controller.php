@@ -54,21 +54,21 @@ class Controller extends WebController
     {
         return [
             'contentNegotiator' => [
-                'class' => ContentNegotiator::className(),
+                'class' => ContentNegotiator::class,
                 'formats' => [
                     'application/json' => Response::FORMAT_JSON,
                     'application/xml' => Response::FORMAT_XML,
                 ],
             ],
             'verbFilter' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => $this->verbs(),
             ],
             'authenticator' => [
-                'class' => CompositeAuth::className(),
+                'class' => CompositeAuth::class,
             ],
             'rateLimiter' => [
-                'class' => RateLimiter::className(),
+                'class' => RateLimiter::class,
             ],
         ];
     }

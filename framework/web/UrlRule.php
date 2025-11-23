@@ -197,7 +197,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
             throw new InvalidConfigException('UrlRule::route must be set.');
         }
         if (is_array($this->normalizer)) {
-            $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
+            $normalizerConfig = array_merge(['class' => UrlNormalizer::class], $this->normalizer);
             $this->normalizer = Yii::createObject($normalizerConfig);
         }
         if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {

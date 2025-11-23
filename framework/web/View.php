@@ -560,7 +560,7 @@ class View extends \yii\base\View
             }
         } else {
             $this->getAssetManager()->bundles[$key] = Yii::createObject([
-                'class' => AssetBundle::className(),
+                'class' => AssetBundle::class,
                 'baseUrl' => '',
                 'basePath' => '@webroot',
                 (string)$type => [ArrayHelper::merge([!Url::isRelative($url) ? $url : ltrim($url, '/')], $originalOptions)],

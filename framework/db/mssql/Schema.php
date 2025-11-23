@@ -336,7 +336,7 @@ SQL;
      */
     public function createQueryBuilder()
     {
-        return Yii::createObject(QueryBuilder::className(), [$this->db]);
+        return Yii::createObject(QueryBuilder::class, [$this->db]);
     }
 
     /**
@@ -828,6 +828,6 @@ SQL;
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length, $this->db]);
+        return Yii::createObject(ColumnSchemaBuilder::class, [$type, $length, $this->db]);
     }
 }

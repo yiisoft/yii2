@@ -188,7 +188,7 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            $this->db = Instance::ensure($this->db, Connection::className());
+            $this->db = Instance::ensure($this->db, Connection::class);
             return true;
         }
 
@@ -476,7 +476,7 @@ class MigrateController extends BaseMigrateController
             if ($relatedColumn === null) {
                 $relatedColumn = 'id';
                 try {
-                    $this->db = Instance::ensure($this->db, Connection::className());
+                    $this->db = Instance::ensure($this->db, Connection::class);
                     $relatedTableSchema = $this->db->getTableSchema($relatedTable);
                     if ($relatedTableSchema !== null) {
                         $primaryKeyCount = count($relatedTableSchema->primaryKey);

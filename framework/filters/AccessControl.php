@@ -106,7 +106,7 @@ class AccessControl extends ActionFilter
     {
         parent::init();
         if ($this->user !== false) {
-            $this->user = Instance::ensure($this->user, User::className());
+            $this->user = Instance::ensure($this->user, User::class);
         }
         foreach ($this->rules as $i => $rule) {
             if (is_array($rule)) {

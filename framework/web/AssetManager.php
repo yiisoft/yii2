@@ -412,10 +412,10 @@ class AssetManager extends Component
     public function getConverter()
     {
         if ($this->_converter === null) {
-            $this->_converter = Yii::createObject(AssetConverter::className());
+            $this->_converter = Yii::createObject(AssetConverter::class);
         } elseif (is_array($this->_converter) || is_string($this->_converter)) {
             if (is_array($this->_converter) && !isset($this->_converter['class'])) {
-                $this->_converter['class'] = AssetConverter::className();
+                $this->_converter['class'] = AssetConverter::class;
             }
             $this->_converter = Yii::createObject($this->_converter);
         }

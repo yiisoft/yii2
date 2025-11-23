@@ -245,7 +245,7 @@ class SluggableBehavior extends AttributeBehavior
         /** @var UniqueValidator $validator */
         $validator = Yii::createObject(array_merge(
             [
-                'class' => UniqueValidator::className(),
+                'class' => UniqueValidator::class,
             ],
             $this->uniqueValidator
         ));

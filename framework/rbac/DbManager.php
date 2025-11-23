@@ -119,7 +119,7 @@ class DbManager extends BaseManager
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->cache !== null) {
             $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
         }
@@ -451,7 +451,7 @@ class DbManager extends BaseManager
      */
     protected function populateItem($row)
     {
-        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::class : Role::class;
 
         if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;

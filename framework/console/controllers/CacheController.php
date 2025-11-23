@@ -306,6 +306,6 @@ class CacheController extends Controller
      */
     private function canBeFlushed($className)
     {
-        return !is_a($className, ApcCache::className(), true) || PHP_SAPI !== 'cli';
+        return !is_a($className, ApcCache::class, true) || PHP_SAPI !== 'cli';
     }
 }
