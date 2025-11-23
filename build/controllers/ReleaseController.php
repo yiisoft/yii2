@@ -1051,6 +1051,7 @@ class ReleaseController extends Controller
                 $versions[$k] = '2.0.0';
                 continue;
             }
+            /** @phpstan-var numeric-string[] */
             $parts = explode('.', $v);
             switch ($type) {
                 case self::MINOR:
