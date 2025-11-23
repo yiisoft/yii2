@@ -1051,18 +1051,17 @@ class ReleaseController extends Controller
                 $versions[$k] = '2.0.0';
                 continue;
             }
-            /** @phpstan-var numeric-string[] */
             $parts = explode('.', $v);
             switch ($type) {
                 case self::MINOR:
-                    $parts[1]++;
+                    $parts[1] = (int) $parts[1] + 1;
                     $parts[2] = 0;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }
                     break;
                 case self::PATCH:
-                    $parts[2]++;
+                    $parts[2] = (int) $parts[2] + 1;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }
