@@ -575,6 +575,10 @@ return [
     ],
     'application/vnd.spotfire.dxp' => 'dxp',
     'application/vnd.spotfire.sfs' => 'sfs',
+    'application/vnd.sqlite3' => [
+        'sqlite',
+        'sqlite3',
+    ],
     'application/vnd.stardivision.calc' => 'sdc',
     'application/vnd.stardivision.draw' => 'sda',
     'application/vnd.stardivision.impress' => 'sdd',
