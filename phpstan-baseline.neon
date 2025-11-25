@@ -401,6 +401,6 @@ parameters:
 			path: framework/caching/WinCache.php
 
 		-
-			message: "#^Argument of an invalid type \\$this\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
+			message: "#^Argument of an invalid type static\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
 			count: 1
 			path: framework/caching/Dependency.php
