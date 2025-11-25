@@ -101,17 +101,29 @@ class ActiveDataProvider extends BaseDataProvider
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
         $query = clone $this->query;
+
+        $has_union = $query->union && count($query->union);
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
                 return [];
             }
-            $query->limit($pagination->getLimit())->offset($pagination->getOffset());
+            if ($has_union) {
+                $query->union[count($query->union)-1]['query']->limit($pagination->getLimit())->offset($pagination->getOffset());
+            } else {
+                $query->limit($pagination->getLimit())->offset($pagination->getOffset());
+            }
         }
         if (($sort = $this->getSort()) !== false) {
             $query->addOrderBy($sort->getOrders());
+        }   
+        if ($has_union) {
+            if ($query->orderBy) {
+                $query->union[count($query->union)-1]['query']->addOrderBy($query->orderBy);
+                $query->orderBy = null;
+            }
         }
-
+        
         return $query->all($this->db);
     }
 
