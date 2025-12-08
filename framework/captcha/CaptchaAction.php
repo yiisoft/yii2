@@ -314,7 +314,11 @@ class CaptchaAction extends Action
 
         ob_start();
         imagepng($image);
-        imagedestroy($image);
+
+        // Function `imagedestroy` is deprecated since PHP `8.5`, as it has no effect since PHP `8.0`
+        if (PHP_VERSION_ID < 80000) {
+            imagedestroy($image);
+        }
 
         return ob_get_clean();
     }
