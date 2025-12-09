@@ -84,6 +84,7 @@ Yii Framework 2 Change Log
 - Bug #20673: Sanitize `null` bytes before `quoteValue()` on PHP 8.5+ in SQLite (terabytesoftw)
 - Bug #20671: Fix PHPDoc annotations in `yii\base`, `yii\console`, `yii\web` and `yii\widgets` namespaces (mspirkov)
 - Bug #20675: Add generics for all controllers (mspirkov)
+- Bug #20689: Fix PHP `8.5` `imagedestroy` deprecation warning (ElisDN)
 
 
 2.0.53 June 27, 2025
