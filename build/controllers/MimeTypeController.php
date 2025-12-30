@@ -9,6 +9,7 @@
 namespace yii\build\controllers;
 
 use Yii;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\VarDumper;
@@ -24,6 +25,8 @@ use yii\helpers\VarDumper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class MimeTypeController extends Controller
 {

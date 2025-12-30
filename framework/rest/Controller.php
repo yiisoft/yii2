@@ -13,6 +13,8 @@ use yii\filters\ContentNegotiator;
 use yii\filters\RateLimiter;
 use yii\filters\VerbFilter;
 use yii\web\Response;
+use yii\web\Controller as WebController;
+use yii\base\Module;
 
 /**
  * Controller is the base class for RESTful API controller classes.
@@ -29,8 +31,11 @@ use yii\web\Response;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module
+ * @extends WebController<T>
  */
-class Controller extends \yii\web\Controller
+class Controller extends WebController
 {
     /**
      * @var string|array the configuration for creating the serializer that formats the response data.

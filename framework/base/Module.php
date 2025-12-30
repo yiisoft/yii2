@@ -545,7 +545,10 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /** @var Controller $controller */
+            /**
+             * @var Controller $controller
+             * @phpstan-var Controller<$this> $controller
+             */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
@@ -579,9 +582,12 @@ class Module extends ServiceLocator
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
      * @param string $route the route consisting of module, controller and action IDs.
-     * @return array|bool If the controller is created successfully, it will be returned together
+     * @return array|false If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
+     *
+     * @phpstan-return array{Controller<$this>, string}|false
+     * @psalm-return array{Controller<$this>, string}|false
      */
     public function createController($route)
     {
@@ -638,6 +644,9 @@ class Module extends ServiceLocator
      * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
+     *
+     * @phpstan-return Controller<$this>|null
+     * @psalm-return Controller<$this>|null
      */
     public function createControllerByID($id)
     {
@@ -717,6 +726,9 @@ class Module extends ServiceLocator
      *
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<Controller<$this>> $action
+     * @psalm-param Action<Controller<$this>> $action
      */
     public function beforeAction($action)
     {
@@ -745,6 +757,9 @@ class Module extends ServiceLocator
      * @param Action $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
+     *
+     * @phpstan-param Action<Controller<$this>> $action
+     * @psalm-param Action<Controller<$this>> $action
      */
     public function afterAction($action, $result)
     {

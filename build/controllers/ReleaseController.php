@@ -10,6 +10,7 @@ namespace yii\build\controllers;
 
 use Yii;
 use yii\base\Exception;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
@@ -40,6 +41,8 @@ use yii\helpers\FileHelper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class ReleaseController extends Controller
 {
@@ -888,7 +891,10 @@ class ReleaseController extends Controller
             // add continued lines to the last item to keep them together
             if (!empty(${$state}) && trim($line) !== '' && strncmp($line, '- ', 2) !== 0) {
                 end(${$state});
-                ${$state}[key(${$state})] .= "\n" . $line;
+
+                if (($k = key(${$state})) !== null) {
+                    ${$state}[$k] .= "\n" . $line;
+                }
             } else {
                 ${$state}[] = $line;
             }
@@ -1048,14 +1054,14 @@ class ReleaseController extends Controller
             $parts = explode('.', $v);
             switch ($type) {
                 case self::MINOR:
-                    $parts[1]++;
+                    $parts[1] = (int) $parts[1] + 1;
                     $parts[2] = 0;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }
                     break;
                 case self::PATCH:
-                    $parts[2]++;
+                    $parts[2] = (int) $parts[2] + 1;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }

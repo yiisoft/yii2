@@ -12,6 +12,8 @@ use yii\base\Exception;
 use yii\base\InlineAction;
 use yii\helpers\Url;
 use yii\base\Action;
+use yii\base\Controller as BaseController;
+use yii\base\Module;
 
 /**
  * Controller is the base class of web controllers.
@@ -24,8 +26,11 @@ use yii\base\Action;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module
+ * @extends BaseController<T>
  */
-class Controller extends \yii\base\Controller
+class Controller extends BaseController
 {
     /**
      * @var bool whether to enable CSRF validation for the actions in this controller.
@@ -121,8 +126,8 @@ class Controller extends \yii\base\Controller
      * @return array the valid parameters that the action can run with.
      * @throws BadRequestHttpException if there are missing or invalid parameters.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params

@@ -351,27 +351,12 @@ parameters:
 			path: framework/console/Controller.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Component\\:\\:isAttributeChanged\\(\\)\\.$#"
-			count: 1
-			path: framework/behaviors/SluggableBehavior.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Component\\:\\:formName\\(\\)\\.$#"
-			count: 1
-			path: framework/behaviors/OptimisticLockBehavior.php
-
-		-
-			message: "#^Access to an undefined property yii\\\\base\\\\Component\\:\\:\\$view\\.$#"
-			count: 2
-			path: framework/behaviors/CacheableWidgetBehavior.php
-
-		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
+			message: "#^Call to an undefined method T of yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Call to an undefined method yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
+			message: "#^Call to an undefined method T of yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
@@ -416,16 +401,6 @@ parameters:
 			path: framework/caching/WinCache.php
 
 		-
-			message: "#^Argument of an invalid type \\$this\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
+			message: "#^Argument of an invalid type static\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
 			count: 1
 			path: framework/caching/Dependency.php
-
-		-
-			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\) does not accept yii\\\\base\\\\Controller\\.$#"
-			count: 1
-			path: framework/base/Module.php
-
-		-
-			message: "#^Offset null does not exist on array\\{\\}\\.$#"
-			count: 1
-			path: build/controllers/ReleaseController.php

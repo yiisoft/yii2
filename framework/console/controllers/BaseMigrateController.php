@@ -8,9 +8,11 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\Action;
 use yii\base\BaseObject;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -24,6 +26,9 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application
+ * @extends Controller<T>
  */
 abstract class BaseMigrateController extends Controller
 {
@@ -122,9 +127,12 @@ abstract class BaseMigrateController extends Controller
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param \yii\base\Action $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @throws InvalidConfigException if directory specified in migrationPath doesn't exist and action isn't "create".
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function beforeAction($action)
     {

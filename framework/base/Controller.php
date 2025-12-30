@@ -24,6 +24,8 @@ use yii\di\NotInstantiableException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module
  */
 class Controller extends Component implements ViewContextInterface
 {
@@ -43,6 +45,9 @@ class Controller extends Component implements ViewContextInterface
     public $id;
     /**
      * @var Module the module that this controller belongs to.
+     *
+     * @phpstan-var T
+     * @psalm-var T
      */
     public $module;
     /**
@@ -60,6 +65,9 @@ class Controller extends Component implements ViewContextInterface
     /**
      * @var Action|null the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
+     *
+     * @phpstan-var Action<$this>|null
+     * @psalm-var Action<$this>|null
      */
     public $action;
     /**
@@ -87,6 +95,9 @@ class Controller extends Component implements ViewContextInterface
      * @param string $id the ID of this controller.
      * @param Module $module the module that this controller belongs to.
      * @param array $config name-value pairs that will be used to initialize the object properties.
+     *
+     * @phpstan-param T $module
+     * @psalm-param T $module
      *
      * @phpstan-param array<string, mixed> $config
      * @psalm-param array<string, mixed> $config
@@ -234,8 +245,8 @@ class Controller extends Component implements ViewContextInterface
      * @param array $params the parameters to be bound to the action.
      * @return array the valid parameters that the action can run with.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params
@@ -257,6 +268,9 @@ class Controller extends Component implements ViewContextInterface
      * method will be created and returned.
      * @param string $id the action ID.
      * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
+     *
+     * @phpstan-return Action<$this>|null
+     * @psalm-return Action<$this>|null
      */
     public function createAction($id)
     {
@@ -312,8 +326,8 @@ class Controller extends Component implements ViewContextInterface
      * @param Action $action the action to be executed.
      * @return bool whether the action should continue to run.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function beforeAction($action)
     {
@@ -343,8 +357,8 @@ class Controller extends Component implements ViewContextInterface
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      *
-     * @phpstan-param Action<static> $action
-     * @psalm-param Action<static> $action
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function afterAction($action, $result)
     {

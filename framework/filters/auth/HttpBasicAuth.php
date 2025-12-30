@@ -7,6 +7,8 @@
 
 namespace yii\filters\auth;
 
+use yii\base\Component;
+
 /**
  * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
  *
@@ -56,6 +58,9 @@ namespace yii\filters\auth;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends AuthMethod<T>
  */
 class HttpBasicAuth extends AuthMethod
 {

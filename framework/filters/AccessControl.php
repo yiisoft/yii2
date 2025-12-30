@@ -9,6 +9,7 @@ namespace yii\filters;
 
 use Yii;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
@@ -53,6 +54,9 @@ use yii\web\User;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class AccessControl extends ActionFilter
 {

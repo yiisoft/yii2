@@ -10,7 +10,9 @@ namespace yii\filters;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
+use yii\base\Module;
 use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
 
@@ -65,6 +67,9 @@ use yii\web\NotFoundHttpException;
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.11
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class HostControl extends ActionFilter
 {
@@ -165,8 +170,8 @@ class HostControl extends ActionFilter
      * @param Action $action the action to be executed.
      * @throws NotFoundHttpException
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     protected function denyAccess($action)
     {

@@ -8,6 +8,8 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\Action;
+use yii\console\Application;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -71,6 +73,9 @@ use yii\helpers\Inflector;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application
+ * @extends BaseMigrateController<T>
  */
 class MigrateController extends BaseMigrateController
 {
@@ -174,8 +179,11 @@ class MigrateController extends BaseMigrateController
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param \yii\base\Action $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<$this> $action
+     * @psalm-param Action<$this> $action
      */
     public function beforeAction($action)
     {

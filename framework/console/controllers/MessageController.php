@@ -8,6 +8,8 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\console\Application;
+use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\db\Connection;
@@ -37,8 +39,11 @@ use yii\i18n\GettextPoFile;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application
+ * @extends Controller<T>
  */
-class MessageController extends \yii\console\Controller
+class MessageController extends Controller
 {
     /**
      * @var string controller default action ID.

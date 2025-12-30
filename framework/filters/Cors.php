@@ -10,8 +10,10 @@ namespace yii\filters;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\web\Request;
 use yii\web\Response;
 
@@ -68,6 +70,9 @@ use yii\web\Response;
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component
+ * @extends ActionFilter<T>
  */
 class Cors extends ActionFilter
 {
@@ -123,8 +128,8 @@ class Cors extends ActionFilter
      * Override settings for specific action.
      * @param Action $action the action settings to override
      *
-     * @phpstan-param Action<Controller> $action
-     * @psalm-param Action<Controller> $action
+     * @phpstan-param Action<Controller<Module>> $action
+     * @psalm-param Action<Controller<Module>> $action
      */
     public function overrideDefaultSettings($action)
     {
