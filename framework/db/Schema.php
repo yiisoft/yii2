@@ -524,6 +524,9 @@ abstract class Schema extends BaseObject
      */
     public function quoteColumnName($name)
     {
+        if ($name === null) {
+            return $name;
+        }
         if (strpos($name, '(') !== false || strpos($name, '[[') !== false) {
             return $name;
         }
