@@ -82,7 +82,7 @@ will need to replace them with alternative caching solutions.
           ];
       }
       
-      public function beforeInsert($event): void
+      public function beforeInsert(\yii\base\ModelEvent $event): void
       {
           // $this->owner is now properly typed as ActiveRecord
       }
@@ -91,12 +91,15 @@ will need to replace them with alternative caching solutions.
   
   **Example for a behavior with its own template parameter:**
   
+  If you're creating a reusable behavior that should work with different component types,
+  you can define your own template parameter:
+  
   ```php
   use yii\base\Behavior;
-  use yii\db\ActiveQuery;
+  use yii\db\ActiveRecord;
   
   /**
-   * @template T of ActiveQuery
+   * @template T of ActiveRecord
    * @extends Behavior<T>
    */
   class CustomQueryBehavior extends Behavior
