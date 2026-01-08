@@ -58,6 +58,60 @@ Upgrade from Yii 2.0.53
 * Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
 will need to replace them with alternative caching solutions.
 
+* Static analysis template annotations have been added to `yii\base\Behavior` and related behavior classes.
+  The `Behavior` class now uses PHPStan and Psalm template annotations to provide better type inference for the `$owner` property.
+  
+  If you are using static analysis tools like PHPStan or Psalm in your application and have custom behavior classes,
+  you may need to add template annotations to avoid `MissingTemplateParam` errors.
+  
+  **Example for a simple behavior:**
+  
+  ```php
+  use yii\base\Behavior;
+  use yii\db\ActiveRecord;
+  
+  /**
+   * @extends Behavior<ActiveRecord>
+   */
+  class TestBehavior extends Behavior
+  {
+      public function events(): array
+      {
+          return [
+              ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+          ];
+      }
+      
+      public function beforeInsert($event): void
+      {
+          // $this->owner is now properly typed as ActiveRecord
+      }
+  }
+  ```
+  
+  **Example for a behavior with its own template parameter:**
+  
+  ```php
+  use yii\base\Behavior;
+  use yii\db\ActiveQuery;
+  
+  /**
+   * @template T of ActiveQuery
+   * @extends Behavior<T>
+   */
+  class CustomQueryBehavior extends Behavior
+  {
+      /**
+       * @var T|null
+       */
+      public $owner;
+  }
+  ```
+  
+  This allows static analysis to infer the type of `$owner` without having to add type annotations throughout your code.
+  The framework's built-in behaviors (like `TimestampBehavior`, `BlameableBehavior`, etc.) have already been updated with
+  these annotations.
+
 Upgrade from Yii 2.0.52
 -----------------------
 
