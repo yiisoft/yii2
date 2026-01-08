@@ -102,12 +102,10 @@ will need to replace them with alternative caching solutions.
    * @template T of ActiveRecord
    * @extends Behavior<T>
    */
-  class CustomQueryBehavior extends Behavior
+  class ReusableBehavior extends Behavior
   {
-      /**
-       * @var T|null
-       */
-      public $owner;
+      // The $owner property inherited from Behavior will be typed as T
+      // This allows your behavior to work with any ActiveRecord subclass
   }
   ```
   
