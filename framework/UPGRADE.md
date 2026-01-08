@@ -58,6 +58,42 @@ Upgrade from Yii 2.0.53
 * Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
 will need to replace them with alternative caching solutions.
 
+* Extensive static analysis template annotations (generics) have been added throughout the framework to improve type inference 
+  with PHPStan and Psalm. These include:
+  
+  - **Actions**: `Action`, `InlineAction`, and all action classes now have generic type parameters for their controller type
+  - **Controllers**: `Controller` classes now have generic type parameters for their module type
+  - **Filters**: All filter classes (including `ActionFilter` and authentication filters) now have generic type parameters
+  - **Database**: `ActiveQuery` has generic type parameter for the model type, `ActiveRecord` has template methods for fluent interfaces, `Schema` classes have generic type parameters for column schema types
+  - **Dependency Injection**: `Container` and `Instance` classes have generic type parameters for object types
+  - **Applications**: `Application` and `BaseYii` have generic type parameters for user identity types
+  - **Behaviors**: Comprehensive generic annotations for all behavior classes (see the 2.0.52 upgrade notes for details on `Behavior` usage)
+  
+  If you are using static analysis tools like PHPStan or Psalm in your application and extend any of these framework classes,
+  you may need to add appropriate template annotations to maintain proper type inference. In most cases, the framework will
+  infer the types automatically, but for complex inheritance hierarchies you may need to explicitly declare template parameters.
+  
+  For example, when creating a custom action:
+  
+  ```php
+  use yii\base\Action;
+  use app\controllers\SiteController;
+  
+  /**
+   * @extends Action<SiteController>
+   */
+  class CustomAction extends Action
+  {
+      public function run()
+      {
+          // $this->controller is now properly typed as SiteController
+      }
+  }
+  ```
+
+Upgrade from Yii 2.0.52
+-----------------------
+
 * Static analysis template annotations have been added to `yii\base\Behavior` and related behavior classes.
   The `Behavior` class now uses PHPStan and Psalm template annotations to provide better type inference for the `$owner` property.
   
@@ -112,9 +148,6 @@ will need to replace them with alternative caching solutions.
   This allows static analysis to infer the type of `$owner` without having to add type annotations throughout your code.
   The framework's built-in behaviors (like `TimestampBehavior`, `BlameableBehavior`, etc.) have already been updated with
   these annotations.
-
-Upgrade from Yii 2.0.52
------------------------
 
 * `ErrorHandler::convertExceptionToError()` has been deprecated and will be removed in version 2.2.0.
 
