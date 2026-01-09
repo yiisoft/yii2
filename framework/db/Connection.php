@@ -153,7 +153,6 @@ class Connection extends Component
      * @event \yii\base\Event an event that is triggered right after a top-level transaction is rolled back
      */
     public const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
-
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
      * Please refer to the [PHP manual](https://www.php.net/manual/en/pdo.construct.php) on

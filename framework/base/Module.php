@@ -49,7 +49,6 @@ class Module extends ServiceLocator
      * @event ActionEvent an event raised after executing a controller action.
      */
     public const EVENT_AFTER_ACTION = 'afterAction';
-
     /**
      * @var array custom module parameters (name => value).
      */

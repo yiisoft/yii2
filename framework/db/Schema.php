@@ -70,7 +70,6 @@ abstract class Schema extends BaseObject
      * data format of the cache changes.
      */
     public const SCHEMA_CACHE_VERSION = 1;
-
     /**
      * @var Connection the database connection
      */

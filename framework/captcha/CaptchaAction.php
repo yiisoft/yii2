@@ -46,7 +46,6 @@ class CaptchaAction extends Action
      * The name of the GET parameter indicating whether the CAPTCHA image should be regenerated.
      */
     public const REFRESH_GET_VAR = 'refresh';
-
     /**
      * @var int how many times should the same CAPTCHA be displayed. Defaults to 3.
      * A value less than or equal to 0 means the test is unlimited (available since version 1.1.2).

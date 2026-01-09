@@ -79,7 +79,6 @@ class Response extends \yii\base\Response
     public const FORMAT_JSON = 'json';
     public const FORMAT_JSONP = 'jsonp';
     public const FORMAT_XML = 'xml';
-
     /**
      * @var string the response format. This determines how to convert [[data]] into [[content]]
      * when the latter is not set. The value of this property must be one of the keys declared in the [[formatters]] array.

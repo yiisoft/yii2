@@ -21,7 +21,6 @@ class Link extends BaseObject
      * The self link.
      */
     public const REL_SELF = 'self';
-
     /**
      * @var string a URI [RFC3986](https://tools.ietf.org/html/rfc3986) or
      * URI template [RFC6570](https://tools.ietf.org/html/rfc6570). This property is required.

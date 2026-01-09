@@ -38,7 +38,6 @@ class Controller extends Component implements ViewContextInterface
      * @event ActionEvent an event raised right after executing a controller action.
      */
     public const EVENT_AFTER_ACTION = 'afterAction';
-
     /**
      * @var string the ID of this controller.
      */

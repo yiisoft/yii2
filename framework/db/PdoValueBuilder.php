@@ -16,8 +16,6 @@ namespace yii\db;
 class PdoValueBuilder implements ExpressionBuilderInterface
 {
     public const PARAM_PREFIX = ':pv';
-
-
     /**
      * {@inheritdoc}
      */

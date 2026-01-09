@@ -47,7 +47,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @since 2.0.6
      */
     public const INDEX_GIN = 'gin';
-
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */

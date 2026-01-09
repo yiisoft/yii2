@@ -68,7 +68,6 @@ class User extends Component
     public const EVENT_AFTER_LOGIN = 'afterLogin';
     public const EVENT_BEFORE_LOGOUT = 'beforeLogout';
     public const EVENT_AFTER_LOGOUT = 'afterLogout';
-
     /**
      * @var string the class name of the [[identity]] object.
      * @phpstan-var class-string<T>

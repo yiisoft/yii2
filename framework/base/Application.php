@@ -82,7 +82,6 @@ abstract class Application extends Module
      * Application state used by [[state]]: application has ended.
      */
     public const STATE_END = 6;
-
     /**
      * @var string the namespace that controller classes are located in.
      * This namespace will be used to load controller classes by prepending it to the controller class name.

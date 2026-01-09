@@ -48,7 +48,6 @@ class OracleMutex extends DbMutex
     public const MODE_SX = 'SX_MODE';
     public const MODE_SS = 'SS_MODE';
     public const MODE_SSX = 'SSX_MODE';
-
     /**
      * @var string lock mode to be used.
      * @see https://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#ARPLS021#CHDBCFDI

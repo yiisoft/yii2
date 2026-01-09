@@ -36,7 +36,6 @@ class ActiveForm extends Widget
      * @since 2.0.14
      */
     public const VALIDATION_STATE_ON_INPUT = 'input';
-
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.

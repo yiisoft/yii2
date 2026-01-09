@@ -36,7 +36,6 @@ abstract class BaseMigrateController extends Controller
      * The name of the dummy migration that marks the beginning of the whole migration history.
      */
     public const BASE_MIGRATION = 'm000000_000000_base';
-
     /**
      * @var string the default command action.
      */

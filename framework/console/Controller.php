@@ -53,7 +53,6 @@ class Controller extends BaseController
      * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
      */
     public const EXIT_CODE_ERROR = 1;
-
     /**
      * @var bool whether to run the command interactively.
      */

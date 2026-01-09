@@ -35,7 +35,6 @@ class UrlNormalizer extends BaseObject
      * @see https://en.wikipedia.org/wiki/HTTP_404
      */
     public const ACTION_NOT_FOUND = 404;
-
     /**
      * @var bool whether slashes should be collapsed, for example `site///index` will be
      * converted into `site/index`

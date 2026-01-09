@@ -45,7 +45,6 @@ class View extends Component implements DynamicContentAwareInterface
      * @event ViewEvent an event that is triggered by [[renderFile()]] right after it renders a view file.
      */
     public const EVENT_AFTER_RENDER = 'afterRender';
-
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
      */

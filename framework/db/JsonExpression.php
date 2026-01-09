@@ -25,7 +25,6 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
 {
     public const TYPE_JSON = 'json';
     public const TYPE_JSONB = 'jsonb';
-
     /**
      * @var mixed the value to be encoded to JSON.
      * The value must be compatible with [\yii\helpers\Json::encode()|Json::encode()]] input requirements.

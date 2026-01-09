@@ -31,7 +31,6 @@ abstract class ErrorHandler extends Component
      * @since 2.0.46
      */
     public const EVENT_SHUTDOWN = 'shutdown';
-
     /**
      * @var bool whether to discard any existing page output before error display. Defaults to true.
      */

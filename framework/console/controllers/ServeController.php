@@ -31,7 +31,6 @@ class ServeController extends Controller
     public const EXIT_CODE_NO_ROUTING_FILE = 3;
     public const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_SERVER = 4;
     public const EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS = 5;
-
     /**
      * @var int port to serve on.
      */

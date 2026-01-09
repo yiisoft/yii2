@@ -42,7 +42,6 @@ class Widget extends Component implements ViewContextInterface
      * @since 2.0.11
      */
     public const EVENT_AFTER_RUN = 'afterRun';
-
     /**
      * @var int a counter used to generate [[id]] for widgets.
      * @internal

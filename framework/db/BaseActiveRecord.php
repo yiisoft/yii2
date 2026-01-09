@@ -81,7 +81,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @since 2.0.8
      */
     public const EVENT_AFTER_REFRESH = 'afterRefresh';
-
     /**
      * @var array attribute values indexed by attribute names
      */

@@ -48,7 +48,6 @@ class BatchQueryResult extends Component implements \Iterator
      * @see https://github.com/yiisoft/yii2/issues/10023
      */
     public const MSSQL_NO_MORE_ROWS_ERROR_CODE = -13;
-
     /**
      * @var Connection|null the DB connection to be used when performing batch query.
      * If null, the "db" application component will be used.

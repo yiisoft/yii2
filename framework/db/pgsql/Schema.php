@@ -37,7 +37,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     public const TYPE_JSONB = 'jsonb';
-
     /**
      * @var string the default schema used for the current session.
      */

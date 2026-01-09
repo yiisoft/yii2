@@ -115,7 +115,6 @@ class View extends \yii\base\View
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
     public const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
-
     /**
      * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
      * are the registered [[AssetBundle]] objects.

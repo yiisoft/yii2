@@ -133,7 +133,6 @@ class DataFilter extends Model
     public const TYPE_DATETIME = 'datetime';
     public const TYPE_DATE = 'date';
     public const TYPE_TIME = 'time';
-
     /**
      * @var string name of the attribute that handles filter value.
      * The name is used to load data via [[load()]] method.

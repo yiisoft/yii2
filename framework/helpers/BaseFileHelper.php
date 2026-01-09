@@ -29,7 +29,6 @@ class BaseFileHelper
     public const PATTERN_MUSTBEDIR = 8;
     public const PATTERN_NEGATIVE = 16;
     public const PATTERN_CASE_INSENSITIVE = 32;
-
     /**
      * @var string the path (or alias) of a PHP file containing MIME type information.
      */

@@ -99,7 +99,6 @@ class Request extends \yii\base\Request
      * @deprecated since 2.0.12. The mask length is now equal to the token length.
      */
     public const CSRF_MASK_LENGTH = 8;
-
     /**
      * @var bool whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
      * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated

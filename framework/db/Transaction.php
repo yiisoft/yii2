@@ -71,7 +71,6 @@ class Transaction extends \yii\base\BaseObject
      * @see https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
      */
     public const SERIALIZABLE = 'SERIALIZABLE';
-
     /**
      * @var Connection the database connection that this transaction is associated with.
      */

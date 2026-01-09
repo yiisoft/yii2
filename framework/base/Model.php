@@ -53,15 +53,13 @@ use yii\validators\Validator;
  * ```
  *
  * Empty array if no errors.
- * @property-read Validator[] $activeValidators The validators applicable to the current
- * [[scenario]].
+ * @property-read Validator[] $activeValidators The validators applicable to the current [[scenario]].
  * @property array $attributes Attribute values (name => value).
  * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
  * values are the corresponding error messages. An empty array will be returned if there is no error.
  * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property-read ArrayObject|Validator[] $validators All the validators declared in the
- * model.
+ * @property-read ArrayObject|Validator[] $validators All the validators declared in the model.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -102,7 +100,6 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * @event Event an event raised at the end of [[validate()]]
      */
     public const EVENT_AFTER_VALIDATE = 'afterValidate';
-
     /**
      * @var array|null validation errors (attribute name => array of errors)
      */

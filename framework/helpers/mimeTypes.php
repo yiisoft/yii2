@@ -316,6 +316,10 @@ $mimeTypes = [
     'hal' => 'application/vnd.hal+xml',
     'hbci' => 'application/vnd.hbci',
     'hdf' => 'application/x-hdf',
+    'heic' => 'image/heic',
+    'heics' => 'image/heic-sequence',
+    'heif' => 'image/heif',
+    'heifs' => 'image/heif-sequence',
     'hh' => 'text/x-c',
     'hlp' => 'application/winhlp',
     'hpgl' => 'application/vnd.hp-hpgl',
@@ -759,6 +763,8 @@ $mimeTypes = [
     'spq' => 'application/scvp-vp-request',
     'spx' => 'audio/ogg',
     'sql' => 'application/x-sql',
+    'sqlite' => 'application/vnd.sqlite3',
+    'sqlite3' => 'application/vnd.sqlite3',
     'src' => 'application/x-wais-source',
     'srt' => 'application/x-subrip',
     'sru' => 'application/sru+xml',
@@ -1012,7 +1018,7 @@ $mimeTypes = [
 
 # fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
 if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
-    $mimeTypes = array_replace($mimeTypes, ['xz' => 'application/octet-stream']);
+    $mimeTypes = array_replace($mimeTypes, array('xz' => 'application/octet-stream'));
 }
 
 return $mimeTypes;

@@ -52,8 +52,6 @@ class BaseConsole
     public const FRAMED = 51;
     public const ENCIRCLED = 52;
     public const OVERLINED = 53;
-
-
     /**
      * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
      * If the cursor is already at the edge of the screen, this has no effect.

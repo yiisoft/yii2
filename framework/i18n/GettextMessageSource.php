@@ -31,7 +31,6 @@ class GettextMessageSource extends MessageSource
 {
     public const MO_FILE_EXT = '.mo';
     public const PO_FILE_EXT = '.po';
-
     /**
      * @var string base directory of messages files
      */

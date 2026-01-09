@@ -283,7 +283,6 @@ class BaseInflector
      * @since 2.0.7
      */
     public const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
-
     /**
      * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
      * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]

@@ -93,8 +93,6 @@ class ActiveRecord extends BaseActiveRecord
      * This is a shortcut of the expression: OP_INSERT | OP_UPDATE | OP_DELETE.
      */
     public const OP_ALL = 0x07;
-
-
     /**
      * Loads default values from database table schema.
      *

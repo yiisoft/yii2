@@ -30,7 +30,6 @@ class ColumnSchemaBuilder extends BaseObject
     public const CATEGORY_NUMERIC = 'numeric';
     public const CATEGORY_TIME = 'time';
     public const CATEGORY_OTHER = 'other';
-
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */

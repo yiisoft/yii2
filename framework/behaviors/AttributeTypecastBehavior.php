@@ -118,7 +118,6 @@ class AttributeTypecastBehavior extends Behavior
     public const TYPE_FLOAT = 'float';
     public const TYPE_BOOLEAN = 'boolean';
     public const TYPE_STRING = 'string';
-
     /**
      * @var Model|BaseActiveRecord|null the owner of this behavior.
      *

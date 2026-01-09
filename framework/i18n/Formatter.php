@@ -77,7 +77,6 @@ class Formatter extends Component
      * @since 2.0.13
      */
     public const UNIT_WEIGHT = 'mass';
-
     /**
      * @var string|null the text to be displayed when formatting a `null` value.
      * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`

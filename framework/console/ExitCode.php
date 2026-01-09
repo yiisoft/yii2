@@ -121,7 +121,6 @@ class ExitCode
      * Something was found in an unconfigured or misconfigured state.
      */
     public const CONFIG = 78;
-
     /**
      * @var array a map of reason descriptions for exit codes.
      */

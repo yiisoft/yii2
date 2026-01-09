@@ -64,7 +64,6 @@ class PageCache extends ActionFilter implements DynamicContentAwareInterface
      * data format of the cache changes.
      */
     public const PAGE_CACHE_VERSION = 1;
-
     /**
      * @var bool whether the content being cached should be differentiated according to the route.
      * A route consists of the requested controller ID and action ID. Defaults to `true`.
