@@ -586,7 +586,7 @@ class Module extends ServiceLocator
      * @throws InvalidConfigException if the controller class and its file do not match.
      *
      * @phpstan-return array{Controller<$this>, string}|false
-     * @psalm-return array{Controller<$this>, string}|false
+     * @psalm-return array{Controller<self>, string}|false
      */
     public function createController($route)
     {
@@ -645,7 +645,7 @@ class Module extends ServiceLocator
      * This exception is only thrown when in debug mode.
      *
      * @phpstan-return Controller<$this>|null
-     * @psalm-return Controller<$this>|null
+     * @psalm-return Controller<self>|null
      */
     public function createControllerByID($id)
     {
@@ -727,7 +727,7 @@ class Module extends ServiceLocator
      * @return bool whether the action should continue to be executed.
      *
      * @phpstan-param Action<Controller<$this>> $action
-     * @psalm-param Action<Controller<$this>> $action
+     * @psalm-param Action<Controller<self>> $action
      */
     public function beforeAction($action)
     {
@@ -758,7 +758,7 @@ class Module extends ServiceLocator
      * @return mixed the processed action result.
      *
      * @phpstan-param Action<Controller<$this>> $action
-     * @psalm-param Action<Controller<$this>> $action
+     * @psalm-param Action<Controller<self>> $action
      */
     public function afterAction($action, $result)
     {

@@ -66,7 +66,7 @@ class Controller extends Component implements ViewContextInterface
      * by [[run()]] when it is called by [[Application]] to run an action.
      *
      * @phpstan-var Action<$this>|null
-     * @psalm-var Action<$this>|null
+     * @psalm-var Action<self>|null
      */
     public $action;
     /**
@@ -245,7 +245,7 @@ class Controller extends Component implements ViewContextInterface
      * @return array the valid parameters that the action can run with.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params
@@ -269,7 +269,7 @@ class Controller extends Component implements ViewContextInterface
      * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
      *
      * @phpstan-return Action<$this>|null
-     * @psalm-return Action<$this>|null
+     * @psalm-return Action<self>|null
      */
     public function createAction($id)
     {
@@ -326,7 +326,7 @@ class Controller extends Component implements ViewContextInterface
      * @return bool whether the action should continue to run.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function beforeAction($action)
     {
@@ -357,7 +357,7 @@ class Controller extends Component implements ViewContextInterface
      * @return mixed the processed action result.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function afterAction($action, $result)
     {

@@ -127,7 +127,7 @@ class Controller extends BaseController
      * @throws BadRequestHttpException if there are missing or invalid parameters.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params
