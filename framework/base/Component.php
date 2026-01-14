@@ -99,7 +99,7 @@ use yii\helpers\StringHelper;
  * @since 2.0
  *
  * @phpstan-property-read Behavior<$this>[] $behaviors
- * @psalm-property-read Behavior<$this>[] $behaviors
+ * @psalm-property-read Behavior<self>[] $behaviors
  */
 class Component extends BaseObject
 {
@@ -668,7 +668,7 @@ class Component extends BaseObject
      * @return Behavior|null the behavior object, or null if the behavior does not exist
      *
      * @phpstan-return Behavior<$this>|null
-     * @psalm-return Behavior<$this>|null
+     * @psalm-return Behavior<self>|null
      */
     public function getBehavior($name)
     {
@@ -681,7 +681,7 @@ class Component extends BaseObject
      * @return Behavior[] list of behaviors attached to this component
      *
      * @phpstan-return Behavior<$this>[]
-     * @psalm-return Behavior<$this>[]
+     * @psalm-return Behavior<self>[]
      */
     public function getBehaviors()
     {
@@ -705,10 +705,10 @@ class Component extends BaseObject
      * @see detachBehavior()
      *
      * @phpstan-param string|array|Behavior<$this> $behavior
-     * @psalm-param string|array|Behavior<$this> $behavior
+     * @psalm-param string|array|Behavior<self> $behavior
      *
      * @phpstan-return Behavior<$this>
-     * @psalm-return Behavior<$this>
+     * @psalm-return Behavior<self>
      */
     public function attachBehavior($name, $behavior)
     {
@@ -738,7 +738,7 @@ class Component extends BaseObject
      * @return Behavior|null the detached behavior. Null if the behavior does not exist.
      *
      * @phpstan-return Behavior<$this>|null
-     * @psalm-return Behavior<$this>|null
+     * @psalm-return Behavior<self>|null
      */
     public function detachBehavior($name)
     {

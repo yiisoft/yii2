@@ -131,7 +131,7 @@ abstract class BaseMigrateController extends Controller
      * @return bool whether the action should continue to be executed.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function beforeAction($action)
     {

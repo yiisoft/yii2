@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.55 under development
 ------------------------
 
-- no changes in this release.
+- Bug #20705: Replace `$this` with `self` in generics in Psalm annotations (mspirkov)
 
 
 2.0.54 January 09, 2026

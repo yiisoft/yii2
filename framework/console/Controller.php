@@ -197,7 +197,7 @@ class Controller extends BaseController
      * @throws Exception if there are unknown options or missing arguments
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      *
      * @phpstan-param array<array-key, mixed> $params
      * @psalm-param array<array-key, mixed> $params
@@ -551,7 +551,7 @@ class Controller extends BaseController
      * @return string a one-line short summary describing the specified action.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionHelpSummary($action)
     {
@@ -568,7 +568,7 @@ class Controller extends BaseController
      * @return string the detailed help information for the specified action.
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionHelp($action)
     {
@@ -593,7 +593,7 @@ class Controller extends BaseController
      * @return array the help information of the action arguments
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionArgsHelp($action)
     {
@@ -669,7 +669,7 @@ class Controller extends BaseController
      * @return array the help information of the action options
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionOptionsHelp($action)
     {
@@ -727,7 +727,7 @@ class Controller extends BaseController
      * @return \ReflectionFunctionAbstract
      *
      * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @psalm-param Action<self> $action
      */
     protected function getActionMethodReflection($action)
     {
@@ -779,7 +779,7 @@ class Controller extends BaseController
      * @return string
      *
      * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
-     * @psalm-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentSummary($reflection)
     {
@@ -798,7 +798,7 @@ class Controller extends BaseController
      * @return string
      *
      * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
-     * @psalm-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentDetail($reflection)
     {
