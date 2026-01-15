@@ -82,7 +82,7 @@ interface QueryInterface
      * - operator format: `[operator, operand1, operand2, ...]`
      *
      * A condition in hash format represents the following SQL expression in general:
-     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array or sub-query,
      * an `IN` expression will be generated. And if a value is `null`, `IS NULL` will be used
      * in the generated expression. Below are some examples:
      *
