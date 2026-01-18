@@ -93,6 +93,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveRelationTrait;
 
     /**
+     * @var string the ID of the database connection component.
+     * This allows you to define which database connection this model should use.
+     * @since 2.0.51
+     */
+    protected static $connection = 'db';
+    /**
      * @event Event an event that is triggered when the query is initialized via [[init()]].
      */
     public const EVENT_INIT = 'init';
@@ -676,6 +682,21 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         list($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
         list($childTable, $childAlias) = $child->getTableNameAndAlias();
 
+        $childModelClass = $child->modelClass;
+        $parentModelClass = $parent->modelClass;
+
+        if ($childModelClass !== null && $parentModelClass !== null) {
+            $childDb = $childModelClass::getDb();
+            $parentDb = $parentModelClass::getDb();
+
+            if ($childDb->dsn !== $parentDb->dsn) {
+                if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
+                    $dbName = $matches[1];
+                    $childTable = "[[$dbName]]." . (empty($child->from) ? $childTable : (is_array($child->from) ? reset($child->from) : $child->from));
+                }
+            }
+        }
+
         if (!empty($child->link)) {
             if (strpos($parentAlias, '{{') === false) {
                 $parentAlias = '{{' . $parentAlias . '}}';
@@ -695,6 +716,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } else {
             $on = $child->on;
         }
+
         $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {

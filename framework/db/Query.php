@@ -53,6 +53,12 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     use QueryTrait;
 
     /**
+     * @var Connection|string|null the DB connection object or the application component ID of the DB connection.
+     * @since 2.0.51
+     */
+    public $db;
+
+    /**
      * @var array|null the columns being selected. For example, `['id', 'name']`.
      * This is used to construct the SELECT clause in a SQL statement. If not set, it means selecting all columns.
      * @see select()
@@ -145,15 +151,20 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * Creates a DB command that can be used to execute this query.
-     * @param Connection|null $db the database connection used to generate the SQL statement.
-     * If this parameter is not given, the `db` application component will be used.
+     * @param Connection|string|null $db the DB connection object or the application component ID of the DB connection.
+     * If this is null, the connection set via [[useDb()]] or the default 'db' application component will be used.
      * @return Command the created DB command instance.
      */
     public function createCommand($db = null)
     {
         if ($db === null) {
-            $db = Yii::$app->getDb();
+            $db = $this->db !== null ? $this->db : Yii::$app->getDb();
         }
+
+        if (is_string($db)) {
+            $db = Yii::$app->get($db);
+        }
+
         list($sql, $params) = $db->getQueryBuilder()->build($this);
 
         $command = $db->createCommand($sql, $params);
@@ -776,6 +787,18 @@ PATTERN;
     public function distinct($value = true)
     {
         $this->distinct = $value;
+        return $this;
+    }
+
+    /**
+     * Sets the database connection to be used for this query.
+     * @param Connection|string|null $db the DB connection object or the application component ID of the DB connection.
+     * @return $this the query object itself
+     * @since 2.0.51
+     */
+    public function useDb($db)
+    {
+        $this->db = $db;
         return $this;
     }
 
