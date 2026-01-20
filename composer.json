@@ -86,7 +86,7 @@
         "dms/phpunit-arraysubset-asserts": "^0.5",
         "phpunit/phpunit": "^9.6",
         "yiisoft/yii2-coding-standards": "^3.0",
-        "phpstan/phpstan": "^2.1.35"
+        "phpstan/phpstan": "^2.1"
     },
     "repositories": [
         {
