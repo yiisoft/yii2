@@ -880,17 +880,30 @@
             $ul = $summary.find('ul').empty();
 
         if ($summary.length && messages) {
-            $.each(data.attributes, function () {
-                if ($.isArray(messages[this.id]) && messages[this.id].length) {
+            data.attributes
+                .reduce(function (errors, attribute) {
+                    if (!$.isArray(messages[attribute.id]) || !messages[attribute.id].length) {
+                        return errors;
+                    }
+
+                    var message = messages[attribute.id][0];
+                    if ($.inArray(message, errors) >= 0) {
+                        return errors;
+                    }
+
+                    errors.push(message);
+                    return errors;
+                }, [])
+                .forEach(function (message) {
                     var error = $('<li/>');
                     if (data.settings.encodeErrorSummary) {
-                        error.text(messages[this.id][0]);
+                        error.text(message);
                     } else {
-                        error.html(messages[this.id][0]);
+                        error.html(message);
                     }
                     $ul.append(error);
-                }
-            });
+                });
+            
             $summary.toggle($ul.find('li').length > 0);
         }
     };
