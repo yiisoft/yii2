@@ -668,12 +668,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $via = $child->via;
         $child->via = null;
         if ($via instanceof self) {
-            // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
             return;
         } elseif (is_array($via)) {
-            // via relation
             $this->joinWithRelation($parent, $via[1], $joinType);
             $this->joinWithRelation($via[1], $child, $joinType);
             return;
@@ -690,9 +688,38 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $parentDb = $parentModelClass::getDb();
 
             if ($childDb->dsn !== $parentDb->dsn) {
-                if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
-                    $dbName = $matches[1];
-                    $childTable = "[[$dbName]]." . (empty($child->from) ? $childTable : (is_array($child->from) ? reset($child->from) : $child->from));
+                $driverName = $childDb->getDriverName();
+                $dbName = null;
+
+                if (in_array($driverName, ['mysql', 'mysqli'])) {
+                    if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
+                        $dbName = $childDb->quoteTableName($matches[1]);
+                    }
+                }
+                elseif (in_array($driverName, ['sqlsrv', 'mssql', 'dblib'])) {
+                    if (preg_match('/Database=([^; ]+)/i', $childDb->dsn, $matches)) {
+                        $dbName = $childDb->quoteTableName($matches[1]);
+                    }
+                }
+                elseif ($driverName === 'pgsql') {
+                    if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
+                        $dbName = $childDb->quoteTableName($matches[1]);
+                    }
+                }
+                elseif ($driverName === 'sqlite') {
+                    if (preg_match('/sqlite:(.+)/', $childDb->dsn, $matches)) {
+                        $path = $matches[1];
+                        if ($path !== ':memory:' && $path !== '') {
+                            $filename = basename($path);
+                            $dbName = $childDb->quoteTableName(pathinfo($filename, PATHINFO_FILENAME));
+                        }
+                    }
+                }
+
+                if ($dbName !== null) {
+                    $rawChildTable = empty($child->from) ? $childTable : (is_array($child->from) ? reset($child->from) : $child->from);
+                    $separator = (in_array($driverName, ['sqlsrv', 'mssql', 'dblib'])) ? '..' : '.';
+                    $childTable = $dbName . $separator . $rawChildTable;
                 }
             }
         }
