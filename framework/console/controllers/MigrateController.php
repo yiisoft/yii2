@@ -492,8 +492,8 @@ class MigrateController extends BaseMigrateController
                 }
             }
             $foreignKeys[$column] = [
-                'idx' => $this->generateTableName("idx-$table-$column"),
-                'fk' => $this->generateTableName("fk-$table-$column"),
+                'idx' => "idx-$table-$column",
+                'fk' => "fk-$table-$column",
                 'relatedTable' => $this->generateTableName($relatedTable),
                 'relatedColumn' => $relatedColumn,
             ];
