@@ -1019,12 +1019,14 @@ Yii Framework 2 Change Log
 - Enh #16191: Enhanced `yii\helpers\Inflector` to work correctly with UTF-8 (silverfire)
 - Enh #16365: Added $filterOnFocusOut option for GridView (s1lver)
 - Enh #16522: Allow jQuery 3.3 (Slamdunk)
+- Enh #16643: Refactor commands/controllers/MessageController method extractMessagesFromTokens a little bit (thyseus)
 - Enh #16603: Added `yii\mutex\FileMutex::$isWindows` for Windows file shares on Unix guest machines (brandonkelly)
 - Enh #16839: Increase frequency of lock tries for `yii\mutex\FileMutex::acquireLock()` when $timeout is provided (rob006)
 - Enh #16839: Add support for `$timeout` in  `yii\mutex\PgsqlMutex::acquire()` (rob006)
 - Enh: `yii\helpers\UnsetArrayValue`, `yii\helpers\ReplaceArrayValue` object now can be restored after serialization using `var_export()` function (silvefire)
 - Chg #16192: `yii\db\Command::logQuery()` is now protected, extracted `getCacheKey()` from `queryInternal()` (drlibra)
 - Chg #16941: Set `yii\console\controllers\MigrateController::useTablePrefix` to true as default value (GHopperMSK)
+
 
 
 2.0.15.1 March 21, 2018

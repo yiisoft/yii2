@@ -554,7 +554,7 @@ EOD;
 
                     if ($pendingParenthesisCount === 0) {
                         // end of translator call or end of something that we can't extract
-                        if (isset($buffer[0][0], $buffer[1], $buffer[2][0]) && $buffer[0][0] === T_CONSTANT_ENCAPSED_STRING && $buffer[1] === ',' && $buffer[2][0] === T_CONSTANT_ENCAPSED_STRING) {
+                        if ($this->isBufferValid($buffer)) {
                             // is valid call we can extract
                             $category = stripcslashes($buffer[0][1]);
                             $category = mb_substr($category, 1, -1);
@@ -563,7 +563,9 @@ EOD;
                                 $fullMessage = mb_substr($buffer[2][1], 1, -1);
                                 $i = 3;
                                 while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {
-                                    $fullMessage .= mb_substr($buffer[$i + 1][1], 1, -1);
+                                    if (isset($buffer[$i+1], $buffer[$i+1][1])) {
+                                        $fullMessage .= mb_substr($buffer[$i + 1][1], 1, -1);
+                                    }
                                     $i += 2;
                                 }
 
@@ -574,7 +576,8 @@ EOD;
                             $nestedTokens = array_slice($buffer, 3);
                             if (count($nestedTokens) > $translatorTokensCount) {
                                 // search for possible nested translator calls
-                                $messages = array_merge_recursive($messages, $this->extractMessagesFromTokens($nestedTokens, $translatorTokens, $ignoreCategories));
+                                $messages = array_merge_recursive($messages,
+                                    $this->extractMessagesFromTokens($nestedTokens, $translatorTokens, $ignoreCategories));
                             }
                         } else {
                             // invalid call or dynamic call we can't extract
@@ -618,6 +621,19 @@ EOD;
         }
 
         return $messages;
+    }
+
+    /**
+     * Checks if the given buffer has the correct format.
+     *
+     * @param array $buffer
+     * @return bool
+     */
+    private function isBufferValid(array $buffer)
+    {
+        return isset($buffer[0][0], $buffer[1], $buffer[2][0])
+            && $buffer[0][0] === T_CONSTANT_ENCAPSED_STRING
+            && $buffer[1] === ',' && $buffer[2][0] === T_CONSTANT_ENCAPSED_STRING;
     }
 
     /**
