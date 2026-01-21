@@ -68,6 +68,7 @@ use yii\base\InvalidConfigException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
+ * @author Dmitriy Malyar <softkoc@gmail.com>
  * @since 2.0
  *
  * @template T of (ActiveRecord|array)
@@ -645,6 +646,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         return [$tableName, $alias];
+    }
+    
+    /**
+     * Return table alias.
+     *
+     * @return string
+     */
+    public function getAlias()
+    {
+        if (!$this->from) {
+            $this->alias('default');
+        }
+
+        return array_keys($this->from)[0];
     }
 
     /**
