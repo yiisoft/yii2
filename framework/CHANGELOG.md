@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #20705: Replace `$this` with `self` in generics in Psalm annotations (mspirkov)
+- Bug #20715: Adjust `JSON` helper error message assertions for `PHP 8.6` compatibility in `JsonTest` class (terabytesoftw)
 
 
 2.0.54 January 09, 2026
