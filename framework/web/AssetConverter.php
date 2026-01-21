@@ -36,9 +36,7 @@ class AssetConverter extends Component implements AssetConverterInterface
      * ]
      * ```
      *
-     * Note: `Yii::getAlias()` can replace alias at the begin of the command only.
-     *
-     * @see https://sass-lang.com/documentation/cli/ SASS/SCSS
+     * @see https://sass-lang.com/documentation/cli SASS/SCSS
      */
     public $commands = [
         'less' => ['css', 'lessc {from} {to} --no-color --source-map'],
@@ -94,12 +92,20 @@ class AssetConverter extends Component implements AssetConverterInterface
      */
     protected function runCommand($command, $basePath, $asset, $result)
     {
-        $command = Yii::getAlias($command);
-
         $command = strtr($command, [
             '{from}' => escapeshellarg("$basePath/$asset"),
             '{to}' => escapeshellarg("$basePath/$result"),
         ]);
+        $command = preg_replace_callback(
+            '/@[^@]+/',
+            static function ($matches) {
+                $to = Yii::getAlias($matches[0], false);
+
+                return $to === false ? $matches[0] : escapeshellarg($to);
+            },
+            $command
+        );
+        
         $descriptor = [
             1 => ['pipe', 'w'],
             2 => ['pipe', 'w'],
