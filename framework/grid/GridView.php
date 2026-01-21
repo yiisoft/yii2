@@ -562,9 +562,9 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                                                            'class' => $this->dataColumnClass ?: DataColumn::className(),
-                                                            'grid' => $this,
-                                                        ], $column));
+                    'class' => $this->dataColumnClass ?: DataColumn::className(),
+                    'grid' => $this,
+                ], $column));
             }
             if (!$column->visible) {
                 unset($this->columns[$i]);
@@ -587,12 +587,12 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-                                     'class' => $this->dataColumnClass ?: DataColumn::className(),
-                                     'grid' => $this,
-                                     'attribute' => $matches[1],
-                                     'format' => isset($matches[3]) ? $matches[3] : 'text',
-                                     'label' => isset($matches[5]) ? $matches[5] : null,
-                                 ]);
+            'class' => $this->dataColumnClass ?: DataColumn::className(),
+            'grid' => $this,
+            'attribute' => $matches[1],
+            'format' => isset($matches[3]) ? $matches[3] : 'text',
+            'label' => isset($matches[5]) ? $matches[5] : null,
+        ]);
     }
 
     /**
