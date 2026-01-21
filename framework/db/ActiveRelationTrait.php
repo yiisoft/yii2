@@ -304,7 +304,7 @@ trait ActiveRelationTrait
                 $primaryModelKey = reset($link);
                 $keys = isset($primaryModel[$primaryModelKey]) ? $primaryModel[$primaryModelKey] : null;
             }
-            if (is_array($keys)) {
+            if (is_array($keys) || $keys instanceof ArrayExpression) {
                 $value = [];
                 foreach ($keys as $key) {
                     $key = $this->normalizeModelKey($key);
