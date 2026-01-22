@@ -662,10 +662,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $via = $child->via;
         $child->via = null;
         if ($via instanceof self) {
+            // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
             return;
         } elseif (is_array($via)) {
+            // via relation
             $this->joinWithRelation($parent, $via[1], $joinType);
             $this->joinWithRelation($via[1], $child, $joinType);
             return;
@@ -685,16 +687,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $driverName = $childDb->getDriverName();
                 $dbName = null;
 
-                if (in_array($driverName, ['mysql', 'mysqli'])) {
-                    if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
-                        $dbName = $childDb->quoteTableName($matches[1]);
-                    }
-                } elseif (in_array($driverName, ['sqlsrv', 'mssql', 'dblib'])) {
-                    if (preg_match('/Database=([^; ]+)/i', $childDb->dsn, $matches)) {
-                        $dbName = $childDb->quoteTableName($matches[1]);
-                    }
-                } elseif ($driverName === 'pgsql') {
-                    if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
+                if (in_array($driverName, ['mysql', 'mysqli', 'sqlsrv', 'mssql', 'dblib', 'pgsql'])) {
+                    if (preg_match('/(?:dbname|Database)=([^; ]+)/i', $childDb->dsn, $matches)) {
                         $dbName = $childDb->quoteTableName($matches[1]);
                     }
                 } elseif ($driverName === 'sqlite') {
