@@ -129,14 +129,15 @@ class ActiveRecord extends BaseActiveRecord
      * You may override this method if you want to use a different database connection.
      * @return Connection the database connection used by this AR class.
      */
-    public static function getDb()
+    public static function getDb(): Connection
     {
-        if (property_exists(static::class, 'connection')) {
-            /** @phpstan-ignore-next-line */
-            $connection = static::$connection;
+        $modelClass = static::class;
+        if (property_exists($modelClass, 'connection')) {
+            $connection = $modelClass::$connection;
         } else {
             $connection = 'db';
         }
+
         return \Yii::$app->get($connection);
     }
 
