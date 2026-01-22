@@ -769,7 +769,7 @@ class Controller extends BaseController
      * @param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
      *
-     * @phpstan-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentSummary($reflection)
@@ -788,7 +788,7 @@ class Controller extends BaseController
      * @param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
      *
-     * @phpstan-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentDetail($reflection)
