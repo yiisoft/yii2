@@ -7,18 +7,19 @@
 
 namespace yiiunit\framework\db;
 
-use Yii;
-
 /**
  * UserStub is a mock ActiveRecord for testing cross-database joins.
  */
 class UserStub extends \yii\db\ActiveRecord
 {
-    public static function getDb()
-    {
-        return Yii::$app->get('db');
-    }
+    /**
+     * {@inheritdoc}
+     */
+    public static $connection = 'db';
 
+    /**
+     * {@inheritdoc}
+     */
     public static function tableName()
     {
         return 'user';
