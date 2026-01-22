@@ -131,14 +131,12 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getDb()
     {
-        $modelClass = static::class;
-        if (property_exists($modelClass, 'connection')) {
-            $connection = $modelClass::$connection;
-        } else {
-            $connection = 'db';
+        $class = static::class;
+        if (property_exists($class, 'connection')) {
+            return \Yii::$app->get($class::$connection);
         }
 
-        return \Yii::$app->get($connection);
+        return \Yii::$app->getDb();
     }
 
     /**

@@ -54,7 +54,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
     /**
      * @var Connection|string|null the DB connection object or the application component ID of the DB connection.
-     * @since 2.0.51
+     * @since 2.0.55
      */
     public $db;
 
@@ -794,7 +794,7 @@ PATTERN;
      * Sets the database connection to be used for this query.
      * @param Connection|string|null $db the DB connection object or the application component ID of the DB connection.
      * @return $this the query object itself
-     * @since 2.0.51
+     * @since 2.0.55
      */
     public function useDb($db)
     {

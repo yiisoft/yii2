@@ -93,12 +93,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     use ActiveRelationTrait;
 
     /**
-     * @var string the ID of the database connection component.
-     * This allows you to define which database connection this model should use.
-     * @since 2.0.51
-     */
-    protected static $connection = 'db';
-    /**
      * @event Event an event that is triggered when the query is initialized via [[init()]].
      */
     public const EVENT_INIT = 'init';

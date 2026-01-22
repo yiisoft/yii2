@@ -1,33 +1,20 @@
 <?php
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
-use Yii;
 use yii\db\Connection;
 use yii\db\ActiveQuery;
 use yiiunit\TestCase;
 use ReflectionMethod;
 
-class UserStub extends \yii\db\ActiveRecord
-{
-    protected static $connection = 'db';
-
-    public static function tableName()
-    {
-        return 'user';
-    }
-}
-
-class LogStub extends \yii\db\ActiveRecord
-{
-    protected static $connection = 'db_logs';
-
-    public static function tableName()
-    {
-        return 'audit_log';
-    }
-}
-
+/**
+ * ConnectionSupportTest tests cross-database join support.
+ */
 class ConnectionSupportTest extends TestCase
 {
     protected function createMockDb($driverName, $dsn)
@@ -69,15 +56,10 @@ class ConnectionSupportTest extends TestCase
         $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
 
-        $this->assertStringContainsString('logs_db', $joinTable, 'Join table should contain database name');
-        $this->assertStringContainsString('`logs_db`', $joinTable, 'Database name should be quoted with backticks');
-        $this->assertStringContainsString('.', $joinTable, 'Should have dot separator');
-        $this->assertStringNotContainsString('..', $joinTable, 'MySQL should use single dot, not double dots');
-        $this->assertMatchesRegularExpression('/`logs_db`\.`?audit_log`?/', $joinTable, 'Should match MySQL cross-database join format: `db_name`.`table_name`');
-        $this->assertTrue(
-            preg_match('/`logs_db`\./', $joinTable) === 1,
-            'MySQL join should have quoted database name followed by dot: `logs_db`.'
-        );
+        $this->assertStringContainsString('logs_db', $joinTable);
+        $this->assertStringContainsString('`logs_db`', $joinTable);
+        $this->assertStringContainsString('.', $joinTable);
+        $this->assertMatchesRegularExpression('/`logs_db`\.`?audit_log`?/', $joinTable);
     }
 
     public function testCrossDbJoinMSSQL()
@@ -98,14 +80,9 @@ class ConnectionSupportTest extends TestCase
         $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
 
-        $this->assertStringContainsString('mssql_logs', $joinTable, 'Join table should contain database name');
-        $this->assertStringContainsString('[mssql_logs]', $joinTable, 'Database name should be quoted with brackets');
-        $this->assertStringContainsString('..', $joinTable, 'MSSQL must use double dots separator (not single dot)');
-        $this->assertMatchesRegularExpression('/\[mssql_logs\]\.\.\[?audit_log\]?/', $joinTable, 'Should match MSSQL cross-database join format: [db_name]..[table_name]');
-        $this->assertTrue(
-            preg_match('/\[mssql_logs\]\.\./', $joinTable) === 1,
-            'MSSQL join should have quoted database name followed by double dots: [mssql_logs]..'
-        );
+        $this->assertStringContainsString('[mssql_logs]', $joinTable);
+        $this->assertStringContainsString('..', $joinTable);
+        $this->assertMatchesRegularExpression('/\[mssql_logs\]\.\.\[?audit_log\]?/', $joinTable);
     }
 
     public function testCrossDbJoinSQLite()
@@ -126,12 +103,9 @@ class ConnectionSupportTest extends TestCase
         $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
 
-        $this->assertStringContainsString('logs', $joinTable, 'Join table should contain database name (from filename)');
-        $this->assertStringContainsString('`logs`', $joinTable, 'Database name should be quoted with backticks');
-        $this->assertStringContainsString('.', $joinTable, 'Should have dot separator');
-        $this->assertStringNotContainsString('..', $joinTable, 'SQLite should use single dot, not double dots');
-        $this->assertMatchesRegularExpression('/`logs`\.`?audit_log`?/', $joinTable, 'Should match SQLite cross-database join format: `db_name`.`table_name`');
-        $this->assertNotEquals($db->dsn, $dbLogs->dsn, 'Parent and child should have different DSNs for cross-database join');
+        $this->assertStringContainsString('`logs`', $joinTable);
+        $this->assertStringContainsString('.', $joinTable);
+        $this->assertMatchesRegularExpression('/`logs`\.`?audit_log`?/', $joinTable);
     }
 
     public function testCrossDbJoinPostgreSQL()
@@ -152,14 +126,8 @@ class ConnectionSupportTest extends TestCase
         $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
 
-        $this->assertStringContainsString('logs_db', $joinTable, 'Join table should contain database name');
-        $this->assertStringContainsString('"logs_db"', $joinTable, 'Database name should be quoted with double quotes');
-        $this->assertStringContainsString('.', $joinTable, 'Should have dot separator');
-        $this->assertStringNotContainsString('..', $joinTable, 'PostgreSQL should use single dot, not double dots');
-        $this->assertMatchesRegularExpression('/"logs_db"\.\"?audit_log\"?/', $joinTable, 'Should match PostgreSQL cross-database join format: "db_name"."table_name"');
-        $this->assertTrue(
-            preg_match('/"logs_db"\./', $joinTable) === 1,
-            'PostgreSQL join should have quoted database name followed by dot: "logs_db".'
-        );
+        $this->assertStringContainsString('"logs_db"', $joinTable);
+        $this->assertStringContainsString('.', $joinTable);
+        $this->assertMatchesRegularExpression('/"logs_db"\.\"?audit_log\"?/', $joinTable);
     }
 }
