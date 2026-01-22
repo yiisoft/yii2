@@ -511,7 +511,8 @@ describe('yii', function () {
                 describe('with form', function () {
                     withData({
                         'submit, data-form': ['.submit-outside-form', '#submit-separate-form'],
-                        'submit, inside a form': ['.submit-inside-form', '#submit-parent-form']
+                        'submit, form tag': ['.submit-outside-form-tag', '#submit-separate-form'],
+                        'submit, inside a form': ['.submit-inside-form', '#submit-parent-form'],
                     }, function (elementSelector, formSelector) {
                         it('should submit according existing form', function () {
                             var $element = $('.handle-action .no-method .valid').find(elementSelector);
@@ -530,6 +531,7 @@ describe('yii', function () {
 
                     withData({
                         'submit, data-form, data-pjax': ['.submit-outside-form-pjax', '#submit-separate-form'],
+                        'submit, form tag, data-pjax': ['.submit-outside-form-tag-pjax', '#submit-separate-form'],
                         'submit, inside a form, data-pjax': ['.submit-inside-form-pjax', '#submit-parent-form-pjax']
                     }, function (elementSelector, formSelector) {
                         it('should submit according existing form with pjax', function () {

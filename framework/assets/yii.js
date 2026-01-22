@@ -151,7 +151,8 @@ window.yii = (function ($) {
          * @param event Related event
          */
         handleAction: function ($e, event) {
-            var $form = $e.attr('data-form') ? $('#' + $e.attr('data-form')) : $e.closest('form'),
+            var $form = $e.attr('data-form') ? $('#' + $e.attr('data-form')) :
+                $e.attr('form') ? $('#' + $e.attr('form')) : $e.closest('form'),
                 method = !$e.data('method') && $form ? $form.attr('method') : $e.data('method'),
                 action = $e.attr('href'),
                 isValidAction = action && action !== '#',
