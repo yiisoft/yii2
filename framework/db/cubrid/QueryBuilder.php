@@ -184,10 +184,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropIndex($name, $table)
     {
-        /**
-         * @var Schema $schema
-         * @phpstan-var Schema<ColumnSchema>
-         */
+        /** @var Schema<ColumnSchema> $schema */
         $schema = $this->db->getSchema();
         foreach ($schema->getTableUniques($table) as $unique) {
             if ($unique->name === $name) {

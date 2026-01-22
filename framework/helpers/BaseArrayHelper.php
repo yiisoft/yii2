@@ -113,19 +113,10 @@ class BaseArrayHelper
      * be appended to the former array.
      * You can use [[UnsetArrayValue]] object to unset value from previous array or
      * [[ReplaceArrayValue]] to force replace former value instead of recursive merging.
-     * @param array $a array to be merged to
-     * @param array $b array to be merged from. You can specify additional
+     * @param array<array-key, mixed> $a array to be merged to
+     * @param array<array-key, mixed> ...$b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
-     * @return array the merged array (the original arrays are not changed.)
-     *
-     * @phpstan-param array<array-key, mixed> $a
-     * @psalm-param array<array-key, mixed> $a
-     *
-     * @phpstan-param array<array-key, mixed> ...$b
-     * @psalm-param array<array-key, mixed> ...$b
-     *
-     * @phpstan-return array<array-key, mixed>
-     * @psalm-return array<array-key, mixed>
+     * @return array<array-key, mixed> the merged array (the original arrays are not changed.)
      */
     public static function merge($a, ...$b)
     {
@@ -625,12 +616,9 @@ class BaseArrayHelper
      * This method enhances the `array_key_exists()` function by supporting case-insensitive
      * key comparison.
      * @param string|int $key the key to check
-     * @param array|ArrayAccess $array the array with keys to check
+     * @param array<array-key, mixed>|ArrayAccess<array-key, mixed> $array the array with keys to check
      * @param bool $caseSensitive whether the key comparison should be case-sensitive
      * @return bool whether the array contains the specified key
-     *
-     * @phpstan-param array<array-key, mixed>|ArrayAccess<array-key, mixed> $array
-     * @psalm-param array<array-key, mixed>|ArrayAccess<array-key, mixed> $array
      */
     public static function keyExists($key, $array, $caseSensitive = true)
     {

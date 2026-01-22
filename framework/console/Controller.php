@@ -191,19 +191,13 @@ class Controller extends BaseController
      * This method is invoked by [[Action]] when it begins to run with the given parameters.
      * This method will first bind the parameters with the [[options()|options]]
      * available to the action. It then validates the given arguments.
-     * @param Action $action the action to be bound with parameters
-     * @param array $params the parameters to be bound to the action
-     * @return array the valid parameters that the action can run with.
+     * @param Action<$this> $action the action to be bound with parameters
+     * @param array<array-key, mixed> $params the parameters to be bound to the action
+     * @return mixed[] the valid parameters that the action can run with.
      * @throws Exception if there are unknown options or missing arguments
      *
      * @phpstan-param Action<$this> $action
      * @psalm-param Action<self> $action
-     *
-     * @phpstan-param array<array-key, mixed> $params
-     * @psalm-param array<array-key, mixed> $params
-     *
-     * @phpstan-return mixed[]
-     * @psalm-return mixed[]
      */
     public function bindActionParams($action, $params)
     {
@@ -547,7 +541,7 @@ class Controller extends BaseController
 
     /**
      * Returns a one-line short summary describing the specified action.
-     * @param Action $action action to get summary for
+     * @param Action<$this> $action action to get summary for
      * @return string a one-line short summary describing the specified action.
      *
      * @phpstan-param Action<$this> $action
@@ -564,7 +558,7 @@ class Controller extends BaseController
 
     /**
      * Returns the detailed help information for the specified action.
-     * @param Action $action action to get help for
+     * @param Action<$this> $action action to get help for
      * @return string the detailed help information for the specified action.
      *
      * @phpstan-param Action<$this> $action
@@ -589,7 +583,7 @@ class Controller extends BaseController
      * The default implementation will return the help information extracted from the Reflection or
      * DocBlock of the parameters corresponding to the action method.
      *
-     * @param Action $action the action instance
+     * @param Action<$this> $action the action instance
      * @return array the help information of the action arguments
      *
      * @phpstan-param Action<$this> $action
@@ -665,7 +659,7 @@ class Controller extends BaseController
      * The default implementation will return the help information extracted from the doc-comment of
      * the properties corresponding to the action options.
      *
-     * @param Action $action
+     * @param Action<$this> $action
      * @return array the help information of the action options
      *
      * @phpstan-param Action<$this> $action
@@ -723,7 +717,7 @@ class Controller extends BaseController
     private $_reflections = [];
 
     /**
-     * @param Action $action
+     * @param Action<$this> $action
      * @return \ReflectionFunctionAbstract
      *
      * @phpstan-param Action<$this> $action
@@ -744,11 +738,8 @@ class Controller extends BaseController
 
     /**
      * Parses the comment block into tags.
-     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection the comment block
+     * @param \ReflectionClass<object>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection the comment block
      * @return array the parsed tags
-     *
-     * @phpstan-param \ReflectionClass<object>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
-     * @psalm-param \ReflectionClass<object>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentTags($reflection)
     {
@@ -775,10 +766,10 @@ class Controller extends BaseController
     /**
      * Returns the first line of docblock.
      *
-     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
      *
-     * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @phpstan-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentSummary($reflection)
@@ -794,10 +785,10 @@ class Controller extends BaseController
     /**
      * Returns full description from the docblock.
      *
-     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
      *
-     * @phpstan-param \ReflectionClass<$this>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @phpstan-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentDetail($reflection)

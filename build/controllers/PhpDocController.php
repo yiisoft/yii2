@@ -36,7 +36,7 @@ class PhpDocController extends ConsoleController
     /**
      * Manually added PHPDoc properties that do not need to be removed or changed.
      *
-     * @phpstan-var array<class-string, string[]>
+     * @var array<class-string, string[]>
      */
     private const MANUALLY_ADDED_PROPERTIES = [
         WebController::class => [
@@ -70,6 +70,8 @@ class PhpDocController extends ConsoleController
     ];
 
     private const PROPERTIES_ENCLOSURE = " *\n";
+
+    private const TYPE_REG_EXP = '\??[\w\\\-]+(?:<(?:[^<>]+|<[^<>]*>)*>|\{[^{}]*\}|\([^()]*\)(?:\s*:\s*[^()\s]+)?)?(?:\[\])*(?:\s*(?:\||&|\?|:)\s*\??[\w\\\-]+(?:<[^<>]*>)?(?:\[\])*)*';
 
     /**
      * {@inheritdoc}
@@ -784,7 +786,7 @@ class PhpDocController extends ConsoleController
             $className = $namespace . '\\' . $class['name'];
 
             $gets = $this->match(
-                '#\* @return (?<type>[\w\\|\\\\\\[\\]]+)'
+                '#\* @return (?<type>' . self::TYPE_REG_EXP . ')'
                     . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
                     . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
                     . 'public function (?<kind>get)(?<name>\w+)\((?:,? ?\$\w+ ?= ?[^,]+)*\)(\:\s*[\w\\|\\\\\\[\\]]+)?#',
@@ -793,7 +795,7 @@ class PhpDocController extends ConsoleController
             );
 
             $sets = $this->match(
-                '#\* @param (?<type>[\w\\|\\\\\\[\\]]+) \$\w+'
+                '#\* @param (?<type>' . self::TYPE_REG_EXP . ') \$\w+'
                     . '(?: (?<comment>(?:(?!\*/|\* @).)+?)(?:(?!\*/).)+|[\s\n]*)((\*\n)|(\*\s.+))*\*/'
                     . '[\s\n]{2,}(\#\[\\\\*.+\])*[\s\n]{2,}'
                     . 'public function (?<kind>set)(?<name>\w+)\(([\w\\|\\\\\\[\\]]+\s*)?\$\w+(?:, ?\$\w+ ?= ?[^,]+)*\)(\:\s*[\w\\|\\\\\\[\\]]+)?#',
@@ -965,10 +967,8 @@ class PhpDocController extends ConsoleController
 
     /**
      * @param string $className
-     * @param \ReflectionClass $ref
+     * @param \ReflectionClass<object> $ref
      * @return bool
-     *
-     * @phpstan-param \ReflectionClass<object> $ref
      */
     protected function isBaseObject($className, \ReflectionClass $ref)
     {

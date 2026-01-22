@@ -54,30 +54,18 @@ use yii\validators\Validator;
  *
  * Empty array if no errors.
  * @property-read Validator[] $activeValidators The validators applicable to the current [[scenario]].
- * @property array $attributes Attribute values (name => value).
- * @property-read array $firstErrors The first errors. The array keys are the attribute names, and the array
- * values are the corresponding error messages. An empty array will be returned if there is no error.
- * @property-read ArrayIterator $iterator An iterator for traversing the items in the list.
+ * @property array<string, mixed> $attributes Attribute values (name => value). Note that the type of this
+ * property differs in getter and setter. See [[getAttributes()]] and [[setAttributes()]] for details.
+ * @property-read array<string, string> $firstErrors The first errors. The array keys are the attribute names,
+ * and the array values are the corresponding error messages. An empty array will be returned if there is no
+ * error.
+ * @property-read ArrayIterator<string, mixed> $iterator An iterator for traversing the items in the list.
  * @property string $scenario The scenario that this model is in. Defaults to [[SCENARIO_DEFAULT]].
- * @property-read ArrayObject|Validator[] $validators All the validators declared in the model.
+ * @property-read ArrayObject<int, Validator>|Validator[] $validators All the validators declared in the
+ * model.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @phpstan-property array<string, mixed> $attributes
- * @psalm-property array<string, mixed> $attributes
- *
- * @phpstan-property-read array<string, string[]> $errors
- * @psalm-property-read array<string, string[]> $errors
- *
- * @phpstan-property-read array<string, string> $firstErrors
- * @psalm-property-read array<string, string> $firstErrors
- *
- * @phpstan-property-read ArrayIterator<string, mixed> $iterator
- * @psalm-property-read ArrayIterator<string, mixed> $iterator
- *
- * @phpstan-property-read ArrayObject<int, Validator>|Validator[] $validators
- * @psalm-property-read ArrayObject<int, Validator>|Validator[] $validators
  *
  * @implements IteratorAggregate<string, mixed>
  * @implements ArrayAccess<string, mixed>
@@ -105,9 +93,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      */
     private $_errors;
     /**
-     * @var ArrayObject|null list of validators
-     *
-     * @phpstan-var ArrayObject<int, Validator>|null
+     * @var ArrayObject<int, Validator>|null list of validators
      */
     private $_validators;
     /**
@@ -179,11 +165,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Note, in order to inherit rules defined in the parent class, a child class needs to
      * merge the parent rules with child rules using functions such as `array_merge()`.
      *
-     * @return array validation rules
+     * @return array<array-key, mixed>[] validation rules
      * @see scenarios()
-     *
-     * @phpstan-return array<array-key, mixed>[]
-     * @psalm-return array<array-key, mixed>[]
      */
     public function rules()
     {
@@ -213,10 +196,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * found in the [[rules()]]. Each scenario will be associated with the attributes that
      * are being validated by the validation rules that apply to the scenario.
      *
-     * @return array a list of scenarios and the corresponding active attributes.
-     *
-     * @phpstan-return array<string, string[]>
-     * @psalm-return array<string, string[]>
+     * @return array<string, string[]> a list of scenarios and the corresponding active attributes.
      */
     public function scenarios()
     {
@@ -327,11 +307,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Note, in order to inherit labels defined in the parent class, a child class needs to
      * merge the parent labels with child labels using functions such as `array_merge()`.
      *
-     * @return array attribute labels (name => label)
+     * @return array<string, string> attribute labels (name => label)
      * @see generateAttributeLabel()
-     *
-     * @phpstan-return array<string, string>
-     * @psalm-return array<string, string>
      */
     public function attributeLabels()
     {
@@ -350,11 +327,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Note, in order to inherit hints defined in the parent class, a child class needs to
      * merge the parent hints with child hints using functions such as `array_merge()`.
      *
-     * @return array attribute hints (name => hint)
+     * @return array<string, string> attribute hints (name => hint)
      * @since 2.0.4
-     *
-     * @phpstan-return array<string, string>
-     * @psalm-return array<string, string>
      */
     public function attributeHints()
     {
@@ -455,10 +429,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * $model->validators[] = $newValidator;
      * ```
      *
-     * @return ArrayObject|Validator[] all the validators declared in the model.
-     *
-     * @phpstan-return ArrayObject<int, Validator>|Validator[]
-     * @psalm-return ArrayObject<int, Validator>|Validator[]
+     * @return ArrayObject<int, Validator>|Validator[] all the validators declared in the model.
      */
     public function getValidators()
     {
@@ -501,11 +472,8 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Creates validator objects based on the validation rules specified in [[rules()]].
      * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
-     * @return ArrayObject validators
+     * @return ArrayObject<int, Validator> validators
      * @throws InvalidConfigException if any validation rule configuration is invalid
-     *
-     * @phpstan-return ArrayObject<int, Validator>
-     * @psalm-return ArrayObject<int, Validator>
      */
     public function createValidators()
     {
@@ -610,7 +578,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
+     * @return array<string, string[]> errors for all attributes or the specified attribute. Empty array is returned if no error.
      * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
      *
      * ```
@@ -627,9 +595,6 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      *
      * @see getFirstErrors()
      * @see getFirstError()
-     *
-     * @phpstan-return array<string, string[]>
-     * @psalm-return array<string, string[]>
      */
     public function getErrors($attribute = null)
     {
@@ -642,13 +607,10 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Returns the first error of every attribute in the model.
-     * @return array the first errors. The array keys are the attribute names, and the array
+     * @return array<string, string> the first errors. The array keys are the attribute names, and the array
      * values are the corresponding error messages. An empty array will be returned if there is no error.
      * @see getErrors()
      * @see getFirstError()
-     *
-     * @phpstan-return array<string, string>
-     * @psalm-return array<string, string>
      */
     public function getFirstErrors()
     {
@@ -682,13 +644,10 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Returns the errors for all attributes as a one-dimensional array.
      * @param bool $showAllErrors boolean, if set to true every error message for each attribute will be shown otherwise
      * only the first error message for each attribute will be shown.
-     * @return array errors for all attributes as a one-dimensional array. Empty array is returned if no error.
+     * @return string[] errors for all attributes as a one-dimensional array. Empty array is returned if no error.
      * @see getErrors()
      * @see getFirstErrors()
      * @since 2.0.14
-     *
-     * @phpstan-return string[]
-     * @psalm-return string[]
      */
     public function getErrorSummary($showAllErrors)
     {
@@ -763,10 +722,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Defaults to null, meaning all attributes listed in [[attributes()]] will be returned.
      * If it is an array, only the attributes in the array will be returned.
      * @param array $except list of attributes whose value should NOT be returned.
-     * @return array attribute values (name => value).
-     *
-     * @phpstan-return array<string, mixed>
-     * @psalm-return array<string, mixed>
+     * @return array<string, mixed> attribute values (name => value).
      */
     public function getAttributes($names = null, $except = [])
     {
@@ -1058,10 +1014,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns an iterator for traversing the attributes in the model.
      * This method is required by the interface [[\IteratorAggregate]].
-     * @return ArrayIterator an iterator for traversing the items in the list.
-     *
-     * @phpstan-return ArrayIterator<string, mixed>
-     * @psalm-return ArrayIterator<string, mixed>
+     * @return ArrayIterator<string, mixed> an iterator for traversing the items in the list.
      */
     #[\ReturnTypeWillChange]
     public function getIterator()

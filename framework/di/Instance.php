@@ -106,20 +106,16 @@ class Instance
      * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::class);
      * ```
      *
+     * @template T of object
+     *
      * @param object|string|array|static $reference an object or a reference to the desired object.
      * You may specify a reference in terms of a component ID or an Instance object.
      * Starting from version 2.0.2, you may also pass in a configuration array for creating the object.
      * If the "class" value is not specified in the configuration array, it will use the value of `$type`.
-     * @param string|null $type the class/interface name to be checked. If null, type check will not be performed.
+     * @param class-string<T>|null $type the class/interface name to be checked. If null, type check will not be performed.
      * @param ServiceLocator|Container|null $container the container. This will be passed to [[get()]].
-     * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
+     * @return ($type is null ? object : T) the object referenced by the Instance, or `$reference` itself if it is an object.
      * @throws InvalidConfigException if the reference is invalid
-     *
-     * @template T of object
-     * @psalm-param class-string<T>|null $type
-     * @phpstan-param class-string<T>|null $type
-     * @psalm-return ($type is null ? object : T)
-     * @phpstan-return ($type is null ? object : T)
      */
     public static function ensure($reference, $type = null, $container = null)
     {

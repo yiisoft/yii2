@@ -17,10 +17,7 @@ namespace yii\db;
 trait ActiveQueryTrait
 {
     /**
-     * @var string the name of the ActiveRecord class.
-     *
-     * @phpstan-var class-string<ActiveRecordInterface>
-     * @psalm-var class-string<ActiveRecordInterface>
+     * @var class-string<ActiveRecordInterface> the name of the ActiveRecord class.
      */
     public $modelClass;
     /**
@@ -149,10 +146,7 @@ trait ActiveQueryTrait
             $primaryModel = $modelClass::instance();
         }
         $relations = $this->normalizeRelations($primaryModel, $with);
-        /**
-         * @var ActiveQuery $relation
-         * @phpstan-var ActiveQuery<ActiveRecord|array<string, mixed>> $relation
-         */
+        /** @var ActiveQuery<ActiveRecord|array<string, mixed>> $relation */
         foreach ($relations as $name => $relation) {
             if ($relation->asArray === null) {
                 // inherit asArray from primary query

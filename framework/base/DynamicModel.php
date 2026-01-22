@@ -67,14 +67,8 @@ class DynamicModel extends Model
 
     /**
      * Constructor.
-     * @param array $attributes the attributes (name-value pairs, or names) being defined.
-     * @param array $config the configuration array to be applied to this object.
-     *
-     * @phpstan-param array<string, mixed>|string[] $attributes
-     * @psalm-param array<string, mixed>|string[] $attributes
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
+     * @param array<string, mixed>|string[] $attributes the attributes (name-value pairs, or names) being defined.
+     * @param array<string, mixed> $config the configuration array to be applied to this object.
      */
     public function __construct(array $attributes = [], $config = [])
     {

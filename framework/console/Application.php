@@ -75,10 +75,7 @@ class Application extends \yii\base\Application
      */
     public $enableCoreCommands = true;
     /**
-     * @var Controller|null the currently active controller instance
-     *
-     * @phpstan-var Controller<Module>|null
-     * @psalm-var Controller<Module>|null
+     * @var Controller<Module>|null the currently active controller instance
      */
     public $controller;
 

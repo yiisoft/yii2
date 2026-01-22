@@ -151,10 +151,7 @@ class Module extends ServiceLocator
      * Constructor.
      * @param string $id the ID of this module.
      * @param Module|null $parent the parent module (if any).
-     * @param array $config name-value pairs that will be used to initialize the object properties.
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
+     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($id, $parent = null, $config = [])
     {
@@ -544,10 +541,7 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /**
-             * @var Controller $controller
-             * @phpstan-var Controller<$this> $controller
-             */
+            /** @var Controller<$this> $controller */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
@@ -581,7 +575,7 @@ class Module extends ServiceLocator
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
      * @param string $route the route consisting of module, controller and action IDs.
-     * @return array|false If the controller is created successfully, it will be returned together
+     * @return array{Controller<$this>, string}|false If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      *
@@ -640,7 +634,7 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller<$this>|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      *
@@ -723,7 +717,7 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action to be executed.
+     * @param Action<Controller<$this>> $action the action to be executed.
      * @return bool whether the action should continue to be executed.
      *
      * @phpstan-param Action<Controller<$this>> $action
@@ -753,7 +747,7 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action just executed.
+     * @param Action<Controller<$this>> $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      *

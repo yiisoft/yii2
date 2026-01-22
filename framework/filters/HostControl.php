@@ -167,11 +167,8 @@ class HostControl extends ActionFilter
      * The default implementation will display 404 page right away, terminating the program execution.
      * You may override this method, creating your own deny access handler. While doing so, make sure you
      * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
-     * @param Action $action the action to be executed.
+     * @param Action<Controller<Module>> $action the action to be executed.
      * @throws NotFoundHttpException
-     *
-     * @phpstan-param Action<Controller<Module>> $action
-     * @psalm-param Action<Controller<Module>> $action
      */
     protected function denyAccess($action)
     {

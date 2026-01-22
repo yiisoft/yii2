@@ -45,15 +45,12 @@ use yii\base\InvalidConfigException;
 class CompositeAuth extends AuthMethod
 {
     /**
-     * @var array the supported authentication methods. This property should take a list of supported
+     * @var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})> the supported authentication methods. This property should take a list of supported
      * authentication methods, each represented by an authentication class or configuration.
      *
      * If this property is empty, no authentication will be performed.
      *
      * Note that an auth method class must implement the [[\yii\filters\auth\AuthInterface]] interface.
-     *
-     * @phpstan-var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})>
-     * @psalm-var list<(class-string<AuthInterface>|array{class: class-string<AuthInterface>})>
      */
     public $authMethods = [];
 

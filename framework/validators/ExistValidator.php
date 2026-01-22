@@ -123,10 +123,7 @@ class ExistValidator extends Validator
     {
         $exists = false;
 
-        /**
-         * @var ActiveQuery $relationQuery
-         * @phpstan-var ActiveQuery<ActiveRecord>
-         */
+        /** @var ActiveQuery<ActiveRecord> $relationQuery */
         $relationQuery = $model->{'get' . ucfirst($this->targetRelation)}();
 
         if ($this->filter instanceof \Closure) {
@@ -316,12 +313,10 @@ class ExistValidator extends Validator
 
     /**
      * Returns conditions with alias.
-     * @param ActiveQuery $query
+     * @param ActiveQuery<ActiveRecord> $query
      * @param array $conditions array of condition, keys to be modified
      * @param string|null $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array
-     *
-     * @phpstan-param ActiveQuery<ActiveRecord> $query
      */
     private function applyTableAlias($query, $conditions, $alias = null)
     {
