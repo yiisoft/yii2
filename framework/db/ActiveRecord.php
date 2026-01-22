@@ -131,7 +131,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getDb()
     {
-        return \Yii::$app->get(static::$connection);
+        if (property_exists(static::class, 'connection')) {
+            /** @phpstan-ignore-next-line */
+            $connection = static::$connection;
+        } else {
+            $connection = 'db';
+        }
+        return \Yii::$app->get($connection);
     }
 
     /**
