@@ -695,18 +695,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                     if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
                         $dbName = $childDb->quoteTableName($matches[1]);
                     }
-                }
-                elseif (in_array($driverName, ['sqlsrv', 'mssql', 'dblib'])) {
+                } elseif (in_array($driverName, ['sqlsrv', 'mssql', 'dblib'])) {
                     if (preg_match('/Database=([^; ]+)/i', $childDb->dsn, $matches)) {
                         $dbName = $childDb->quoteTableName($matches[1]);
                     }
-                }
-                elseif ($driverName === 'pgsql') {
+                } elseif ($driverName === 'pgsql') {
                     if (preg_match('/dbname=([^; ]+)/', $childDb->dsn, $matches)) {
                         $dbName = $childDb->quoteTableName($matches[1]);
                     }
-                }
-                elseif ($driverName === 'sqlite') {
+                } elseif ($driverName === 'sqlite') {
                     if (preg_match('/sqlite:(.+)/', $childDb->dsn, $matches)) {
                         $path = $matches[1];
                         if ($path !== ':memory:' && $path !== '') {
