@@ -680,8 +680,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $parentModelClass = $parent->modelClass;
 
         if ($childModelClass !== null && $parentModelClass !== null) {
-            $childDb = $childModelClass::getDb();
-            $parentDb = $parentModelClass::getDb();
+            if ($child->db !== null) {
+                $childDb = is_string($child->db) ? \Yii::$app->get($child->db) : $child->db;
+            } else {
+                $childDb = $childModelClass::getDb();
+            }
+            if ($parent->db !== null) {
+                $parentDb = is_string($parent->db) ? \Yii::$app->get($parent->db) : $parent->db;
+            } else {
+                $parentDb = $parentModelClass::getDb();
+            }
 
             if ($childDb->dsn !== $parentDb->dsn) {
                 $driverName = $childDb->getDriverName();

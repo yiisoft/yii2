@@ -10,7 +10,6 @@ namespace yiiunit\framework\db;
 use yii\db\Connection;
 use yii\db\ActiveQuery;
 use yiiunit\TestCase;
-use ReflectionMethod;
 
 /**
  * CrossDbConnectionTest tests cross-database join support.
@@ -40,30 +39,33 @@ class CrossDbConnectionTest extends TestCase
 
     /**
      * Tests if join correctly uses the database from useDb() call.
+     * This test proves that useDb() overrides the default connection.
      */
     public function testJoinWithUseDb()
     {
-        $db = $this->createMockDb('mysql', 'mysql:host=localhost;dbname=main_db');
+        $dbMain = $this->createMockDb('mysql', 'mysql:host=localhost;dbname=main_db');
         $dbLogs = $this->createMockDb('mysql', 'mysql:host=localhost;dbname=logs_db');
+        $dbOther = $this->createMockDb('mysql', 'mysql:host=localhost;dbname=other_db');
 
-        $this->mockApplication(['components' => ['db' => $db, 'db_logs' => $dbLogs]]);
+        $this->mockApplication(['components' => [
+            'db' => $dbMain,
+            'db_logs' => $dbLogs,
+            'other_conn' => $dbOther
+        ]]);
 
-        // Иницираме квери за User, но му велиме експлицитно да користи 'db_logs'
         $parent = new ActiveQuery(UserStub::class);
-        $parent->useDb('db_logs');
-
         $child = new ActiveQuery(LogStub::class);
         $child->link = ['user_id' => 'id'];
+        $child->useDb('other_conn');
 
-        $method = new ReflectionMethod($parent, 'joinWithRelation');
-        $method->setAccessible(true);
-        $method->invoke($parent, $parent, $child, 'LEFT JOIN');
+        $this->invokeMethod($parent, 'joinWithRelation', [$parent, $child, 'LEFT JOIN']);
 
         $joinTable = $parent->join[0][1];
 
-        // Проверуваме дали поради useDb('db_logs'), табелата е правилно префиксирана
-        $this->assertStringContainsString('logs_db', $joinTable);
-        $this->assertMatchesRegularExpression('/`logs_db`\.`?audit_log`?/', $joinTable);
+        $this->assertStringContainsString('other_db', $joinTable, 'Join table should contain database name from useDb()');
+        $this->assertStringContainsString('`other_db`', $joinTable, 'Database name should be quoted with backticks');
+        $this->assertStringNotContainsString('logs_db', $joinTable, 'Should not use model connection (db_logs), but useDb() connection (other_conn)');
+        $this->assertMatchesRegularExpression('/`other_db`\.`?audit_log`?/', $joinTable, 'Should match MySQL cross-database join format with useDb() connection');
     }
 
     public function testCrossDbJoinMySQL()
@@ -77,16 +79,9 @@ class CrossDbConnectionTest extends TestCase
         $child = new ActiveQuery(LogStub::class);
         $child->link = ['user_id' => 'id'];
 
-        $method = new ReflectionMethod($parent, 'joinWithRelation');
-        $method->setAccessible(true);
-        $method->invoke($parent, $parent, $child, 'LEFT JOIN');
+        $this->invokeMethod($parent, 'joinWithRelation', [$parent, $child, 'LEFT JOIN']);
 
-        $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
-
-        $this->assertStringContainsString('logs_db', $joinTable);
-        $this->assertStringContainsString('`logs_db`', $joinTable);
-        $this->assertStringContainsString('.', $joinTable);
         $this->assertMatchesRegularExpression('/`logs_db`\.`?audit_log`?/', $joinTable);
     }
 
@@ -101,15 +96,9 @@ class CrossDbConnectionTest extends TestCase
         $child = new ActiveQuery(LogStub::class);
         $child->link = ['user_id' => 'id'];
 
-        $method = new ReflectionMethod($parent, 'joinWithRelation');
-        $method->setAccessible(true);
-        $method->invoke($parent, $parent, $child, 'LEFT JOIN');
+        $this->invokeMethod($parent, 'joinWithRelation', [$parent, $child, 'LEFT JOIN']);
 
-        $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
-
-        $this->assertStringContainsString('[mssql_logs]', $joinTable);
-        $this->assertStringContainsString('..', $joinTable);
         $this->assertMatchesRegularExpression('/\[mssql_logs\]\.\.\[?audit_log\]?/', $joinTable);
     }
 
@@ -124,15 +113,9 @@ class CrossDbConnectionTest extends TestCase
         $child = new ActiveQuery(LogStub::class);
         $child->link = ['user_id' => 'id'];
 
-        $method = new ReflectionMethod($parent, 'joinWithRelation');
-        $method->setAccessible(true);
-        $method->invoke($parent, $parent, $child, 'LEFT JOIN');
+        $this->invokeMethod($parent, 'joinWithRelation', [$parent, $child, 'LEFT JOIN']);
 
-        $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
-
-        $this->assertStringContainsString('`logs`', $joinTable);
-        $this->assertStringContainsString('.', $joinTable);
         $this->assertMatchesRegularExpression('/`logs`\.`?audit_log`?/', $joinTable);
     }
 
@@ -147,15 +130,9 @@ class CrossDbConnectionTest extends TestCase
         $child = new ActiveQuery(LogStub::class);
         $child->link = ['user_id' => 'id'];
 
-        $method = new ReflectionMethod($parent, 'joinWithRelation');
-        $method->setAccessible(true);
-        $method->invoke($parent, $parent, $child, 'LEFT JOIN');
+        $this->invokeMethod($parent, 'joinWithRelation', [$parent, $child, 'LEFT JOIN']);
 
-        $this->assertNotEmpty($parent->join, 'Join should be added to parent query');
         $joinTable = $parent->join[0][1];
-
-        $this->assertStringContainsString('"logs_db"', $joinTable);
-        $this->assertStringContainsString('.', $joinTable);
         $this->assertMatchesRegularExpression('/"logs_db"\.\"?audit_log\"?/', $joinTable);
     }
 }
