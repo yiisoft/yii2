@@ -13,9 +13,9 @@ use yiiunit\TestCase;
 use ReflectionMethod;
 
 /**
- * ConnectionSupportTest tests cross-database join support.
+ * CrossDbConnectionTest tests cross-database join support.
  */
-class ConnectionSupportTest extends TestCase
+class CrossDbConnectionTest extends TestCase
 {
     protected function createMockDb($driverName, $dsn)
     {
@@ -36,6 +36,34 @@ class ConnectionSupportTest extends TestCase
         });
 
         return $mock;
+    }
+
+    /**
+     * Tests if join correctly uses the database from useDb() call.
+     */
+    public function testJoinWithUseDb()
+    {
+        $db = $this->createMockDb('mysql', 'mysql:host=localhost;dbname=main_db');
+        $dbLogs = $this->createMockDb('mysql', 'mysql:host=localhost;dbname=logs_db');
+
+        $this->mockApplication(['components' => ['db' => $db, 'db_logs' => $dbLogs]]);
+
+        // Иницираме квери за User, но му велиме експлицитно да користи 'db_logs'
+        $parent = new ActiveQuery(UserStub::class);
+        $parent->useDb('db_logs');
+
+        $child = new ActiveQuery(LogStub::class);
+        $child->link = ['user_id' => 'id'];
+
+        $method = new ReflectionMethod($parent, 'joinWithRelation');
+        $method->setAccessible(true);
+        $method->invoke($parent, $parent, $child, 'LEFT JOIN');
+
+        $joinTable = $parent->join[0][1];
+
+        // Проверуваме дали поради useDb('db_logs'), табелата е правилно префиксирана
+        $this->assertStringContainsString('logs_db', $joinTable);
+        $this->assertMatchesRegularExpression('/`logs_db`\.`?audit_log`?/', $joinTable);
     }
 
     public function testCrossDbJoinMySQL()

@@ -158,7 +158,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
     public function createCommand($db = null)
     {
         if ($db === null) {
-            $db = $this->db !== null ? $this->db : Yii::$app->getDb();
+            $db = $this->db ?? Yii::$app->getDb();
         }
 
         if (is_string($db)) {
