@@ -55,7 +55,7 @@ class BaseVarDumper
         self::dumpInternal($var, 0);
         if ($highlight) {
             $result = highlight_string("<?php\n" . self::$_output, true);
-            self::$_output = preg_replace('/&lt;\\?php<br \\/>/', '', $result, 1);
+            self::$_output = preg_replace('/&lt;\\?php(<br \\/>|\\n)/', '', $result, 1);
         }
 
         return self::$_output;
@@ -201,14 +201,18 @@ class BaseVarDumper
                         if ($var instanceof Arrayable) {
                             self::exportInternal($var->toArray(), $level);
                             return;
-                        } elseif ($var instanceof \IteratorAggregate) {
+                        }
+
+                        if ($var instanceof \IteratorAggregate) {
                             $varAsArray = [];
                             foreach ($var as $key => $value) {
                                 $varAsArray[$key] = $value;
                             }
                             self::exportInternal($varAsArray, $level);
                             return;
-                        } elseif ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
+                        }
+
+                        if ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
                             $output = var_export($var->__toString(), true);
                         } else {
                             $outputBackup = self::$_output;
