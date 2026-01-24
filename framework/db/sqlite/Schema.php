@@ -309,10 +309,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {

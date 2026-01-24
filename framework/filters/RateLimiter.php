@@ -120,11 +120,8 @@ class RateLimiter extends ActionFilter
      * @param RateLimitInterface $user the current user
      * @param Request $request
      * @param Response $response
-     * @param Action $action the action to be executed
+     * @param Action<Controller<Module>> $action the action to be executed
      * @throws TooManyRequestsHttpException if rate limit exceeds
-     *
-     * @phpstan-param Action<Controller<Module>> $action
-     * @psalm-param Action<Controller<Module>> $action
      */
     public function checkRateLimit($user, $request, $response, $action)
     {

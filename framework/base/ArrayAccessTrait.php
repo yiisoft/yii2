@@ -13,13 +13,10 @@ namespace yii\base;
  * Note that ArrayAccessTrait requires the class using it contain a property named `data` which should be an array.
  * The data will be exposed by ArrayAccessTrait to support accessing the class object like an array.
  *
- * @property array $data
+ * @property array<array-key, mixed> $data
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @phpstan-property array<array-key, mixed> $data
- * @psalm-property array<array-key, mixed> $data
  */
 trait ArrayAccessTrait
 {
@@ -27,10 +24,7 @@ trait ArrayAccessTrait
      * Returns an iterator for traversing the data.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return \ArrayIterator an iterator for traversing the cookies in the collection.
-     *
-     * @phpstan-return \ArrayIterator<array-key, mixed>
-     * @psalm-return \ArrayIterator<array-key, mixed>
+     * @return \ArrayIterator<array-key, mixed> an iterator for traversing the cookies in the collection.
      */
     #[\ReturnTypeWillChange]
     public function getIterator()

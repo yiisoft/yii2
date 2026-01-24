@@ -401,10 +401,7 @@ class ActiveForm extends Widget
      * When this method is used to validate multiple models, this parameter will be interpreted
      * as a model.
      *
-     * @return array the error message array indexed by the attribute IDs.
-     *
-     * @phpstan-return array<string,array<string>>
-     * @psalm-return array<string,array<string>>
+     * @return array<string, array<string>> the error message array indexed by the attribute IDs.
      */
     public static function validate($model, $attributes = null)
     {

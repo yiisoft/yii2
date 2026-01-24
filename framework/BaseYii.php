@@ -71,10 +71,7 @@ class BaseYii
      */
     public static $classMap = [];
     /**
-     * @var \yii\console\Application|\yii\web\Application the application instance
-     *
-     * @phpstan-var \yii\console\Application|\yii\web\Application<TUserIdentity>
-     * @psalm-var \yii\console\Application|\yii\web\Application<TUserIdentity>
+     * @var \yii\console\Application|\yii\web\Application<TUserIdentity> the application instance
      */
     public static $app;
     /**
@@ -130,12 +127,9 @@ class BaseYii
      * @param string $alias the alias to be translated.
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|false the path corresponding to the alias, false if the root alias is not previously registered.
+     * @return ($throwException is true ? string : string|false) the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
-     *
-     * @phpstan-return ($throwException is true ? string : string|false)
-     * @psalm-return ($throwException is true ? string : string|false)
      */
     public static function getAlias($alias, $throwException = true)
     {
@@ -335,7 +329,9 @@ class BaseYii
      * Using [[\yii\di\Container|dependency injection container]], this method can also identify
      * dependent objects, instantiate them and inject them into the newly created object.
      *
-     * @param string|array|callable $type the object type. This can be specified in one of the following forms:
+     * @template T
+     *
+     * @param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type the object type. This can be specified in one of the following forms:
      *
      * - a string: representing the class name of the object to be created
      * - a configuration array: the array must contain a `class` element which is treated as the object class,
@@ -344,15 +340,9 @@ class BaseYii
      *   The callable should return a new instance of the object being created.
      *
      * @param array $params the constructor parameters
-     * @return object the created object
+     * @return T the created object
      * @throws InvalidConfigException if the configuration is invalid.
      * @see \yii\di\Container
-     *
-     * @template T
-     * @phpstan-param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type
-     * @psalm-param class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}|callable(): T $type
-     * @phpstan-return T
-     * @psalm-return T
      */
     public static function createObject($type, array $params = [])
     {

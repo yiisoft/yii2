@@ -83,7 +83,23 @@ a `phpstan.neon` file with your own configuration, and PHPStan will use it.
 
 #### Note
 
-In PHPDoc annotations, we use standard PHP types. Please use PHPStan/Psalm annotations if you want to add conditional types, array shapes, etc. This is because not all IDEs currently support PHPStan/Psalm types, and it will also break automatic documentation generation.
+In PHPDoc annotations, we use PHPStan types. If you need to specify a different type for Psalm
+(which is usually the case with generics), then use Psalm annotations in conjunction with PHPStan
+annotations.
+
+An example of what it should look like:
+
+```php
+/**
+ * @return Action<$this>|null
+ * @phpstan-return Action<$this>|null
+ * @psalm-return Action<self>|null
+ */
+public function createAction($id)
+{
+...
+}
+```
 
 ### Extensions
 

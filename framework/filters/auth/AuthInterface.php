@@ -23,14 +23,11 @@ interface AuthInterface
 {
     /**
      * Authenticates the current user.
-     * @param User $user
+     * @param User<IdentityInterface> $user
      * @param Request $request
      * @param Response $response
      * @return IdentityInterface|null the authenticated user identity. If authentication information is not provided, null will be returned.
      * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
-     *
-     * @phpstan-param User<IdentityInterface> $user
-     * @psalm-param User<IdentityInterface> $user
      */
     public function authenticate($user, $request, $response);
 

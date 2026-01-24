@@ -13,29 +13,23 @@ use yii\base\BaseObject;
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
  *
  * @property-read int $count The number of headers in the collection.
- * @property-read \ArrayIterator $iterator An iterator for traversing the headers in the collection.
+ * @property-read \ArrayIterator<string, string[]> $iterator An iterator for traversing the headers in the
+ * collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
  * @implements \IteratorAggregate<string, string[]>
  * @implements \ArrayAccess<string, string|null>
- *
- * @phpstan-property-read \ArrayIterator<string, string[]> $iterator
- * @psalm-property-read \ArrayIterator<string, string[]> $iterator
  */
 class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
-     * @var array the headers in this collection (indexed by the normalized header names)
-     *
-     * @phpstan-var array<string, string[]>
+     * @var array<string, string[]> the headers in this collection (indexed by the normalized header names)
      */
     private $_headers = [];
     /**
-     * @var array the original names of the headers (indexed by the normalized header names)
-     *
-     * @phpstan-var array<string, string>
+     * @var array<string, string> the original names of the headers (indexed by the normalized header names)
      */
     private $_originalHeaderNames = [];
 
@@ -44,10 +38,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns an iterator for traversing the headers in the collection.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return \ArrayIterator an iterator for traversing the headers in the collection.
-     *
-     * @phpstan-return \ArrayIterator<string, string[]>
-     * @psalm-return \ArrayIterator<string, string[]>
+     * @return \ArrayIterator<string, string[]> an iterator for traversing the headers in the collection.
      */
     #[\ReturnTypeWillChange]
     public function getIterator()
@@ -80,17 +71,11 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     /**
      * Returns the named header(s).
      * @param string $name the name of the header to return
-     * @param string|array|null $default the value to return in case the named header does not exist
+     * @param ($first is true ? string|null : string[]|null) $default the value to return in case the named header does not exist
      * @param bool $first whether to only return the first header of the specified name.
      * If false, all headers of the specified name will be returned.
-     * @return string|array|null the named header(s). If `$first` is true, a string will be returned;
+     * @return ($first is true ? string|null : string[]|null) the named header(s). If `$first` is true, a string will be returned;
      * If `$first` is false, an array will be returned.
-     *
-     * @phpstan-param ($first is true ? string|null : string[]|null) $default
-     * @psalm-param ($first is true ? string|null : string[]|null) $default
-     *
-     * @phpstan-return ($first is true ? string|null : string[]|null)
-     * @psalm-return ($first is true ? string|null : string[]|null)
      */
     public function get($name, $default = null, $first = true)
     {

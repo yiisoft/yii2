@@ -346,10 +346,7 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /**
-         * @var User $user
-         * @phpstan-var User<IdentityInterface>
-         */
+        /** @var User<IdentityInterface> $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();

@@ -45,9 +45,7 @@ abstract class SqlTokenizer extends Component
     protected $offset;
 
     /**
-     * @var \SplStack stack of active tokens.
-     *
-     * @phpstan-var \SplStack<SqlToken>
+     * @var \SplStack<SqlToken> stack of active tokens.
      */
     private $_tokenStack;
     /**
@@ -178,15 +176,12 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Returns whether the longest common prefix equals to the SQL code of the same length at the current offset.
-     * @param array $with strings to be tested.
+     * @param array<int, string>|array<int, array<string, mixed>> $with strings to be tested.
      * The method **will** modify this parameter to speed up lookups.
      * @param bool $caseSensitive whether to perform a case sensitive comparison.
      * @param int|null $length length of the matched string.
      * @param string|null $content matched string.
      * @return bool whether a match is found.
-     *
-     * @phpstan-param array<int, string>|array<int, array<string, mixed>> $with
-     * @psalm-param array<int, string>|array<int, array<string, mixed>> $with
      */
     protected function startsWithAnyLongest(array &$with, $caseSensitive, &$length = null, &$content = null)
     {

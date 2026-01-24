@@ -32,10 +32,7 @@ use yii\web\User;
 abstract class AuthMethod extends ActionFilter implements AuthInterface
 {
     /**
-     * @var User|null the user object representing the user authentication status. If not set, the `user` application component will be used.
-     *
-     * @phpstan-var User<IdentityInterface>
-     * @psalm-var User<IdentityInterface>
+     * @var User<IdentityInterface>|null the user object representing the user authentication status. If not set, the `user` application component will be used.
      */
     public $user;
     /**
@@ -106,13 +103,10 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     /**
      * Checks, whether authentication is optional for the given action.
      *
-     * @param Action $action action to be checked.
+     * @param Action<Controller<Module>> $action action to be checked.
      * @return bool whether authentication is optional or not.
      * @see optional
      * @since 2.0.7
-     *
-     * @phpstan-param Action<Controller<Module>> $action
-     * @psalm-param Action<Controller<Module>> $action
      */
     protected function isOptional($action)
     {

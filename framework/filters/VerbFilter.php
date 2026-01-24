@@ -88,12 +88,9 @@ class VerbFilter extends Behavior
     }
 
     /**
-     * @param ActionEvent $event
+     * @param ActionEvent<Action<Controller<Module>>> $event
      * @return bool
      * @throws MethodNotAllowedHttpException when the request method is not allowed.
-     *
-     * @phpstan-param ActionEvent<Action<Controller<Module>>> $event
-     * @psalm-param ActionEvent<Action<Controller<Module>>> $event
      */
     public function beforeAction($event)
     {

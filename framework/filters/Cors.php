@@ -126,10 +126,7 @@ class Cors extends ActionFilter
 
     /**
      * Override settings for specific action.
-     * @param Action $action the action settings to override
-     *
-     * @phpstan-param Action<Controller<Module>> $action
-     * @psalm-param Action<Controller<Module>> $action
+     * @param Action<Controller<Module>> $action the action settings to override
      */
     public function overrideDefaultSettings($action)
     {
