@@ -232,7 +232,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
+            $this->buildFrom($query->from, $params, $query->forceIndex),
             $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
@@ -1275,9 +1275,10 @@ class QueryBuilder extends \yii\base\BaseObject
     /**
      * @param array $tables
      * @param array $params the binding parameters to be populated
+     * @param string $forceIndex
      * @return string the FROM clause built from [[Query::$from]].
      */
-    public function buildFrom($tables, &$params)
+    public function buildFrom($tables, &$params, $forceIndex = null)
     {
         if (empty($tables)) {
             return '';
@@ -1285,7 +1286,13 @@ class QueryBuilder extends \yii\base\BaseObject
 
         $tables = $this->quoteTableNames($tables, $params);
 
-        return 'FROM ' . implode(', ', $tables);
+        $from = 'FROM ' . implode(', ', $tables);
+
+        if (!empty($forceIndex)) {
+            $from .= " FORCE INDEX ({$forceIndex}) ";
+        }
+
+        return $from;
     }
 
     /**
