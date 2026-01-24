@@ -750,15 +750,17 @@ class User extends Component
      */
     public function can($permissionName, $params = [], $allowCaching = true)
     {
-        if ($allowCaching && empty($params) && isset($this->_access[$permissionName])) {
-            return $this->_access[$permissionName];
+        /* @var string $json to cache the $params too */
+        $allowCaching && $json = json_encode($params);
+        if ($allowCaching && isset($this->_access[$permissionName][$json])) {
+            return $this->_access[$permissionName][$json];
         }
         if (($accessChecker = $this->getAccessChecker()) === null) {
             return false;
         }
         $access = $accessChecker->checkAccess($this->getId(), $permissionName, $params);
-        if ($allowCaching && empty($params)) {
-            $this->_access[$permissionName] = $access;
+        if ($allowCaching) {
+            $this->_access[$permissionName][$json] = $access;
         }
 
         return $access;
