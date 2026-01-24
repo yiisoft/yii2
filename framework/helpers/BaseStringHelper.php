@@ -359,7 +359,11 @@ class BaseStringHelper
      */
     public static function countWords($string)
     {
-        return count(preg_split('/\s+/u', $string, 0, PREG_SPLIT_NO_EMPTY));
+        $keywords = preg_split('/\s+/u', $string, 0, PREG_SPLIT_NO_EMPTY);
+        if ($keywords !== false) {
+            return count($keywords);
+        }
+        return 0;
     }
 
     /**
