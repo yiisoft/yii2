@@ -77,11 +77,6 @@ use yii\helpers\StringHelper;
 class ActiveRecord extends BaseActiveRecord
 {
     /**
-     * @var string the ID of the database connection component.
-     * @since 2.0.55
-     */
-    public static $connection = 'db';
-    /**
      * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
      */
     public const OP_INSERT = 0x01;
@@ -135,7 +130,13 @@ class ActiveRecord extends BaseActiveRecord
      */
     public static function getDb()
     {
-        return \Yii::$app->get(static::$connection);
+        if (property_exists(static::class, 'connection')) {
+            /** @phpstan-ignore-next-line */
+            $connection = static::$connection;
+        } else {
+            $connection = 'db';
+        }
+        return \Yii::$app->get($connection);
     }
 
     /**
