@@ -28,13 +28,8 @@ use yii\helpers\Url;
  * @since 2.0
  *
  * @phpstan-import-type RegisterJsFileOptions from View
- * @psalm-import-type RegisterJsFileOptions from View
- *
  * @phpstan-import-type RegisterCssFileOptions from View
- * @psalm-import-type RegisterCssFileOptions from View
- *
  * @phpstan-import-type PublishOptions from AssetManager
- * @psalm-import-type PublishOptions from AssetManager
  */
 class AssetBundle extends BaseObject
 {
@@ -71,7 +66,7 @@ class AssetBundle extends BaseObject
      */
     public $baseUrl;
     /**
-     * @var array list of bundle class names that this bundle depends on.
+     * @var class-string[] list of bundle class names that this bundle depends on.
      *
      * For example:
      *
@@ -81,13 +76,10 @@ class AssetBundle extends BaseObject
      *    'yii\bootstrap\BootstrapAsset',
      * ];
      * ```
-     *
-     * @phpstan-var class-string[]
-     * @psalm-var class-string[]
      */
     public $depends = [];
     /**
-     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
+     * @var (string|array<array-key, mixed>)[] list of JavaScript files that this bundle contains. Each JavaScript file can be
      * specified in one of the following formats:
      *
      * - an absolute URL representing an external asset. For example,
@@ -101,43 +93,28 @@ class AssetBundle extends BaseObject
      *   This functionality is available since version 2.0.7.
      *
      * Note that only a forward slash "/" should be used as directory separator.
-     *
-     * @phpstan-var (string|array<array-key, mixed>)[]
-     * @psalm-var (string|array<array-key, mixed>)[]
      */
     public $js = [];
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
+     * @var (string|array<array-key, mixed>)[] list of CSS files that this bundle contains. Each CSS file can be specified
      * in one of the three formats as explained in [[js]].
      *
      * Note that only a forward slash "/" should be used as directory separator.
-     *
-     * @phpstan-var (string|array<array-key, mixed>)[]
-     * @psalm-var (string|array<array-key, mixed>)[]
      */
     public $css = [];
     /**
-     * @var array the options that will be passed to [[View::registerJsFile()]]
+     * @var RegisterJsFileOptions the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
-     *
-     * @phpstan-var RegisterJsFileOptions
-     * @psalm-var RegisterJsFileOptions
      */
     public $jsOptions = [];
     /**
-     * @var array the options that will be passed to [[View::registerCssFile()]]
+     * @var RegisterCssFileOptions the options that will be passed to [[View::registerCssFile()]]
      * when registering the CSS files in this bundle.
-     *
-     * @phpstan-var RegisterCssFileOptions
-     * @psalm-var RegisterCssFileOptions
      */
     public $cssOptions = [];
     /**
-     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
+     * @var PublishOptions the options to be passed to [[AssetManager::publish()]] when the asset bundle
      * is being published. This property is used only when [[sourcePath]] is set.
-     *
-     * @phpstan-var PublishOptions
-     * @psalm-var PublishOptions
      */
     public $publishOptions = [];
 

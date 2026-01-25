@@ -401,10 +401,7 @@ SQL;
      * Creates ColumnSchema instance.
      *
      * @param array $column
-     * @return ColumnSchema
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @return T
      */
     protected function createColumn($column)
     {

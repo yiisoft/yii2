@@ -18,16 +18,14 @@ use yii\base\InvalidCallException;
  * For more details and usage information on CookieCollection, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
  *
  * @property-read int $count The number of cookies in the collection.
- * @property-read ArrayIterator $iterator An iterator for traversing the cookies in the collection.
+ * @property-read ArrayIterator<string, Cookie> $iterator An iterator for traversing the cookies in the
+ * collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
  * @implements \IteratorAggregate<string, Cookie>
  * @implements \ArrayAccess<string, Cookie|null>
- *
- * @phpstan-property-read ArrayIterator<string, Cookie> $iterator
- * @psalm-property-read ArrayIterator<string, Cookie> $iterator
  */
 class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
@@ -37,9 +35,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     public $readOnly = false;
 
     /**
-     * @var Cookie[] the cookies in this collection (indexed by the cookie names)
-     *
-     * @phpstan-var array<string, Cookie>
+     * @var array<string, Cookie> the cookies in this collection (indexed by the cookie names)
      */
     private $_cookies;
 
@@ -60,10 +56,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      * Returns an iterator for traversing the cookies in the collection.
      * This method is required by the SPL interface [[\IteratorAggregate]].
      * It will be implicitly called when you use `foreach` to traverse the collection.
-     * @return ArrayIterator an iterator for traversing the cookies in the collection.
-     *
-     * @phpstan-return ArrayIterator<string, Cookie>
-     * @psalm-return ArrayIterator<string, Cookie>
+     * @return ArrayIterator<string, Cookie> an iterator for traversing the cookies in the collection.
      */
     #[\ReturnTypeWillChange]
     public function getIterator()

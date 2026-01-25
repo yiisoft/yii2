@@ -122,10 +122,8 @@ class Container extends Component
      */
     private $_reflections = [];
     /**
-     * @var array cached dependencies indexed by class/interface names. Each class name
+     * @var array<class-string, array<string, mixed>> cached dependencies indexed by class/interface names. Each class name
      * is associated with a list of constructor parameter types or default values.
-     *
-     * @phpstan-var array<class-string, array<string, mixed>>
      */
     private $_dependencies = [];
     /**
@@ -149,7 +147,9 @@ class Container extends Component
      * In this case, the constructor parameters and object configurations will be used
      * only if the class is instantiated the first time.
      *
-     * @param string|Instance $class the class Instance, name, or an alias name (e.g. `foo`) that was previously
+     * @template T of object
+     *
+     * @param string|class-string<T>|Instance $class the class Instance, name, or an alias name (e.g. `foo`) that was previously
      * registered via [[set()]] or [[setSingleton()]].
      * @param array $params a list of constructor parameter values. Use one of two definitions:
      *  - Parameters as name-value pairs, for example: `['posts' => PostRepository::class]`.
@@ -158,15 +158,9 @@ class Container extends Component
      *    parameter list.
      *    Dependencies indexed by name and by position in the same array are not allowed.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
-     * @return object an instance of the requested class.
+     * @return ($class is class-string<T> ? T : object) an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
-     *
-     * @template T of object
-     * @psalm-param string|class-string<T>|Instance $class
-     * @phpstan-param string|class-string<T>|Instance $class
-     * @psalm-return ($class is class-string<T> ? T : object)
-     * @phpstan-return ($class is class-string<T> ? T : object)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -383,26 +377,18 @@ class Container extends Component
      * Creates an instance of the specified class.
      * This method will resolve dependencies of the specified class, instantiate them, and inject
      * them into the new instance of the specified class.
-     * @param string $class the class name
-     * @param array $params constructor parameters
-     * @param array $config configurations to be applied to the new instance
-     * @return object the newly created instance of the specified class
-     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      *
      * @template T of object
      *
-     * @phpstan-param class-string<T> $class
-     * @psalm-param class-string<T> $class
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @param class-string<T> $class the class name
+     * @param array $params constructor parameters
+     * @param array $config configurations to be applied to the new instance
+     * @return T the newly created instance of the specified class
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     protected function build($class, $params, $config)
     {
-        /**
-         * @var ReflectionClass $reflection
-         * @phpstan-var ReflectionClass<T> $reflection
-         */
+        /** @var ReflectionClass<T> $reflection */
         list($reflection, $dependencies) = $this->getDependencies($class);
 
         $addDependencies = [];
@@ -513,17 +499,12 @@ class Container extends Component
 
     /**
      * Returns the dependencies of the specified class.
-     * @param string $class class name, interface name or alias name
-     * @return array the dependencies of the specified class.
-     * @throws NotInstantiableException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      *
      * @template T of object
      *
-     * @phpstan-param class-string<T> $class
-     * @psalm-param class-string<T> $class
-     *
-     * @phpstan-return array{ReflectionClass<T>, array<string, mixed>}
-     * @psalm-return array{ReflectionClass<T>, array<string, mixed>}
+     * @param class-string<T> $class class name, interface name or alias name
+     * @return array{ReflectionClass<T>, array<string, mixed>} the dependencies of the specified class.
+     * @throws NotInstantiableException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
      */
     protected function getDependencies($class)
     {
@@ -608,12 +589,9 @@ class Container extends Component
     /**
      * Resolves dependencies by replacing them with the actual object instances.
      * @param array $dependencies the dependencies
-     * @param ReflectionClass|null $reflection the class reflection associated with the dependencies
+     * @param ReflectionClass<object>|null $reflection the class reflection associated with the dependencies
      * @return array the resolved dependencies
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
-     *
-     * @phpstan-param ReflectionClass<object>|null $reflection
-     * @psalm-param ReflectionClass<object>|null $reflection
      */
     protected function resolveDependencies($dependencies, $reflection = null)
     {

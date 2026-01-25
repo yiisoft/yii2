@@ -67,25 +67,16 @@ class CaptchaValidator extends Validator
 
     /**
      * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
-     * @return CaptchaAction the action object
+     * @return CaptchaAction<Controller<Module>> the action object
      * @throws InvalidConfigException
-     *
-     * @phpstan-return CaptchaAction<Controller<Module>>
-     * @psalm-return CaptchaAction<Controller<Module>>
      */
     public function createCaptchaAction()
     {
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
-            /**
-             * @var Controller $controller
-             * @phpstan-var Controller<Module> $controller
-             */
+            /** @var Controller<Module> $controller */
             list($controller, $actionID) = $ca;
-            /**
-             * @var CaptchaAction|null
-             * @phpstan-var CaptchaAction<Controller<Module>>|null
-             */
+            /** @var CaptchaAction<Controller<Module>>|null */
             $action = $controller->createAction($actionID);
             if ($action !== null) {
                 return $action;

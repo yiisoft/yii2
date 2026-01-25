@@ -179,23 +179,18 @@ interface CacheInterface extends \ArrayAccess
      *     }, 1000);
      * }
      * ```
+     * @template TResult of mixed
      *
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
+     * @param callable(): TResult|\Closure(): TResult $callable the callable or closure that will be used to generate a value to be cached.
      * In case $callable returns `false`, the value will not be cached.
      * @param int|null $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
      * @param Dependency|null $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.
-     * @return mixed result of $callable execution
-     *
-     * @template TResult of mixed
-     * @psalm-param callable():TResult|\Closure():TResult $callable
-     * @phpstan-param callable():TResult|\Closure():TResult $callable
-     * @psalm-return TResult
-     * @phpstan-return TResult
+     * @return TResult result of $callable execution
      */
     public function getOrSet($key, $callable, $duration = null, $dependency = null);
 }

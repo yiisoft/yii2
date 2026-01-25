@@ -66,26 +66,19 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
+ * @template T of (ActiveRecord|array)
+ *
+ * @method T|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
+ * @method T[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
+ * @method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true) Sets the [[asArray]] property.
+ * @method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
+ * and can be traversed to retrieve the data in batches.
+ * @method BatchQueryResult<int, T> each($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
+ * and can be traversed to retrieve the data in batches.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
- *
- * @template T of (ActiveRecord|array)
- *
- * @phpstan-method T|null one($db = null)
- * @psalm-method T|null one($db = null)
- *
- * @phpstan-method T[] all($db = null)
- * @psalm-method T[] all($db = null)
- *
- * @phpstan-method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true)
- * @psalm-method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true)
- *
- * @phpstan-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
- * @psalm-method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null)
- *
- * @phpstan-method BatchQueryResult<int, T> each($batchSize = 100, $db = null)
- * @psalm-method BatchQueryResult<int, T> each($batchSize = 100, $db = null)
  */
 class ActiveQuery extends Query implements ActiveQueryInterface
 {
@@ -117,11 +110,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Constructor.
-     * @param string $modelClass the model class associated with this query
+     * @param class-string<ActiveRecordInterface> $modelClass the model class associated with this query
      * @param array $config configurations to be applied to the newly created query object
-     *
-     * @phpstan-param class-string<ActiveRecordInterface> $modelClass
-     * @psalm-param class-string<ActiveRecordInterface> $modelClass
      */
     public function __construct($modelClass, $config = [])
     {
@@ -145,9 +135,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns all results as an array.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
-     * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
-     * @psalm-return T[]
-     * @phpstan-return T[]
+     * @return T[] the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null)
     {
@@ -190,10 +178,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /**
-                 * @var self $viaQuery
-                 * @phpstan-var self<ActiveRecord|array<string, mixed>> $viaQuery
-                 */
+                /** @var self<ActiveRecord|array<string, mixed>> $viaQuery */
                 list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
                     if ($viaCallableUsed) {
@@ -271,10 +256,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function removeDuplicatedModels($models)
     {
         $hash = [];
-        /**
-         * @var ActiveRecord
-         * @phpstan-var class-string<ActiveRecord>
-         */
+        /** @var class-string<ActiveRecord> */
         $class = $this->modelClass;
         $pks = $class::primaryKey();
 
@@ -322,11 +304,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns a single row of result.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If `null`, the DB connection returned by [[modelClass]] will be used.
-     * @return array|ActiveRecord|null a single row of query result. Depending on the setting of [[asArray]],
+     * @return T|null a single row of query result. Depending on the setting of [[asArray]],
      * the query result may be either an array or an ActiveRecord object. `null` will be returned
      * if the query results in nothing.
-     * @psalm-return T|null
-     * @phpstan-return T|null
      */
     public function one($db = null)
     {
@@ -460,10 +440,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /**
-                     * @var self $query
-                     * @phpstan-var self<ActiveRecord|array<string, mixed>> $query
-                     */
+                    /** @var self<ActiveRecord|array<string, mixed>> $query */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -650,12 +627,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * Joins a parent query with a child query.
      * The current query object will be modified accordingly.
-     * @param ActiveQuery $parent
-     * @param ActiveQuery $child
+     * @param ActiveQuery<ActiveRecord|array<string, mixed>> $parent
+     * @param ActiveQuery<ActiveRecord|array<string, mixed>> $child
      * @param string $joinType
-     *
-     * @phpstan-param ActiveQuery<ActiveRecord|array<string, mixed>> $parent
-     * @phpstan-param ActiveQuery<ActiveRecord|array<string, mixed>> $child
      */
     private function joinWithRelation($parent, $child, $joinType)
     {

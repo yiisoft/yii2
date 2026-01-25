@@ -61,12 +61,9 @@ use yii\web\User;
 class AccessControl extends ActionFilter
 {
     /**
-     * @var User|array|string|false the user object representing the authentication status or the ID of the user application component.
+     * @var User<IdentityInterface>|array|string|false the user object representing the authentication status or the ID of the user application component.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      * Starting from version 2.0.12, you can set it to `false` to explicitly switch this component support off for the filter.
-     *
-     * @phpstan-var User<IdentityInterface>|array|string|false
-     * @psalm-var User<IdentityInterface>|array|string|false
      */
     public $user = 'user';
     /**
@@ -151,11 +148,8 @@ class AccessControl extends ActionFilter
      * Denies the access of the user.
      * The default implementation will redirect the user to the login page if he is a guest;
      * if the user is already logged, a 403 HTTP exception will be thrown.
-     * @param User|false $user the current user or boolean `false` in case of detached User component
+     * @param User<IdentityInterface>|false $user the current user or boolean `false` in case of detached User component
      * @throws ForbiddenHttpException if the user is already logged in or in case of detached User component.
-     *
-     * @phpstan-param User<IdentityInterface>|false $user
-     * @psalm-param User<IdentityInterface>|false $user
      */
     protected function denyAccess($user)
     {
