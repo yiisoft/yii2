@@ -39,4 +39,4 @@ jobs:
     uses: yiisoft/yii2-actions/.github/workflows/linter.yml@master
     with:
       directories: framework/ tests/ build/
-      php-version: ["7.4", "8.5"]
+      php-version: '["7.4", "8.5"]'
