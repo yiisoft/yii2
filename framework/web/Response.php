@@ -445,9 +445,7 @@ class Response extends \yii\base\Response
         }
 
         // Try to reset time limit for big files
-        if (!function_exists('set_time_limit') || !@set_time_limit(0)) {
-            Yii::warning('set_time_limit() is not available', __METHOD__);
-        }
+        $setTimeLimitFailed = !function_exists('set_time_limit') || !@set_time_limit(0);
 
         if (is_callable($this->stream)) {
             $data = call_user_func($this->stream);
@@ -460,6 +458,7 @@ class Response extends \yii\base\Response
 
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
+        $iterationCount = 0;
         if (is_array($this->stream)) {
             list($handle, $begin, $end) = $this->stream;
 
@@ -469,6 +468,10 @@ class Response extends \yii\base\Response
             }
 
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
+                $iterationCount++;
+                if ($setTimeLimitFailed && $iterationCount === 2) {
+                    Yii::warning('set_time_limit() is not available', __METHOD__);
+                }
                 if ($pos + $chunkSize > $end) {
                     $chunkSize = $end - $pos + 1;
                 }
@@ -478,6 +481,10 @@ class Response extends \yii\base\Response
             fclose($handle);
         } else {
             while (!feof($this->stream)) {
+                $iterationCount++;
+                if ($setTimeLimitFailed && $iterationCount === 2) {
+                    Yii::warning('set_time_limit() is not available', __METHOD__);
+                }
                 echo fread($this->stream, $chunkSize);
                 flush();
             }
