@@ -1,4 +1,3 @@
----
 name: ci-sqlite
 
 permissions:
@@ -35,64 +34,31 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  PHP_EXTENSIONS: curl, intl, pdo, pdo_sqlite
-  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-  PHPUNIT_GROUP: sqlite
-  XDEBUG_MODE: coverage
-
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-sqlite
-
-    env:
-      COVERAGE_DRIVER: xdebug
-
-    runs-on: ubuntu-latest
-
-    strategy:
-        fail-fast: false
-        matrix:
-            php: [7.4, 8.5]
-
-    steps: &sqlite-steps
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
-
-      - name: Checkout.
-        uses: actions/checkout@v5
-
-      - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
-        with:
-          coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
-          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
-          php-version: ${{ matrix.php }}
-
-      - name: Run PHPUnit tests.
-        uses: ./.github/actions/phpunit
-        with:
-          coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          group: ${{ env.PHPUNIT_GROUP }}
+    name: SQLite tests with coverage
+    uses: yiisoft/yii2-actions/.github/workflows/phpunit.yml@master
+    with:
+      concurrency-group: sqlite-${{ github.ref }}
+      coverage-driver: xdebug
+      enable-concurrency: true
+      extensions: curl, intl, pdo, pdo_sqlite
+      os: '["ubuntu-latest","windows-latest"]'
+      php-version: '["7.4","8.5"]'
+      phpunit-group: sqlite
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   tests-dev:
-    name: PHP ${{ matrix.php }}-sqlite
-
-    env:
-      COVERAGE_DRIVER: none
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.0, 8.1, 8.2, 8.3, 8.4]
-
-    steps: *sqlite-steps
+    name: SQLite tests
+    uses: yiisoft/yii2-actions/.github/workflows/phpunit.yml@master
+    with:
+      concurrency-group: sqlite-dev-${{ github.ref }}
+      coverage-driver: none
+      enable-concurrency: true
+      extensions: curl, intl, pdo, pdo_sqlite
+      os: '["ubuntu-latest"]'
+      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      phpunit-group: sqlite
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
