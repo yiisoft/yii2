@@ -58,7 +58,7 @@ jobs:
     name: MySQL tests
     uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
     with:
-      concurrency-group: mysql-latest-${{ github.ref }}
+      concurrency-group: mysql-dev-${{ github.ref }}
       coverage-driver: none
       database-env: '{"MYSQL_ROOT_PASSWORD":"root","MYSQL_DATABASE":"yiitest"}'
       database-health-cmd: mysqladmin ping
