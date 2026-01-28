@@ -22,5 +22,5 @@ da20adc82aef3eb5ae0bad3889fe6695e6424f06
 1f6a8230732d829cdf2f3ca6755e4ac32f2c6f4f
 # CS fixes.
 7a7d2a9c06c099de8064729ca3fc95fb24241b75
-# Fixed error PHPCS lasted version in `PHP 8.5`
+# Fixed error PHPCS latest version in `PHP 8.5`
 f66d5c8864712aef233b8131c2f99721101f61d0
