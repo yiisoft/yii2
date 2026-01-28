@@ -47,9 +47,8 @@ jobs:
       database-port: "3306"
       database-type: mysql
       database-versions: '["5.7","latest"]'
-      extensions: apc, curl, intl, pdo, pdo_mysql
+      extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-latest"]'
-      php-ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1,date.timezone='UTC'
       php-version: '["7.4","8.5"]'
       phpunit-group: mysql
     secrets:
@@ -67,9 +66,8 @@ jobs:
       database-port: "3306"
       database-type: mysql
       database-versions: '["latest"]'
-      extensions: apcu, curl, intl, pdo, pdo_mysql
+      extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-latest"]'
-      php-ini-values: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1,date.timezone='UTC'
       php-version: '["8.0","8.1","8.2","8.3","8.4"]'
       phpunit-group: mysql
     secrets:
