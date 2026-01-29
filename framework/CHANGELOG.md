@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Bug #20715: Adjust `JSON` helper error message assertions for `PHP 8.6` compatibility in `JsonTest` class (terabytesoftw)
 - Enh #20714: Allow overriding the `yii\grid\GridView`'s default `filterSelector`, allow using `Closure`s for `filterSelector` (chriscpty)
 - Enh #20717: Use PHPStan/Psalm types in PHPDoc annotations (mspirkov)
+- Enh #20718: When set_time_limit() is not available, throw a warning only for big files (@marc-farre)
 
 
 2.0.54 January 09, 2026
