@@ -1,5 +1,4 @@
----
-name: lint
+name: linter
 
 permissions:
   contents: read
@@ -35,35 +34,9 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   phpcs:
-    runs-on: ubuntu-latest
-
-    name: PHP ${{ matrix.php }}-PHP_CodeSniffer
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.4]
-
-    steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
-
-      - name: Checkout.
-        uses: actions/checkout@v5
-
-      - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
-        with:
-          composer-command: install
-          php-version: ${{ matrix.php }}
-          tools: cs2pr
-
-      - name: Run PHP_CodeSniffer.
-        run: vendor/bin/phpcs -q --report=checkstyle framework/ tests/ build/ | cs2pr
+    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@master
+    with:
+      directories: framework/ tests/ build/
+      php-version: '["7.4", "8.5"]'
