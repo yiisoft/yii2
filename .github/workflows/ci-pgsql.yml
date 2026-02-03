@@ -1,4 +1,3 @@
----
 name: ci-pgsql
 
 permissions:
@@ -35,86 +34,39 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  PHP_EXTENSIONS: curl, intl, pdo, pdo_pgsql
-  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-  PHPUNIT_GROUP: pgsql
-  XDEBUG_MODE: coverage
-
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
-
-    env:
-      COVERAGE_DRIVER: xdebug
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [7.4, 8.5]
-        pgsql: [10, 11, 12, 13, 14, 15, 16, 17]
-
-    services: &pgsql-service
-      postgres:
-        image: postgres:${{ matrix.pgsql }}
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: yiitest
-        ports:
-          - 5432:5432
-        options: >-
-          --name=postgres
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-retries=3
-          --health-timeout=5s
-          --mount type=tmpfs,destination=/var/lib/postgresql/data
-
-    steps: &pgsql-steps
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
-
-      - name: Checkout.
-        uses: actions/checkout@v5
-
-      - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
-        with:
-          coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
-          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
-          php-version: ${{ matrix.php }}
-
-      - name: Run PHPUnit tests.
-        uses: ./.github/actions/phpunit
-        with:
-          coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          group: ${{ env.PHPUNIT_GROUP }}
+    name: PostgreSQL tests with coverage
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: pgsql-${{ github.ref }}
+      coverage-driver: xdebug
+      database-env: '{"POSTGRES_USER":"postgres","POSTGRES_PASSWORD":"postgres","POSTGRES_DB":"yiitest"}'
+      database-health-cmd: pg_isready
+      database-image: postgres
+      database-port: "5432"
+      database-type: pgsql
+      database-versions: '["10","11","12","13","14","15","16","17","latest"]'
+      extensions: curl, intl, pdo, pdo_pgsql
+      os: '["ubuntu-latest"]'
+      php-version: '["7.4","8.5"]'
+      phpunit-group: pgsql
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   tests-dev:
-    name: PHP ${{ matrix.php }}-pgsql-${{ matrix.pgsql }}
-
-    env:
-      COVERAGE_DRIVER: none
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.0, 8.1, 8.2, 8.3, 8.4]
-        pgsql:
-          - 17
-
-    services: *pgsql-service
-
-    steps: *pgsql-steps
+    name: PostgreSQL tests
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: pgsql-dev-${{ github.ref }}
+      coverage-driver: none
+      database-env: '{"POSTGRES_USER":"postgres","POSTGRES_PASSWORD":"postgres","POSTGRES_DB":"yiitest"}'
+      database-health-cmd: pg_isready
+      database-image: postgres
+      database-port: "5432"
+      database-type: pgsql
+      database-versions: '["latest"]'
+      extensions: curl, intl, pdo, pdo_pgsql
+      os: '["ubuntu-latest"]'
+      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      phpunit-group: pgsql
