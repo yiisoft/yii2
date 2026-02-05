@@ -186,7 +186,7 @@ abstract class Application extends Module
 
     /**
      * Constructor.
-     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties.
+     * @param mixed[] $config name-value pairs that will be used to initialize the object properties.
      * Note that the configuration must contain both [[id]] and [[basePath]].
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
      */
