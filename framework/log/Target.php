@@ -14,7 +14,6 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
-use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\User;
 

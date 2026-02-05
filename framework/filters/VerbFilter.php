@@ -12,7 +12,6 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
-use yii\base\Module;
 use yii\web\Controller;
 use yii\web\MethodNotAllowedHttpException;
 

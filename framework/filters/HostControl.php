@@ -13,7 +13,6 @@ use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\base\Component;
 use yii\base\Controller;
-use yii\base\Module;
 use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
 

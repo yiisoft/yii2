@@ -10,7 +10,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidRouteException;
-use yii\base\Module;
 use yii\helpers\Url;
 
 /**

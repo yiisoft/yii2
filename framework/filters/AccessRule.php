@@ -16,7 +16,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
-use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\User;
 

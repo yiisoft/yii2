@@ -13,7 +13,6 @@ use yii\base\ActionFilter;
 use yii\base\Component;
 use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
 use yii\web\User;
 
 /**

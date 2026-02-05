@@ -9,8 +9,6 @@
 namespace yii\filters;
 
 use yii\base\Action;
-use yii\base\Controller;
-use yii\base\Module;
 
 /**
  * RateLimitInterface is the interface that may be implemented by an identity object to enforce rate limiting.

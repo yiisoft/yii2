@@ -10,7 +10,6 @@ namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Module;
 use yii\helpers\Json;
 use yii\validators\ValidationAsset;
 use yii\validators\Validator;
