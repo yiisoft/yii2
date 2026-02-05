@@ -36,7 +36,7 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Controller
+ * @template T of Controller = Controller
  */
 class Action extends Component
 {

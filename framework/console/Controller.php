@@ -41,7 +41,7 @@ use yii\base\Module;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Module
+ * @template T of Module = Module
  * @extends BaseController<T>
  */
 class Controller extends BaseController

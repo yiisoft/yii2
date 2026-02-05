@@ -23,7 +23,7 @@ interface RateLimitInterface
     /**
      * Returns the maximum number of allowed requests and the window size.
      * @param \yii\web\Request $request the current request
-     * @param Action<Controller<Module>> $action the action to be executed
+     * @param Action $action the action to be executed
      * @return array an array of two elements. The first element is the maximum number of allowed requests,
      * and the second element is the size of the window in seconds.
      */
@@ -32,7 +32,7 @@ interface RateLimitInterface
     /**
      * Loads the number of allowed requests and the corresponding timestamp from a persistent storage.
      * @param \yii\web\Request $request the current request
-     * @param Action<Controller<Module>> $action the action to be executed
+     * @param Action $action the action to be executed
      * @return array an array of two elements. The first element is the number of allowed requests,
      * and the second element is the corresponding UNIX timestamp.
      */
@@ -41,7 +41,7 @@ interface RateLimitInterface
     /**
      * Saves the number of allowed requests and the corresponding timestamp to a persistent storage.
      * @param \yii\web\Request $request the current request
-     * @param Action<Controller<Module>> $action the action to be executed
+     * @param Action $action the action to be executed
      * @param int $allowance the number of allowed requests remaining.
      * @param int $timestamp the current timestamp.
      */

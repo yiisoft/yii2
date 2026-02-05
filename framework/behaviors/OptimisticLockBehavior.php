@@ -63,7 +63,7 @@ use yii\helpers\ArrayHelper;
  * @since 2.0.16
  * @see \yii\db\BaseActiveRecord::optimisticLock() for details on how to enable optimistic lock.
  *
- * @template T of BaseActiveRecord
+ * @template T of BaseActiveRecord = BaseActiveRecord
  * @extends AttributeBehavior<T>
  */
 class OptimisticLockBehavior extends AttributeBehavior

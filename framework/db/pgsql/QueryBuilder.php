@@ -208,7 +208,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        /** @var Schema<ColumnSchema> */
+        /** @var Schema */
         $dbSchema = $this->db->getSchema();
         $enable = $check ? 'ENABLE' : 'DISABLE';
         $schema = $schema ?: $dbSchema->defaultSchema;
@@ -378,7 +378,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $updateColumns = false;
         }
 
-        /** @var Schema<ColumnSchema> $schema */
+        /** @var Schema $schema */
         $schema = $this->db->getSchema();
         if (!$insertColumns instanceof Query) {
             $tableSchema = $schema->getTableSchema($table);

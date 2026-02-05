@@ -67,7 +67,7 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
- * @template T of (ActiveRecord|array)
+ * @template T of ActiveRecord|array = ActiveRecord|array<array-key, mixed>
  *
  * @method T|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method T[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
@@ -628,8 +628,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * Joins a parent query with a child query.
      * The current query object will be modified accordingly.
-     * @param ActiveQuery<ActiveRecord|array<string, mixed>> $parent
-     * @param ActiveQuery<ActiveRecord|array<string, mixed>> $child
+     * @param ActiveQuery $parent
+     * @param ActiveQuery $child
      * @param string $joinType
      */
     private function joinWithRelation($parent, $child, $joinType)

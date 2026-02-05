@@ -53,7 +53,7 @@ use yii\web\Response;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 class PageCache extends ActionFilter implements DynamicContentAwareInterface

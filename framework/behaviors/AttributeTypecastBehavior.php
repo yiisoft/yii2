@@ -110,7 +110,7 @@ use yii\validators\StringValidator;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  *
- * @template T of Model|BaseActiveRecord
+ * @template T of Model|BaseActiveRecord = Model|BaseActiveRecord
  * @extends Behavior<T>
  */
 class AttributeTypecastBehavior extends Behavior

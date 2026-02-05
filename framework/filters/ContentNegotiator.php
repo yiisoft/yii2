@@ -85,7 +85,7 @@ use yii\web\Response;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 class ContentNegotiator extends ActionFilter implements BootstrapInterface

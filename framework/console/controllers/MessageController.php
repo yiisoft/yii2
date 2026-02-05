@@ -41,7 +41,7 @@ use yii\i18n\GettextPoFile;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Application
+ * @template T of Application = Application
  * @extends Controller<T>
  */
 class MessageController extends Controller

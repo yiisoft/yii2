@@ -76,7 +76,7 @@ class Application extends \yii\base\Application
      */
     public $enableCoreCommands = true;
     /**
-     * @var Controller<Module>|null the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
 

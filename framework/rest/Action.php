@@ -21,7 +21,7 @@ use yii\base\Action as BaseAction;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Controller
+ * @template T of Controller = Controller
  * @extends BaseAction<T>
  */
 class Action extends BaseAction

@@ -23,7 +23,7 @@ use yii\helpers\Console;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0.7
  *
- * @template T of Application
+ * @template T of Application = Application
  * @extends Controller<T>
  */
 class ServeController extends Controller

@@ -50,7 +50,7 @@ use yii\db\BaseActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of BaseActiveRecord
+ * @template T of BaseActiveRecord = BaseActiveRecord
  * @extends Behavior<T>
  */
 class AttributeBehavior extends Behavior

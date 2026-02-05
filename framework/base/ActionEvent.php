@@ -16,7 +16,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Action
+ * @template T of Action = Action
  */
 class ActionEvent extends Event
 {

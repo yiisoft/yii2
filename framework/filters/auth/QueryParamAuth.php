@@ -16,7 +16,7 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends AuthMethod<T>
  */
 class QueryParamAuth extends AuthMethod
