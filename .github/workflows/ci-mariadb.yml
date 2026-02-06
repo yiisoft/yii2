@@ -1,4 +1,3 @@
----
 name: ci-mariadb
 
 permissions:
@@ -35,87 +34,39 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  PHP_EXTENSIONS: curl, intl, pdo, pdo_mysql
-  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-  PHPUNIT_GROUP: mysql
-  XDEBUG_MODE: coverage
-
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-${{ matrix.mariadb }}
-
-    env:
-      COVERAGE_DRIVER: xdebug
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [7.4, 8.5]
-        mariadb:
-          - mariadb:10.4
-          - mariadb:latest
-
-    services: &mariadb-service
-      mysql:
-        image: ${{ matrix.mariadb }}
-        env:
-          MARIADB_ROOT_PASSWORD: root
-          MARIADB_DATABASE: yiitest
-        ports:
-          - 3306:3306
-        options: >-
-          --name=mariadb
-          --health-cmd="mariadb-admin ping"
-          --health-interval=10s
-          --health-retries=3
-          --health-timeout=5s
-          --mount type=tmpfs,destination=/var/lib/mysql
-
-    steps: &mariadb-steps
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
-
-      - name: Checkout.
-        uses: actions/checkout@v5
-
-      - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
-        with:
-          coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
-          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
-          php-version: ${{ matrix.php }}
-
-      - name: Run PHPUnit tests.
-        uses: ./.github/actions/phpunit
-        with:
-          coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          group: ${{ env.PHPUNIT_GROUP }}
+    name: MariaDB tests with coverage
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mariadb-${{ github.ref }}
+      coverage-driver: xdebug
+      database-env: '{"MARIADB_ROOT_PASSWORD":"root","MARIADB_DATABASE":"yiitest"}'
+      database-health-cmd: mariadb-admin ping
+      database-image: mariadb
+      database-port: "3306"
+      database-type: mysql
+      database-versions: '["10.4","latest"]'
+      extensions: curl, intl, pdo, pdo_mysql
+      os: '["ubuntu-latest"]'
+      php-version: '["7.4","8.5"]'
+      phpunit-group: mysql
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
   tests-dev:
-    name: PHP ${{ matrix.php }}-${{ matrix.mariadb }}
-
-    env:
-      COVERAGE_DRIVER: none
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.0, 8.1, 8.2, 8.3, 8.4]
-        mariadb:
-          - mariadb:latest
-
-    services: *mariadb-service
-
-    steps: *mariadb-steps
+    name: MariaDB tests
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mariadb-dev-${{ github.ref }}
+      coverage-driver: none
+      database-env: '{"MARIADB_ROOT_PASSWORD":"root","MARIADB_DATABASE":"yiitest"}'
+      database-health-cmd: mariadb-admin ping
+      database-image: mariadb
+      database-port: "3306"
+      database-type: mysql
+      database-versions: '["latest"]'
+      extensions: curl, intl, pdo, pdo_mysql
+      os: '["ubuntu-latest"]'
+      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      phpunit-group: mysql
