@@ -14,7 +14,6 @@ use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 use yii\helpers\VarDumper;
-use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\User;
 
@@ -347,7 +346,7 @@ abstract class Target extends Component
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
 
-        /** @var User<IdentityInterface> $user */
+        /** @var User $user */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
         if ($user && ($identity = $user->getIdentity(false))) {
             $userID = $identity->getId();

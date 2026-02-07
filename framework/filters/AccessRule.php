@@ -16,7 +16,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
-use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\User;
 
@@ -165,8 +164,8 @@ class AccessRule extends Component
 
     /**
      * Checks whether the Web user is allowed to perform the specified action.
-     * @param Action<Controller<Module>> $action the action to be performed
-     * @param User<IdentityInterface>|false $user the user object or `false` in case of detached User component
+     * @param Action $action the action to be performed
+     * @param User|false $user the user object or `false` in case of detached User component
      * @param Request $request
      * @return bool|null `true` if the user is allowed, `false` if the user is denied, `null` if the rule does not apply to the user
      */
@@ -187,7 +186,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param Action<Controller<Module>> $action the action
+     * @param Action $action the action
      * @return bool whether the rule applies to the action
      */
     protected function matchAction($action)
@@ -196,7 +195,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param Controller<Module> $controller the controller
+     * @param Controller $controller the controller
      * @return bool whether the rule applies to the controller
      */
     protected function matchController($controller)
@@ -216,7 +215,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param User<IdentityInterface> $user the user object
+     * @param User $user the user object
      * @return bool whether the rule applies to the role
      * @throws InvalidConfigException if User component is detached
      */
@@ -298,7 +297,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param Action<Controller<Module>> $action the action to be performed
+     * @param Action $action the action to be performed
      * @return bool whether the rule should be applied
      */
     protected function matchCustom($action)

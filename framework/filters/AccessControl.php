@@ -13,7 +13,6 @@ use yii\base\ActionFilter;
 use yii\base\Component;
 use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
-use yii\web\IdentityInterface;
 use yii\web\User;
 
 /**
@@ -56,13 +55,13 @@ use yii\web\User;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 class AccessControl extends ActionFilter
 {
     /**
-     * @var User<IdentityInterface>|array|string|false the user object representing the authentication status or the ID of the user application component.
+     * @var User|array|string|false the user object representing the authentication status or the ID of the user application component.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      * Starting from version 2.0.12, you can set it to `false` to explicitly switch this component support off for the filter.
      */
@@ -149,7 +148,7 @@ class AccessControl extends ActionFilter
      * Denies the access of the user.
      * The default implementation will redirect the user to the login page if he is a guest;
      * if the user is already logged, a 403 HTTP exception will be thrown.
-     * @param User<IdentityInterface>|false $user the current user or boolean `false` in case of detached User component
+     * @param User|false $user the current user or boolean `false` in case of detached User component
      * @throws ForbiddenHttpException if the user is already logged in or in case of detached User component.
      */
     protected function denyAccess($user)

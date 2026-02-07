@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #20714: Allow overriding the `yii\grid\GridView`'s default `filterSelector`, allow using `Closure`s for `filterSelector` (chriscpty)
 - Enh #20717: Use PHPStan/Psalm types in PHPDoc annotations (mspirkov)
 - Enh #20718: When set_time_limit() is not available, throw a warning only for big files (@marc-farre)
+- Enh #20729: Add default types in `@template` annotations (mspirkov)
 - Enh #20730: Make the configuration type for `Application` wider (mspirkov)
 
 

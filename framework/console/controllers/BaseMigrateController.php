@@ -28,7 +28,7 @@ use yii\helpers\Inflector;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Application
+ * @template T of Application = Application
  * @extends Controller<T>
  */
 abstract class BaseMigrateController extends Controller

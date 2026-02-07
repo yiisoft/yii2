@@ -10,7 +10,6 @@ namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Module;
 use yii\helpers\Json;
 use yii\validators\ValidationAsset;
 use yii\validators\Validator;
@@ -68,16 +67,16 @@ class CaptchaValidator extends Validator
 
     /**
      * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
-     * @return CaptchaAction<Controller<Module>> the action object
+     * @return CaptchaAction the action object
      * @throws InvalidConfigException
      */
     public function createCaptchaAction()
     {
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
-            /** @var Controller<Module> $controller */
+            /** @var Controller $controller */
             list($controller, $actionID) = $ca;
-            /** @var CaptchaAction<Controller<Module>>|null */
+            /** @var CaptchaAction|null */
             $action = $controller->createAction($actionID);
             if ($action !== null) {
                 return $action;

@@ -39,7 +39,7 @@ use yii\caching\TagDependency;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
  *
- * @template T of ColumnSchema
+ * @template T of ColumnSchema = ColumnSchema
  */
 abstract class Schema extends BaseObject
 {

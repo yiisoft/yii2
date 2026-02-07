@@ -39,7 +39,7 @@ use yii\console\Application as ConsoleApplication;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of ConsoleApplication
+ * @template T of ConsoleApplication = ConsoleApplication
  * @extends Controller<T>
  */
 class HelpController extends Controller
@@ -211,7 +211,7 @@ class HelpController extends Controller
 
     /**
      * Returns all available actions of the specified controller.
-     * @param Controller<Module> $controller the controller instance
+     * @param Controller $controller the controller instance
      * @return array all available action IDs.
      */
     public function getActions($controller)
@@ -356,7 +356,7 @@ class HelpController extends Controller
 
     /**
      * Displays the overall information of the command.
-     * @param Controller<Module> $controller the controller instance
+     * @param Controller $controller the controller instance
      */
     protected function getCommandHelp($controller)
     {
@@ -400,7 +400,7 @@ class HelpController extends Controller
 
     /**
      * Displays the detailed information of a command action.
-     * @param Controller<Module> $controller the controller instance
+     * @param Controller $controller the controller instance
      * @param string $actionID action ID
      * @throws Exception if the action does not exist
      */
@@ -521,7 +521,7 @@ class HelpController extends Controller
     }
 
     /**
-     * @param Controller<Module> $controller the controller instance
+     * @param Controller $controller the controller instance
      * @param string $option the option name
      * @return string the formatted string for the alias argument or option
      * @since 2.0.8

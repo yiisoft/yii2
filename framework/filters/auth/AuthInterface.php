@@ -24,7 +24,7 @@ interface AuthInterface
 {
     /**
      * Authenticates the current user.
-     * @param User<IdentityInterface> $user
+     * @param User $user
      * @param Request $request
      * @param Response $response
      * @return IdentityInterface|null the authenticated user identity. If authentication information is not provided, null will be returned.

@@ -12,7 +12,6 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
-use yii\base\Module;
 use yii\web\Controller;
 use yii\web\MethodNotAllowedHttpException;
 
@@ -89,7 +88,7 @@ class VerbFilter extends Behavior
     }
 
     /**
-     * @param ActionEvent<Action<Controller<Module>>> $event
+     * @param ActionEvent $event
      * @return bool
      * @throws MethodNotAllowedHttpException when the request method is not allowed.
      */

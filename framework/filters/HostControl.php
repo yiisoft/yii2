@@ -13,7 +13,6 @@ use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\base\Component;
 use yii\base\Controller;
-use yii\base\Module;
 use yii\helpers\StringHelper;
 use yii\web\NotFoundHttpException;
 
@@ -69,7 +68,7 @@ use yii\web\NotFoundHttpException;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.11
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 class HostControl extends ActionFilter
@@ -168,7 +167,7 @@ class HostControl extends ActionFilter
      * The default implementation will display 404 page right away, terminating the program execution.
      * You may override this method, creating your own deny access handler. While doing so, make sure you
      * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
-     * @param Action<Controller<Module>> $action the action to be executed.
+     * @param Action $action the action to be executed.
      * @throws NotFoundHttpException
      */
     protected function denyAccess($action)

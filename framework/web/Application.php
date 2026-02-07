@@ -10,7 +10,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidRouteException;
-use yii\base\Module;
 use yii\helpers\Url;
 
 /**
@@ -18,7 +17,7 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
- * @template TUserIdentity of IdentityInterface
+ * @template TUserIdentity of IdentityInterface = IdentityInterface
  *
  * @property-read ErrorHandler $errorHandler The error handler application component.
  * @property string $homeUrl The homepage URL.
@@ -56,7 +55,7 @@ class Application extends \yii\base\Application
      */
     public $catchAll;
     /**
-     * @var Controller<Module>|null the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
 

@@ -26,7 +26,7 @@ use yii\di\NotInstantiableException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Module
+ * @template T of Module = Module
  */
 class Controller extends Component implements ViewContextInterface
 {

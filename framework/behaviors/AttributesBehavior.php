@@ -63,7 +63,7 @@ use yii\db\BaseActiveRecord;
  * @author Bogdan Stepanenko <bscheshirwork@gmail.com>
  * @since 2.0.13
  *
- * @template T of BaseActiveRecord
+ * @template T of BaseActiveRecord = BaseActiveRecord
  * @extends Behavior<T>
  */
 class AttributesBehavior extends Behavior

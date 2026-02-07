@@ -45,7 +45,7 @@ use yii\test\FixtureTrait;
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  *
- * @template T of Application
+ * @template T of Application = Application
  * @extends Controller<T>
  */
 class FixtureController extends Controller

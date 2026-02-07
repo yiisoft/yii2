@@ -351,12 +351,12 @@ parameters:
 			path: framework/console/Controller.php
 
 		-
-			message: "#^Call to an undefined method T of yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
+			message: "#^Call to an undefined method T of yii\\\\base\\\\Model \\= yii\\\\base\\\\Model\\:\\:canSetOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: "#^Call to an undefined method T of yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
+			message: "#^Call to an undefined method T of yii\\\\base\\\\Model \\= yii\\\\base\\\\Model\\:\\:setOldAttribute\\(\\)\\.$#"
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
@@ -404,3 +404,8 @@ parameters:
 			message: "#^Argument of an invalid type static\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
 			count: 1
 			path: framework/caching/Dependency.php
+
+		-
+			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\|null\\) does not accept yii\\\\base\\\\Controller\\<\\$this\\(yii\\\\base\\\\Module\\)\\>\\.$#"
+			count: 1
+			path: framework/base/Module.php

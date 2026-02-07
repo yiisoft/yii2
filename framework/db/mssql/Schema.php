@@ -26,7 +26,7 @@ use yii\db\Schema as BaseSchema;
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  *
- * @template T of ColumnSchema
+ * @template T of ColumnSchema = ColumnSchema
  * @extends BaseSchema<T>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface

@@ -121,7 +121,7 @@ use yii\caching\CacheInterface;
  * @property-read PDO $masterPdo The PDO instance for the currently active master connection.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
  * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
- * @property-read Schema<ColumnSchema> $schema The schema information for the database opened by this
+ * @property-read Schema $schema The schema information for the database opened by this
  * connection.
  * @property-read string $serverVersion Server version as a string.
  * @property-read Connection|null $slave The currently active slave connection. `null` is returned if there is
@@ -436,7 +436,7 @@ class Connection extends Component
      */
     private $_transaction;
     /**
-     * @var Schema<ColumnSchema>|null the database schema
+     * @var Schema|null the database schema
      */
     private $_schema;
     /**
@@ -853,7 +853,7 @@ class Connection extends Component
 
     /**
      * Returns the schema information for the database opened by this connection.
-     * @return Schema<ColumnSchema> the schema information for the database opened by this connection.
+     * @return Schema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
      */
     public function getSchema()

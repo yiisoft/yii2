@@ -34,7 +34,7 @@ use yii\base\Component;
  * @author Benoît Boure <benoit.boure@gmail.com>
  * @since 2.0.14
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends AuthMethod<T>
  */
 class HttpHeaderAuth extends AuthMethod

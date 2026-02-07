@@ -113,7 +113,7 @@ abstract class Application extends Module
      */
     public $sourceLanguage = 'en-US';
     /**
-     * @var Controller<Module>|null the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
     /**
@@ -126,7 +126,7 @@ abstract class Application extends Module
      */
     public $requestedRoute;
     /**
-     * @var Action<covariant Controller<Module>>|null the requested Action. If null, it means the request cannot be resolved into an action.
+     * @var Action<covariant Controller>|null the requested Action. If null, it means the request cannot be resolved into an action.
      */
     public $requestedAction;
     /**

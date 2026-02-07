@@ -49,7 +49,7 @@ use yii\base\UserException;
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0
  *
- * @template T of Controller
+ * @template T of Controller = Controller
  * @extends Action<T>
  */
 class ErrorAction extends Action

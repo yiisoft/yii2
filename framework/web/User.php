@@ -48,7 +48,7 @@ use yii\rbac\CheckAccessInterface;
  * ]
  * ```
  *
- * @template T of IdentityInterface
+ * @template T of IdentityInterface = IdentityInterface
  *
  * @property-read string|int|null $id The unique identifier for the user. If `null`, it means the user is a
  * guest.

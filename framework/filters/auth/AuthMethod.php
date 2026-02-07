@@ -12,10 +12,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\base\Component;
-use yii\base\Controller;
-use yii\base\Module;
 use yii\helpers\StringHelper;
-use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\UnauthorizedHttpException;
@@ -27,13 +24,13 @@ use yii\web\User;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 abstract class AuthMethod extends ActionFilter implements AuthInterface
 {
     /**
-     * @var User<IdentityInterface>|null the user object representing the user authentication status. If not set, the `user` application component will be used.
+     * @var User|null the user object representing the user authentication status. If not set, the `user` application component will be used.
      */
     public $user;
     /**
@@ -104,7 +101,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     /**
      * Checks, whether authentication is optional for the given action.
      *
-     * @param Action<Controller<Module>> $action action to be checked.
+     * @param Action $action action to be checked.
      * @return bool whether authentication is optional or not.
      * @see optional
      * @since 2.0.7
