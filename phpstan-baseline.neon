@@ -406,6 +406,6 @@ parameters:
 			path: framework/caching/Dependency.php
 
 		-
-			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\|null\\) does not accept yii\\\\base\\\\Controller\\<\\$this\\(yii\\\\base\\\\Module\\)\\>\\.$#"
+			message: "#^Property yii\\\\console\\\\Application\\:\\:\\$controller \\(yii\\\\console\\\\Controller\\|yii\\\\web\\\\Controller\\|null\\) does not accept yii\\\\base\\\\Controller\\<static\\(yii\\\\base\\\\Module\\)\\>\\.$#"
 			count: 1
 			path: framework/base/Module.php

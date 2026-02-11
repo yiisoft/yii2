@@ -122,12 +122,12 @@ class Controller extends BaseController
      * This method will check the parameter names that the action requires and return
      * the provided parameters according to the requirement. If there is any missing parameter,
      * an exception will be thrown.
-     * @param Action<$this> $action the action to be bound with parameters
+     * @param Action<static> $action the action to be bound with parameters
      * @param array<array-key, mixed> $params the parameters to be bound to the action
      * @return mixed[] the valid parameters that the action can run with.
      * @throws BadRequestHttpException if there are missing or invalid parameters.
      *
-     * @phpstan-param Action<$this> $action
+     * @phpstan-param Action<static> $action
      * @psalm-param Action<self> $action
      */
     public function bindActionParams($action, $params)

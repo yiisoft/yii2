@@ -60,10 +60,10 @@ class Controller extends Component implements ViewContextInterface
      */
     public $layout;
     /**
-     * @var Action<$this>|null the action that is currently being executed. This property will be set
+     * @var Action<covariant static>|null the action that is currently being executed. This property will be set
      * by [[run()]] when it is called by [[Application]] to run an action.
      *
-     * @phpstan-var Action<$this>|null
+     * @phpstan-var Action<covariant static>|null
      * @psalm-var Action<self>|null
      */
     public $action;
@@ -223,11 +223,11 @@ class Controller extends Component implements ViewContextInterface
     /**
      * Binds the parameters to the action.
      * This method is invoked by [[Action]] when it begins to run with the given parameters.
-     * @param Action<$this> $action the action to be bound with parameters.
+     * @param Action<static> $action the action to be bound with parameters.
      * @param array<array-key, mixed> $params the parameters to be bound to the action.
      * @return mixed[] the valid parameters that the action can run with.
      *
-     * @phpstan-param Action<$this> $action
+     * @phpstan-param Action<static> $action
      * @psalm-param Action<self> $action
      */
     public function bindActionParams($action, $params)
@@ -243,9 +243,9 @@ class Controller extends Component implements ViewContextInterface
      * where `xyz` is the action ID. If found, an [[InlineAction]] representing that
      * method will be created and returned.
      * @param string $id the action ID.
-     * @return Action<$this>|null the newly created action instance. Null if the ID doesn't resolve into any action.
+     * @return Action<covariant static>|null the newly created action instance. Null if the ID doesn't resolve into any action.
      *
-     * @phpstan-return Action<$this>|null
+     * @phpstan-return Action<covariant static>|null
      * @psalm-return Action<self>|null
      */
     public function createAction($id)
@@ -299,10 +299,10 @@ class Controller extends Component implements ViewContextInterface
      * }
      * ```
      *
-     * @param Action<$this> $action the action to be executed.
+     * @param Action<static> $action the action to be executed.
      * @return bool whether the action should continue to run.
      *
-     * @phpstan-param Action<$this> $action
+     * @phpstan-param Action<static> $action
      * @psalm-param Action<self> $action
      */
     public function beforeAction($action)
@@ -329,11 +329,11 @@ class Controller extends Component implements ViewContextInterface
      * }
      * ```
      *
-     * @param Action<$this> $action the action just executed.
+     * @param Action<static> $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
      *
-     * @phpstan-param Action<$this> $action
+     * @phpstan-param Action<static> $action
      * @psalm-param Action<self> $action
      */
     public function afterAction($action, $result)

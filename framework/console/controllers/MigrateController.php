@@ -179,10 +179,10 @@ class MigrateController extends BaseMigrateController
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param Action<$this> $action the action to be executed.
+     * @param Action<static> $action the action to be executed.
      * @return bool whether the action should continue to be executed.
      *
-     * @phpstan-param Action<$this> $action
+     * @phpstan-param Action<static> $action
      * @psalm-param Action<self> $action
      */
     public function beforeAction($action)
