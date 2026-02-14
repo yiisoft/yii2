@@ -188,13 +188,18 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
-            echo 'An internal server error occurred.';
+            echo $this->fallbackExceptionMessage($exception);
         }
         error_log($msg);
         if (defined('HHVM_VERSION')) {
             flush();
         }
         exit(1);
+    }
+
+    protected function fallbackExceptionMessage($exception)
+    {
+        return 'An internal server error occurred.';
     }
 
     /**
