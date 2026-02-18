@@ -281,6 +281,8 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public function one($db = null)
     {
+        $this->limit(1);
+
         if ($this->emulateExecution) {
             return false;
         }
