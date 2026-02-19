@@ -12,6 +12,8 @@ Yii Framework 2 Change Log
 - Enh #20729: Add default types in `@template` annotations (mspirkov)
 - Enh #20730: Make the configuration type for `Application` wider (mspirkov)
 - Bug #20733: Replace `$this` with `static` and `covariant static` in generics in PHPStan and PHPDoc annotations (mspirkov)
+- Bug #20735: Fix `@param` annotations for `$name` in `Request::get()` and `Request::post()` (mspirkov)
+- Enh #20735: Add conditional types in `@return` annotations in `Request::get()` and `Request::post()` (mspirkov)
 
 
 2.0.54 January 09, 2026
