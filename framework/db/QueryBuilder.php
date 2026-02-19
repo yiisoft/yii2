@@ -472,7 +472,9 @@ class QueryBuilder extends \yii\base\BaseObject
                 if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
-                if (is_string($value)) {
+                if (is_array($value)) {
+                    $value = json_encode($value);
+                } elseif (is_string($value)) {
                     $value = $schema->quoteValue($value);
                 } elseif (is_float($value)) {
                     // ensure type cast always has . as decimal separator in all locales
