@@ -51,7 +51,7 @@ jobs:
       hook: |
         sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
         docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q "IF DB_ID(N'yiitest') IS NULL CREATE DATABASE yiitest;"
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["7.4","8.5"]'
       phpunit-group: mssql
     secrets:
@@ -73,6 +73,6 @@ jobs:
       hook: |
         sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
         docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q "IF DB_ID(N'yiitest') IS NULL CREATE DATABASE yiitest;"
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["8.0","8.1","8.2","8.3","8.4"]'
       phpunit-group: mssql

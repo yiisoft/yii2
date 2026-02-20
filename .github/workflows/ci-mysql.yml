@@ -48,7 +48,7 @@ jobs:
       database-type: mysql
       database-versions: '["5.7","latest"]'
       extensions: curl, intl, pdo, pdo_mysql
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["7.4","8.5"]'
       phpunit-group: mysql
     secrets:
@@ -67,6 +67,6 @@ jobs:
       database-type: mysql
       database-versions: '["latest"]'
       extensions: curl, intl, pdo, pdo_mysql
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["8.0","8.1","8.2","8.3","8.4"]'
       phpunit-group: mysql

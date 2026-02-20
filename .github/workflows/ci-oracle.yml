@@ -49,7 +49,7 @@ jobs:
       database-type: oracle
       database-versions: '["latest"]'
       extensions: curl, intl, oci8, pdo, pdo_oci
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["7.4"]'
       phpunit-group: oci
     secrets:
