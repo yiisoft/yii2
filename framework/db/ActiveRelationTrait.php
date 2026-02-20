@@ -442,8 +442,16 @@ trait ActiveRelationTrait
         }
 
         if ($checkMultiple && !$this->multiple) {
-            foreach ($buckets as $i => $bucket) {
-                $buckets[$i] = reset($bucket);
+            $countKeys = count($linkKeys);
+            foreach ($models as $model) {
+                if($countKeys == 1 && is_array($model->{$linkKeys[0]})) {
+                    foreach ($model->{$linkKeys[0]} as $key) {
+                        $buckets[(string) $key][] = $model;
+                    }
+                } else {
+                    $key = $this->getModelKey($model, $linkKeys);
+                    $buckets[$key][] = $model;
+                }
             }
         }
 
