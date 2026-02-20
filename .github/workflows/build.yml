@@ -53,7 +53,7 @@ jobs:
       COVERAGE_DRIVER: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
       IGNORE_PLATFORM_REQS: false
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services: &memcached-service
       memcached:
@@ -101,7 +101,7 @@ jobs:
       COVERAGE_DRIVER: none
       IGNORE_PLATFORM_REQS: true
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services: *memcached-service
 

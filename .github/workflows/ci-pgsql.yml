@@ -48,7 +48,7 @@ jobs:
       database-type: pgsql
       database-versions: '["10","11","12","13","14","15","16","17","latest"]'
       extensions: curl, intl, pdo, pdo_pgsql
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["7.4","8.5"]'
       phpunit-group: pgsql
     secrets:
@@ -67,6 +67,6 @@ jobs:
       database-type: pgsql
       database-versions: '["latest"]'
       extensions: curl, intl, pdo, pdo_pgsql
-      os: '["ubuntu-latest"]'
+      os: '["ubuntu-22.04"]'
       php-version: '["8.0","8.1","8.2","8.3","8.4"]'
       phpunit-group: pgsql
