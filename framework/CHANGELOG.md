@@ -14,6 +14,8 @@ Yii Framework 2 Change Log
 - Bug #20733: Replace `$this` with `static` and `covariant static` in generics in PHPStan and PHPDoc annotations (mspirkov)
 - Bug #20735: Fix `@param` annotations for `$name` in `Request::get()` and `Request::post()` (mspirkov)
 - Enh #20735: Add conditional types in `@return` annotations in `Request::get()` and `Request::post()` (mspirkov)
+- Bug #20738: Fix `@var` annotations for `Application::$requestedParams`, `AssetBundle::$basePath`, `AssetBundle::$baseUrl`, `MultiFieldSession::$writeCallback` and `View::$assetBundles` (mspirkov)
+- Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
 
 
 2.0.54 January 09, 2026

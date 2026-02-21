@@ -49,7 +49,7 @@ class AssetBundle extends BaseObject
      */
     public $sourcePath;
     /**
-     * @var string the Web-accessible directory that contains the asset files in this bundle.
+     * @var string|null the Web-accessible directory that contains the asset files in this bundle.
      *
      * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
      * when it publishes the asset files from [[sourcePath]].
@@ -58,7 +58,7 @@ class AssetBundle extends BaseObject
      */
     public $basePath;
     /**
-     * @var string the base URL for the relative asset files listed in [[js]] and [[css]].
+     * @var string|null the base URL for the relative asset files listed in [[js]] and [[css]].
      *
      * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
      * when it publishes the asset files from [[sourcePath]].

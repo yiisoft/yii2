@@ -393,7 +393,7 @@ class AssetManager extends Component
     }
 
     /**
-     * @var AssetConverterInterface
+     * @var array|AssetConverterInterface|null
      */
     private $_converter;
 

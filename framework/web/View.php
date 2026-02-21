@@ -104,7 +104,7 @@ class View extends \yii\base\View
      */
     public const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
     /**
-     * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
+     * @var array<string, AssetBundle|false> list of the registered asset bundles. The keys are the bundle names, and the values
      * are the registered [[AssetBundle]] objects.
      * @see registerAssetBundle()
      */
@@ -534,7 +534,7 @@ class View extends \yii\base\View
                 $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');
                 $timestamp = @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
                 if ($timestamp > 0) {
-                    $url = $timestamp ? "$url?v=$timestamp" : $url;
+                    $url = "$url?v=$timestamp";
                 }
             }
             if ($type === 'js') {
