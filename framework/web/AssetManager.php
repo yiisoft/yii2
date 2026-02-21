@@ -419,7 +419,7 @@ class AssetManager extends Component
      * Sets the asset converter.
      * @param array|string|AssetConverterInterface $value the asset converter. This can be either
      * an object implementing the [[AssetConverterInterface]], or a configuration
-     * array that can be used to create the asset converter object or a class name.
+     * array that can be used to create the asset converter object, or a class name.
      */
     public function setConverter($value)
     {
