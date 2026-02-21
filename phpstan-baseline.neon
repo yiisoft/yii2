@@ -409,5 +409,5 @@ parameters:
 		-
 			message: "#^Access to an undefined property yiiunit\\\\framework\\\\base\\\\NewComponent\\:\\:\\$as f\\.$#"
 			count: 1
-			path: framework/caching/Dependency.php
+			path: tests/framework/base/ComponentTest.php
 			reportUnmatched: false # fails only for PHP8
