@@ -173,7 +173,7 @@ class BaseObjectTest extends TestCase
 /**
  * @property mixed $Text
  * @property mixed $text
- * @property-read self|null $object
+ * @property-read self $object
  * @property-read callable $execute
  * @property-read array<array-key, mixed> $items
  * @property-write mixed $writeOnly
