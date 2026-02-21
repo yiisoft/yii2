@@ -194,6 +194,8 @@ class Filter1 extends ActionFilter
 {
     /**
      * {@inheritdoc}
+     *
+     * @param Action<FakeController> $action
      */
     public function beforeAction($action)
     {
@@ -214,6 +216,8 @@ class Filter2 extends ActionFilter
 {
     /**
      * {@inheritdoc}
+     *
+     * @param Action<FakeController> $action
      */
     public function beforeAction($action)
     {
@@ -234,6 +238,8 @@ class Filter3 extends ActionFilter
 {
     /**
      * {@inheritdoc}
+     *
+     * @param Action<FakeController> $action
      */
     public function beforeAction($action)
     {

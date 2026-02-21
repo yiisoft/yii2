@@ -1,4 +1,5 @@
 includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
     - phpstan-baseline.neon
 
 parameters:
@@ -7,6 +8,34 @@ parameters:
     paths:
         - build
         - framework
+        - tests
+
+    excludePaths:
+        analyse:
+            - tests/data
+            - tests/framework/base/stub
+            # Analyze these directories
+            - tests/framework/behaviors
+            - tests/framework/caching
+            - tests/framework/console
+            - tests/framework/data
+            - tests/framework/db
+            - tests/framework/di
+            - tests/framework/filters
+            - tests/framework/grid
+            - tests/framework/helpers
+            - tests/framework/i18n
+            - tests/framework/log
+            - tests/framework/mail
+            - tests/framework/models
+            - tests/framework/mutex
+            - tests/framework/rbac
+            - tests/framework/requirements
+            - tests/framework/rest
+            - tests/framework/test
+            - tests/framework/validators
+            - tests/framework/web
+            - tests/framework/widgets
 
     bootstrapFiles:
         - framework/BaseYii.php

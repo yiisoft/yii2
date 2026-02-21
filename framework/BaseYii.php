@@ -72,7 +72,7 @@ class BaseYii
      */
     public static $classMap = [];
     /**
-     * @var \yii\console\Application|\yii\web\Application<TUserIdentity> the application instance
+     * @var \yii\console\Application|\yii\web\Application<TUserIdentity>|null the application instance
      */
     public static $app;
     /**

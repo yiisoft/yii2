@@ -14,10 +14,17 @@ use yii\base\Behavior;
 use yii\base\Component;
 use yiiunit\TestCase;
 
+/**
+ * We use `mixin` here to avoid PHPStan errors when testing `attachBehavior`.
+ * @mixin BarBehavior
+ */
 class BarClass extends Component
 {
 }
 
+/**
+ * @mixin BarBehavior
+ */
 class FooClass extends Component
 {
     public function behaviors()
@@ -28,6 +35,9 @@ class FooClass extends Component
     }
 }
 
+/**
+ * @method string magicBehaviorMethod()
+ */
 class BarBehavior extends Behavior
 {
     public static $attachCount = 0;
@@ -101,8 +111,11 @@ class BehaviorTest extends TestCase
         $this->assertEquals(0, BarBehavior::$detachCount);
         $this->assertEquals('behavior property', $bar->behaviorProperty);
         $this->assertEquals('behavior method', $bar->behaviorMethod());
-        $this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
-        $this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
+
+        /** @var BarBehavior */
+        $barBehavior = $bar->getBehavior('bar');
+        $this->assertEquals('behavior property', $barBehavior->behaviorProperty);
+        $this->assertEquals('behavior method', $barBehavior->behaviorMethod());
 
         $behavior = new BarBehavior(['behaviorProperty' => 'reattached']);
         $bar->attachBehavior('bar', $behavior);
@@ -156,10 +169,13 @@ class BehaviorTest extends TestCase
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
-        $this->expectException('yii\base\UnknownMethodException');
 
         $this->assertFalse($bar->hasMethod('nomagicBehaviorMethod'));
         $bar->attachBehavior('bar', $behavior);
+
+        $this->expectException('yii\base\UnknownMethodException');
+        // We intentionally call a non-existent method to test that an exception is thrown
+        // @phpstan-ignore method.notFound
         $bar->nomagicBehaviorMethod();
     }
 }

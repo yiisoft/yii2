@@ -45,6 +45,7 @@ class DynamicModelTest extends TestCase
         $post = [
             'name' => 'long name',
         ];
+        /** @var DynamicModel&object{age: int} */
         $model = DynamicModel::validateData($post, [
             [['email', 'name'], 'required'],
             ['age', 'default', 'value' => 18],
@@ -86,6 +87,7 @@ class DynamicModelTest extends TestCase
     {
         $email = 'invalid';
         $name = 'long name';
+        /** @var DynamicModel&object{email: string, name: string} */
         $model = new DynamicModel(compact('name', 'email'));
         $this->assertEquals($email, $model->email);
         $this->assertEquals($name, $model->name);
@@ -94,11 +96,14 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($model->canSetProperty('email'));
         $this->assertTrue($model->canSetProperty('name'));
         $this->expectException('yii\base\UnknownPropertyException');
+        // We intentionally access a non-existent property to test that an exception is thrown
+        // @phpstan-ignore property.notFound
         $age = $model->age;
     }
 
     public function testLoad(): void
     {
+        /** @var DynamicModel&object{name: string, mobile: string} */
         $dynamic = new DynamicModel();
         //define two attributes
         $dynamic->defineAttribute('name');
