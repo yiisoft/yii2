@@ -404,3 +404,9 @@ parameters:
 			message: "#^Argument of an invalid type static\\(yii\\\\caching\\\\Dependency\\) supplied for foreach\\, only iterables are supported\\.$#"
 			count: 1
 			path: framework/caching/Dependency.php
+
+		-
+			message: "#^Access to an undefined property yiiunit\\\\framework\\\\base\\\\NewComponent\\:\\:\\$as f\\.$#"
+			count: 1
+			path: framework/caching/Dependency.php
+			reportUnmatched: false # fails only for PHP8
