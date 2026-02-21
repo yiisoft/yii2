@@ -104,7 +104,7 @@ class View extends \yii\base\View
      */
     public const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
     /**
-     * @var array<string, AssetBundle|false> list of the registered asset bundles. The keys are the bundle names, and the values
+     * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
      * are the registered [[AssetBundle]] objects.
      * @see registerAssetBundle()
      */
