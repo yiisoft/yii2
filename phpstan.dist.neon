@@ -14,7 +14,7 @@ parameters:
         analyse:
             - tests/data
             - tests/framework/base/stub
-            # Analyze these directories
+            # TODO: Analyze these directories
             - tests/framework/behaviors
             - tests/framework/caching
             - tests/framework/console

@@ -405,7 +405,7 @@ parameters:
 			count: 1
 			path: framework/caching/Dependency.php
 
-        # Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
+		# Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
 		-
 			message: "#^Access to an undefined property yiiunit\\\\framework\\\\base\\\\NewComponent\\:\\:\\$as f\\.$#"
 			count: 1
