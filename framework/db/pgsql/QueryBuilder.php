@@ -259,8 +259,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
             return "ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$type}";
         }
+        
+        //add casting statement when old column type different from new column type
+        //new column type is group of integer like smallint, bigint column type change to int
+        //if old column type or new column type is boolean
+        //      sql script must be add with format "USING [columnname]::[oldColumnType]::[newColumnType]"
+        //else
+        //      sql script must be add with format "USING [columnname]::[newColumnType]"
+        //
+        $schema = $this->db->getSchema();
+        $tableSchema = $schema->getTableSchema($table);
+        $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
+        $oldColumnType = $columnSchemas[$column]->dbType;
+        $newColumnType = (preg_match("/smallint|bigint/", $this->getColumnType($type))) ? 'int' : $this->getColumnType($type);
 
-        $type = 'TYPE ' . $this->getColumnType($type);
+        if($oldColumnType == $newColumnType) {
+            $casting_statement = "";
+
+        } else {
+            if($oldColumnType=='bool' || $newColumnType=='bool')
+                $casting_statement = " USING $column::$oldColumnType::$newColumnType";
+            else
+                $casting_statement = " USING $column::$newColumnType";
+
+        }
+
+        $type = 'TYPE ' . $this->getColumnType($type) . $casting_statement;
 
         $multiAlterStatement = [];
         $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
