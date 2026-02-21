@@ -534,7 +534,7 @@ class View extends \yii\base\View
                 $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');
                 $timestamp = @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
                 if ($timestamp > 0) {
-                    $url = $timestamp ? "$url?v=$timestamp" : $url;
+                    $url = "$url?v=$timestamp";
                 }
             }
             if ($type === 'js') {

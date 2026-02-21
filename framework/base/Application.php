@@ -130,7 +130,7 @@ abstract class Application extends Module
      */
     public $requestedAction;
     /**
-     * @var array the parameters supplied to the requested action.
+     * @var array|null the parameters supplied to the requested action.
      */
     public $requestedParams;
     /**
