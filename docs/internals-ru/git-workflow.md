@@ -140,7 +140,7 @@ php build/build dev/ext <extension-name> <fork>
 ### 2. Получите последний код из основного репозитория Yii
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 Вы должны начинать с этого действия работу над каждым новым предложением. Убедитесь, что вы работаете с самой
