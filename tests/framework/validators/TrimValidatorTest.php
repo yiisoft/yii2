@@ -140,8 +140,6 @@ class TrimValidatorTest extends TestCase
         $this->assertSame(false, $options['skipOnArray']);
         $this->assertSame(false, $options['skipOnEmpty']);
         $this->assertSame(false, $options['chars']);
-        $this->assertIsBool($options['skipOnArray']);
-        $this->assertIsBool($options['skipOnEmpty']);
     }
 
     public function testClientOptionsWithCustomChars(): void
