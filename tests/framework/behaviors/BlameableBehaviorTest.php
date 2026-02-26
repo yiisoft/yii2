@@ -213,6 +213,8 @@ class ActiveRecordBlameableWithDefaultValueClosure extends ActiveRecordBlameable
  * @property int $updated_by
  *
  * @property BlameableBehavior $blameable
+ *
+ * @mixin BlameableBehavior
  */
 class ActiveRecordBlameable extends ActiveRecord
 {
@@ -235,7 +237,10 @@ class ActiveRecordBlameable extends ActiveRecord
      */
     public function getBlameable()
     {
-        return $this->getBehavior('blameable');
+        /** @var BlameableBehavior */
+        $result = $this->getBehavior('blameable');
+
+        return $result;
     }
 
     public static function primaryKey()

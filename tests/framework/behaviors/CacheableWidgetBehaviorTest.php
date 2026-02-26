@@ -3,7 +3,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Exception;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use yii\base\Widget;
 use yii\behaviors\CacheableWidgetBehavior;
 use yiiunit\TestCase;
@@ -19,14 +19,14 @@ class CacheableWidgetBehaviorTest extends TestCase
     /**
      * Default-initialized simple cacheable widget mock.
      *
-     * @var PHPUnit_Framework_MockObject_MockObject|SimpleCacheableWidget|CacheableWidgetBehavior
+     * @var MockObject&SimpleCacheableWidget
      */
     private $simpleWidget;
 
     /**
      * Default-initialized dynamic cacheable widget mock.
      *
-     * @var PHPUnit_Framework_MockObject_MockObject|DynamicCacheableWidget|CacheableWidgetBehavior
+     * @var MockObject&DynamicCacheableWidget
      */
     private $dynamicWidget;
 
@@ -114,8 +114,9 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Returns a widget mock.
-     * @param $widgetClass
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @template T of BaseCacheableWidget
+     * @param class-string<T> $widgetClass
+     * @return T&MockObject
      */
     private function getWidgetMock($widgetClass)
     {
@@ -127,6 +128,9 @@ class CacheableWidgetBehaviorTest extends TestCase
     }
 }
 
+/**
+ * @mixin CacheableWidgetBehavior
+ */
 class BaseCacheableWidget extends Widget
 {
     /**

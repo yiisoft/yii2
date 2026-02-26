@@ -337,13 +337,15 @@ class AttributeTypecastBehaviorTest extends TestCase
  * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached.
  *
  * @property int $id
- * @property string $name
- * @property int $amount
- * @property float $price
- * @property bool $isActive
- * @property string $callback
+ * @property string|int|null $name
+ * @property int|string|null $amount
+ * @property float|string|null $price
+ * @property bool|int|null $isActive
+ * @property string|null $callback
  *
  * @property AttributeTypecastBehavior $attributeTypecastBehavior
+ *
+ * @mixin AttributeTypecastBehavior
  */
 class ActiveRecordAttributeTypecast extends ActiveRecord
 {
@@ -391,14 +393,19 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
      */
     public function getAttributeTypecastBehavior()
     {
-        return $this->getBehavior('attributeTypecast');
+        /** @var AttributeTypecastBehavior */
+        $result = $this->getBehavior('attributeTypecast');
+
+        return $result;
     }
 }
 
 /**
  * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached with an enum field.
  *
- * @property StatusTypeString $status
+ * @property StatusTypeString|string $status
+ *
+ * @mixin AttributeTypecastBehavior
  */
 class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
 {
@@ -425,6 +432,9 @@ class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
      */
     public function getAttributeTypecastBehavior()
     {
-        return $this->getBehavior('attributeTypecast');
+        /** @var AttributeTypecastBehavior */
+        $result = $this->getBehavior('attributeTypecast');
+
+        return $result;
     }
 }

@@ -86,7 +86,10 @@ class SluggableBehaviorTest extends TestCase
     public function testSlugSeveralAttributes(): void
     {
         $model = new ActiveRecordSluggable();
-        $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
+
+        /** @var SluggableBehavior */
+        $sluggableBehavior = $model->getBehavior('sluggable');
+        $sluggableBehavior->attribute = ['name', 'category_id'];
 
         $model->name = 'test';
         $model->category_id = 10;
@@ -101,7 +104,10 @@ class SluggableBehaviorTest extends TestCase
     public function testSlugRelatedAttribute(): void
     {
         $model = new ActiveRecordSluggable();
-        $model->getBehavior('sluggable')->attribute = 'related.name';
+
+        /** @var SluggableBehavior */
+        $sluggableBehavior = $model->getBehavior('sluggable');
+        $sluggableBehavior->attribute = 'related.name';
 
         $relatedmodel = new ActiveRecordRelated();
         $relatedmodel->name = 'I am an value inside an related activerecord model';
@@ -126,7 +132,7 @@ class SluggableBehaviorTest extends TestCase
         $model->save();
 
         $model = new ActiveRecordSluggableUnique();
-        $model->sluggable->uniqueSlugGenerator = 'increment';
+        $model->sluggable->uniqueSlugGenerator = null;
         $model->name = $name;
         $model->save();
 
@@ -188,6 +194,10 @@ class SluggableBehaviorTest extends TestCase
         $model->save();
         $this->assertEquals('test-name', $model->slug);
 
+        $model->name = '';
+        $model->save();
+        $this->assertEquals('test-name', $model->slug);
+
         $model->name = 'test name 2';
         $model->save();
         $this->assertEquals('test-name-2', $model->slug);
@@ -236,11 +246,14 @@ class SluggableBehaviorTest extends TestCase
  * Test Active Record class with [[SluggableBehavior]] behavior attached.
  *
  * @property int $id
- * @property string $name
- * @property string $slug
- * @property int $category_id
+ * @property string|null $name
+ * @property string|null $slug
+ * @property int|null $category_id
+ * @property int|null $belongs_to_id
  *
  * @property SluggableBehavior $sluggable
+ *
+ * @mixin SluggableBehavior
  */
 class ActiveRecordSluggable extends ActiveRecord
 {
@@ -264,7 +277,10 @@ class ActiveRecordSluggable extends ActiveRecord
      */
     public function getSluggable()
     {
-        return $this->getBehavior('sluggable');
+        /** @var SluggableBehavior */
+        $result = $this->getBehavior('sluggable');
+
+        return $result;
     }
 
     public function getRelated()
@@ -273,6 +289,10 @@ class ActiveRecordSluggable extends ActiveRecord
     }
 }
 
+/**
+ * @property int $id
+ * @property string|null $name
+ */
 class ActiveRecordRelated extends ActiveRecord
 {
     public static function tableName()
@@ -281,6 +301,9 @@ class ActiveRecordRelated extends ActiveRecord
     }
 }
 
+/**
+ * @mixin SluggableBehavior
+ */
 class ActiveRecordSluggableUnique extends ActiveRecordSluggable
 {
     public function behaviors()
@@ -295,6 +318,9 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
     }
 }
 
+/**
+ * @mixin SluggableBehavior
+ */
 class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
 {
     public function behaviors()
