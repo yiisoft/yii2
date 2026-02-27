@@ -65,6 +65,7 @@ class SafeValidatorTest extends TestCase
         $model->load(['username' => 'admin', 'role' => 'superuser'], '');
 
         $this->assertSame('admin', $model->username);
+        $this->assertNull($model->role);
     }
 
     public function testValidationAlwaysPasses(): void

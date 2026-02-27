@@ -22,7 +22,7 @@ class TrimValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mockWebApplication();
+        $this->destroyApplication();
     }
 
     public function testTrimWhitespace(): void
@@ -108,7 +108,7 @@ class TrimValidatorTest extends TestCase
         $this->assertSame($original, $model->tags);
     }
 
-    public function testSkipOnArrayFalseWithScalar(): void
+    public function testSkipOnArrayTrueWithScalar(): void
     {
         $model = new DynamicModel(['name' => '  hello  ']);
         $validator = new TrimValidator();
