@@ -26,7 +26,7 @@ use yii\di\Instance;
 class DbDependency extends Dependency
 {
     /**
-     * @var string|Connection the application component ID of the DB connection or a connection instance.
+     * @var Connection|string the DB connection object or the application component ID of the DB connection.
      */
     public $db = 'db';
     /**
