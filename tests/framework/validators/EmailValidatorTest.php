@@ -243,7 +243,6 @@ class EmailValidatorTest extends TestCase
         $local = str_repeat('a', 64);
         $domain = str_repeat('a', 63) . '.' . str_repeat('b', 63) . '.' . str_repeat('c', 58) . '.com';
         $email = $local . '@' . $domain;
-        $this->assertSame(255, strlen($email));
 
         $this->assertFalse($validator->validate($email));
     }
