@@ -29,7 +29,7 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 git remote add upstream https://github.com/yiisoft/yii2.git
 ```
 
-### 3. Настройка тестовой среды
+### 3. Настройка тестовой среды <span id="prepare-the-test-environment"></span>
 
 Следующие шаги не обязательны, если вы хотите работать только с переводом или документацией.
 
@@ -101,7 +101,7 @@ public function createAction($id)
 }
 ```
 
-### Расширения
+### Расширения <span id="extensions"></span>
 
 Для работы над расширениями вы можете склонировать репозиторий расширения. Мы сделали команду, которая поможет вам
 сделать это:
@@ -140,7 +140,7 @@ php build/build dev/ext <extension-name> <fork>
 ### 2. Получите последний код из основного репозитория Yii
 
 ```
-git pull upstream
+git pull upstream master
 ```
 
 Вы должны начинать с этого действия работу над каждым новым предложением. Убедитесь, что вы работаете с самой
