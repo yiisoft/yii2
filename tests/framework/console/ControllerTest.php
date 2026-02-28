@@ -25,7 +25,7 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    /** @var FakeController */
+    /** @var FakeController|FakePhp71Controller */
     private $controller;
 
     protected function setUp(): void
