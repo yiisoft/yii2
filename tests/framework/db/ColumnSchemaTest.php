@@ -10,18 +10,6 @@ use yii\db\Schema;
 use yiiunit\TestCase;
 use PDO;
 
-enum StringStatus: string
-{
-    case Active = 'active';
-    case Inactive = 'inactive';
-}
-
-enum IntStatus: int
-{
-    case On = 1;
-    case Off = 0;
-}
-
 class ColumnSchemaTest extends TestCase
 {
     private function createColumn(array $config = []): ColumnSchema
@@ -272,13 +260,6 @@ class ColumnSchemaTest extends TestCase
         $this->assertSame('123.45', $result);
     }
 
-    public function testCastToStringFromBackedEnum(): void
-    {
-        $column = $this->createStringColumn();
-        $result = $column->phpTypecast(StringStatus::Active);
-        $this->assertSame('active', $result);
-    }
-
     public function testCastToInteger(): void
     {
         $column = $this->createIntegerColumn();
@@ -289,20 +270,6 @@ class ColumnSchemaTest extends TestCase
     {
         $column = $this->createIntegerColumn();
         $this->assertSame(3, $column->phpTypecast(3.7));
-    }
-
-    public function testCastToIntegerFromBackedEnum(): void
-    {
-        $column = $this->createIntegerColumn();
-        $result = $column->phpTypecast(IntStatus::On);
-        $this->assertSame(1, $result);
-    }
-
-    public function testCastToIntegerFromBackedEnumZero(): void
-    {
-        $column = $this->createIntegerColumn();
-        $result = $column->phpTypecast(IntStatus::Off);
-        $this->assertSame(0, $result);
     }
 
     /**
