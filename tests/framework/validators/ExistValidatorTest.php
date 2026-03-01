@@ -345,7 +345,6 @@ abstract class ExistValidatorTest extends DatabaseTestCase
 
     public function testCreateQueryWithFilter(): void
     {
-        // closure filter
         $val = new ExistValidator(['targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'id', 'filter' => function ($query) {
             $query->andWhere(['a_field' => 'ref_to_2']);
         }]);
@@ -355,7 +354,6 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $query = $method->invoke($val, ValidatorTestRefModel::class, ['id' => 2]);
         $this->assertNotEmpty($query->where);
 
-        // array filter
         $val->filter = ['a_field' => 'ref_to_2'];
         $query = $method->invoke($val, ValidatorTestRefModel::class, ['id' => 2]);
         $this->assertNotEmpty($query->where);

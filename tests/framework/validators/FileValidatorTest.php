@@ -818,7 +818,6 @@ class FileValidatorTest extends TestCase
             ]
         );
         $model = new FakedValidationTypedModel();
-        // single attribute cannot be checked because maxFiles = 0 === no limits
         $model->multiple = $files;
         $validator->validateAttribute($model, 'multiple');
         $this->assertTrue($model->hasErrors('multiple'));

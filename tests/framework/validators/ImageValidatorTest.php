@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use Yii;
@@ -48,28 +50,32 @@ class ImageValidatorTest extends TestCase
         $this->assertTrue($val->validate($image));
 
         $notImage = $this->createTestFile('test.txt');
+        $error = null;
         $this->assertFalse($val->validate($notImage, $error));
         $this->assertStringContainsString('is not an image', $error);
     }
 
     public function testValidateImageDimensions(): void
     {
-        // test.jpg is 1x1
         $image = $this->createTestFile('test.jpg');
 
         $val = new ImageValidator(['minWidth' => 2]);
+        $error = null;
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('width cannot be smaller than 2', $error);
 
         $val = new ImageValidator(['minHeight' => 2]);
+        $error = null;
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('height cannot be smaller than 2', $error);
 
         $val = new ImageValidator(['maxWidth' => 0]);
+        $error = null;
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('width cannot be larger than 0', $error);
 
         $val = new ImageValidator(['maxHeight' => 0]);
+        $error = null;
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('height cannot be larger than 0', $error);
 
@@ -86,7 +92,7 @@ class ImageValidatorTest extends TestCase
             'maxHeight' => 100,
         ]);
         $model = new FakedValidationModel();
-        $view = new ImageViewStub();
+        $view = new ImageValidatorViewStub();
 
         $js = $val->clientValidateAttribute($model, 'attr', $view);
         $this->assertStringContainsString('yii.validation.image', $js);
@@ -131,7 +137,7 @@ class ImageValidatorTest extends TestCase
     }
 }
 
-class ImageViewStub extends View
+class ImageValidatorViewStub extends View
 {
     public function registerAssetBundle($name, $position = null) {}
 }

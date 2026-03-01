@@ -353,8 +353,8 @@ class ValidatorTest extends TestCase
     {
         $model = new DynamicModel(['attr' => 1]);
         $val = new InlineValidator([
-            'method' => function ($attr) {
-                $this->addError($attr, 'error');
+            'method' => function ($attribute, $params, $validator, $current) {
+                $this->addError($attribute, 'error');
             }
         ]);
         $val->validateAttribute($model, 'attr');
@@ -365,7 +365,7 @@ class ValidatorTest extends TestCase
     {
         $model = new DynamicModel(['attr' => 1]);
         $val = new InlineValidator([
-            'clientValidate' => function ($attr) {
+            'clientValidate' => function ($attribute, $params, $validator, $current, $view) {
                 return 'js';
             }
         ]);

@@ -159,7 +159,6 @@ class DateValidatorTest extends TestCase
         $val->type = 'invalid';
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('Unknown validation type');
-        // use Reflection to call private method or just trigger it via validation
         $method = new \ReflectionMethod($val, 'getIntlDateFormatter');
         $method->setAccessible(true);
         $method->invoke($val, 'short');
