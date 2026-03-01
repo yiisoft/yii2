@@ -295,8 +295,9 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $customer->clearErrors();
         $customer->addError('name', 'error');
         $validator->validateAttribute($customer, 'email');
-        $this->assertTrue($customer->hasErrors('email')); // validator should not be skipped
+        $this->assertTrue($customer->hasErrors('email'));
     }
+
     public function testTargetRelationWithFilterArray(): void
     {
         $val = new ExistValidator(['targetRelation' => 'references', 'filter' => ['a_field' => 'ref_to_2']]);

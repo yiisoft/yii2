@@ -148,6 +148,7 @@ class RangeValidatorTest extends TestCase
         ]);
         $this->assertTrue($val->validate('a'));
     }
+
     public function testValidateClosureRange(): void
     {
         $val = new RangeValidator(['range' => function ($model, $attr) {

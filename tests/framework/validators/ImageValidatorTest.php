@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use Yii;
-use yii\helpers\Json;
 use yii\validators\ImageValidator;
 use yii\web\UploadedFile;
 use yii\web\View;

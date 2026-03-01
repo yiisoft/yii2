@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
 - Bug #20738: Fix `@param` annotation for `$value` parameter in `AssetManager::setConverter()` (mspirkov)
 - Bug #20739: Fix `@var` annotation for `BaseYii::$app` (mspirkov)
+- Enh #20760: Suppress PHP warning from `getimagesize()` in `ImageValidator::validateImage()` since the error is already handled by the return value check (WarLikeLaux)
 
 
 2.0.54 January 09, 2026
