@@ -328,4 +328,35 @@ class EmailValidatorTest extends TestCase
 
         $this->assertArrayNotHasKey('skipOnEmpty', $options);
     }
+
+    public function testLocalPartOver64(): void
+    {
+        $validator = new EmailValidator();
+        $local = str_repeat('a', 65);
+        $this->assertFalse($validator->validate($local . '@example.com'));
+    }
+
+    public function testEmailOver254(): void
+    {
+        $validator = new EmailValidator();
+        $local = str_repeat('a', 64);
+        $domain = str_repeat('a', 63) . '.' . str_repeat('b', 63) . '.' . str_repeat('c', 62) . '.com';
+        $email = $local . '@' . $domain;
+        $this->assertFalse($validator->validate($email));
+    }
+
+    public function testIdnToAsciiWithFallback(): void
+    {
+        $val = new MockEmailValidator(['enableIDN' => true, 'enableLocalIDN' => true]);
+        $this->assertTrue($val->validate('test@example.com'));
+        $this->assertFalse($val->validate('test@' . str_repeat('a', 70) . '.com'));
+    }
+}
+
+class MockEmailValidator extends EmailValidator
+{
+    protected function idnToAscii($idn)
+    {
+        return strlen($idn) > 64 ? false : $idn;
+    }
 }
