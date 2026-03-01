@@ -371,4 +371,19 @@ class ValidatorTest extends TestCase
         ]);
         $this->assertEquals('js', $val->clientValidateAttribute($model, 'attr', new View()));
     }
+
+    public function testInlineValidatorStringMethod(): void
+    {
+        $model = new FakedValidationModel();
+        $model->val_attr_a = 'a';
+        $val = new InlineValidator(['method' => 'inlineVal']);
+        $val->validateAttribute($model, 'val_attr_a');
+        $this->assertNotEmpty($model->getInlineValArgs());
+    }
+
+    public function testInlineValidatorClientNull(): void
+    {
+        $val = new InlineValidator();
+        $this->assertNull($val->clientValidateAttribute(new DynamicModel(), 'attr', new View()));
+    }
 }
