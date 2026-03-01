@@ -297,42 +297,9 @@ class Security extends Component
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
-        if (function_exists('hash_hkdf')) {
-            $outputKey = hash_hkdf((string)$algo, (string)$inputKey, $length, (string)$info, (string)$salt);
-            if ($outputKey === false) {
-                throw new InvalidArgumentException('Invalid parameters to hash_hkdf()');
-            }
-
-            return $outputKey;
-        }
-
-        $test = @hash_hmac($algo, '', '', true);
-        if (!$test) {
-            throw new InvalidArgumentException('Failed to generate HMAC with hash algorithm: ' . $algo);
-        }
-        $hashLength = StringHelper::byteLength($test);
-        if (is_string($length) && preg_match('{^\d{1,16}$}', $length)) {
-            $length = (int) $length;
-        }
-        if (!is_int($length) || $length < 0 || $length > 255 * $hashLength) {
-            throw new InvalidArgumentException('Invalid length');
-        }
-        $blocks = $length !== 0 ? ceil($length / $hashLength) : 1;
-
-        if ($salt === null) {
-            $salt = str_repeat("\0", $hashLength);
-        }
-        $prKey = hash_hmac($algo, $inputKey, $salt, true);
-
-        $hmac = '';
-        $outputKey = '';
-        for ($i = 1; $i <= $blocks; $i++) {
-            $hmac = hash_hmac($algo, $hmac . $info . chr($i), $prKey, true);
-            $outputKey .= $hmac;
-        }
-
-        if ($length !== 0) {
-            $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
+        $outputKey = hash_hkdf((string)$algo, (string)$inputKey, $length, (string)$info, (string)$salt);
+        if ($outputKey === false) {
+            throw new InvalidArgumentException('Invalid parameters to hash_hkdf()');
         }
 
         return $outputKey;
@@ -354,48 +321,9 @@ class Security extends Component
      */
     public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
     {
-        if (function_exists('hash_pbkdf2') && PHP_VERSION_ID >= 50500) {
-            $outputKey = hash_pbkdf2($algo, $password, $salt, $iterations, $length, true);
-            if ($outputKey === false) {
-                throw new InvalidArgumentException('Invalid parameters to hash_pbkdf2()');
-            }
-
-            return $outputKey;
-        }
-
-        // todo: is there a nice way to reduce the code repetition in hkdf() and pbkdf2()?
-        $test = @hash_hmac($algo, '', '', true);
-        if (!$test) {
-            throw new InvalidArgumentException('Failed to generate HMAC with hash algorithm: ' . $algo);
-        }
-        if (is_string($iterations) && preg_match('{^\d{1,16}$}', $iterations)) {
-            $iterations = (int) $iterations;
-        }
-        if (!is_int($iterations) || $iterations < 1) {
-            throw new InvalidArgumentException('Invalid iterations');
-        }
-        if (is_string($length) && preg_match('{^\d{1,16}$}', $length)) {
-            $length = (int) $length;
-        }
-        if (!is_int($length) || $length < 0) {
-            throw new InvalidArgumentException('Invalid length');
-        }
-        $hashLength = StringHelper::byteLength($test);
-        $blocks = $length !== 0 ? ceil($length / $hashLength) : 1;
-
-        $outputKey = '';
-        for ($j = 1; $j <= $blocks; $j++) {
-            $hmac = hash_hmac($algo, $salt . pack('N', $j), $password, true);
-            $xorsum = $hmac;
-            for ($i = 1; $i < $iterations; $i++) {
-                $hmac = hash_hmac($algo, $hmac, $password, true);
-                $xorsum ^= $hmac;
-            }
-            $outputKey .= $xorsum;
-        }
-
-        if ($length !== 0) {
-            $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
+        $outputKey = hash_pbkdf2($algo, $password, $salt, $iterations, $length, true);
+        if ($outputKey === false) {
+            throw new InvalidArgumentException('Invalid parameters to hash_pbkdf2()');
         }
 
         return $outputKey;
@@ -547,19 +475,7 @@ class Security extends Component
             $cost = $this->passwordHashCost;
         }
 
-        if (function_exists('password_hash')) {
-            /* @noinspection PhpUndefinedConstantInspection */
-            return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
-        }
-
-        $salt = $this->generateSalt($cost);
-        $hash = crypt($password, $salt);
-        // strlen() is safe since crypt() returns only ascii
-        if (!is_string($hash) || strlen($hash) !== 60) {
-            throw new Exception('Unknown error occurred while generating hash.');
-        }
-
-        return $hash;
+        return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
     }
 
     /**
@@ -584,46 +500,7 @@ class Security extends Component
             throw new InvalidArgumentException('Hash is invalid.');
         }
 
-        if (function_exists('password_verify')) {
-            return password_verify($password, $hash);
-        }
-
-        $test = crypt($password, $hash);
-        $n = strlen($test);
-        if ($n !== 60) {
-            return false;
-        }
-
-        return $this->compareString($test, $hash);
-    }
-
-    /**
-     * Generates a salt that can be used to generate a password hash.
-     *
-     * The PHP [crypt()](https://www.php.net/manual/en/function.crypt.php) built-in function
-     * requires, for the Blowfish hash algorithm, a salt string in a specific format:
-     * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
-     * from the alphabet "./0-9A-Za-z".
-     *
-     * @param int $cost the cost parameter
-     * @return string the random salt value.
-     * @throws InvalidArgumentException if the cost parameter is out of the range of 4 to 31.
-     */
-    protected function generateSalt($cost = 13)
-    {
-        $cost = (int) $cost;
-        if ($cost < 4 || $cost > 31) {
-            throw new InvalidArgumentException('Cost must be between 4 and 31.');
-        }
-
-        // Get a 20-byte random string
-        $rand = $this->generateRandomKey(20);
-        // Form the prefix that specifies Blowfish (bcrypt) algorithm and cost parameter.
-        $salt = sprintf('$2y$%02d$', $cost);
-        // Append the random salt data in the required base64 format.
-        $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
-
-        return $salt;
+        return password_verify($password, $hash);
     }
 
     /**
@@ -643,20 +520,7 @@ class Security extends Component
             throw new InvalidArgumentException('Expected actual value to be a string, ' . gettype($actual) . ' given.');
         }
 
-        if (function_exists('hash_equals')) {
-            return hash_equals($expected, $actual);
-        }
-
-        $expected .= "\0";
-        $actual .= "\0";
-        $expectedLength = StringHelper::byteLength($expected);
-        $actualLength = StringHelper::byteLength($actual);
-        $diff = $expectedLength - $actualLength;
-        for ($i = 0; $i < $actualLength; $i++) {
-            $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
-        }
-
-        return $diff === 0;
+        return hash_equals($expected, $actual);
     }
 
     /**
