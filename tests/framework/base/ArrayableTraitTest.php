@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
+declare(strict_types=1);
+
 namespace yiiunit\framework\base;
 
 use JsonSerializable;
@@ -383,7 +391,7 @@ class ArrayableCallableFieldsStub extends Model implements Arrayable
         return [
             'firstName',
             'lastName',
-            'fullName' => function ($model) {
+            'fullName' => function ($model, $field) {
                 return $model->firstName . ' ' . $model->lastName;
             },
         ];
