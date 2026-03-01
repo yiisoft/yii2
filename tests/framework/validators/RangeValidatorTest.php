@@ -10,6 +10,7 @@ namespace yiiunit\framework\validators;
 
 use ArrayObject;
 use yii\validators\RangeValidator;
+use yii\base\DynamicModel;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -146,5 +147,44 @@ class RangeValidatorTest extends TestCase
             'allowArray' => false,
         ]);
         $this->assertTrue($val->validate('a'));
+    }
+    public function testValidateClosureRange(): void
+    {
+        $val = new RangeValidator(['range' => function ($model, $attr) {
+            return [1, 2];
+        }]);
+        $m = new DynamicModel(['attr' => 1]);
+        $val->validateAttribute($m, 'attr');
+        $this->assertFalse($m->hasErrors());
+
+        $m->attr = 3;
+        $val->validateAttribute($m, 'attr');
+        $this->assertTrue($m->hasErrors());
+    }
+
+    public function testValidateTraversableRange(): void
+    {
+        $range = new \ArrayObject([1, 2]);
+        $val = new RangeValidator(['range' => $range]);
+        $this->assertTrue($val->validate(1));
+        $this->assertFalse($val->validate(3));
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $this->mockApplication();
+        $validator = new RangeValidator(['range' => [1, 2], 'allowArray' => true, 'not' => true]);
+        $model = new FakedValidationModel();
+        $model->attr_range = 1;
+        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+
+        $result = $validator->clientValidateAttribute($model, 'attr_range', $view);
+        $this->assertStringContainsString('yii.validation.range', $result);
+
+        $validator->range = function ($model, $attr) {
+            return [3, 4];
+        };
+        $result = $validator->clientValidateAttribute($model, 'attr_range', $view);
+        $this->assertStringContainsString('3', $result);
     }
 }
