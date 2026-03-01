@@ -11,12 +11,14 @@ declare(strict_types=1);
 namespace yiiunit\framework\base;
 
 use yii\base\DynamicModel;
+use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use yiiunit\data\base\InvalidRulesModel;
 use yiiunit\data\base\RulesModel;
 use yiiunit\data\base\Singer;
 use yiiunit\data\base\Speaker;
 use yiiunit\TestCase;
+use yii\validators\RequiredValidator;
 
 /**
  * @group base
@@ -184,7 +186,8 @@ class ModelTest extends TestCase
         $model = new RulesModel();
         $model->rules = [
             [
-                [123456], 'safe',
+                [123456],
+                'safe',
             ]
         ];
 
@@ -521,6 +524,164 @@ class ModelTest extends TestCase
         $this->assertEquals([], $model->safeAttributes());
         $this->assertEquals([''], $model->attributes());
     }
+
+    public function testAttributeHintsDefault(): void
+    {
+        $model = new Model();
+        $this->assertSame([], $model->attributeHints());
+    }
+
+    public function testGetAttributeHint(): void
+    {
+        $model = new HintModel();
+        $this->assertSame('Enter your full name', $model->getAttributeHint('name'));
+        $this->assertSame('', $model->getAttributeHint('nonexistent'));
+    }
+
+    public function testValidateReturnsFalseWhenBeforeValidateFails(): void
+    {
+        $model = new BeforeValidateFailsModel();
+        $this->assertFalse($model->validate());
+    }
+
+    public function testValidateWithUnknownScenario(): void
+    {
+        $model = new CustomScenariosModel();
+        $model->setScenario('nonexistent');
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Unknown scenario: nonexistent');
+        $model->validate();
+    }
+
+    public function testIsAttributeActive(): void
+    {
+        $model = new CustomScenariosModel();
+        $this->assertTrue($model->isAttributeActive('id'));
+        $this->assertTrue($model->isAttributeActive('name'));
+        $model->setScenario('secondScenario');
+        $this->assertTrue($model->isAttributeActive('id'));
+        $this->assertFalse($model->isAttributeActive('name'));
+    }
+
+    public function testValidateMultiple(): void
+    {
+        $model1 = new ComplexModel1();
+        $model1->name = 'Name 1';
+        $model1->description = 'Desc 1';
+        $model1->id = 1;
+
+        $model2 = new ComplexModel1();
+        $model2->name = 'Name 2';
+        $model2->description = 'Desc 2';
+        $model2->id = 2;
+
+        $this->assertTrue(Model::validateMultiple([$model1, $model2]));
+    }
+
+    public function testValidateMultipleWithInvalid(): void
+    {
+        $model1 = new ComplexModel1();
+        $model1->name = 'Name 1';
+        $model1->id = 1;
+
+        $model2 = new ComplexModel1();
+
+        $this->assertFalse(Model::validateMultiple([$model1, $model2]));
+    }
+
+    public function testFields(): void
+    {
+        $speaker = new Speaker();
+        $fields = $speaker->fields();
+        $this->assertIsArray($fields);
+        $this->assertContains('firstName', $fields);
+        $this->assertContains('lastName', $fields);
+    }
+
+    public function testClone(): void
+    {
+        $model = new Speaker();
+        $model->firstName = 'Test';
+        $model->addError('firstName', 'Error');
+        $this->assertTrue($model->hasErrors());
+
+        $clone = clone $model;
+        $this->assertFalse($clone->hasErrors());
+        $this->assertSame('Test', $clone->firstName);
+    }
+
+    public function testGetFirstErrorReturnsFalseForNoErrors(): void
+    {
+        $speaker = new Speaker();
+        $this->assertNull($speaker->getFirstError('firstName'));
+        $this->assertSame([], $speaker->getFirstErrors());
+    }
+
+    public function testCreateValidatorsWithValidatorInstance(): void
+    {
+        $model = new ValidatorInstanceRulesModel();
+        $validators = $model->createValidators();
+        $this->assertCount(1, $validators);
+    }
+
+    public function testLoadMultipleWithEmptyModels(): void
+    {
+        $this->assertFalse(Model::loadMultiple([], ['data']));
+    }
+
+    public function testValidateClearErrorsFalse(): void
+    {
+        $model = new ComplexModel1();
+        $model->id = 1;
+        $model->name = 'test';
+        $model->addError('name', 'manual error');
+        $model->validate(null, false);
+        $this->assertTrue($model->hasErrors('name'));
+    }
+
+    public function testAfterValidateEventFires(): void
+    {
+        $fired = false;
+        $model = new ComplexModel1();
+        $model->id = 1;
+        $model->name = 'test';
+        $model->on(Model::EVENT_AFTER_VALIDATE, function () use (&$fired) {
+            $fired = true;
+        });
+        $model->validate();
+        $this->assertTrue($fired);
+    }
+
+    public function testBeforeValidateEventFires(): void
+    {
+        $fired = false;
+        $model = new ComplexModel1();
+        $model->id = 1;
+        $model->name = 'test';
+        $model->on(Model::EVENT_BEFORE_VALIDATE, function () use (&$fired) {
+            $fired = true;
+        });
+        $model->validate();
+        $this->assertTrue($fired);
+    }
+
+    public function testSetAttributesUnsafeIsIgnored(): void
+    {
+        $model = new RulesModel();
+        $model->rules = [
+            [['name'], 'required'],
+        ];
+        $model->setAttributes(['name' => 'ok', 'email' => 'bad'], true);
+        $this->assertSame('ok', $model->name);
+        $this->assertNull($model->email);
+    }
+
+    public function testIsAttributeRequiredWithConditionalWhen(): void
+    {
+        $singer = new Singer();
+        $this->assertTrue($singer->isAttributeRequired('lastName'));
+        $this->assertFalse($singer->isAttributeRequired('test'));
+    }
 }
 
 class ComplexModel1 extends Model
@@ -588,6 +749,39 @@ class CustomScenariosModel extends Model
         return [
             self::SCENARIO_DEFAULT => ['id', 'name'],
             'secondScenario' => ['id'],
+        ];
+    }
+}
+
+class HintModel extends Model
+{
+    public $name;
+
+    public function attributeHints()
+    {
+        return [
+            'name' => 'Enter your full name',
+        ];
+    }
+}
+
+class BeforeValidateFailsModel extends Model
+{
+    public function beforeValidate()
+    {
+        return false;
+    }
+}
+
+class ValidatorInstanceRulesModel extends Model
+{
+    public $name;
+
+    public function rules()
+    {
+        /** @phpstan-ignore return.type */
+        return [
+            new RequiredValidator(['attributes' => ['name']]),
         ];
     }
 }

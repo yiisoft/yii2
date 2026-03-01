@@ -514,6 +514,86 @@ class ComponentTest extends TestCase
         $obj->trigger('barEventOnce');
         $this->assertEquals(1, $obj->foo);
     }
+
+    public function testGetPropertyViaBehavior(): void
+    {
+        $this->component->attachBehavior('a', new NewBehavior());
+        $this->component->p = 'behavior value';
+        $this->assertSame('behavior value', $this->component->p);
+    }
+
+    public function testHasMethodViaBehavior(): void
+    {
+        $this->assertFalse($this->component->hasMethod('test'));
+        $this->component->attachBehavior('a', new NewBehavior());
+        $this->assertTrue($this->component->hasMethod('test'));
+    }
+
+    public function testHasMethodWithoutBehaviors(): void
+    {
+        $this->assertFalse($this->component->hasMethod('test', false));
+        $this->assertTrue($this->component->hasMethod('raiseEvent', false));
+    }
+
+    public function testOnPrependPlainHandler(): void
+    {
+        $order = [];
+        $this->component->on('click', function () use (&$order) {
+            $order[] = 'first';
+        });
+        $this->component->on('click', function () use (&$order) {
+            $order[] = 'prepended';
+        }, null, false);
+
+        $this->component->trigger('click');
+        $this->assertSame(['prepended', 'first'], $order);
+    }
+
+    public function testOnPrependWildcardHandler(): void
+    {
+        $order = [];
+        $this->component->on('click.*', function () use (&$order) {
+            $order[] = 'first';
+        });
+        $this->component->on('click.*', function () use (&$order) {
+            $order[] = 'prepended';
+        }, null, false);
+
+        $this->component->trigger('click.test');
+        $this->assertSame(['prepended', 'first'], $order);
+    }
+
+    public function testSetBehaviorInstanceViaProperty(): void
+    {
+        $component = new NewComponent();
+        $behavior = new NewBehavior();
+        $p = 'as myBehavior';
+        // @phpstan-ignore property.notFound
+        $component->$p = $behavior;
+        $this->assertSame($behavior, $component->getBehavior('myBehavior'));
+    }
+
+    public function testBehaviorsDeclaredInMethod(): void
+    {
+        $component = new ComponentWithBehaviors();
+        $component->ensureBehaviors();
+        $behaviors = $component->getBehaviors();
+        $this->assertCount(2, $behaviors);
+        $this->assertInstanceOf(NewBehavior::class, $behaviors['named']);
+        $this->assertInstanceOf(NewBehavior2::class, $behaviors[0]);
+    }
+
+    public function testAttachBehaviorReplacesExisting(): void
+    {
+        $behavior1 = new NewBehavior();
+        $behavior2 = new NewBehavior();
+
+        $this->component->attachBehavior('a', $behavior1);
+        $this->assertSame($behavior1, $this->component->getBehavior('a'));
+
+        $this->component->attachBehavior('a', $behavior2);
+        $this->assertSame($behavior2, $this->component->getBehavior('a'));
+    }
 }
 
 /**
@@ -626,5 +706,16 @@ class NewComponent2 extends Component
     {
         $this->b = $b;
         $this->c = $c;
+    }
+}
+
+class ComponentWithBehaviors extends Component
+{
+    public function behaviors()
+    {
+        return [
+            'named' => NewBehavior::class,
+            NewBehavior2::class,
+        ];
     }
 }
