@@ -610,7 +610,7 @@ class ModelTest extends TestCase
         $this->assertSame('Test', $clone->firstName);
     }
 
-    public function testGetFirstErrorReturnsFalseForNoErrors(): void
+    public function testGetFirstErrorReturnsNullForNoErrors(): void
     {
         $speaker = new Speaker();
         $this->assertNull($speaker->getFirstError('firstName'));
