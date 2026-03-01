@@ -128,8 +128,8 @@ class CompositeAuthTest extends TestCase
 
     public function testCallingRunWithCompleteRoute(): void
     {
-        /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
+        /** @var TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('test/d'));
     }
@@ -139,24 +139,24 @@ class CompositeAuthTest extends TestCase
      */
     public function testRunAction(): void
     {
-        /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
+        /** @var TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('b'));
     }
 
     public function testRunButWithActionIdOnly(): void
     {
-        /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
+        /** @var TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('c'));
     }
 
     public function testRunWithWrongToken(): void
     {
-        /** @var TestController $controller */
         Yii::$app->request->headers->set('X-Api-Key', 'wrong-user');
+        /** @var TestController */
         $controller = Yii::$app->createController('test')[0];
         $this->expectException('yii\web\UnauthorizedHttpException');
         $controller->run('a');

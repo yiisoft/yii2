@@ -15,12 +15,12 @@ parameters:
             - tests/data
             - tests/framework/base/stub
             - tests/framework/di/stubs
+            - tests/framework/filters/stubs
             # TODO: Analyze these directories
             - tests/framework/caching
             - tests/framework/console
             - tests/framework/data
             - tests/framework/db
-            - tests/framework/filters
             - tests/framework/grid
             - tests/framework/helpers
             - tests/framework/i18n

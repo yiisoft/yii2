@@ -39,12 +39,12 @@ use yiiunit\TestCase;
 abstract class CacheTestCase extends TestCase
 {
     /**
-     * @var int virtual time to be returned by mocked time() function.
+     * @var int|null virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
     /**
-     * @var float virtual time to be returned by mocked microtime() function.
+     * @var float|null virtual time to be returned by mocked microtime() function.
      * Null means normal microtime() behavior.
      */
     public static $microtime;
