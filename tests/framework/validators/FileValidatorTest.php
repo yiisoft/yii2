@@ -129,7 +129,9 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($m->hasErrors('attr_files'));
         $m = FakedValidationModel::createWithAttributes([
             'attr_files' => $this->createTestFiles([
-                [''], [''], [''],
+                [''],
+                [''],
+                [''],
             ]),
         ]);
         $val->validateAttribute($m, 'attr_files');
@@ -820,5 +822,26 @@ class FileValidatorTest extends TestCase
         $model->multiple = $files;
         $validator->validateAttribute($model, 'multiple');
         $this->assertTrue($model->hasErrors('multiple'));
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $this->mockApplication();
+        $validator = new FileValidator([
+            'extensions' => ['jpg', 'png'],
+            'minSize' => 1024,
+            'maxSize' => 2048,
+            'maxFiles' => 2,
+            'mimeTypes' => ['image/jpeg', 'image/png'],
+        ]);
+        $model = new FakedValidationModel();
+        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+
+        $result = $validator->clientValidateAttribute($model, 'attr_files', $view);
+        $this->assertStringContainsString('yii.validation.file', $result);
+        $this->assertStringContainsString('extensions', $result);
+        $this->assertStringContainsString('minSize', $result);
+        $this->assertStringContainsString('maxSize', $result);
+        $this->assertStringContainsString('mimeTypes', $result);
     }
 }
