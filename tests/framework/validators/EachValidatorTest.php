@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\base\DynamicModel;
 use yii\validators\EachValidator;
 use yiiunit\data\base\ArrayAccessObject;
 use yiiunit\data\base\Speaker;
@@ -175,7 +176,9 @@ class EachValidatorTest extends TestCase
     {
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
-                'one', 2, 'three',
+                'one',
+                2,
+                'three',
             ],
         ]);
         $validator = new EachValidator(['rule' => ['integer']]);
@@ -193,7 +196,7 @@ class EachValidatorTest extends TestCase
     public function testValidateArrayAccess(): void
     {
         $model = FakedValidationModel::createWithAttributes([
-            'attr_array' => new ArrayAccessObject([1,2,3]),
+            'attr_array' => new ArrayAccessObject([1, 2, 3]),
         ]);
 
         $validator = new EachValidator(['rule' => ['integer']]);
@@ -262,5 +265,47 @@ class EachValidatorTest extends TestCase
 
         $model->validate();
         $this->assertFalse($model->hasErrors('arrayProperty'));
+    }
+
+    public function testInvalidRule(): void
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid validation rule');
+        $val = new EachValidator(['rule' => []]);
+        $val->validate([1]);
+    }
+
+    public function testAllowMessageFromRuleFalse(): void
+    {
+        $val = new EachValidator(['rule' => ['integer'], 'allowMessageFromRule' => false, 'message' => 'each fail']);
+        $m = new DynamicModel(['attr' => ['a']]);
+        $val->validateAttribute($m, 'attr');
+        $this->assertEquals(['each fail'], $m->getErrors('attr'));
+    }
+
+    public function testValidateFilteredValue(): void
+    {
+        $val = new EachValidator(['rule' => ['trim']]);
+        $m = new DynamicModel(['attr' => ['  a  ']]);
+        $val->validateAttribute($m, 'attr');
+        $this->assertEquals(['a'], $m->attr);
+    }
+
+    public function testRuleAsValidatorInstance(): void
+    {
+        $rule = new \yii\validators\NumberValidator();
+        $val = new EachValidator(['rule' => $rule]);
+        $this->assertTrue($val->validate([1, 2]));
+        $this->assertFalse($val->validate([1, 'a']));
+    }
+
+    public function testValidateValueAllowMessageFromRuleFalse(): void
+    {
+        $val = new EachValidator(['rule' => ['integer'], 'allowMessageFromRule' => false, 'message' => 'each fail']);
+        $method = new \ReflectionMethod($val, 'validateValue');
+        $method->setAccessible(true);
+        $result = $method->invoke($val, [1, 'a']);
+        $this->assertIsArray($result);
+        $this->assertEquals('each fail', $result[0]);
     }
 }
