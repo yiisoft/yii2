@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
 - Bug #20738: Fix `@param` annotation for `$value` parameter in `AssetManager::setConverter()` (mspirkov)
 - Bug #20739: Fix `@var` annotation for `BaseYii::$app` (mspirkov)
+- Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 
 
 2.0.54 January 09, 2026
