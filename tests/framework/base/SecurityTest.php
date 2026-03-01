@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\base;
 
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\base\Security;
 use yiiunit\TestCase;
 
@@ -1313,14 +1314,14 @@ TEXT;
     public function testCompareStringsWithNonStringExpected(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected expected value to be a string');
+        $this->expectExceptionMessage('Expected expected value to be a string, integer given');
         $this->security->compareString(123, 'test');
     }
 
     public function testCompareStringsWithNonStringActual(): void
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Expected actual value to be a string');
+        $this->expectExceptionMessage('Expected actual value to be a string, integer given');
         $this->security->compareString('test', 123);
     }
 
@@ -1380,7 +1381,7 @@ TEXT;
         $this->assertSame(32, strlen($key));
     }
 
-    public function testValidatePasswordAcceptsAllBlowfishPrefixes(): void
+    public function testValidatePasswordWithCorrectAndWrongPassword(): void
     {
         $this->security->passwordHashCost = 4;
         $hash = $this->security->generatePasswordHash('test');
@@ -1400,36 +1401,6 @@ TEXT;
         $hash = $this->security->generatePasswordHash('test');
         $this->assertStringStartsWith('$2y$04$', $hash);
         $this->assertTrue($this->security->validatePassword('test', $hash));
-    }
-
-    public function testCompareStringsWithNonStringExpectedShowsType(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('integer given');
-        $this->security->compareString(123, 'test');
-    }
-
-    public function testCompareStringsWithNonStringActualShowsType(): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('integer given');
-        $this->security->compareString('test', 123);
-    }
-
-    public function testEncryptByPasswordInvalidCipherShowsCipherName(): void
-    {
-        $this->security->cipher = 'BOGUS-256-XYZ';
-        $this->expectException(\yii\base\InvalidConfigException::class);
-        $this->expectExceptionMessage('BOGUS-256-XYZ is not an allowed cipher');
-        $this->security->encryptByPassword('data', 'pass');
-    }
-
-    public function testDecryptByPasswordInvalidCipherShowsCipherName(): void
-    {
-        $this->security->cipher = 'BOGUS-256-XYZ';
-        $this->expectException(\yii\base\InvalidConfigException::class);
-        $this->expectExceptionMessage('BOGUS-256-XYZ is not an allowed cipher');
-        $this->security->decryptByPassword('data', 'pass');
     }
 
     public function testHashDataValidateDataRoundtripHex(): void

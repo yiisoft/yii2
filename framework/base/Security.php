@@ -463,8 +463,7 @@ class Security extends Component
      * therefore slows down a brute-force attack. For best protection against brute-force attacks,
      * set it to the highest value that is tolerable on production servers. The time taken to
      * compute the hash doubles for every increment by one of $cost.
-     * @return string The password hash string. When [[passwordHashStrategy]] is set to 'crypt',
-     * the output is always 60 ASCII characters, when set to 'password_hash' the output length
+     * @return string The password hash string. The output length
      * might increase in future versions of PHP (https://www.php.net/manual/en/function.password-hash.php)
      * @throws Exception on bad password parameter or cost parameter.
      * @see validatePassword()
@@ -483,7 +482,7 @@ class Security extends Component
      * @param string $password The password to verify.
      * @param string $hash The hash to verify the password against.
      * @return bool whether the password is correct.
-     * @throws InvalidArgumentException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
+     * @throws InvalidArgumentException on bad password/hash parameters.
      * @see generatePasswordHash()
      */
     public function validatePassword($password, $hash)
