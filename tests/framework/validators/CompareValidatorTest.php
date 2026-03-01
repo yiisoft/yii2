@@ -250,4 +250,257 @@ class CompareValidatorTest extends TestCase
         }
         $this->fail('InvalidConfigException expected none received');
     }
+
+    public function testValidateValueWithTypeNumber(): void
+    {
+        $val = new CompareValidator(['compareValue' => 10, 'type' => CompareValidator::TYPE_NUMBER]);
+        $this->assertTrue($val->validate(10));
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate(10.0));
+        $this->assertFalse($val->validate(11));
+    }
+
+    public function testCompareValuesWithTypeNumber(): void
+    {
+        $val = new CompareValidator(['compareValue' => 100, 'type' => CompareValidator::TYPE_NUMBER, 'operator' => '>']);
+        $this->assertTrue($val->validate(101));
+        $this->assertFalse($val->validate(100));
+        $this->assertFalse($val->validate(99));
+
+        $val->operator = '<';
+        $val->message = null;
+        $val->init();
+        $this->assertTrue($val->validate(99));
+        $this->assertFalse($val->validate(100));
+        $this->assertFalse($val->validate(101));
+    }
+
+    public function testValidateAttributeWithClosure(): void
+    {
+        $val = new CompareValidator([
+            'compareValue' => function ($model, $attribute) {
+                return $model->attr_test_val;
+            },
+        ]);
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_test' => 'hello',
+            'attr_test_val' => 'hello',
+        ]);
+        $val->validateAttribute($model, 'attr_test');
+        $this->assertFalse($model->hasErrors('attr_test'));
+
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_test' => 'hello',
+            'attr_test_val' => 'world',
+        ]);
+        $val = new CompareValidator([
+            'compareValue' => function ($model, $attribute) {
+                return $model->attr_test_val;
+            },
+        ]);
+        $val->validateAttribute($model, 'attr_test');
+        $this->assertTrue($model->hasErrors('attr_test'));
+    }
+
+    public function testValidateValueWithClosure(): void
+    {
+        $val = new CompareValidator(['compareValue' => function () {
+            return 42;
+        }]);
+        $this->assertTrue($val->validate(42));
+        $this->assertFalse($val->validate(43));
+    }
+
+    public function testGetClientOptionsWithCompareValue(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'expected']);
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertSame('==', $options['operator']);
+        $this->assertSame('string', $options['type']);
+        $this->assertSame('expected', $options['compareValue']);
+        $this->assertArrayNotHasKey('compareAttribute', $options);
+        $this->assertArrayHasKey('message', $options);
+    }
+
+    public function testGetClientOptionsWithCompareAttribute(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $model->attr_test_val = 'test';
+        $val = new CompareValidator(['compareAttribute' => 'attr_test_val']);
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertArrayHasKey('compareAttribute', $options);
+        $this->assertArrayHasKey('compareAttributeName', $options);
+        $this->assertArrayNotHasKey('compareValue', $options);
+    }
+
+    public function testGetClientOptionsDefaultCompareAttribute(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $model->attr_test_repeat = 'test';
+        $val = new CompareValidator();
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertArrayHasKey('compareAttribute', $options);
+        $this->assertStringContainsString('attr_test_repeat', $options['compareAttributeName']);
+    }
+
+    public function testGetClientOptionsWithSkipOnEmpty(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'test', 'skipOnEmpty' => true]);
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertSame(1, $options['skipOnEmpty']);
+    }
+
+    public function testGetClientOptionsWithoutSkipOnEmpty(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'test', 'skipOnEmpty' => false]);
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertArrayNotHasKey('skipOnEmpty', $options);
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'expected']);
+        $js = $val->clientValidateAttribute($model, 'attr_test', new CompareViewStub());
+
+        $this->assertStringStartsWith('yii.validation.compare(', $js);
+        $this->assertStringContainsString('$form', $js);
+    }
+
+    public function defaultMessagePerOperatorProvider(): array
+    {
+        return [
+            ['==', 'equal to'],
+            ['===', 'equal to'],
+            ['!=', 'not be equal'],
+            ['!==', 'not be equal'],
+            ['>', 'greater than'],
+            ['>=', 'greater than or equal'],
+            ['<', 'less than'],
+            ['<=', 'less than or equal'],
+        ];
+    }
+
+    /**
+     * @dataProvider defaultMessagePerOperatorProvider
+     */
+    public function testDefaultMessagePerOperator(string $operator, string $expectedSubstring): void
+    {
+        $val = new CompareValidator(['operator' => $operator, 'compareValue' => 1]);
+        $this->assertStringContainsString($expectedSubstring, $val->message);
+    }
+
+    public function testClientValidateAttributeWithClosure(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => function () {
+            return 'resolved';
+        }]);
+        $js = $val->clientValidateAttribute($model, 'attr_test', new CompareViewStub());
+
+        $this->assertStringContainsString('resolved', $js);
+    }
+
+    public function testClientValidateAttributeContainsEncodedOptions(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'check']);
+        $js = $val->clientValidateAttribute($model, 'attr_test', new CompareViewStub());
+
+        $this->assertStringContainsString('"operator":"=="', $js);
+        $this->assertStringContainsString('"compareValue":"check"', $js);
+    }
+
+    public function testValidateAttributeCompareAttributeHasErrorMessage(): void
+    {
+        $val = new CompareValidator(['compareAttribute' => 'attr_x', 'skipOnError' => false]);
+        $model = FakedValidationModel::createWithAttributes(['attr_x' => 10, 'attr_y' => 10]);
+        $model->addError('attr_x', 'invalid');
+        $val->validateAttribute($model, 'attr_y');
+        $errors = $model->getErrors('attr_y');
+        $this->assertStringContainsString('attr_x', $errors[0]);
+        $this->assertStringContainsString('is invalid', $errors[0]);
+    }
+
+    public function testValidateValueErrorContainsCompareValue(): void
+    {
+        $val = new CompareValidator(['compareValue' => 'expected']);
+        $val->validate('wrong', $error);
+        $this->assertStringContainsString('expected', $error);
+    }
+
+    public function testGetClientOptionsMessageContainsCompareValue(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'target']);
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertStringContainsString('target', $options['message']);
+    }
+
+    public function testTypeNumberCastsToFloat(): void
+    {
+        $val = new CompareValidator([
+            'compareValue' => '10',
+            'type' => CompareValidator::TYPE_NUMBER,
+            'operator' => '===',
+        ]);
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate(10));
+        $this->assertTrue($val->validate(10.0));
+    }
+
+    public function testCompareAttributeErrorEarlyReturn(): void
+    {
+        $val = new CompareValidator(['compareAttribute' => 'attr_x', 'skipOnError' => false]);
+        $model = FakedValidationModel::createWithAttributes(['attr_x' => 5, 'attr_y' => 99]);
+        $model->addError('attr_x', 'bad value');
+        $val->validateAttribute($model, 'attr_y');
+
+        $errors = $model->getErrors('attr_y');
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('is invalid', $errors[0]);
+    }
+
+    public function testGetClientOptionsMessageContainsAttributeLabel(): void
+    {
+        $model = new FakedValidationModel();
+        $model->attr_test = 'test';
+        $val = new CompareValidator(['compareValue' => 'x']);
+        $options = $val->getClientOptions($model, 'attr_test');
+
+        $this->assertStringContainsString('attr_test', $options['message']);
+    }
+
+    public function testDefaultOperatorFallsThrough(): void
+    {
+        $val = new CompareValidator(['compareValue' => 5]);
+        $val->operator = '<>';
+        $this->assertFalse($val->validate(5));
+        $this->assertFalse($val->validate(999));
+    }
+}
+
+class CompareViewStub extends \yii\web\View
+{
+    public function registerAssetBundle($name, $position = null)
+    {
+    }
 }
