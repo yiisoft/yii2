@@ -351,6 +351,17 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($val->validate('test@example.com'));
         $this->assertFalse($val->validate('test@' . str_repeat('a', 70) . '.com'));
     }
+
+    public function testCheckDNSWithWarning(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true]);
+        $mock = $this->getMockBuilder(EmailValidator::class)
+            ->onlyMethods(['isDNSValid'])
+            ->getMock();
+        $mock->checkDNS = true;
+        $mock->method('isDNSValid')->willReturn(false);
+        $this->assertFalse($mock->validate('test@invalid-domain.com'));
+    }
 }
 
 class MockEmailValidator extends EmailValidator

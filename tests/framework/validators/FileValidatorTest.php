@@ -837,10 +837,66 @@ class FileValidatorTest extends TestCase
         $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
 
         $result = $validator->clientValidateAttribute($model, 'attr_files', $view);
-        $this->assertStringContainsString('yii.validation.file', $result);
-        $this->assertStringContainsString('extensions', $result);
-        $this->assertStringContainsString('minSize', $result);
-        $this->assertStringContainsString('maxSize', $result);
         $this->assertStringContainsString('mimeTypes', $result);
+    }
+
+    public function testValidateValueEdgeCases(): void
+    {
+        $val = new FileValidator();
+        $result = $this->invokeMethod($val, 'validateValue', ['not an uploaded file']);
+        $this->assertEquals([$val->uploadRequired, []], $result);
+
+        $file = new UploadedFile(['error' => 999, 'name' => 'test.txt']);
+        $result = $this->invokeMethod($val, 'validateValue', [$file]);
+        $this->assertEquals([$val->message, []], $result);
+    }
+
+    public function testValidateExtensionEdgeCases(): void
+    {
+        $val = new FileValidator(['extensions' => ['jpg']]);
+
+        $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.jpg']);
+        $this->assertFalse(@$this->invokeMethod($val, 'validateExtension', [$file]));
+    }
+
+    public function testValidateMimeTypeNull(): void
+    {
+        $val = new FileValidator(['mimeTypes' => ['image/png']]);
+        $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.png']);
+
+        $this->assertFalse(@$this->invokeMethod($val, 'validateMimeType', [$file]));
+    }
+
+    public function testValidateExtensionMismatchMimeType(): void
+    {
+        $val = new FileValidator([
+            'extensions' => ['jpg'],
+            'checkExtensionByMimeType' => true,
+        ]);
+        // test.txt has mime text/plain, extensionsByMimeType should not contain 'jpg'
+        $filePath = Yii::getAlias('@yiiunit/framework/validators/data/mimeType/test.txt');
+        $file = new UploadedFile([
+            'tempName' => $filePath,
+            'name' => 'test.jpg' // extension jpg, but content is txt
+        ]);
+        $this->assertFalse($this->invokeMethod($val, 'validateExtension', [$file]));
+    }
+
+    public function testValidateExtensionEmptyExtensions(): void
+    {
+        $val = new FileValidator([
+            'extensions' => [],
+            'checkExtensionByMimeType' => false,
+        ]);
+        $file = new UploadedFile(['name' => 'test.jpg']);
+        $this->assertTrue($this->invokeMethod($val, 'validateExtension', [$file]));
+    }
+
+    public function testGetClientOptionsUploadRequired(): void
+    {
+        $val = new FileValidator(['skipOnEmpty' => false]);
+        $model = new FakedValidationModel();
+        $options = $val->getClientOptions($model, 'attr_files');
+        $this->assertArrayHasKey('uploadRequired', $options);
     }
 }

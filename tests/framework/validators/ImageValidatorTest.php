@@ -50,7 +50,7 @@ class ImageValidatorTest extends TestCase
         $this->assertTrue($val->validate($image));
 
         $notImage = $this->createTestFile('test.txt');
-        $error = null;
+        $error = '';
         $this->assertFalse($val->validate($notImage, $error));
         $this->assertStringContainsString('is not an image', $error);
     }
@@ -60,22 +60,22 @@ class ImageValidatorTest extends TestCase
         $image = $this->createTestFile('test.jpg');
 
         $val = new ImageValidator(['minWidth' => 2]);
-        $error = null;
+        $error = '';
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('width cannot be smaller than 2', $error);
 
         $val = new ImageValidator(['minHeight' => 2]);
-        $error = null;
+        $error = '';
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('height cannot be smaller than 2', $error);
 
         $val = new ImageValidator(['maxWidth' => 0]);
-        $error = null;
+        $error = '';
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('width cannot be larger than 0', $error);
 
         $val = new ImageValidator(['maxHeight' => 0]);
-        $error = null;
+        $error = '';
         $this->assertFalse($val->validate($image, $error));
         $this->assertStringContainsString('height cannot be larger than 0', $error);
 
@@ -124,6 +124,17 @@ class ImageValidatorTest extends TestCase
         $this->assertArrayHasKey('overHeight', $options);
     }
 
+    public function testValidateImageZeroDimensions(): void
+    {
+        $validator = new ImageValidator();
+        $file = new UploadedFile([
+            'tempName' => Yii::getAlias('@yiiunit/framework/validators/data/mimeType/test.jpg'),
+            'name' => 'test.jpg'
+        ]);
+
+        $this->assertNull($this->invokeMethod($validator, 'validateImage', [$file]));
+    }
+
     protected function createTestFile($fileName)
     {
         $filePath = Yii::getAlias('@yiiunit/framework/validators/data/mimeType/') . $fileName;
@@ -139,7 +150,5 @@ class ImageValidatorTest extends TestCase
 
 class ImageValidatorViewStub extends View
 {
-    public function registerAssetBundle($name, $position = null)
-    {
-    }
+    public function registerAssetBundle($name, $position = null) {}
 }
