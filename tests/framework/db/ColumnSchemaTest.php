@@ -174,14 +174,14 @@ class ColumnSchemaTest extends TestCase
 
     public function testArrayWithThreeElementsIsNotPdoValue(): void
     {
-        $column = $this->createColumn(['phpType' => 'array', 'type' => Schema::TYPE_JSON]);
+        $column = $this->createColumn(['phpType' => 'object', 'type' => Schema::TYPE_JSON]);
         $value = [1, PDO::PARAM_INT, 'extra'];
         $this->assertSame($value, $column->phpTypecast($value));
     }
 
     public function testArrayWithInvalidPdoTypeIsNotConverted(): void
     {
-        $column = $this->createColumn(['phpType' => 'array', 'type' => Schema::TYPE_JSON]);
+        $column = $this->createColumn(['phpType' => 'object', 'type' => Schema::TYPE_JSON]);
         $value = ['hello', 999];
         $this->assertSame($value, $column->phpTypecast($value));
     }
@@ -211,8 +211,7 @@ class ColumnSchemaTest extends TestCase
     {
         $column = $this->createStringColumn();
         $result = $column->phpTypecast(1.0);
-        $this->assertIsString($result);
-        $this->assertStringContainsString('1', $result);
+        $this->assertSame('1', $result);
     }
 
     public function testCastToStringFromResource(): void
