@@ -129,7 +129,7 @@ class CompositeAuthTest extends TestCase
     public function testCallingRunWithCompleteRoute(): void
     {
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
-        /** @var TestController */
+        /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('test/d'));
     }
@@ -140,7 +140,7 @@ class CompositeAuthTest extends TestCase
     public function testRunAction(): void
     {
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
-        /** @var TestController */
+        /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('b'));
     }
@@ -148,7 +148,7 @@ class CompositeAuthTest extends TestCase
     public function testRunButWithActionIdOnly(): void
     {
         Yii::$app->request->headers->set('X-Api-Key', 'user1');
-        /** @var TestController */
+        /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->assertEquals('success', $controller->run('c'));
     }
@@ -156,7 +156,7 @@ class CompositeAuthTest extends TestCase
     public function testRunWithWrongToken(): void
     {
         Yii::$app->request->headers->set('X-Api-Key', 'wrong-user');
-        /** @var TestController */
+        /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->expectException('yii\web\UnauthorizedHttpException');
         $controller->run('a');
@@ -164,7 +164,7 @@ class CompositeAuthTest extends TestCase
 
     public function testRunWithoutAuthHeader(): void
     {
-        /** @var TestController */
+        /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $this->expectException('yii\web\UnauthorizedHttpException');
         $controller->run('a');
@@ -172,7 +172,7 @@ class CompositeAuthTest extends TestCase
 
     public function testRunWithOptionalAction(): void
     {
-        /** @var TestController */
+        /** @var TestController $controller */
         $controller = Yii::$app->createController('test')[0];
         $controller->optional = ['a'];
         $this->assertEquals('success', $controller->run('a'));

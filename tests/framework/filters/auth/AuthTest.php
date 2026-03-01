@@ -62,7 +62,7 @@ class AuthTest extends TestCase
 
     public function authOnly($token, $login, $filter): void
     {
-        /** @var TestAuthController */
+        /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
@@ -73,7 +73,7 @@ class AuthTest extends TestCase
 
     public function authOptional($token, $login, $filter): void
     {
-        /** @var TestAuthController */
+        /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['optional' => ['filtered']]);
         try {
@@ -84,7 +84,7 @@ class AuthTest extends TestCase
 
     public function authExcept($token, $login, $filter): void
     {
-        /** @var TestAuthController */
+        /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['except' => ['other']]);
         try {
@@ -204,7 +204,7 @@ class AuthTest extends TestCase
     {
         Yii::$app->request->headers->set('Authorization', 'Bearer wrong_token');
         $filter = ['class' => HttpBearerAuth::class];
-        /** @var TestAuthController */
+        /** @var TestAuthController $controller */
         $controller = Yii::$app->createController('test-auth')[0];
         $controller->authenticatorConfig = ArrayHelper::merge($filter, ['only' => ['filtered']]);
         try {
