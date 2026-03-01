@@ -449,7 +449,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     /**
      * Test validating a class with default scope
      * @see https://github.com/yiisoft/yii2/issues/14484
-    */
+     */
     public function testFindModelWith(): void
     {
         $validator = new UniqueValidator([
@@ -533,6 +533,30 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $customer->addError('name', 'error');
         $validator->validateAttribute($customer, 'email');
         $this->assertTrue($customer->hasErrors('email')); // validator should not be skipped
+    }
+
+    public function testAddComboNotUniqueErrorWithComplexAttributes(): void
+    {
+        $val = new UniqueValidator([
+            'targetAttribute' => ['order_id' => 'item_id', 'item_id' => 'order_id'],
+        ]);
+        $model = new OrderItem();
+        $model->order_id = 1;
+        $model->item_id = 1;
+        $val->validateAttribute($model, 'order_id');
+        $this->assertTrue($model->hasErrors('order_id'));
+    }
+
+    public function testApplyTableAliasWithQuotedColumn(): void
+    {
+        $val = new UniqueValidator();
+        $method = new \ReflectionMethod($val, 'applyTableAlias');
+        $method->setAccessible(true);
+        $query = Customer::find();
+        $conditions = ['[[name]]' => 'test'];
+        $prefixed = $method->invoke($val, $query, $conditions);
+        $alias = array_keys($query->getTablesUsedInFrom())[0];
+        $this->assertArrayHasKey("{$alias}.[[name]]", $prefixed);
     }
 }
 
