@@ -177,7 +177,7 @@ class RequiredValidatorTest extends TestCase
         $this->assertStringContainsString('agree', $errors[0]);
     }
 
-    public function testErrorMessageWithoutRequiredValueDoesNotContainPlaceholder(): void
+    public function testErrorMessageWithoutRequiredValueShowsBlank(): void
     {
         $val = new RequiredValidator();
         $m = FakedValidationModel::createWithAttributes(['attr_val' => null]);
@@ -185,6 +185,7 @@ class RequiredValidatorTest extends TestCase
         $this->assertTrue($m->hasErrors('attr_val'));
         $errors = $m->getErrors('attr_val');
         $this->assertStringContainsString('blank', $errors[0]);
+        $this->assertStringNotContainsString('{requiredValue}', $errors[0]);
     }
 
     public function testGetClientOptionsMessageContainsRequiredValue(): void
