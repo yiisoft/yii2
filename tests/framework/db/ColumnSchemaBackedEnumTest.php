@@ -4,6 +4,8 @@ namespace yiiunit\framework\db;
 
 use yii\db\ColumnSchema;
 use yii\db\Schema;
+use yiiunit\framework\db\stubs\IntBackedStatus;
+use yiiunit\framework\db\stubs\StringBackedStatus;
 use yiiunit\TestCase;
 
 /**
@@ -11,14 +13,19 @@ use yiiunit\TestCase;
  */
 class ColumnSchemaBackedEnumTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        require_once __DIR__ . '/stubs/BackedEnumStubs.php';
+    }
+
     public function testCastToStringFromBackedEnum(): void
     {
         $column = new ColumnSchema();
         $column->type = Schema::TYPE_STRING;
         $column->phpType = 'string';
 
-        eval('enum StringBackedStatus: string { case Active = "active"; }');
-        $result = $column->phpTypecast(\StringBackedStatus::Active);
+        $result = $column->phpTypecast(StringBackedStatus::Active);
         $this->assertSame('active', $result);
     }
 
@@ -28,8 +35,7 @@ class ColumnSchemaBackedEnumTest extends TestCase
         $column->type = Schema::TYPE_INTEGER;
         $column->phpType = 'integer';
 
-        eval('enum IntBackedStatus: int { case On = 1; }');
-        $result = $column->phpTypecast(\IntBackedStatus::On);
+        $result = $column->phpTypecast(IntBackedStatus::On);
         $this->assertSame(1, $result);
     }
 
@@ -39,8 +45,7 @@ class ColumnSchemaBackedEnumTest extends TestCase
         $column->type = Schema::TYPE_INTEGER;
         $column->phpType = 'integer';
 
-        eval('enum IntBackedStatusZero: int { case Off = 0; }');
-        $result = $column->phpTypecast(\IntBackedStatusZero::Off);
+        $result = $column->phpTypecast(IntBackedStatus::Off);
         $this->assertSame(0, $result);
     }
 }
