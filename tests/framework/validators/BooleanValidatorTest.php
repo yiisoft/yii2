@@ -23,7 +23,6 @@ class BooleanValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
         $this->destroyApplication();
     }
 
@@ -130,7 +129,5 @@ class ModelForBooleanValidator extends Model
 
 class BooleanViewStub extends View
 {
-    public function registerAssetBundle($name, $position = null)
-    {
-    }
+    public function registerAssetBundle($name, $position = null) {}
 }

@@ -21,7 +21,6 @@ class EmailValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
         $this->destroyApplication();
     }
 
@@ -114,25 +113,30 @@ class EmailValidatorTest extends TestCase
 
     public function testValidateValueMx(): void
     {
-        $validator = new EmailValidator();
-
-        $validator->checkDNS = true;
+        $validator = new EmailValidator(['checkDNS' => true]);
         $this->assertTrue($validator->validate('5011@gmail.com'));
 
         $validator->checkDNS = false;
         $this->assertTrue($validator->validate('test@nonexistingsubdomain.example.com'));
         $validator->checkDNS = true;
         $this->assertFalse($validator->validate('test@nonexistingsubdomain.example.com'));
+    }
 
-        $validator->checkDNS = true;
-        $validator->allowName = true;
-        $emails = [
-            'ipetrov@gmail.com',
-            'Ivan Petrov <ipetrov@gmail.com>',
+    /**
+     * @dataProvider emailsProvider
+     */
+    public function testValidateValueMxAllowName($email): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true, 'allowName' => true]);
+        $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
+    }
+
+    public static function emailsProvider(): array
+    {
+        return [
+            ['ipetrov@gmail.com'],
+            ['Ivan Petrov <ipetrov@gmail.com>'],
         ];
-        foreach ($emails as $email) {
-            $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
-        }
     }
 
     public function testValidateAttribute(): void
