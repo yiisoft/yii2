@@ -349,4 +349,26 @@ class ValidatorTest extends TestCase
         $validator = SafeValidator::createValidator('safe', $model, [1]);
         $this->assertSame([1], $validator->getValidationAttributes(1));
     }
+    public function testInlineValidatorClosure(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+        $val = new InlineValidator([
+            'method' => function ($attr) {
+                $this->addError($attr, 'error');
+            }
+        ]);
+        $val->validateAttribute($model, 'attr');
+        $this->assertEquals(['error'], $model->getErrors('attr'));
+    }
+
+    public function testInlineValidatorClientClosure(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+        $val = new InlineValidator([
+            'clientValidate' => function ($attr) {
+                return 'js';
+            }
+        ]);
+        $this->assertEquals('js', $val->clientValidateAttribute($model, 'attr', new View()));
+    }
 }
