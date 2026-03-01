@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\db;
 
 use yii\db\ColumnSchemaBuilder;
@@ -12,8 +18,6 @@ class SchemaBuilderTraitTest extends TestCase
 {
     private function createBuilder(): SchemaBuilderTraitStub
     {
-        $columnBuilder = $this->createMock(ColumnSchemaBuilder::class);
-
         $schema = $this->createMock(Schema::class);
         $schema->method('createColumnSchemaBuilder')
             ->willReturnCallback(function ($type, $length = null) {
@@ -166,6 +170,7 @@ class SchemaBuilderTraitTest extends TestCase
         $this->assertInstanceOf(ColumnSchemaBuilder::class, $column);
         $result = (string) $column;
         $this->assertStringContainsString('money', $result);
+        $this->assertStringContainsString('19', $result);
     }
 
     public function testMoneyWithNoArgs(): void
