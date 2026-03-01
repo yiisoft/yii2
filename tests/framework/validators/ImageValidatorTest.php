@@ -150,5 +150,7 @@ class ImageValidatorTest extends TestCase
 
 class ImageValidatorViewStub extends View
 {
-    public function registerAssetBundle($name, $position = null) {}
+    public function registerAssetBundle($name, $position = null)
+    {
+    }
 }
