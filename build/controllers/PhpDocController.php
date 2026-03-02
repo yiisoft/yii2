@@ -47,6 +47,7 @@ class PhpDocController extends ConsoleController
         ConsoleController::class => [
             'request',
             'response',
+            'help',
         ],
         Model::class => [
             'errors',

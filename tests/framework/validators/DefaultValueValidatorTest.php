@@ -46,4 +46,19 @@ class DefaultValueValidatorTest extends TestCase
         $val->validateAttribute($obj, 'attrA');
         $this->assertEquals($objB->attrA, $obj->attrA);
     }
+
+    public function testValidateAttributeWithClosure(): void
+    {
+        $val = new DefaultValueValidator();
+        $val->value = function ($model, $attribute) {
+            return $attribute . '_default';
+        };
+        $obj = new stdclass();
+        $obj->attrA = null;
+        $obj->attrB = 'existing';
+        $val->validateAttribute($obj, 'attrA');
+        $this->assertSame('attrA_default', $obj->attrA);
+        $val->validateAttribute($obj, 'attrB');
+        $this->assertSame('existing', $obj->attrB);
+    }
 }

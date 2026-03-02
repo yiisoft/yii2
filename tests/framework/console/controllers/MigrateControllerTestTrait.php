@@ -19,13 +19,14 @@ use yiiunit\TestCase;
 /**
  * This trait provides unit tests shared by the different migration controllers implementations.
  * @see BaseMigrateController
+ *
+ * @template TMigrateController of BaseMigrateController
+ * @phpstan-require-extends TestCase
  */
 trait MigrateControllerTestTrait
 {
-    /** @var TestCase $this */
-
     /**
-     * @var string name of the migration controller class, which is under test.
+     * @var class-string<TMigrateController> name of the migration controller class, which is under test.
      */
     protected $migrateControllerClass;
     /**
@@ -75,7 +76,7 @@ trait MigrateControllerTestTrait
     /**
      * Creates test migrate controller instance.
      * @param array $config controller configuration.
-     * @return BaseMigrateController migrate command instance.
+     * @return TMigrateController migrate command instance.
      */
     protected function createMigrateController(array $config = [])
     {
