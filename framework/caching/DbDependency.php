@@ -26,11 +26,11 @@ use yii\di\Instance;
 class DbDependency extends Dependency
 {
     /**
-     * @var string the application component ID of the DB connection.
+     * @var Connection|string the DB connection object or the application component ID of the DB connection.
      */
     public $db = 'db';
     /**
-     * @var string the SQL query whose result is used to determine if the dependency has been changed.
+     * @var string|null the SQL query whose result is used to determine if the dependency has been changed.
      * Only the first row of the query result will be used.
      */
     public $sql;

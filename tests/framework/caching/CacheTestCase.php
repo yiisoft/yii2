@@ -29,7 +29,7 @@ function microtime($float = false)
 
 namespace yiiunit\framework\caching;
 
-use yii\caching\CacheInterface;
+use yii\caching\Cache;
 use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
@@ -50,7 +50,7 @@ abstract class CacheTestCase extends TestCase
     public static $microtime;
 
     /**
-     * @return CacheInterface
+     * @return Cache
      */
     abstract protected function getCacheInstance();
 
@@ -67,7 +67,7 @@ abstract class CacheTestCase extends TestCase
     }
 
     /**
-     * @return CacheInterface
+     * @return Cache
      */
     public function prepare()
     {
@@ -288,13 +288,13 @@ abstract class CacheTestCase extends TestCase
         $dependency = new TagDependency(['tags' => 'test']);
 
         $expected = 'SilverFire';
-        $loginClosure = function ($cache) use (&$login) {
+        $loginClosure = function ($cache) {
             return 'SilverFire';
         };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         // Call again with another login to make sure that value is cached
-        $loginClosure = function ($cache) use (&$login) {
+        $loginClosure = function ($cache) {
             return 'SamDark';
         };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
