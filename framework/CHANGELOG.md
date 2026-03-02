@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
 - Bug #20738: Fix `@param` annotation for `$value` parameter in `AssetManager::setConverter()` (mspirkov)
 - Bug #20739: Fix `@var` annotation for `BaseYii::$app` (mspirkov)
+- Bug #20746: Fix `@var` annotations for `DbDependency::$db` and `DbDependency::$sql` (mspirkov)
 - Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 
