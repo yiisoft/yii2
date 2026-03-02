@@ -459,7 +459,7 @@ class ComponentTest extends TestCase
         ]);
         $this->component->p = 'Yii is cool.';
 
-        /** @var NewBehavior */
+        /** @var NewBehavior $aBehavior */
         $aBehavior = $this->component->getBehavior('a');
         $this->assertSame('Yii is cool.', $aBehavior->p);
     }

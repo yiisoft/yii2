@@ -319,8 +319,9 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         if ($this->expressionBuilders[$className] === __CLASS__) {
-            /** @var $this&ExpressionBuilderInterface */
-            return $this;
+            /** @var $this&ExpressionBuilderInterface $result */
+            $result = $this;
+            return $result;
         }
 
         if (!is_object($this->expressionBuilders[$className])) {

@@ -112,7 +112,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals('behavior property', $bar->behaviorProperty);
         $this->assertEquals('behavior method', $bar->behaviorMethod());
 
-        /** @var BarBehavior */
+        /** @var BarBehavior $barBehavior */
         $barBehavior = $bar->getBehavior('bar');
         $this->assertEquals('behavior property', $barBehavior->behaviorProperty);
         $this->assertEquals('behavior method', $barBehavior->behaviorMethod());
