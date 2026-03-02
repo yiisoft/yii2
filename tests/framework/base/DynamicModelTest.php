@@ -45,7 +45,7 @@ class DynamicModelTest extends TestCase
         $post = [
             'name' => 'long name',
         ];
-        /** @var DynamicModel&object{age: int} */
+        /** @var DynamicModel&object{age: int} $model */
         $model = DynamicModel::validateData($post, [
             [['email', 'name'], 'required'],
             ['age', 'default', 'value' => 18],
@@ -87,7 +87,7 @@ class DynamicModelTest extends TestCase
     {
         $email = 'invalid';
         $name = 'long name';
-        /** @var DynamicModel&object{email: string, name: string} */
+        /** @var DynamicModel&object{email: string, name: string} $model */
         $model = new DynamicModel(compact('name', 'email'));
         $this->assertEquals($email, $model->email);
         $this->assertEquals($name, $model->name);
@@ -103,7 +103,7 @@ class DynamicModelTest extends TestCase
 
     public function testLoad(): void
     {
-        /** @var DynamicModel&object{name: string, mobile: string} */
+        /** @var DynamicModel&object{name: string, mobile: string} $dynamic */
         $dynamic = new DynamicModel();
         //define two attributes
         $dynamic->defineAttribute('name');

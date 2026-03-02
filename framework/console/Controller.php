@@ -34,6 +34,7 @@ use yii\base\Module;
  * @property Request $request The request object.
  * @property Response $response The response object.
  * @property-read string $help The help information for this controller.
+ * @property-write bool $help Whether to display help information about current command.
  * @property-read string $helpSummary The one-line short summary describing this controller.
  * @property-read array $passedOptionValues The properties corresponding to the passed options.
  * @property-read array $passedOptions The names of the options passed during execution.
@@ -112,7 +113,7 @@ class Controller extends BaseController
      * If the action ID is empty, the method will use [[defaultAction]].
      * @param string $id the ID of the action to be executed.
      * @param array $params the parameters (name-value pairs) to be passed to the action.
-     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
+     * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
      * @throws Exception if there are unknown options or missing arguments
      * @see createAction
