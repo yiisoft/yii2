@@ -127,7 +127,7 @@ class AssetBundle extends BaseObject
      */
     public static function register($view)
     {
-        /** @var static */
+        /** @var static $result */
         $result = $view->registerAssetBundle(get_called_class());
 
         return $result;
