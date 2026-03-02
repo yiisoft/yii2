@@ -58,7 +58,7 @@ class Controller extends BaseController
      */
     public function renderAjax($view, $params = [])
     {
-        /** @var View */
+        /** @var View $viewComponent */
         $viewComponent = $this->getView();
 
         return $viewComponent->renderAjax($view, $params, $this);
