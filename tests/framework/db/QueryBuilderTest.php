@@ -11,6 +11,7 @@ namespace yiiunit\framework\db;
 use Yii;
 use Exception;
 use Closure;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
@@ -2359,6 +2360,223 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
         ];
+    }
+
+    public static function batchUpdateProvider(): array
+    {
+        return [
+            'sparse rows with expression' => [
+                'customer',
+                [
+                    [
+                        'id' => 1,
+                        'status' => 1,
+                        'name' => 'Tom',
+                    ],
+                    [
+                        'id' => 2,
+                        'status' => 0,
+                    ],
+                    [
+                        'id' => 3,
+                        'name' => new Expression('UPPER(name)'),
+                    ],
+                ],
+                'id',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp3 THEN :qp4 ELSE [[status]] END, [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp2 WHEN [[id]]=:qp5 THEN UPPER(name) ELSE [[name]] END WHERE [[id]] IN (:qp0, :qp3, :qp5)',
+                [
+                    ':qp0' => 1,
+                    ':qp1' => 1,
+                    ':qp2' => 'Tom',
+                    ':qp3' => 2,
+                    ':qp4' => 0,
+                    ':qp5' => 3,
+                ],
+            ],
+            'null key value' => [
+                'customer',
+                [
+                    [
+                        'id' => null,
+                        'status' => 1,
+                    ],
+                    [
+                        'id' => 2,
+                        'status' => 0,
+                    ],
+                ],
+                'id',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]] IS NULL THEN :qp0 WHEN [[id]]=:qp1 THEN :qp2 ELSE [[status]] END WHERE ([[id]] IN (:qp1) OR [[id]] IS NULL)',
+                [
+                    ':qp0' => 1,
+                    ':qp1' => 2,
+                    ':qp2' => 0,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider batchUpdateProvider
+     * @param string $table
+     * @param array $rows
+     * @param string $key
+     * @param string $expectedSQL
+     * @param array $expectedParams
+     */
+    public function testBatchUpdate($table, $rows, $key, $expectedSQL, $expectedParams): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate($table, $rows, $key, $actualParams);
+        $this->assertSame($this->replaceQuotes($expectedSQL), $actualSQL);
+        $this->assertSame($expectedParams, $actualParams);
+    }
+
+    public function testBatchUpdateWithoutUpdatableColumns(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1],
+            ['id' => 2],
+        ], 'id', $actualParams);
+
+        $this->assertSame('', $actualSQL);
+        $this->assertSame([], $actualParams);
+    }
+
+    public function testBatchUpdateMissingKeyColumn(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Each batch update row must contain the "id" column.');
+
+        $actualParams = [];
+        $this->getQueryBuilder()->batchUpdate('customer', [
+            ['status' => 1],
+        ], 'id', $actualParams);
+    }
+
+    public function testBatchUpdateDuplicateKeyValues(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Duplicate batch update key value found for "id".');
+
+        $actualParams = [];
+        $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 1],
+            ['id' => 1, 'status' => 2],
+        ], 'id', $actualParams);
+    }
+
+    public function testBatchUpdateWithTraversableRow(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            new \ArrayObject([
+                'id' => 1,
+                'status' => 1,
+            ]),
+        ], 'id', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE [[id]] IN (:qp0)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateInvalidRowType(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Each batch update row must be an array.');
+
+        $actualParams = [];
+        $this->getQueryBuilder()->batchUpdate('customer', [
+            'invalid',
+        ], 'id', $actualParams);
+    }
+
+    public function testBatchUpdateInvalidKeyValue(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Batch update key values must be scalar or null. Column "id" contains an invalid value.');
+
+        $actualParams = [];
+        $this->getQueryBuilder()->batchUpdate('customer', [
+            [
+                'id' => new Expression('1'),
+                'status' => 1,
+            ],
+        ], 'id', $actualParams);
+    }
+
+    public function testBatchUpdateOnlyNullKeyValues(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            [
+                'id' => null,
+                'status' => 1,
+            ],
+        ], 'id', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]] IS NULL THEN :qp0 ELSE [[status]] END WHERE [[id]] IS NULL',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithoutTableSchema(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('unknown_table', [
+            [
+                'id' => 'k1',
+                'status' => 1,
+            ],
+        ], 'id', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[unknown_table]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE [[id]] IN (:qp0)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 'k1',
+            ':qp1' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithTableSchema(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder(true, true)->batchUpdate('type', [
+            [
+                'int_col' => '1',
+                'float_col' => '2.5',
+            ],
+        ], 'int_col', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END WHERE [[int_col]] IN (:qp0)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 2.5,
+        ], $actualParams);
     }
 
     /**

@@ -622,6 +622,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
+    public function batchUpdate($table, $rows, $key, &$params = [])
+    {
+        $normalizedRows = [];
+        foreach ($rows as $row) {
+            if (!is_array($row)) {
+                $normalizedRows[] = $row;
+                continue;
+            }
+
+            if (array_key_exists($key, $row)) {
+                $keyValue = $row[$key];
+                unset($row[$key]);
+                $row = $this->normalizeTableRowData($table, $row, $params);
+                $row[$key] = $keyValue;
+            } else {
+                $row = $this->normalizeTableRowData($table, $row, $params);
+            }
+            $normalizedRows[] = $row;
+        }
+
+        return parent::batchUpdate($table, $normalizedRows, $key, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getColumnType($type)
     {
         $columnType = parent::getColumnType($type);
