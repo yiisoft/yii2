@@ -237,7 +237,7 @@ class ActiveRecordBlameable extends ActiveRecord
      */
     public function getBlameable()
     {
-        /** @var BlameableBehavior */
+        /** @var BlameableBehavior $result */
         $result = $this->getBehavior('blameable');
 
         return $result;
