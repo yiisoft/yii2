@@ -76,7 +76,7 @@ class CaptchaValidator extends Validator
         if ($ca !== false) {
             /** @var Controller $controller */
             list($controller, $actionID) = $ca;
-            /** @var CaptchaAction|null */
+            /** @var CaptchaAction|null $action */
             $action = $controller->createAction($actionID);
             if ($action !== null) {
                 return $action;

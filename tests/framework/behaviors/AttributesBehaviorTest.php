@@ -214,7 +214,7 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
      */
     public function getAttributesBehavior()
     {
-        /** @var AttributesBehavior */
+        /** @var AttributesBehavior $result */
         $result = $this->getBehavior('attributes');
 
         return $result;
