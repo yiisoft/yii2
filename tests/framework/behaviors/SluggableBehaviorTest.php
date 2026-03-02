@@ -87,7 +87,7 @@ class SluggableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordSluggable();
 
-        /** @var SluggableBehavior */
+        /** @var SluggableBehavior $sluggableBehavior */
         $sluggableBehavior = $model->getBehavior('sluggable');
         $sluggableBehavior->attribute = ['name', 'category_id'];
 
@@ -105,7 +105,7 @@ class SluggableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordSluggable();
 
-        /** @var SluggableBehavior */
+        /** @var SluggableBehavior $sluggableBehavior */
         $sluggableBehavior = $model->getBehavior('sluggable');
         $sluggableBehavior->attribute = 'related.name';
 
@@ -277,7 +277,7 @@ class ActiveRecordSluggable extends ActiveRecord
      */
     public function getSluggable()
     {
-        /** @var SluggableBehavior */
+        /** @var SluggableBehavior $result */
         $result = $this->getBehavior('sluggable');
 
         return $result;
