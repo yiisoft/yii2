@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
+- Enh #20763: Added `yii\db\Command::batchUpdate()`, `yii\db\QueryBuilder::batchUpdate()` and `yii\db\Migration::batchUpdate()` for multi-row updates with per-row values (shandori)
 
 
 2.0.54 January 09, 2026
