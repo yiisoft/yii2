@@ -17,7 +17,6 @@ parameters:
             - tests/framework/di/stubs
             - tests/framework/filters/stubs
             # TODO: Analyze these directories
-            - tests/framework/data
             - tests/framework/db
             - tests/framework/grid
             - tests/framework/helpers
