@@ -55,6 +55,39 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         return $data;
     }
 
+    public function testBatchUpdate(): void
+    {
+        $db = $this->getConnection();
+        $db->createCommand()->delete('customer')->execute();
+        $db->createCommand()->batchInsert('customer', ['id', 'email', 'name', 'address', 'status'], [
+            [1, 'u1@example.com', 'u1', 'a1', 0],
+            [2, 'u2@example.com', 'u2', 'a2', 0],
+            [3, 'u3@example.com', 'u3', 'a3', 0],
+            [4, 'u4@example.com', 'u4', 'a4', 0],
+        ])->execute();
+
+        $db->createCommand()->batchUpdate('customer', [
+            ['id' => 1, 'name' => 'updated-1', 'status' => 1],
+            ['id' => 2, 'address' => 'updated-a2'],
+            ['id' => 3],
+            ['id' => 4, 'name' => 'updated-u4'],
+        ], 'id')->execute();
+
+        $rows = (new Query())
+            ->select(['id', 'name', 'address', 'status'])
+            ->from('customer')
+            ->where(['id' => [1, 2, 3, 4]])
+            ->orderBy(['id' => SORT_ASC])
+            ->all($db);
+
+        $this->assertEquals([
+            ['id' => 1, 'name' => 'updated-1', 'address' => 'a1', 'status' => 1],
+            ['id' => 2, 'name' => 'u2', 'address' => 'updated-a2', 'status' => 0],
+            ['id' => 3, 'name' => 'u3', 'address' => 'a3', 'status' => 0],
+            ['id' => 4, 'name' => 'updated-u4', 'address' => 'a4', 'status' => 0],
+        ], $rows);
+    }
+
     /**
      * Testing the "ORA-01461: can bind a LONG value only for insert into a LONG column"
      *

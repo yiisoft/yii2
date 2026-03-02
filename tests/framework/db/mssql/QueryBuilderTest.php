@@ -264,6 +264,28 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $data;
     }
 
+    public function testBatchUpdateWithTableSchema(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder(true, true)->batchUpdate('type', [
+            [
+                'int_col' => '1',
+                'float_col' => '2.5',
+            ],
+        ], 'int_col', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END WHERE [[int_col]] IN (:qp0)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => '2.5',
+        ], $actualParams);
+    }
+
     public static function insertProvider(): array
     {
         return [
