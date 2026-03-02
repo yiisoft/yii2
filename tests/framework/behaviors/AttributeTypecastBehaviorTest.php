@@ -393,7 +393,7 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
      */
     public function getAttributeTypecastBehavior()
     {
-        /** @var AttributeTypecastBehavior */
+        /** @var AttributeTypecastBehavior $result */
         $result = $this->getBehavior('attributeTypecast');
 
         return $result;
@@ -432,7 +432,7 @@ class ActiveRecordAttributeTypecastWithEnum extends ActiveRecord
      */
     public function getAttributeTypecastBehavior()
     {
-        /** @var AttributeTypecastBehavior */
+        /** @var AttributeTypecastBehavior $result */
         $result = $this->getBehavior('attributeTypecast');
 
         return $result;
