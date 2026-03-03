@@ -82,7 +82,7 @@ class CacheControllerTest extends TestCase
             ],
         ]);
 
-        /** @var TestApplication */
+        /** @var TestApplication $application */
         $application = Yii::$app;
 
         $this->application = $application;
