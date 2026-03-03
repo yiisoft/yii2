@@ -137,37 +137,44 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $db = $this->getConnection();
         $db->createCommand()->delete('customer')->execute();
-        $db->createCommand('SET IDENTITY_INSERT [customer] ON')->execute();
-        try {
-            $db->createCommand()->batchInsert('customer', ['id', 'email', 'name', 'address', 'status'], [
-                [1, 'u1@example.com', 'u1', 'a1', 0],
-                [2, 'u2@example.com', 'u2', 'a2', 0],
-                [3, 'u3@example.com', 'u3', 'a3', 0],
-                [4, 'u4@example.com', 'u4', 'a4', 0],
-            ])->execute();
-        } finally {
-            $db->createCommand('SET IDENTITY_INSERT [customer] OFF')->execute();
+        $emails = ['u1@example.com', 'u2@example.com', 'u3@example.com', 'u4@example.com'];
+        $db->createCommand()->batchInsert('customer', ['email', 'name', 'address', 'status'], [
+            ['u1@example.com', 'u1', 'a1', 0],
+            ['u2@example.com', 'u2', 'a2', 0],
+            ['u3@example.com', 'u3', 'a3', 0],
+            ['u4@example.com', 'u4', 'a4', 0],
+        ])->execute();
+
+        $insertedRows = (new Query())
+            ->select(['id', 'email'])
+            ->from('customer')
+            ->where(['email' => $emails])
+            ->all($db);
+        $ids = [];
+        foreach ($insertedRows as $row) {
+            $ids[$row['email']] = $row['id'];
         }
+        $this->assertCount(4, $ids);
 
         $db->createCommand()->batchUpdate('customer', [
-            ['id' => 1, 'name' => 'updated-1', 'status' => 1],
-            ['id' => 2, 'address' => 'updated-a2'],
-            ['id' => 3],
-            ['id' => 4, 'name' => 'updated-u4'],
+            ['id' => $ids['u1@example.com'], 'name' => 'updated-1', 'status' => 1],
+            ['id' => $ids['u2@example.com'], 'address' => 'updated-a2'],
+            ['id' => $ids['u3@example.com']],
+            ['id' => $ids['u4@example.com'], 'name' => 'updated-u4'],
         ], 'id')->execute();
 
         $rows = (new Query())
-            ->select(['id', 'name', 'address', 'status'])
+            ->select(['id', 'email', 'name', 'address', 'status'])
             ->from('customer')
-            ->where(['id' => [1, 2, 3, 4]])
-            ->orderBy(['id' => SORT_ASC])
+            ->where(['email' => $emails])
+            ->orderBy(['email' => SORT_ASC])
             ->all($db);
 
         $this->assertEquals([
-            ['id' => 1, 'name' => 'updated-1', 'address' => 'a1', 'status' => 1],
-            ['id' => 2, 'name' => 'u2', 'address' => 'updated-a2', 'status' => 0],
-            ['id' => 3, 'name' => 'u3', 'address' => 'a3', 'status' => 0],
-            ['id' => 4, 'name' => 'updated-u4', 'address' => 'a4', 'status' => 0],
+            ['id' => $ids['u1@example.com'], 'email' => 'u1@example.com', 'name' => 'updated-1', 'address' => 'a1', 'status' => 1],
+            ['id' => $ids['u2@example.com'], 'email' => 'u2@example.com', 'name' => 'u2', 'address' => 'updated-a2', 'status' => 0],
+            ['id' => $ids['u3@example.com'], 'email' => 'u3@example.com', 'name' => 'u3', 'address' => 'a3', 'status' => 0],
+            ['id' => $ids['u4@example.com'], 'email' => 'u4@example.com', 'name' => 'updated-u4', 'address' => 'a4', 'status' => 0],
         ], $rows);
     }
 

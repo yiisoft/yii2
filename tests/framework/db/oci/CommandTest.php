@@ -55,6 +55,14 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         return $data;
     }
 
+    public static function batchUpdateSqlProvider(): array
+    {
+        $data = parent::batchUpdateSqlProvider();
+        $data['sparse rows']['expected'] = 'MERGE INTO [[type]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk]], CAST(:qp1 AS FLOAT) AS [[_v0]], 1 AS [[_s0]], CAST(:qp2 AS CHAR(100)) AS [[_v1]], 1 AS [[_s1]] FROM DUAL UNION ALL SELECT CAST(:qp3 AS NUMBER) AS [[_bk]], CAST(NULL AS FLOAT) AS [[_v0]], 0 AS [[_s0]], UPPER(:ph) AS [[_v1]], 1 AS [[_s1]] FROM DUAL) S ON (T.[[int_col]]=S.[[_bk]] OR (T.[[int_col]] IS NULL AND S.[[_bk]] IS NULL)) WHEN MATCHED THEN UPDATE SET T.[[float_col]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[float_col]] END, T.[[char_col]]=CASE WHEN S.[[_s1]]=1 THEN S.[[_v1]] ELSE T.[[char_col]] END';
+
+        return $data;
+    }
+
     public function testBatchUpdate(): void
     {
         $db = $this->getConnection();

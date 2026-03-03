@@ -475,12 +475,12 @@ EOD;
             return $placeholder;
         }
 
-        $dbType = strtoupper($columnSchemas[$column]->dbType);
-        if (strpos($dbType, 'LOB') !== false || strpos($dbType, 'RAW') !== false || strpos($dbType, 'LONG') !== false) {
+        $castType = $this->resolveMergeBatchUpdateCastType($columnSchemas[$column]);
+        if ($castType === null) {
             return $placeholder;
         }
 
-        return 'CAST(' . $placeholder . ' AS ' . $columnSchemas[$column]->dbType . ')';
+        return 'CAST(' . $placeholder . ' AS ' . $castType . ')';
     }
 
     /**
@@ -495,12 +495,41 @@ EOD;
             return 'NULL';
         }
 
-        $dbType = strtoupper($columnSchemas[$column]->dbType);
-        if (strpos($dbType, 'LOB') !== false || strpos($dbType, 'RAW') !== false || strpos($dbType, 'LONG') !== false) {
+        $castType = $this->resolveMergeBatchUpdateCastType($columnSchemas[$column]);
+        if ($castType === null) {
             return 'NULL';
         }
 
-        return 'CAST(NULL AS ' . $columnSchemas[$column]->dbType . ')';
+        return 'CAST(NULL AS ' . $castType . ')';
+    }
+
+    /**
+     * Resolves an Oracle-safe CAST type for MERGE source values.
+     * @param \yii\db\ColumnSchema $columnSchema
+     * @return string|null
+     */
+    private function resolveMergeBatchUpdateCastType($columnSchema)
+    {
+        $dbType = strtoupper(trim((string) $columnSchema->dbType));
+        if ($dbType === '') {
+            return null;
+        }
+        if (strpos($dbType, 'LOB') !== false || strpos($dbType, 'RAW') !== false || strpos($dbType, 'LONG') !== false) {
+            return null;
+        }
+        if (strpos($dbType, '(') !== false) {
+            return $dbType;
+        }
+
+        if (in_array($dbType, ['VARCHAR2', 'NVARCHAR2', 'CHAR', 'NCHAR'], true)) {
+            $size = isset($columnSchema->size) && (int) $columnSchema->size > 0
+                ? (int) $columnSchema->size
+                : ($dbType === 'VARCHAR2' ? 4000 : 2000);
+
+            return $dbType . '(' . $size . ')';
+        }
+
+        return $dbType;
     }
 
     /**

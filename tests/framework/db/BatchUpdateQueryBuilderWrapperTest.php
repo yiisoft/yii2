@@ -355,6 +355,135 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         ], $params);
     }
 
+    public function testOciBatchUpdateWithSchemaStringCastFallbackSize(): void
+    {
+        $schema = (object) [
+            'columns' => [
+                'int_col' => new class {
+                    public $dbType = 'NUMBER';
+
+                    public function dbTypecast($value)
+                    {
+                        return $value === null ? null : (int) $value;
+                    }
+                },
+                'name' => new class {
+                    public $dbType = 'VARCHAR2';
+
+                    public function dbTypecast($value)
+                    {
+                        return $value;
+                    }
+                },
+                'status' => new class {
+                    public $dbType = 'NUMBER';
+
+                    public function dbTypecast($value)
+                    {
+                        return $value === null ? null : (int) $value;
+                    }
+                },
+            ],
+        ];
+        $queryBuilder = new OciQueryBuilder($this->createConnectionStub('"', '"', [
+            'type' => $schema,
+        ]));
+
+        $params = [];
+        $sql = $queryBuilder->batchUpdate('type', [
+            ['int_col' => 1, 'name' => 'Tom', 'status' => 1],
+            ['int_col' => 2, 'status' => 0],
+        ], 'int_col', $params);
+
+        $this->assertStringContainsString('CAST(:qp1 AS VARCHAR2(4000)) AS "_v0"', $sql);
+        $this->assertStringContainsString('CAST(NULL AS VARCHAR2(4000)) AS "_v0"', $sql);
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'Tom',
+            ':qp2' => 1,
+            ':qp3' => 2,
+            ':qp4' => 0,
+        ], $params);
+    }
+
+    public function testOciBatchUpdateWithSchemaStringCastUsesColumnSize(): void
+    {
+        $schema = (object) [
+            'columns' => [
+                'int_col' => new class {
+                    public $dbType = 'NUMBER';
+
+                    public function dbTypecast($value)
+                    {
+                        return $value === null ? null : (int) $value;
+                    }
+                },
+                'name' => new class {
+                    public $dbType = 'VARCHAR2';
+                    public $size = 64;
+
+                    public function dbTypecast($value)
+                    {
+                        return $value;
+                    }
+                },
+            ],
+        ];
+        $queryBuilder = new OciQueryBuilder($this->createConnectionStub('"', '"', [
+            'type' => $schema,
+        ]));
+
+        $params = [];
+        $sql = $queryBuilder->batchUpdate('type', [
+            ['int_col' => 1, 'name' => 'Tom'],
+        ], 'int_col', $params);
+
+        $this->assertStringContainsString('CAST(:qp1 AS VARCHAR2(64)) AS "_v0"', $sql);
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'Tom',
+        ], $params);
+    }
+
+    public function testOciBatchUpdateWithSchemaEmptyDbTypeSkipsCast(): void
+    {
+        $schema = (object) [
+            'columns' => [
+                'int_col' => new class {
+                    public $dbType = 'NUMBER';
+
+                    public function dbTypecast($value)
+                    {
+                        return $value === null ? null : (int) $value;
+                    }
+                },
+                'misc_col' => new class {
+                    public $dbType = '';
+
+                    public function dbTypecast($value)
+                    {
+                        return $value;
+                    }
+                },
+            ],
+        ];
+        $queryBuilder = new OciQueryBuilder($this->createConnectionStub('"', '"', [
+            'type' => $schema,
+        ]));
+
+        $params = [];
+        $sql = $queryBuilder->batchUpdate('type', [
+            ['int_col' => 1, 'misc_col' => 'x'],
+        ], 'int_col', $params);
+
+        $this->assertStringContainsString(':qp1 AS "_v0"', $sql);
+        $this->assertStringNotContainsString('CAST(:qp1 AS', $sql);
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'x',
+        ], $params);
+    }
+
     public function testOciBatchUpdateWithExpressionValue(): void
     {
         $queryBuilder = new OciQueryBuilder($this->createConnectionStub('"', '"'));
