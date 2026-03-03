@@ -983,6 +983,7 @@ class Command extends Component
      * @param string $table the name of the table whose primary key sequence is reset
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have the maximum existing value +1.
+     * @return int number of rows affected by the execution.
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      * @since 2.0.16
      */
