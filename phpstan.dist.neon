@@ -14,10 +14,10 @@ parameters:
         analyse:
             - tests/data
             - tests/framework/base/stub
+            - tests/framework/di/stubs
+            - tests/framework/filters/stubs
             # TODO: Analyze these directories
             - tests/framework/db
-            - tests/framework/di
-            - tests/framework/filters
             - tests/framework/grid
             - tests/framework/helpers
             - tests/framework/i18n
