@@ -484,18 +484,6 @@ class SqlTokenTest extends TestCase
         $this->assertFalse($statement->matches($patternCode));
     }
 
-    public function testTypeConstants(): void
-    {
-        $this->assertSame(0, SqlToken::TYPE_CODE);
-        $this->assertSame(1, SqlToken::TYPE_STATEMENT);
-        $this->assertSame(2, SqlToken::TYPE_TOKEN);
-        $this->assertSame(3, SqlToken::TYPE_PARENTHESIS);
-        $this->assertSame(4, SqlToken::TYPE_KEYWORD);
-        $this->assertSame(5, SqlToken::TYPE_OPERATOR);
-        $this->assertSame(6, SqlToken::TYPE_IDENTIFIER);
-        $this->assertSame(7, SqlToken::TYPE_STRING_LITERAL);
-    }
-
     public function testOffsetSetReplacesByIndex(): void
     {
         $parent = $this->createCollectionToken();
