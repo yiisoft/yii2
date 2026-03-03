@@ -11,6 +11,7 @@ namespace yiiunit\framework\filters;
 use yiiunit\TestCase;
 use yii\rbac\BaseManager;
 use Closure;
+use PHPUnit\Framework\MockObject\MockObject;
 use Yii;
 use yii\base\Action;
 use yii\filters\AccessRule;
@@ -38,11 +39,10 @@ class AccessRuleTest extends TestCase
 
     /**
      * @param string $method
-     * @return Request
+     * @return Request&MockObject
      */
     protected function mockRequest($method = 'GET')
     {
-        /** @var Request $request */
         $request = $this->createPartialMock(Request::class, ['getMethod']);
         $request->method('getMethod')->willReturn($method);
 
@@ -378,8 +378,8 @@ class AccessRuleTest extends TestCase
     public function testMatchRolesAndPermissions(): void
     {
         $action = $this->mockAction();
-        $user = $this->getMockBuilder('\yii\web\User')->getMock();
-        $user->identityCLass = UserIdentity::class;
+        $user = $this->getMockBuilder(User::class)->getMock();
+        $user->identityClass = UserIdentity::class;
 
         $rule = new AccessRule([
             'allow' => true,
