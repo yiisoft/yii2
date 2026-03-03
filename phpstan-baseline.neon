@@ -58,6 +58,11 @@ parameters:
 		-
 			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
 			count: 1
+			path: framework/db/JsonExpressionBuilder.php
+
+		-
+			message: "#^Call to an undefined method yii\\\\db\\\\ExpressionInterface\\:\\:getValue\\(\\)\\.$#"
+			count: 1
 			path: framework/db/pgsql/JsonExpressionBuilder.php
 
 		-
