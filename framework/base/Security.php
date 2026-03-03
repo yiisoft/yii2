@@ -503,6 +503,37 @@ class Security extends Component
     }
 
     /**
+     * Generates a salt that can be used to generate a password hash.
+     *
+     * The PHP [crypt()](https://www.php.net/manual/en/function.crypt.php) built-in function
+     * requires, for the Blowfish hash algorithm, a salt string in a specific format:
+     * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
+     * from the alphabet "./0-9A-Za-z".
+     *
+     * @param int $cost the cost parameter
+     * @return string the random salt value.
+     * @throws InvalidArgumentException if the cost parameter is out of the range of 4 to 31.
+     * @deprecated since 2.0.55. This method is no longer used internally
+     * as [[generatePasswordHash()]] now relies on `password_hash()`. Will be removed in 2.2.
+     */
+    protected function generateSalt($cost = 13)
+    {
+        $cost = (int) $cost;
+        if ($cost < 4 || $cost > 31) {
+            throw new InvalidArgumentException('Cost must be between 4 and 31.');
+        }
+
+        // Get a 20-byte random string
+        $rand = $this->generateRandomKey(20);
+        // Form the prefix that specifies Blowfish (bcrypt) algorithm and cost parameter.
+        $salt = sprintf('$2y$%02d$', $cost);
+        // Append the random salt data in the required base64 format.
+        $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
+
+        return $salt;
+    }
+
+    /**
      * Performs string comparison using timing attack resistant approach.
      * @see https://codereview.stackexchange.com/q/13512
      * @param string $expected string to compare.
