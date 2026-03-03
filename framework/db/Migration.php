@@ -255,6 +255,7 @@ class Migration extends Component implements MigrationInterface
      * @param array $rows the rows to be batch updated. Each row must be in format (column => value).
      * @param string $key the column that uniquely identifies each row.
      * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @since 2.0.55
      */
     public function batchUpdate($table, $rows, $key)
     {

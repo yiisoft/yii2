@@ -522,6 +522,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * They should be bound to the DB command later.
      * @return string the batch UPDATE SQL statement.
      * @throws InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @since 2.0.55
      */
     public function batchUpdate($table, $rows, $key, &$params = [])
     {

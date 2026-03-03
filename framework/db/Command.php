@@ -554,6 +554,7 @@ class Command extends Component
      * @param string $key the column that uniquely identifies each row.
      * @return $this the command object itself
      * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @since 2.0.55
      */
     public function batchUpdate($table, $rows, $key)
     {
