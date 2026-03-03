@@ -181,7 +181,17 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     public static function batchUpdateSqlProvider(): array
     {
         $data = parent::batchUpdateSqlProvider();
-        $data['sparse rows']['expectedParams'][':qp1'] = '2.5';
+        $data['sparse rows']['expected'] = 'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END, [[char_col]]=CASE WHEN [[int_col]]=:qp2 THEN :qp3 WHEN [[int_col]]=:qp4 THEN UPPER(:qp5) ELSE [[char_col]] END WHERE [[int_col]] IN (:qp6, :qp7)';
+        $data['sparse rows']['expectedParams'] = [
+            ':qp0' => 1,
+            ':qp1' => '2.5',
+            ':qp2' => 1,
+            ':qp3' => 'A',
+            ':qp4' => 2,
+            ':qp5' => 'b',
+            ':qp6' => 1,
+            ':qp7' => 2,
+        ];
 
         return $data;
     }

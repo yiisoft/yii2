@@ -81,12 +81,13 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         ], 'id', $params);
 
         $this->assertSame(
-            'UPDATE [customer] SET [status]=CASE WHEN [id]=:qp0 THEN :qp1 ELSE [status] END WHERE [id] IN (:qp0)',
+            'UPDATE [customer] SET [status]=CASE WHEN [id]=:qp0 THEN :qp1 ELSE [status] END WHERE [id] IN (:qp2)',
             $sql,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 1,
+            ':qp2' => 1,
         ], $params);
     }
 
@@ -103,12 +104,13 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         ], 'id', $params);
 
         $this->assertSame(
-            'UPDATE [customer] SET [status]=CASE WHEN [id]=:qp0 THEN :qp1 ELSE [status] END WHERE [id] IN (:qp0)',
+            'UPDATE [customer] SET [status]=CASE WHEN [id]=:qp0 THEN :qp1 ELSE [status] END WHERE [id] IN (:qp2)',
             $sql,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 1,
+            ':qp2' => 1,
         ], $params);
     }
 
@@ -123,6 +125,35 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $queryBuilder->batchUpdate('customer', [
             ['status' => 1],
         ], 'id', $params);
+    }
+
+    public function testMssqlBatchUpdateWithoutUpdatableColumnsReturnsEmpty(): void
+    {
+        $queryBuilder = new MssqlQueryBuilder($this->createConnectionStub('[', ']'));
+
+        $params = [];
+        $sql = $queryBuilder->batchUpdate('customer', [
+            ['id' => 1],
+        ], 'id', $params);
+
+        $this->assertSame('', $sql);
+        $this->assertSame([], $params);
+    }
+
+    public function testMssqlBatchUpdateKeepsUnknownNamedTokenInExpression(): void
+    {
+        $queryBuilder = new MssqlQueryBuilder($this->createConnectionStub('[', ']'));
+
+        $params = [];
+        $sql = $queryBuilder->batchUpdate('customer', [
+            ['id' => 1, 'status' => new \yii\db\Expression("'x:literal'")],
+        ], 'id', $params);
+
+        $this->assertStringContainsString("'x:literal'", $sql);
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 1,
+        ], $params);
     }
 
     public function testOciBatchUpdateWithKey(): void
