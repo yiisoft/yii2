@@ -18,6 +18,7 @@ use yii\db\conditions\LikeCondition;
 use yii\db\conditions\InCondition;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
+use yii\db\JsonExpression;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
@@ -2338,6 +2339,45 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
 
         $this->assertEquals($expected, $sql);
+    }
+
+    public function testBatchInsertWithArrayValue(): void
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $params = [];
+        $sql = $queryBuilder->batchInsert(
+            'no_such_table',
+            ['json_col'],
+            [[['key' => 'value', 'num' => 42]]],
+            $params
+        );
+
+        $expected = $this->replaceQuotes(
+            'INSERT INTO [[no_such_table]] ([[json_col]]) VALUES (:qp0)'
+        );
+        $this->assertSame($expected, $sql);
+        $this->assertSame([':qp0' => '{"key":"value","num":42}'], $params);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20683
+     */
+    public function testBatchInsertWithJsonExpressionContainingQuery(): void
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $params = [];
+        $query = (new Query())->select('data')->from('source');
+        $sql = $queryBuilder->batchInsert(
+            'no_such_table',
+            ['json_col'],
+            [[new JsonExpression($query)]],
+            $params
+        );
+
+        $this->assertStringContainsString('SELECT', $sql);
+        $this->assertStringContainsString('source', $sql);
     }
 
     public static function updateProvider(): array
