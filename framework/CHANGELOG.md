@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.55 under development
 ------------------------
 
+- Enh #20780: Add configurable `ErrorHandler::$fallbackExceptionMessage` property (WarLikeLaux)
 - Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
 - Bug #20705: Replace `$this` with `self` in generics in Psalm annotations (mspirkov)
 - Bug #20715: Adjust `JSON` helper error message assertions for `PHP 8.6` compatibility in `JsonTest` class (terabytesoftw)
