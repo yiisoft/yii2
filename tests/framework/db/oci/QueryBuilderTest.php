@@ -313,6 +313,23 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         return $data;
     }
 
+    public function testBatchInsertWithArrayValue(): void
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $params = [];
+        $sql = $queryBuilder->batchInsert(
+            'no_such_table',
+            ['json_col'],
+            [[['key' => 'value', 'num' => 42]]],
+            $params
+        );
+
+        $expected = 'INSERT ALL  INTO "no_such_table" ("json_col") VALUES (:qp0) SELECT 1 FROM SYS.DUAL';
+        $this->assertSame($expected, $sql);
+        $this->assertSame([':qp0' => '{"key":"value","num":42}'], $params);
+    }
+
     /**
      * Dummy test to speed up QB's tests which rely on DB schema
      */
