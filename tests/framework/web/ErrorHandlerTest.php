@@ -178,6 +178,33 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }
+
+    public function testFallbackExceptionMessageDefault(): void
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame('An internal server error occurred.', $handler->fallbackExceptionMessage);
+    }
+
+    public function testFallbackExceptionMessageCustom(): void
+    {
+        $this->destroyApplication();
+        $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
+            'components' => [
+                'errorHandler' => [
+                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    'errorView' => '@yiiunit/data/views/errorHandler.php',
+                    'exceptionView' => '@yiiunit/data/views/errorHandlerForAssetFiles.php',
+                    'fallbackExceptionMessage' => 'Service temporarily unavailable.',
+                ],
+            ],
+        ]);
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame('Service temporarily unavailable.', $handler->fallbackExceptionMessage);
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler

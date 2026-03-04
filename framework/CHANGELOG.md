@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.55 under development
 ------------------------
 
-- Enh #20780: Add configurable `ErrorHandler::$fallbackExceptionMessage` property (WarLikeLaux)
 - Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
 - Bug #20705: Replace `$this` with `self` in generics in Psalm annotations (mspirkov)
 - Bug #20715: Adjust `JSON` helper error message assertions for `PHP 8.6` compatibility in `JsonTest` class (terabytesoftw)
@@ -24,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
+- Enh #20780: Add configurable `ErrorHandler::$fallbackExceptionMessage` property (WarLikeLaux)
 
 
 2.0.54 January 09, 2026
