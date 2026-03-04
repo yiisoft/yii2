@@ -140,7 +140,7 @@ class ArrayHelperTest extends TestCase
         if (version_compare(PHP_VERSION, '8.1.0', '<')) {
             $this->markTestSkipped('Enums require PHP 8.1+');
         }
-        $this->assertSame('hearts', ArrayHelper::toArray(StringBackedEnum::Hearts));
+        $this->assertSame(['hearts'], ArrayHelper::toArray(StringBackedEnum::Hearts));
     }
 
     public function testToArrayIntBackedEnum(): void
@@ -148,7 +148,7 @@ class ArrayHelperTest extends TestCase
         if (version_compare(PHP_VERSION, '8.1.0', '<')) {
             $this->markTestSkipped('Enums require PHP 8.1+');
         }
-        $this->assertSame(1, ArrayHelper::toArray(IntBackedEnum::Active));
+        $this->assertSame([1], ArrayHelper::toArray(IntBackedEnum::Active));
     }
 
     public function testToArrayUnitEnum(): void
@@ -156,7 +156,7 @@ class ArrayHelperTest extends TestCase
         if (version_compare(PHP_VERSION, '8.1.0', '<')) {
             $this->markTestSkipped('Enums require PHP 8.1+');
         }
-        $this->assertSame('Red', ArrayHelper::toArray(PureEnum::Red));
+        $this->assertSame(['Red'], ArrayHelper::toArray(PureEnum::Red));
     }
 
     public function testToArrayWithBackedEnumInArray(): void
