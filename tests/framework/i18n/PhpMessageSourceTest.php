@@ -95,8 +95,8 @@ class PhpMessageSourceTest extends TestCase
         $source = $this->createSource();
         $path = $this->invokeMethod($source, 'getMessageFilePath', ['test', 'en']);
 
-        $this->assertStringStartsWith('/', $path);
         $this->assertStringNotContainsString('@', $path);
+        $this->assertStringEndsWith('/en/test.php', $path);
     }
 
     public function testGetMessageFilePathWithEmptyLanguage(): void
