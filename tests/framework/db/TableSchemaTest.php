@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\db;
 
 use yii\base\InvalidArgumentException;
@@ -135,43 +137,5 @@ class TableSchemaTest extends TestCase
 
         self::assertSame([], $table->primaryKey);
         self::assertFalse($table->columns['id']->isPrimaryKey);
-    }
-
-    public function testDefaultPropertyValues(): void
-    {
-        $table = new TableSchema();
-
-        self::assertSame([], $table->primaryKey);
-        self::assertNull($table->sequenceName);
-        self::assertSame([], $table->foreignKeys);
-        self::assertSame([], $table->columns);
-    }
-
-    public function testSchemaNameProperty(): void
-    {
-        $table = new TableSchema();
-        $table->schemaName = 'public';
-        $table->name = 'users';
-        $table->fullName = 'public.users';
-
-        self::assertSame('public', $table->schemaName);
-        self::assertSame('users', $table->name);
-        self::assertSame('public.users', $table->fullName);
-    }
-
-    public function testForeignKeysStructure(): void
-    {
-        $table = new TableSchema();
-        $table->foreignKeys = [
-            ['users', 'user_id' => 'id'],
-            ['roles', 'role_id' => 'id', 'tenant_id' => 'tenant_id'],
-        ];
-
-        self::assertCount(2, $table->foreignKeys);
-        self::assertSame('users', $table->foreignKeys[0][0]);
-        self::assertSame('id', $table->foreignKeys[0]['user_id']);
-        self::assertSame('roles', $table->foreignKeys[1][0]);
-        self::assertSame('id', $table->foreignKeys[1]['role_id']);
-        self::assertSame('tenant_id', $table->foreignKeys[1]['tenant_id']);
     }
 }

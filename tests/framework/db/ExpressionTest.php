@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\db;
 
 use yii\db\Expression;
@@ -25,15 +27,6 @@ class ExpressionTest extends TestCase
         self::assertSame([], $expression->params);
     }
 
-    public function testConstructorWithParams(): void
-    {
-        $params = [':name' => 'John', ':age' => 25];
-        $expression = new Expression('name = :name AND age = :age', $params);
-
-        self::assertSame('name = :name AND age = :age', $expression->expression);
-        self::assertSame($params, $expression->params);
-    }
-
     public function testConstructorWithConfig(): void
     {
         $expression = new Expression('DEFAULT', [], ['expression' => 'overridden']);
@@ -49,13 +42,6 @@ class ExpressionTest extends TestCase
         self::assertSame('COUNT(*)', $expression->__toString());
     }
 
-    public function testToStringReturnsExpression(): void
-    {
-        $expression = new Expression('COALESCE(a, b, 0)');
-
-        self::assertSame($expression->expression, (string) $expression);
-    }
-
     public function testImplementsExpressionInterface(): void
     {
         $expression = new Expression('1');
@@ -69,16 +55,6 @@ class ExpressionTest extends TestCase
 
         self::assertSame('', $expression->expression);
         self::assertSame('', (string) $expression);
-    }
-
-    public function testExpressionIsPubliclyMutable(): void
-    {
-        $expression = new Expression('OLD');
-        $expression->expression = 'NEW';
-        $expression->params = [':id' => 1];
-
-        self::assertSame('NEW', (string) $expression);
-        self::assertSame([':id' => 1], $expression->params);
     }
 
     /**

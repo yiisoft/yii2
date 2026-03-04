@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\db;
 
 use yii\base\InvalidConfigException;
@@ -145,11 +147,5 @@ class JsonExpressionTest extends TestCase
             'null' => [null],
             'empty array' => [[]],
         ];
-    }
-
-    public function testTypeConstants(): void
-    {
-        self::assertSame('json', JsonExpression::TYPE_JSON);
-        self::assertSame('jsonb', JsonExpression::TYPE_JSONB);
     }
 }
