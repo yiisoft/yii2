@@ -53,6 +53,12 @@ abstract class ErrorHandler extends Component
      * @since 2.0.36
      */
     public $silentExitOnException;
+    /**
+     * @var string the message displayed to end users when an error occurs while handling another error.
+     * This message is only shown when [[YII_DEBUG]] is `false`.
+     * @since 2.0.55
+     */
+    public $fallbackExceptionMessage = 'An internal server error occurred.';
 
     /**
      * @var string|null Used to reserve memory for fatal error handler.
@@ -188,7 +194,7 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
-            echo 'An internal server error occurred.';
+            echo $this->fallbackExceptionMessage;
         }
         error_log($msg);
         if (defined('HHVM_VERSION')) {
