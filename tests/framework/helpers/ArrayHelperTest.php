@@ -132,6 +132,45 @@ class ArrayHelperTest extends TestCase
         ], ArrayHelper::toArray(new DateTime('2021-09-13 15:16:17', new DateTimeZone('UTC'))));
     }
 
+    public function testToArrayStringBackedEnum(): void
+    {
+        $this->assertSame('hearts', ArrayHelper::toArray(StringBackedEnum::Hearts));
+    }
+
+    public function testToArrayIntBackedEnum(): void
+    {
+        $this->assertSame(1, ArrayHelper::toArray(IntBackedEnum::Active));
+    }
+
+    public function testToArrayUnitEnum(): void
+    {
+        $this->assertSame('Red', ArrayHelper::toArray(PureEnum::Red));
+    }
+
+    public function testToArrayWithBackedEnumInArray(): void
+    {
+        $this->assertSame(
+            ['hearts', 'diamonds'],
+            ArrayHelper::toArray([StringBackedEnum::Hearts, StringBackedEnum::Diamonds])
+        );
+    }
+
+    public function testToArrayWithUnitEnumInArray(): void
+    {
+        $this->assertSame(
+            ['Red', 'Blue'],
+            ArrayHelper::toArray([PureEnum::Red, PureEnum::Blue])
+        );
+    }
+
+    public function testToArrayWithMixedEnumInArray(): void
+    {
+        $this->assertSame(
+            ['hearts', 1, 'Red'],
+            ArrayHelper::toArray([StringBackedEnum::Hearts, IntBackedEnum::Active, PureEnum::Red])
+        );
+    }
+
     public function testRemove(): void
     {
         $array = ['name' => 'b', 'age' => 3];
@@ -1875,4 +1914,22 @@ class MagicModel extends Model
     {
         return 'ta-da';
     }
+}
+
+enum StringBackedEnum: string
+{
+    case Hearts = 'hearts';
+    case Diamonds = 'diamonds';
+}
+
+enum IntBackedEnum: int
+{
+    case Active = 1;
+    case Inactive = 0;
+}
+
+enum PureEnum
+{
+    case Red;
+    case Blue;
 }

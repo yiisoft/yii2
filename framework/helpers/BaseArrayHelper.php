@@ -8,6 +8,8 @@
 
 namespace yii\helpers;
 
+use BackedEnum;
+use UnitEnum;
 use Yii;
 use ArrayAccess;
 use Traversable;
@@ -71,6 +73,10 @@ class BaseArrayHelper
             }
 
             return $object;
+        } elseif ($object instanceof BackedEnum) {
+            return $object->value;
+        } elseif ($object instanceof UnitEnum) {
+            return $object->name;
         } elseif ($object instanceof \DateTimeInterface) {
             return (array)$object;
         } elseif (is_object($object)) {
