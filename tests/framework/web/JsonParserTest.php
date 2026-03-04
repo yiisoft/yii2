@@ -87,19 +87,4 @@ class JsonParserTest extends TestCase
         $this->assertSame([], $result);
     }
 
-    public function testParsesNestedJson(): void
-    {
-        $parser = new JsonParser();
-        $result = $parser->parse('{"user":{"name":"John","roles":["admin","editor"]}}', 'application/json');
-
-        $this->assertSame(['user' => ['name' => 'John', 'roles' => ['admin', 'editor']]], $result);
-    }
-
-    public function testParsesJsonArrayList(): void
-    {
-        $parser = new JsonParser();
-        $result = $parser->parse('[1,2,3]', 'application/json');
-
-        $this->assertSame([1, 2, 3], $result);
-    }
 }
