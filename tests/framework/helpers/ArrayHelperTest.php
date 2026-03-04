@@ -22,6 +22,9 @@ use yii\base\BaseObject;
 use yii\base\Model;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
+use yiiunit\framework\helpers\enums\IntBackedEnum;
+use yiiunit\framework\helpers\enums\PureEnum;
+use yiiunit\framework\helpers\enums\StringBackedEnum;
 use yiiunit\TestCase;
 
 /**
@@ -134,21 +137,33 @@ class ArrayHelperTest extends TestCase
 
     public function testToArrayStringBackedEnum(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $this->markTestSkipped('Enums require PHP 8.1+');
+        }
         $this->assertSame('hearts', ArrayHelper::toArray(StringBackedEnum::Hearts));
     }
 
     public function testToArrayIntBackedEnum(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $this->markTestSkipped('Enums require PHP 8.1+');
+        }
         $this->assertSame(1, ArrayHelper::toArray(IntBackedEnum::Active));
     }
 
     public function testToArrayUnitEnum(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $this->markTestSkipped('Enums require PHP 8.1+');
+        }
         $this->assertSame('Red', ArrayHelper::toArray(PureEnum::Red));
     }
 
     public function testToArrayWithBackedEnumInArray(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $this->markTestSkipped('Enums require PHP 8.1+');
+        }
         $this->assertSame(
             ['hearts', 'diamonds'],
             ArrayHelper::toArray([StringBackedEnum::Hearts, StringBackedEnum::Diamonds])
@@ -157,6 +172,9 @@ class ArrayHelperTest extends TestCase
 
     public function testToArrayWithUnitEnumInArray(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $this->markTestSkipped('Enums require PHP 8.1+');
+        }
         $this->assertSame(
             ['Red', 'Blue'],
             ArrayHelper::toArray([PureEnum::Red, PureEnum::Blue])
@@ -165,6 +183,9 @@ class ArrayHelperTest extends TestCase
 
     public function testToArrayWithMixedEnumInArray(): void
     {
+        if (version_compare(PHP_VERSION, '8.1.0', '<')) {
+            $this->markTestSkipped('Enums require PHP 8.1+');
+        }
         $this->assertSame(
             ['hearts', 1, 'Red'],
             ArrayHelper::toArray([StringBackedEnum::Hearts, IntBackedEnum::Active, PureEnum::Red])
@@ -1914,22 +1935,4 @@ class MagicModel extends Model
     {
         return 'ta-da';
     }
-}
-
-enum StringBackedEnum: string
-{
-    case Hearts = 'hearts';
-    case Diamonds = 'diamonds';
-}
-
-enum IntBackedEnum: int
-{
-    case Active = 1;
-    case Inactive = 0;
-}
-
-enum PureEnum
-{
-    case Red;
-    case Blue;
 }
