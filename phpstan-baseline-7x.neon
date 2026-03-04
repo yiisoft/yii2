@@ -41,6 +41,26 @@ parameters:
 			path: framework/db/Command.php
 
 		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: "#^Class UnitEnum not found\\.$#"
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: "#^Access to property \\$name on an unknown class UnitEnum\\.$#"
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
 			message: "#^Call to an undefined method ReflectionType\\:\\:getName\\(\\)\\.$#"
 			count: 2
 			path: framework/web/Controller.php
