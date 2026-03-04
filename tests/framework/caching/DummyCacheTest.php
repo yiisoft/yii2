@@ -24,7 +24,6 @@ class DummyCacheTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->mockApplication();
         $this->cache = new DummyCache();
     }
 
@@ -109,7 +108,7 @@ class DummyCacheTest extends TestCase
     public function testGetOrSetAlwaysCallsCallable(): void
     {
         $callCount = 0;
-        $callable = function () use (&$callCount) {
+        $callable = function ($cache) use (&$callCount) {
             $callCount++;
             return 'generated';
         };
