@@ -35,11 +35,11 @@ class BaseConsoleTest extends TestCase
         $data = '%yfoo';
         $actual = BaseConsole::renderColoredString($data);
         $expected = "\033[33mfoo";
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $actual = BaseConsole::renderColoredString($data, false);
         $expected = 'foo';
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -51,15 +51,15 @@ class BaseConsoleTest extends TestCase
 
         $actual = BaseConsole::ansiColorizedSubstr($str, 0, 3);
         $expected = BaseConsole::renderColoredString('Foo');
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $actual = BaseConsole::ansiColorizedSubstr($str, 3, 3);
         $expected = BaseConsole::renderColoredString('Bar');
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
 
         $actual = BaseConsole::ansiColorizedSubstr($str, 1, 4);
         $expected = BaseConsole::renderColoredString('ooBa');
-        $this->assertEquals($expected, $actual);
+        $this->assertSame($expected, $actual);
     }
 
     /**
@@ -76,7 +76,7 @@ class BaseConsoleTest extends TestCase
 
         $ansiActual = BaseConsole::ansiColorizedSubstr($ansiStr, $start, $length);
         $ansiExpected = BaseConsole::renderColoredString($expected);
-        $this->assertEquals($ansiExpected, $ansiActual);
+        $this->assertSame($ansiExpected, $ansiActual);
     }
 
     public static function ansiColorizedSubstrWithColorsData(): array
@@ -206,11 +206,8 @@ class BaseConsoleTest extends TestCase
             $this->assertCount(2, $result);
             $this->assertGreaterThan(0, $result[0]);
             $this->assertGreaterThan(0, $result[1]);
-        } else {
-            $this->assertFalse($result);
         }
 
-        // cached result
         $this->assertSame($result, BaseConsole::getScreenSize(false));
     }
 
