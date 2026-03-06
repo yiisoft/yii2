@@ -349,4 +349,42 @@ class ValidatorTest extends TestCase
         $validator = SafeValidator::createValidator('safe', $model, [1]);
         $this->assertSame([1], $validator->getValidationAttributes(1));
     }
+
+    public function testInlineValidatorClosure(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+        $val = new InlineValidator([
+            'method' => function ($attribute, $params, $validator, $current) {
+                $this->addError($attribute, 'error');
+            }
+        ]);
+        $val->validateAttribute($model, 'attr');
+        $this->assertEquals(['error'], $model->getErrors('attr'));
+    }
+
+    public function testInlineValidatorClientClosure(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+        $val = new InlineValidator([
+            'clientValidate' => function ($attribute, $params, $validator, $current, $view) {
+                return 'js';
+            }
+        ]);
+        $this->assertEquals('js', $val->clientValidateAttribute($model, 'attr', new View()));
+    }
+
+    public function testInlineValidatorStringMethod(): void
+    {
+        $model = new FakedValidationModel();
+        $model->val_attr_a = 'a';
+        $val = new InlineValidator(['method' => 'inlineVal']);
+        $val->validateAttribute($model, 'val_attr_a');
+        $this->assertNotEmpty($model->getInlineValArgs());
+    }
+
+    public function testInlineValidatorClientNull(): void
+    {
+        $val = new InlineValidator();
+        $this->assertNull($val->clientValidateAttribute(new DynamicModel(), 'attr', new View()));
+    }
 }

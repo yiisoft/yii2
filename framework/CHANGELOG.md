@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
+- Enh #20760: Suppress PHP warning from `getimagesize()` in `ImageValidator::validateImage()` since the error is already handled by the return value check (WarLikeLaux)
 
 
 2.0.54 January 09, 2026

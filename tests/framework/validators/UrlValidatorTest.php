@@ -33,7 +33,7 @@ class UrlValidatorTest extends TestCase
         $this->assertTrue($val->validate('https://google.de'));
         $this->assertFalse($val->validate('htp://yiiframework.com'));
         $this->assertTrue($val->validate('https://www.google.de/search?q=yii+framework&ie=utf-8&oe=utf-8'
-                                        . '&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
+            . '&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
         $this->assertFalse($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
         $this->assertFalse($val->validate('http://invalid,domain'));
         $this->assertFalse($val->validate('http://example.com,'));
@@ -124,5 +124,42 @@ class UrlValidatorTest extends TestCase
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertTrue($obj->hasErrors('attr_url'));
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $this->mockApplication();
+        $validator = new UrlValidator();
+        $model = new FakedValidationModel();
+        $model->attr_url = 'http://google.de';
+        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+
+        $result = $validator->clientValidateAttribute($model, 'attr_url', $view);
+        $this->assertStringContainsString('yii.validation.url', $result);
+
+        $validator->enableIDN = true;
+        if (function_exists('idn_to_ascii')) {
+            $view->assetBundles['yii\validators\PunycodeAsset'] = true;
+            $result = $validator->clientValidateAttribute($model, 'attr_url', $view);
+            $this->assertStringContainsString('yii.validation.url', $result);
+        }
+    }
+
+    public function testGetClientOptions(): void
+    {
+        $this->mockApplication();
+        $validator = new UrlValidator(['defaultScheme' => 'https', 'skipOnEmpty' => true]);
+        $model = new FakedValidationModel();
+        $options = $validator->getClientOptions($model, 'attr_url');
+
+        $this->assertArrayHasKey('pattern', $options);
+        $this->assertArrayHasKey('message', $options);
+        $this->assertArrayHasKey('enableIDN', $options);
+        $this->assertEquals('https', $options['defaultScheme']);
+        $this->assertEquals(1, $options['skipOnEmpty']);
+
+        $validator->pattern = '/regex/';
+        $options = $validator->getClientOptions($model, 'attr_url');
+        $this->assertStringContainsString('regex', (string) $options['pattern']);
     }
 }
