@@ -440,6 +440,169 @@ class ConsoleTest extends TestCase
         $this->assertEquals('d', $result);
         $this->truncateStreams();
     }
+
+    public function testAnsiToHtmlUnclosedFormat(): void
+    {
+        $ansi = Console::ansiFormatCode([Console::FG_RED]) . 'unclosed';
+        $this->assertSame('<span style="color: red;">unclosed</span>', Console::ansiToHtml($ansi));
+    }
+
+    public function testWrapText(): void
+    {
+        ConsoleProgressStub::$screenSize = [20, 24];
+        $result = ConsoleProgressStub::wrapText('Lorem ipsum dolor sit amet.', 4);
+        $lines = explode("\n", $result);
+        $this->assertGreaterThan(1, count($lines));
+        $this->assertStringStartsNotWith('    ', $lines[0]);
+        for ($i = 1; $i < count($lines); $i++) {
+            $this->assertStringStartsWith('    ', $lines[$i]);
+        }
+
+        ConsoleProgressStub::$screenSize = false;
+        $text = 'Lorem ipsum dolor sit amet.';
+        $this->assertSame($text, ConsoleProgressStub::wrapText($text, 4));
+
+        ConsoleProgressStub::$screenSize = [3, 24];
+        $this->assertSame($text, ConsoleProgressStub::wrapText($text, 5));
+    }
+
+    public function testProgressBar(): void
+    {
+        ConsoleProgressStub::$screenSize = [80, 24];
+
+        ConsoleProgressStub::startProgress(0, 100, 'Test: ', 80);
+        ConsoleProgressStub::updateProgress(50, 100);
+        ConsoleProgressStub::updateProgress(100, 100);
+        ConsoleProgressStub::endProgress();
+
+        $output = $this->readOutput();
+        $this->assertStringContainsString('0%', $output);
+        $this->assertStringContainsString('50%', $output);
+        $this->assertStringContainsString('100%', $output);
+        $this->truncateStreams();
+    }
+
+    public function testProgressBarWidthVariations(): void
+    {
+        ConsoleProgressStub::$screenSize = [80, 24];
+
+        ConsoleProgressStub::startProgress(0, 100, '', false);
+        ConsoleProgressStub::updateProgress(50, 100);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('50%', $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::startProgress(0, 100, '', null);
+        ConsoleProgressStub::updateProgress(50, 100);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('50%', $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::$screenSize = [100, 24];
+        ConsoleProgressStub::startProgress(0, 100, '', 0.5);
+        ConsoleProgressStub::updateProgress(50, 100);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('50%', $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::$screenSize = false;
+        ConsoleProgressStub::startProgress(0, 100, '', null);
+        ConsoleProgressStub::updateProgress(50, 100);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('50%', $this->readOutput());
+        $this->truncateStreams();
+    }
+
+    public function testProgressBarPercentBounds(): void
+    {
+        ConsoleProgressStub::$screenSize = [80, 24];
+
+        ConsoleProgressStub::startProgress(0, 100, '', 80);
+        ConsoleProgressStub::updateProgress(200, 100);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('200%', $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::startProgress(0, 100, '', 80);
+        ConsoleProgressStub::updateProgress(-1, 100);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('(-1/100)', $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::startProgress(0, 0, '', 80);
+        ConsoleProgressStub::endProgress();
+        $this->assertStringContainsString('100%', $this->readOutput());
+        $this->truncateStreams();
+    }
+
+    public function testProgressBarUpdatePrefix(): void
+    {
+        ConsoleProgressStub::$screenSize = [80, 24];
+
+        ConsoleProgressStub::startProgress(0, 100, 'Old: ', 80);
+        ConsoleProgressStub::updateProgress(50, 100, 'New: ');
+        ConsoleProgressStub::endProgress();
+
+        $output = $this->readOutput();
+        $this->assertStringContainsString('New:', $output);
+        $this->truncateStreams();
+    }
+
+    public function testEndProgressVariations(): void
+    {
+        ConsoleProgressStub::$screenSize = [80, 24];
+
+        ConsoleProgressStub::startProgress(0, 100, 'A: ', 80);
+        ConsoleProgressStub::endProgress(false);
+        $this->assertStringContainsString(PHP_EOL, $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::$ansiSupport = true;
+        ConsoleProgressStub::startProgress(0, 100, 'Prefix: ', 80);
+        ob_start();
+        ConsoleProgressStub::endProgress(true);
+        $echoOutput = ob_get_clean();
+        $this->assertStringContainsString("\033[2K", $echoOutput);
+        $this->assertStringContainsString('Prefix:', $this->readOutput());
+        ConsoleProgressStub::$ansiSupport = false;
+        $this->truncateStreams();
+
+        ConsoleProgressStub::startProgress(0, 100, 'B: ', 80);
+        ConsoleProgressStub::endProgress(true);
+        $this->assertStringContainsString("\r", $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::startProgress(0, 100, 'DL: ', 80);
+        ConsoleProgressStub::endProgress('done.' . PHP_EOL);
+        $this->assertStringContainsString('done.', $this->readOutput());
+        $this->truncateStreams();
+
+        ConsoleProgressStub::startProgress(0, 100, 'Drop: ', 80);
+        $this->truncateStreams();
+        ConsoleProgressStub::endProgress(true, false);
+        $this->assertStringNotContainsString('Drop:', $this->readOutput());
+        $this->truncateStreams();
+    }
+
+    public function testProgressBarETA(): void
+    {
+        ConsoleProgressStub::$screenSize = [80, 24];
+
+        ConsoleProgressStub::startProgress(0, 100, '', 80);
+        $this->truncateStreams();
+
+        $ref = new \ReflectionProperty(\yii\helpers\BaseConsole::class, '_progressEtaLastUpdate');
+        $ref->setAccessible(true);
+        $ref->setValue(null, time() - 2);
+
+        ConsoleProgressStub::updateProgress(50, 100);
+        ConsoleProgressStub::endProgress();
+
+        $output = $this->readOutput();
+        $this->assertStringContainsString('ETA:', $output);
+        $this->assertStringNotContainsString('ETA: n/a', $output);
+        $this->truncateStreams();
+    }
 }
 
 /**
@@ -460,5 +623,21 @@ class TestConsoleModel extends DynamicModel
     public function init(): void
     {
         $this->defineAttribute('name');
+    }
+}
+
+class ConsoleProgressStub extends ConsoleStub
+{
+    public static $screenSize = [80, 24];
+    public static $ansiSupport = false;
+
+    public static function getScreenSize($refresh = false)
+    {
+        return static::$screenSize;
+    }
+
+    public static function streamSupportsAnsiColors($stream)
+    {
+        return static::$ansiSupport;
     }
 }
