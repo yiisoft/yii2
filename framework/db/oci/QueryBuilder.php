@@ -164,7 +164,8 @@ EOD;
 
         //Oracle needs at least two queries to reset sequence (see adding transactions and/or use alter method to avoid grants' issue?)
         $this->db->createCommand('DROP SEQUENCE "' . $tableSchema->sequenceName . '"')->execute();
-        $this->db->createCommand('CREATE SEQUENCE "' . $tableSchema->sequenceName . '" START WITH ' . $value
+
+        return $this->db->createCommand('CREATE SEQUENCE "' . $tableSchema->sequenceName . '" START WITH ' . $value
             . ' INCREMENT BY 1 NOMAXVALUE NOCACHE')->execute();
     }
 
