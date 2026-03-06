@@ -53,6 +53,23 @@ abstract class ErrorHandler extends Component
      * @since 2.0.36
      */
     public $silentExitOnException;
+    /**
+     * @var string|callable the message displayed to end users when an error occurs while handling another error.
+     * This message is only shown when [[YII_DEBUG]] is `false`.
+     * If a callable is provided, it will be called with two arguments: the current exception and the previous exception.
+     * The callable must return a string.
+     *
+     * ```php
+     * 'errorHandler' => [
+     *     'fallbackExceptionMessage' => function ($exception, $previousException) {
+     *         return 'Error: ' . $exception->getMessage();
+     *     },
+     * ],
+     * ```
+     *
+     * @since 2.0.55
+     */
+    public $fallbackExceptionMessage = 'An internal server error occurred.';
 
     /**
      * @var string|null Used to reserve memory for fatal error handler.
@@ -188,7 +205,9 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
-            echo 'An internal server error occurred.';
+            echo is_callable($this->fallbackExceptionMessage)
+                ? call_user_func($this->fallbackExceptionMessage, $exception, $previousException)
+                : $this->fallbackExceptionMessage;
         }
         error_log($msg);
         if (defined('HHVM_VERSION')) {

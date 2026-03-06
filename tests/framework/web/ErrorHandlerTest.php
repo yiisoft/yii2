@@ -178,6 +178,57 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }
+
+    public function testFallbackExceptionMessageDefault(): void
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame('An internal server error occurred.', $handler->fallbackExceptionMessage);
+    }
+
+    public function testFallbackExceptionMessageCustom(): void
+    {
+        $this->destroyApplication();
+        $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
+            'components' => [
+                'errorHandler' => [
+                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    'errorView' => '@yiiunit/data/views/errorHandler.php',
+                    'exceptionView' => '@yiiunit/data/views/errorHandlerForAssetFiles.php',
+                    'fallbackExceptionMessage' => 'Service temporarily unavailable.',
+                ],
+            ],
+        ]);
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame('Service temporarily unavailable.', $handler->fallbackExceptionMessage);
+    }
+
+    public function testFallbackExceptionMessageCallable(): void
+    {
+        $this->destroyApplication();
+        $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
+            'components' => [
+                'errorHandler' => [
+                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    'errorView' => '@yiiunit/data/views/errorHandler.php',
+                    'exceptionView' => '@yiiunit/data/views/errorHandlerForAssetFiles.php',
+                    'fallbackExceptionMessage' => function ($exception, $previousException) {
+                        return 'Error: ' . $exception->getMessage();
+                    },
+                ],
+            ],
+        ]);
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertIsCallable($handler->fallbackExceptionMessage);
+        $result = call_user_func($handler->fallbackExceptionMessage, new \RuntimeException('test'), new \RuntimeException('prev'));
+        $this->assertSame('Error: test', $result);
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler
