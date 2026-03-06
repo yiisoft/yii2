@@ -12,6 +12,7 @@ use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\helpers\StringHelper;
 use yii\db\ExpressionInterface;
@@ -327,6 +328,8 @@ EOD;
                     $value = 'NULL';
                 } elseif ($value instanceof ExpressionInterface) {
                     $value = $this->buildExpression($value, $params);
+                } elseif (is_array($value)) {
+                    $value = $this->buildExpression(new JsonExpression($value), $params);
                 }
                 $vs[] = $value;
             }
