@@ -8,9 +8,10 @@ use yii\data\Pagination;
 use yii\data\Sort;
 use yii\db\ActiveRecord;
 use yii\db\Query;
-use yii\rest\ActiveController;
 use yii\rest\IndexAction;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\framework\rest\stubs\RestController;
+use yiiunit\framework\rest\stubs\RestModule;
 use yiiunit\TestCase;
 
 /**
@@ -44,7 +45,7 @@ class IndexActionTest extends TestCase
         $sql = '';
         Yii::$app->controller = new RestController(
             'rest',
-            new Module('rest'),
+            new RestModule('rest'),
             [
                 'modelClass' => IndexActionModel::class,
                 'actions' => [
@@ -91,7 +92,7 @@ class IndexActionTest extends TestCase
 
         $controller = new RestController(
             'rest',
-            new Module('rest'),
+            new RestModule('rest'),
             [
                 'modelClass' => IndexActionModel::class,
                 'actions' => [
@@ -187,20 +188,6 @@ class IndexActionTest extends TestCase
             ]
         ];
     }
-}
-
-class RestController extends ActiveController
-{
-    public $actions = [];
-
-    public function actions()
-    {
-        return $this->actions;
-    }
-}
-
-class Module extends \yii\base\Module
-{
 }
 
 /**
