@@ -64,13 +64,21 @@ class BaseArrayHelper
         if (is_array($object)) {
             if ($recursive) {
                 foreach ($object as $key => $value) {
-                    if (is_array($value) || is_object($value)) {
+                    if (PHP_VERSION_ID >= 80100 && $value instanceof \BackedEnum) {
+                        $object[$key] = $value->value;
+                    } elseif (PHP_VERSION_ID >= 80100 && $value instanceof \UnitEnum) {
+                        $object[$key] = $value->name;
+                    } elseif (is_array($value) || is_object($value)) {
                         $object[$key] = static::toArray($value, $properties, true);
                     }
                 }
             }
 
             return $object;
+        } elseif (PHP_VERSION_ID >= 80100 && $object instanceof \BackedEnum) {
+            return [$object->value];
+        } elseif (PHP_VERSION_ID >= 80100 && $object instanceof \UnitEnum) {
+            return [$object->name];
         } elseif ($object instanceof \DateTimeInterface) {
             return (array)$object;
         } elseif (is_object($object)) {
