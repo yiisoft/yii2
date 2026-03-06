@@ -188,6 +188,126 @@ class IndexActionTest extends TestCase
             ]
         ];
     }
+
+    public function testRunCallsCheckAccess(): void
+    {
+        $accessChecked = false;
+        $controller = new RestController(
+            'rest',
+            new RestModule('rest'),
+            [
+                'modelClass' => IndexActionModel::class,
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
+                        'checkAccess' => function ($actionId) use (&$accessChecked) {
+                            $accessChecked = true;
+                            $this->assertSame('index', $actionId);
+                        },
+                    ],
+                ],
+            ]
+        );
+        Yii::$app->controller = $controller;
+        $controller->run('index');
+
+        $this->assertTrue($accessChecked);
+    }
+
+    public function testPrepareDataProviderCallable(): void
+    {
+        $customCalled = false;
+        $controller = new RestController(
+            'rest',
+            new RestModule('rest'),
+            [
+                'modelClass' => IndexActionModel::class,
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
+                        'prepareDataProvider' => function ($action, $filter) use (&$customCalled) {
+                            $customCalled = true;
+                            $this->assertNull($filter);
+                            return new \yii\data\ArrayDataProvider(['allModels' => []]);
+                        },
+                    ],
+                ],
+            ]
+        );
+        Yii::$app->controller = $controller;
+        $controller->run('index');
+
+        $this->assertTrue($customCalled);
+    }
+
+    public function testDataFilterIntegration(): void
+    {
+        Yii::$app->getRequest()->setQueryParams([
+            'filter' => ['name' => ['eq' => 'test']],
+        ]);
+
+        $controller = new RestController(
+            'rest',
+            new RestModule('rest'),
+            [
+                'modelClass' => IndexActionModel::class,
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
+                        'dataFilter' => [
+                            'class' => 'yii\data\ActiveDataFilter',
+                            'searchModel' => function () {
+                                return (new \yii\base\DynamicModel(['name' => null]))
+                                    ->addRule('name', 'string');
+                            },
+                        ],
+                    ],
+                ],
+            ]
+        );
+        Yii::$app->controller = $controller;
+
+        $result = $controller->createAction('index')->runWithParams([]);
+
+        $this->assertInstanceOf(\yii\data\ActiveDataProvider::class, $result);
+    }
+
+    public function testDataFilterBuildFailureReturnsDataFilter(): void
+    {
+        Yii::$app->getRequest()->setQueryParams([
+            'filter' => ['invalid_field' => 'value'],
+        ]);
+
+        $controller = new RestController(
+            'rest',
+            new RestModule('rest'),
+            [
+                'modelClass' => IndexActionModel::class,
+                'actions' => [
+                    'index' => [
+                        'class' => IndexAction::class,
+                        'modelClass' => IndexActionModel::class,
+                        'dataFilter' => [
+                            'class' => 'yii\data\ActiveDataFilter',
+                            'searchModel' => function () {
+                                return (new \yii\base\DynamicModel(['name' => null]))
+                                    ->addRule('name', 'string');
+                            },
+                        ],
+                    ],
+                ],
+            ]
+        );
+        Yii::$app->controller = $controller;
+
+        $result = $controller->createAction('index')->runWithParams([]);
+
+        $this->assertInstanceOf(\yii\data\ActiveDataFilter::class, $result);
+        $this->assertTrue($result->hasErrors());
+    }
 }
 
 /**

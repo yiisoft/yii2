@@ -475,4 +475,10 @@ class UrlRuleTest extends TestCase
             ],
         ];
     }
+
+    public function testInitWithEmptyControllerThrowsException(): void
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        new UrlRule(['controller' => '']);
+    }
 }
