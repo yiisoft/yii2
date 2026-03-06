@@ -504,8 +504,7 @@ class DataFilterTest extends TestCase
         $builder->setErrorMessages([]);
         $builder->filter = 'invalid';
         $builder->validate();
-        $errors = $builder->getErrors('filter');
-        $this->assertSame('The format of Filter is invalid.', $errors[0]);
+        $this->assertSame('The format of Filter is invalid.', $builder->getFirstError('filter'));
     }
 
     public function testValidateMixedOperatorAndValue(): void
@@ -623,14 +622,14 @@ class DataFilterTest extends TestCase
     {
         $builder = new DataFilter();
         $this->expectException('yii\base\UnknownPropertyException');
-        $builder->nonExistent;
+        $builder->__get('nonExistent');
     }
 
     public function testMagicSetNonFilterThrows(): void
     {
         $builder = new DataFilter();
         $this->expectException('yii\base\UnknownPropertyException');
-        $builder->nonExistent = 'value';
+        $builder->__set('nonExistent', 'value');
     }
 
     public function testMagicIssetNonFilter(): void
@@ -672,8 +671,7 @@ class DataFilterTest extends TestCase
         $ref->setValue($builder, ['someKey' => 'some message']);
         $builder->filter = 'invalid';
         $builder->validate();
-        $errors = $builder->getErrors('filter');
-        $this->assertSame('The format of Filter is invalid.', $errors[0]);
+        $this->assertSame('The format of Filter is invalid.', $builder->getFirstError('filter'));
     }
 
     public function testGetErrorMessagesCallback(): void
@@ -700,8 +698,7 @@ class DataFilterTest extends TestCase
         $builder->setSearchAttributeTypes(['name' => DataFilter::TYPE_STRING, 'fake' => DataFilter::TYPE_STRING]);
         $builder->filter = ['fake' => 'value'];
         $this->assertFalse($builder->validate());
-        $errors = $builder->getErrors('filter');
-        $this->assertStringContainsString('fake', $errors[0]);
+        $this->assertStringContainsString('fake', (string) $builder->getFirstError('filter'));
     }
 
     public function testAttributes(): void
