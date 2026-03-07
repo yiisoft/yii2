@@ -53,7 +53,7 @@ class ResourceCommand extends Command
             return $row;
         }
 
-        if (in_array($row['name'], self::$resourceRuleNames, true)) {
+        if (in_array($row['name'], self::$resourceRuleNames, true) && is_string($row['data'])) {
             $row['data'] = $this->createStream($row['data']);
         }
 
