@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
+- Enh #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 
 
 2.0.54 January 09, 2026
