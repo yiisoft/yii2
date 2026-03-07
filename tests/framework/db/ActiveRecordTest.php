@@ -1354,9 +1354,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // request the inverseOf relation as array
         $orders2 = $customer->getOrders2()->asArray()->all();
         $this->assertEquals($customer['id'], $orders2[0]['customer2']['id']);
+        $this->assertInternalType('array', $orders2[0]['customer2']);
 
         $orders2 = $customer->getOrders2()->asArray()->one();
         $this->assertEquals($customer['id'], $orders2['customer2']['id']);
+        $this->assertInternalType('array', $orders2['customer2']);
     }
 
     public function testDefaultValues(): void
