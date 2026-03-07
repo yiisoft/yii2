@@ -249,6 +249,22 @@ class Migration extends Component implements MigrationInterface
     }
 
     /**
+     * Creates and executes a batch UPDATE SQL statement.
+     * The method will properly escape the table and column names, and bind the values to be updated.
+     * @param string $table the table to be updated.
+     * @param array $rows the rows to be batch updated. Each row must be in format (column => value).
+     * @param string $key the column that uniquely identifies each row.
+     * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @since 2.0.55
+     */
+    public function batchUpdate($table, $rows, $key)
+    {
+        $time = $this->beginCommand("update $table");
+        $this->db->createCommand()->batchUpdate($table, $rows, $key)->execute();
+        $this->endCommand($time);
+    }
+
+    /**
      * Creates and executes a command to insert rows into a database table if
      * they do not already exist (matching unique constraints),
      * or update them if they do.

@@ -532,6 +532,39 @@ class Command extends Component
     }
 
     /**
+     * Creates a batch UPDATE command.
+     *
+     * For example,
+     *
+     * ```
+     * $connection->createCommand()->batchUpdate('user', [
+     *     ['id' => 1, 'name' => 'Tom', 'age' => 30],
+     *     ['id' => 2, 'name' => 'Jane'],
+     * ], 'id')->execute();
+     * ```
+     *
+     * The method will properly escape the table and column names, and bind the values to be updated.
+     *
+     * Note that each row must contain the key column and that key values must be unique.
+     *
+     * Also note that the created command is not executed until [[execute()]] is called.
+     *
+     * @param string $table the table to be updated.
+     * @param array|\Generator $rows the rows to be batch updated. Each row must be in format (column => value).
+     * @param string $key the column that uniquely identifies each row.
+     * @return $this the command object itself
+     * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @since 2.0.55
+     */
+    public function batchUpdate($table, $rows, $key)
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchUpdate($table, $rows, $key, $params);
+
+        return $this->setSql($sql)->bindValues($params);
+    }
+
+    /**
      * Creates a command to insert rows into a database table if
      * they do not already exist (matching unique constraints),
      * or update them if they do.

@@ -622,6 +622,51 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
+    public function batchUpdate($table, $rows, $key, &$params = [])
+    {
+        $normalizedRows = [];
+        foreach ($rows as $row) {
+            if (!is_array($row)) {
+                $normalizedRows[] = $row;
+                continue;
+            }
+
+            if (array_key_exists($key, $row)) {
+                $keyValue = $row[$key];
+                unset($row[$key]);
+                $row = $this->normalizeTableRowData($table, $row, $params);
+                $row[$key] = $keyValue;
+            } else {
+                $row = $this->normalizeTableRowData($table, $row, $params);
+            }
+            $normalizedRows[] = $row;
+        }
+
+        $sql = parent::batchUpdate($table, $normalizedRows, $key, $params);
+        if ($sql === '' || empty($params)) {
+            return $sql;
+        }
+
+        $expandedParams = [];
+        $sql = preg_replace_callback('/:([a-zA-Z_][a-zA-Z0-9_]*)/', function ($matches) use (&$expandedParams, $params) {
+            $name = ':' . $matches[1];
+            if (!array_key_exists($name, $params)) {
+                return $matches[0];
+            }
+
+            $expandedName = ':qp' . count($expandedParams);
+            $expandedParams[$expandedName] = $params[$name];
+
+            return $expandedName;
+        }, $sql);
+        $params = $expandedParams;
+
+        return $sql;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getColumnType($type)
     {
         $columnType = parent::getColumnType($type);

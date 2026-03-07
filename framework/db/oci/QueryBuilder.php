@@ -348,6 +348,192 @@ EOD;
 
     /**
      * {@inheritdoc}
+     * @see https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/MERGE.html
+     */
+    public function batchUpdate($table, $rows, $key, &$params = [])
+    {
+        $schema = $this->db->getSchema();
+        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+        } else {
+            $columnSchemas = [];
+        }
+
+        $preparedRows = [];
+        $updatedColumns = [];
+        $seenKeyValues = [];
+        foreach ($rows as $row) {
+            if ($row instanceof \Traversable) {
+                $row = iterator_to_array($row);
+            }
+            if (!is_array($row)) {
+                throw new InvalidArgumentException('Each batch update row must be an array.');
+            }
+            if (!array_key_exists($key, $row)) {
+                throw new InvalidArgumentException("Each batch update row must contain the \"$key\" column.");
+            }
+
+            $keyValue = isset($columnSchemas[$key]) ? $columnSchemas[$key]->dbTypecast($row[$key]) : $row[$key];
+            if ($keyValue instanceof ExpressionInterface || (!is_scalar($keyValue) && $keyValue !== null)) {
+                throw new InvalidArgumentException("Batch update key values must be scalar or null. Column \"$key\" contains an invalid value.");
+            }
+
+            unset($row[$key]);
+            if (empty($row)) {
+                continue;
+            }
+
+            $keyHash = gettype($keyValue) . ':' . var_export($keyValue, true);
+            if (isset($seenKeyValues[$keyHash])) {
+                throw new InvalidArgumentException("Duplicate batch update key value found for \"$key\".");
+            }
+            $seenKeyValues[$keyHash] = true;
+
+            foreach ($row as $column => $value) {
+                $row[$column] = isset($columnSchemas[$column]) ? $columnSchemas[$column]->dbTypecast($value) : $value;
+                if (!isset($updatedColumns[$column])) {
+                    $updatedColumns[$column] = true;
+                }
+            }
+
+            $preparedRows[] = [
+                'key' => $keyValue,
+                'values' => $row,
+            ];
+        }
+
+        if (empty($preparedRows)) {
+            return '';
+        }
+
+        $keySourceAlias = '_bk';
+        $sourceAliases = [];
+        $setAliases = [];
+        $i = 0;
+        foreach (array_keys($updatedColumns) as $column) {
+            $sourceAliases[$column] = '_v' . $i;
+            $setAliases[$column] = '_s' . $i;
+            $i++;
+        }
+
+        $usingRows = [];
+        foreach ($preparedRows as $preparedRow) {
+            $selectParts = [];
+            $selectParts[] = $this->buildMergeBatchUpdateValue($key, $preparedRow['key'], $columnSchemas, $params)
+                . ' AS ' . $this->db->quoteColumnName($keySourceAlias);
+            foreach ($sourceAliases as $column => $sourceAlias) {
+                if (array_key_exists($column, $preparedRow['values'])) {
+                    $valueSql = $this->buildMergeBatchUpdateValue($column, $preparedRow['values'][$column], $columnSchemas, $params);
+                    $setSql = '1';
+                } else {
+                    $valueSql = $this->buildMergeBatchUpdateMissingValue($column, $columnSchemas);
+                    $setSql = '0';
+                }
+                $selectParts[] = $valueSql . ' AS ' . $this->db->quoteColumnName($sourceAlias);
+                $selectParts[] = $setSql . ' AS ' . $this->db->quoteColumnName($setAliases[$column]);
+            }
+            $usingRows[] = 'SELECT ' . implode(', ', $selectParts) . ' FROM DUAL';
+        }
+
+        $targetAlias = 'T';
+        $sourceAlias = 'S';
+        $quotedKey = $this->db->quoteColumnName($key);
+        $targetKey = $targetAlias . '.' . $quotedKey;
+        $sourceKey = $sourceAlias . '.' . $this->db->quoteColumnName($keySourceAlias);
+        $onCondition = $targetKey . '=' . $sourceKey . ' OR (' . $targetKey . ' IS NULL AND ' . $sourceKey . ' IS NULL)';
+
+        $updates = [];
+        foreach ($sourceAliases as $column => $sourceColumnAlias) {
+            $targetColumn = $targetAlias . '.' . $this->db->quoteColumnName($column);
+            $sourceColumn = $sourceAlias . '.' . $this->db->quoteColumnName($sourceColumnAlias);
+            $sourceSetColumn = $sourceAlias . '.' . $this->db->quoteColumnName($setAliases[$column]);
+            $updates[] = $targetColumn . '=CASE WHEN ' . $sourceSetColumn . '=1 THEN ' . $sourceColumn . ' ELSE ' . $targetColumn . ' END';
+        }
+
+        return 'MERGE INTO ' . $this->db->quoteTableName($table) . ' ' . $targetAlias
+            . ' USING (' . implode(' UNION ALL ', $usingRows) . ') ' . $sourceAlias
+            . ' ON (' . $onCondition . ')'
+            . ' WHEN MATCHED THEN UPDATE SET ' . implode(', ', $updates);
+    }
+
+    /**
+     * Builds value SQL for a MERGE-based batch update source row.
+     * @param string $column
+     * @param mixed $value
+     * @param array $columnSchemas
+     * @param array $params
+     * @return string
+     */
+    private function buildMergeBatchUpdateValue($column, $value, $columnSchemas, &$params)
+    {
+        if ($value instanceof ExpressionInterface) {
+            return $this->buildExpression($value, $params);
+        }
+
+        $placeholder = $this->bindParam($value, $params);
+        if (!isset($columnSchemas[$column])) {
+            return $placeholder;
+        }
+
+        $castType = $this->resolveMergeBatchUpdateCastType($columnSchemas[$column]);
+        if ($castType === null) {
+            return $placeholder;
+        }
+
+        return 'CAST(' . $placeholder . ' AS ' . $castType . ')';
+    }
+
+    /**
+     * Builds a source value for a missing column in a MERGE-based batch update source row.
+     * @param string $column
+     * @param array $columnSchemas
+     * @return string
+     */
+    private function buildMergeBatchUpdateMissingValue($column, $columnSchemas)
+    {
+        if (!isset($columnSchemas[$column])) {
+            return 'NULL';
+        }
+
+        $castType = $this->resolveMergeBatchUpdateCastType($columnSchemas[$column]);
+        if ($castType === null) {
+            return 'NULL';
+        }
+
+        return 'CAST(NULL AS ' . $castType . ')';
+    }
+
+    /**
+     * Resolves an Oracle-safe CAST type for MERGE source values.
+     * @param \yii\db\ColumnSchema $columnSchema
+     * @return string|null
+     */
+    private function resolveMergeBatchUpdateCastType($columnSchema)
+    {
+        $dbType = strtoupper(trim((string) $columnSchema->dbType));
+        if ($dbType === '') {
+            return null;
+        }
+        if (strpos($dbType, 'LOB') !== false || strpos($dbType, 'RAW') !== false || strpos($dbType, 'LONG') !== false) {
+            return null;
+        }
+        if (strpos($dbType, '(') !== false) {
+            return $dbType;
+        }
+
+        if (in_array($dbType, ['VARCHAR2', 'NVARCHAR2', 'CHAR', 'NCHAR'], true)) {
+            $size = isset($columnSchema->size) && (int) $columnSchema->size > 0
+                ? (int) $columnSchema->size
+                : ($dbType === 'VARCHAR2' ? 4000 : 2000);
+
+            return $dbType . '(' . $size . ')';
+        }
+
+        return $dbType;
+    }
+
+    /**
+     * {@inheritdoc}
      * @since 2.0.8
      */
     public function selectExists($rawSql)
