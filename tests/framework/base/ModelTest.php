@@ -779,7 +779,6 @@ class ValidatorInstanceRulesModel extends Model
 
     public function rules()
     {
-        /** @phpstan-ignore return.type */
         return [
             new RequiredValidator(['attributes' => ['name']]),
         ];
