@@ -34,6 +34,7 @@ class FormatterNumberTest extends TestCase
             'language' => 'ru-RU',
         ]);
         $this->formatter = new Formatter(['locale' => 'en-US']);
+        IntlTestHelper::applyIntlStatusToFormatter($this->formatter);
     }
 
     protected function tearDown(): void
