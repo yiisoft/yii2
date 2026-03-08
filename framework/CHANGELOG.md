@@ -24,6 +24,7 @@ Yii Framework 2 Change Log
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
+- Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
 - Enh #20763: Added `yii\db\Command::batchUpdate()`, `yii\db\QueryBuilder::batchUpdate()` and `yii\db\Migration::batchUpdate()` for multi-row updates with per-row values (WarLikeLaux)
 
 
