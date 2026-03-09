@@ -420,6 +420,10 @@ class AssetManagerTest extends TestCase
 
     public function testPublishFileWithFileMode(): void
     {
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestSkipped('File permissions are not supported on Windows.');
+        }
+
         $am = $this->createManager(['fileMode' => 0644]);
         $filePath = Yii::getAlias('@webroot') . '/data.txt';
 
@@ -568,6 +572,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertStringEndsWith(DIRECTORY_SEPARATOR . 'data.txt', $result);
         $this->assertStringContainsString(DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR, $result);
+        $this->assertMatchesRegularExpression('/[0-9a-f]+/', basename(dirname($result)));
     }
 
     public function testGetPublishedPathForDirectory(): void
@@ -580,6 +585,7 @@ class AssetManagerTest extends TestCase
         $this->assertStringNotContainsString('data.txt', $result);
         $this->assertStringNotContainsString(basename($dirPath), $result);
         $this->assertStringStartsWith($am->basePath . DIRECTORY_SEPARATOR, $result);
+        $this->assertMatchesRegularExpression('/[0-9a-f]+$/', $result);
     }
 
     public function testGetPublishedPathReturnsFalseForNonExistentPath(): void
@@ -618,6 +624,8 @@ class AssetManagerTest extends TestCase
 
         $this->assertStringEndsWith('/data.txt', $result);
         $this->assertStringStartsWith('/assets/', $result);
+        $hashSegment = explode('/', trim($result, '/'))[1];
+        $this->assertMatchesRegularExpression('/^[0-9a-f]+$/', $hashSegment);
     }
 
     public function testGetPublishedUrlForDirectory(): void
@@ -630,6 +638,7 @@ class AssetManagerTest extends TestCase
         $this->assertStringStartsWith('/assets/', $result);
         $this->assertStringNotContainsString('data.txt', $result);
         $this->assertStringNotContainsString(basename($dirPath), $result);
+        $this->assertMatchesRegularExpression('/^\/assets\/[0-9a-f]+$/', $result);
     }
 
     public function testGetPublishedUrlReturnsFalseForNonExistentPath(): void
@@ -658,8 +667,8 @@ class AssetManagerTest extends TestCase
 
         $result = $am->publish($filePath);
 
-        $this->assertStringContainsString('custom-hash', $result[0]);
-        $this->assertStringContainsString('custom-hash', $result[1]);
+        $this->assertSame($am->basePath . DIRECTORY_SEPARATOR . 'custom-hash' . DIRECTORY_SEPARATOR . 'data.txt', $result[0]);
+        $this->assertSame('/assets/custom-hash/data.txt', $result[1]);
     }
     public function testGetAssetUrlWithRelativeAsset(): void
     {
