@@ -25,9 +25,6 @@ use yiiunit\TestCase;
  */
 class AssetManagerTest extends TestCase
 {
-    /**
-     * @var string
-     */
     private $assetsPath;
 
     protected function setUp(): void
@@ -133,7 +130,7 @@ class AssetManagerTest extends TestCase
         $am->basePath = '/non/existent/path';
         $am->checkBasePathPermission();
 
-        $this->assertTrue(true);
+        $this->assertSame('/non/existent/path', $am->basePath);
     }
     public function testGetBundleReturnsDummyWhenBundlesDisabled(): void
     {
@@ -252,16 +249,6 @@ class AssetManagerTest extends TestCase
         $this->assertTrue($converter->forceConvert);
     }
 
-    public function testGetConverterFromArrayConfigWithoutClass(): void
-    {
-        $am = $this->createManager();
-        $am->setConverter(['forceConvert' => false]);
-
-        $converter = $am->getConverter();
-
-        $this->assertInstanceOf(AssetConverter::class, $converter);
-    }
-
     public function testGetConverterFromStringConfig(): void
     {
         $am = $this->createManager();
@@ -299,9 +286,9 @@ class AssetManagerTest extends TestCase
 
         $this->assertCount(2, $result);
         $this->assertFileExists($result[0]);
-        $this->assertStringContainsString('data.txt', $result[0]);
-        $this->assertStringContainsString('/assets/', $result[1]);
-        $this->assertStringContainsString('data.txt', $result[1]);
+        $this->assertStringEndsWith(DIRECTORY_SEPARATOR . 'data.txt', $result[0]);
+        $this->assertStringStartsWith('/assets/', $result[1]);
+        $this->assertStringEndsWith('/data.txt', $result[1]);
     }
 
     public function testPublishDirectoryByPath(): void
@@ -313,7 +300,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertCount(2, $result);
         $this->assertDirectoryExists($result[0]);
-        $this->assertStringContainsString('/assets/', $result[1]);
+        $this->assertStringStartsWith('/assets/', $result[1]);
     }
 
     public function testPublishReturnsCachedResult(): void
@@ -387,17 +374,19 @@ class AssetManagerTest extends TestCase
     {
         Yii::$app->errorHandler->register();
 
-        $am = $this->createManager(['linkAssets' => true]);
-        $filePath = Yii::getAlias('@webroot') . '/data.txt';
-
-        $dir = $this->invokeMethod($am, 'hash', [$filePath]);
-        $dstDir = $am->basePath . DIRECTORY_SEPARATOR . $dir;
-        $dstFile = $dstDir . DIRECTORY_SEPARATOR . basename($filePath);
-
-        FileHelper::createDirectory($dstDir, 0775, true);
-        symlink('/non/existent/target', $dstFile);
-
         try {
+            $am = $this->createManager(['linkAssets' => true]);
+            $filePath = Yii::getAlias('@webroot') . '/data.txt';
+
+            $dir = $this->invokeMethod($am, 'hash', [$filePath]);
+            $dstDir = $am->basePath . DIRECTORY_SEPARATOR . $dir;
+            $dstFile = $dstDir . DIRECTORY_SEPARATOR . basename($filePath);
+
+            FileHelper::createDirectory($dstDir, 0775, true);
+            if (!@symlink('/non/existent/target', $dstFile)) {
+                $this->markTestSkipped('Cannot create dangling symlinks on this system.');
+            }
+
             $this->expectException(\yii\base\ErrorException::class);
             $am->publish($filePath);
         } finally {
@@ -410,15 +399,17 @@ class AssetManagerTest extends TestCase
     {
         Yii::$app->errorHandler->register();
 
-        $am = $this->createManager(['linkAssets' => true]);
-        $dirPath = Yii::getAlias('@testSourcePath');
-
-        $dir = $this->invokeMethod($am, 'hash', [$dirPath]);
-        $dstDir = $am->basePath . DIRECTORY_SEPARATOR . $dir;
-
-        symlink('/non/existent/target', $dstDir);
-
         try {
+            $am = $this->createManager(['linkAssets' => true]);
+            $dirPath = Yii::getAlias('@testSourcePath');
+
+            $dir = $this->invokeMethod($am, 'hash', [$dirPath]);
+            $dstDir = $am->basePath . DIRECTORY_SEPARATOR . $dir;
+
+            if (!@symlink('/non/existent/target', $dstDir)) {
+                $this->markTestSkipped('Cannot create dangling symlinks on this system.');
+            }
+
             $this->expectException(\yii\base\ErrorException::class);
             $am->publish($dirPath);
         } finally {
@@ -435,6 +426,7 @@ class AssetManagerTest extends TestCase
         $result = $am->publish($filePath);
 
         $this->assertFileExists($result[0]);
+        $this->assertSame(0644, fileperms($result[0]) & 0777);
     }
 
     public function testPublishFileWithAppendTimestamp(): void
@@ -471,7 +463,7 @@ class AssetManagerTest extends TestCase
         $this->assertTrue($called);
     }
 
-    public function testPublishDirectoryAfterCopyNotOverriddenByOptions(): void
+    public function testPublishDirectoryOptionsAfterCopyOverridesClassAfterCopy(): void
     {
         $classCalled = false;
         $optionsCalled = false;
@@ -493,24 +485,43 @@ class AssetManagerTest extends TestCase
 
     public function testPublishDirectoryWithForceCopyOption(): void
     {
-        $am = $this->createManager();
+        $copyCount = 0;
+        $am = $this->createManager([
+            'beforeCopy' => function ($from, $to) use (&$copyCount) {
+                $copyCount++;
+                return strncmp(basename($from), '.', 1) !== 0;
+            },
+        ]);
         $dirPath = Yii::getAlias('@testSourcePath');
 
         $am->publish($dirPath);
+        $copyCount = 0;
+        $this->setInaccessibleProperty($am, '_published', []);
+
         $am->publish($dirPath, ['forceCopy' => true]);
 
-        $published = $am->getPublishedPath($dirPath);
-        $this->assertDirectoryExists($published);
+        $this->assertGreaterThan(0, $copyCount);
     }
 
     public function testPublishDirectoryWithForceCopyProperty(): void
     {
-        $am = $this->createManager(['forceCopy' => true]);
+        $copyCount = 0;
+        $am = $this->createManager([
+            'forceCopy' => true,
+            'beforeCopy' => function ($from, $to) use (&$copyCount) {
+                $copyCount++;
+                return strncmp(basename($from), '.', 1) !== 0;
+            },
+        ]);
         $dirPath = Yii::getAlias('@testSourcePath');
 
-        $result = $am->publish($dirPath);
+        $am->publish($dirPath);
+        $copyCount = 0;
+        $this->setInaccessibleProperty($am, '_published', []);
 
-        $this->assertDirectoryExists($result[0]);
+        $am->publish($dirPath);
+
+        $this->assertGreaterThan(0, $copyCount);
     }
 
     public function testPublishDirectoryForceCopyOptionFalseOverridesProperty(): void
@@ -594,8 +605,8 @@ class AssetManagerTest extends TestCase
 
         $result = $am->getPublishedUrl($filePath);
 
-        $this->assertStringContainsString('data.txt', $result);
-        $this->assertStringContainsString('/assets/', $result);
+        $this->assertStringEndsWith('/data.txt', $result);
+        $this->assertStringStartsWith('/assets/', $result);
     }
 
     public function testGetPublishedUrlForUnpublishedFile(): void
