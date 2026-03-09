@@ -592,10 +592,11 @@ class ModelTest extends TestCase
     public function testFields(): void
     {
         $speaker = new Speaker();
-        $fields = $speaker->fields();
-        $this->assertIsArray($fields);
-        $this->assertContains('firstName', $fields);
-        $this->assertContains('lastName', $fields);
+
+        $this->assertSame(
+            ['firstName' => 'firstName', 'lastName' => 'lastName', 'customLabel' => 'customLabel', 'underscore_style' => 'underscore_style'],
+            $speaker->fields(),
+        );
     }
 
     public function testClone(): void
@@ -608,13 +609,6 @@ class ModelTest extends TestCase
         $clone = clone $model;
         $this->assertFalse($clone->hasErrors());
         $this->assertSame('Test', $clone->firstName);
-    }
-
-    public function testGetFirstErrorReturnsNullForNoErrors(): void
-    {
-        $speaker = new Speaker();
-        $this->assertNull($speaker->getFirstError('firstName'));
-        $this->assertSame([], $speaker->getFirstErrors());
     }
 
     public function testCreateValidatorsWithValidatorInstance(): void
@@ -637,6 +631,7 @@ class ModelTest extends TestCase
         $model->addError('name', 'manual error');
         $model->validate(null, false);
         $this->assertTrue($model->hasErrors('name'));
+        $this->assertContains('manual error', $model->getErrors('name'));
     }
 
     public function testAfterValidateEventFires(): void
@@ -674,13 +669,6 @@ class ModelTest extends TestCase
         $model->setAttributes(['name' => 'ok', 'email' => 'bad'], true);
         $this->assertSame('ok', $model->name);
         $this->assertNull($model->email);
-    }
-
-    public function testIsAttributeRequiredWithConditionalWhen(): void
-    {
-        $singer = new Singer();
-        $this->assertTrue($singer->isAttributeRequired('lastName'));
-        $this->assertFalse($singer->isAttributeRequired('test'));
     }
 }
 

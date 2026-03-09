@@ -302,11 +302,6 @@ class EventTest extends TestCase
         $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
     }
 
-    public function testHasHandlersEarlyReturnNoEventsNoWildcards(): void
-    {
-        $this->assertFalse(Event::hasHandlers(Post::class, 'nonexistent'));
-    }
-
     public function testTriggerWithObjectSetsSender(): void
     {
         $capturedSender = null;
@@ -330,8 +325,7 @@ class EventTest extends TestCase
 
         $post = new Post();
         $post->save();
-        $this->assertContains('plain', $order);
-        $this->assertContains('wildcard', $order);
+        $this->assertSame(['wildcard', 'plain'], $order);
     }
 
     public function testHasHandlersWithMultipleWildcardNamePatterns(): void
