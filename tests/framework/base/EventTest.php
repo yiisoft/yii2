@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
-use ReflectionProperty;
 use stdClass;
 use yii\base\Component;
 use yii\base\Event;
@@ -281,12 +280,8 @@ class EventTest extends TestCase
 
     public function testHasHandlersSkipsEmptyWildcardHandlers(): void
     {
-        $ref = new ReflectionProperty(Event::class, '_eventWildcards');
-        $ref->setAccessible(true);
-        $ref->setValue(null, [
-            'save' => [
-                '*\\Post' => [],
-            ],
+        $this->setInaccessibleProperty(new Event(), '_eventWildcards', [
+            'save' => ['*\Post' => []],
         ]);
 
         $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
