@@ -8,8 +8,10 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use Yii;
 use yii\base\Module;
 use yii\console\controllers\HelpController;
+use yii\console\Exception;
 use yii\helpers\Console;
 use yiiunit\TestCase;
 
@@ -213,6 +215,261 @@ STRING
         $this->assertStringContainsString('- fake-no-default', $result);
         $this->assertStringContainsString('    fake-no-default/index', $result);
         $this->assertStringNotContainsString('    fake-no-default/index (default)', $result);
+    }
+
+    public function testActionIndexWithUnknownCommandThrowsException(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('No help for unknown command');
+
+        $this->runControllerAction('index', ['command' => 'unknown-nonexistent']);
+    }
+
+    public function testActionIndexWithCommandNameShowsCommandHelp(): void
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerMap' => [
+                'cache' => 'yii\console\controllers\CacheController',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'cache']));
+        $this->assertStringContainsString('DESCRIPTION', $result);
+        $this->assertStringContainsString('SUB-COMMANDS', $result);
+        $this->assertStringContainsString('cache/flush', $result);
+        $this->assertStringContainsString('cache/flush-all', $result);
+        $this->assertStringContainsString('cache/flush-schema', $result);
+        $this->assertStringContainsString('cache/index', $result);
+        $this->assertStringContainsString('(default)', $result);
+        $this->assertStringContainsString('To see the detailed information about individual sub-commands, enter:', $result);
+    }
+
+    public function testActionIndexWithNonDefaultSubCommand(): void
+    {
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help/list']));
+        $this->assertStringContainsString('USAGE', $result);
+        $this->assertStringContainsString('bootstrap.php help/list', $result);
+        $this->assertStringNotContainsString('bootstrap.php help [', $result);
+    }
+
+    public function testActionIndexWithSubCommandHavingRequiredArg(): void
+    {
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help/list-action-options']));
+        $this->assertStringContainsString('<action>', $result);
+        $this->assertStringContainsString('(required)', $result);
+    }
+
+    public function testActionIndexWithUnknownSubCommandThrowsException(): void
+    {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('No help for unknown sub-command');
+
+        $this->runControllerAction('index', ['command' => 'help/nonexistent-action']);
+    }
+
+    public function testActionIndexNoCommandsAvailable(): void
+    {
+        $emptyDir = sys_get_temp_dir() . '/yii2_test_empty_controllers_' . getmypid();
+        @mkdir($emptyDir, 0777, true);
+
+        \Yii::setAlias('@emptyNs', $emptyDir);
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerNamespace' => 'emptyNs',
+        ]);
+        Yii::$app->controllerMap = [];
+
+        $controller = new BufferedHelpController('help', Yii::$app);
+        $controller->runAction('index');
+        $result = Console::stripAnsiFormat($controller->flushStdOutBuffer());
+
+        $this->assertStringContainsString('No commands are found.', $result);
+        $this->assertStringNotContainsString('The following commands are available:', $result);
+
+        @rmdir($emptyDir);
+    }
+
+    public function testActionListActionOptionsWithUnknownCommand(): void
+    {
+        $result = $this->runControllerAction('list-action-options', ['action' => 'unknown-nonexistent']);
+        $this->assertSame('', $result);
+    }
+
+    public function testActionListActionOptionsWithNonExistentAction(): void
+    {
+        $result = $this->runControllerAction('list-action-options', ['action' => 'help/nonexistent-action']);
+        $this->assertSame('', $result);
+    }
+
+    public function testActionUsageWithUnknownCommand(): void
+    {
+        $result = $this->runControllerAction('usage', ['action' => 'unknown-nonexistent']);
+        $this->assertSame('', $result);
+    }
+
+    public function testActionUsageWithNonExistentAction(): void
+    {
+        $result = $this->runControllerAction('usage', ['action' => 'help/nonexistent-action']);
+        $this->assertSame('', $result);
+    }
+
+    public function testActionUsageWithDefaultAction(): void
+    {
+        $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help']));
+        $this->assertStringContainsString('bootstrap.php help', $result);
+        $this->assertStringNotContainsString('bootstrap.php help/index', $result);
+    }
+
+    public function testActionUsageWithOptionalArgument(): void
+    {
+        $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/index']));
+        $this->assertStringContainsString('[command]', $result);
+        $this->assertStringNotContainsString('<command>', $result);
+    }
+
+    public function testValidateControllerClassWithNonExistingClass(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'validateControllerClass');
+
+        $this->assertFalse($method->invoke($controller, 'non\existent\ClassName'));
+    }
+
+    public function testValidateControllerClassWithAbstractClass(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'validateControllerClass');
+
+        $this->assertFalse($method->invoke($controller, 'yii\console\Controller'));
+    }
+
+    public function testValidateControllerClassWithValidConsoleController(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'validateControllerClass');
+
+        $this->assertTrue($method->invoke($controller, 'yii\console\controllers\HelpController'));
+    }
+
+    public function testValidateControllerClassWithNonControllerClass(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'validateControllerClass');
+
+        $this->assertFalse($method->invoke($controller, 'yii\base\Component'));
+    }
+
+    public function testGetDefaultHelpHeader(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'getDefaultHelpHeader');
+
+        $result = $method->invoke($controller);
+        $this->assertStringContainsString('This is Yii version ', $result);
+        $this->assertStringContainsString(\Yii::getVersion(), $result);
+    }
+
+    public function testFormatOptionHelpWithEmptyDocAndComment(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+
+        $result = $method->invoke($controller, '--name', false, '', null, '');
+        $this->assertSame('--name', $result);
+    }
+
+    public function testFormatOptionHelpWithEmptyTypeAndComment(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+
+        $result = $method->invoke($controller, '--name', false, '', null, 'some description');
+        $this->assertSame('--name: some description', $result);
+    }
+
+    public function testFormatOptionHelpWithArrayDefault(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+
+        $result = $method->invoke($controller, '--items', false, 'array', [], 'list of items');
+        $this->assertStringContainsString('array', $result);
+        $this->assertStringContainsString('list of items', $result);
+        $this->assertStringNotContainsString('defaults to', $result);
+    }
+
+    public function testFormatOptionHelpRequired(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+
+        $result = $method->invoke($controller, '--name', true, 'string', null, '');
+        $this->assertStringContainsString('(required)', $result);
+    }
+
+    public function testFormatOptionAliasesWithAlias(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'formatOptionAliases');
+
+        $serveController = new \yii\console\controllers\ServeController('serve', Yii::$app);
+        $result = $method->invoke($controller, $serveController, 'port');
+        $this->assertSame(', -p', $result);
+    }
+
+    public function testFormatOptionAliasesWithNoAlias(): void
+    {
+        $controller = $this->createController();
+        $method = new \ReflectionMethod($controller, 'formatOptionAliases');
+
+        $serveController = new \yii\console\controllers\ServeController('serve', Yii::$app);
+        $result = $method->invoke($controller, $serveController, 'color');
+        $this->assertSame('', $result);
+    }
+
+    public function testGetCommandsFiltersOutNonConsoleControllers(): void
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerMap' => [
+                'web-only' => 'yii\web\Controller',
+            ],
+        ]);
+        $controller = $this->createController();
+        $commands = $controller->getCommands();
+        $this->assertNotContains('web-only', $commands);
+    }
+
+    public function testGetActionsIncludesActionMethodsAndExternalActions(): void
+    {
+        $controller = $this->createController();
+        $actions = $controller->getActions($controller);
+
+        $this->assertContains('index', $actions);
+        $this->assertContains('list', $actions);
+        $this->assertContains('list-action-options', $actions);
+        $this->assertContains('usage', $actions);
+        $this->assertSame($actions, array_unique($actions));
+        $previousAction = '';
+        foreach ($actions as $action) {
+            $this->assertGreaterThanOrEqual(0, strcmp($action, $previousAction));
+            $previousAction = $action;
+        }
+    }
+
+    public function testGetModuleCommandsWithNestedModules(): void
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'modules' => [
+                'magic' => [
+                    'class' => 'yiiunit\data\modules\magic\Module',
+                ],
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertStringContainsString('magic/e-tag/', $result);
+        $this->assertStringContainsString('magic/subFolder/sub/', $result);
     }
 }
 

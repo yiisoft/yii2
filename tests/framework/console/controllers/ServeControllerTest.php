@@ -148,6 +148,105 @@ class ServeControllerTest extends TestCase
         $this->assertStringContainsString("Routing file is \"{$router}\"", $result);
         $this->assertStringContainsString('Quit the server with CTRL-C or COMMAND-C.', $result);
     }
+
+    public function testOptionsReturnsExpectedKeys(): void
+    {
+        $controller = new ServeControllerMock('serve', Yii::$app);
+        $options = $controller->options('index');
+
+        $this->assertContains('docroot', $options);
+        $this->assertContains('router', $options);
+        $this->assertContains('port', $options);
+        $this->assertContains('interactive', $options);
+        $this->assertContains('color', $options);
+    }
+
+    public function testOptionAliases(): void
+    {
+        $controller = new ServeControllerMock('serve', Yii::$app);
+        $aliases = $controller->optionAliases();
+
+        $this->assertSame('docroot', $aliases['t']);
+        $this->assertSame('port', $aliases['p']);
+        $this->assertSame('router', $aliases['r']);
+    }
+
+    public function testAddressWithPortUsesPortFromAddress(): void
+    {
+        $docroot = __DIR__ . '/stub';
+
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->onlyMethods(['isAddressTaken', 'runCommand'])
+            ->getMock();
+
+        $serveController->docroot = $docroot;
+        $serveController->port = 8080;
+
+        $serveController->method('isAddressTaken')->willReturn(false);
+        $serveController->expects($this->once())->method('runCommand');
+
+        ob_start();
+        $serveController->actionIndex('localhost:9090');
+        ob_end_clean();
+
+        $result = $serveController->flushStdOutBuffer();
+        $this->assertStringContainsString('http://localhost:9090/', $result);
+        $this->assertStringNotContainsString('8080', $result);
+    }
+
+    public function testDocRootNotExistReturnsExitCode(): void
+    {
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->onlyMethods(['runCommand'])
+            ->getMock();
+
+        $serveController->docroot = '/not/exist/path';
+        $serveController->expects($this->never())->method('runCommand');
+
+        ob_start();
+        $exitCode = $serveController->actionIndex();
+        ob_end_clean();
+
+        $this->assertSame(ServeController::EXIT_CODE_NO_DOCUMENT_ROOT, $exitCode);
+    }
+
+    public function testRouterNotExistReturnsExitCode(): void
+    {
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->onlyMethods(['runCommand'])
+            ->getMock();
+
+        $serveController->docroot = __DIR__ . '/stub';
+        $serveController->router = '/not/exist/router.php';
+        $serveController->expects($this->never())->method('runCommand');
+
+        ob_start();
+        $exitCode = $serveController->actionIndex();
+        ob_end_clean();
+
+        $this->assertSame(ServeController::EXIT_CODE_NO_ROUTING_FILE, $exitCode);
+    }
+
+    public function testAddressTakenReturnsExitCode(): void
+    {
+        $serveController = $this->getMockBuilder(ServeControllerMock::class)
+            ->setConstructorArgs(['serve', Yii::$app])
+            ->onlyMethods(['isAddressTaken', 'runCommand'])
+            ->getMock();
+
+        $serveController->docroot = __DIR__ . '/stub';
+        $serveController->method('isAddressTaken')->willReturn(true);
+        $serveController->expects($this->never())->method('runCommand');
+
+        ob_start();
+        $exitCode = $serveController->actionIndex();
+        ob_end_clean();
+
+        $this->assertSame(ServeController::EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS, $exitCode);
+    }
 }
 
 /**

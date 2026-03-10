@@ -8,8 +8,10 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 use Yii;
+use yii\console\controllers\BaseMigrateController;
 use yii\console\controllers\MigrateController;
 use yii\console\ExitCode;
 use yii\db\Migration;
@@ -550,5 +552,458 @@ class MigrateControllerTest extends TestCase
             ],
             array_keys($rows)
         );
+    }
+
+    public function testGetMigrationHistoryWithoutNamespaces(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $controller->db = Yii::$app->db;
+
+        $this->runMigrateControllerAction('history');
+
+        $rows = $this->invokeMethod($controller, 'getMigrationHistory', [10]);
+        $this->assertSame([], $rows);
+
+        $this->createMigration('hist_no_ns1', '010101_000001');
+        $this->createMigration('hist_no_ns2', '010101_000002');
+        $this->runMigrateControllerAction('up');
+
+        $rows = $this->invokeMethod($controller, 'getMigrationHistory', [10]);
+        $this->assertCount(2, $rows);
+        $versions = array_keys($rows);
+        $this->assertStringContainsString('hist_no_ns2', $versions[0]);
+        $this->assertStringContainsString('hist_no_ns1', $versions[1]);
+    }
+
+    public function testGetMigrationHistoryWithoutNamespacesAndLimit(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $controller->db = Yii::$app->db;
+
+        $this->runMigrateControllerAction('history');
+
+        $this->createMigration('hist_limit1', '010101_000001');
+        $this->createMigration('hist_limit2', '010101_000002');
+        $this->createMigration('hist_limit3', '010101_000003');
+        $this->runMigrateControllerAction('up');
+
+        $rows = $this->invokeMethod($controller, 'getMigrationHistory', [2]);
+        $this->assertCount(2, $rows);
+    }
+
+    public function testMigrateControllerOptionsForCreate(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $options = $controller->options('create');
+        $this->assertContains('fields', $options);
+        $this->assertContains('useTablePrefix', $options);
+        $this->assertContains('comment', $options);
+        $this->assertContains('templateFile', $options);
+        $this->assertContains('migrationTable', $options);
+        $this->assertContains('db', $options);
+    }
+
+    public function testMigrateControllerOptionsForUp(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $options = $controller->options('up');
+        $this->assertNotContains('fields', $options);
+        $this->assertNotContains('useTablePrefix', $options);
+        $this->assertNotContains('comment', $options);
+        $this->assertContains('migrationTable', $options);
+        $this->assertContains('db', $options);
+    }
+
+    public function testOptionAliases(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $aliases = $controller->optionAliases();
+        $this->assertSame('comment', $aliases['C']);
+        $this->assertSame('fields', $aliases['f']);
+        $this->assertSame('migrationPath', $aliases['p']);
+        $this->assertSame('migrationTable', $aliases['t']);
+        $this->assertSame('templateFile', $aliases['F']);
+        $this->assertSame('useTablePrefix', $aliases['P']);
+        $this->assertSame('compact', $aliases['c']);
+    }
+
+    public function testTruncateDatabaseDropsTablesAndViews(): void
+    {
+        Yii::$app->db->createCommand('CREATE TABLE test_table1(id INTEGER PRIMARY KEY, name TEXT)')->execute();
+        Yii::$app->db->createCommand('CREATE TABLE test_table2(id INTEGER PRIMARY KEY, value TEXT)')->execute();
+        Yii::$app->db->createCommand('CREATE VIEW test_view1 AS SELECT * FROM test_table1')->execute();
+
+        $controller = $this->createMigrateController([]);
+        $controller->db = Yii::$app->db;
+
+        ob_start();
+        $this->invokeMethod($controller, 'truncateDatabase');
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('dropped.', $output);
+
+        $tables = Yii::$app->db->schema->getTableNames('', true);
+        $this->assertNotContains('test_table1', $tables);
+        $this->assertNotContains('test_table2', $tables);
+        $this->assertNotContains('test_view1', $tables);
+    }
+
+    public function testGetMigrationNameLimitReturnsColumnSize(): void
+    {
+        $this->runMigrateControllerAction('history');
+
+        $controller = $this->createMigrateController([]);
+        $controller->db = Yii::$app->db;
+
+        $limit = $this->invokeMethod($controller, 'getMigrationNameLimit');
+        $this->assertSame(MigrateController::MAX_NAME_LENGTH, $limit);
+    }
+
+    public function testGetMigrationNameLimitReturnsCachedValue(): void
+    {
+        $this->runMigrateControllerAction('history');
+
+        $controller = $this->createMigrateController([]);
+        $controller->db = Yii::$app->db;
+
+        $limit1 = $this->invokeMethod($controller, 'getMigrationNameLimit');
+        $limit2 = $this->invokeMethod($controller, 'getMigrationNameLimit');
+        $this->assertSame($limit1, $limit2);
+    }
+
+    public function testGenerateTableNameWithPrefix(): void
+    {
+        $controller = $this->createMigrateController(['useTablePrefix' => true]);
+        $result = $this->invokeMethod($controller, 'generateTableName', ['my_table']);
+        $this->assertSame('{{%my_table}}', $result);
+    }
+
+    public function testGenerateTableNameWithoutPrefix(): void
+    {
+        $controller = $this->createMigrateController(['useTablePrefix' => false]);
+        $result = $this->invokeMethod($controller, 'generateTableName', ['my_table']);
+        $this->assertSame('my_table', $result);
+    }
+
+    public function testAddDefaultPrimaryKeyWhenNoIdField(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $fields = [
+            ['property' => 'name', 'decorators' => 'string()'],
+        ];
+        $this->invokeMethod($controller, 'addDefaultPrimaryKey', [&$fields]);
+        $this->assertSame('id', $fields[0]['property']);
+        $this->assertSame('primaryKey()', $fields[0]['decorators']);
+        $this->assertCount(2, $fields);
+    }
+
+    public function testAddDefaultPrimaryKeySkipsWhenIdExists(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $fields = [
+            ['property' => 'id', 'decorators' => 'integer()'],
+            ['property' => 'name', 'decorators' => 'string()'],
+        ];
+        $this->invokeMethod($controller, 'addDefaultPrimaryKey', [&$fields]);
+        $this->assertCount(2, $fields);
+        $this->assertSame('integer()', $fields[0]['decorators']);
+    }
+
+    public function testAddDefaultPrimaryKeySkipsWhenPrimaryKeyDecorator(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $fields = [
+            ['property' => 'custom_id', 'decorators' => 'primaryKey()'],
+            ['property' => 'name', 'decorators' => 'string()'],
+        ];
+        $this->invokeMethod($controller, 'addDefaultPrimaryKey', [&$fields]);
+        $this->assertCount(2, $fields);
+        $this->assertSame('custom_id', $fields[0]['property']);
+    }
+
+    public function testParseFieldsWithForeignKey(): void
+    {
+        $controller = $this->createMigrateController([
+            'fields' => ['user_id:integer:foreignKey'],
+        ]);
+        $result = $this->invokeMethod($controller, 'parseFields');
+        $this->assertArrayHasKey('user_id', $result['foreignKeys']);
+        $this->assertSame('user', $result['foreignKeys']['user_id']['table']);
+        $this->assertNull($result['foreignKeys']['user_id']['column']);
+    }
+
+    public function testParseFieldsWithForeignKeyAndTable(): void
+    {
+        $controller = $this->createMigrateController([
+            'fields' => ['order_id:integer:foreignKey(user_order)'],
+        ]);
+        $result = $this->invokeMethod($controller, 'parseFields');
+        $this->assertArrayHasKey('order_id', $result['foreignKeys']);
+        $this->assertSame('user_order', $result['foreignKeys']['order_id']['table']);
+    }
+
+    public function testParseFieldsWithoutForeignKey(): void
+    {
+        $controller = $this->createMigrateController([
+            'fields' => ['name:string(255):notNull'],
+        ]);
+        $result = $this->invokeMethod($controller, 'parseFields');
+        $this->assertEmpty($result['foreignKeys']);
+        $this->assertCount(1, $result['fields']);
+        $this->assertSame('name', $result['fields'][0]['property']);
+    }
+
+    public function testSplitFieldIntoChunksWithDefaultValue(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $result = $this->invokeMethod($controller, 'splitFieldIntoChunks', ['field_1:string:defaultValue(\'val:ue\')']);
+        $this->assertSame('field_1', $result[0]);
+        $this->assertSame('string', $result[1]);
+        $this->assertSame("defaultValue('val:ue')", $result[2]);
+    }
+
+    public function testSplitFieldIntoChunksWithoutDefaultValue(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $result = $this->invokeMethod($controller, 'splitFieldIntoChunks', ['name:string(255):notNull']);
+        $this->assertSame('name', $result[0]);
+        $this->assertSame('string(255)', $result[1]);
+        $this->assertSame('notNull', $result[2]);
+    }
+
+    public function testBaseMigrateControllerTruncateDatabaseThrowsNotSupportedException(): void
+    {
+        $this->expectException(NotSupportedException::class);
+
+        $controller = $this->createMigrateController([]);
+        $parent = new \ReflectionClass(BaseMigrateController::class);
+        $method = $parent->getMethod('truncateDatabase');
+
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
+        $method->invoke($controller);
+    }
+
+    public function testCreateMigrationHistoryTable(): void
+    {
+        $tableNames = Yii::$app->db->schema->getTableNames('', true);
+        $this->assertNotContains('migration', $tableNames);
+
+        $this->runMigrateControllerAction('history');
+
+        $tableNames = Yii::$app->db->schema->getTableNames('', true);
+        $this->assertContains('migration', $tableNames);
+    }
+
+    public function testNewWithNamespacedMigrations(): void
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace],
+        ];
+
+        $this->createNamespaceMigration('nsNew1');
+        $this->createNamespaceMigration('nsNew2');
+
+        $output = $this->runMigrateControllerAction('new', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertStringContainsString('Found 2 new migrations:', $output);
+    }
+
+    public function testHistoryWithNamespacesShowsAll(): void
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace],
+        ];
+
+        $this->createNamespaceMigration('histAll1');
+        $this->createNamespaceMigration('histAll2');
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+
+        $output = $this->runMigrateControllerAction('history', ['all'], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertStringContainsString('Total 2 migrations have been applied before:', $output);
+    }
+
+    public function testNormalizeTableNameTrailingUnderscore(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $result = $this->invokeMethod($controller, 'normalizeTableName', ['test_']);
+        $this->assertSame('test', $result);
+    }
+
+    public function testNormalizeTableNameLeadingUnderscore(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $result = $this->invokeMethod($controller, 'normalizeTableName', ['_Test']);
+        $this->assertSame('Test', $result);
+    }
+
+    public function testNormalizeTableNameCamelCase(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $result = $this->invokeMethod($controller, 'normalizeTableName', ['MyTable']);
+        $this->assertSame('my_table', $result);
+    }
+
+    public function testBeforeActionReturnsFalseWhenEventCancelled(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $controller->on(\yii\base\Controller::EVENT_BEFORE_ACTION, function ($event) {
+            $event->isValid = false;
+        });
+
+        ob_start();
+        $exitCode = $controller->runAction('up');
+        ob_end_clean();
+
+        $this->assertNull($exitCode);
+    }
+
+    public function testGetMigrationHistoryWithNonMatchingVersion(): void
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace],
+        ];
+
+        $this->runMigrateControllerAction('history', [], $controllerConfig);
+
+        Yii::$app->db->createCommand()->insert('migration', [
+            'version' => 'custom_no_timestamp',
+            'apply_time' => time(),
+        ])->execute();
+
+        $controller = $this->createMigrateController($controllerConfig);
+        $controller->db = Yii::$app->db;
+
+        $rows = $this->invokeMethod($controller, 'getMigrationHistory', [10]);
+        $this->assertArrayHasKey('custom_no_timestamp', $rows);
+    }
+
+    public function testIsViewRelatedReturnsFalseForUnrelatedError(): void
+    {
+        $controller = $this->createMigrateController([]);
+        $result = $this->invokeMethod($controller, 'isViewRelated', ['Some random database error']);
+        $this->assertFalse($result);
+    }
+
+    public function testParseFieldsWithForeignKeyAndColumnSpec(): void
+    {
+        $controller = $this->createMigrateController([
+            'fields' => ['user_id:integer:foreignKey(users user_pk)'],
+        ]);
+        $result = $this->invokeMethod($controller, 'parseFields');
+        $this->assertSame('user_pk', $result['foreignKeys']['user_id']['column']);
+        $this->assertSame('users', $result['foreignKeys']['user_id']['table']);
+    }
+
+    public function testFkResolvesColumnFromSinglePkTable(): void
+    {
+        Yii::$app->db->createCommand('CREATE TABLE fk_user(pk_col INTEGER PRIMARY KEY, name TEXT)')->execute();
+
+        $controller = $this->createMigrateController([
+            'fields' => ['fk_user_id:integer:foreignKey(fk_user)'],
+        ]);
+        $controller->db = Yii::$app->db;
+
+        ob_start();
+        $result = $this->invokeMethod($controller, 'generateMigrationSourceCode', [[
+            'name' => 'create_fk_test_table',
+            'className' => 'm000000_000000_create_fk_test_table',
+            'namespace' => null,
+        ]]);
+        ob_end_clean();
+
+        $this->assertStringContainsString("'pk_col'", $result);
+    }
+
+    public function testFkCompositePkUsesDefaultColumn(): void
+    {
+        Yii::$app->db->createCommand('CREATE TABLE fk_order_item(order_id INTEGER, product_id INTEGER, PRIMARY KEY(order_id, product_id))')->execute();
+
+        $controller = $this->createMigrateController([
+            'fields' => ['fk_order_item_id:integer:foreignKey(fk_order_item)'],
+        ]);
+        $controller->db = Yii::$app->db;
+
+        ob_start();
+        $result = $this->invokeMethod($controller, 'generateMigrationSourceCode', [[
+            'name' => 'create_fk_comp_table',
+            'className' => 'm000000_000000_create_fk_comp_table',
+            'namespace' => null,
+        ]]);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('primary key is composite', $output);
+        $this->assertStringContainsString("'id'", $result);
+    }
+
+    public function testFkNoPkUsesDefaultColumn(): void
+    {
+        Yii::$app->db->createCommand('CREATE TABLE fk_tag(name TEXT, value TEXT)')->execute();
+
+        $controller = $this->createMigrateController([
+            'fields' => ['fk_tag_id:integer:foreignKey(fk_tag)'],
+        ]);
+        $controller->db = Yii::$app->db;
+
+        ob_start();
+        $result = $this->invokeMethod($controller, 'generateMigrationSourceCode', [[
+            'name' => 'create_fk_nopk_table',
+            'className' => 'm000000_000000_create_fk_nopk_table',
+            'namespace' => null,
+        ]]);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('does not have a primary key', $output);
+        $this->assertStringContainsString("'id'", $result);
+    }
+
+    public function testCreateMigrationWithUnknownNamespaceThrowsException(): void
+    {
+        $this->setOutputCallback(function ($output) {
+            return null;
+        });
+
+        $this->expectException(\yii\console\Exception::class);
+        $this->expectExceptionMessage('not found in `migrationNamespaces`');
+
+        $controller = $this->createMigrateController([
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace],
+        ]);
+        $controller->run('create', ['unknown\\SomeMigration']);
+    }
+
+    public function testActionFreshConfirmDenied(): void
+    {
+        $this->runMigrateControllerAction('history');
+
+        $module = $this->getMockBuilder(\yii\base\Module::class)
+            ->addMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
+        $controller = new DenyingEchoMigrateController('migrate', $module);
+        $controller->interactive = false;
+        $controller->migrationPath = $this->migrationPath;
+
+        ob_start();
+        $exitCode = $controller->run('fresh');
+        $output = ob_get_clean();
+
+        $this->assertSame(ExitCode::OK, $exitCode);
+        $this->assertStringContainsString('Action was cancelled by user.', $output);
+    }
+}
+
+class DenyingEchoMigrateController extends EchoMigrateController
+{
+    public function confirm($message, $default = false)
+    {
+        return false;
     }
 }
