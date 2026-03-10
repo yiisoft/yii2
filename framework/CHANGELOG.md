@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
 - Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
+- Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 
 
 2.0.54 January 09, 2026
@@ -95,7 +96,6 @@ Yii Framework 2 Change Log
 - Bug #20673: Sanitize `null` bytes before `quoteValue()` on PHP 8.5+ in SQLite (terabytesoftw)
 - Bug #20675: Add generics for all controllers (mspirkov)
 - Bug #20689: Fix PHP `8.5` `imagedestroy` deprecation warning (ElisDN)
-- Bug #20697: Fix `strpos()` passing null to parameter #1 ($haystack) of type string is deprecated and add tests for PHP `8.5` (terabytesoftw)
 - Enh #20047: Throw exception when fixture not found rather than ignoring (borgou)
 - Enh #20433: Add PHPStan/Psalm annotations for some controllers methods: `beforeAction`, `afterAction` and `bindActionParams` (mspirkov)
 - Enh #20434: Add PHPStan/Psalm annotations for `hasMany` and `hasOne` methods (mspirkov)

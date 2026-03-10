@@ -13,14 +13,14 @@ ALTER SYSTEM SET db_block_checksum = OFF SCOPE=BOTH;
 ALTER SYSTEM SET undo_retention = 60 SCOPE=BOTH;
 
 -- Disable the recycle bin
-ALTER SYSTEM SET recyclebin = OFF SCOPE=BOTH;
+ALTER SYSTEM SET recyclebin = OFF SCOPE=SPFILE;
 
 -- Defer segment creation (tables get no storage until first INSERT)
 ALTER SYSTEM SET deferred_segment_creation = TRUE SCOPE=BOTH;
 
 -- Increase cursor cache for ORM-heavy workloads
 ALTER SYSTEM SET open_cursors = 300 SCOPE=BOTH;
-ALTER SYSTEM SET session_cached_cursors = 100 SCOPE=BOTH;
+ALTER SYSTEM SET session_cached_cursors = 100 SCOPE=SPFILE;
 
 -- Disable automatic optimizer stats collection
 BEGIN
