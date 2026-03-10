@@ -1294,13 +1294,19 @@ CODE;
 
     public function testGetNewMigrationsSkipsNonExistentNamespacePath(): void
     {
-        Yii::setAlias('@nonexistentNs', '/tmp/nonexistent_ns_' . uniqid());
+        $previousNonexistentNsAlias = Yii::getAlias('@nonexistentNs', false);
 
-        $output = $this->runMigrateControllerAction('new', [], [
-            'migrationPath' => $this->migrationPath,
-            'migrationNamespaces' => ['nonexistentNs\\migrations'],
-        ]);
-        $this->assertSame(ExitCode::OK, $this->getExitCode());
-        $this->assertStringContainsString('No new migrations found.', $output);
+        try {
+            Yii::setAlias('@nonexistentNs', '/tmp/nonexistent_ns_' . uniqid());
+
+            $output = $this->runMigrateControllerAction('new', [], [
+                'migrationPath' => $this->migrationPath,
+                'migrationNamespaces' => ['nonexistentNs\\migrations'],
+            ]);
+            $this->assertSame(ExitCode::OK, $this->getExitCode());
+            $this->assertStringContainsString('No new migrations found.', $output);
+        } finally {
+            Yii::setAlias('@nonexistentNs', $previousNonexistentNsAlias === false ? null : $previousNonexistentNsAlias);
+        }
     }
 }

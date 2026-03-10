@@ -569,10 +569,10 @@ class MigrateControllerTest extends TestCase
         $this->runMigrateControllerAction('up');
 
         $rows = $this->invokeMethod($controller, 'getMigrationHistory', [10]);
-        $this->assertCount(2, $rows);
-        $versions = array_keys($rows);
-        $this->assertStringContainsString('hist_no_ns2', $versions[0]);
-        $this->assertStringContainsString('hist_no_ns1', $versions[1]);
+        $this->assertSame([
+            'm010101_000002_hist_no_ns2',
+            'm010101_000001_hist_no_ns1',
+        ], array_keys($rows));
     }
 
     public function testGetMigrationHistoryWithoutNamespacesAndLimit(): void
@@ -588,7 +588,10 @@ class MigrateControllerTest extends TestCase
         $this->runMigrateControllerAction('up');
 
         $rows = $this->invokeMethod($controller, 'getMigrationHistory', [2]);
-        $this->assertCount(2, $rows);
+        $this->assertSame([
+            'm010101_000003_hist_limit3',
+            'm010101_000002_hist_limit2',
+        ], array_keys($rows));
     }
 
     public function testMigrateControllerOptionsForCreate(): void

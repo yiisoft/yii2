@@ -270,23 +270,27 @@ STRING
     public function testActionIndexNoCommandsAvailable(): void
     {
         $emptyDir = sys_get_temp_dir() . '/yii2_test_empty_controllers_' . getmypid();
-        @mkdir($emptyDir, 0777, true);
+        $previousEmptyNsAlias = Yii::getAlias('@emptyNs', false);
 
-        \Yii::setAlias('@emptyNs', $emptyDir);
-        $this->mockApplication([
-            'enableCoreCommands' => false,
-            'controllerNamespace' => 'emptyNs',
-        ]);
-        Yii::$app->controllerMap = [];
+        try {
+            @mkdir($emptyDir, 0777, true);
+            Yii::setAlias('@emptyNs', $emptyDir);
+            $this->mockApplication([
+                'enableCoreCommands' => false,
+                'controllerNamespace' => 'emptyNs',
+            ]);
+            Yii::$app->controllerMap = [];
 
-        $controller = new BufferedHelpController('help', Yii::$app);
-        $controller->runAction('index');
-        $result = Console::stripAnsiFormat($controller->flushStdOutBuffer());
+            $controller = new BufferedHelpController('help', Yii::$app);
+            $controller->runAction('index');
+            $result = Console::stripAnsiFormat($controller->flushStdOutBuffer());
 
-        $this->assertStringContainsString('No commands are found.', $result);
-        $this->assertStringNotContainsString('The following commands are available:', $result);
-
-        @rmdir($emptyDir);
+            $this->assertStringContainsString('No commands are found.', $result);
+            $this->assertStringNotContainsString('The following commands are available:', $result);
+        } finally {
+            Yii::setAlias('@emptyNs', $previousEmptyNsAlias === false ? null : $previousEmptyNsAlias);
+            @rmdir($emptyDir);
+        }
     }
 
     public function testActionListActionOptionsWithUnknownCommand(): void
@@ -456,16 +460,25 @@ STRING
         $controller = $this->createController();
         $actions = $controller->getActions($controller);
 
-        $this->assertContains('index', $actions);
-        $this->assertContains('list', $actions);
-        $this->assertContains('list-action-options', $actions);
-        $this->assertContains('usage', $actions);
-        $this->assertSame($actions, array_unique($actions));
-        $previousAction = '';
-        foreach ($actions as $action) {
-            $this->assertGreaterThanOrEqual(0, strcmp($action, $previousAction));
-            $previousAction = $action;
-        }
+        $this->assertSame(['index', 'list', 'list-action-options', 'usage'], $actions);
+    }
+
+    public function testGetModuleCommandsSkipsUnavailableModule(): void
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'modules' => [
+                'broken' => null,
+                'magic' => [
+                    'class' => 'yiiunit\data\modules\magic\Module',
+                ],
+            ],
+        ]);
+
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+
+        $this->assertStringContainsString('magic/e-tag/delete', $result);
+        $this->assertStringNotContainsString("broken\n", $result);
     }
 
     public function testGetModuleCommandsWithNestedModules(): void
