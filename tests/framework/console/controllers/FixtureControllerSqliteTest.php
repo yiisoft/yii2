@@ -30,7 +30,7 @@ class FixtureControllerSqliteTest extends TestCase
     ];
 
     /**
-     * @var BufferedFixtureController
+     * @var BufferedFixtureController|null
      */
     private $_controller;
 

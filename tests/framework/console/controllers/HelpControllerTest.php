@@ -331,6 +331,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'validateControllerClass');
+        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke($controller, 'non\existent\ClassName'));
     }
@@ -339,6 +340,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'validateControllerClass');
+        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke($controller, 'yii\console\Controller'));
     }
@@ -347,6 +349,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'validateControllerClass');
+        $method->setAccessible(true);
 
         $this->assertTrue($method->invoke($controller, 'yii\console\controllers\HelpController'));
     }
@@ -355,6 +358,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'validateControllerClass');
+        $method->setAccessible(true);
 
         $this->assertFalse($method->invoke($controller, 'yii\base\Component'));
     }
@@ -363,6 +367,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'getDefaultHelpHeader');
+        $method->setAccessible(true);
 
         $result = $method->invoke($controller);
         $this->assertStringContainsString('This is Yii version ', $result);
@@ -373,6 +378,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+        $method->setAccessible(true);
 
         $result = $method->invoke($controller, '--name', false, '', null, '');
         $this->assertSame('--name', $result);
@@ -382,6 +388,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+        $method->setAccessible(true);
 
         $result = $method->invoke($controller, '--name', false, '', null, 'some description');
         $this->assertSame('--name: some description', $result);
@@ -391,6 +398,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+        $method->setAccessible(true);
 
         $result = $method->invoke($controller, '--items', false, 'array', [], 'list of items');
         $this->assertStringContainsString('array', $result);
@@ -402,6 +410,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'formatOptionHelp');
+        $method->setAccessible(true);
 
         $result = $method->invoke($controller, '--name', true, 'string', null, '');
         $this->assertStringContainsString('(required)', $result);
@@ -411,6 +420,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'formatOptionAliases');
+        $method->setAccessible(true);
 
         $serveController = new \yii\console\controllers\ServeController('serve', Yii::$app);
         $result = $method->invoke($controller, $serveController, 'port');
@@ -421,6 +431,7 @@ STRING
     {
         $controller = $this->createController();
         $method = new \ReflectionMethod($controller, 'formatOptionAliases');
+        $method->setAccessible(true);
 
         $serveController = new \yii\console\controllers\ServeController('serve', Yii::$app);
         $result = $method->invoke($controller, $serveController, 'color');

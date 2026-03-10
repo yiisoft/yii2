@@ -115,12 +115,12 @@ class CacheControllerSqliteTest extends TestCase
 
     public function testActionFlushSuccessfullyFlushesCache(): void
     {
-        Yii::$app->arrayCache->set('testKey', 'testValue');
+        Yii::$app->get('arrayCache')->set('testKey', 'testValue');
 
         $this->_controller->actionFlush('arrayCache');
         $output = $this->_controller->flushStdOutBuffer();
 
-        $this->assertFalse(Yii::$app->arrayCache->get('testKey'));
+        $this->assertFalse(Yii::$app->get('arrayCache')->get('testKey'));
         $this->assertStringContainsString('The following cache components were processed:', $output);
         $this->assertStringContainsString('arrayCache', $output);
         $this->assertStringNotContainsString('not flushed', $output);
@@ -128,12 +128,12 @@ class CacheControllerSqliteTest extends TestCase
 
     public function testActionFlushNotifiesNotFoundAndFlushesFound(): void
     {
-        Yii::$app->arrayCache->set('key', 'value');
+        Yii::$app->get('arrayCache')->set('key', 'value');
 
         $this->_controller->actionFlush('arrayCache', 'nonExistingCache');
         $output = $this->_controller->flushStdOutBuffer();
 
-        $this->assertFalse(Yii::$app->arrayCache->get('key'));
+        $this->assertFalse(Yii::$app->get('arrayCache')->get('key'));
         $this->assertStringContainsString('The following cache components were NOT found:', $output);
         $this->assertStringContainsString('nonExistingCache', $output);
         $this->assertStringContainsString('The following cache components were processed:', $output);
@@ -161,14 +161,14 @@ class CacheControllerSqliteTest extends TestCase
 
     public function testActionFlushAllFlushesAllCaches(): void
     {
-        Yii::$app->arrayCache->set('k1', 'v1');
-        Yii::$app->closureCache->set('k2', 'v2');
+        Yii::$app->get('arrayCache')->set('k1', 'v1');
+        Yii::$app->get('closureCache')->set('k2', 'v2');
 
         $this->_controller->actionFlushAll();
         $output = $this->_controller->flushStdOutBuffer();
 
-        $this->assertFalse(Yii::$app->arrayCache->get('k1'));
-        $this->assertFalse(Yii::$app->closureCache->get('k2'));
+        $this->assertFalse(Yii::$app->get('arrayCache')->get('k1'));
+        $this->assertFalse(Yii::$app->get('closureCache')->get('k2'));
         $this->assertStringContainsString('The following cache components were processed:', $output);
         $this->assertStringNotContainsString('not flushed', $output);
     }
@@ -394,7 +394,7 @@ class CacheControllerSqliteTest extends TestCase
 
     public function testNotifyFlushedShowsSuccessForFlushedCache(): void
     {
-        Yii::$app->arrayCache->set('key', 'value');
+        Yii::$app->get('arrayCache')->set('key', 'value');
         $this->_controller->actionFlush('arrayCache');
         $output = $this->_controller->flushStdOutBuffer();
 
