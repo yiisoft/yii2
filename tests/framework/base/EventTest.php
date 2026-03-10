@@ -100,8 +100,7 @@ class EventTest extends TestCase
      */
     public function testHasHandlersWithWildcard(): void
     {
-        Event::on('\yiiunit\framework\base\*', 'save.*', function ($event) {
-            // do nothing
+        Event::on('\yiiunit\framework\base\*', 'save.*', function () {
         });
 
         $this->assertTrue(Event::hasHandlers('yiiunit\framework\base\SomeInterface', 'save.it'), 'save.it');
@@ -186,6 +185,185 @@ class EventTest extends TestCase
         $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
         Event::off('*\Post', 'save', $handler);
         $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+    }
+
+    public function testOnPrependPlainHandler(): void
+    {
+        $order = [];
+        Event::on(Post::class, 'save', function () use (&$order) {
+            $order[] = 'first';
+        });
+        Event::on(Post::class, 'save', function () use (&$order) {
+            $order[] = 'prepended';
+        }, null, false);
+
+        $post = new Post();
+        $post->save();
+        $this->assertSame(['prepended', 'first'], $order);
+    }
+
+    public function testOnPrependWildcardHandler(): void
+    {
+        $order = [];
+        Event::on('*\Post', 'save', function () use (&$order) {
+            $order[] = 'first';
+        });
+        Event::on('*\Post', 'save', function () use (&$order) {
+            $order[] = 'prepended';
+        }, null, false);
+
+        $post = new Post();
+        $post->save();
+        $this->assertSame(['prepended', 'first'], $order);
+    }
+
+    public function testOffWildcardWithNullHandler(): void
+    {
+        Event::on('*\Post', 'save', function () {
+        });
+        Event::on('*\Post', 'save', function () {
+        });
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
+        $this->assertTrue(Event::off('*\Post', 'save'));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+    }
+
+    public function testOffReturnsFalseForEmptyWildcard(): void
+    {
+        $this->assertFalse(Event::off('*\Post', 'nonexistent'));
+    }
+
+    public function testHasHandlersWithObject(): void
+    {
+        Event::on(Post::class, 'save', function () {
+        });
+        $post = new Post();
+        $this->assertTrue(Event::hasHandlers($post, 'save'));
+    }
+
+    public function testTriggerWithHandledEvent(): void
+    {
+        $order = [];
+        Event::on(Post::class, 'save', function ($event) use (&$order) {
+            $order[] = 'first';
+            $event->handled = true;
+        });
+        Event::on(Post::class, 'save', function () use (&$order) {
+            $order[] = 'second';
+        });
+
+        Event::trigger(Post::class, 'save');
+        $this->assertSame(['first'], $order);
+    }
+
+    public function testTriggerWithNoHandlers(): void
+    {
+        Event::trigger(Post::class, 'nonexistent');
+        $this->assertSame(0, $this->counter);
+    }
+
+    public function testTriggerWithWildcardNameNoMatch(): void
+    {
+        Event::on('*\Post', 'other*', function () {
+            $this->counter++;
+        });
+        Event::trigger(Post::class, 'save');
+        $this->assertSame(0, $this->counter);
+    }
+
+    public function testHasHandlersWildcardNameNoMatch(): void
+    {
+        Event::on('*\Post', 'delete*', function () {
+        });
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+    }
+
+    public function testHasHandlersSkipsEmptyWildcardHandlers(): void
+    {
+        $this->setInaccessibleProperty(new Event(), '_eventWildcards', [
+            'save' => ['*\Post' => []],
+        ]);
+
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+    }
+
+    public function testOffWildcardSpecificHandlerReturnValue(): void
+    {
+        $handler = function () {
+            $this->counter++;
+        };
+        Event::on('*\Post', 'save', $handler);
+        $this->assertTrue(Event::off('*\Post', 'save', $handler));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
+    }
+
+    public function testTriggerWithObjectSetsSender(): void
+    {
+        $capturedSender = null;
+        Event::on(Post::class, 'save', function ($event) use (&$capturedSender) {
+            $capturedSender = $event->sender;
+        });
+        $post = new Post();
+        Event::trigger($post, 'save');
+        $this->assertSame($post, $capturedSender);
+    }
+
+    public function testTriggerWithBothPlainAndWildcardHandlers(): void
+    {
+        $order = [];
+        Event::on(Post::class, 'save', function () use (&$order) {
+            $order[] = 'plain';
+        });
+        Event::on('*\Post', 'save', function () use (&$order) {
+            $order[] = 'wildcard';
+        });
+
+        $post = new Post();
+        $post->save();
+        $this->assertSame(['wildcard', 'plain'], $order);
+    }
+
+    public function testHasHandlersWithMultipleWildcardNamePatterns(): void
+    {
+        Event::on('*\Post', 'save*', function () {
+        });
+        Event::on('*\Post', 'delete*', function () {
+        });
+
+        $this->assertTrue(Event::hasHandlers(Post::class, 'save.draft'));
+        $this->assertTrue(Event::hasHandlers(Post::class, 'delete.all'));
+        $this->assertFalse(Event::hasHandlers(Post::class, 'update'));
+    }
+
+    public function testTriggerWithMultipleWildcardNamePatterns(): void
+    {
+        $triggered = [];
+        Event::on('*\Post', 'save*', function () use (&$triggered) {
+            $triggered[] = 'save';
+        });
+        Event::on('*\Post', 'delete*', function () use (&$triggered) {
+            $triggered[] = 'delete';
+        });
+
+        Event::trigger(Post::class, 'save.draft');
+        $this->assertSame(['save'], $triggered);
+    }
+
+    public function testHasHandlersWithLeadingBackslash(): void
+    {
+        Event::on(Post::class, 'save', function () {
+        });
+        $this->assertTrue(Event::hasHandlers('\yiiunit\framework\base\Post', 'save'));
+    }
+
+    public function testTriggerWithLeadingBackslash(): void
+    {
+        $triggered = false;
+        Event::on(Post::class, 'save', function () use (&$triggered) {
+            $triggered = true;
+        });
+        Event::trigger('\yiiunit\framework\base\Post', 'save');
+        $this->assertTrue($triggered);
     }
 }
 
