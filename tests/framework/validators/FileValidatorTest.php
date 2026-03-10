@@ -129,7 +129,9 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($m->hasErrors('attr_files'));
         $m = FakedValidationModel::createWithAttributes([
             'attr_files' => $this->createTestFiles([
-                [''], [''], [''],
+                [''],
+                [''],
+                [''],
             ]),
         ]);
         $val->validateAttribute($m, 'attr_files');
@@ -816,9 +818,85 @@ class FileValidatorTest extends TestCase
             ]
         );
         $model = new FakedValidationTypedModel();
-        // single attribute cannot be checked because maxFiles = 0 === no limits
         $model->multiple = $files;
         $validator->validateAttribute($model, 'multiple');
         $this->assertTrue($model->hasErrors('multiple'));
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $this->mockApplication();
+        $validator = new FileValidator([
+            'extensions' => ['jpg', 'png'],
+            'minSize' => 1024,
+            'maxSize' => 2048,
+            'maxFiles' => 2,
+            'mimeTypes' => ['image/jpeg', 'image/png'],
+        ]);
+        $model = new FakedValidationModel();
+        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+
+        $result = $validator->clientValidateAttribute($model, 'attr_files', $view);
+        $this->assertStringContainsString('mimeTypes', $result);
+    }
+
+    public function testValidateValueEdgeCases(): void
+    {
+        $val = new FileValidator();
+        $result = $this->invokeMethod($val, 'validateValue', ['not an uploaded file']);
+        $this->assertEquals([$val->uploadRequired, []], $result);
+
+        $file = new UploadedFile(['error' => 999, 'name' => 'test.txt']);
+        $result = $this->invokeMethod($val, 'validateValue', [$file]);
+        $this->assertEquals([$val->message, []], $result);
+    }
+
+    public function testValidateExtensionEdgeCases(): void
+    {
+        $val = new FileValidator(['extensions' => ['jpg']]);
+
+        $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.jpg']);
+        $this->assertFalse(@$this->invokeMethod($val, 'validateExtension', [$file]));
+    }
+
+    public function testValidateMimeTypeNull(): void
+    {
+        $val = new FileValidator(['mimeTypes' => ['image/png']]);
+        $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.png']);
+
+        $this->assertFalse(@$this->invokeMethod($val, 'validateMimeType', [$file]));
+    }
+
+    public function testValidateExtensionMismatchMimeType(): void
+    {
+        $val = new FileValidator([
+            'extensions' => ['jpg'],
+            'checkExtensionByMimeType' => true,
+        ]);
+        // test.txt has mime text/plain, extensionsByMimeType should not contain 'jpg'
+        $filePath = Yii::getAlias('@yiiunit/framework/validators/data/mimeType/test.txt');
+        $file = new UploadedFile([
+            'tempName' => $filePath,
+            'name' => 'test.jpg' // extension jpg, but content is txt
+        ]);
+        $this->assertFalse($this->invokeMethod($val, 'validateExtension', [$file]));
+    }
+
+    public function testValidateExtensionEmptyExtensions(): void
+    {
+        $val = new FileValidator([
+            'extensions' => [],
+            'checkExtensionByMimeType' => false,
+        ]);
+        $file = new UploadedFile(['name' => 'test.jpg']);
+        $this->assertTrue($this->invokeMethod($val, 'validateExtension', [$file]));
+    }
+
+    public function testGetClientOptionsUploadRequired(): void
+    {
+        $val = new FileValidator(['skipOnEmpty' => false]);
+        $model = new FakedValidationModel();
+        $options = $val->getClientOptions($model, 'attr_files');
+        $this->assertArrayHasKey('uploadRequired', $options);
     }
 }

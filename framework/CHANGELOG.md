@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
 - Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
+- Enh #20760: Suppress PHP warning from `getimagesize()` in `ImageValidator::validateImage()` since the error is already handled by the return value check (WarLikeLaux)
 
 
 2.0.54 January 09, 2026

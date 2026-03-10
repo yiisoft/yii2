@@ -396,4 +396,45 @@ class IpValidatorTest extends TestCase
         $this->assertEquals('fa01::2/614', $model->attr_ip);
         $this->assertEquals('attr_ip contains wrong subnet mask.', $model->getFirstError('attr_ip'));
     }
+
+    public function testValidateIPv4NotAllowed(): void
+    {
+        $val = new IpValidator(['ipv4' => false]);
+        $this->assertFalse($val->validate('127.0.0.1'));
+        $m = new FakedValidationModel();
+        $m->attr_ip = '127.0.0.1';
+        $val->validateAttribute($m, 'attr_ip');
+        $this->assertEquals('attr_ip must not be an IPv4 address.', $m->getFirstError('attr_ip'));
+    }
+
+    public function testValidateIPv6NotAllowed(): void
+    {
+        $val = new IpValidator(['ipv6' => false]);
+        $this->assertFalse($val->validate('::1'));
+        $m = new FakedValidationModel();
+        $m->attr_ip = '::1';
+        $val->validateAttribute($m, 'attr_ip');
+        $this->assertEquals('attr_ip must not be an IPv6 address.', $m->getFirstError('attr_ip'));
+    }
+
+    public function testPrepareRangesDoubleNegation(): void
+    {
+        $val = new IpValidator();
+        $val->networks['test'] = ['!10.0.0.1', '192.168.0.1'];
+        $val->setRanges(['!test']);
+        $this->assertEquals(['10.0.0.1', '!192.168.0.1'], $val->getRanges());
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $this->mockApplication();
+        $validator = new IpValidator(['skipOnEmpty' => true]);
+        $model = new FakedValidationModel();
+        $model->attr_ip = '127.0.0.1';
+        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+
+        $result = $validator->clientValidateAttribute($model, 'attr_ip', $view);
+        $this->assertStringContainsString('yii.validation.ip', $result);
+        $this->assertStringContainsString('skipOnEmpty', $result);
+    }
 }
