@@ -418,7 +418,6 @@ class CacheControllerSqliteTest extends TestCase
             ->setConstructorArgs([null, null])
             ->onlyMethods(['confirm'])
             ->getMock();
-        $controller->interactive = false;
         $controller->method('confirm')->willReturn(false);
 
         $result = $controller->actionFlush('arrayCache');
@@ -449,7 +448,6 @@ class CacheControllerSqliteTest extends TestCase
             ->setConstructorArgs([null, null])
             ->onlyMethods(['confirm'])
             ->getMock();
-        $controller->interactive = false;
         $controller->method('confirm')->willReturn(false);
 
         $result = $controller->actionFlushSchema('db');

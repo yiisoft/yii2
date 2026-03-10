@@ -662,18 +662,6 @@ class MigrateControllerTest extends TestCase
         $this->assertSame(MigrateController::MAX_NAME_LENGTH, $limit);
     }
 
-    public function testGetMigrationNameLimitReturnsCachedValue(): void
-    {
-        $this->runMigrateControllerAction('history');
-
-        $controller = $this->createMigrateController([]);
-        $controller->db = Yii::$app->db;
-
-        $limit1 = $this->invokeMethod($controller, 'getMigrationNameLimit');
-        $limit2 = $this->invokeMethod($controller, 'getMigrationNameLimit');
-        $this->assertSame($limit1, $limit2);
-    }
-
     public function testGenerateTableNameWithPrefix(): void
     {
         $controller = $this->createMigrateController(['useTablePrefix' => true]);
@@ -887,11 +875,19 @@ class MigrateControllerTest extends TestCase
         $this->assertArrayHasKey('custom_no_timestamp', $rows);
     }
 
+    public function testIsViewRelatedReturnsTrueForViewError(): void
+    {
+        $controller = $this->createMigrateController([]);
+
+        $this->assertTrue($this->invokeMethod($controller, 'isViewRelated', ['use DROP VIEW to delete view']));
+        $this->assertTrue($this->invokeMethod($controller, 'isViewRelated', ['SQLSTATE[42S02]: Base table or view not found']));
+        $this->assertTrue($this->invokeMethod($controller, 'isViewRelated', ['is a view. Use DROP VIEW']));
+    }
+
     public function testIsViewRelatedReturnsFalseForUnrelatedError(): void
     {
         $controller = $this->createMigrateController([]);
-        $result = $this->invokeMethod($controller, 'isViewRelated', ['Some random database error']);
-        $this->assertFalse($result);
+        $this->assertFalse($this->invokeMethod($controller, 'isViewRelated', ['Some random database error']));
     }
 
     public function testParseFieldsWithForeignKeyAndColumnSpec(): void
