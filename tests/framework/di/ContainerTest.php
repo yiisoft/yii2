@@ -166,6 +166,7 @@ class ContainerTest extends TestCase
 
         // use component of application
         $callback = function ($param, QuxInterface $qux, Bar $bar) {
+            /** @var Qux $qux */
             return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
         };
         $result = Yii::$container->invoke($callback, ['D426']);
@@ -173,6 +174,7 @@ class ContainerTest extends TestCase
 
         // another component of application
         $callback = function ($param, QuxInterface $qux2, $other = 'default') {
+            /** @var Qux $qux2 */
             return [$param, $qux2 instanceof Qux, $qux2->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['M2792684']);
@@ -180,6 +182,7 @@ class ContainerTest extends TestCase
 
         // component not belong application
         $callback = function ($param, QuxInterface $notBelongApp, $other) {
+            /** @var Qux $notBelongApp */
             return [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);

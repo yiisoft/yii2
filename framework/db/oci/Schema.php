@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,7 @@ use yii\db\Schema as BaseSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of ColumnSchema
+ * @template T of ColumnSchema = ColumnSchema
  * @extends BaseSchema<T>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface
@@ -401,10 +402,7 @@ SQL;
      * Creates ColumnSchema instance.
      *
      * @param array $column
-     * @return ColumnSchema
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @return T
      */
     protected function createColumn($column)
     {

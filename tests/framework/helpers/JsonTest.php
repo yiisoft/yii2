@@ -231,7 +231,17 @@ PHP
             $json = "{'a': '1'}";
             Json::decode($json);
         } catch (InvalidArgumentException $e) {
-            $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+            if (PHP_VERSION_ID >= 80600) {
+                $this->assertStringContainsString(
+                    Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'],
+                    $e->getMessage(),
+                );
+            } else {
+                $this->assertSame(
+                    Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'],
+                    $e->getMessage(),
+                );
+            }
         }
 
         // unsupported type since PHP 5.5
@@ -241,10 +251,16 @@ PHP
             Json::encode($data);
             fclose($fp);
         } catch (InvalidArgumentException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
+            if (PHP_VERSION_ID >= 80600) {
+                $this->assertStringContainsString(
+                    Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'],
+                    $e->getMessage(),
+                );
             } else {
-                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+                $this->assertSame(
+                    Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'],
+                    $e->getMessage(),
+                );
             }
         }
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -31,7 +32,7 @@ use yii\web\Request;
  * @author Dmitry Dorogin <dmirogin@ya.ru>
  * @since 2.0.13
  *
- * @template T of Component
+ * @template T of Component = Component
  * @extends ActionFilter<T>
  */
 class AjaxFilter extends ActionFilter

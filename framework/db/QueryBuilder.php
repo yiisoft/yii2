@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -39,7 +40,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * The prefix for automatically generated query binding parameters.
      */
     public const PARAM_PREFIX = ':qp';
-
     /**
      * @var Connection the database connection.
      */
@@ -319,8 +319,9 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         if ($this->expressionBuilders[$className] === __CLASS__) {
-            /** @phpstan-var $this&ExpressionBuilderInterface */
-            return $this;
+            /** @var $this&ExpressionBuilderInterface $result */
+            $result = $this;
+            return $result;
         }
 
         if (!is_object($this->expressionBuilders[$className])) {
@@ -406,9 +407,6 @@ class QueryBuilder extends \yii\base\BaseObject
      * @return array array of column names, values and params.
      * @throws InvalidArgumentException if query's select does not contain named parameters only.
      * @since 2.0.11
-     *
-     * @phpstan-param Schema<ColumnSchema> $schema
-     * @psalm-param Schema<ColumnSchema> $schema
      */
     protected function prepareInsertSelectSubQuery($columns, $schema, $params = [])
     {

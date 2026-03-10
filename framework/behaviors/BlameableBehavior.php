@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -54,7 +55,7 @@ use yii\db\BaseActiveRecord;
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
  *
- * @template T of BaseActiveRecord
+ * @template T of BaseActiveRecord = BaseActiveRecord
  * @extends AttributeBehavior<T>
  */
 class BlameableBehavior extends AttributeBehavior

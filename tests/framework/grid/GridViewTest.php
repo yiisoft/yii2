@@ -208,4 +208,100 @@ class GridViewTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    public function testFilterSelector(): void
+    {
+        $this->mockWebApplication(
+            [
+                'components' => [
+                    'assetManager' => [
+                        'bundles' => false,
+                    ],
+                    'request' => [
+                        'scriptFile' => __DIR__ . '/baseUrl/index.php',
+                        'scriptUrl'  => '/baseUrl/index.php',
+                        'class' => 'yii\web\Request',
+                        'cookieValidationKey' => '123',
+                        'hostInfo' => 'http://example.com/',
+                        'url' => '/base/index.php&r=site%2Fcurrent&id=42',
+                    ],
+                    'urlManager' => [
+                        'class' => 'yii\web\UrlManager',
+                        'baseUrl' => '/base',
+                        'scriptUrl' => '/base/index.php',
+                        'hostInfo' => 'http://example.com/',
+                    ],
+                ],
+            ]
+        );
+
+        $view = Yii::$app->getView();
+        // use renderAjax so the javascript gets baked into the HTML
+        $html = $view->renderAjax(
+            '@yiiunit/data/views/widgets/GridView/gridview.php',
+            [
+                'options' => [
+                    'dataProvider'   => new ArrayDataProvider(['allModels' => []]),
+                    'id'             => 'test_grid_view',
+                    'filterSelector' => 'foobar',
+                ]
+            ]
+        );
+        $this->assertStringContainsString(
+            '"filterSelector":"#test_grid_view-filters input, #test_grid_view-filters select, foobar"',
+            $html
+        );
+        $html = $view->renderAjax(
+            '@yiiunit/data/views/widgets/GridView/gridview.php',
+            [
+                'options' => [
+                    'dataProvider'           => new ArrayDataProvider(['allModels' => []]),
+                    'id'                     => 'test_grid_view',
+                    'filterSelector'         => 'foobar',
+                    'overrideFilterSelector' => true
+                ]
+            ]
+        );
+        $this->assertStringNotContainsString(
+            '#test_grid_view-filters input, #test_grid_view-filters select',
+            $html
+        );
+        $this->assertStringContainsString(
+            '"filterSelector":"foobar"',
+            $html
+        );
+        $html = $view->renderAjax(
+            '@yiiunit/data/views/widgets/GridView/gridview.php',
+            [
+                'options' => [
+                    'dataProvider'   => new ArrayDataProvider(['allModels' => []]),
+                    'id'             => 'test_grid_view',
+                    'filterSelector' => static fn($widgetId, $filterId) => "$widgetId foo $filterId bar",
+                ]
+            ]
+        );
+        $this->assertStringContainsString(
+            '"filterSelector":"#test_grid_view-filters input, #test_grid_view-filters select, test_grid_view foo test_grid_view-filters bar"',
+            $html
+        );
+        $html = $view->renderAjax(
+            '@yiiunit/data/views/widgets/GridView/gridview.php',
+            [
+                'options' => [
+                    'dataProvider'           => new ArrayDataProvider(['allModels' => []]),
+                    'id'                     => 'test_grid_view',
+                    'filterSelector'         => static fn($widgetId, $filterId) => "$widgetId foo $filterId bar",
+                    'overrideFilterSelector' => true
+                ]
+            ]
+        );
+        $this->assertStringNotContainsString(
+            '#test_grid_view-filters input, #test_grid_view-filters select',
+            $html
+        );
+        $this->assertStringContainsString(
+            '"filterSelector":"test_grid_view foo test_grid_view-filters bar"',
+            $html
+        );
+    }
 }

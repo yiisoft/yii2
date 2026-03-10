@@ -49,3 +49,21 @@ parameters:
 			message: "#^Parameter \\&\\$constraints by\\-ref type of method yii\\\\db\\\\QueryBuilder\\:\\:getTableUniqueColumnNames\\(\\) expects array\\<yii\\\\db\\\\Constraint\\>\\, array\\<string\\, yii\\\\db\\\\Constraint\\>\\|false given\\.$#"
 			count: 1
 			path: framework/db/QueryBuilder.php
+
+		# PHP 7.4 does not have enums, so we ignore these errors.
+		-
+			message: "#^Access to constant Active on an unknown class yiiunit\\\\framework\\\\db\\\\enums\\\\StatusTypeString\\.$#"
+			count: 3
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
+
+		# PHP 7.4 does not have enums, so we ignore these errors.
+		-
+			message: "#^PHPDoc tag \\@property for property yiiunit\\\\framework\\\\behaviors\\\\ActiveRecordAttributeTypecastWithEnum\\:\\:\\$status contains unknown class yiiunit\\\\framework\\\\db\\\\enums\\\\StatusTypeString\\.$#"
+			count: 1
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
+
+		# PHP 7.4 does not have enums, so we ignore these errors.
+		-
+			message: "#^Class yiiunit\\\\framework\\\\db\\\\enums\\\\StatusTypeString not found\\.$#"
+			count: 1
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php

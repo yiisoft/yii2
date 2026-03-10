@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -11,7 +12,6 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionEvent;
 use yii\base\Behavior;
-use yii\base\Module;
 use yii\web\Controller;
 use yii\web\MethodNotAllowedHttpException;
 
@@ -91,9 +91,6 @@ class VerbFilter extends Behavior
      * @param ActionEvent $event
      * @return bool
      * @throws MethodNotAllowedHttpException when the request method is not allowed.
-     *
-     * @phpstan-param ActionEvent<Action<Controller<Module>>> $event
-     * @psalm-param ActionEvent<Action<Controller<Module>>> $event
      */
     public function beforeAction($event)
     {

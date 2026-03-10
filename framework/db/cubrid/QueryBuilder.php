@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,7 +10,6 @@ namespace yii\db\cubrid;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
-use yii\db\ColumnSchema;
 use yii\db\Exception;
 use yii\db\Expression;
 
@@ -184,10 +184,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropIndex($name, $table)
     {
-        /**
-         * @var Schema $schema
-         * @phpstan-var Schema<ColumnSchema>
-         */
+        /** @var Schema $schema */
         $schema = $this->db->getSchema();
         foreach ($schema->getTableUniques($table) as $unique) {
             if ($unique->name === $name) {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -79,7 +80,6 @@ class Pagination extends BaseObject implements Linkable
     public const LINK_PREV = 'prev';
     public const LINK_FIRST = 'first';
     public const LINK_LAST = 'last';
-
     /**
      * @var string name of the parameter storing the current page index.
      * @see params

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -105,7 +106,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
-            /** @var View */
+            /** @var View $view */
             $view = Yii::$app->view;
             $view->clear();
             $result = Yii::$app->runAction($this->errorAction);
@@ -266,7 +267,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             return ob_get_clean();
         }
 
-        /** @var View */
+        /** @var View $view */
         $view = Yii::$app->getView();
         $view->clear();
 

@@ -19,7 +19,7 @@ use yiiunit\TestCase;
 class BaseObjectTest extends TestCase
 {
     /**
-     * @var NewObject
+     * @var NewObject|null
      */
     protected $object;
 
@@ -71,6 +71,8 @@ class BaseObjectTest extends TestCase
     {
         $this->assertSame('default', $this->object->Text);
         $this->expectException('yii\base\UnknownPropertyException');
+        // We intentionally access a non-existent property to test that an exception is thrown
+        // @phpstan-ignore property.notFound
         $value2 = $this->object->Caption;
     }
 
@@ -80,6 +82,8 @@ class BaseObjectTest extends TestCase
         $this->object->Text = $value;
         $this->assertEquals($value, $this->object->Text);
         $this->expectException('yii\base\UnknownPropertyException');
+        // We intentionally access a non-existent property to test that an exception is thrown
+        // @phpstan-ignore property.notFound
         $this->object->NewMember = $value;
     }
 
@@ -123,6 +127,8 @@ class BaseObjectTest extends TestCase
     public function testCallUnknownMethod(): void
     {
         $this->expectException('yii\base\UnknownMethodException');
+        // We intentionally call a non-existent method to test that an exception is thrown
+        // @phpstan-ignore method.notFound
         $this->object->unknownMethod();
     }
 
@@ -164,7 +170,14 @@ class BaseObjectTest extends TestCase
     }
 }
 
-
+/**
+ * @property mixed $Text
+ * @property mixed $text
+ * @property-read self $object
+ * @property-read callable $execute
+ * @property-read array<array-key, mixed> $items
+ * @property-write mixed $writeOnly
+ */
 class NewObject extends BaseObject
 {
     private $_object = null;

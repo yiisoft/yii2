@@ -1,4 +1,3 @@
----
 name: static analysis
 
 permissions:
@@ -35,45 +34,19 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   phpstan:
-    name: PHP ${{ matrix.php }}-PHPStan
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@master
+    with:
+      configuration: phpstan.dist.neon
+      concurrency-group: phpstan-${{ github.ref }}
+      extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      php-version: '["8.5"]'
 
-    env:
-      PHP_EXTENSIONS: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
-
-    steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
-
-      - name: Checkout.
-        uses: actions/checkout@v5
-
-      - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
-        with:
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
-          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
-          php-version: ${{ matrix.php }}
-          tools: cs2pr, pie
-
-      - name: Static analysis PHP 7.x.
-        if: matrix.php == '7.3' || matrix.php == '7.4'
-        run: vendor/bin/phpstan analyse --configuration=phpstan-7x.dist.neon --error-format=checkstyle | cs2pr
-
-      - name: Static analysis PHP 8.x.
-        if: matrix.php != '7.3' && matrix.php != '7.4'
-        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
+  phpstan-7x:
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@master
+    with:
+      configuration: phpstan-7x.dist.neon
+      concurrency-group: phpstan7x-${{ github.ref }}
+      extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      php-version: '["7.4"]'

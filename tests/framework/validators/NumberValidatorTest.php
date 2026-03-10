@@ -510,6 +510,38 @@ class NumberValidatorTest extends TestCase
         $this->assertSame('attr_number is too big.', $msgs[0]);
     }
 
+    public function testGetClientOptions(): void
+    {
+        $val = new NumberValidator(['min' => 5, 'max' => 10, 'skipOnEmpty' => false]);
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => 7]);
+        $options = $val->getClientOptions($model, 'attr_num');
+
+        $this->assertStringContainsString('attr_num', $options['message']);
+        $this->assertSame(5, $options['min']);
+        $this->assertStringContainsString('attr_num', $options['tooSmall']);
+        $this->assertStringContainsString('5', $options['tooSmall']);
+        $this->assertSame(10, $options['max']);
+        $this->assertStringContainsString('attr_num', $options['tooBig']);
+        $this->assertStringContainsString('10', $options['tooBig']);
+        $this->assertArrayNotHasKey('skipOnEmpty', $options);
+    }
+
+    public function testGetClientOptionsSkipOnEmpty(): void
+    {
+        $val = new NumberValidator(['skipOnEmpty' => true]);
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => 7]);
+        $options = $val->getClientOptions($model, 'attr_num');
+        $this->assertSame(1, $options['skipOnEmpty']);
+    }
+
+    public function testGetClientOptionsIntegerPattern(): void
+    {
+        $val = new NumberValidator(['integerOnly' => true]);
+        $model = FakedValidationModel::createWithAttributes(['attr_num' => 7]);
+        $options = $val->getClientOptions($model, 'attr_num');
+        $this->assertStringContainsString('integer', $options['message']);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/3118
      */
@@ -609,6 +641,13 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->validate("\t1.1\t"));
         $this->assertFalse($val->validate("\t1.1"));
         $this->assertFalse($val->validate("1.1\t"));
+    }
+
+    public function testValidateValueRejectsArrayWhenAllowArrayIsFalse(): void
+    {
+        $val = new NumberValidator();
+        $this->assertFalse($val->allowArray);
+        $this->assertFalse($val->validate([1, 2, 3]));
     }
 }
 
