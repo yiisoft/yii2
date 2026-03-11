@@ -51,7 +51,7 @@ jobs:
       extensions: curl, intl, oci8, pdo, pdo_oci
       hook: docker exec -i database sqlplus -s system/oracle@//localhost/FREE < tests/data/oci/optimize_for_tests.sql
       os: '["ubuntu-22.04"]'
-      php-version: '["8.5"]'
+      php-version: '["7.4","8.5"]'
       phpunit-group: oci
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

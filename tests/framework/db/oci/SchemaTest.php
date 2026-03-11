@@ -230,6 +230,43 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         ], $uniqueIndexes);
     }
 
+    /**
+     * Verifies that LOB indexes (internal Oracle indexes for CLOB/BLOB columns) are excluded from
+     * {@see \yii\db\oci\Schema::loadTableIndexes()} results, preventing `null` column names and PHP deprecation
+     * warnings in {@see \yii\db\oci\Schema::quoteColumnName()}.
+     *
+     * @see https://github.com/yiisoft/yii2/pull/20697
+     */
+    public function testLobIndexesExcluded(): void
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema('lob_test') !== null) {
+            $db->createCommand()->dropTable('lob_test')->execute();
+        }
+
+        $db->createCommand()->setSql(
+            'CREATE TABLE "lob_test" ("id" NUMBER(10) NOT NULL, "content" CLOB, "data" BLOB, PRIMARY KEY ("id"))'
+        )->execute();
+
+        $indexes = $db->getSchema()->getTableIndexes('lob_test', true);
+
+        foreach ($indexes as $index) {
+            foreach ($index->columnNames as $columnName) {
+                $this->assertNotNull(
+                    $columnName,
+                    'LOB index with "NULL" column name should be excluded',
+                );
+                $this->assertIsString(
+                    $columnName,
+                    'Index column name must be a string',
+                );
+            }
+        }
+
+        $db->createCommand()->dropTable('lob_test')->execute();
+    }
+
     public function testCompositeFk(): void
     {
         $this->markTestSkipped('Should be fixed.');
