@@ -102,6 +102,7 @@ class Security extends Component
      * @return bool if LibreSSL should be used
      * Use version is 2.1.5 or higher.
      * @since 2.0.36
+     * @deprecated since 2.0.55. This method is not used internally. Will be removed in 2.2.
      */
     protected function shouldUseLibreSSL()
     {

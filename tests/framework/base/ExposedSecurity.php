@@ -31,11 +31,4 @@ class ExposedSecurity extends Security
         return parent::pbkdf2($algo, $password, $salt, $iterations, $length);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function shouldUseLibreSSL()
-    {
-        return parent::shouldUseLibreSSL();
-    }
 }

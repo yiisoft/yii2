@@ -1131,19 +1131,6 @@ TEXT;
         ];
     }
 
-    public function testShouldUseLibreSSL(): void
-    {
-        $result = $this->security->shouldUseLibreSSL();
-        $this->assertIsBool($result);
-    }
-
-    public function testShouldUseLibreSSLCaching(): void
-    {
-        $first = $this->security->shouldUseLibreSSL();
-        $second = $this->security->shouldUseLibreSSL();
-        $this->assertSame($first, $second);
-    }
-
     public function testEncryptByPasswordInvalidCipher(): void
     {
         $this->security->cipher = 'INVALID-CIPHER';
