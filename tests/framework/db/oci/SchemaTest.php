@@ -251,6 +251,15 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $indexes = $db->getSchema()->getTableIndexes('lob_test', true);
 
+        $this->assertCount(1, $indexes);
+
+        $primaryIndexes = array_values(
+            array_filter($indexes, static fn ($index) => $index->isPrimary),
+        );
+
+        $this->assertCount(1, $primaryIndexes);
+        $this->assertSame(['id'], $primaryIndexes[0]->columnNames);
+
         foreach ($indexes as $index) {
             foreach ($index->columnNames as $columnName) {
                 $this->assertNotNull(
