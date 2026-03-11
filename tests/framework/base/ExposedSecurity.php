@@ -30,5 +30,4 @@ class ExposedSecurity extends Security
     {
         return parent::pbkdf2($algo, $password, $salt, $iterations, $length);
     }
-
 }
