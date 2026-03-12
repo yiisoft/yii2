@@ -52,6 +52,58 @@ parameters:
 
 		# PHP 7.4 does not have enums, so we ignore these errors.
 		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: "#^Class UnitEnum not found\\.$#"
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: "#^Access to property \\$name on an unknown class UnitEnum\\.$#"
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		# PHP 7.4 does not have enums, so we ignore these errors.
+		-
+			message: "#^Class BackedEnum not found\\.$#"
+			count: 2
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: "#^Access to property \\$value on an unknown class BackedEnum\\.$#"
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: "#^Class UnitEnum not found\\.$#"
+			count: 2
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: "#^Access to property \\$name on an unknown class UnitEnum\\.$#"
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: "#^Call to an undefined static method BackedEnum&UnitEnum\\:\\:cases\\(\\)\\.$#"
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: "#^Call to an undefined static method UnitEnum\\:\\:cases\\(\\)\\.$#"
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		# PHP 7.4 does not have enums, so we ignore these errors.
+		-
 			message: "#^Access to constant Active on an unknown class yiiunit\\\\framework\\\\db\\\\enums\\\\StatusTypeString\\.$#"
 			count: 3
 			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php

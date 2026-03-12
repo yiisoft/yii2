@@ -102,6 +102,7 @@ class RangeValidatorEnumTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_status' => 'bogus']);
         $val->validateAttribute($m, 'attr_status');
         $this->assertTrue($m->hasErrors('attr_status'));
+        $this->assertSame(['attr_status is invalid.'], $m->getErrors('attr_status'));
     }
 
     public function testGetClientOptionsWithEnumCasesInRange(): void
