@@ -25,6 +25,8 @@ Yii Framework 2 Change Log
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
 - Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
+- Bug #20794: Fix PHP enum support in `BaseHtml::getAttributeValue()` and `RangeValidator::getClientOptions()` (WarLikeLaux)
+- Enh #20794: Add `enum` and `target` properties to `RangeValidator` for enum-based validation (WarLikeLaux)
 
 
 2.0.54 January 09, 2026

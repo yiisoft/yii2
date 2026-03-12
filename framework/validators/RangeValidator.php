@@ -50,6 +50,19 @@ class RangeValidator extends Validator
      * @var bool whether to allow array type attribute.
      */
     public $allowArray = false;
+    /**
+     * @var string|null the enum class name. If set, [[range]] will be automatically
+     * populated with enum values or names depending on [[target]].
+     * Requires PHP 8.1 or higher.
+     * @since 2.0.55
+     */
+    public $enum;
+    /**
+     * @var string whether to use enum case 'value' or 'name' when populating [[range]]
+     * from [[enum]]. Defaults to 'value' for backed enums. For unit enums only 'name' is supported.
+     * @since 2.0.55
+     */
+    public $target = 'value';
 
 
     /**
@@ -58,6 +71,26 @@ class RangeValidator extends Validator
     public function init()
     {
         parent::init();
+        if ($this->enum !== null) {
+            if (PHP_VERSION_ID < 80100) {
+                throw new InvalidConfigException('The "enum" property requires PHP 8.1 or higher.');
+            }
+            if (!is_subclass_of($this->enum, \UnitEnum::class)) {
+                throw new InvalidConfigException('The "enum" property must be a valid enum class.');
+            }
+            if ($this->target === 'value') {
+                if (!is_subclass_of($this->enum, \BackedEnum::class)) {
+                    throw new InvalidConfigException('The "value" target requires a backed enum. Use \'name\' for unit enums.');
+                }
+                $this->range = array_map(function ($case) {
+                    return $case->value;
+                }, $this->enum::cases());
+            } else {
+                $this->range = array_map(function ($case) {
+                    return $case->name;
+                }, $this->enum::cases());
+            }
+        }
         if (
             !is_array($this->range)
             && !($this->range instanceof \Closure)
@@ -125,7 +158,13 @@ class RangeValidator extends Validator
     {
         $range = [];
         foreach ($this->range as $value) {
-            $range[] = (string) $value;
+            if (PHP_VERSION_ID >= 80100 && $value instanceof \BackedEnum) {
+                $range[] = (string) $value->value;
+            } elseif (PHP_VERSION_ID >= 80100 && $value instanceof \UnitEnum) {
+                $range[] = $value->name;
+            } else {
+                $range[] = (string) $value;
+            }
         }
         $options = [
             'range' => $range,
