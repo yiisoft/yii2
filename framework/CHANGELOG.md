@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
 - Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
 - Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
+- Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 
 
 2.0.54 January 09, 2026
