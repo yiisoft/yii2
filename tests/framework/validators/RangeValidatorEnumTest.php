@@ -67,15 +67,29 @@ class RangeValidatorEnumTest extends TestCase
     public function testEnumUnitEnumWithValueTargetThrows(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('The "value" target requires a backed enum');
+        $this->expectExceptionMessage('The "value" target requires a backed enum. Use \'name\' for unit enums.');
         new RangeValidator(['enum' => Suit::class]);
     }
 
     public function testEnumInvalidClassThrows(): void
     {
         $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('The "enum" property must be a valid enum class');
+        $this->expectExceptionMessage('The "enum" property must be a valid enum class.');
         new RangeValidator(['enum' => \stdClass::class]);
+    }
+
+    public function testEnumNonStringThrows(): void
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "enum" property must be a valid enum class.');
+        new RangeValidator(['enum' => 123]);
+    }
+
+    public function testEnumInvalidTargetThrows(): void
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "target" property must be either "value" or "name".');
+        new RangeValidator(['enum' => StringStatus::class, 'target' => 'invalid']);
     }
 
     public function testEnumWithNotProperty(): void

@@ -84,7 +84,12 @@ parameters:
 
 		-
 			message: "#^Class UnitEnum not found\\.$#"
-			count: 2
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: "#^Function enum_exists not found\\.$#"
+			count: 1
 			path: framework/validators/RangeValidator.php
 
 		-

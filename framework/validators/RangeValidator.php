@@ -75,7 +75,7 @@ class RangeValidator extends Validator
             if (PHP_VERSION_ID < 80100) {
                 throw new InvalidConfigException('The "enum" property requires PHP 8.1 or higher.');
             }
-            if (!is_subclass_of($this->enum, \UnitEnum::class)) {
+            if (!is_string($this->enum) || !enum_exists($this->enum)) {
                 throw new InvalidConfigException('The "enum" property must be a valid enum class.');
             }
             if ($this->target === 'value') {
@@ -85,10 +85,12 @@ class RangeValidator extends Validator
                 $this->range = array_map(function ($case) {
                     return $case->value;
                 }, $this->enum::cases());
-            } else {
+            } elseif ($this->target === 'name') {
                 $this->range = array_map(function ($case) {
                     return $case->name;
                 }, $this->enum::cases());
+            } else {
+                throw new InvalidConfigException('The "target" property must be either "value" or "name".');
             }
         }
         if (
