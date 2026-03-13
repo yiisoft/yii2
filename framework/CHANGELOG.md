@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.55 under development
 ------------------------
 
-- Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
 - Bug #20705: Replace `$this` with `self` in generics in Psalm annotations (mspirkov)
 - Bug #20715: Adjust `JSON` helper error message assertions for `PHP 8.6` compatibility in `JsonTest` class (terabytesoftw)
 - Enh #20714: Allow overriding the `yii\grid\GridView`'s default `filterSelector`, allow using `Closure`s for `filterSelector` (chriscpty)
@@ -19,10 +18,15 @@ Yii Framework 2 Change Log
 - Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
 - Bug #20738: Fix `@param` annotation for `$value` parameter in `AssetManager::setConverter()` (mspirkov)
 - Bug #20739: Fix `@var` annotation for `BaseYii::$app` (mspirkov)
+- Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
 - Bug #20746: Fix `@var` annotations for `DbDependency::$db` and `DbDependency::$sql` (mspirkov)
 - Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
 - Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
+- Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
+- Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
+- Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
+- Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 - Enh #20780: Add configurable `ErrorHandler::$fallbackExceptionMessage` property (WarLikeLaux)
 
 
