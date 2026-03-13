@@ -1,6 +1,9 @@
 -- === Test-only settings: sacrifice durability for speed ===
 -- === NEVER use in production ===
 
+WHENEVER OSERROR EXIT 1
+WHENEVER SQLERROR EXIT SQL.SQLCODE
+
 -- Make commits return instantly (biggest win for write-heavy test suites)
 ALTER SYSTEM SET commit_logging = BATCH SCOPE=BOTH;
 ALTER SYSTEM SET commit_wait = NOWAIT SCOPE=BOTH;
