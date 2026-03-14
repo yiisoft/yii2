@@ -396,6 +396,119 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ], $actualParams);
     }
 
+    public function testBatchUpdateCompositeKey(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 10, 'name' => 'Tom'],
+            ['id' => 2, 'status' => 20, 'name' => 'Jerry'],
+        ], [], ['id', 'status'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 AND [[status]]=:qp1 THEN :qp2 WHEN [[id]]=:qp3 AND [[status]]=:qp4 THEN :qp5 ELSE [[name]] END WHERE ([[id]]=:qp6 AND [[status]]=:qp7) OR ([[id]]=:qp8 AND [[status]]=:qp9)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 10,
+            ':qp2' => 'Tom',
+            ':qp3' => 2,
+            ':qp4' => 20,
+            ':qp5' => 'Jerry',
+            ':qp6' => 1,
+            ':qp7' => 10,
+            ':qp8' => 2,
+            ':qp9' => 20,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithColumnsParameter(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            [1, 'active'],
+            [2, 'inactive'],
+        ], ['id', 'name'], ['id'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[name]] END WHERE [[id]] IN (:qp4, :qp5)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'active',
+            ':qp2' => 2,
+            ':qp3' => 'inactive',
+            ':qp4' => 1,
+            ':qp5' => 2,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithCondition(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 1],
+        ], [], ['id'], 'active=1', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE ([[id]] IN (:qp2)) AND (active=1)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 1,
+            ':qp2' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithConditionArray(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'name' => 'Tom'],
+        ], [], ['id'], ['status' => 1], $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[name]] END WHERE ([[id]] IN (:qp2)) AND ([[status]]=:qp3)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'Tom',
+            ':qp2' => 1,
+            ':qp3' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateAutoDetectPrimaryKey(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder(true, true)->batchUpdate('animal', [
+            ['id' => 1, 'type' => 'cat'],
+        ], [], [], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'UPDATE [[animal]] SET [[type]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[type]] END WHERE [[id]] IN (:qp2)',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'cat',
+            ':qp2' => 1,
+        ], $actualParams);
+    }
+
     public static function insertProvider(): array
     {
         return [
