@@ -563,6 +563,26 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
+     * Ensure empty-string messages are still extracted with the null-sentinel guard.
+     */
+    public function testCreateTranslationWithEmptyStringMessage(): void
+    {
+        $category = 'test.empty.category';
+        $sourceFileContent = "Yii::t('{$category}', '');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey(
+            '',
+            $messages,
+            "empty message key is missing in translation file. Command output:\n\n{$out}",
+        );
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/14016
      */
     public function testShouldNotMarkUnused(): void
