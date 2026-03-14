@@ -9,6 +9,7 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\Query;
@@ -617,6 +618,86 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function update($table, $columns, $condition, &$params)
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
+    {
+        if (!empty($columns)) {
+            $resolvedRows = [];
+            $columnCount = count($columns);
+            foreach ($rows as $row) {
+                if ($row instanceof \Traversable) {
+                    $row = iterator_to_array($row);
+                }
+                if (!is_array($row)) {
+                    throw new InvalidArgumentException('Each batch update row must be an array.');
+                }
+                if (count($row) !== $columnCount) {
+                    throw new InvalidArgumentException(
+                        'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
+                    );
+                }
+                $resolvedRows[] = array_combine($columns, array_values($row));
+            }
+            $rows = $resolvedRows;
+            $columns = [];
+        }
+
+        if (empty($keys)) {
+            $tableSchema = $this->db->getSchema()->getTableSchema($table);
+            if ($tableSchema !== null && !empty($tableSchema->primaryKey)) {
+                $keys = $tableSchema->primaryKey;
+            } else {
+                throw new InvalidConfigException(
+                    'The $keys parameter must be specified because the table "' . $table . '" has no primary key defined.'
+                );
+            }
+        }
+
+        $normalizedRows = [];
+        foreach ($rows as $row) {
+            if (!is_array($row)) {
+                $normalizedRows[] = $row;
+                continue;
+            }
+
+            $keyValues = [];
+            foreach ($keys as $keyCol) {
+                if (array_key_exists($keyCol, $row)) {
+                    $keyValues[$keyCol] = $row[$keyCol];
+                    unset($row[$keyCol]);
+                }
+            }
+            $row = $this->normalizeTableRowData($table, $row, $params);
+            foreach ($keyValues as $keyCol => $keyValue) {
+                $row[$keyCol] = $keyValue;
+            }
+            $normalizedRows[] = $row;
+        }
+
+        $sql = parent::batchUpdate($table, $normalizedRows, [], $keys, $condition, $params);
+        if ($sql === '' || empty($params)) {
+            return $sql;
+        }
+
+        $expandedParams = [];
+        $sql = preg_replace_callback('/:([a-zA-Z_][a-zA-Z0-9_]*)/', function ($matches) use (&$expandedParams, $params) {
+            $name = ':' . $matches[1];
+            if (!array_key_exists($name, $params)) {
+                return $matches[0];
+            }
+
+            $expandedName = ':qp' . count($expandedParams);
+            $expandedParams[$expandedName] = $params[$name];
+
+            return $expandedName;
+        }, $sql);
+        $params = $expandedParams;
+
+        return $sql;
     }
 
     /**

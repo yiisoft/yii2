@@ -532,6 +532,45 @@ class Command extends Component
     }
 
     /**
+     * Creates a batch UPDATE command.
+     *
+     * For example,
+     *
+     * ```php
+     * $connection->createCommand()->batchUpdate('user', [
+     *     ['id' => 1, 'name' => 'Tom', 'age' => 30],
+     *     ['id' => 2, 'name' => 'Jane'],
+     * ], [], ['id'])->execute();
+     * ```
+     *
+     * The method will properly escape the table and column names, and bind the values to be updated.
+     *
+     * Note that each row must contain the key column(s) and that key values must be unique.
+     *
+     * Also note that the created command is not executed until [[execute()]] is called.
+     *
+     * @param string $table the table to be updated.
+     * @param array|\Generator $rows the rows to be batch updated.
+     * When `$columns` is empty, each row must be associative (column => value).
+     * When `$columns` is specified, each row must be an indexed array matching the column order.
+     * @param array $columns list of column names. When specified, rows are treated as indexed arrays.
+     * @param array $keys the column(s) that uniquely identify each row. Supports composite keys.
+     * If empty, the primary key of the table will be used.
+     * @param string|array|\yii\db\ExpressionInterface $condition additional WHERE condition.
+     * @return $this the command object itself
+     * @throws \yii\base\InvalidConfigException if `$keys` is empty and the table has no primary key.
+     * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @since 2.0.55
+     */
+    public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '')
+    {
+        $params = [];
+        $sql = $this->db->getQueryBuilder()->batchUpdate($table, $rows, $columns, $keys, $condition, $params);
+
+        return $this->setSql($sql)->bindValues($params);
+    }
+
+    /**
      * Creates a command to insert rows into a database table if
      * they do not already exist (matching unique constraints),
      * or update them if they do.
