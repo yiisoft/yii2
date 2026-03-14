@@ -570,14 +570,14 @@ EOD;
                                         $skipping = Console::ansiFormat('Skipping line', [Console::FG_YELLOW]);
                                         $this->stdout("$skipping $line. Make sure both category and message are static strings.\n");
 
-                                        $fullMessage = '';
+                                        $fullMessage = null;
                                         break;
                                     }
                                     $fullMessage .= mb_substr($buffer[$i + 1][1], 1, -1);
                                     $i += 2;
                                 }
 
-                                if ($fullMessage !== '') {
+                                if ($fullMessage !== null) {
                                     $message = stripcslashes($fullMessage);
                                     $messages[$category][] = $message;
                                 }
