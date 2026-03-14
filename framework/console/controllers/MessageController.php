@@ -564,7 +564,7 @@ EOD;
                                 $fullMessage = mb_substr($buffer[2][1], 1, -1);
                                 $i = 3;
                                 while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {
-                                    if (!isset($buffer[$i + 1][1])) {
+                                    if (!is_array($buffer[$i + 1]) || $buffer[$i + 1][0] !== T_CONSTANT_ENCAPSED_STRING) {
                                         // invalid call or dynamic call we can't extract
                                         $line = Console::ansiFormat($this->getLine($buffer), [Console::FG_CYAN]);
                                         $skipping = Console::ansiFormat('Skipping line', [Console::FG_YELLOW]);
@@ -577,7 +577,7 @@ EOD;
                                     $i += 2;
                                 }
 
-                                if ($fullMessage) {
+                                if ($fullMessage !== '') {
                                     $message = stripcslashes($fullMessage);
                                     $messages[$category][] = $message;
                                 }

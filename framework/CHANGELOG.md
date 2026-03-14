@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
 - Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
+- Bug #17254: Fixed `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
 
 
 2.0.54 January 09, 2026
@@ -406,7 +407,6 @@ Yii Framework 2 Change Log
 - Bug #18988: Fix default value of `yii\console\controllers\MessageController::$translator` (WinterSilence)
 - Bug #18993: Load defaults by `attributes()` in `yii\db\ActiveRecord::loadDefaultValues()` (WinterSilence)
 - Bug #19021: Fix return type in PhpDoc `yii\db\Migration` functions `up()`, `down()`, `safeUp()` and `safeDown()` (WinterSilence, rhertogh)
-- Bug #17254: Fixed `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
 - Bug #19030: Add DI container usage to `yii\base\Widget::end()` (papppeter)
 - Bug #19031: Fix displaying console help for parameters with declared types (WinterSilence)
 - Bug #19096: Fix `Request::getIsConsoleRequest()` may return erroneously when testing a Web application in Codeception (WinterSilence)
