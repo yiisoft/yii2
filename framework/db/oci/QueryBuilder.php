@@ -9,12 +9,13 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yii\db\Query;
 use yii\helpers\StringHelper;
-use yii\db\ExpressionInterface;
 
 /**
  * QueryBuilder is the query builder for Oracle databases.
@@ -350,13 +351,40 @@ EOD;
      * {@inheritdoc}
      * @see https://docs.oracle.com/en/database/oracle/oracle-database/19/sqlrf/MERGE.html
      */
-    public function batchUpdate($table, $rows, $key, &$params = [])
+    public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
     {
         $schema = $this->db->getSchema();
-        if (($tableSchema = $schema->getTableSchema($table)) !== null) {
-            $columnSchemas = $tableSchema->columns;
-        } else {
-            $columnSchemas = [];
+        $tableSchema = $schema->getTableSchema($table);
+        $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
+
+        if (empty($keys)) {
+            if ($tableSchema !== null && !empty($tableSchema->primaryKey)) {
+                $keys = $tableSchema->primaryKey;
+            } else {
+                throw new InvalidConfigException(
+                    'The $keys parameter must be specified because the table "' . $table . '" has no primary key defined.'
+                );
+            }
+        }
+
+        if (!empty($columns)) {
+            $resolvedRows = [];
+            $columnCount = count($columns);
+            foreach ($rows as $row) {
+                if ($row instanceof \Traversable) {
+                    $row = iterator_to_array($row);
+                }
+                if (!is_array($row)) {
+                    throw new InvalidArgumentException('Each batch update row must be an array.');
+                }
+                if (count($row) !== $columnCount) {
+                    throw new InvalidArgumentException(
+                        'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
+                    );
+                }
+                $resolvedRows[] = array_combine($columns, array_values($row));
+            }
+            $rows = $resolvedRows;
         }
 
         $preparedRows = [];
@@ -369,23 +397,42 @@ EOD;
             if (!is_array($row)) {
                 throw new InvalidArgumentException('Each batch update row must be an array.');
             }
-            if (!array_key_exists($key, $row)) {
-                throw new InvalidArgumentException("Each batch update row must contain the \"$key\" column.");
+
+            $keyValues = [];
+            $keyHashParts = [];
+            foreach ($keys as $keyCol) {
+                if (!array_key_exists($keyCol, $row)) {
+                    throw new InvalidArgumentException(
+                        'Each batch update row must contain the "' . $keyCol . '" column.'
+                    );
+                }
+
+                $kv = isset($columnSchemas[$keyCol]) ? $columnSchemas[$keyCol]->dbTypecast($row[$keyCol]) : $row[$keyCol];
+                if ($kv instanceof ExpressionInterface || (!is_scalar($kv) && $kv !== null)) {
+                    throw new InvalidArgumentException(
+                        'Batch update key values must be scalar or null. Column "' . $keyCol . '" contains an invalid value.'
+                    );
+                }
+
+                $keyValues[$keyCol] = $kv;
+                $keyHashParts[] = gettype($kv) . ':' . var_export($kv, true);
             }
 
-            $keyValue = isset($columnSchemas[$key]) ? $columnSchemas[$key]->dbTypecast($row[$key]) : $row[$key];
-            if ($keyValue instanceof ExpressionInterface || (!is_scalar($keyValue) && $keyValue !== null)) {
-                throw new InvalidArgumentException("Batch update key values must be scalar or null. Column \"$key\" contains an invalid value.");
+            foreach ($keys as $keyCol) {
+                unset($row[$keyCol]);
             }
-
-            unset($row[$key]);
             if (empty($row)) {
                 continue;
             }
 
-            $keyHash = gettype($keyValue) . ':' . var_export($keyValue, true);
+            $keyHash = implode('|', $keyHashParts);
             if (isset($seenKeyValues[$keyHash])) {
-                throw new InvalidArgumentException("Duplicate batch update key value found for \"$key\".");
+                if (count($keys) === 1) {
+                    throw new InvalidArgumentException(
+                        'Duplicate batch update key value found for "' . $keys[0] . '".'
+                    );
+                }
+                throw new InvalidArgumentException('Duplicate batch update key values found.');
             }
             $seenKeyValues[$keyHash] = true;
 
@@ -397,7 +444,7 @@ EOD;
             }
 
             $preparedRows[] = [
-                'key' => $keyValue,
+                'keys' => $keyValues,
                 'values' => $row,
             ];
         }
@@ -406,7 +453,13 @@ EOD;
             return '';
         }
 
-        $keySourceAlias = '_bk';
+        $keySourceAliases = [];
+        $k = 0;
+        foreach ($keys as $keyCol) {
+            $keySourceAliases[$keyCol] = '_bk' . $k;
+            $k++;
+        }
+
         $sourceAliases = [];
         $setAliases = [];
         $i = 0;
@@ -419,8 +472,10 @@ EOD;
         $usingRows = [];
         foreach ($preparedRows as $preparedRow) {
             $selectParts = [];
-            $selectParts[] = $this->buildMergeBatchUpdateValue($key, $preparedRow['key'], $columnSchemas, $params)
-                . ' AS ' . $this->db->quoteColumnName($keySourceAlias);
+            foreach ($keys as $keyCol) {
+                $selectParts[] = $this->buildMergeBatchUpdateValue($keyCol, $preparedRow['keys'][$keyCol], $columnSchemas, $params)
+                    . ' AS ' . $this->db->quoteColumnName($keySourceAliases[$keyCol]);
+            }
             foreach ($sourceAliases as $column => $sourceAlias) {
                 if (array_key_exists($column, $preparedRow['values'])) {
                     $valueSql = $this->buildMergeBatchUpdateValue($column, $preparedRow['values'][$column], $columnSchemas, $params);
@@ -437,10 +492,21 @@ EOD;
 
         $targetAlias = 'T';
         $sourceAlias = 'S';
-        $quotedKey = $this->db->quoteColumnName($key);
-        $targetKey = $targetAlias . '.' . $quotedKey;
-        $sourceKey = $sourceAlias . '.' . $this->db->quoteColumnName($keySourceAlias);
-        $onCondition = $targetKey . '=' . $sourceKey . ' OR (' . $targetKey . ' IS NULL AND ' . $sourceKey . ' IS NULL)';
+
+        $onParts = [];
+        foreach ($keys as $keyCol) {
+            $targetKey = $targetAlias . '.' . $this->db->quoteColumnName($keyCol);
+            $sourceKey = $sourceAlias . '.' . $this->db->quoteColumnName($keySourceAliases[$keyCol]);
+            $onParts[] = '(' . $targetKey . '=' . $sourceKey . ' OR (' . $targetKey . ' IS NULL AND ' . $sourceKey . ' IS NULL))';
+        }
+        $onCondition = implode(' AND ', $onParts);
+
+        if ($condition !== '' && $condition !== []) {
+            $conditionSql = $this->buildCondition($condition, $params);
+            if ($conditionSql !== '') {
+                $onCondition .= ' AND (' . $conditionSql . ')';
+            }
+        }
 
         $updates = [];
         foreach ($sourceAliases as $column => $sourceColumnAlias) {

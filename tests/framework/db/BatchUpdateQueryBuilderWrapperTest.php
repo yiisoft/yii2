@@ -24,7 +24,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1, 'status' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame(
             'UPDATE "customer" SET "status"=CASE WHEN "id"=:qp0 THEN :qp1 ELSE "status" END WHERE "id" IN (:qp0)',
@@ -46,7 +46,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
                 'id' => 1,
                 'status' => 1,
             ]),
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame(
             'UPDATE "customer" SET "status"=CASE WHEN "id"=:qp0 THEN :qp1 ELSE "status" END WHERE "id" IN (:qp0)',
@@ -68,7 +68,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $queryBuilder->batchUpdate('customer', [
             ['status' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
     }
 
     public function testMssqlBatchUpdateWithKey(): void
@@ -78,7 +78,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1, 'status' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame(
             'UPDATE [customer] SET [status]=CASE WHEN [id]=:qp0 THEN :qp1 ELSE [status] END WHERE [id] IN (:qp2)',
@@ -101,7 +101,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
                 'id' => 1,
                 'status' => 1,
             ]),
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame(
             'UPDATE [customer] SET [status]=CASE WHEN [id]=:qp0 THEN :qp1 ELSE [status] END WHERE [id] IN (:qp2)',
@@ -124,7 +124,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $queryBuilder->batchUpdate('customer', [
             ['status' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
     }
 
     public function testMssqlBatchUpdateWithoutUpdatableColumnsReturnsEmpty(): void
@@ -134,7 +134,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame('', $sql);
         $this->assertSame([], $params);
@@ -147,7 +147,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1, 'status' => new \yii\db\Expression("'x:literal'")],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertStringContainsString("'x:literal'", $sql);
         $this->assertSame([
@@ -163,10 +163,10 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1, 'status' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame(
-            'MERGE INTO "customer" T USING (SELECT :qp0 AS "_bk", :qp1 AS "_v0", 1 AS "_s0" FROM DUAL) S ON (T."id"=S."_bk" OR (T."id" IS NULL AND S."_bk" IS NULL)) WHEN MATCHED THEN UPDATE SET T."status"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."status" END',
+            'MERGE INTO "customer" T USING (SELECT :qp0 AS "_bk0", :qp1 AS "_v0", 1 AS "_s0" FROM DUAL) S ON ((T."id"=S."_bk0" OR (T."id" IS NULL AND S."_bk0" IS NULL))) WHEN MATCHED THEN UPDATE SET T."status"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."status" END',
             $sql,
         );
         $this->assertSame([
@@ -185,10 +185,10 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
                 'id' => 1,
                 'status' => 1,
             ]),
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame(
-            'MERGE INTO "customer" T USING (SELECT :qp0 AS "_bk", :qp1 AS "_v0", 1 AS "_s0" FROM DUAL) S ON (T."id"=S."_bk" OR (T."id" IS NULL AND S."_bk" IS NULL)) WHEN MATCHED THEN UPDATE SET T."status"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."status" END',
+            'MERGE INTO "customer" T USING (SELECT :qp0 AS "_bk0", :qp1 AS "_v0", 1 AS "_s0" FROM DUAL) S ON ((T."id"=S."_bk0" OR (T."id" IS NULL AND S."_bk0" IS NULL))) WHEN MATCHED THEN UPDATE SET T."status"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."status" END',
             $sql,
         );
         $this->assertSame([
@@ -226,9 +226,9 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('type', [
             ['int_col' => '1', 'float_col' => '2.5'],
-        ], 'int_col', $params);
+        ], [], ['int_col'], '', $params);
 
-        $this->assertStringStartsWith('MERGE INTO "type" T USING (SELECT CAST(:qp0 AS NUMBER(10)) AS "_bk", CAST(:qp1 AS NUMBER) AS "_v0", 1 AS "_s0" FROM DUAL) S ON (T."int_col"=S."_bk" OR (T."int_col" IS NULL AND S."_bk" IS NULL)) WHEN MATCHED THEN UPDATE SET T."float_col"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."float_col" END', $sql);
+        $this->assertStringStartsWith('MERGE INTO "type" T USING (SELECT CAST(:qp0 AS NUMBER(10)) AS "_bk0", CAST(:qp1 AS NUMBER) AS "_v0", 1 AS "_s0" FROM DUAL) S ON ((T."int_col"=S."_bk0" OR (T."int_col" IS NULL AND S."_bk0" IS NULL))) WHEN MATCHED THEN UPDATE SET T."float_col"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."float_col" END', $sql);
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 2.5,
@@ -245,7 +245,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $queryBuilder->batchUpdate('customer', [
             ['status' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
     }
 
     public function testOciBatchUpdateInvalidRowType(): void
@@ -258,7 +258,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $queryBuilder->batchUpdate('customer', [
             'invalid',
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
     }
 
     public function testOciBatchUpdateInvalidKeyValue(): void
@@ -274,7 +274,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
                 'id' => new \yii\db\Expression('1'),
                 'status' => 1,
             ],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
     }
 
     public function testOciBatchUpdateDuplicateKeyValues(): void
@@ -288,7 +288,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $queryBuilder->batchUpdate('customer', [
             ['id' => 1, 'status' => 1],
             ['id' => 1, 'status' => 0],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
     }
 
     public function testOciBatchUpdateWithoutUpdatableColumns(): void
@@ -298,7 +298,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertSame('', $sql);
         $this->assertSame([], $params);
@@ -312,7 +312,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $sql = $queryBuilder->batchUpdate('customer', [
             ['id' => 1, 'status' => 1, 'name' => 'Tom'],
             ['id' => 2, 'status' => 0],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertStringContainsString('NULL AS "_v1", 0 AS "_s1"', $sql);
         $this->assertSame([
@@ -370,7 +370,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $sql = $queryBuilder->batchUpdate('type', [
             ['int_col' => 1, 'num_col' => 2.5, 'clob_col' => 'abc'],
             ['int_col' => 2, 'flag_col' => 1],
-        ], 'int_col', $params);
+        ], [], ['int_col'], '', $params);
 
         $this->assertStringContainsString('CAST(:qp1 AS NUMBER) AS "_v0"', $sql);
         $this->assertStringContainsString(':qp2 AS "_v1"', $sql);
@@ -424,7 +424,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $sql = $queryBuilder->batchUpdate('type', [
             ['int_col' => 1, 'name' => 'Tom', 'status' => 1],
             ['int_col' => 2, 'status' => 0],
-        ], 'int_col', $params);
+        ], [], ['int_col'], '', $params);
 
         $this->assertStringContainsString('CAST(:qp1 AS VARCHAR2(4000)) AS "_v0"', $sql);
         $this->assertStringContainsString('CAST(NULL AS VARCHAR2(4000)) AS "_v0"', $sql);
@@ -467,7 +467,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('type', [
             ['int_col' => 1, 'name' => 'Tom'],
-        ], 'int_col', $params);
+        ], [], ['int_col'], '', $params);
 
         $this->assertStringContainsString('CAST(:qp1 AS VARCHAR2(64)) AS "_v0"', $sql);
         $this->assertSame([
@@ -505,7 +505,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         $params = [];
         $sql = $queryBuilder->batchUpdate('type', [
             ['int_col' => 1, 'misc_col' => 'x'],
-        ], 'int_col', $params);
+        ], [], ['int_col'], '', $params);
 
         $this->assertStringContainsString(':qp1 AS "_v0"', $sql);
         $this->assertStringNotContainsString('CAST(:qp1 AS', $sql);
@@ -525,7 +525,7 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
                 'id' => 1,
                 'status' => new \yii\db\Expression('UPPER(status)'),
             ],
-        ], 'id', $params);
+        ], [], ['id'], '', $params);
 
         $this->assertStringContainsString('UPPER(status) AS "_v0"', $sql);
         $this->assertSame([

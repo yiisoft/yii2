@@ -161,7 +161,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             ['id' => $ids['u2@example.com'], 'address' => 'updated-a2'],
             ['id' => $ids['u3@example.com']],
             ['id' => $ids['u4@example.com'], 'name' => 'updated-u4'],
-        ], 'id')->execute();
+        ], [], ['id'])->execute();
 
         $rows = (new Query())
             ->select(['id', 'email', 'name', 'address', 'status'])

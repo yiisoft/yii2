@@ -341,7 +341,7 @@ SQL;
             ['id' => 2, 'address' => 'updated-a2'],
             ['id' => 3],
             ['id' => 4, 'name' => 'updated-u4'],
-        ], 'id')->execute();
+        ], [], ['id'])->execute();
 
         $rows = (new Query())
             ->select(['id', 'name', 'address', 'status'])
@@ -365,7 +365,7 @@ SQL;
         $result = $db->createCommand()->batchUpdate('customer', [
             ['id' => 1],
             ['id' => 2],
-        ], 'id')->execute();
+        ], [], ['id'])->execute();
 
         $this->assertSame(0, $result);
     }
@@ -476,7 +476,9 @@ SQL;
                     ['int_col' => 2, 'char_col' => new Expression('UPPER(:ph)', [':ph' => 'b'])],
                     ['int_col' => 3],
                 ],
-                'key' => 'int_col',
+                'columns' => [],
+                'keys' => ['int_col'],
+                'condition' => '',
                 'expected' => 'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END, [[char_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp2 WHEN [[int_col]]=:qp3 THEN UPPER(:ph) ELSE [[char_col]] END WHERE [[int_col]] IN (:qp0, :qp3)',
                 'expectedParams' => [
                     ':qp0' => 1,
@@ -489,7 +491,9 @@ SQL;
             'empty rows represented by ArrayObject' => [
                 'table' => 'type',
                 'rows' => new ArrayObject(),
-                'key' => 'int_col',
+                'columns' => [],
+                'keys' => ['int_col'],
+                'condition' => '',
                 'expected' => '',
                 'expectedParams' => [],
             ],
@@ -520,14 +524,16 @@ SQL;
      * @dataProvider batchUpdateSqlProvider
      * @param string $table
      * @param array|\Generator $rows
-     * @param string $key
+     * @param array $columns
+     * @param array $keys
+     * @param string $condition
      * @param string $expected
      * @param array $expectedParams
      */
-    public function testBatchUpdateSQL($table, $rows, $key, $expected, array $expectedParams = []): void
+    public function testBatchUpdateSQL($table, $rows, $columns, $keys, $condition, $expected, array $expectedParams = []): void
     {
         $command = $this->getConnection()->createCommand();
-        $command->batchUpdate($table, $rows, $key);
+        $command->batchUpdate($table, $rows, $columns, $keys, $condition);
         $command->prepare(false);
         $this->assertSame($this->replaceQuotes($expected), $command->getSql());
         $this->assertSame($expectedParams, $command->params);

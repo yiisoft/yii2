@@ -284,7 +284,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                         'name' => new Expression('UPPER(name)'),
                     ],
                 ],
-                'id',
+                [],
+                ['id'],
+                '',
                 'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[status]] END, [[name]]=CASE WHEN [[id]]=:qp4 THEN :qp5 WHEN [[id]]=:qp6 THEN UPPER(name) ELSE [[name]] END WHERE [[id]] IN (:qp7, :qp8, :qp9)',
                 [
                     ':qp0' => 1,
@@ -311,7 +313,9 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                         'status' => 0,
                     ],
                 ],
-                'id',
+                [],
+                ['id'],
+                '',
                 'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]] IS NULL THEN :qp0 WHEN [[id]]=:qp1 THEN :qp2 ELSE [[status]] END WHERE ([[id]] IN (:qp3) OR [[id]] IS NULL)',
                 [
                     ':qp0' => 1,
@@ -331,7 +335,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 'id' => 1,
                 'status' => 1,
             ]),
-        ], 'id', $actualParams);
+        ], [], ['id'], '', $actualParams);
 
         $this->assertSame(
             $this->replaceQuotes(
@@ -354,7 +358,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 'id' => 'k1',
                 'status' => 1,
             ],
-        ], 'id', $actualParams);
+        ], [], ['id'], '', $actualParams);
 
         $this->assertSame(
             $this->replaceQuotes(
@@ -377,7 +381,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 'int_col' => '1',
                 'float_col' => '2.5',
             ],
-        ], 'int_col', $actualParams);
+        ], [], ['int_col'], '', $actualParams);
 
         $this->assertSame(
             $this->replaceQuotes(

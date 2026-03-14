@@ -27,7 +27,7 @@ class MigrationTest extends \yiiunit\TestCase
             ->getMock();
         $command->expects($this->once())
             ->method('batchUpdate')
-            ->with('customer', [['id' => 1, 'status' => 1]], 'id')
+            ->with('customer', [['id' => 1, 'status' => 1]], [], ['id'], '')
             ->willReturnSelf();
         $command->expects($this->once())
             ->method('execute')
@@ -61,7 +61,7 @@ class MigrationTest extends \yiiunit\TestCase
             }
         };
         $migration->db = $connection;
-        $migration->batchUpdate('customer', [['id' => 1, 'status' => 1]], 'id');
+        $migration->batchUpdate('customer', [['id' => 1, 'status' => 1]], [], ['id']);
 
         $this->assertSame('update customer', $migration->beginDescription);
         $this->assertSame(42.0, $migration->endTime);

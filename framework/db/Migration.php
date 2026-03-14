@@ -252,15 +252,18 @@ class Migration extends Component implements MigrationInterface
      * Creates and executes a batch UPDATE SQL statement.
      * The method will properly escape the table and column names, and bind the values to be updated.
      * @param string $table the table to be updated.
-     * @param array $rows the rows to be batch updated. Each row must be in format (column => value).
-     * @param string $key the column that uniquely identifies each row.
+     * @param array $rows the rows to be batch updated.
+     * @param array $columns list of column names. When specified, rows are treated as indexed arrays.
+     * @param array $keys the column(s) that uniquely identify each row. If empty, the primary key is used.
+     * @param string|array|\yii\db\ExpressionInterface $condition additional WHERE condition.
+     * @throws \yii\base\InvalidConfigException if `$keys` is empty and the table has no primary key.
      * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
      * @since 2.0.55
      */
-    public function batchUpdate($table, $rows, $key)
+    public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '')
     {
         $time = $this->beginCommand("update $table");
-        $this->db->createCommand()->batchUpdate($table, $rows, $key)->execute();
+        $this->db->createCommand()->batchUpdate($table, $rows, $columns, $keys, $condition)->execute();
         $this->endCommand($time);
     }
 
