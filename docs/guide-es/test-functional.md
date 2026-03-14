@@ -14,8 +14,8 @@ web especial o una interfaz de usuario compleja en Javascript.
 Las pruebas funcionales se implementan con ayuda del _framework_ Codeception, que tiene
 una buena documentación:
 
-- [Codeception para el _framework_ Yii](http://codeception.com/for/yii)
-- [Tests funcionales de Codeception](http://codeception.com/docs/04-FunctionalTests)
+- [Codeception para el _framework_ Yii](https://codeception.com/for/yii)
+- [Tests funcionales de Codeception](https://codeception.com/docs/04-FunctionalTests)
 
 ## Ejecución de tests en las plantillas básica y avanzada
 

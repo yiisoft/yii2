@@ -1,7 +1,7 @@
 Bộ điều khiển (Controller)
 ===========
 
-Controller thuộc một phần trong mẫu thiết kế [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+Controller thuộc một phần trong mẫu thiết kế [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
 Controller là đối tượng được kế thừa từ class [[yii\base\Controller]] và chịu trách nhiệm xứ lý các yêu cầu và gửi phản hồi
 . Đặc biệt, sau khi tiếp nhận các yêu cầu điều khiển từ [ứng dụng](structure-applications.md),
 controllers sẽ phân tích thông tin yêu cầu được gửi đến, gửi dữ liệu qua [models](structure-models.md) để xử lý, và gán kết quả xử lý từ model
@@ -83,7 +83,7 @@ hoặc có định dạng sau nếu Controller được gán như một Module:
 ModuleID/ControllerID/ActionID
 ```
 
-Như vậy nếu user truy cập vào đường dẫn sau `http://hostname/index.php?r=site/index`, thì hành động `index` nằm trong bộ điều khiển `site`
+Như vậy nếu user truy cập vào đường dẫn sau `https://hostname/index.php?r=site/index`, thì hành động `index` nằm trong bộ điều khiển `site`
 sẽ được thực hiện. Để biết thêm thông tin về cách bộ định tuyến xác định các hành động, vui lòng tham khảo tại mục
 [Routing và URL Generation](runtime-routing.md).
 
@@ -179,7 +179,7 @@ Bạn có thể cấu hình [[yii\base\Application::controllerMap|controller map
 Mỗi ứng dụng đều có một Controller mặc định được mô tả qua thuộc tính [[yii\base\Application::defaultRoute]].
 Khi một yêu cầu không được mô tả cụ thể ở mục [route](#routes), thì route mặc định sẽ được gọi.
 Chẳng hạn [[yii\web\Application|Web applications]], có giá trị là `'site'`, trong khi đó [[yii\console\Application|ứng dụng console]],
-có route mặc định là `help`. Vì vậy, nếu truy cập vào URL sau `http://hostname/index.php`, thì Controller `site` sẽ được gọi và xử lý yêu cầu.
+có route mặc định là `help`. Vì vậy, nếu truy cập vào URL sau `https://hostname/index.php`, thì Controller `site` sẽ được gọi và xử lý yêu cầu.
 
 Bạn có thể thay đổi thông tin Controller mặc định tại mục [cấu hình ứng dung](structure-applications.md#application-configurations) như sau:
 
@@ -322,8 +322,8 @@ một đối tượng):
 ```php
 public function actionForward()
 {
-    // điều hướng tới URL http://example.com
-    return $this->redirect('http://example.com');
+    // điều hướng tới URL https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -353,13 +353,13 @@ class PostController extends Controller
 
 Các tham số cho action sẽ được dùng như sau và tương ứng với các yêu cầu khác nhau:
 
-* `http://hostname/index.php?r=post/view&id=123`: biến `$id` sẽ nhận giá trị là
+* `https://hostname/index.php?r=post/view&id=123`: biến `$id` sẽ nhận giá trị là
   `'123'`,  trong khi đó tham số `$version` nhận giá trị null vì không có đối số `version` được truyền lên.
-* `http://hostname/index.php?r=post/view&id=123&version=2`: biến `$id` và `$version` sẽ nhận giá trị tương ứng là
+* `https://hostname/index.php?r=post/view&id=123&version=2`: biến `$id` và `$version` sẽ nhận giá trị tương ứng là
    `'123'` và `'2'`.
-* `http://hostname/index.php?r=post/view`: ngoại lệ [[yii\web\BadRequestHttpException]] sẽ được gửi ra
+* `https://hostname/index.php?r=post/view`: ngoại lệ [[yii\web\BadRequestHttpException]] sẽ được gửi ra
   vì tham số `$id` không được gửi lên.
-* `http://hostname/index.php?r=post/view&id[]=123`: xảy ra ngoại lệ [[yii\web\BadRequestHttpException]] lý do vì
+* `https://hostname/index.php?r=post/view&id[]=123`: xảy ra ngoại lệ [[yii\web\BadRequestHttpException]] lý do vì
   tham số `$id` nhận dữ liệu là một mảng do vậy không hợp lệ `['123']`.
 
 Nếu bạn muốn tham số của action nhận dữ liệu là một mảng, bạn nên khai báo biên là `array`, như sau:
@@ -371,8 +371,8 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Nếu yêu cầu là `http://hostname/index.php?r=post/view&id[]=123`, thì tham số `$id` sẽ nhận giá trị là
- `['123']`. Nếu yêu cầu là `http://hostname/index.php?r=post/view&id=123`, tham số `$id` sẽ chỉ nhận
+Nếu yêu cầu là `https://hostname/index.php?r=post/view&id[]=123`, thì tham số `$id` sẽ nhận giá trị là
+ `['123']`. Nếu yêu cầu là `https://hostname/index.php?r=post/view&id=123`, tham số `$id` sẽ chỉ nhận
 các giá trị trong mảng là giống nhau bởi vì giá trị `'123'` không là mảng và sẽ tự động chuyển vào mảng.
 
 Ở ví dụ trên sẽ hướng dẫn các tham số trong mỗi action hoạt động trong ứng dụng Web. Với ứng dụng console,

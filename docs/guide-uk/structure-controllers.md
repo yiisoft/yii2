@@ -1,7 +1,7 @@
 Контролери
 ==========
 
-Контролери є частиною архітектури [MVC](http://uk.wikipedia.org/wiki/Модель-вид-контролер). Це об’єкти класів,
+Контролери є частиною архітектури [MVC](https://uk.wikipedia.org/wiki/Модель-вид-контролер). Це об’єкти класів,
 успадкованих від [[yii\base\Controller]] та відповідають за обробку запитів і генерування відповідей.
 Зокрема, після отримання контролю від [додатків](structure-applications.md), контролери проаналізують 
 вхідні дані, передадуть їх у [моделі](structure-models.md), додадуть результати моделі у
@@ -83,7 +83,7 @@ ControllerID/ActionID
 ModuleID/ControllerID/ActionID
 ```
 
-Таким чином, якщо користувач звертається до URL `http://hostname/index.php?r=site/index`, то буде викликано дію `index`
+Таким чином, якщо користувач звертається до URL `https://hostname/index.php?r=site/index`, то буде викликано дію `index`
 у контролері `site`. Розділ [Маршрутизація та створення URL](runtime-routing.md) містить більш детальну інформацію
 про те, як маршрути співвідносяться із діями.
 
@@ -179,7 +179,7 @@ class SiteController extends Controller
 Коли в запиті не вказано [маршрут](#routes), то буде використано маршрут із зазначеної властивості.
 Для [[yii\web\Application|веб-додатків]] це значення рівне `'site'`, у той час, як для 
 [[yii\console\Application|консольних додатків]], це - `'help'`. Таким чином, якщо вказаний URL 
-`http://hostname/index.php`, це значить, що контролер `site` виконає обробку запиту.
+`https://hostname/index.php`, це значить, що контролер `site` виконає обробку запиту.
 
 Ви можете змінити контролер за замовчуванням наступним чином в [налаштуваннях додатку](structure-applications.md#application-configurations):
 
@@ -324,8 +324,8 @@ class HelloWorldAction extends Action
 ```php
 public function actionForward()
 {
-    // перенаправляємо браузер користувача на http://example.com
-    return $this->redirect('http://example.com');
+    // перенаправляємо браузер користувача на https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -355,13 +355,13 @@ class PostController extends Controller
 
 Параметри дії будуть заповнені для різних запитів наступним чином:
 
-* `http://hostname/index.php?r=post/view&id=123`: параметру `$id` буде присвоєне значення `'123'`, у той час,
+* `https://hostname/index.php?r=post/view&id=123`: параметру `$id` буде присвоєне значення `'123'`, у той час,
   як `$version` буде мати значення `null`, бо рядок запиту не містить параметра `version`.
-* `http://hostname/index.php?r=post/view&id=123&version=2`: параметрам `$id` і `$version` будуть присвоєні
+* `https://hostname/index.php?r=post/view&id=123&version=2`: параметрам `$id` і `$version` будуть присвоєні
   значення `'123'` і `'2'` відповідно.
-* `http://hostname/index.php?r=post/view`: буде отримане виключення [[yii\web\BadRequestHttpException]], оскільки
+* `https://hostname/index.php?r=post/view`: буде отримане виключення [[yii\web\BadRequestHttpException]], оскільки
   обов’язковий параметр `$id` не було вказано у запиті.
-* `http://hostname/index.php?r=post/view&id[]=123`: буде отримане виключення [[yii\web\BadRequestHttpException]],
+* `https://hostname/index.php?r=post/view&id[]=123`: буде отримане виключення [[yii\web\BadRequestHttpException]],
   оскільки параметр `$id` отримав невірне значення `['123']`.
 
 Якщо ви хочете, щоб параметр дії приймав масив значень, ви повинні вказати тип `array` для параметра метода, як наведено нижче:
@@ -373,8 +373,8 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Тепер, якщо запит буде містити URL `http://hostname/index.php?r=post/view&id[]=123`, то параметр `$id` отримає
-значення `['123']`. Якщо запит буде містити URL `http://hostname/index.php?r=post/view&id=123`, то параметр
+Тепер, якщо запит буде містити URL `https://hostname/index.php?r=post/view&id[]=123`, то параметр `$id` отримає
+значення `['123']`. Якщо запит буде містити URL `https://hostname/index.php?r=post/view&id=123`, то параметр
 `$id` все одно отримає масив, оскільки скалярне значення `'123'` буде автоматично перетворено у масив.
 
 Вищенаведені приклади в основному показують як параметри дій працюють для веб-додатків. Більше інформації

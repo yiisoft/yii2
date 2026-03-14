@@ -2,12 +2,12 @@ Corriendo Aplicaciones
 ======================
 
 Después de haber instalado Yii, tienes una aplicación totalmente funcional a la que se puede acceder a través de
-la URL `http://hostname/basic/web/index.php` o `http://hostname/index.php`, dependiendo de tu configuración.
+la URL `https://hostname/basic/web/index.php` o `https://hostname/index.php`, dependiendo de tu configuración.
 Esta sección será una introducción a la funcionalidad incluida de la aplicación, cómo se organiza el código,
 y cómo la aplicación maneja los requests en general.
 
 > Info: Por simplicidad, en el transcurso de este tutorial "Para Empezar", se asume que has definido `basic/web`
-  como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `http://hostname/index.php`
+  como el document root de tu servidor Web, y configurado la URL de acceso a tu aplicación para que sea `https://hostname/index.php`
   o similar.
   Dependiendo de tus necesidades, por favor ajusta dichas URLs.
   
@@ -20,7 +20,7 @@ Funcionalidad <span id="functionality"></span>
 
 La aplicación básica contiene 4 páginas:
 
-* página principal, mostrada cuando se accede a la URL `http://hostname/index.php`,
+* página principal, mostrada cuando se accede a la URL `https://hostname/index.php`,
 * página "Acerca de (About)",
 * la página "Contacto (Contact)", que muestra un formulario de contacto que permite a los usuarios finales contactarse vía email,
 * y la página "Login", que muestra un formulario para loguearse que puede usarse para autenticar usuarios. 
@@ -63,7 +63,7 @@ basic/                  base path de la aplicación
 En general, los archivos de la aplicación pueden ser divididos en dos: aquellos bajo `basic/web` y aquellos bajo otros directorios.
 Los primeros pueden accederse directo por HTTP (ej., en un navegador), mientras que los últimos no pueden ni deben ser accedidos así.
 
-Yii implementa el patrón de diseño [modelo-vista-controlador (MVC)](http://wikipedia.org/wiki/Model-view-controller),
+Yii implementa el patrón de diseño [modelo-vista-controlador (MVC)](https://wikipedia.org/wiki/Model-view-controller),
 que es reflejado en la estructura de directorios utilizada. El directorio `models` contiene todas las [clases del modelo](structure-models.md),
 el directorio `views` contiene todas las [vistas (templates)](structure-views.md), y el directorio `controllers` contiene
 todas las [clases de controladores](structure-controllers.md).

@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Yii;
 use yii\base\Action;
 use yii\filters\AjaxFilter;
@@ -21,20 +23,17 @@ class AjaxFilterTest extends TestCase
 {
     /**
      * @param bool $isAjax
-     * @return Request
+     * @return Request&MockObject
      */
     protected function mockRequest($isAjax)
     {
-        /** @var Request $request */
-        $request = $this->getMockBuilder('\yii\web\Request')
-            ->setMethods(['getIsAjax'])
-            ->getMock();
+        $request = $this->createPartialMock(Request::class, ['getIsAjax']);
         $request->method('getIsAjax')->willReturn($isAjax);
 
         return $request;
     }
 
-    public function testFilter()
+    public function testFilter(): void
     {
         $this->mockWebApplication();
         $controller = new Controller('id', Yii::$app);

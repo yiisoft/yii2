@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
@@ -18,7 +19,7 @@ use yii\base\DynamicModel;
  */
 class ConsoleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -85,7 +86,7 @@ class ConsoleTest extends TestCase
         rewind(ConsoleStub::$inputStream);
     }
 
-    public function testStripAnsiFormat()
+    public function testStripAnsiFormat(): void
     {
         ob_start();
         ob_implicit_flush(false);
@@ -153,7 +154,7 @@ class ConsoleTest extends TestCase
         }
     }*/
 
-    public function ansiFormats()
+    public static function ansiFormats(): array
     {
         return [
             ['test', 'test'],
@@ -200,12 +201,12 @@ class ConsoleTest extends TestCase
      * @param string $ansi
      * @param string $html
      */
-    public function testAnsi2Html($ansi, $html)
+    public function testAnsi2Html($ansi, $html): void
     {
         $this->assertEquals($html, Console::ansiToHtml($ansi));
     }
 
-    public function testErrorSummary()
+    public function testErrorSummary(): void
     {
         $model = new TestConsoleModel();
         $model->name = 'not_an_integer';
@@ -216,32 +217,11 @@ class ConsoleTest extends TestCase
         $expectedHtml =  "Error message. Here are some chars: < >\nError message. Here are even more chars: \"\"";
         $this->assertEqualsWithoutLE($expectedHtml, Console::errorSummary($model, $options));
     }
-}
-
-/**
- * @property string name
- * @property array types
- * @property string description
- */
-class TestConsoleModel extends DynamicModel
-{
-    public function rules()
-    {
-        return [
-            ['name', 'required'],
-            ['name', 'string', 'max' => 100]
-        ];
-    }
-
-    public function init()
-    {
-        $this->defineAttribute('name');
-    }
 
     /**
      * @covers \yii\helpers\BaseConsole::input()
      */
-    public function testInput()
+    public function testInput(): void
     {
         $this->sendInput('test1');
         $result = ConsoleStub::input();
@@ -259,7 +239,7 @@ class TestConsoleModel extends DynamicModel
     /**
      * @covers \yii\helpers\BaseConsole::output()
      */
-    public function testOutput()
+    public function testOutput(): void
     {
         $result = ConsoleStub::output('Smth');
         $this->assertEquals('Smth' . PHP_EOL, $this->readOutput());
@@ -269,7 +249,7 @@ class TestConsoleModel extends DynamicModel
     /**
      * @covers \yii\helpers\BaseConsole::error()
      */
-    public function testError()
+    public function testError(): void
     {
         $result = ConsoleStub::error('SomeError');
         $this->assertEquals('SomeError' . PHP_EOL, $this->readOutput(ConsoleStub::$errorStream));
@@ -279,7 +259,7 @@ class TestConsoleModel extends DynamicModel
     /**
      * @covers \yii\helpers\BaseConsole::prompt()
      */
-    public function testPrompt()
+    public function testPrompt(): void
     {
         // testing output variations
 
@@ -370,7 +350,7 @@ class TestConsoleModel extends DynamicModel
     /**
      * @covers \yii\helpers\BaseConsole::confirm()
      */
-    public function testConfirm()
+    public function testConfirm(): void
     {
         $this->sendInput('y');
         ConsoleStub::confirm('Are you sure?');
@@ -389,17 +369,19 @@ class TestConsoleModel extends DynamicModel
         $this->assertFalse($result);
         $this->truncateStreams();
 
-        foreach ([
-            'y' => true,
-            'Y' => true,
-            'yes' => true,
-            'YeS' => true,
-            'n' => false,
-            'N' => false,
-            'no' => false,
-            'NO' => false,
-            'WHAT?!' . PHP_EOL . 'yes' => true,
-        ] as $currInput => $currAssertion) {
+        foreach (
+            [
+                'y' => true,
+                'Y' => true,
+                'yes' => true,
+                'YeS' => true,
+                'n' => false,
+                'N' => false,
+                'no' => false,
+                'NO' => false,
+                'WHAT?!' . PHP_EOL . 'yes' => true,
+            ] as $currInput => $currAssertion
+        ) {
             $this->sendInput($currInput);
             $result = ConsoleStub::confirm('Are you sure?');
             $this->assertEquals($currAssertion, $result, $currInput);
@@ -410,7 +392,7 @@ class TestConsoleModel extends DynamicModel
     /**
      * @covers \yii\helpers\BaseConsole::select()
      */
-    public function testSelect()
+    public function testSelect(): void
     {
         $options = [
             'c' => 'cat',
@@ -420,20 +402,20 @@ class TestConsoleModel extends DynamicModel
 
         $this->sendInput('c');
         $result = ConsoleStub::select('Usual behavior', $options);
-        $this->assertEquals('Usual behavior [c,d,m,?]: ', $this->readOutput());
+        $this->assertEquals('Usual behavior (c,d,m,?): ', $this->readOutput());
         $this->assertEquals('c', $result);
         $this->truncateStreams();
 
         $this->sendInput('x', 'd');
         $result = ConsoleStub::select('Wrong character', $options);
-        $this->assertEquals('Wrong character [c,d,m,?]: Wrong character [c,d,m,?]: ', $this->readOutput());
+        $this->assertEquals('Wrong character (c,d,m,?): Wrong character (c,d,m,?): ', $this->readOutput());
         $this->assertEquals('d', $result);
         $this->truncateStreams();
 
         $this->sendInput('?', 'm');
         $result = ConsoleStub::select('Using help', $options);
         $this->assertEquals(
-            'Using help [c,d,m,?]: '
+            'Using help (c,d,m,?): '
                 . ' c - cat'
                 . PHP_EOL
                 . ' d - dog'
@@ -442,9 +424,41 @@ class TestConsoleModel extends DynamicModel
                 . PHP_EOL
                 . ' ? - Show help'
                 . PHP_EOL
-                . 'Using help [c,d,m,?]: ',
+                . 'Using help (c,d,m,?): ',
             $this->readOutput()
         );
         $this->truncateStreams();
+
+        $this->sendInput('');
+        $result = ConsoleStub::select('Use Default', $options, 'm');
+        $this->assertEquals('m', $result);
+        $this->truncateStreams();
+
+        $this->sendInput('', 'd');
+        $result = ConsoleStub::select('Empty without Default', $options);
+        $this->assertEquals('Empty without Default (c,d,m,?): Empty without Default (c,d,m,?): ', $this->readOutput());
+        $this->assertEquals('d', $result);
+        $this->truncateStreams();
+    }
+}
+
+/**
+ * @property string name
+ * @property array types
+ * @property string description
+ */
+class TestConsoleModel extends DynamicModel
+{
+    public function rules()
+    {
+        return [
+            ['name', 'required'],
+            ['name', 'string', 'max' => 100]
+        ];
+    }
+
+    public function init(): void
+    {
+        $this->defineAttribute('name');
     }
 }

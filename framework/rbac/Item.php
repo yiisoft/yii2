@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rbac;
@@ -17,9 +18,8 @@ use yii\base\BaseObject;
  */
 class Item extends BaseObject
 {
-    const TYPE_ROLE = 1;
-    const TYPE_PERMISSION = 2;
-
+    public const TYPE_ROLE = 1;
+    public const TYPE_PERMISSION = 2;
     /**
      * @var int the type of the item. This should be either [[TYPE_ROLE]] or [[TYPE_PERMISSION]].
      */
@@ -33,7 +33,7 @@ class Item extends BaseObject
      */
     public $description;
     /**
-     * @var string name of the rule associated with this item
+     * @var string|null name of the rule associated with this item
      */
     public $ruleName;
     /**

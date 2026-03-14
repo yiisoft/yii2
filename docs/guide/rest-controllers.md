@@ -69,7 +69,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -80,7 +80,7 @@ public function behaviors()
 Adding the [Cross-Origin Resource Sharing](structure-filters.md#cors) filter to a controller is a bit more complicated
 than adding other filters described above, because the CORS filter has to be applied before authentication methods
 and thus needs a slightly different approach compared to other filters. Also authentication has to be disabled for the
-[CORS Preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests)
+[CORS Preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#preflighted_requests)
 so that a browser can safely determine whether a request can be made beforehand without the need for sending
 authentication credentials. The following shows the code that is needed to add the [[yii\filters\Cors]] filter
 to an existing controller that extends from [[yii\rest\ActiveController]]:
@@ -98,7 +98,7 @@ public function behaviors()
     
     // add CORS filter
     $behaviors['corsFilter'] = [
-        'class' => \yii\filters\Cors::className(),
+        'class' => \yii\filters\Cors::class,
     ];
     
     // re-add authentication filter

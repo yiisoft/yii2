@@ -7,7 +7,7 @@
 ## <div dir="rtl">PHP</div>
 
 <p dir="rtl">
-    ال Yii هو إطار عمل PHP، لذا تأكد من قراءة وفهم المرجع الرسمي الخاص بلغة ال <a href="https://secure.php.net/manual/en/langref.php">PHP</a>. عند البدء بتطوير المشاريع أو التطبيقات باستخدام ال Yii ، ستكتب التعليمات البرمجية بطريقة كائنية التوجه OOP، لذا تأكد من أنك على دراية بـمفاهيم ال <a href="https://secure.php.net/manual/en/language.oop5.basic.php">OOP</a> وكذلك ال <a href="https://secure.php.net/manual/en/language.namespaces.php">namespaces</a>.
+    ال Yii هو إطار عمل PHP، لذا تأكد من قراءة وفهم المرجع الرسمي الخاص بلغة ال <a href="https://www.php.net/manual/en/langref.php">PHP</a>. عند البدء بتطوير المشاريع أو التطبيقات باستخدام ال Yii ، ستكتب التعليمات البرمجية بطريقة كائنية التوجه OOP، لذا تأكد من أنك على دراية بـمفاهيم ال <a href="https://www.php.net/manual/en/language.oop5.basic.php">OOP</a> وكذلك ال <a href="https://www.php.net/manual/en/language.namespaces.php">namespaces</a>.
 </p>
 
 ## <div dir="rtl">البرمجة كائنية التوجه object oriented programming</div>

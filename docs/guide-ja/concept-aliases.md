@@ -18,7 +18,7 @@ Yii はすでに利用可能な多くの事前定義エイリアスを持って�
 Yii::setAlias('@foo', '/path/to/foo');
 
 // URL のエイリアス
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // \foo\Bar クラスを保持する具体的なファイルのエイリアス
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // /path/to/foo を表示
-echo Yii::getAlias('@bar');               // http://www.example.com を表示
+echo Yii::getAlias('@bar');               // https://www.example.com を表示
 echo Yii::getAlias('@foo/bar/file.php');  // /path/to/foo/bar/file.php を表示
 ```
 
@@ -116,8 +116,8 @@ Yii では、一般的に使用されるファイルのパスと URL を簡単�
   エントリス・クリプトを含むディレクトリによって決定されます。
 - `@web`, 現在実行中のウェブ・アプリケーションのベース URL。これは、 [[yii\web\Request::baseUrl]] と同じ値を持ちます。
 - `@vendor`, [[yii\base\Application::vendorPath|Composer のベンダー・ディレクトリ]] 。デフォルトは `@app/vendor` 。
-- `@bower`, [bower パッケージ](http://bower.io/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/bower` 。
-- `@npm`, [npm パッケージ](https://www.npmjs.org/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/npm` 。
+- `@bower`, [bower パッケージ](https://bower.io/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/bower` 。
+- `@npm`, [npm パッケージ](https://www.npmjs.com/) が含まれるルート・ディレクトリ。デフォルトは `@vendor/npm` 。
 
 `@yii` エイリアスは [エントリ・スクリプト](structure-entry-scripts.md) に `Yii.php` ファイルを読み込んだ時点で定義されます。
 エイリアスの残りの部分は、アプリケーションのコンストラクタ内で、アプリケーションの [構成情報](concept-configurations.md)

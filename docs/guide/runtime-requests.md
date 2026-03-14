@@ -76,13 +76,13 @@ if ($request->isPut)  { /* the request method is PUT */ }
 
 The `request` component provides many ways of inspecting the currently requested URL. 
 
-Assuming the URL being requested is `http://example.com/admin/index.php/product?id=100`, you can get various
+Assuming the URL being requested is `https://example.com/admin/index.php/product?id=100`, you can get various
 parts of this URL as summarized in the following:
 
 * [[yii\web\Request::url|url]]: returns `/admin/index.php/product?id=100`, which is the URL without the host info part. 
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: returns `http://example.com/admin/index.php/product?id=100`,
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: returns `https://example.com/admin/index.php/product?id=100`,
   which is the whole URL including the host info part.
-* [[yii\web\Request::hostInfo|hostInfo]]: returns `http://example.com`, which is the host info part of the URL.
+* [[yii\web\Request::hostInfo|hostInfo]]: returns `https://example.com`, which is the host info part of the URL.
 * [[yii\web\Request::pathInfo|pathInfo]]: returns `/product`, which is the part after the entry script and 
   before the question mark (query string).
 * [[yii\web\Request::queryString|queryString]]: returns `id=100`, which is the part after the question mark. 
@@ -151,8 +151,9 @@ You should not blindly trust headers provided by proxies unless you explicitly t
 Since 2.0.13 Yii supports configuring trusted proxies via the 
 [[yii\web\Request::trustedHosts|trustedHosts]],
 [[yii\web\Request::secureHeaders|secureHeaders]], 
-[[yii\web\Request::ipHeaders|ipHeaders]] and
-[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+[[yii\web\Request::ipHeaders|ipHeaders]],
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]] and
+[[yii\web\Request::portHeaders|portHeaders]] (since 2.0.46)
 properties of the `request` component.
 
 The following is a request config for an application that runs behind an array of reverse proxies,
@@ -184,6 +185,7 @@ In case your proxies are using different headers you can use the request configu
         'X-Forwarded-For',
         'X-Forwarded-Host',
         'X-Forwarded-Proto',
+        'X-Forwarded-Port',
         'X-Proxy-User-Ip',
         'Front-End-Https',
     ],
@@ -200,3 +202,27 @@ With the above configuration, all headers listed in `secureHeaders` are filtered
 except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is made by the proxy.
 In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
 will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].
+
+Since 2.0.31 [RFC 7239](https://datatracker.ietf.org/doc/html/rfc7239) `Forwarded` header is supported. In order to enable
+it you need to add header name to `secureHeaders`. Make sure your proxy is setting it, otherwise end user would be
+able to spoof IP and protocol.
+
+### Already resolved user IP <span id="already-respolved-user-ip"></span>
+
+If the user's IP address is resolved before the Yii application (e.g. `ngx_http_realip_module` or similar),
+the `request` component will work correctly with the following configuration:
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '0.0.0.0/0',
+    ],
+    'ipHeaders' => [], 
+],
+```
+
+In this case, the value of [[yii\web\Request::userIP|userIP]] will be equal to `$_SERVER['REMOTE_ADDR']`.
+Also, properties that are resolved from HTTP headers will work correctly (e.g. [[yii\web\Request::getIsSecureConnection()]]).
+
+> Warning: The `trustedHosts=['0.0.0.0/0']` setting assumes that all IPs are trusted.

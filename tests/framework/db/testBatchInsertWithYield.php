@@ -1,12 +1,14 @@
 <?php
+
+use yiiunit\framework\db\CommandTest;
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
+ *
+ * @var CommandTest $this
  */
-
-/* @var $this \yiiunit\framework\db\CommandTest  */
-
 $rows = call_user_func(function () {
     if (false) {
         yield [];

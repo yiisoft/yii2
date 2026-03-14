@@ -1,9 +1,9 @@
 <?php
 
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\data\ar;
@@ -39,7 +39,7 @@ class Department extends ActiveRecord
     public function getEmployees()
     {
         return $this
-            ->hasMany(Employee::className(), [
+            ->hasMany(Employee::class, [
                 'department_id' => 'id',
             ])
             ->inverseOf('department')

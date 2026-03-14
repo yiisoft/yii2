@@ -1,7 +1,7 @@
 Controllers
 ===========
 
-Controllers are part of the [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
+Controllers are part of the [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) architecture.
 They are objects of classes extending from [[yii\base\Controller]] and are responsible for processing requests and
 generating responses. In particular, after taking over the control from [applications](structure-applications.md),
 controllers will analyze incoming request data, pass them to [models](structure-models.md), inject model results
@@ -83,7 +83,7 @@ or the following format if the controller belongs to a module:
 ModuleID/ControllerID/ActionID
 ```
 
-So if a user requests with the URL `http://hostname/index.php?r=site/index`, the `index` action in the `site` controller
+So if a user requests with the URL `https://hostname/index.php?r=site/index`, the `index` action in the `site` controller
 will be executed. For more details on how routes are resolved into actions, please refer to
 the [Routing and URL Creation](runtime-routing.md) section.
 
@@ -179,7 +179,7 @@ You may configure the [[yii\base\Application::controllerMap|controller map]] in 
 Each application has a default controller specified via the [[yii\base\Application::defaultRoute]] property.
 When a request does not specify a [route](#routes), the route specified by this property will be used.
 For [[yii\web\Application|Web applications]], its value is `'site'`, while for [[yii\console\Application|console applications]],
-it is `help`. Therefore, if a URL is `http://hostname/index.php`, then the `site` controller will handle the request.
+it is `help`. Therefore, if a URL is `https://hostname/index.php`, then the `site` controller will handle the request.
 
 You may change the default controller with the following [application configuration](structure-applications.md#application-configurations):
 
@@ -323,8 +323,8 @@ a response object):
 ```php
 public function actionForward()
 {
-    // redirect the user browser to http://example.com
-    return $this->redirect('http://example.com');
+    // redirect the user browser to https://example.com
+    return $this->redirect('https://example.com');
 }
 ```
 
@@ -354,13 +354,13 @@ class PostController extends Controller
 
 The action parameters will be populated as follows for different requests:
 
-* `http://hostname/index.php?r=post/view&id=123`: the `$id` parameter will be filled with the value
+* `https://hostname/index.php?r=post/view&id=123`: the `$id` parameter will be filled with the value
   `'123'`,  while `$version` is still `null` because there is no `version` query parameter.
-* `http://hostname/index.php?r=post/view&id=123&version=2`: the `$id` and `$version` parameters will
+* `https://hostname/index.php?r=post/view&id=123&version=2`: the `$id` and `$version` parameters will
   be filled with `'123'` and `'2'`, respectively.
-* `http://hostname/index.php?r=post/view`: a [[yii\web\BadRequestHttpException]] exception will be thrown
+* `https://hostname/index.php?r=post/view`: a [[yii\web\BadRequestHttpException]] exception will be thrown
   because the required `$id` parameter is not provided in the request.
-* `http://hostname/index.php?r=post/view&id[]=123`: a [[yii\web\BadRequestHttpException]] exception will be thrown
+* `https://hostname/index.php?r=post/view&id[]=123`: a [[yii\web\BadRequestHttpException]] exception will be thrown
   because `$id` parameter is receiving an unexpected array value `['123']`.
 
 If you want an action parameter to accept array values, you should type-hint it with `array`, like the following:
@@ -372,8 +372,8 @@ public function actionView(array $id, $version = null)
 }
 ```
 
-Now if the request is `http://hostname/index.php?r=post/view&id[]=123`, the `$id` parameter will take the value
-of `['123']`. If the request is `http://hostname/index.php?r=post/view&id=123`, the `$id` parameter will still
+Now if the request is `https://hostname/index.php?r=post/view&id[]=123`, the `$id` parameter will take the value
+of `['123']`. If the request is `https://hostname/index.php?r=post/view&id=123`, the `$id` parameter will still
 receive the same array value because the scalar value `'123'` will be automatically turned into an array.
 
 The above examples mainly show how action parameters work for Web applications. For console applications,

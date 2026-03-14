@@ -1,14 +1,17 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\base\Module;
 use yii\console\controllers\BaseMigrateController;
+use yii\console\ExitCode;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yiiunit\TestCase;
@@ -16,13 +19,14 @@ use yiiunit\TestCase;
 /**
  * This trait provides unit tests shared by the different migration controllers implementations.
  * @see BaseMigrateController
+ *
+ * @template TMigrateController of BaseMigrateController
+ * @phpstan-require-extends TestCase
  */
 trait MigrateControllerTestTrait
 {
-    /* @var $this TestCase */
-
     /**
-     * @var string name of the migration controller class, which is under test.
+     * @var class-string<TMigrateController> name of the migration controller class, which is under test.
      */
     protected $migrateControllerClass;
     /**
@@ -37,9 +41,17 @@ trait MigrateControllerTestTrait
      * @var string test migration namespace
      */
     protected $migrationNamespace;
+    /**
+     * @var int|null migration controller exit code
+     */
+    protected $migrationExitCode;
 
+    public function getExitCode()
+    {
+        return $this->migrationExitCode;
+    }
 
-    public function setUpMigrationPath()
+    public function setUpMigrationPath(): void
     {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
         $this->migrationPath = Yii::getAlias('@yiiunit/runtime/test_migrations');
@@ -49,7 +61,7 @@ trait MigrateControllerTestTrait
         }
     }
 
-    public function tearDownMigrationPath()
+    public function tearDownMigrationPath(): void
     {
         FileHelper::removeDirectory($this->migrationPath);
         FileHelper::removeDirectory(Yii::getAlias('@yiiunit/runtime/app_migrations'));
@@ -64,18 +76,20 @@ trait MigrateControllerTestTrait
     /**
      * Creates test migrate controller instance.
      * @param array $config controller configuration.
-     * @return BaseMigrateController migrate command instance.
+     * @return TMigrateController migrate command instance.
      */
     protected function createMigrateController(array $config = [])
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         $class = $this->migrateControllerClass;
         $migrateController = new $class('migrate', $module);
         $migrateController->interactive = false;
         $migrateController->migrationPath = $this->migrationPath;
+
         return Yii::configure($migrateController, $config);
     }
 
@@ -91,7 +105,7 @@ trait MigrateControllerTestTrait
         $controller = $this->createMigrateController($config);
         ob_start();
         ob_implicit_flush(false);
-        $controller->run($actionID, $args);
+        $this->migrationExitCode = $controller->run($actionID, $args);
 
         return ob_get_clean();
     }
@@ -211,21 +225,23 @@ CODE;
 
     // Tests :
 
-    public function testCreate()
+    public function testCreate(): void
     {
         $migrationName = 'test_migration';
         $this->runMigrateControllerAction('create', [$migrationName]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $files = FileHelper::findFiles($this->migrationPath);
         $this->assertCount(1, $files, 'Unable to create new migration!');
-        $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
+        $this->assertStringContainsString($migrationName, basename($files[0]), 'Wrong migration name!');
     }
 
-    public function testUp()
+    public function testUp(): void
     {
         $this->createMigration('test_up1');
         $this->createMigration('test_up2');
 
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', 'm*_test_up1', 'm*_test_up2']);
     }
@@ -233,12 +249,13 @@ CODE;
     /**
      * @depends testUp
      */
-    public function testUpCount()
+    public function testUpCount(): void
     {
         $this->createMigration('test_down1');
         $this->createMigration('test_down2');
 
         $this->runMigrateControllerAction('up', [1]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', 'm*_test_down1']);
     }
@@ -246,13 +263,15 @@ CODE;
     /**
      * @depends testUp
      */
-    public function testDownCount()
+    public function testDownCount(): void
     {
         $this->createMigration('test_down_count1');
         $this->createMigration('test_down_count2');
 
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->runMigrateControllerAction('down', [1]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', 'm*_test_down_count1']);
     }
@@ -260,13 +279,15 @@ CODE;
     /**
      * @depends testDownCount
      */
-    public function testDownAll()
+    public function testDownAll(): void
     {
         $this->createMigration('test_down_all1');
         $this->createMigration('test_down_all2');
 
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->runMigrateControllerAction('down', ['all']);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base']);
     }
@@ -274,64 +295,73 @@ CODE;
     /**
      * @depends testUp
      */
-    public function testHistory()
+    public function testHistory(): void
     {
         $output = $this->runMigrateControllerAction('history');
-        $this->assertContains('No migration', $output);
+        $this->assertStringContainsString('No migration', $output);
 
         $this->createMigration('test_history1');
         $this->createMigration('test_history2');
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $output = $this->runMigrateControllerAction('history');
-        $this->assertContains('_test_history1', $output);
-        $this->assertContains('_test_history2', $output);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertStringContainsString('_test_history1', $output);
+        $this->assertStringContainsString('_test_history2', $output);
     }
 
     /**
      * @depends testUp
      */
-    public function testNew()
+    public function testNew(): void
     {
         $this->createMigration('test_new1');
 
         $output = $this->runMigrateControllerAction('new');
-        $this->assertContains('_test_new1', $output);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertStringContainsString('_test_new1', $output);
 
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $output = $this->runMigrateControllerAction('new');
-        $this->assertNotContains('_test_new1', $output);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertStringNotContainsString('_test_new1', $output);
     }
 
-    public function testMark()
+    public function testMark(): void
     {
         $version = '010101_000001';
         $this->createMigration('test_mark1', $version);
 
         $this->runMigrateControllerAction('mark', [$version]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
     }
 
-    public function testMarkBase()
+    public function testMarkBase(): void
     {
         $version = '010101_000001';
         $this->createMigration('test_mark1', $version);
 
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
 
         $this->runMigrateControllerAction('mark', [BaseMigrateController::BASE_MIGRATION]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory(['m*_base']);
     }
 
-    public function testTo()
+    public function testTo(): void
     {
         $version = '020202_000001';
         $this->createMigration('to1', $version);
 
         $this->runMigrateControllerAction('to', [$version]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', 'm*_to1']);
     }
@@ -339,12 +369,14 @@ CODE;
     /**
      * @depends testUp
      */
-    public function testRedo()
+    public function testRedo(): void
     {
         $this->createMigration('test_redo1');
         $this->runMigrateControllerAction('up');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->runMigrateControllerAction('redo');
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', 'm*_test_redo1']);
     }
@@ -354,7 +386,7 @@ CODE;
     /**
      * @depends testCreate
      */
-    public function testNamespaceCreate()
+    public function testNamespaceCreate(): void
     {
         // default namespace apply :
         $migrationName = 'testDefaultNamespace';
@@ -362,10 +394,11 @@ CODE;
             'migrationPath' => null,
             'migrationNamespaces' => [$this->migrationNamespace],
         ]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
-        $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
-        $this->assertRegExp('/class M[0-9]{12}' . ucfirst($migrationName) . '/s', $fileContent);
+        $this->assertStringContainsString("namespace {$this->migrationNamespace};", $fileContent);
+        $this->assertMatchesRegularExpression('/class M[0-9]{12}' . ucfirst($migrationName) . '/s', $fileContent);
         unlink($files[0]);
 
         // namespace specify :
@@ -374,9 +407,10 @@ CODE;
             'migrationPath' => $this->migrationPath,
             'migrationNamespaces' => [$this->migrationNamespace],
         ]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
-        $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+        $this->assertStringContainsString("namespace {$this->migrationNamespace};", $fileContent);
         unlink($files[0]);
 
         // no namespace:
@@ -385,15 +419,16 @@ CODE;
             'migrationPath' => $this->migrationPath,
             'migrationNamespaces' => [$this->migrationNamespace],
         ]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
-        $this->assertNotContains("namespace {$this->migrationNamespace};", $fileContent);
+        $this->assertStringNotContainsString("namespace {$this->migrationNamespace};", $fileContent);
     }
 
     /**
      * @depends testUp
      */
-    public function testNamespaceUp()
+    public function testNamespaceUp(): void
     {
         $this->createNamespaceMigration('nsTest1');
         $this->createNamespaceMigration('nsTest2');
@@ -402,6 +437,7 @@ CODE;
             'migrationPath' => null,
             'migrationNamespaces' => [$this->migrationNamespace],
         ]);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory([
             'm*_*_base',
@@ -414,7 +450,7 @@ CODE;
      * @depends testNamespaceUp
      * @depends testDownCount
      */
-    public function testNamespaceDownCount()
+    public function testNamespaceDownCount(): void
     {
         $this->createNamespaceMigration('down1');
         $this->createNamespaceMigration('down2');
@@ -424,7 +460,9 @@ CODE;
             'migrationNamespaces' => [$this->migrationNamespace],
         ];
         $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->runMigrateControllerAction('down', [1], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory([
             'm*_*_base',
@@ -436,7 +474,7 @@ CODE;
      * @depends testNamespaceUp
      * @depends testHistory
      */
-    public function testNamespaceHistory()
+    public function testNamespaceHistory(): void
     {
         $controllerConfig = [
             'migrationPath' => null,
@@ -444,21 +482,23 @@ CODE;
         ];
 
         $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
-        $this->assertContains('No migration', $output);
+        $this->assertStringContainsString('No migration', $output);
 
         $this->createNamespaceMigration('history1');
         $this->createNamespaceMigration('history2');
         $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
-        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*History1/s', $output);
-        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*History2/s', $output);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertMatchesRegularExpression('/' . preg_quote($this->migrationNamespace) . '.*History1/s', $output);
+        $this->assertMatchesRegularExpression('/' . preg_quote($this->migrationNamespace) . '.*History2/s', $output);
     }
 
     /**
      * @depends testMark
      */
-    public function testNamespaceMark()
+    public function testNamespaceMark(): void
     {
         $controllerConfig = [
             'migrationPath' => null,
@@ -469,6 +509,7 @@ CODE;
         $this->createNamespaceMigration('mark1', $version);
 
         $this->runMigrateControllerAction('mark', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*Mark1']);
     }
@@ -476,7 +517,7 @@ CODE;
     /**
      * @depends testTo
      */
-    public function testNamespaceTo()
+    public function testNamespaceTo(): void
     {
         $controllerConfig = [
             'migrationPath' => null,
@@ -487,6 +528,7 @@ CODE;
         $this->createNamespaceMigration('to1', $version);
 
         $this->runMigrateControllerAction('to', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
 
         $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*To1']);
     }
@@ -494,7 +536,7 @@ CODE;
     /**
      * Test migration with using multiple migration paths and namespaces.
      */
-    public function testCombinedMigrationProcess()
+    public function testCombinedMigrationProcess(): void
     {
         FileHelper::createDirectory(Yii::getAlias('@yiiunit/runtime/app_migrations'));
         FileHelper::createDirectory(Yii::getAlias('@yiiunit/runtime/extension_migrations'));
@@ -510,10 +552,12 @@ CODE;
 
         // yii migrate/up 1
         $this->runMigrateControllerAction('up', [1], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory(['m*_base', 'm010101_000001_app_migration1']);
 
         // yii migrate/up
         $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -524,6 +568,7 @@ CODE;
 
         // yii migrate/to m010101_000002_ext_migration1
         $this->runMigrateControllerAction('to', ['m010101_000002_ext_migration1'], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -531,6 +576,7 @@ CODE;
 
         // yii migrate/mark M010101000004NsMigration
         $this->runMigrateControllerAction('mark', ['m010101_000003_app_migration2'], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -540,6 +586,7 @@ CODE;
 
         // yii migrate/up
         $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -550,6 +597,7 @@ CODE;
 
         // yii migrate/redo 2
         $this->runMigrateControllerAction('redo', [2], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -560,6 +608,7 @@ CODE;
 
         // yii migrate/down
         $this->runMigrateControllerAction('down', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -569,6 +618,7 @@ CODE;
 
         // yii migrate/redo
         $this->runMigrateControllerAction('redo', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -578,6 +628,7 @@ CODE;
 
         // yii migrate/down 2
         $this->runMigrateControllerAction('down', [2], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -585,6 +636,7 @@ CODE;
 
         // yii migrate/create app_migration3
         $this->runMigrateControllerAction('create', ['app_migration3'], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',
@@ -592,6 +644,7 @@ CODE;
 
         // yii migrate/up
         $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
         $this->assertMigrationHistory([
             'm*_base',
             'm010101_000001_app_migration1',

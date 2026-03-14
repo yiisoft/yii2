@@ -76,14 +76,14 @@ if ($request->isPut)  { // el método de la request es PUT }
 
 El componente `request` proporciona muchas maneras de inspeccionar la URL solicitada actualmente.
 
-Asumiendo que la URL que se está solicitando es `http://example.com/admin/index.php/product?id=100`, se pueden obtener 
+Asumiendo que la URL que se está solicitando es `https://example.com/admin/index.php/product?id=100`, se pueden obtener 
 varias partes de la URL explicadas en los siguientes puntos:
 
 * [[yii\web\Request::url|url]]: devuelve `/admin/index.php/product?id=100`, que es la URL sin la parte de información 
   del host.
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: devuelve `http://example.com/admin/index.php/product?id=100`, que es 
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: devuelve `https://example.com/admin/index.php/product?id=100`, que es 
   la URL entera, incluyendo la parte de información del host.
-* [[yii\web\Request::hostInfo|hostInfo]]: devuelve `http://example.com`, que es la parte de información del host 
+* [[yii\web\Request::hostInfo|hostInfo]]: devuelve `https://example.com`, que es la parte de información del host 
   dentro de la URL.
 * [[yii\web\Request::pathInfo|pathInfo]]: devuelve `/product`, que es la parte posterior al script de entrada y 
   anterior al interrogante (query string)

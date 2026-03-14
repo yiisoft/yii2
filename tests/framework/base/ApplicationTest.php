@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -19,21 +22,21 @@ use yiiunit\TestCase;
  */
 class ApplicationTest extends TestCase
 {
-    public function testContainerSettingsAffectBootstrap()
+    public function testContainerSettingsAffectBootstrap(): void
     {
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className(),
+                    Dispatcher::class => DispatcherMock::class,
                 ],
             ],
             'bootstrap' => ['log'],
         ]);
 
-        $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);
+        $this->assertInstanceOf(DispatcherMock::class, Yii::$app->log);
     }
 
-    public function testBootstrap()
+    public function testBootstrap(): void
     {
         Yii::getLogger()->flush();
 
@@ -41,15 +44,15 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::className(),
+                    'class' => Component::class,
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::className(),
+                    'class' => BootstrapComponentMock::class,
                 ],
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::className(),
+                    'class' => Module::class,
                 ],
             ],
             'bootstrap' => [
@@ -65,6 +68,17 @@ class ApplicationTest extends TestCase
         $this->assertSame('Loading module: moduleX', Yii::getLogger()->messages[2][0]);
         $this->assertSame('Bootstrap with yii\base\Module', Yii::getLogger()->messages[3][0]);
         $this->assertSame('Bootstrap with Closure', Yii::getLogger()->messages[4][0]);
+    }
+
+    public function testModuleId(): void
+    {
+        $this->mockApplication(['id' => 'app-basic']);
+        $child = new Module('child');
+        Yii::$app->setModules(['child' => $child]);
+
+        $this->assertEquals('app-basic', Yii::$app->getModule('child')->module->id);
+        $this->assertEquals('', Yii::$app->getModule('child')->module->getUniqueId());
+        $this->assertEquals('child', Yii::$app->getModule('child')->getUniqueId());
     }
 }
 

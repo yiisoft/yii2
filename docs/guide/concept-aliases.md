@@ -18,7 +18,7 @@ You can define an alias for a file path or URL by calling [[Yii::setAlias()]]:
 Yii::setAlias('@foo', '/path/to/foo');
 
 // an alias of a URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // an alias of a concrete file that contains a \foo\Bar class
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -47,7 +47,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -61,7 +61,7 @@ The same method can also resolve a derived alias into the corresponding file pat
 
 ```php
 echo Yii::getAlias('@foo');               // displays: /path/to/foo
-echo Yii::getAlias('@bar');               // displays: http://www.example.com
+echo Yii::getAlias('@bar');               // displays: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // displays: /path/to/foo/bar/file.php
 ```
 
@@ -116,8 +116,8 @@ Yii predefines a set of aliases to easily reference commonly used file paths and
   containing the [entry script](structure-entry-scripts.md).
 - `@web`, the base URL of the currently running Web application. It has the same value as [[yii\web\Request::baseUrl]].
 - `@vendor`, the [[yii\base\Application::vendorPath|Composer vendor directory]]. Defaults to `@app/vendor`.
-- `@bower`, the root directory that contains [bower packages](http://bower.io/). Defaults to `@vendor/bower`.
-- `@npm`, the root directory that contains [npm packages](https://www.npmjs.org/). Defaults to `@vendor/npm`.
+- `@bower`, the root directory that contains [bower packages](https://bower.io/). Defaults to `@vendor/bower`.
+- `@npm`, the root directory that contains [npm packages](https://www.npmjs.com/). Defaults to `@vendor/npm`.
 
 The `@yii` alias is defined when you include the `Yii.php` file in your [entry script](structure-entry-scripts.md).
 The rest of the aliases are defined in the application constructor when applying the application

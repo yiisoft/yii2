@@ -53,7 +53,7 @@ Configurer une Connexion à la BDD <span id="configuring-db-connection"></span>
 ---------------------------
 
 Avant de continuer, vérifiez que vous avez installé à la fois l'extension PHP 
-[PDO](https://secure.php.net/manual/fr/book.pdo.php) et le pilote PDO pour la base de données que vous utilisez (c'est
+[PDO](https://www.php.net/manual/fr/book.pdo.php) et le pilote PDO pour la base de données que vous utilisez (c'est
 à dire `pdo_mysql` pour MySQL). C'est une exigence de base si votre application utilise une base de données relationnelle.
 
 Une fois ces éléments installés, ouvrez le fichier `config/db.php` et modifiez les paramètres pour qu'ils correspondent à votre base de données. Par défaut, le fichier contient ce qui suit :
@@ -222,7 +222,7 @@ Essayer <span id="trying-it-out"></span>
 Pour voir comment tout le code ci-dessus fonctionne, pointez votre navigateur sur l'URL suivante :
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 ![Liste de Pays](images/start-country-list.png)
@@ -233,7 +233,7 @@ page d'enregistrements.
 Observez plus attentivement et vous noterez que l'URL dans le navigateur devient
 
 ```
-http://hostname/index.php?r=country/index&page=2
+https://hostname/index.php?r=country/index&page=2
 ```
 
 En coulisse, [[yii\data\Pagination|Pagination]] fournit toutes les fonctionnalités permettant de paginer un ensemble de données :

@@ -79,7 +79,7 @@ class AppAsset extends AssetBundle
     [[yii\web\AssetManager::basePath]]，文件实际的 URL
     在该路径前加上 [[yii\web\AssetManager::baseUrl]]。
   - 绝对 URL 地址表示为外部 JavaScript 文件，如
-    `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
+    `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`。
 * [[yii\web\AssetBundle::depends|depends]]：一个列出该资源包依赖的
   其他资源包（后两节有详细介绍）。
@@ -201,13 +201,13 @@ class FontAwesomeAsset extends AssetBundle
 }  
 ```
 
-上述的代码为 ["fontawesome" package](http://fontawesome.io/) 定义了资源包。
+上述的代码为 ["fontawesome" package](https://fontawesome.com/) 定义了资源包。
 通过配置发布选项的 only 下标，只有 `fonts` 和 `css` 子目录会发布。
 
 
 ### Bower 和 NPM 资源安装 <span id="bower-npm-assets"></span>
 
-大多数 JavaScript/CSS 包使用 [Bower](http://bower.io/) 或 [NPM](https://www.npmjs.org/) 来管理。
+大多数 JavaScript/CSS 包使用 [Bower](https://bower.io/) 或 [NPM](https://www.npmjs.com/) 来管理。
 在 PHP 中，我们用 Composer 来管理 PHP 依赖。像 PHP 包一样，
 也可以使用 `composer.json` 管理 Bower 和 NPM 包。
 
@@ -257,7 +257,7 @@ $config = [
 composer global require "fxp/composer-asset-plugin:^1.4.1"
 ```
 
-这个命令会全局安装 [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) 插件，
+这个命令会全局安装 [composer asset plugin](https://github.com/fxpio/composer-asset-plugin) 插件，
 以便使用 Composer 来管理对 Bower 和 NPM 包的依赖。 在这个插件安装后，
 你计算机上的每个项目都可以通过 `composer.json` 来管理 Bower 和 NPM 包。
 
@@ -459,10 +459,10 @@ return [
         'assetManager' => [
             'bundles' => [
                 'app\assets\LanguageAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/i18n/en' // 这行代码不起作用！
+                    'baseUrl' => 'https://some.cdn.com/files/i18n/en' // 这行代码不起作用！
                 ],
                 'app\assets\LargeFileAssetBundle' => [
-                    'baseUrl' => 'http://some.cdn.com/files/large-files' // 这行代码不起作用！
+                    'baseUrl' => 'https://some.cdn.com/files/large-files' // 这行代码不起作用！
                 ],
             ],
         ],
@@ -577,8 +577,8 @@ Yii框架定义许多资源包，如下资源包是最常用，
 ## 资源转换 <span id="asset-conversion"></span>
 
 除了直接编写 CSS 或 JavaScript 代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成 CSS/JavaScript。
-例如，对于 CSS 代码可使用 [LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
-对于 JavaScript 可使用 [TypeScript](http://www.typescriptlang.org/)。
+例如，对于 CSS 代码可使用 [LESS](https://lesscss.org/) 或 [SCSS](https://sass-lang.com/)，
+对于 JavaScript 可使用 [TypeScript](https://www.typescriptlang.org/)。
 
 可将使用扩展语法的资源文件列到资源包的 [[yii\web\AssetBundle::css|css]] 和 [[yii\web\AssetBundle::js|js]] 中，如下所示：
 
@@ -608,14 +608,14 @@ class AppAsset extends AssetBundle
 Yii 使用文件扩展名来表示资源使用哪种扩展语法，
 默认可以识别如下语法和文件扩展名：
 
-- [LESS](http://lesscss.org/)：`.less`
-- [SCSS](http://sass-lang.com/)：`.scss`
-- [Stylus](http://learnboost.github.io/stylus/)：`.styl`
-- [CoffeeScript](http://coffeescript.org/)：`.coffee`
-- [TypeScript](http://www.typescriptlang.org/)：`.ts`
+- [LESS](https://lesscss.org/)：`.less`
+- [SCSS](https://sass-lang.com/)：`.scss`
+- [Stylus](https://stylus-lang.com/)：`.styl`
+- [CoffeeScript](https://coffeescript.org/)：`.coffee`
+- [TypeScript](https://www.typescriptlang.org/)：`.ts`
 
 Yii 依靠安装的预处理工具来转换资源，例如，
-为使用 [LESS](http://lesscss.org/)，应安装 `lessc` 预处理命令。
+为使用 [LESS](https://lesscss.org/)，应安装 `lessc` 预处理命令。
 
 可配置 [[yii\web\AssetManager::converter]] 自定义预处理命令和支持的扩展语法，
 如下所示：
@@ -642,7 +642,7 @@ return [
 命令中的标记 `{from}` 和 `{to}` 会分别被源资源文件路径和目标资源文件路径替代。
 
 > Info: 除了以上方式，也有其他的方式来处理扩展语法资源，
-  例如，可使用编译工具如[grunt](http://gruntjs.com/)
+  例如，可使用编译工具如[grunt](https://gruntjs.com/)
   来监控并自动转换扩展语法资源，此时，
   应使用资源包中编译后的CSS/JavaScript文件而不是原始文件。
 
@@ -838,7 +838,7 @@ yii asset assets.php config/assets-prod.php
 
 
 > Info: 使用 `asset` 命令并不是合并和压缩资源的唯一方法。
-  你也可以使用能够自动运行设定任务的项目构建工具 [grunt](http://gruntjs.com/) 来实现同样的目的。
+  你也可以使用能够自动运行设定任务的项目构建工具 [grunt](https://gruntjs.com/) 来实现同样的目的。
 
 
 ### 资源包分组 <span id="grouping-asset-bundles"></span>

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -31,7 +32,7 @@ use yii\web\Response;
  * The following example shows how to use Pjax with the [[\yii\grid\GridView]] widget so that the grid pagination,
  * sorting and filtering can be done via pjax:
  *
- * ```php
+ * ```
  * use yii\widgets\Pjax;
  *
  * Pjax::begin();
@@ -55,14 +56,14 @@ class Pjax extends Widget
      */
     public $options = [];
     /**
-     * @var string|false the jQuery selector of the links that should trigger pjax requests.
+     * @var string|null|false the jQuery selector of the links that should trigger pjax requests.
      * If not set, all links within the enclosed content of Pjax will trigger pjax requests.
      * If set to false, no code will be registered to handle links.
      * Note that if the response to the pjax request is a full page, a normal request will be sent again.
      */
     public $linkSelector;
     /**
-     * @var string|false the jQuery selector of the forms whose submissions should trigger pjax requests.
+     * @var string|null|false the jQuery selector of the forms whose submissions should trigger pjax requests.
      * If not set, all forms with `data-pjax` attribute within the enclosed content of Pjax will trigger pjax requests.
      * If set to false, no code will be registered to handle forms.
      * Note that if the response to the pjax request is a full page, a normal request will be sent again.
@@ -204,7 +205,7 @@ class Pjax extends Widget
         if ($this->formSelector !== false) {
             $formSelector = Json::htmlEncode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
             $submitEvent = Json::htmlEncode($this->submitEvent);
-            $js .= "\njQuery(document).on($submitEvent, $formSelector, function (event) {jQuery.pjax.submit(event, $options);});";
+            $js .= "\njQuery(document).off($submitEvent, $formSelector).on($submitEvent, $formSelector, function (event) {jQuery.pjax.submit(event, $options);});";
         }
         $view = $this->getView();
         PjaxAsset::register($view);

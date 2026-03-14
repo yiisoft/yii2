@@ -2,7 +2,7 @@ Dependency Injection Container
 ==============================
 
 A dependency injection (DI) container is an object that knows how to instantiate and configure objects and
-all their dependent objects. [Martin Fowler's article](http://martinfowler.com/articles/injection.html) has well
+all their dependent objects. [Martin Fowler's article](https://martinfowler.com/articles/injection.html) has well
 explained why DI container is useful. Here we will mainly explain the usage of the DI container provided by Yii.
 
 
@@ -42,7 +42,7 @@ $foo = new Foo($bar);
 
 ### Method Injection <span id="method-injection"></span>
 
-Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
+Usually the dependencies of a class are passed to the constructor and are available inside the class during the whole lifecycle.
 With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
 and passing it to the constructor may not be possible or may cause too much overhead in the majority of use cases.
 
@@ -163,11 +163,14 @@ $container->set('yii\db\Connection');
 // register an interface
 // When a class depends on the interface, the corresponding class
 // will be instantiated as the dependent object
-$container->set('yii\mail\MailInterface', 'yii\swiftmailer\Mailer');
+$container->set('yii\mail\MailInterface', 'yii\symfonymailer\Mailer');
 
 // register an alias name. You can use $container->get('foo')
 // to create an instance of Connection
 $container->set('foo', 'yii\db\Connection');
+
+// register an alias with `Instance::of`
+$container->set('bar', Instance::of('foo'));
 
 // register a class with configuration. The configuration
 // will be applied when the class is instantiated by get()
@@ -179,7 +182,7 @@ $container->set('yii\db\Connection', [
 ]);
 
 // register an alias name with class configuration
-// In this case, a "class" element is required to specify the class
+// In this case, a "class" or "__class" element is required to specify the class
 $container->set('db', [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
@@ -188,11 +191,12 @@ $container->set('db', [
     'charset' => 'utf8',
 ]);
 
-// register a PHP callable
+// register callable closure or array
 // The callable will be executed each time when $container->get('db') is called
 $container->set('db', function ($container, $params, $config) {
     return new \yii\db\Connection($config);
 });
+$container->set('db', ['app\db\DbFactory', 'create']);
 
 // register a component instance
 // $container->get('pageCache') will return the same instance each time it is called
@@ -214,7 +218,6 @@ $container->setSingleton('yii\db\Connection', [
     'charset' => 'utf8',
 ]);
 ```
-
 
 Resolving Dependencies <span id="resolving-dependencies"></span>
 ----------------------
@@ -238,6 +241,9 @@ $db = $container->get('db');
 
 // equivalent to: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
 $engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
+
+// equivalent to: $api = new \app\components\Api($host, $apiKey);
+$api = $container->get('app\components\Api', ['host' => $host, 'apiKey' => $apiKey]);
 ```
 
 Behind the scene, the DI container does much more work than just creating a new object.
@@ -372,6 +378,24 @@ cannot be instantiated. This is because you need to tell the DI container how to
 Now if you access the controller again, an instance of `app\components\BookingService` will be
 created and injected as the 3rd parameter to the controller's constructor.
 
+Since Yii 2.0.36 when using PHP 7 action injection is available for both web and console controllers:
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+use app\components\BookingInterface;
+
+class HotelController extends Controller
+{    
+    public function actionBook($id, BookingInterface $bookingService)
+    {
+        $result = $bookingService->book($id);
+        // ...    
+    }
+}
+``` 
+
 Advanced Practical Usage <span id="advanced-practical-usage"></span>
 ---------------
 
@@ -440,32 +464,27 @@ we shall copy-paste the line that creates `FileStorage` object, that is not the 
 
 As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
 and [[yii\di\Container::setSingleton()|setSingleton()]] can optionally take dependency's constructor parameters as
-a third argument. To set the constructor parameters, you may use the following configuration array format:
-
- - `key`: class name, interface name or alias name. The key will be passed to the
- [[yii\di\Container::set()|set()]] method as a first argument `$class`.
- - `value`: array of two elements. The first element will be passed to the [[yii\di\Container::set()|set()]] method as the
- second argument `$definition`, the second one — as `$params`.
+a third argument. To set the constructor parameters, you may use the `__construct()` option:
 
 Let's modify our example:
 
 ```php
 $container->setDefinitions([
     'tempFileStorage' => [ // we've created an alias for convenience
-        ['class' => 'app\storage\FileStorage'],
-        ['/var/tempfiles'] // could be extracted from some config files
+        'class' => 'app\storage\FileStorage',
+        '__construct()' => ['/var/tempfiles'], // could be extracted from some config files
     ],
     'app\storage\DocumentsReader' => [
-        ['class' => 'app\storage\DocumentsReader'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsReader',
+        '__construct()' => [Instance::of('tempFileStorage')],
     ],
     'app\storage\DocumentsWriter' => [
-        ['class' => 'app\storage\DocumentsWriter'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsWriter',
+        '__construct()' => [Instance::of('tempFileStorage')]
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader'); 
 // Will behave exactly the same as in the previous example.
 ```
 
@@ -488,19 +507,19 @@ create its instance once and use it multiple times.
 ```php
 $container->setSingletons([
     'tempFileStorage' => [
-        ['class' => 'app\storage\FileStorage'],
-        ['/var/tempfiles']
+        'class' => 'app\storage\FileStorage',
+        '__construct()' => ['/var/tempfiles']
     ],
 ]);
 
 $container->setDefinitions([
     'app\storage\DocumentsReader' => [
-        ['class' => 'app\storage\DocumentsReader'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsReader',
+        '__construct()' => [Instance::of('tempFileStorage')],
     ],
     'app\storage\DocumentsWriter' => [
-        ['class' => 'app\storage\DocumentsWriter'],
-        [Instance::of('tempFileStorage')]
+        'class' => 'app\storage\DocumentsWriter',
+        '__construct()' => [Instance::of('tempFileStorage')],
     ]
 ]);
 
@@ -525,7 +544,7 @@ Summary <span id="summary"></span>
 
 Both dependency injection and [service locator](concept-service-locator.md) are popular design patterns
 that allow building software in a loosely-coupled and more testable fashion. We highly recommend you to read
-[Martin's article](http://martinfowler.com/articles/injection.html) to get a deeper understanding of
+[Martin's article](https://martinfowler.com/articles/injection.html) to get a deeper understanding of
 dependency injection and service locator.
 
 Yii implements its [service locator](concept-service-locator.md) on top of the dependency injection (DI) container.

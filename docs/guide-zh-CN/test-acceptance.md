@@ -6,8 +6,8 @@
 
 验证测试是在 Codeception 框架的帮助下实现的，该框架有一个很好的文档：
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception Acceptance Tests](https://codeception.com/docs/03-AcceptanceTests)
 
 ## 运行基本和高级模板测试
 

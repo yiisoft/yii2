@@ -1,5 +1,6 @@
 # phpstorm project files
 .idea
+*.iml
 
 # netbeans project files
 nbproject
@@ -37,6 +38,7 @@ composer.phar
 phpunit.phar
 # local phpunit config
 /phpunit.xml
+.phpunit.result.cache
 
 # ignore dev installed apps and extensions
 /apps
@@ -46,3 +48,7 @@ phpunit.phar
 # NPM packages
 /node_modules
 .env
+package-lock.json
+
+# local phpstan config
+phpstan.neon

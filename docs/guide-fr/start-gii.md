@@ -39,7 +39,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 Grâce à cette ligne, votre application est en mode développement, et active Gii, suivant la configuration  vue ci-dessus. Vous pouvez maintenant accéder à Gii via l’URL suivante :
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Note : si vous accédez à Gii depuis une machine autre que localhost, l’accès sera refusé par défaut pour des raisons 
@@ -103,7 +103,7 @@ Essayer <span id="trying-it-out"></span>
 Pour voir comment ça fonctionne, utilisez votre navigateur pour accéder à l’URL suivant :
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 Vous verrez une grille de données montrant les pays de la table de la base de données. Vous pouvez trier la table, ou lui appliquer des filtres en entrant des conditions de filtrage dans les entêtes de colonnes.

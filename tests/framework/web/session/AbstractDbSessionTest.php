@@ -1,16 +1,20 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web\session;
 
+use PDO;
+use Exception;
+use stdClass;
 use Yii;
 use yii\db\Connection;
-use yii\db\Query;
 use yii\db\Migration;
+use yii\db\Query;
 use yii\web\DbSession;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
@@ -20,12 +24,14 @@ use yiiunit\TestCase;
  */
 abstract class AbstractDbSessionTest extends TestCase
 {
+    use SessionTestTrait;
+
     /**
      * @return string[] the driver names that are suitable for the test (mysql, pgsql, etc)
      */
     abstract protected function getDriverNames();
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -35,7 +41,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->createTableSession();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->dropTableSession();
         parent::tearDown();
@@ -46,19 +52,19 @@ abstract class AbstractDbSessionTest extends TestCase
         $driverNames = $this->getDriverNames();
         $databases = self::getParam('databases');
         foreach ($driverNames as $driverName) {
-            if (in_array($driverName, \PDO::getAvailableDrivers()) && array_key_exists($driverName, $databases)) {
+            if (in_array($driverName, PDO::getAvailableDrivers()) && array_key_exists($driverName, $databases)) {
                 $driverAvailable = $driverName;
                 break;
             }
         }
         if (!isset($driverAvailable)) {
-            $this->markTestIncomplete(get_called_class() . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
+            $this->markTestIncomplete(static::class . ' requires ' . implode(' or ', $driverNames) . ' PDO driver! Configuration for connection required too.');
             return [];
         }
         $config = $databases[$driverAvailable];
 
         $result = [
-            'class' => Connection::className(),
+            'class' => Connection::class,
             'dsn' => $config['dsn'],
         ];
 
@@ -81,7 +87,7 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         try {
             $this->runMigrate('down', ['all']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Table may not exist for different reasons, but since this method
             // reverts DB changes to make next test pass, this exception is skipped.
         }
@@ -89,7 +95,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
     // Tests :
 
-    public function testReadWrite()
+    public function testReadWrite(): void
     {
         $session = new DbSession();
 
@@ -99,7 +105,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->assertEquals('', $session->readSession('test'));
     }
 
-    public function testInitializeWithConfig()
+    public function testInitializeWithConfig(): void
     {
         // should produce no exceptions
         $session = new DbSession([
@@ -115,7 +121,7 @@ abstract class AbstractDbSessionTest extends TestCase
     /**
      * @depends testReadWrite
      */
-    public function testGarbageCollection()
+    public function testGarbageCollection(): void
     {
         $session = new DbSession();
 
@@ -125,8 +131,9 @@ abstract class AbstractDbSessionTest extends TestCase
         $session->db->createCommand()
             ->update('session', ['expire' => time() - 100], 'id = :id', ['id' => 'expire'])
             ->execute();
-        $session->gcSession(1);
+        $deleted = $session->gcSession(1);
 
+        $this->assertEquals(1, $deleted);
         $this->assertEquals('', $session->readSession('expire'));
         $this->assertEquals('new data', $session->readSession('new'));
     }
@@ -134,7 +141,7 @@ abstract class AbstractDbSessionTest extends TestCase
     /**
      * @depends testReadWrite
      */
-    public function testWriteCustomField()
+    public function testWriteCustomField(): void
     {
         $session = new DbSession();
 
@@ -151,14 +158,15 @@ abstract class AbstractDbSessionTest extends TestCase
     /**
      * @depends testReadWrite
      */
-    public function testWriteCustomFieldWithUserId()
+    public function testWriteCustomFieldWithUserId(): void
     {
         $session = new DbSession();
         $session->open();
         $session->set('user_id', 12345);
 
         // add mapped custom column
-        $migration = new Migration;
+        $migration = new Migration();
+        $migration->compact = true;
         $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
 
         $session->writeCallback = function ($session) {
@@ -177,7 +185,7 @@ abstract class AbstractDbSessionTest extends TestCase
 
     protected function buildObjectForSerialization()
     {
-        $object = new \stdClass();
+        $object = new stdClass();
         $object->nullValue = null;
         $object->floatValue = pi();
         $object->textValue = str_repeat('QweåßƒТест', 200);
@@ -193,7 +201,7 @@ abstract class AbstractDbSessionTest extends TestCase
         return $object;
     }
 
-    public function testSerializedObjectSaving()
+    public function testSerializedObjectSaving(): void
     {
         $session = new DbSession();
 
@@ -225,7 +233,7 @@ abstract class AbstractDbSessionTest extends TestCase
         }, (new Query())->select(['version'])->from('migration')->column());
     }
 
-    public function testMigration()
+    public function testMigration(): void
     {
         $this->dropTableSession();
         $this->mockWebApplication([
@@ -245,7 +253,7 @@ abstract class AbstractDbSessionTest extends TestCase
         $this->createTableSession();
     }
 
-    public function testInstantiate()
+    public function testInstantiate(): void
     {
         $oldTimeout = ini_get('session.gc_maxlifetime');
         // unset Yii::$app->db to make sure that all queries are made against sessionDb
@@ -264,5 +272,15 @@ abstract class AbstractDbSessionTest extends TestCase
         Yii::$app->set('db', Yii::$app->sessionDb);
         Yii::$app->set('sessionDb', null);
         ini_set('session.gc_maxlifetime', $oldTimeout);
+    }
+
+    public function testInitUseStrictMode(): void
+    {
+        $this->initStrictModeTest(DbSession::class);
+    }
+
+    public function testUseStrictMode(): void
+    {
+        $this->useStrictModeTest(DbSession::class);
     }
 }

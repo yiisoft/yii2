@@ -48,7 +48,7 @@ Barcha o'zgarishlarni quyidagi ko'rinishda olib boramiz [pull request](https://g
 - Tarjima vaqtida fakt xatoliklarni qilmang! 
 - Matnda tashqi manbalarga murojaatlar uchraydi, agar murojaat terminni izohlash maqolasiga olib boradigan bo'lsa, u holda 
   o'zbekchada tarjimasi bo'r bo'lgan vaziyatda o'zbekchasiga murojaat qilinadi.
-  Masalan `http://en.wikipedia.org/wiki/Captcha` → `http://uz.wikipedia.org/wiki/Captcha`.
+  Masalan `https://en.wikipedia.org/wiki/Captcha` → `https://uz.wikipedia.org/wiki/Captcha`.
 - Sharhlar kodda tarjima qilinadi, agarda birinchi holatdagi mazmunini o'zgartirmasa; Matndagi vaqtinchalik sharhlarni 
   imkon qadar faqat *lokal*da ishlatish kerak! Aks holda uni reliz ga tushib qolish ehtimoli bor; 
 - Bo'limlarni tarjima qilish vaqtida `README.md` dagi tarjimani olib ketamiz; 
@@ -79,7 +79,7 @@ Tarjima qilish vaqtida hujjatning struktura birligini to'g'ri nomlash muhim. Quy
 
 ### Rasmlarni tarjima qilish
 
-Qo'llanma uchun rasmlar `images` qism katalogida joylashgan. Ularning barchasi [yED](http://www.yworks.com/en/products_yed_about.html) da yaratilgan.
+Qo'llanma uchun rasmlar `images` qism katalogida joylashgan. Ularning barchasi [yED](https://www.yworks.com/en/products_yed_about.html) da yaratilgan.
 Zarurat tug'ilgan vaqtda fayl tarjima qilinayotgan katalogning `images` katalogiga nusxalanadi va tarjima qilinib png formatida saqlanadi.
 
 Rasmlardagi yozuvlar tarjima qilinadi.

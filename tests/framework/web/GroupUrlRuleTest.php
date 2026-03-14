@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -18,13 +19,13 @@ use yiiunit\TestCase;
  */
 class GroupUrlRuleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    public function testCreateUrl()
+    public function testCreateUrl(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
@@ -40,7 +41,7 @@ class GroupUrlRuleTest extends TestCase
         }
     }
 
-    public function testParseRequest()
+    public function testParseRequest(): void
     {
         $manager = new UrlManager(['cache' => null]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
@@ -62,7 +63,7 @@ class GroupUrlRuleTest extends TestCase
         }
     }
 
-    public function testParseVerb()
+    public function testParseVerb(): void
     {
         $config = [
             'prefix' => 'admin',
@@ -229,6 +230,21 @@ class GroupUrlRuleTest extends TestCase
             [
                 'no prefix',
                 [
+                    'rules' => [
+                        'login' => 'user/login',
+                        'logout' => 'user/logout',
+                    ],
+                ],
+                [
+                    ['login', 'user/login'],
+                    ['logout', 'user/logout'],
+                    ['create', false],
+                ],
+            ],
+            [
+                'slash prefix',
+                [
+                    'prefix' => '/',
                     'rules' => [
                         'login' => 'user/login',
                         'logout' => 'user/logout',

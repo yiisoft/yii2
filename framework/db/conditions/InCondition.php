@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\conditions;
@@ -15,6 +16,7 @@ use yii\db\ExpressionInterface;
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 class InCondition implements ConditionInterface
 {
@@ -38,10 +40,10 @@ class InCondition implements ConditionInterface
     /**
      * SimpleCondition constructor
      *
-     * @param string|string[] the column name. If it is an array, a composite `IN` condition
+     * @param string|string[] $column the column name. If it is an array, a composite `IN` condition
      * will be generated.
      * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array an array of values that [[column]] value should be among. If it is an empty array the generated
+     * @param array $values an array of values that [[column]] value should be among. If it is an empty array the generated
      * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
      */
     public function __construct($column, $operator, $values)

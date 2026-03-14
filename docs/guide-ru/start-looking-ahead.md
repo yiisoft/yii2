@@ -22,11 +22,11 @@
 	  Причём качество этих статей может быть таким же хорошим, как в Подробном руководстве. 
 	  Они полезны тем, что охватывают более широкие темы и часто могут предоставить вам готовые решения для дальнейшего использования.
     - Книги
-* [Расширения](http://www.yiiframework.com/extensions/):
+* [Расширения](https://www.yiiframework.com/extensions/):
   Yii гордится библиотекой из тысяч внесённых пользователями расширений, 
   которые могут быть легко подключены в ваши приложения и сделать разработку приложений ещё быстрее и проще.
 * Сообщество
-    - [Форум](http://www.yiiframework.com/forum/)
+    - [Форум](https://forum.yiiframework.com/)
     - [Чат Gitter](https://gitter.im/yiisoft/yii2/rus)
     - [GitHub](https://github.com/yiisoft/yii2)
     - [Facebook](https://www.facebook.com/groups/yiitalk/)

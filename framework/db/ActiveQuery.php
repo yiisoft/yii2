@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -45,7 +46,7 @@ use yii\base\InvalidConfigException;
  *
  * These options can be configured using methods of the same name. For example:
  *
- * ```php
+ * ```
  * $customers = Customer::find()->with('orders')->asArray()->all();
  * ```
  *
@@ -66,6 +67,16 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
+ * @template T of ActiveRecord|array = ActiveRecord|array<array-key, mixed>
+ *
+ * @method T|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
+ * @method T[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
+ * @method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true) Sets the [[asArray]] property.
+ * @method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
+ * and can be traversed to retrieve the data in batches.
+ * @method BatchQueryResult<int, T> each($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
+ * and can be traversed to retrieve the data in batches.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -78,15 +89,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * @event Event an event that is triggered when the query is initialized via [[init()]].
      */
-    const EVENT_INIT = 'init';
-
+    public const EVENT_INIT = 'init';
     /**
-     * @var string the SQL statement to be executed for retrieving AR records.
+     * @var string|null the SQL statement to be executed for retrieving AR records.
      * This is set by [[ActiveRecord::findBySql()]].
      */
     public $sql;
     /**
-     * @var string|array the join condition to be used when this query is used in a relational context.
+     * @var string|array|null the join condition to be used when this query is used in a relational context.
      * The condition will be used in the ON part when [[ActiveQuery::joinWith()]] is called.
      * Otherwise, the condition will be used in the WHERE part of a query.
      * Please refer to [[Query::where()]] on how to specify this parameter.
@@ -94,14 +104,14 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public $on;
     /**
-     * @var array a list of relations that this query should be joined with
+     * @var array|null a list of relations that this query should be joined with
      */
     public $joinWith;
 
 
     /**
      * Constructor.
-     * @param string $modelClass the model class associated with this query
+     * @param class-string<ActiveRecordInterface> $modelClass the model class associated with this query
      * @param array $config configurations to be applied to the newly created query object
      */
     public function __construct($modelClass, $config = [])
@@ -124,9 +134,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns all results as an array.
-     * @param Connection $db the DB connection used to create the DB command.
+     * @param Connection|null $db the DB connection used to create the DB command.
      * If null, the DB connection returned by [[modelClass]] will be used.
-     * @return array|ActiveRecord[] the query results. If the query results in nothing, an empty array will be returned.
+     * @return T[] the query results. If the query results in nothing, an empty array will be returned.
      */
     public function all($db = null)
     {
@@ -169,7 +179,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $this->filterByModels($viaModels);
             } elseif (is_array($this->via)) {
                 // via relation
-                /* @var $viaQuery ActiveQuery */
+                /** @var self<ActiveRecord|array<string, mixed>> $viaQuery */
                 list($viaName, $viaQuery, $viaCallableUsed) = $this->via;
                 if ($viaQuery->multiple) {
                     if ($viaCallableUsed) {
@@ -247,7 +257,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function removeDuplicatedModels($models)
     {
         $hash = [];
-        /* @var $class ActiveRecord */
+        /** @var class-string<ActiveRecord> $class */
         $class = $this->modelClass;
         $pks = $class::primaryKey();
 
@@ -295,7 +305,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Executes query and returns a single row of result.
      * @param Connection|null $db the DB connection used to create the DB command.
      * If `null`, the DB connection returned by [[modelClass]] will be used.
-     * @return ActiveRecord|array|null a single row of query result. Depending on the setting of [[asArray]],
+     * @return T|null a single row of query result. Depending on the setting of [[asArray]],
      * the query result may be either an array or an ActiveRecord object. `null` will be returned
      * if the query results in nothing.
      */
@@ -318,7 +328,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function createCommand($db = null)
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -342,7 +352,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
@@ -390,7 +400,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * In the following you find some examples:
      *
-     * ```php
+     * ```
      * // find all orders that contain books, and eager loading "books"
      * Order::find()->joinWith('books', true, 'INNER JOIN')->all();
      * // find all orders, eager loading "books", and sort the orders and books by the book names.
@@ -431,7 +441,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 list(, $relation, $alias) = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /* @var $query ActiveQuery */
+                    /** @var self<ActiveRecord|array<string, mixed>> $query */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -454,7 +464,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        /* @var $modelClass ActiveRecordInterface */
+        /** @var ActiveRecordInterface $modelClass */
         $modelClass = $this->modelClass;
         $model = $modelClass::instance();
         foreach ($this->joinWith as $config) {
@@ -485,6 +495,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $uniqueJoins[serialize($j)] = $j;
         }
         $this->join = array_values($uniqueJoins);
+
+        // https://github.com/yiisoft/yii2/issues/16092
+        $uniqueJoinsByTableName = [];
+        foreach ($this->join as $config) {
+            $tableName = serialize($config[1]);
+            if (!array_key_exists($tableName, $uniqueJoinsByTableName)) {
+                $uniqueJoinsByTableName[$tableName] = $config;
+            }
+        }
+        $this->join = array_values($uniqueJoinsByTableName);
 
         if (!empty($join)) {
             // append explicit join to joinWith()
@@ -539,7 +559,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                /* @var $relationModelClass ActiveRecordInterface */
+                /** @var ActiveRecordInterface $relationModelClass */
                 $relationModelClass = $relation->modelClass;
                 $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
@@ -686,10 +706,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * Use this method to specify additional conditions when declaring a relation in the [[ActiveRecord]] class:
      *
-     * ```php
+     * ```
      * public function getActiveUsers()
      * {
-     *     return $this->hasMany(User::className(), ['id' => 'user_id'])
+     *     return $this->hasMany(User::class, ['id' => 'user_id'])
      *                 ->onCondition(['active' => true]);
      * }
      * ```
@@ -756,10 +776,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * Use this method to specify a junction table when declaring a relation in the [[ActiveRecord]] class:
      *
-     * ```php
+     * ```
      * public function getItems()
      * {
-     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *     return $this->hasMany(Item::class, ['id' => 'item_id'])
      *                 ->viaTable('order_item', ['order_id' => 'id']);
      * }
      * ```
@@ -768,13 +788,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param array $link the link between the junction table and the table associated with [[primaryModel]].
      * The keys of the array represent the columns in the junction table, and the values represent the columns
      * in the [[primaryModel]] table.
-     * @param callable $callable a PHP callback for customizing the relation associated with the junction table.
+     * @param callable|null $callable a PHP callback for customizing the relation associated with the junction table.
      * Its signature should be `function($query)`, where `$query` is the query to be customized.
      * @return $this the query object itself
      * @throws InvalidConfigException when query is not initialized properly
      * @see via()
      */
-    public function viaTable($tableName, $link, callable $callable = null)
+    public function viaTable($tableName, $link, ?callable $callable = null)
     {
         $modelClass = $this->primaryModel ? get_class($this->primaryModel) : $this->modelClass;
         $relation = new self($modelClass, [
@@ -839,7 +859,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function getPrimaryTableName()
     {
-        /* @var $modelClass ActiveRecord */
+        /** @var ActiveRecord $modelClass */
         $modelClass = $this->modelClass;
         return $modelClass::tableName();
     }

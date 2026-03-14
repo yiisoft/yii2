@@ -87,7 +87,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 يتضمن تثبيت Yii من ملف أرشيف ثلاث خطوات وهي:
 </p>
 <ol dir="rtl">
-<li> تثبت الملف من خلال الموقع الرسمي <a href="http://www.yiiframework.com/download/">yiiframework.com</a>.</li>
+<li> تثبت الملف من خلال الموقع الرسمي <a href="https://www.yiiframework.com/download/">yiiframework.com</a>.</li>
 <li> قم بفك ضغط الملف الذي تم تنزيله إلى مجلد يمكن الوصول إليه عبر الويب.</li>
 <li> قم بتعديل ملف <code>config/web.php</code> عن طريق إدخال secret key ل<code> cookieValidationKey</code>
 (يتم ذلك تلقائيًا إذا قمت بتثبيت ال Yii باستخدام Composer): </li>
@@ -121,7 +121,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 --------------------------
 
 <p dir="rtl">
-    تعتمد ال Yii على حزم <a href="http://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.org/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/francoispluchino/composer-asset-plugin/">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
+    تعتمد ال Yii على حزم <a href="https://bower.io/">Bower</a> و/أو <a href="https://www.npmjs.com/">NPM</a> لتثبيت مكتبات ال (CSS و JavaScript). ويستخدم ال composer للحصول على هذه المكتبات ، مما يسمح بالحصول على إصدارات ال PHP و CSS/JavaScript في نفس الوقت. ويمكن تحقيق ذلك إما عن طريق استخدام <a href="https://asset-packagist.org/">asset-packagist.org</a> أو من خلال ال <a href="https://github.com/fxpio/composer-asset-plugin">composer asset plugin</a>، يرجى الرجوع إلى <a href="../guide/structure-assets.md">Assets documentation</a> لمزيد من التفاصيل.
 <br /><br />
 قد ترغب في إدارة ال assets عبر  ال native Bower/NPM أو استخدام ال CDN أو تجنب تثبيت ال assets بالكامل من حلال ال Composer ، ويمكن ذلك من خلال إضافة الأسطر التالية إلى "composer.json":
 </p>
@@ -143,7 +143,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 --------------------------
 
 <p dir="rtl">
-    بعد الانتهاء من التثبيت، ستحتاج الى القيام بإعداد خادم الويب الخاص بك(your web server) (انظر القسم التالي) أو قم باستخدام <a href="https://secure.php.net/manual/en/features.commandline.webserver.php">built-in PHP web server</a> عن طريق تنفيذ الأمر التالي داخل المسار web في المشروع الخاص بك: 
+    بعد الانتهاء من التثبيت، ستحتاج الى القيام بإعداد خادم الويب الخاص بك(your web server) (انظر القسم التالي) أو قم باستخدام <a href="https://www.php.net/manual/en/features.commandline.webserver.php">built-in PHP web server</a> عن طريق تنفيذ الأمر التالي داخل المسار web في المشروع الخاص بك: 
 </p>
  
 ```bash
@@ -179,7 +179,7 @@ http://localhost:8080/
 </ul>
 
 <p dir="rtl">
-    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال <a href="https://secure.php.net/manual/en/pdo.installation.php">PDO PHP Extension</a>.
+    يجب عليك أن تقوم بتثبيت وإعداد ال PHP الخاص بك بحيث تلبي الحد الأدنى من متطلبات ال Yii. الأهم من ذلك يجب أن يكون الإصدار الخاص بال PHP أعلى أو يساوي 5.4. من الناحية المثالية أحدث إصدار  يعمل مع ال Yii هو ال PHP 7. يجب عليك أيضًا تثبيت ال <a href="https://www.php.net/manual/en/pdo.installation.php">PDO PHP Extension</a>.
 </p>
 
 
@@ -191,12 +191,12 @@ http://localhost:8080/
 </p></blockquote>
 
 <p dir="rtl">
-    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="http://httpd.apache.org/">Apache HTTP</a> أو ال <a href="http://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="http://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
+    يجب أن يعمل التطبيق الذي تم تثبيته وفقًا للتعليمات المذكورة أعلاه مع أي من الخوادم ال <a href="https://httpd.apache.org/">Apache HTTP</a> أو ال <a href="https://nginx.org/">Nginx HTTP</a> في كل من أنظمة التشغيل Windows, Mac OS X أو Linux ممن لديها إصدار أعلى أو يساوي PHP 5.4، كما أن ال Yii 2.0 متوافق مع ال Facebook <a href="https://hhvm.com/">HHVM</a>، لكن، يجب أن تأخذ بعين الإعتبار أن ال HHVM يسلك في بعض الأحيان بطريقة مختلفة عن ال Native PHP، لذلك يجب أن تأخذ عناية إضافية عندما تعمل على ال HHVM.
 </p>
 
 <p dir="rtl">
     على ال production server، قد ترغب في إعداد خادم الويب الخاص بك بحيث يمكن الوصول إلى التطبيق
-الخاص بك عبر ال URL التالي <code>http://www.example.com/index.php</code> بدلاً من <code>http://www.example.com/basic/web/index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="../guide/runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
+الخاص بك عبر ال URL التالي <code>https://www.example.com/index.php</code> بدلاً من <code>https://www.example.com/basic/web/index.php</code>. هذا الكلام يتطلب إنشاء إعداد يقوم بتوجيه ال document root الموجود على ال web server الى مجلد ال basic/web، كما قد ترغب أيضا بإخفاء ال <code>index.php</code> من ال URL كما هو موضح في ال <a href="../guide/runtime-routing.md">Routing and URL Creation</a>. في هذا الموضوع ستتعلم كيف يمكنك إعداد ال Apache أو ال Nginx server لتحقيق هذه الأهداف. 
 </p>
 
 <blockquote class="info"><p dir="rtl">
@@ -244,7 +244,7 @@ DocumentRoot "path/to/basic/web"
 -----------------------
 
 <p dir="rtl">
-    لاستخدام <a href="http://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="https://secure.php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
+    لاستخدام <a href="https://wiki.nginx.org/">Nginx</a>، يجب تثبيت PHP على أنه <a href="https://www.php.net/install.fpm">FPM SAPI</a>، ويمكنك استخدام إعدادات ال Nginx التالية، مع الإنتباه على استبدال المسار من  <code>path/to/basic/web</code> الى المسار الفعلي  وصولا إلى <code>basic/web</code> بالإضافة الى إستبدال <code>mysite.test</code> إلى ال hostname الخاص بالتطبيق.
 </p>
 
 

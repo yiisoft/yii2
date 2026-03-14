@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\di;
@@ -25,6 +26,10 @@ class TestClass extends BaseObject
     public $prop2;
 }
 
+class TestSubclass extends TestClass
+{
+}
+
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,11 +37,11 @@ class TestClass extends BaseObject
  */
 class ServiceLocatorTest extends TestCase
 {
-    public function testCallable()
+    public function testCallable(): void
     {
         // anonymous function
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, function () {
             return new TestClass([
                 'prop1' => 100,
@@ -50,7 +55,7 @@ class ServiceLocatorTest extends TestCase
 
         // static method
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [__NAMESPACE__ . '\\Creator', 'create']);
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
@@ -58,20 +63,37 @@ class ServiceLocatorTest extends TestCase
         $this->assertNull($object->prop2);
     }
 
-    public function testObject()
+    public function testObject(): void
     {
         $object = new TestClass();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container = new ServiceLocator();
         $container->set($className, $object);
         $this->assertSame($container->get($className), $object);
     }
 
-    public function testShared()
+    public function testDi3Compatibility(): void
+    {
+        $config = [
+            'components' => [
+                'test' => [
+                    'class' => TestClass::class,
+                ],
+            ],
+        ];
+
+        // User Defined Config
+        $config['components']['test']['__class'] = TestSubclass::class;
+
+        $app = new ServiceLocator($config);
+        $this->assertInstanceOf(TestSubclass::class, $app->get('test'));
+    }
+
+    public function testShared(): void
     {
         // with configuration: shared
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [
             'class' => $className,
             'prop1' => 10,
@@ -90,7 +112,7 @@ class ServiceLocatorTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/11771
      */
-    public function testModulePropertyIsset()
+    public function testModulePropertyIsset(): void
     {
         $config = [
             'components' => [

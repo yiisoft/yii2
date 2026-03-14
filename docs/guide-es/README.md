@@ -1,7 +1,7 @@
 Guía Definitiva de Yii 2.0
 ==========================
 
-Este tutorial se publica bajo los [Términos de Documentación Yii](http://www.yiiframework.com/doc/terms/).
+Este tutorial se publica bajo los [Términos de Documentación Yii](https://www.yiiframework.com/doc/terms/).
 
 Todos los derechos reservados.
 
@@ -117,7 +117,7 @@ Seguridad
 * **TBD** [Autenticación](security-authentication.md)
 * **TBD** [Autorización](security-authorization.md)
 * **TBD** [Trabajar con contraseñas](security-passwords.md)
-* **TBD** [Autenticar Clientes](security-auth-clients.md)
+* [Autenticar Clientes](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
 * **TBD** [Buenas prácticas](security-best-practices.md)
 
 

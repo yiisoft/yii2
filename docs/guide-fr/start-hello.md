@@ -71,7 +71,7 @@ La vue `dire` doit être enregistrée dans le fichier `views/site/dire.php`. Qua
 est appelée dans une action, elle cherchera un fichier PHP nommé `views/ControllerID/NomDeLaVue.php`.
 
 Notez que dans le code ci-dessus, le paramètre `message` est [[yii\helpers\Html::encode()|Encodé-HTML]]
-avant d'être affiché. Cela est nécessaire car le paramètre vient de l'utilisateur, le rendant vulnérable aux [attaques cross-site scripting (XSS)](http://fr.wikipedia.org/wiki/Cross-site_scripting) en intégrant du code Javascript malicieux dans le paramètre.
+avant d'être affiché. Cela est nécessaire car le paramètre vient de l'utilisateur, le rendant vulnérable aux [attaques cross-site scripting (XSS)](https://fr.wikipedia.org/wiki/Cross-site_scripting) en intégrant du code Javascript malicieux dans le paramètre.
 
 Bien entendu, vous pouvez insérer plus de contenu dans la vue `dire`. Le contenu peut être des tags HTMML, du texte brut, ou même des expressions PHP.
 En réalité, la vue `dire` est simplement un script PHP exécuté par la méthode [[yii\web\Controller::render()|render()]].
@@ -84,7 +84,7 @@ Essayer <span id="trying-it-out"></span>
 Après avoir créé l'action et la vue, vous pouvez accéder à la nouvelle page en accédant à l'URL suivant :
 
 ```
-http://hostname/index.php?r=site/dire&message=Hello+World
+https://hostname/index.php?r=site/dire&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)

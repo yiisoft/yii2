@@ -16,7 +16,7 @@ Możesz zdefiniować alias do ścieżki pliku lub adresu URL wywołując [[Yii::
 Yii::setAlias('@foo', '/path/to/foo');
 
 // alias do adresu URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // alias istniejącego pliku, zawierającego klasę \foo\Bar
 Yii::setAlias('@foo/Bar.php', '/zdecydowanie/nie/foo/Bar.php');
@@ -43,7 +43,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -57,7 +57,7 @@ Dotyczy to zarówno bazowych aliasów, jak i pochodnych:
 
 ```php
 echo Yii::getAlias('@foo');               // wyświetla: /ścieżka/do/foo
-echo Yii::getAlias('@bar');               // wyświetla: http://www.example.com
+echo Yii::getAlias('@bar');               // wyświetla: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // wyświetla: /ścieżka/do/foo/bar/file.php
 ```
 
@@ -109,8 +109,8 @@ Yii predefiniuje zestaw aliasów do łatwego wskazywania często używanych ści
   [skrypt wejścia](structure-entry-scripts.md).
 - `@web`, bazowy adres URL aktualnie używanej aplikacji Web. Wskazuje na tą samą wartość co [[yii\web\Request::baseUrl]].
 - `@vendor`, [[yii\base\Application::vendorPath|folder pakietów composera]]. Domyślnie wskazuje na `@app/vendor`.
-- `@bower`, bazowy folder zawierający [pakiety bowera](http://bower.io/). Domyślnie wskazuje na `@vendor/bower`.
-- `@npm`, bazowy folder zawierający [pakiety npm](https://www.npmjs.org/). Domyślnie wskazuje na `@vendor/npm`.
+- `@bower`, bazowy folder zawierający [pakiety bowera](https://bower.io/). Domyślnie wskazuje na `@vendor/bower`.
+- `@npm`, bazowy folder zawierający [pakiety npm](https://www.npmjs.com/). Domyślnie wskazuje na `@vendor/npm`.
 
 Alias `@yii` jest definiowany poprzez dołączenie pliku `Yii.php` w [skrypcie wejścia](structure-entry-scripts.md).
 Pozostałe aliasy są definiowane w konstruktorze aplikacji podczas ładowania [konfiguracji](concept-configurations.md).

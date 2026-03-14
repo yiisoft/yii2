@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -14,7 +15,7 @@ use yii\base\InvalidConfigException;
  *
  * For example:
  *
- * ```php
+ * ```
  * new JsonExpression(['a' => 1, 'b' => 2]); // will be encoded to '{"a": 1, "b": 2}'
  * ```
  *
@@ -23,9 +24,8 @@ use yii\base\InvalidConfigException;
  */
 class JsonExpression implements ExpressionInterface, \JsonSerializable
 {
-    const TYPE_JSON = 'json';
-    const TYPE_JSONB = 'jsonb';
-
+    public const TYPE_JSON = 'json';
+    public const TYPE_JSONB = 'jsonb';
     /**
      * @var mixed the value to be encoded to JSON.
      * The value must be compatible with [\yii\helpers\Json::encode()|Json::encode()]] input requirements.
@@ -69,7 +69,7 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     }
 
     /**
-     * @return null|string the type of JSON
+     * @return string|null the type of JSON
      * @see type
      */
     public function getType()
@@ -80,12 +80,13 @@ class JsonExpression implements ExpressionInterface, \JsonSerializable
     /**
      * Specify data which should be serialized to JSON
      *
-     * @link https://secure.php.net/manual/en/jsonserializable.jsonserialize.php
+     * @link https://www.php.net/manual/en/jsonserializable.jsonserialize.php
      * @return mixed data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 2.0.14.2
      * @throws InvalidConfigException when JsonExpression contains QueryInterface object
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $value = $this->getValue();

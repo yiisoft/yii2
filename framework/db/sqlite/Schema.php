@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\sqlite;
 
+use Yii;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
@@ -20,17 +22,21 @@ use yii\db\SqlToken;
 use yii\db\TableSchema;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from a SQLite (2/3) database.
  *
- * @property string $transactionIsolationLevel The transaction isolation level to use for this transaction.
- * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
+ * @property-write string $transactionIsolationLevel The transaction isolation level to use for this
+ * transaction. This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -159,7 +165,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
         $sql = $this->db->createCommand('SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
             ':tableName' => $tableName,
         ])->queryScalar();
-        /** @var $code SqlToken[]|SqlToken[][]|SqlToken[][][] */
+        /** @var SqlToken[]|SqlToken[][]|SqlToken[][][] $code */
         $code = (new SqlTokenizer($sql))->tokenize();
         $pattern = (new SqlTokenizer('any CREATE any TABLE any()'))->tokenize();
         if (!$code[0]->matches($pattern, 0, $firstMatchIndex, $lastMatchIndex)) {
@@ -206,7 +212,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::className(), [$this->db]);
     }
 
     /**
@@ -215,7 +221,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length]);
     }
 
     /**
@@ -270,7 +276,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      *
      * Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],
@@ -304,7 +310,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -362,7 +368,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
      * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
      * @throws NotSupportedException when unsupported isolation levels are used.
      * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
-     * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
+     * @see https://www.sqlite.org/pragma.html#pragma_read_uncommitted
      */
     public function setTransactionIsolationLevel($level)
     {
@@ -482,5 +488,25 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     private function isSystemIdentifier($identifier)
     {
         return strncmp($identifier, 'sqlite_', 7) === 0;
+    }
+
+    /**
+     * @inheritdoc
+     *
+     * Since PHP 8.5, `PDO::quote()` throws a ValueError when the string contains null bytes ("\0").
+     *
+     * This method sanitizes such bytes before calling the parent implementation to avoid exceptions while maintaining
+     * backward compatibility.
+     *
+     * @link https://github.com/php/php-src/commit/0a10f6db26875e0f1d0f867307cee591d29a43c7
+     */
+    public function quoteValue($value)
+    {
+        if (PHP_VERSION_ID >= 80500 && is_string($value) && str_contains($value, "\0")) {
+            // Sanitize null bytes to prevent PDO ValueError on PHP 8.5+
+            $value = str_replace("\0", '', $value);
+        }
+
+        return parent::quoteValue($value);
     }
 }

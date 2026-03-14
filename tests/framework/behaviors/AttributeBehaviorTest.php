@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\behaviors;
 
@@ -26,14 +29,14 @@ class AttributeBehaviorTest extends TestCase
      */
     protected $dbConnection;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (!extension_loaded('pdo') || !extension_loaded('pdo_sqlite')) {
             static::markTestSkipped('PDO and SQLite extensions are required.');
         }
     }
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->mockApplication([
             'components' => [
@@ -52,7 +55,7 @@ class AttributeBehaviorTest extends TestCase
         Yii::$app->getDb()->createCommand()->createTable('test_attribute', $columns)->execute();
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
@@ -63,7 +66,7 @@ class AttributeBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function preserveNonEmptyValuesDataProvider()
+    public static function preserveNonEmptyValuesDataProvider(): array
     {
         return [
             [
@@ -105,7 +108,7 @@ class AttributeBehaviorTest extends TestCase
         $preserveNonEmptyValues,
         $name,
         $alias
-    ) {
+    ): void {
         $model = new ActiveRecordWithAttributeBehavior();
         $model->attributeBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -124,6 +127,8 @@ class AttributeBehaviorTest extends TestCase
  * @property string $alias
  *
  * @property AttributeBehavior $attributeBehavior
+ *
+ * @mixin AttributeBehavior
  */
 class ActiveRecordWithAttributeBehavior extends ActiveRecord
 {
@@ -134,7 +139,7 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     {
         return [
             'attribute' => [
-                'class' => AttributeBehavior::className(),
+                'class' => AttributeBehavior::class,
                 'attributes' => [
                     self::EVENT_BEFORE_VALIDATE => 'alias',
                 ],
@@ -158,6 +163,9 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
      */
     public function getAttributeBehavior()
     {
-        return $this->getBehavior('attribute');
+        /** @var AttributeBehavior $result */
+        $result = $this->getBehavior('attribute');
+
+        return $result;
     }
 }

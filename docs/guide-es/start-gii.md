@@ -43,7 +43,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 De esta manera, tu aplicación habrá habilitado Gii, y puedes acceder al módulo a través de la siguiente URL:
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 ![Gii](images/start-gii.png)
@@ -98,7 +98,7 @@ Probándolo <span id="trying-it-out"></span>
 Para ver cómo funciona, accede desde tu navegador a la siguiente URL:
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 Verás una grilla de datos mostrando los países de la base de datos. Puedes ordenar la grilla

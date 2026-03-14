@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\test;
@@ -23,7 +24,7 @@ trait FileFixtureTrait
      */
     public $dataDirectory;
     /**
-     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
+     * @var string|bool|null the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
@@ -53,12 +54,11 @@ trait FileFixtureTrait
         if (is_file($file)) {
             return require $file;
         }
-        
+
         if ($throwException) {
             throw new InvalidConfigException("Fixture data file does not exist: {$file}");
         }
 
         return [];
     }
-
 }

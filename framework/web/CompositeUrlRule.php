@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -13,8 +14,8 @@ use yii\base\BaseObject;
 /**
  * CompositeUrlRule is the base class for URL rule classes that consist of multiple simpler rules.
  *
- * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
- * if rule does not provide info about create status. This property is read-only.
+ * @property-read int|null $createUrlStatus Status of the URL creation after the last [[createUrl()]] call.
+ * `null` if rule does not provide info about create status.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -22,7 +23,7 @@ use yii\base\BaseObject;
 abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * @var UrlRuleInterface[] the URL rules contained in this composite rule.
+     * @var UrlRuleInterface[]|UrlRuleInterface[][]|array[]|string[] the URL rules contained in this composite rule.
      * This property is set in [[init()]] by the return value of [[createRules()]].
      */
     protected $rules = [];
@@ -35,7 +36,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
 
     /**
      * Creates the URL rules that should be contained within this composite rule.
-     * @return UrlRuleInterface[] the URL rules
+     * @return UrlRuleInterface[]|UrlRuleInterface[][] the URL rules
      */
     abstract protected function createRules();
 
@@ -54,7 +55,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
     public function parseRequest($manager, $request)
     {
         foreach ($this->rules as $rule) {
-            /* @var $rule UrlRule */
+            /** @var UrlRule $rule */
             $result = $rule->parseRequest($manager, $request);
             if (YII_DEBUG) {
                 Yii::debug([
@@ -103,7 +104,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      */
     protected function iterateRules($rules, $manager, $route, $params)
     {
-        /* @var $rule UrlRule */
+        /** @var UrlRule $rule */
         foreach ($rules as $rule) {
             $url = $rule->createUrl($manager, $route, $params);
             if ($url !== false) {
@@ -130,10 +131,10 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
      * For multiple rules statuses will be combined by bitwise `or` operator
      * (e.g. `UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_PARAMS_MISMATCH`).
      *
-     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * @return int|null Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
      * info about create status.
-     * @see $createStatus
-     * @see https://secure.php.net/manual/en/language.operators.bitwise.php
+     * @see createStatus
+     * @see https://www.php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */
     public function getCreateUrlStatus()

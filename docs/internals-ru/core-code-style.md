@@ -335,7 +335,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Документация
 -------------
 
-- Для получения информации по синтаксису документации обратитесь к первоисточнику [PHPDoc](http://phpdoc.org/);
+- Для получения информации по синтаксису документации обратитесь к первоисточнику [PHPDoc](https://phpdoc.org/);
 - Код без документации недопустим;
 - Все файлы классов должны содержать блок документации в начале файла и блок документации непосредственно перед каждым классом;
 - Нет необходимости использовать тег `@return` если метод не возвращает значение;
@@ -364,9 +364,9 @@ public function getErrors($attribute = null)
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 
@@ -435,6 +435,35 @@ public function getEventHandlers($name)
 ```markdown
 [Руководство](guide:file-name.md)
 [Раздел руководства](guide:file-name.md#subsection)
+```
+
+##### Примеры кода
+
+В примерах кода должен использоваться синтаксис Markdown, но не должен указываться язык.
+Указание языка в примерах кода может привести к нарушению их отображения в некоторых IDE. Пример:
+
+```php
+/**
+ * Correct code example:
+ * 
+ * ```
+ * $object->doMagic();
+ * ```
+ */
+public function doMagic()
+{
+}
+
+/**
+ * Incorrect code example:
+ * 
+ * ```php
+ * $object->doMagic();
+ * ```
+ */
+public function doMagic()
+{
+}
 ```
 
 

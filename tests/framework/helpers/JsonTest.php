@@ -1,39 +1,45 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\DynamicModel;
-use yii\helpers\BaseJson;
+use stdClass;
+use SplStack;
+use yii\base\InvalidArgumentException;
+use DateTime;
+use DateTimeZone;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
+use yiiunit\framework\models\JsonModel;
 use yiiunit\TestCase;
 
 /**
  * @group helpers
+ * @coversDefaultClass \yii\helpers\Json
  */
 class JsonTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        // destroy application, Helper must work without Yii::$app
+        // destroy application, helper must work without Yii::$app
         $this->destroyApplication();
     }
 
-    public function testEncode()
+    public function testEncode(): void
     {
         // Arrayable data encoding
-        $dataArrayable = $this->getMockBuilder('yii\\base\\Arrayable')->getMock();
+        $dataArrayable = $this->getMockBuilder('\yii\base\Arrayable')->getMock();
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
-        $this->assertSame('{}', $actual);
+        $this->assertSame('[]', $actual);
 
         // basic data encoding
         $data = '1';
@@ -46,15 +52,25 @@ class JsonTest extends TestCase
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
         // simple object encoding
-        $data = new \stdClass();
-        $data->a = 1;
-        $data->b = 2;
+        $data = (object) ['a' => 1, 'b' => 2];
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
+
+        // simple object with zero indexed keys encoding
+        $data = (object) [
+            0 => 1,
+            1 => 2
+        ];
+        $default = Json::$keepObjectType;
+        Json::$keepObjectType = true;
+        $this->assertSame('{"0":1,"1":2}', Json::encode($data));
+        Json::$keepObjectType = false;
+        $this->assertSame('[1,2]', Json::encode($data));
+        Json::$keepObjectType = $default;
 
         // empty data encoding
         $data = [];
         $this->assertSame('[]', Json::encode($data));
-        $data = new \stdClass();
+        $data = new stdClass();
         $this->assertSame('{}', Json::encode($data));
 
         // expression encoding
@@ -66,9 +82,7 @@ class JsonTest extends TestCase
         $expression1 = 'function (a) {}';
         $expression2 = 'function (b) {}';
         $data = [
-            'a' => [
-                1, new JsExpression($expression1),
-            ],
+            'a' => [1, new JsExpression($expression1)],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::encode($data));
@@ -80,16 +94,29 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
-        // @see https://github.com/yiisoft/yii2/issues/12043
+        // https://github.com/yiisoft/yii2/issues/12043
         $data = new JsonModel();
         $data->data = [];
         $this->assertSame('[]', Json::encode($data));
         $data = new JsonModel();
         $data->data = (object) null;
         $this->assertSame('{}', Json::encode($data));
+
+        // Generator (Only supported since PHP 5.5)
+        if (PHP_VERSION_ID >= 50500) {
+            $data = eval(<<<'PHP'
+                return function () {
+                    foreach (['a' => 1, 'b' => 2] as $name => $value) {
+                        yield $name => $value;
+                    }
+                };
+PHP
+            );
+            $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
+        }
     }
 
-    public function testHtmlEncode()
+    public function testHtmlEncode(): void
     {
         // HTML escaped chars
         $data = '&<>"\'/';
@@ -106,10 +133,8 @@ class JsonTest extends TestCase
         $this->assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
 
         // simple object encoding
-        $data = new \stdClass();
-        $data->a = 1;
-        $data->b = 2;
-        $this->assertSame('{"a":1,"b":2}', Json::htmlEncode($data));
+        $data = (object) ['a' => 1, 'b' => 'c'];
+        $this->assertSame('{"a":1,"b":"c"}', Json::htmlEncode($data));
 
         // expression encoding
         $expression = 'function () {}';
@@ -120,9 +145,7 @@ class JsonTest extends TestCase
         $expression1 = 'function (a) {}';
         $expression2 = 'function (b) {}';
         $data = [
-            'a' => [
-                1, new JsExpression($expression1),
-            ],
+            'a' => [1, new JsExpression($expression1)],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::htmlEncode($data));
@@ -147,14 +170,26 @@ class JsonTest extends TestCase
         $document = simplexml_load_string($xml);
         $this->assertSame('{"apiKey":"ieu2iqw4o","methodProperties":{"FindByString":"Kiev"}}', Json::encode($document));
 
-        $postsStack = new \SplStack();
+        // SimpleXMLElement with empty tag
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<parent>
+  <child1/>
+  <child2>
+    <subElement>sub</subElement>
+  </child2>
+</parent>';
+
+        $document = simplexml_load_string($xml);
+        $this->assertSame('{"child1":{},"child2":{"subElement":"sub"}}', Json::encode($document));
+
+        $postsStack = new SplStack();
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
         $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
-    public function testDecode()
+    public function testDecode(): void
     {
         // empty value
         $json = '';
@@ -171,45 +206,66 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('\yii\base\InvalidArgumentException');
         Json::decode($json);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
-     * @expectedExceptionMessage Invalid JSON data.
+     * @covers ::decode
      */
-    public function testDecodeInvalidParamException()
+    public function testDecodeInvalidArgumentException(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid JSON data.');
+
         Json::decode([]);
     }
 
-    public function testHandleJsonError()
+    /**
+     * @covers ::decode
+     */
+    public function testHandleJsonError(): void
     {
-        // Basic syntax error
+        // basic syntax error
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidParamException $e) {
-            $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            if (PHP_VERSION_ID >= 80600) {
+                $this->assertStringContainsString(
+                    Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'],
+                    $e->getMessage(),
+                );
+            } else {
+                $this->assertSame(
+                    Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'],
+                    $e->getMessage(),
+                );
+            }
         }
 
-        // Unsupported type since PHP 5.5
+        // unsupported type since PHP 5.5
         try {
             $fp = fopen('php://stdin', 'r');
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidParamException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            if (PHP_VERSION_ID >= 80600) {
+                $this->assertStringContainsString(
+                    Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'],
+                    $e->getMessage(),
+                );
             } else {
-                $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+                $this->assertSame(
+                    Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'],
+                    $e->getMessage(),
+                );
             }
         }
     }
 
-    public function testErrorSummary()
+    public function testErrorSummary(): void
     {
         $model = new JsonModel();
         $model->name = 'not_an_integer';
@@ -220,27 +276,49 @@ class JsonTest extends TestCase
         $expectedHtml = '["Error message. Here are some chars: < >","Error message. Here are even more chars: \"\""]';
         $this->assertEquals($expectedHtml, Json::errorSummary($model, $options));
     }
-}
 
-class JsonModel extends DynamicModel implements \JsonSerializable
-{
-    public $data = ['json' => 'serializable'];
-
-    public function jsonSerialize()
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17760
+     * @covers ::encode
+     */
+    public function testEncodeDateTime(): void
     {
-        return $this->data;
+        $input = new DateTime('October 12, 2014', new DateTimeZone('UTC'));
+        $output = Json::encode($input);
+        $this->assertEquals('{"date":"2014-10-12 00:00:00.000000","timezone_type":3,"timezone":"UTC"}', $output);
     }
 
-    public function rules()
+    /**
+     * @covers ::encode
+     */
+    public function testPrettyPrint(): void
     {
-        return [
-            ['name', 'required'],
-            ['name', 'string', 'max' => 100]
-        ];
-    }
+        $defaultValue = Json::$prettyPrint;
+        $input = ['a' => 1, 'b' => 2];
+        $defOutput = '{"a":1,"b":2}';
+        $ppOutput = "{\n    \"a\": 1,\n    \"b\": 2\n}";
 
-    public function init()
-    {
-       $this->defineAttribute('name');
+        // Test unchanged options
+        Json::$prettyPrint = null;
+        $output = Json::encode($input, 320);
+        $this->assertEquals($defOutput, $output);
+        $output = Json::encode($input, 448);
+        $this->assertEquals($ppOutput, $output);
+
+        // Test pretty print enabled
+        Json::$prettyPrint = true;
+        $output = Json::encode($input, 320);
+        $this->assertEquals($ppOutput, $output);
+        $output = Json::encode($input, 448);
+        $this->assertEquals($ppOutput, $output);
+
+        // Test pretty print disabled
+        Json::$prettyPrint = false;
+        $output = Json::encode($input, 320);
+        $this->assertEquals($defOutput, $output);
+        $output = Json::encode($input, 448);
+        $this->assertEquals($defOutput, $output);
+
+        Json::$prettyPrint = $defaultValue;
     }
 }

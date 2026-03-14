@@ -1,13 +1,15 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\validators;
 
 use Yii;
+use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
 use yii\web\JsExpression;
@@ -22,7 +24,7 @@ class EmailValidator extends Validator
 {
     /**
      * @var string the regular expression used to validate the attribute value.
-     * @see http://www.regular-expressions.info/email.html
+     * @see https://www.regular-expressions.info/email.html
      */
     public $pattern = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/';
     /**
@@ -31,6 +33,19 @@ class EmailValidator extends Validator
      * @see allowName
      */
     public $fullPattern = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$/';
+    /**
+     * @var string the regular expression used to validate the part before the @ symbol, used if ASCII conversion fails to validate the address.
+     * @see https://www.regular-expressions.info/email.html
+     * @since 2.0.42
+     */
+    public $patternASCII = '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
+    /**
+     * @var string the regular expression used to validate email addresses with the name part before the @ symbol, used if ASCII conversion fails to validate the address.
+     * This property is used only when [[allowName]] is true.
+     * @see allowName
+     * @since 2.0.42
+     */
+    public $fullPatternASCII = '/^[^@]*<[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*$/';
     /**
      * @var bool whether to allow name in the email address (e.g. "John Smith <john.smith@example.com>"). Defaults to false.
      * @see fullPattern
@@ -49,6 +64,12 @@ class EmailValidator extends Validator
      * otherwise an exception would be thrown.
      */
     public $enableIDN = false;
+    /**
+     * @var bool whether [[enableIDN]] should apply to the local part of the email (left side
+     * of the `@`). Only applies if [[enableIDN]] is `true`.
+     * @since 2.0.43
+     */
+    public $enableLocalIDN = true;
 
 
     /**
@@ -76,14 +97,16 @@ class EmailValidator extends Validator
             $valid = false;
         } else {
             if ($this->enableIDN) {
-                $matches['local'] = $this->idnToAscii($matches['local']);
+                if ($this->enableLocalIDN) {
+                    $matches['local'] = $this->idnToAsciiWithFallback($matches['local']);
+                }
                 $matches['domain'] = $this->idnToAscii($matches['domain']);
                 $value = $matches['name'] . $matches['open'] . $matches['local'] . '@' . $matches['domain'] . $matches['close'];
             }
 
             if (strlen($matches['local']) > 64) {
                 // The maximum total length of a user name or other local-part is 64 octets. RFC 5322 section 4.5.3.1.1
-                // http://tools.ietf.org/html/rfc5321#section-4.5.3.1.1
+                // https://datatracker.ietf.org/doc/html/rfc5321#section-4.5.3.1.1
                 $valid = false;
             } elseif (strlen($matches['local'] . '@' . $matches['domain']) > 254) {
                 // There is a restriction in RFC 2821 on the length of an address in MAIL and RCPT commands
@@ -91,7 +114,7 @@ class EmailValidator extends Validator
                 // upper limit on address lengths should normally be considered to be 254.
                 //
                 // Dominic Sayers, RFC 3696 erratum 1690
-                // http://www.rfc-editor.org/errata_search.php?eid=1690
+                // https://www.rfc-editor.org/errata_search.php?eid=1690
                 $valid = false;
             } else {
                 $valid = preg_match($this->pattern, $value) || ($this->allowName && preg_match($this->fullPattern, $value));
@@ -111,30 +134,28 @@ class EmailValidator extends Validator
      */
     protected function isDNSValid($domain)
     {
-        if (checkdnsrr($domain . '.', 'MX')) {
-            $mxRecords = dns_get_record($domain . '.', DNS_MX);
-            if ($mxRecords !== false && count($mxRecords) > 0) {
-                return true;
-            }
+        return $this->hasDNSRecord($domain, true) || $this->hasDNSRecord($domain, false);
+    }
+
+    private function hasDNSRecord($domain, $isMX)
+    {
+        $normalizedDomain = $domain . '.';
+        if (!checkdnsrr($normalizedDomain, ($isMX ? 'MX' : 'A'))) {
+            return false;
         }
 
-        if (checkdnsrr($domain . '.', 'A')) {
-            $aRecords = dns_get_record($domain . '.', DNS_A);
-            if ($aRecords !== false && count($aRecords) > 0) {
-                return true;
-            }
+        try {
+            // dns_get_record can return false and emit Warning that may or may not be converted to ErrorException
+            $records = dns_get_record($normalizedDomain, ($isMX ? DNS_MX : DNS_A));
+        } catch (ErrorException $exception) {
+            return false;
         }
 
-        return false;
+        return !empty($records);
     }
 
     private function idnToAscii($idn)
     {
-        if (PHP_VERSION_ID < 50600) {
-            // TODO: drop old PHP versions support
-            return idn_to_ascii($idn);
-        }
-
         return idn_to_ascii($idn, IDNA_NONTRANSITIONAL_TO_ASCII, INTL_IDNA_VARIANT_UTS46);
     }
 
@@ -171,5 +192,22 @@ class EmailValidator extends Validator
         }
 
         return $options;
+    }
+
+    /**
+     * @param string $value
+     * @return string|bool returns string if it is valid and/or can be converted, bool false if it can't be converted and/or is invalid
+     * @see https://github.com/yiisoft/yii2/issues/18585
+     */
+    private function idnToAsciiWithFallback($value)
+    {
+        $ascii = $this->idnToAscii($value);
+        if ($ascii === false) {
+            if (preg_match($this->patternASCII, $value) || ($this->allowName && preg_match($this->fullPatternASCII, $value))) {
+                return $value;
+            }
+        }
+
+        return $ascii;
     }
 }

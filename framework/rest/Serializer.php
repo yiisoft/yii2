@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rest;
@@ -64,11 +65,11 @@ class Serializer extends Component
      */
     public $perPageHeader = 'X-Pagination-Per-Page';
     /**
-     * @var string the name of the envelope (e.g. `items`) for returning the resource objects in a collection.
+     * @var string|null the name of the envelope (e.g. `items`) for returning the resource objects in a collection.
      * This is used when serving a resource collection. When this is set and pagination is enabled, the serializer
      * will return a collection in the following format:
      *
-     * ```php
+     * ```
      * [
      *     'items' => [...],  // assuming collectionEnvelope is "items"
      *     '_links' => {  // pagination links as returned by Pagination::getLinks()
@@ -102,11 +103,11 @@ class Serializer extends Component
      */
     public $metaEnvelope = '_meta';
     /**
-     * @var Request the current request. If not set, the `request` application component will be used.
+     * @var Request|null the current request. If not set, the `request` application component will be used.
      */
     public $request;
     /**
-     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @var Response|null the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
     /**
@@ -137,7 +138,7 @@ class Serializer extends Component
      * Serializes the given data into a format that can be easily turned into other formats.
      * This method mainly converts the objects of recognized types into array representation.
      * It will not do conversion for unknown object types or non-object data.
-     * The default implementation will handle [[Model]] and [[DataProviderInterface]].
+     * The default implementation will handle [[Model]], [[DataProviderInterface]] and [\JsonSerializable](https://www.php.net/manual/en/class.jsonserializable.php).
      * You may override this method to support more object types.
      * @param mixed $data the data to be serialized.
      * @return mixed the converted data.
@@ -148,8 +149,16 @@ class Serializer extends Component
             return $this->serializeModelErrors($data);
         } elseif ($data instanceof Arrayable) {
             return $this->serializeModel($data);
+        } elseif ($data instanceof \JsonSerializable) {
+            return $data->jsonSerialize();
         } elseif ($data instanceof DataProviderInterface) {
             return $this->serializeDataProvider($data);
+        } elseif (is_array($data)) {
+            $serializedArray = [];
+            foreach ($data as $key => $value) {
+                $serializedArray[$key] = $this->serialize($value);
+            }
+            return $serializedArray;
         }
 
         return $data;
@@ -176,7 +185,7 @@ class Serializer extends Component
     /**
      * Serializes a data provider.
      * @param DataProviderInterface $dataProvider
-     * @return array the array representation of the data provider.
+     * @return array|null the array representation of the data provider.
      */
     protected function serializeDataProvider($dataProvider)
     {
@@ -248,7 +257,7 @@ class Serializer extends Component
     /**
      * Serializes a model object.
      * @param Arrayable $model
-     * @return array the array representation of the model
+     * @return array|null the array representation of the model
      */
     protected function serializeModel($model)
     {
@@ -286,10 +295,9 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list($fields, $expand) = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
-                $models[$i] = $model->toArray($fields, $expand);
+                $models[$i] = $this->serializeModel($model);
             } elseif (is_array($model)) {
                 $models[$i] = ArrayHelper::toArray($model);
             }

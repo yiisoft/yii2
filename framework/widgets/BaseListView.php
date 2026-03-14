@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -51,7 +52,7 @@ abstract class BaseListView extends Widget
      */
     public $sorter = [];
     /**
-     * @var string the HTML content to be displayed as the summary of the list view.
+     * @var string|null the HTML content to be displayed as the summary of the list view.
      * If you do not want to show the summary, you may set it with an empty string.
      *
      * The following tokens will be replaced with the corresponding values:
@@ -77,7 +78,7 @@ abstract class BaseListView extends Widget
      */
     public $showOnEmpty = false;
     /**
-     * @var string|false the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * @var string|false|null the HTML content to be displayed when [[dataProvider]] does not have any data.
      * When this is set to `false` no extra HTML content will be generated.
      * The default value is the text "No results found." which will be translated to the current application language.
      * @see showOnEmpty
@@ -227,14 +228,18 @@ abstract class BaseListView extends Widget
             }
         }
 
-        return Yii::$app->getI18n()->format($summaryContent, [
+        if ($summaryContent === '') {
+            return '';
+        }
+
+        return Html::tag($tag, Yii::$app->getI18n()->format($summaryContent, [
             'begin' => $begin,
             'end' => $end,
             'count' => $count,
             'totalCount' => $totalCount,
             'page' => $page,
             'pageCount' => $pageCount,
-        ], Yii::$app->language);
+        ], Yii::$app->language), $summaryOptions);
     }
 
     /**
@@ -247,8 +252,8 @@ abstract class BaseListView extends Widget
         if ($pagination === false || $this->dataProvider->getCount() <= 0) {
             return '';
         }
-        /* @var $class LinkPager */
         $pager = $this->pager;
+        /** @var LinkPager $class */
         $class = ArrayHelper::remove($pager, 'class', LinkPager::className());
         $pager['pagination'] = $pagination;
         $pager['view'] = $this->getView();
@@ -266,8 +271,8 @@ abstract class BaseListView extends Widget
         if ($sort === false || empty($sort->attributes) || $this->dataProvider->getCount() <= 0) {
             return '';
         }
-        /* @var $class LinkSorter */
         $sorter = $this->sorter;
+        /** @var LinkSorter $class */
         $class = ArrayHelper::remove($sorter, 'class', LinkSorter::className());
         $sorter['sort'] = $sort;
         $sorter['view'] = $this->getView();

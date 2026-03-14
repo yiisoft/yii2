@@ -354,13 +354,13 @@ $filter = new ActiveDataFilter([
 
 $filterCondition = null;
 
-// どのようなソースからでもフィルタをロードすることが出来ます。
-// 例えば、リクエスト・ボディの JSON からロードしたい場合は、
+// どのようなソースからでもフィルタをロードすることが出来ます。例えば、
+// リクエスト・ボディの JSON からロードしたい場合は、
 // 下記のように Yii::$app->request->getBodyParams() を使います。
 if ($filter->load(\Yii::$app->request->get())) { 
     $filterCondition = $filter->build();
     if ($filterCondition === false) {
-        // シリアライザがエラーを抽出するだろう
+        // シリアライザがフィルタの抽出でエラーを出すかもしれない
         return $filter;
     }
 }

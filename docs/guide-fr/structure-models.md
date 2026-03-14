@@ -1,7 +1,7 @@
 Modèles
 =======
 
-Les modèles font partie du modèle d'architecture [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) (Modèle Vue Contrôleur).
+Les modèles font partie du modèle d'architecture [MVC](https://fr.wikipedia.org/wiki/Mod%C3%A8le-vue-contr%C3%B4leur) (Modèle Vue Contrôleur).
 Ces objets représentent les données à traiter, les règles et la logique de traitement. 
 
 Vous pouvez créer des classes de modèle en étendant la classe [[yii\base\Model]] ou ses classe filles. La classe de base [[yii\base\Model]] prend en charge des fonctionnalités nombreuses et utiles :
@@ -31,7 +31,7 @@ $model->name = 'example';
 echo $model->name;
 ```
 
-Vous pouvez également accéder aux attributs comme aux éléments d'un tableau, grâce à la prise en charge de [ArrayAccess](https://secure.php.net/manual/en/class.arrayaccess.php) et [ArrayIterator](https://secure.php.net/manual/en/class.arrayiterator.php)
+Vous pouvez également accéder aux attributs comme aux éléments d'un tableau, grâce à la prise en charge de [ArrayAccess](https://www.php.net/manual/en/class.arrayaccess.php) et [ArrayIterator](https://www.php.net/manual/en/class.arrayiterator.php)
 par la classe [[yii\base\Model]]:
 
 ```php

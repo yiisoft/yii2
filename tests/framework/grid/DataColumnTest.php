@@ -1,45 +1,48 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\grid;
 
+use yiiunit\TestCase;
+use yiiunit\data\base\RulesModel;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;
+use yiiunit\data\base\Singer;
 
 /**
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  *
  * @group grid
  */
-class DataColumnTest extends \yiiunit\TestCase
+class DataColumnTest extends TestCase
 {
     /**
      * @see DataColumn::getHeaderCellLabel()
      */
-    public function testColumnLabels_OnEmpty_ArrayProvider()
+    public function testColumnLabelsOnEmptyArrayProvider(): void
     {
         $this->mockApplication();
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider([
                 'allModels' => [],
                 'totalCount' => 0,
-                'modelClass' => Order::className(),
+                'modelClass' => Order::class,
             ]),
             'columns' => ['customer_id', 'total'],
         ]);
         $labels = [];
         foreach ($grid->columns as $column) {
-            $method = new \ReflectionMethod($column, 'getHeaderCellLabel');
-            $method->setAccessible(true);
-            $labels[] = $method->invoke($column);
+            $labels[] = $this->invokeMethod($column, 'getHeaderCellLabel');
         }
         $this->assertEquals(['Customer', 'Invoice Total'], $labels);
     }
@@ -47,7 +50,7 @@ class DataColumnTest extends \yiiunit\TestCase
     /**
      * @see DataColumn::getHeaderCellLabel()
      */
-    public function testColumnLabels_OnEmpty_ArrayProvider_WithFilterModel()
+    public function testColumnLabelsOnEmptyArrayProviderWithFilterModel(): void
     {
         $this->mockApplication();
         $grid = new GridView([
@@ -60,9 +63,7 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
         $labels = [];
         foreach ($grid->columns as $column) {
-            $method = new \ReflectionMethod($column, 'getHeaderCellLabel');
-            $method->setAccessible(true);
-            $labels[] = $method->invoke($column);
+            $labels[] = $this->invokeMethod($column, 'getHeaderCellLabel');
         }
         $this->assertEquals(['Customer', 'Invoice Total'], $labels);
     }
@@ -71,7 +72,7 @@ class DataColumnTest extends \yiiunit\TestCase
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_String()
+    public function testFilterInputString(): void
     {
         $this->mockApplication();
         $filterInput = '<input type="text"/>';
@@ -89,18 +90,50 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
         //print_r($grid->columns);exit();
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
-        $this->assertEquals($result, $filterInput);
-    }
 
+        $this->assertEquals($this->invokeMethod($dataColumn, 'renderFilterCellContent'), $filterInput);
+    }
 
     /**
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_Array()
+    public function testFilterHasMaxLengthWhenIsAnActiveTextInput(): void
+    {
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => '\yii\db\Connection',
+                    'dsn' => 'sqlite::memory:',
+                ],
+            ],
+        ]);
+
+        ActiveRecord::$db = Yii::$app->getDb();
+        Yii::$app->getDb()->createCommand()->createTable(Singer::tableName(), [
+            'firstName' => 'string',
+            'lastName' => 'string'
+        ])->execute();
+
+        $filterInput = '<input type="text" class="form-control" name="Singer[lastName]" maxlength="25">';
+        $grid = new GridView([
+            'dataProvider' => new ActiveDataProvider(),
+            'filterModel' => new Singer(),
+            'columns' => [
+                0 => 'lastName'
+            ],
+        ]);
+
+        $dataColumn = $grid->columns[0];
+
+        $this->assertEquals($this->invokeMethod($dataColumn, 'renderFilterCellContent'), $filterInput);
+    }
+
+    /**
+     * @see DataColumn::$filter
+     * @see DataColumn::renderFilterCellContent()
+     */
+    public function testFilterInputArray(): void
     {
         $this->mockApplication([
             'components' => [
@@ -133,25 +166,25 @@ class DataColumnTest extends \yiiunit\TestCase
         ]);
 
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="0">1</option>
 <option value="1">2</option>
 </select>
 HTML
-            , $result);
+            ,
+            $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+        );
     }
 
     /**
      * @see DataColumn::$filter
      * @see DataColumn::renderFilterCellContent()
      */
-    public function testFilterInput_FormatBoolean()
+    public function testFilterInputFormatBoolean(): void
     {
         $this->mockApplication([
             'components' => [
@@ -183,17 +216,46 @@ HTML
         ]);
 
         $dataColumn = $grid->columns[0];
-        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
-        $method->setAccessible(true);
-        $result = $method->invoke($dataColumn);
 
-        $this->assertEqualsWithoutLE(<<<'HTML'
+        $this->assertEqualsWithoutLE(
+            <<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="1">Yes</option>
 <option value="0">No</option>
 </select>
 HTML
-            , $result);
+            ,
+            $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+        );
+    }
+
+    /**
+     * @see DataColumn::$filterAttribute
+     * @see DataColumn::renderFilterCellContent()
+     */
+    public function testFilterInputWithFilterAttribute(): void
+    {
+        $this->mockApplication();
+
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [],
+            ]),
+            'columns' => [
+                0 => [
+                    'attribute' => 'username',
+                    'filterAttribute' => 'user_id',
+                ],
+            ],
+            'filterModel' => new RulesModel(['rules' => [['user_id', 'safe']]]),
+        ]);
+
+        $dataColumn = $grid->columns[0];
+
+        $this->assertEquals(
+            '<input type="text" class="form-control" name="RulesModel[user_id]">',
+            $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
+        );
     }
 }

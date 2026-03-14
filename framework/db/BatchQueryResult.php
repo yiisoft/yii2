@@ -1,13 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
 
-use yii\base\BaseObject;
+use yii\base\Component;
 
 /**
  * BatchQueryResult represents a batch query from which you can retrieve data in batches.
@@ -16,7 +17,7 @@ use yii\base\BaseObject;
  * calling [[Query::batch()]] or [[Query::each()]]. Because BatchQueryResult implements the [[\Iterator]] interface,
  * you can iterate it to obtain a batch of data in each iteration. For example,
  *
- * ```php
+ * ```
  * $query = (new Query)->from('user');
  * foreach ($query->batch() as $i => $users) {
  *     // $users represents the rows in the $i-th batch
@@ -27,11 +28,29 @@ use yii\base\BaseObject;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \Iterator<int, mixed>
  */
-class BatchQueryResult extends BaseObject implements \Iterator
+class BatchQueryResult extends Component implements \Iterator
 {
     /**
-     * @var Connection the DB connection to be used when performing batch query.
+     * @event Event an event that is triggered when the batch query is reset.
+     * @see reset()
+     * @since 2.0.41
+     */
+    public const EVENT_RESET = 'reset';
+    /**
+     * @event Event an event that is triggered when the last batch has been fetched.
+     * @since 2.0.41
+     */
+    public const EVENT_FINISH = 'finish';
+    /**
+     * MSSQL error code for exception that is thrown when last batch is size less than specified batch size
+     * @see https://github.com/yiisoft/yii2/issues/10023
+     */
+    public const MSSQL_NO_MORE_ROWS_ERROR_CODE = -13;
+    /**
+     * @var Connection|null the DB connection to be used when performing batch query.
      * If null, the "db" application component will be used.
      */
     public $db;
@@ -51,11 +70,11 @@ class BatchQueryResult extends BaseObject implements \Iterator
     public $each = false;
 
     /**
-     * @var DataReader the data reader associated with this batch query.
+     * @var DataReader|null the data reader associated with this batch query.
      */
     private $_dataReader;
     /**
-     * @var array the data retrieved in the current batch
+     * @var array|null the data retrieved in the current batch
      */
     private $_batch;
     /**
@@ -63,14 +82,9 @@ class BatchQueryResult extends BaseObject implements \Iterator
      */
     private $_value;
     /**
-     * @var string|int the key for the current iteration
+     * @var string|int|null the key for the current iteration
      */
     private $_key;
-    /**
-     * @var int MSSQL error code for exception that is thrown when last batch is size less than specified batch size
-     * @see https://github.com/yiisoft/yii2/issues/10023
-     */
-    private $mssqlNoMoreRowsErrorCode = -13;
 
 
     /**
@@ -95,12 +109,14 @@ class BatchQueryResult extends BaseObject implements \Iterator
         $this->_batch = null;
         $this->_value = null;
         $this->_key = null;
+        $this->trigger(self::EVENT_RESET);
     }
 
     /**
      * Resets the iterator to the initial state.
      * This method is required by the interface [[\Iterator]].
      */
+    #[\ReturnTypeWillChange]
     public function rewind()
     {
         $this->reset();
@@ -111,6 +127,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      * Moves the internal pointer to the next dataset.
      * This method is required by the interface [[\Iterator]].
      */
+    #[\ReturnTypeWillChange]
     public function next()
     {
         if ($this->_batch === null || !$this->each || $this->each && next($this->_batch) === false) {
@@ -160,12 +177,18 @@ class BatchQueryResult extends BaseObject implements \Iterator
         $count = 0;
 
         try {
-            while ($count++ < $this->batchSize && ($row = $this->_dataReader->read())) {
-                $rows[] = $row;
+            while ($count++ < $this->batchSize) {
+                if ($row = $this->_dataReader->read()) {
+                    $rows[] = $row;
+                } else {
+                    // we've reached the end
+                    $this->trigger(self::EVENT_FINISH);
+                    break;
+                }
             }
         } catch (\PDOException $e) {
             $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
-            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== $this->mssqlNoMoreRowsErrorCode) {
+            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== self::MSSQL_NO_MORE_ROWS_ERROR_CODE) {
                 throw $e;
             }
         }
@@ -178,6 +201,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      * This method is required by the interface [[\Iterator]].
      * @return int the index of the current row.
      */
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return $this->_key;
@@ -188,6 +212,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      * This method is required by the interface [[\Iterator]].
      * @return mixed the current dataset.
      */
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return $this->_value;
@@ -198,6 +223,7 @@ class BatchQueryResult extends BaseObject implements \Iterator
      * This method is required by the interface [[\Iterator]].
      * @return bool whether there is a valid dataset at the current position.
      */
+    #[\ReturnTypeWillChange]
     public function valid()
     {
         return !empty($this->_batch);
@@ -222,5 +248,16 @@ class BatchQueryResult extends BaseObject implements \Iterator
         }
 
         return null;
+    }
+
+    /**
+     * Unserialization is disabled to prevent remote code execution in case application
+     * calls unserialize() on user input containing specially crafted string.
+     * @see https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-15148
+     * @since 2.0.38
+     */
+    public function __wakeup()
+    {
+        throw new \BadMethodCallException('Cannot unserialize ' . __CLASS__);
     }
 }

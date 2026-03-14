@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\data;
 
+use stdClass;
 use yii\base\DynamicModel;
 use yii\data\DataFilter;
 use yiiunit\data\base\Singer;
@@ -17,7 +19,7 @@ use yiiunit\TestCase;
  */
 class DataFilterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -26,7 +28,7 @@ class DataFilterTest extends TestCase
 
     // Tests :
 
-    public function testSetupSearchModel()
+    public function testSetupSearchModel(): void
     {
         $builder = new DataFilter();
 
@@ -34,12 +36,12 @@ class DataFilterTest extends TestCase
         $builder->setSearchModel($model);
         $this->assertSame($model, $builder->getSearchModel());
 
-        $builder->setSearchModel(Singer::className());
+        $builder->setSearchModel(Singer::class);
         $model = $builder->getSearchModel();
         $this->assertTrue($model instanceof Singer);
 
         $builder->setSearchModel([
-            'class' => Singer::className(),
+            'class' => Singer::class,
             'scenario' => 'search',
         ]);
         $model = $builder->getSearchModel();
@@ -55,10 +57,10 @@ class DataFilterTest extends TestCase
         $this->assertTrue($model instanceof DynamicModel);
 
         $this->expectException('yii\base\InvalidConfigException');
-        $builder->setSearchModel(new \stdClass());
+        $builder->setSearchModel(new stdClass());
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
         $filterValue = [
             'name' => 'value',
@@ -85,7 +87,7 @@ class DataFilterTest extends TestCase
      * Data provider for [[testValidate()]].
      * @return array test data.
      */
-    public function dataProviderValidate()
+    public static function dataProviderValidate(): array
     {
         return [
             [
@@ -225,6 +227,31 @@ class DataFilterTest extends TestCase
                 true,
                 [],
             ],
+            [
+                [
+                    'name' => [
+                        'eq' => 'NULL',
+                    ],
+                ],
+                true,
+                [],
+            ],
+            [
+                [
+                    'name' => 'NULL',
+                ],
+                true,
+                [],
+            ],
+            [
+                [
+                    'name' => [
+                        'neq' => 'NULL',
+                    ],
+                ],
+                true,
+                [],
+            ],
         ];
     }
 
@@ -237,7 +264,7 @@ class DataFilterTest extends TestCase
      * @param bool $expectedResult
      * @param array $expectedErrors
      */
-    public function testValidate($filter, $expectedResult, $expectedErrors)
+    public function testValidate($filter, $expectedResult, $expectedErrors): void
     {
         $builder = new DataFilter();
         $searchModel = (new DynamicModel([
@@ -268,7 +295,7 @@ class DataFilterTest extends TestCase
      * Data provider for [[testNormalize()]].
      * @return array test data.
      */
-    public function dataProviderNormalize()
+    public static function dataProviderNormalize(): array
     {
         return [
             [
@@ -304,6 +331,18 @@ class DataFilterTest extends TestCase
                     'number' => [
                         '>' => 10,
                         '<' => 20,
+                    ],
+                ],
+            ],
+            [
+                [
+                    'name' => [
+                        'like' => 'foo',
+                    ],
+                ],
+                [
+                    'name' => [
+                        'LIKE' => 'foo',
                     ],
                 ],
             ],
@@ -363,6 +402,14 @@ class DataFilterTest extends TestCase
                     'datetime' => '2015-06-06 17:46:12',
                 ],
             ],
+            [
+                [
+                    'name' => 'NULL',
+                ],
+                [
+                    'name' => null,
+                ],
+            ],
         ];
     }
 
@@ -374,7 +421,7 @@ class DataFilterTest extends TestCase
      * @param array $filter
      * @param array $expectedResult
      */
-    public function testNormalize($filter, $expectedResult)
+    public function testNormalize($filter, $expectedResult): void
     {
         $builder = new DataFilter();
         $searchModel = (new DynamicModel([
@@ -403,7 +450,16 @@ class DataFilterTest extends TestCase
         $this->assertEquals($expectedResult, $builder->normalize(false));
     }
 
-    public function testSetupErrorMessages()
+    public function testNormalizeNonDefaultNull(): void
+    {
+        $builder = new DataFilter();
+        $builder->nullValue = 'abcde';
+        $builder->setSearchModel((new DynamicModel(['name' => null]))->addRule('name', 'string'));
+        $builder->filter = ['name' => 'abcde'];
+        $this->assertEquals(['name' => null], $builder->normalize(false));
+    }
+
+    public function testSetupErrorMessages(): void
     {
         $builder = new DataFilter();
         $builder->setErrorMessages([

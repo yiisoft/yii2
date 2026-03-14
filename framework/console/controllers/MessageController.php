@@ -1,13 +1,16 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console\controllers;
 
 use Yii;
+use yii\console\Application;
+use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\db\Connection;
@@ -37,8 +40,11 @@ use yii\i18n\GettextPoFile;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
-class MessageController extends \yii\console\Controller
+class MessageController extends Controller
 {
     /**
      * @var string controller default action ID.
@@ -58,12 +64,11 @@ class MessageController extends \yii\console\Controller
      */
     public $languages = [];
     /**
-     * @var string the name of the function for translating messages.
-     * Defaults to 'Yii::t'. This is used as a mark to find the messages to be
-     * translated. You may use a string for single function name or an array for
-     * multiple function names.
+     * @var string|string[] the name of the function for translating messages.
+     * This is used as a mark to find the messages to be translated.
+     * You may use a string for single function name or an array for multiple function names.
      */
-    public $translator = 'Yii::t';
+    public $translator = ['Yii::t', '\Yii::t'];
     /**
      * @var bool whether to sort messages by keys when merging new messages
      * with the existing ones. Defaults to false, which means the new (untranslated)
@@ -85,23 +90,22 @@ class MessageController extends \yii\console\Controller
      */
     public $markUnused = true;
     /**
-     * @var array list of patterns that specify which files/directories should NOT be processed.
+     * @var array|null list of patterns that specify which files/directories should NOT be processed.
      * If empty or not set, all files/directories will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
      */
     public $except = [
-        '.svn',
-        '.git',
-        '.gitignore',
-        '.gitkeep',
-        '.hgignore',
-        '.hgkeep',
+        '.*',
+        '/.*',
         '/messages',
+        '/tests',
+        '/runtime',
+        '/vendor',
         '/BaseYii.php', // contains examples about Yii::t()
     ];
     /**
-     * @var array list of patterns that specify which files (not directories) should be processed.
+     * @var array|null list of patterns that specify which files (not directories) should be processed.
      * If empty or not set, all files will be processed.
      * See helpers/FileHelper::findFiles() description for pattern matching rules.
      * If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
@@ -288,7 +292,7 @@ EOD;
      * This command will search through source code files and extract
      * messages that need to be translated in different languages.
      *
-     * @param string $configFile the path or alias of the configuration file.
+     * @param string|null $configFile the path or alias of the configuration file.
      * You may use the "yii message/config" command to generate
      * this file and then customize it for your needs.
      * @throws Exception on failure.
@@ -356,16 +360,6 @@ EOD;
             $currentMessages[$row['category']][$row['id']] = $row['message'];
         }
 
-        $currentLanguages = [];
-        $rows = (new Query())->select(['language'])->from($messageTable)->groupBy('language')->all($db);
-        foreach ($rows as $row) {
-            $currentLanguages[] = $row['language'];
-        }
-        $missingLanguages = [];
-        if (!empty($currentLanguages)) {
-            $missingLanguages = array_diff($languages, $currentLanguages);
-        }
-
         $new = [];
         $obsolete = [];
 
@@ -374,89 +368,130 @@ EOD;
 
             if (isset($currentMessages[$category])) {
                 $new[$category] = array_diff($msgs, $currentMessages[$category]);
+                // obsolete messages per category
                 $obsolete += array_diff($currentMessages[$category], $msgs);
             } else {
                 $new[$category] = $msgs;
             }
         }
 
+        // obsolete categories
         foreach (array_diff(array_keys($currentMessages), array_keys($messages)) as $category) {
             $obsolete += $currentMessages[$category];
         }
 
         if (!$removeUnused) {
             foreach ($obsolete as $pk => $msg) {
-                if (mb_substr($msg, 0, 2) === '@@' && mb_substr($msg, -2) === '@@') {
+                // skip already marked unused
+                if (strncmp($msg, '@@', 2) === 0 && substr($msg, -2) === '@@') {
                     unset($obsolete[$pk]);
                 }
             }
         }
 
-        $obsolete = array_keys($obsolete);
         $this->stdout('Inserting new messages...');
-        $savedFlag = false;
+        $insertCount = 0;
 
         foreach ($new as $category => $msgs) {
             foreach ($msgs as $msg) {
-                $savedFlag = true;
-                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $msg]);
-                foreach ($languages as $language) {
-                    $db->createCommand()
-                       ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
-                       ->execute();
-                }
+                $insertCount++;
+                $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $msg]);
             }
         }
 
-        if (!empty($missingLanguages)) {
-            $updatedMessages = [];
-            $rows = (new Query())->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
-            foreach ($rows as $row) {
-                $updatedMessages[$row['category']][$row['id']] = $row['message'];
-            }
-            foreach ($updatedMessages as $category => $msgs) {
-                foreach ($msgs as $id => $msg) {
-                    $savedFlag = true;
-                    foreach ($missingLanguages as $language) {
-                        $db->createCommand()
-                            ->insert($messageTable, ['id' => $id, 'language' => $language])
-                            ->execute();
-                    }
-                }
-            }
-        }
+        $this->stdout($insertCount ? "{$insertCount} saved.\n" : "Nothing to save.\n");
 
-        $this->stdout($savedFlag ? "saved.\n" : "Nothing to save.\n");
         $this->stdout($removeUnused ? 'Deleting obsoleted messages...' : 'Updating obsoleted messages...');
 
         if (empty($obsolete)) {
             $this->stdout("Nothing obsoleted...skipped.\n");
-            return;
         }
 
-        if ($removeUnused) {
-            $db->createCommand()
-               ->delete($sourceMessageTable, ['in', 'id', $obsolete])
-               ->execute();
-            $this->stdout("deleted.\n");
-        } elseif ($markUnused) {
-            $rows = (new Query())
-                ->select(['id', 'message'])
-                ->from($sourceMessageTable)
-                ->where(['in', 'id', $obsolete])
-                ->all($db);
+        if ($obsolete) {
+            if ($removeUnused) {
+                $affected = $db->createCommand()
+                   ->delete($sourceMessageTable, ['in', 'id', array_keys($obsolete)])
+                   ->execute();
+                $this->stdout("{$affected} deleted.\n");
+            } elseif ($markUnused) {
+                $marked = 0;
+                $rows = (new Query())
+                    ->select(['id', 'message'])
+                    ->from($sourceMessageTable)
+                    ->where(['in', 'id', array_keys($obsolete)])
+                    ->all($db);
 
-            foreach ($rows as $row) {
-                $db->createCommand()->update(
-                    $sourceMessageTable,
-                    ['message' => '@@' . $row['message'] . '@@'],
-                    ['id' => $row['id']]
-                )->execute();
+                foreach ($rows as $row) {
+                    $marked++;
+                    $db->createCommand()->update(
+                        $sourceMessageTable,
+                        ['message' => '@@' . $row['message'] . '@@'],
+                        ['id' => $row['id']]
+                    )->execute();
+                }
+                $this->stdout("{$marked} updated.\n");
+            } else {
+                $this->stdout("kept untouched.\n");
             }
-            $this->stdout("updated.\n");
-        } else {
-            $this->stdout("kept untouched.\n");
         }
+
+        // get fresh message id list
+        $freshMessagesIds = [];
+        $rows = (new Query())->select(['id'])->from($sourceMessageTable)->all($db);
+        foreach ($rows as $row) {
+            $freshMessagesIds[] = $row['id'];
+        }
+
+        $this->stdout('Generating missing rows...');
+        $generatedMissingRows = [];
+
+        foreach ($languages as $language) {
+            $count = 0;
+
+            // get list of ids of translations for this language
+            $msgRowsIds = [];
+            $msgRows = (new Query())->select(['id'])->from($messageTable)->where([
+                'language' => $language,
+            ])->all($db);
+            foreach ($msgRows as $row) {
+                $msgRowsIds[] = $row['id'];
+            }
+
+            // insert missing
+            foreach ($freshMessagesIds as $id) {
+                if (!in_array($id, $msgRowsIds)) {
+                    $db->createCommand()
+                       ->insert($messageTable, ['id' => $id, 'language' => $language])
+                       ->execute();
+                    $count++;
+                }
+            }
+            if ($count) {
+                $generatedMissingRows[] = "{$count} for {$language}";
+            }
+        }
+
+        $this->stdout($generatedMissingRows ? implode(', ', $generatedMissingRows) . ".\n" : "Nothing to do.\n");
+
+        $this->stdout('Dropping unused languages...');
+        $droppedLanguages = [];
+
+        $currentLanguages = [];
+        $rows = (new Query())->select(['language'])->from($messageTable)->groupBy('language')->all($db);
+        foreach ($rows as $row) {
+            $currentLanguages[] = $row['language'];
+        }
+
+        foreach ($currentLanguages as $currentLanguage) {
+            if (!in_array($currentLanguage, $languages)) {
+                $deleted = $db->createCommand()->delete($messageTable, 'language=:language', [
+                    'language' => $currentLanguage,
+                ])->execute();
+                $droppedLanguages[] = "removed {$deleted} rows for $currentLanguage";
+            }
+        }
+
+        $this->stdout($droppedLanguages ? implode(', ', $droppedLanguages) . ".\n" : "Nothing to do.\n");
     }
 
     /**

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -17,7 +18,7 @@ use yii\base\InvalidArgumentException;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * $tokenizer = new SqlTokenizer("SELECT * FROM user WHERE id = 1");
  * $root = $tokeinzer->tokenize();
  * $sqlTokens = $root->getChildren();
@@ -45,7 +46,7 @@ abstract class SqlTokenizer extends Component
     protected $offset;
 
     /**
-     * @var \SplStack stack of active tokens.
+     * @var \SplStack<SqlToken> stack of active tokens.
      */
     private $_tokenStack;
     /**
@@ -176,7 +177,7 @@ abstract class SqlTokenizer extends Component
 
     /**
      * Returns whether the longest common prefix equals to the SQL code of the same length at the current offset.
-     * @param string[] $with strings to be tested.
+     * @param array<int, string>|array<int, array<string, mixed>> $with strings to be tested.
      * The method **will** modify this parameter to speed up lookups.
      * @param bool $caseSensitive whether to perform a case sensitive comparison.
      * @param int|null $length length of the matched string.
@@ -194,6 +195,7 @@ abstract class SqlTokenizer extends Component
                 return mb_strlen($string2, 'UTF-8') - mb_strlen($string1, 'UTF-8');
             });
             $map = [];
+            /** @var string $string */
             foreach ($with as $string) {
                 $map[mb_strlen($string, 'UTF-8')][$caseSensitive ? $string : mb_strtoupper($string, 'UTF-8')] = true;
             }

@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\oci;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
@@ -20,17 +22,21 @@ use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database.
  *
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
- * sequence object. This property is read-only.
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
+ * the sequence object.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
 
@@ -192,6 +198,7 @@ LEFT JOIN "SYS"."USER_IND_COLUMNS" "uicol"
 LEFT JOIN "SYS"."USER_CONSTRAINTS" "uc"
     ON "uc"."OWNER" = "ui"."TABLE_OWNER" AND "uc"."CONSTRAINT_NAME" = "ui"."INDEX_NAME" AND "uc"."CONSTRAINT_TYPE" = 'P'
 WHERE "ui"."TABLE_OWNER" = :schemaName AND "ui"."TABLE_NAME" = :tableName
+    AND "ui"."INDEX_TYPE" != 'LOB'
 ORDER BY "uicol"."COLUMN_POSITION" ASC
 SQL;
 
@@ -261,7 +268,7 @@ SQL;
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::className(), [$this->db]);
     }
 
     /**
@@ -269,7 +276,7 @@ SQL;
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length, $this->db);
+        return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length]);
     }
 
     /**
@@ -372,7 +379,7 @@ SQL;
 
     /**
      * @Overrides method in class 'Schema'
-     * @see https://secure.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
+     * @see https://www.php.net/manual/en/function.PDO-lastInsertId.php -> Oracle does not support this
      *
      * Returns the ID of the last inserted row or sequence value.
      * @param string $sequenceName name of the sequence object (required by some DBMS)
@@ -396,7 +403,7 @@ SQL;
      * Creates ColumnSchema instance.
      *
      * @param array $column
-     * @return ColumnSchema
+     * @return T
      */
     protected function createColumn($column)
     {
@@ -411,18 +418,20 @@ SQL;
         $c->phpType = $this->getColumnPhpType($c);
 
         if (!$c->isPrimaryKey) {
-            if (stripos($column['DATA_DEFAULT'], 'timestamp') !== false) {
+            if (stripos((string) $column['DATA_DEFAULT'], 'timestamp') !== false) {
                 $c->defaultValue = null;
             } else {
-                $defaultValue = $column['DATA_DEFAULT'];
+                $defaultValue = (string) $column['DATA_DEFAULT'];
                 if ($c->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
                     $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
                 } else {
                     if ($defaultValue !== null) {
-                        if (($len = strlen($defaultValue)) > 2 && $defaultValue[0] === "'"
-                            && $defaultValue[$len - 1] === "'"
+                        if (
+                            strlen($defaultValue) > 2
+                            && strncmp($defaultValue, "'", 1) === 0
+                            && substr($defaultValue, -1) === "'"
                         ) {
-                            $defaultValue = substr($column['DATA_DEFAULT'], 1, -1);
+                            $defaultValue = substr($defaultValue, 1, -1);
                         } else {
                             $defaultValue = trim($defaultValue);
                         }
@@ -506,7 +515,7 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:.
      *
-     * ```php
+     * ```
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],
@@ -592,9 +601,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) === '' ? null : (int) $length;
-        $column->precision = trim($precision) === '' ? null : (int) $precision;
-        $column->scale = trim($scale) === '' ? null : (int) $scale;
+        $column->size = trim((string) $length) === '' ? null : (int) $length;
+        $column->precision = trim((string) $precision) === '' ? null : (int) $precision;
+        $column->scale = trim((string) $scale) === '' ? null : (int) $scale;
     }
 
     /**
@@ -614,7 +623,7 @@ SQL;
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,
-                    'value' => null,
+                    'value' => '',
                 ];
                 if (!isset($columnSchemas[$name]) || $columnSchemas[$name]->phpType !== 'integer') {
                     $returnParams[$phName]['dataType'] = \PDO::PARAM_STR;

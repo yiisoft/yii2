@@ -85,14 +85,14 @@ if ($request->isPut)  { /* o método da requisição é PUT */ }
 ## URLs da Requisição <span id="request-urls"></span>
 
 O componente `request` fornece muitas formas de inspecionar a atual URL da requisição.
-Assumindo que a URL da requisição seja `http://example.com/admin/index.php/product?id=100`, 
+Assumindo que a URL da requisição seja `https://example.com/admin/index.php/product?id=100`, 
 você pode obter várias partes desta URL através das propriedades explicadas a seguir:
 
 * [[yii\web\Request::url|url]]: retorna `/admin/index.php/product?id=100`, que é 
   a URL sem as informações de protocolo e de domínio. 
-* [[yii\web\Request::absoluteUrl|absoluteUrl]]: retorna `http://example.com/admin/index.php/product?id=100`, 
+* [[yii\web\Request::absoluteUrl|absoluteUrl]]: retorna `https://example.com/admin/index.php/product?id=100`, 
   que é a URL completa, incluindo as informações de protocolo e de domínio.
-* [[yii\web\Request::hostInfo|hostInfo]]: retorna `http://example.com`, que são 
+* [[yii\web\Request::hostInfo|hostInfo]]: retorna `https://example.com`, que são 
   as informações de protocolo e de domínio da URL.
 * [[yii\web\Request::pathInfo|pathInfo]]: retorna `/product`, que é a informação 
   depois do script de entrada e antes da interrogação (da query string).

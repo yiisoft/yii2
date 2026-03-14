@@ -16,9 +16,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Вход';
 ?>
@@ -269,8 +271,10 @@ $this->params['breadcrumbs'][] = 'О нас';
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -468,7 +472,7 @@ Yii определяет какой шаблон использовать для
 * [работа с клиентскими скриптами](output-client-scripts.md): Поддерживает регистрацию и рендеринг CSS и Javascript.
 * [управление связками](structure-assets.md): позволяет регистрацию и управление [связками клиентского кода](structure-assets.md).
 * [альтернативные движки шаблонов](tutorial-template-engines.md): позволяет использовать другие шаблонные движки, такие как 
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 
 Также удобно пользоваться мелкими, но удобными фичами при разработке веб страниц, которые приведены ниже.
@@ -539,14 +543,14 @@ $this->registerLinkTag([
     'title' => 'Сводка новостей по Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Этот код выведет
 
 ```html
-<link title="Сводка новостей по Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Сводка новостей по Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Как и в случае с [[yii\web\View::registerMetaTag()|registerMetaTag()]], вы можете указать ключ вторым параметром при вызове 

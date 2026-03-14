@@ -281,7 +281,7 @@ if (!$model && null === $event)
 ```
 
 そうしても意味が通じる場合は、`return` の後の `else` は避けてください。
-[ガード条件](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html) を使用しましょう。
+[ガード条件](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html) を使用しましょう。
 
 ```php
 $result = $this->getResult();
@@ -362,7 +362,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 ドキュメント
 ------------
 
-- ドキュメントの文法については [phpDoc](http://phpdoc.org/) を参照してください。
+- ドキュメントの文法については [phpDoc](https://phpdoc.org/) を参照してください。
 - ドキュメントの無いコードは許容されません。
 - 全てのクラス・ファイルは、ファイル・レベルの doc ブロックを各ファイルの先頭に持ち、
   クラス・レベルの doc ブロックを各クラスの直前に持たなければなりません。
@@ -395,9 +395,9 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

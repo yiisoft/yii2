@@ -279,7 +279,7 @@ if (!$model && null === $event)
 ```
 
 Należy unikać stosowania `else` po `return`, kiedy ma to sens.
-Należy używać [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
+Należy używać [guard conditions](https://refactoring.com/catalog/replaceNestedConditionalWithGuardClauses.html).
 
 ```php
 $result = $this->getResult();
@@ -360,7 +360,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 Dokumentacja
 ------------
 
-- Należy stosować dokumentację zgodnie ze składnią [phpDoc](http://phpdoc.org/).
+- Należy stosować dokumentację zgodnie ze składnią [phpDoc](https://phpdoc.org/).
 - Kod bez dokumentacji jest niedozwolony.
 - Każdy plik klasy musi zawierać blok dokumentacji "poziomu pliku" na początku pliku i blok dokumentacji "poziomu klasy"
   zaraz nad klasą.
@@ -391,9 +391,9 @@ Dokumentacja
 ```php
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 ```
 

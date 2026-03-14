@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -24,7 +25,7 @@ use yii\validators\Validator;
  *
  * Filter example:
  *
- * ```json
+ * ```
  * {
  *     "or": [
  *         {
@@ -51,7 +52,7 @@ use yii\validators\Validator;
  * In the request the filter should be specified using a key name equal to [[filterAttributeName]]. Thus actual HTTP request body
  * will look like following:
  *
- * ```json
+ * ```
  * {
  *     "filter": {"or": {...}},
  *     "page": 2,
@@ -62,7 +63,7 @@ use yii\validators\Validator;
  * Raw filter value should be assigned to [[filter]] property of the model.
  * You may populate it from request data via [[load()]] method:
  *
- * ```php
+ * ```
  * use yii\data\DataFilter;
  *
  * $dataFilter = new DataFilter();
@@ -72,7 +73,7 @@ use yii\validators\Validator;
  * In order to function this class requires a search model specified via [[searchModel]]. This search model should declare
  * all available search attributes and their validation rules. For example:
  *
- * ```php
+ * ```
  * class SearchModel extends \yii\base\Model
  * {
  *     public $id;
@@ -92,7 +93,7 @@ use yii\validators\Validator;
  * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as a [[searchModel]].
  * In this case you should specify [[searchModel]] using a PHP callable:
  *
- * ```php
+ * ```
  * function () {
  *     return (new \yii\base\DynamicModel(['id' => null, 'name' => null]))
  *         ->addRule(['id', 'name'], 'trim')
@@ -125,15 +126,14 @@ use yii\validators\Validator;
  */
 class DataFilter extends Model
 {
-    const TYPE_INTEGER = 'integer';
-    const TYPE_FLOAT = 'float';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_STRING = 'string';
-    const TYPE_ARRAY = 'array';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_DATE = 'date';
-    const TYPE_TIME = 'time';
-
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_DATETIME = 'datetime';
+    public const TYPE_DATE = 'date';
+    public const TYPE_TIME = 'time';
     /**
      * @var string name of the attribute that handles filter value.
      * The name is used to load data via [[load()]] method.
@@ -156,7 +156,7 @@ class DataFilter extends Model
      *
      * You may specify several keywords for the same filter build key, creating multiple aliases. For example:
      *
-     * ```php
+     * ```
      * [
      *     'eq' => '=',
      *     '=' => '=',
@@ -230,7 +230,7 @@ class DataFilter extends Model
      * @var array actual attribute names to be used in searched condition, in format: [filterAttribute => actualAttribute].
      * For example, in case of using table joins in the search query, attribute map may look like the following:
      *
-     * ```php
+     * ```
      * [
      *     'authorName' => '{{author}}.[[name]]'
      * ]
@@ -239,6 +239,11 @@ class DataFilter extends Model
      * Attribute map will be applied to filter condition in [[normalize()]] method.
      */
     public $attributeMap = [];
+    /**
+     * @var string representation of `null` instead of literal `null` in case the latter cannot be used.
+     * @since 2.0.40
+     */
+    public $nullValue = 'NULL';
 
     /**
      * @var array|\Closure list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
@@ -350,7 +355,7 @@ class DataFilter extends Model
     /**
      * Detect attribute type from given validator.
      *
-     * @param Validator validator from which to detect attribute type.
+     * @param Validator $validator validator from which to detect attribute type.
      * @return string|null detected attribute type.
      * @since 2.0.14
      */
@@ -359,29 +364,31 @@ class DataFilter extends Model
         if ($validator instanceof BooleanValidator) {
             return self::TYPE_BOOLEAN;
         }
-        
+
         if ($validator instanceof NumberValidator) {
             return $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
         }
-        
+
         if ($validator instanceof StringValidator) {
             return self::TYPE_STRING;
         }
-        
+
         if ($validator instanceof EachValidator) {
             return self::TYPE_ARRAY;
         }
-        
+
         if ($validator instanceof DateValidator) {
             if ($validator->type == DateValidator::TYPE_DATETIME) {
                 return self::TYPE_DATETIME;
             }
-            
+
             if ($validator->type == DateValidator::TYPE_TIME) {
                 return self::TYPE_TIME;
             }
             return self::TYPE_DATE;
         }
+
+        return null;
     }
 
     /**
@@ -608,7 +615,7 @@ class DataFilter extends Model
      * Validates operator condition.
      * @param string $operator raw operator control keyword.
      * @param mixed $condition attribute condition.
-     * @param string $attribute attribute name.
+     * @param string|null $attribute attribute name.
      */
     protected function validateOperatorCondition($operator, $condition, $attribute = null)
     {
@@ -659,7 +666,7 @@ class DataFilter extends Model
             return;
         }
 
-        $model->{$attribute} = $value;
+        $model->{$attribute} = $value === $this->nullValue ? null : $value;
         if (!$model->validate([$attribute])) {
             $this->addError($this->filterAttributeName, $model->getFirstError($attribute));
             return;
@@ -753,6 +760,8 @@ class DataFilter extends Model
             }
             if (is_array($value)) {
                 $result[$key] = $this->normalizeComplexFilter($value);
+            } elseif ($value === $this->nullValue) {
+                $result[$key] = null;
             } else {
                 $result[$key] = $value;
             }

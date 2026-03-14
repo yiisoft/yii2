@@ -13,8 +13,8 @@ If you are unsure, [report it to the main repository](https://github.com/yiisoft
 
 **Do not report an issue if**
 
-* you are asking how to use some Yii feature. You should use [the forum](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/) or [chat room](http://www.yiiframework.com/chat/) for this purpose.
-* your issue is about security. Please [contact us directly](http://www.yiiframework.com/security/) to report security issues.
+* you are asking how to use some Yii feature. You should use [the forum](https://forum.yiiframework.com/index.php/forum/42-general-discussions-for-yii-20/) or [chat room](https://www.yiiframework.com/chat/) for this purpose.
+* your issue is about security. Please [contact us directly](https://www.yiiframework.com/security/) to report security issues.
 
 **Avoid duplicated issues**
 

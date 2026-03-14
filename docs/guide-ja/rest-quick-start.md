@@ -9,7 +9,7 @@ Yii は、RESTful ウェブサービス API を実装する仕事を簡単にす
 * 出力フィールドの選択をサポートした、カスタマイズ可能なオブジェクトのシリアライゼーション
 * コレクション・データと検証エラーの適切な書式設定
 * コレクションのページネーション、フィルタリングおよびソーティング
-* [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS) のサポート
+* [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) のサポート
 * HTTP 動詞を適切にチェックする効率的なルーティング
 * `OPTIONS` および `HEAD` 動詞のサポートを内蔵
 * 認証と権限付与
@@ -162,7 +162,9 @@ Content-Type: application/xml
 次のコマンドは、JSON 形式でユーザのデータを持つ POST リクエストを送信して、新しいユーザを作成します。
 
 ```
-$ curl -i -H "Accept:application/json" -H "Content-Type:application/json" -XPOST "http://localhost/users" -d '{"username": "example", "email": "user@example.com"}'
+$ curl -i -H "Accept:application/json" -H "Content-Type:application/json" \
+    -XPOST "http://localhost/users" \
+    -d '{"username": "example", "email": "user@example.com"}'
 
 HTTP/1.1 201 Created
 ...

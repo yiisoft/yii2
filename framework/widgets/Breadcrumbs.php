@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -22,7 +23,7 @@ use yii\helpers\Html;
  *
  * To use Breadcrumbs, you need to configure its [[links]] property, which specifies the links to be displayed. For example,
  *
- * ```php
+ * ```
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'itemTemplate' => "<li><i>{link}</i></li>\n", // template for all links
@@ -42,7 +43,7 @@ use yii\helpers\Html;
  * You can use a view parameter (e.g. `$this->params['breadcrumbs']`) to configure the links in different
  * views. In the layout view, you assign this view parameter to the [[links]] property like the following:
  *
- * ```php
+ * ```
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
@@ -68,7 +69,7 @@ class Breadcrumbs extends Widget
      */
     public $encodeLabels = true;
     /**
-     * @var array the first hyperlink in the breadcrumbs (called home link).
+     * @var array|null the first hyperlink in the breadcrumbs (called home link).
      * Please refer to [[links]] on the format of the link.
      * If this property is not set, it will default to a link pointing to [[\yii\web\Application::homeUrl]]
      * with the label 'Home'. If this property is false, the home link will not be rendered.
@@ -79,7 +80,7 @@ class Breadcrumbs extends Widget
      * the widget will not render anything. Each array element represents a single link in the breadcrumbs
      * with the following structure:
      *
-     * ```php
+     * ```
      * [
      *     'label' => 'label of the link',  // required
      *     'url' => 'url of the link',      // optional, will be processed by Url::to()
@@ -94,17 +95,17 @@ class Breadcrumbs extends Widget
      * for the hyperlink tag. For example, the following link specification will generate a hyperlink
      * with CSS class `external`:
      *
-     * ```php
+     * ```
      * [
      *     'label' => 'demo',
-     *     'url' => 'http://example.com',
+     *     'url' => 'https://example.com',
      *     'class' => 'external',
      * ]
      * ```
      *
      * Since version 2.0.3 each individual link can override global [[encodeLabels]] param like the following:
      *
-     * ```php
+     * ```
      * [
      *     'label' => '<strong>Hello!</strong>',
      *     'encode' => false,

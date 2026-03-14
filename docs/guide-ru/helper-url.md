@@ -26,11 +26,11 @@ $absoluteBaseUrl = Url::base(true);
 $httpsAbsoluteBaseUrl = Url::base('https');
 ```
 
-Единственный параметр данного метода работает также как и `Url::home()`.
+Единственный параметр данного метода работает так же как и `Url::home()`.
 
 ## Создание URL <span id="creating-urls"></span>
 
-Чтобы создать URL для соответствующего роута используйте метод `Url::toRoute()`. Метод использует [[\yii\web\UrlManager]].
+Чтобы создать URL для соответствующего роута, используйте метод `Url::toRoute()`. Метод использует [[\yii\web\UrlManager]].
 Для того чтобы создать URL:
 
 ```php
@@ -62,7 +62,7 @@ $url = Url::toRoute(['product/view', 'id' => 42]);
 - Если роут начинается не со слеша (например, `site/index`), то он будет считаться относительным роутом текущего модуля
   и будет определен с помощью [[\yii\base\Module::uniqueId|uniqueId]].
 
-Начиная с версии 2.0.2, вы можете задавать роуты с помощью [псевдонимов](concept-aliases.md). В этом случае, сначала
+Начиная с версии 2.0.2, вы можете задавать роуты с помощью [псевдонимов](concept-aliases.md). В этом случае сначала
 псевдоним будет сконвертирован в соответствующий роут, который будет преобразован в абсолютный в соответствии с вышеописанными
 правилами.
 
@@ -78,7 +78,7 @@ echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 // /index.php?r=post/edit&id=100     псевдоним "@postEdit" задан как "post/edit"
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
-// http://www.example.com/index.php?r=site/index
+// https://www.example.com/index.php?r=site/index
 echo Url::toRoute('site/index', true);
 
 // https://www.example.com/index.php?r=site/index
@@ -120,7 +120,7 @@ echo Url::to('@web/images/logo.gif');
 // images/logo.gif
 echo Url::to('images/logo.gif');
 
-// http://www.example.com/images/logo.gif
+// https://www.example.com/images/logo.gif
 echo Url::to('@web/images/logo.gif', true);
 
 // https://www.example.com/images/logo.gif

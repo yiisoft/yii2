@@ -44,7 +44,7 @@ Dựa vào dòng này, ứng dụng sẽ được thiết lập ở chế độ 
 Bây giờ bạn có thể truy cập Gii qua đường dẫn:
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Lưu ý: Nếu bạn muốn truy cập Gii không chỉ từ localhost mà còn từ các máy khác, mặc định các truy cập sẽ bị từ chối
@@ -107,7 +107,7 @@ Xem kết quả <span id="trying-it-out"></span>
 Xem kết quả, dùng trình duyệt truy cập vào đường dẫn sau:
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 Bạn sẽ thấy dữ liệu bảng được hiển thị chứa các thông tin trong CSDL country. Bạn có thể sắp xếp các bảng,

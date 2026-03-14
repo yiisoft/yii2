@@ -1,7 +1,7 @@
 Yii 2.0 için Açıklayıcı Rehber
 ==============================
 
-Bu döküman, [Yii Dökümantasyon Koşulları](http://www.yiiframework.com/doc/terms/) altında yayınlandı.
+Bu döküman, [Yii Dökümantasyon Koşulları](https://www.yiiframework.com/doc/terms/) altında yayınlandı.
 
 Tüm hakları saklıdır.
 

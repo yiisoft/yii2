@@ -15,7 +15,7 @@ Vous pouvez définir un alias pour un chemin de fichier ou pour une URL en appel
 Yii::setAlias('@foo', '/path/to/foo');
 
 // un alias pour une URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 
 // un alias de fichier concrêt qui contient une classe  \foo\Bar
@@ -39,7 +39,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -52,7 +52,7 @@ Vous pouvez appeler [[Yii::getAlias()]] pour résoudre un alias racine en le che
 
 ```php
 echo Yii::getAlias('@foo');               // affiche : /path/to/foo
-echo Yii::getAlias('@bar');               // affiche : http://www.example.com
+echo Yii::getAlias('@bar');               // affiche : https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // affiche : /path/to/foo/bar/file.php
 ```
 
@@ -100,8 +100,8 @@ Yii prédéfinit un jeu d'alias pour faire référence à des chemins de fichier
 - `@webroot`, le dossier Web racine de l'application en cours d'exécution. Il est déterminé en se basant sur le dossier qui contient le [script d'entrée](structure-entry-scripts.md).
 - `@web`, l'URL de base de l'application en cours d'exécution. Cet alias a la même valeur que  [[yii\web\Request::baseUrl]].
 - `@vendor`, le [[yii\base\Application::vendorPath|dossier vendor de Composer]]. Valeur par défaut `@app/vendor`.
-- `@bower`, le dossier racine des [paquets bower](http://bower.io/). Valeur par défaut `@vendor/bower`.
-- `@npm`, le dossier racine des [paquets npm](https://www.npmjs.org/). Valeur par défaut `@vendor/npm`.
+- `@bower`, le dossier racine des [paquets bower](https://bower.io/). Valeur par défaut `@vendor/bower`.
+- `@npm`, le dossier racine des [paquets npm](https://www.npmjs.com/). Valeur par défaut `@vendor/npm`.
 
 L'alias `@yii` est défini lorsque vous incluez le fichier `Yii.php` dans votre [script d'entrée](structure-entry-scripts.md). Les alias restants sont définis dans le constructeur de l'application au moment où la [configuration](concept-configurations.md) de l'application est appliquée.
  .

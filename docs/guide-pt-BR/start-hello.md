@@ -92,7 +92,7 @@ o arquivo PHP em `views/IDdoController/NomeDaView.php`.
 
 Perceba que no código acima o parâmetro `mensagem` é [[yii\helpers\Html::encode()|codificado como HTML]]
 antes de ser impresso. Isso é necessário, já que o parâmetro vem de um usuário final,
-tornando-o vulnerável a [ataques de cross-site scripting (XSS)](http://en.wikipedia.org/wiki/Cross-site_scripting)
+tornando-o vulnerável a [ataques de cross-site scripting (XSS)](https://en.wikipedia.org/wiki/Cross-site_scripting)
 por embutir código JavaScript malicioso no parâmetro.
 
 Naturalmente, você pode colocar mais conteúdo na view `cumprimentar`. O conteúdo pode consistir
@@ -108,7 +108,7 @@ Conferindo <span id="trying-it-out"></span>
 Após criar a action e a view, você pode acessar a nova página através da seguinte URL:
 
 ```
-http://hostname/index.php?r=site/cumprimentar&mensagem=Olá+Mundo!
+https://hostname/index.php?r=site/cumprimentar&mensagem=Olá+Mundo!
 ```
 
 ![Olá Mundo!](images/start-hello-world.png)

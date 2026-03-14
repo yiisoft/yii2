@@ -30,7 +30,8 @@ describe('yii.captcha', function () {
 
     jsdom({
         html: html,
-        src: fs.readFileSync(jQueryPath, 'utf-8')
+        src: fs.readFileSync(jQueryPath, 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {

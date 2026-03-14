@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -41,14 +42,14 @@ class DbQueryDependency extends Dependency
      */
     public $query;
     /**
-     * @var string|callable method which should be invoked in over the [[query]] object.
+     * @var string|callable|null method which should be invoked in over the [[query]] object.
      *
      * If specified as a string an own query method with such name will be invoked, passing [[db]] value as its
      * first argument. For example: `exists`, `all`.
      *
      * This field can be specified as a PHP callback of following signature:
      *
-     * ```php
+     * ```
      * function (QueryInterface $query, mixed $db) {
      *     //return mixed;
      * }

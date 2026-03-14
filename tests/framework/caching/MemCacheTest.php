@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\caching;
@@ -39,18 +40,18 @@ class MemCacheTest extends CacheTestCase
         return $this->_cacheInstance;
     }
 
-    public function testExpire()
+    public function testExpire(): void
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test memcache expiry on travis-ci.');
+        if (getenv('GITHUB_ACTIONS') == 'true') {
+            $this->markTestSkipped('Can not reliably test memcache expiry on GitHub actions.');
         }
         parent::testExpire();
     }
 
-    public function testExpireAdd()
+    public function testExpireAdd(): void
     {
-        if (getenv('TRAVIS') == 'true') {
-            $this->markTestSkipped('Can not reliably test memcache expiry on travis-ci.');
+        if (getenv('GITHUB_ACTIONS') == 'true') {
+            $this->markTestSkipped('Can not reliably test memcache expiry on GitHub actions.');
         }
         parent::testExpireAdd();
     }

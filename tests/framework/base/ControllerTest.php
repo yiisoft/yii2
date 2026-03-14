@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -19,7 +22,7 @@ class ControllerTest extends TestCase
 {
     public static $actionRuns = [];
 
-    public function testRunAction()
+    public function testRunAction(): void
     {
         $this->mockApplication();
 
@@ -52,7 +55,7 @@ class ControllerTest extends TestCase
      * @param string $actionId
      * @param string|null $expectedActionMethod
      */
-    public function testCreateInlineAction($controllerClass, $actionId, $expectedActionMethod)
+    public function testCreateInlineAction($controllerClass, $actionId, $expectedActionMethod): void
     {
         $this->mockApplication();
         /** @var Controller $controller */
@@ -65,7 +68,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($expectedActionMethod, $actionMethod);
     }
 
-    public function createInlineActionProvider()
+    public static function createInlineActionProvider(): array
     {
         return [
             ['\yiiunit\framework\base\TestController', 'non-existent-id', null],
@@ -83,12 +86,12 @@ class ControllerTest extends TestCase
      *
      * @dataProvider actionIdMethodProvider
      */
-    public function testActionIdMethod($input, $expected)
+    public function testActionIdMethod($input, $expected): void
     {
         $this->assertSame($expected, preg_match('/^(?:[a-z0-9_]+-)*[a-z0-9_]+$/', $input));
     }
 
-    public function actionIdMethodProvider()
+    public static function actionIdMethodProvider(): array
     {
         return [
             ['apple-id', 1],
@@ -107,7 +110,9 @@ class ControllerTest extends TestCase
     }
 }
 
-
+/**
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ */
 class TestController extends Controller
 {
     public function actionTest1()
@@ -124,34 +129,31 @@ class TestController extends Controller
 
     public function actionTest3()
     {
-
     }
 
     public function actionTestTest()
     {
-
     }
 
     public function actionTest_test()
     {
-
     }
 }
 
+/**
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ */
 class Test1Controller extends Controller
 {
     public function actionTest_1()
     {
-
     }
 
     public function actionTest_test()
     {
-
     }
 
     public function actionTestTest_test_2()
     {
-
     }
 }

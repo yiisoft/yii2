@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\pgsql;
@@ -96,7 +97,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
     {
         $expressionClass = get_class($expression);
 
-        return new $expressionClass($value, $expression->getType(), $expression->getDimension()-1);
+        return new $expressionClass($value, $expression->getType(), $expression->getDimension() - 1);
     }
 
     /**
@@ -132,7 +133,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
      *
      * @param ArrayExpression $expression
      * @param mixed $value
-     * @return JsonExpression
+     * @return mixed
      */
     protected function typecastValue(ArrayExpression $expression, $value)
     {

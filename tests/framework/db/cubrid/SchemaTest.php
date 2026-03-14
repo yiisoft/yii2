@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\cubrid;
 
+use PDO;
 use yii\db\Expression;
 use yiiunit\framework\db\AnyCaseValue;
 
@@ -18,23 +20,23 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 {
     public $driverName = 'cubrid';
 
-    public function testGetSchemaNames()
+    public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in CUBRID.');
     }
 
-    public function testGetPDOType()
+    public function testGetPDOType(): void
     {
         $values = [
-            [null, \PDO::PARAM_NULL],
-            ['', \PDO::PARAM_STR],
-            ['hello', \PDO::PARAM_STR],
-            [0, \PDO::PARAM_INT],
-            [1, \PDO::PARAM_INT],
-            [1337, \PDO::PARAM_INT],
-            [true, \PDO::PARAM_INT],
-            [false, \PDO::PARAM_INT],
-            [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
+            [null, PDO::PARAM_NULL],
+            ['', PDO::PARAM_STR],
+            ['hello', PDO::PARAM_STR],
+            [0, PDO::PARAM_INT],
+            [1, PDO::PARAM_INT],
+            [1337, PDO::PARAM_INT],
+            [true, PDO::PARAM_INT],
+            [false, PDO::PARAM_INT],
+            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
         ];
 
         $schema = $this->getConnection()->schema;
@@ -44,7 +46,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         }
         fclose($fp);
     }
-
 
     public function getExpectedColumns()
     {
@@ -86,11 +87,11 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         foreach ($result as $name => $constraints) {
-            $result[$name][2] = $this->convertPropertiesToAnycase($constraints[2]);
+            $result[$name][2] = static::convertPropertiesToAnycase($constraints[2]);
         }
         $result['1: check'][2] = false;
         unset($result['1: index'][2][0]);
@@ -107,27 +108,17 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function lowercaseConstraintsProvider()
-    {
-        $this->markTestSkipped('This test hangs on CUBRID.');
-    }
-
-    public function uppercaseConstraintsProvider()
-    {
-        $this->markTestSkipped('This test hangs on CUBRID.');
-    }
-
     /**
      * @param array|object|string $object
      * @param bool $isProperty
      * @return array|object|string
      */
-    private function convertPropertiesToAnycase($object, $isProperty = false)
+    private static function convertPropertiesToAnycase($object, $isProperty = false)
     {
         if (!$isProperty && \is_array($object)) {
             $result = [];
             foreach ($object as $name => $value) {
-                $result[] = $this->convertPropertiesToAnycase($value);
+                $result[] = static::convertPropertiesToAnycase($value);
             }
 
             return $result;
@@ -135,12 +126,34 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         if (\is_object($object)) {
             foreach (array_keys((array) $object) as $name) {
-                $object->$name = $this->convertPropertiesToAnycase($object->$name, true);
+                $object->$name = static::convertPropertiesToAnycase($object->$name, true);
             }
         } elseif (\is_array($object) || \is_string($object)) {
             $object = new AnyCaseValue($object);
         }
 
         return $object;
+    }
+
+    /**
+     * @dataProvider lowercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected): void
+    {
+        $this->markTestSkipped('This test hangs on CUBRID.');
+    }
+
+    /**
+     * @dataProvider uppercaseConstraintsProvider
+     * @param string $tableName
+     * @param string $type
+     * @param mixed $expected
+     */
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected): void
+    {
+        $this->markTestSkipped('This test hangs on CUBRID.');
     }
 }

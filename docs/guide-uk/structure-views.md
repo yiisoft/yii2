@@ -1,7 +1,7 @@
 Представлення
 =============
 
-Представлення є частиною архітектури [MVC](http://uk.wikipedia.org/wiki/Модель-вид-контролер).
+Представлення є частиною архітектури [MVC](https://uk.wikipedia.org/wiki/Модель-вид-контролер).
 Це код, який відповідає за відображення даних кінцевим користувачам. У веб-додатку представлення зазвичай створені
 у вигляді *шаблонів представлень*, які є файлами скриптів PHP, що містять переважно HTML-код та презентаційний PHP-код.
 Управління ними здійснюється за допомогою [компонента додатку](structure-application-components.md) [[yii\web\View|view]], який надає часто використовувані методи
@@ -20,9 +20,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Вхід';
 ?>
@@ -324,8 +326,10 @@ $this->params['breadcrumbs'][] = 'Про нас';
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -545,7 +549,7 @@ class PostController extends Controller
 * [опрацювання клієнтських скриптів](output-client-scripts.md): підтримує реєстрацію та формування CSS та JavaScript;
 * [опрацювання колекції ресурсів](structure-assets.md): підтримує реєстрацію та формування [колекцій ресурсів](structure-assets.md);
 * [альтернативні шаблонізатори](tutorial-template-engines.md): дозволяє використовувати інші шаблонізатори, такі як
-  [Twig](http://twig.sensiolabs.org/), [Smarty](http://www.smarty.net/).
+  [Twig](https://twig.symfony.com/), [Smarty](https://www.smarty.net/).
 
 Ви також можете часто використовувати наступні другорядні, але корисні, можливості в процесі розробки веб-сторінок.
 
@@ -616,14 +620,14 @@ $this->registerLinkTag([
     'title' => 'Свіжі новини про Yii',
     'rel' => 'alternate',
     'type' => 'application/rss+xml',
-    'href' => 'http://www.yiiframework.com/rss.xml/',
+    'href' => 'https://www.yiiframework.com/rss.xml/',
 ]);
 ```
 
 Результатом вищенаведеного коду буде
 
 ```html
-<link title="Свіжі новини про Yii" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
+<link title="Свіжі новини про Yii" rel="alternate" type="application/rss+xml" href="https://www.yiiframework.com/rss.xml/">
 ```
 
 Подібно до [[yii\web\View::registerMetaTag()|registerMetaTags()]], ви можете визначати ключ під час виклику

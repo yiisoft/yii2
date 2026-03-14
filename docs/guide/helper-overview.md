@@ -33,7 +33,7 @@ The following core helper classes are provided in the Yii releases:
 - HtmlPurifier
 - Imagine (provided by yii2-imagine extension)
 - Inflector
-- Json
+- [Json](helper-json.md)
 - Markdown
 - StringHelper
 - [Url](helper-url.md)

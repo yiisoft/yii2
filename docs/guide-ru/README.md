@@ -1,7 +1,7 @@
 Полное руководство по Yii 2.0
 =============================
 
-Данное руководство выпущено в соответствии с [положениями о документации Yii](http://www.yiiframework.com/doc/terms/).
+Данное руководство выпущено в соответствии с [положениями о документации Yii](https://www.yiiframework.com/doc/terms/).
 
 All Rights Reserved.
 
@@ -18,6 +18,7 @@ All Rights Reserved.
 Первое знакомство
 -----------------
 
+* [Что нужно знать](start-prerequisites.md)
 * [Установка Yii](start-installation.md)
 * [Запуск приложения](start-workflow.md)
 * [Говорим «привет»](start-hello.md)
@@ -135,6 +136,7 @@ All Rights Reserved.
 * [Быстрый старт](rest-quick-start.md)
 * [Ресурсы](rest-resources.md)
 * [Контроллеры](rest-controllers.md)
+* [Фильтрация коллекций](rest-filtering-collections.md)
 * [Роутинг](rest-routing.md)
 * [Форматирование ответа](rest-response-formatting.md)
 * [Аутентификация](rest-authentication.md)
@@ -168,6 +170,7 @@ All Rights Reserved.
 * [Шаблон приложения advanced](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md)
 * [Создание приложения с нуля](tutorial-start-from-scratch.md)
 * [Консольные команды](tutorial-console.md)
+* [Docker](tutorial-docker.md)
 * [Встроенные валидаторы](tutorial-core-validators.md)
 * [Интернационализация](tutorial-i18n.md)
 * [Отправка почты](tutorial-mailing.md)
@@ -181,14 +184,14 @@ All Rights Reserved.
 Виджеты
 -------
 
-* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
-* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
-* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
-* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
-* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
-* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
-* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
-* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [GridView](https://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](https://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](https://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](https://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](https://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](https://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](https://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](https://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Виджеты Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ru/README.md)
 * [Виджеты Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ru/README.md)
 
@@ -199,4 +202,5 @@ All Rights Reserved.
 * [Обзор](helper-overview.md)
 * [ArrayHelper](helper-array.md)
 * [Html](helper-html.md)
+* [Json](helper-json.md)
 * [Url хелпер](helper-url.md)

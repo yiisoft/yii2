@@ -1,15 +1,25 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
 
+use yii\web\Application;
+use yiiunit\framework\web\stubs\ModelBindingStub;
+use yii\base\Module;
+use yii\data\ArrayDataProvider;
+use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
+use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
+use yii\web\ServerErrorHttpException;
+use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;
 
 /**
@@ -17,22 +27,262 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    public function testBindActionParams()
+    /** @var FakeController */
+    private $controller;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockWebApplication();
+        $this->controller = new FakeController('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        Yii::$app->controller = $this->controller;
+    }
+
+    public function testBindActionParams(): void
     {
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
-        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'validator' => 'avaliable'];
+        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'validator' => 'available'];
         list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
         $this->assertEquals('default', $other);
 
-        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => 'avaliable'];
+        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => 'available'];
         list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
-        $this->assertEquals('avaliable', $other);
+        $this->assertEquals('available', $other);
     }
 
-    public function testAsJson()
+    public function testNullableInjectedActionParams(): void
+    {
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
+        $params = [];
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals(Yii::$app->request, $args[0]);
+        $this->assertNull($args[1]);
+    }
+
+    public function testModelBindingHttpException(): void
+    {
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'container' => [
+                'definitions' => [
+                    ModelBindingStub::class => [
+                        ModelBindingStub::class,
+                        'build',
+                    ],
+                ],
+            ],
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        Yii::$container->set(VendorImage::class, VendorImage::class);
+        $this->mockWebApplication(['controller' => $this->controller]);
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionModelBindingInjection');
+        $this->expectException(get_class(new NotFoundHttpException('Not Found Item.')));
+        $this->expectExceptionMessage('Not Found Item.');
+        $this->controller->bindActionParams($injectionAction, []);
+    }
+
+    public function testInjectionContainerException(): void
+    {
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        Yii::$container->set(VendorImage::class, function () {
+            throw new RuntimeException('uh oh');
+        });
+
+        $this->expectException(get_class(new RuntimeException()));
+        $this->expectExceptionMessage('uh oh');
+        $this->controller->bindActionParams($injectionAction, $params);
+    }
+
+    public function testUnknownInjection(): void
+    {
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        Yii::$container->clear(VendorImage::class);
+        $this->expectException(get_class(new ServerErrorHttpException()));
+        $this->expectExceptionMessage('Could not load required service: vendorImage');
+        $this->controller->bindActionParams($injectionAction, $params);
+    }
+
+    public function testInjectedActionParams(): void
+    {
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
+        Yii::$container->set(VendorImage::class, VendorImage::class);
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertEquals($params['before'], $args[0]);
+        $this->assertEquals(Yii::$app->request, $args[1]);
+        $this->assertEquals('Component: yii\web\Request $request', Yii::$app->requestedParams['request']);
+        $this->assertEquals($params['between'], $args[2]);
+        $this->assertInstanceOf(VendorImage::class, $args[3]);
+        $this->assertEquals('Container DI: yiiunit\framework\web\stubs\VendorImage $vendorImage', Yii::$app->requestedParams['vendorImage']);
+        $this->assertNull($args[4]);
+        $this->assertEquals('Unavailable service: post', Yii::$app->requestedParams['post']);
+        $this->assertEquals($params['after'], $args[5]);
+    }
+
+    public function testInjectedActionParamsFromModule(): void
+    {
+        $module = new Module('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $module->set('yii\data\DataProviderInterface', [
+            'class' => ArrayDataProvider::class,
+        ]);
+        // Use the PHP71 controller for this test
+        $this->controller = new FakePhp71Controller('fake', $module);
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
+        $args = $this->controller->bindActionParams($injectionAction, []);
+        $this->assertInstanceOf(ArrayDataProvider::class, $args[0]);
+        $this->assertEquals('Module yii\base\Module DI: yii\data\DataProviderInterface $dataProvider', Yii::$app->requestedParams['dataProvider']);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17701
+     */
+    public function testBindTypedActionParams(): void
+    {
+        // Use the PHP7 controller for this test
+        $this->controller = new FakePhp7Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
+
+        $params = ['foo' => '100', 'bar' => null, 'true' => 'on', 'false' => 'false', 'string' => 'strong'];
+        list($foo, $bar, $true, $false, $string) = $this->controller->bindActionParams($aksi1, $params);
+        $this->assertSame(100, $foo);
+        $this->assertSame(null, $bar);
+        $this->assertSame(true, $true);
+        $this->assertSame(false, $false);
+        $this->assertSame('strong', $string);
+
+        // allow nullable argument to be set to empty string (as null)
+        // https://github.com/yiisoft/yii2/issues/18450
+        $params = ['foo' => 100, 'bar' => '', 'true' => true, 'false' => true, 'string' => 'strong'];
+        list(, $bar) = $this->controller->bindActionParams($aksi1, $params);
+        $this->assertSame(null, $bar);
+
+        // make sure nullable string argument is not set to null when empty string is passed
+        $stringy = new InlineAction('stringy', $this->controller, 'actionStringy');
+        list($foo) = $this->controller->bindActionParams($stringy, ['foo' => '']);
+        $this->assertSame('', $foo);
+
+        // make sure mixed type works
+        $params = ['foo' => 100];
+        $mixedParameter = new InlineAction('mixed-parameter', $this->controller, 'actionMixedParameter');
+        list($foo) = $this->controller->bindActionParams($mixedParameter, $params);
+        $this->assertSame(100, $foo);
+        $params = ['foo' => 'foobar'];
+        $mixedParameter = new InlineAction('mixed-parameter', $this->controller, 'actionMixedParameter');
+        list($foo) = $this->controller->bindActionParams($mixedParameter, $params);
+        $this->assertSame('foobar', $foo);
+
+
+        $params = ['foo' => 'oops', 'bar' => null];
+        $this->expectException('yii\web\BadRequestHttpException');
+        $this->expectExceptionMessage('Invalid data received for parameter "foo".');
+        $this->controller->bindActionParams($aksi1, $params);
+    }
+
+    public function testAsJson(): void
     {
         $data = [
             'test' => 123,
@@ -45,7 +295,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($data, $result->data);
     }
 
-    public function testAsXml()
+    public function testAsXml(): void
     {
         $data = [
             'test' => 123,
@@ -58,7 +308,7 @@ class ControllerTest extends TestCase
         $this->assertEquals($data, $result->data);
     }
 
-    public function testRedirect()
+    public function testRedirect(): void
     {
         $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
         $this->assertEquals($this->controller->redirect('')->headers->get('location'), '/');
@@ -75,13 +325,17 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
     }
 
-    protected function setUp()
+    public function testUnionBindingActionParams(): void
     {
-        parent::setUp();
-        $this->controller = new FakeController('fake', new \yii\web\Application([
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+
+        // Use the PHP80 controller for this test
+        $this->controller = new FakePhp80Controller('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
-
             'components' => [
                 'request' => [
                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
@@ -90,6 +344,61 @@ class ControllerTest extends TestCase
                 ],
             ],
         ]));
+
         $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
+        $params = ['arg' => 'test', 'second' => 1];
+
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertSame('test', $args[0]);
+        $this->assertSame(1, $args[1]);
+
+        // test that a value PHP parsed to a string but that should be an int becomes one
+        $params = ['arg' => 'test', 'second' => '1'];
+
+        $args = $this->controller->bindActionParams($injectionAction, $params);
+        $this->assertSame('test', $args[0]);
+        $this->assertSame(1, $args[1]);
+    }
+
+    public function testUnionBindingActionParamsWithArray(): void
+    {
+        if (PHP_VERSION_ID < 80000) {
+            $this->markTestSkipped('Can not be tested on PHP < 8.0');
+            return;
+        }
+        // Use the PHP80 controller for this test
+        $this->controller = new FakePhp80Controller('fake', new Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+
+        $this->mockWebApplication(['controller' => $this->controller]);
+
+        $injectionAction = new InlineAction('array-or-int', $this->controller, 'actionArrayOrInt');
+        $params = ['foo' => 1];
+
+        try {
+            $args = $this->controller->bindActionParams($injectionAction, $params);
+            $this->assertSame(1, $args[0]);
+        } catch (BadRequestHttpException $e) {
+            $this->fail('Failed to bind int param for array|int union type!');
+        }
+
+        try {
+            $paramsArray = ['foo' => [1, 2, 3, 4]];
+            $args = $this->controller->bindActionParams($injectionAction, $paramsArray);
+            $this->assertSame([1, 2, 3, 4], $args[0]);
+        } catch (BadRequestHttpException $e) {
+            $this->fail('Failed to bind array param for array|int union type!');
+        }
     }
 }

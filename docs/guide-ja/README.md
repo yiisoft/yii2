@@ -1,7 +1,7 @@
 Yii 2.0 決定版ガイド
 ====================
 
-このチュートリアルは [Yii ドキュメント許諾条件](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
+このチュートリアルは [Yii ドキュメント許諾条件](https://www.yiiframework.com/doc/terms/) の下にリリースされています。
 
 All Rights Reserved.
 
@@ -135,6 +135,7 @@ RESTful ウェブ・サービス
 
 * [クイック・スタート](rest-quick-start.md)
 * [リソース](rest-resources.md)
+* [コレクションのフィルタリング](rest-filtering-collections.md)
 * [コントローラ](rest-controllers.md)
 * [ルーティング](rest-routing.md)
 * [レスポンス形式の設定](rest-response-formatting.md)

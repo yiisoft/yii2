@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -70,7 +70,7 @@ Puedes personalizar este comportamiento configurando la propiedad [[yii\filters\
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('No tienes los suficientes permisos para acceder a esta página');
@@ -126,7 +126,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -153,10 +153,10 @@ class SiteController extends Controller
 ## Control de Acceso Basado en Roles (RBAC) <span id="rbac"></span>
 
 El Control de Acceso Basado en Roles (RBAC) provee una simple pero poderosa manera centralizada de control de acceso. Por favos consulta
-la [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) para más detalles sobre comparar RBAC
+la [Wikipedia](https://en.wikipedia.org/wiki/Role-based_access_control) para más detalles sobre comparar RBAC
 con otros mecanismos de control de acceso más tradicionales.
 
-Yii implementa una Jerarquía General RBAC, siguiendo el [modelo NIST RBAC](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf).
+Yii implementa una Jerarquía General RBAC, siguiendo el [modelo NIST RBAC](https://csrc.nist.gov/CSRC/media/Publications/conference-paper/1992/10/13/role-based-access-controls/documents/ferraiolo-kuhn-92.pdf).
 Esto provee la funcionalidad RBAC a través de [componente de la aplicación](structure-application-components.md) [[yii\rbac\ManagerInterface|authManager]].
 
 Utilizar RBAC envuelve dos cosas. La primera es construir los datos de autorización RBAC, y la segunda
