@@ -88,11 +88,6 @@ parameters:
 			path: framework/validators/RangeValidator.php
 
 		-
-			message: "#^Function enum_exists not found\\.$#"
-			count: 1
-			path: framework/validators/RangeValidator.php
-
-		-
 			message: "#^Access to property \\$name on an unknown class UnitEnum\\.$#"
 			count: 1
 			path: framework/validators/RangeValidator.php
