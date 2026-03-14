@@ -505,7 +505,7 @@ abstract class BaseMessageControllerTest extends TestCase
     /**
      * Do not crash on this string, but ignore it.
      */
-    public function testCreateTranslationFromConcatenatedStringWithParenthesis(): void
+    public function testCreateTranslationFromConcatenatedStringWithParentheses(): void
     {
         $category = 'test.category1';
         $sourceFileContent = <<<EOF
