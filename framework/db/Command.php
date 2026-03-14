@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -23,7 +24,7 @@ use yii\base\NotSupportedException;
  *
  * For example,
  *
- * ```php
+ * ```
  * $users = $connection->createCommand('SELECT * FROM user')->queryAll();
  * ```
  *
@@ -36,7 +37,7 @@ use yii\base\NotSupportedException;
  * Command also supports building SQL statements by providing methods such as [[insert()]],
  * [[update()]], etc. For example, the following code will create and execute an INSERT SQL statement:
  *
- * ```php
+ * ```
  * $connection->createCommand()->insert('user', [
  *     'name' => 'Sam',
  *     'age' => 30,
@@ -61,7 +62,7 @@ class Command extends Component
      */
     public $db;
     /**
-     * @var \PDOStatement the PDOStatement object that this command is associated with
+     * @var \PDOStatement|null the PDOStatement object that this command is associated with
      */
     public $pdoStatement;
     /**
@@ -95,15 +96,15 @@ class Command extends Component
     protected $pendingParams = [];
 
     /**
-     * @var string the SQL statement that this command represents
+     * @var string|null the SQL statement that this command represents
      */
     private $_sql;
     /**
-     * @var string name of the table, which schema, should be refreshed after command execution.
+     * @var string|null name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
     /**
-     * @var string|false|null the isolation level to use for this transaction.
+     * @var string|null|false the isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
      */
     private $_isolationLevel = false;
@@ -116,10 +117,10 @@ class Command extends Component
 
     /**
      * Enables query cache for this command.
-     * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
+     * @param int|null $duration the number of seconds that query result of this command can remain valid in the cache.
      * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
      * Use 0 to indicate that the cached data will never expire.
-     * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query result.
+     * @param \yii\caching\Dependency|null $dependency the cache dependency associated with the cached query result.
      * @return $this the command object itself
      */
     public function cache($duration = null, $dependency = null)
@@ -218,7 +219,7 @@ class Command extends Component
             }
         }
         if (!isset($params[1])) {
-            return preg_replace_callback('#(:\w+)#', function($matches) use ($params) {
+            return preg_replace_callback('#(:\w+)#', function ($matches) use ($params) {
                 $m = $matches[1];
                 return isset($params[$m]) ? $params[$m] : $m;
             }, $this->_sql);
@@ -237,7 +238,7 @@ class Command extends Component
      * this may improve performance.
      * For SQL statement with binding parameters, this method is invoked
      * automatically.
-     * @param bool $forRead whether this method is called for a read query. If null, it means
+     * @param bool|null $forRead whether this method is called for a read query. If null, it means
      * the SQL statement should be used to determine whether it is for read or write.
      * @throws Exception if there is any DB error
      */
@@ -258,7 +259,7 @@ class Command extends Component
             $forRead = false;
         }
         if ($forRead || $forRead === null && $this->db->getSchema()->isReadQuery($sql)) {
-            $pdo = $this->db->getSlavePdo();
+            $pdo = $this->db->getSlavePdo(true);
         } else {
             $pdo = $this->db->getMasterPdo();
         }
@@ -269,10 +270,10 @@ class Command extends Component
         } catch (\Exception $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
             $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
-            throw new Exception($message, $errorInfo, (int) $e->getCode(), $e);
+            throw new Exception($message, $errorInfo, $e->getCode(), $e);
         } catch (\Throwable $e) {
             $message = $e->getMessage() . "\nFailed to prepare SQL: $sql";
-            throw new Exception($message, null, (int) $e->getCode(), $e);
+            throw new Exception($message, null, $e->getCode(), $e);
         }
     }
 
@@ -292,8 +293,8 @@ class Command extends Component
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value the PHP variable to bind to the SQL statement parameter (passed by reference)
-     * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-     * @param int $length length of the data type
+     * @param int|null $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param int|null $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
      * @see https://www.php.net/manual/en/function.PDOStatement-bindParam.php
@@ -336,7 +337,7 @@ class Command extends Component
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value The value to bind to the parameter
-     * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param int|null $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
      * @see https://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
@@ -377,6 +378,13 @@ class Command extends Component
                 $this->pendingParams[$name] = [$value->getValue(), $value->getType()];
                 $this->params[$name] = $value->getValue();
             } else {
+                if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
+                    if ($value instanceof \BackedEnum) {
+                        $value = $value->value;
+                    } elseif ($value instanceof \UnitEnum) {
+                        $value = $value->name;
+                    }
+                }
                 $type = $schema->getPdoType($value);
                 $this->pendingParams[$name] = [$value, $type];
                 $this->params[$name] = $value;
@@ -399,7 +407,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int|null $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -413,7 +421,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/pdostatement.setfetchmode.php)
+     * @param int|null $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -458,7 +466,7 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
@@ -488,7 +496,7 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
@@ -530,10 +538,10 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
-     *     'url' => 'http://example.com/', // url is unique
+     *     'url' => 'https://example.com/', // url is unique
      *     'visits' => 0,
      * ], [
      *     'visits' => new \yii\db\Expression('visits + 1'),
@@ -564,13 +572,13 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
      * ```
      *
      * or with using parameter binding for the condition:
      *
-     * ```php
+     * ```
      * $minAge = 30;
      * $connection->createCommand()->update('user', ['status' => 1], 'age > :minAge', [':minAge' => $minAge])->execute();
      * ```
@@ -598,13 +606,13 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->delete('user', 'status = 0')->execute();
      * ```
      *
      * or with using parameter binding for the condition:
      *
-     * ```php
+     * ```
      * $status = 0;
      * $connection->createCommand()->delete('user', 'status = :status', [':status' => $status])->execute();
      * ```
@@ -631,7 +639,8 @@ class Command extends Component
      *
      * The columns in the new table should be specified as name-definition pairs (e.g. 'name' => 'string'),
      * where name stands for a column name which will be properly quoted by the method, and definition
-     * stands for the column type which can contain an abstract DB type.
+     * stands for the column type which must contain an abstract DB type.
+     *
      * The method [[QueryBuilder::getColumnType()]] will be called
      * to convert the abstract column types to physical ones. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
@@ -639,9 +648,19 @@ class Command extends Component
      * If a column is specified with definition only (e.g. 'PRIMARY KEY (name, type)'), it will be directly
      * inserted into the generated SQL.
      *
+     * Example usage:
+     * ```
+     * Yii::$app->db->createCommand()->createTable('post', [
+     *     'id' => 'pk',
+     *     'title' => 'string',
+     *     'text' => 'text',
+     *     'column_name double precision null default null',
+     * ]);
+     * ```
+     *
      * @param string $table the name of the table to be created. The name will be properly quoted by the method.
      * @param array $columns the columns (name => definition) in the new table.
-     * @param string $options additional SQL fragment that will be appended to the generated SQL.
+     * @param string|null $options additional SQL fragment that will be appended to the generated SQL.
      * @return $this the command object itself
      */
     public function createTable($table, $columns, $options = null)
@@ -693,7 +712,7 @@ class Command extends Component
      * @param string $table the table that the new column will be added to. The table name will be properly quoted by the method.
      * @param string $column the name of the new column. The name will be properly quoted by the method.
      * @param string $type the column type. [[\yii\db\QueryBuilder::getColumnType()]] will be called
-     * to convert the give column type to the physical one. For example, `string` will be converted
+     * to convert the given column type to the physical one. For example, `string` will be converted
      * as `varchar(255)`, and `string not null` becomes `varchar(255) not null`.
      * @return $this the command object itself
      */
@@ -783,8 +802,8 @@ class Command extends Component
      * @param string|array $columns the name of the column to that the constraint will be added on. If there are multiple columns, separate them with commas.
      * @param string $refTable the table that the foreign key references to.
      * @param string|array $refColumns the name of the column that the foreign key references to. If there are multiple columns, separate them with commas.
-     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
-     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string|null $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string|null $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
      * @return $this the command object itself
      */
     public function addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete = null, $update = null)
@@ -1136,7 +1155,7 @@ class Command extends Component
     /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int|null $fetchMode the result fetch mode. Please refer to [PHP manual](https://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem
@@ -1149,11 +1168,11 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\CacheInterface */
+                /** @var \yii\caching\CacheInterface $cache */
                 $cache = $info[0];
                 $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);
-                if (is_array($result) && isset($result[0])) {
+                if (is_array($result) && array_key_exists(0, $result)) {
                     Yii::debug('Query result served from cache', 'yii\db\Command::query');
                     return $result[0];
                 }
@@ -1255,7 +1274,7 @@ class Command extends Component
      * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
      * when executing the command. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function (\yii\db\Exception $e, $attempt)
      * {
      *     // return true or false (whether to retry the command or rethrow $e)
@@ -1324,6 +1343,5 @@ class Command extends Component
         $this->params = [];
         $this->_refreshTableName = null;
         $this->_isolationLevel = false;
-        $this->_retryHandler = null;
     }
 }

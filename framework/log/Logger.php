@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\log;
 
-use Yii;
 use yii\base\Component;
 
 /**
@@ -31,12 +31,11 @@ use yii\base\Component;
  * or [[DbTarget|database]], with the help of the [[dispatcher]].
  *
  * @property-read array $dbProfiling The first element indicates the number of SQL statements executed, and
- * the second element the total time spent in SQL execution. This property is read-only.
- * @property-read float $elapsedTime The total elapsed time in seconds for current request. This property is
- * read-only.
+ * the second element the total time spent in SQL execution.
+ * @property-read float $elapsedTime The total elapsed time in seconds for current request.
  * @property-read array $profiling The profiling results. Each element is an array consisting of these
  * elements: `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory`
- * and `memoryDiff` values are available since version 2.0.11. This property is read-only.
+ * and `memoryDiff` values are available since version 2.0.11.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -47,36 +46,35 @@ class Logger extends Component
      * Error message level. An error message is one that indicates the abnormal termination of the
      * application and may require developer's handling.
      */
-    const LEVEL_ERROR = 0x01;
+    public const LEVEL_ERROR = 0x01;
     /**
      * Warning message level. A warning message is one that indicates some abnormal happens but
      * the application is able to continue to run. Developers should pay attention to this message.
      */
-    const LEVEL_WARNING = 0x02;
+    public const LEVEL_WARNING = 0x02;
     /**
      * Informational message level. An informational message is one that includes certain information
      * for developers to review.
      */
-    const LEVEL_INFO = 0x04;
+    public const LEVEL_INFO = 0x04;
     /**
      * Tracing message level. A tracing message is one that reveals the code execution flow.
      */
-    const LEVEL_TRACE = 0x08;
+    public const LEVEL_TRACE = 0x08;
     /**
      * Profiling message level. This indicates the message is for profiling purpose.
      */
-    const LEVEL_PROFILE = 0x40;
+    public const LEVEL_PROFILE = 0x40;
     /**
      * Profiling message level. This indicates the message is for profiling purpose. It marks the beginning
      * of a profiling block.
      */
-    const LEVEL_PROFILE_BEGIN = 0x50;
+    public const LEVEL_PROFILE_BEGIN = 0x50;
     /**
      * Profiling message level. This indicates the message is for profiling purpose. It marks the end
      * of a profiling block.
      */
-    const LEVEL_PROFILE_END = 0x60;
-
+    public const LEVEL_PROFILE_END = 0x60;
     /**
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
      * Each log message is of the following structure:
@@ -146,7 +144,7 @@ class Logger extends Component
      * Logs a message with the given type and category.
      * If [[traceLevel]] is greater than 0, additional call stack information about
      * the application code will be logged as well.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * @param string|array|\Throwable $message the message to be logged. This can be a simple string or a more
      * complex data structure that will be handled by a [[Target|log target]].
      * @param int $level the level of the message. This must be one of the following:
      * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`, `Logger::LEVEL_PROFILE`,

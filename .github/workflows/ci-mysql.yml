@@ -1,80 +1,72 @@
-on:
-  - pull_request
-  - push
-
 name: ci-mysql
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "eslint.config.js"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php-version }}-mysql-${{ matrix.mysql-version }}
-    env:
+    name: MySQL tests with coverage
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mysql-${{ github.ref }}
+      coverage-driver: xdebug
+      database-env: '{"MYSQL_ROOT_PASSWORD":"root","MYSQL_DATABASE":"yiitest"}'
+      database-health-cmd: mysqladmin ping
+      database-image: mysql
+      database-port: "3306"
+      database-type: mysql
+      database-versions: '["5.7","latest"]'
       extensions: curl, intl, pdo, pdo_mysql
-      key: cache-v1
+      os: '["ubuntu-22.04"]'
+      php-version: '["7.4","8.5"]'
+      phpunit-group: mysql
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
-
-        php-version:
-          - "7.4"
-
-        mysql-version:
-          - "latest"
-
-    services:
-      mysql:
-        image: mysql:${{ matrix.mysql-version }}
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: yiitest
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Setup cache environment
-        id: cache-env
-        uses: shivammathur/cache-extensions@v1
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          key: ${{ env.key }}
-
-      - name: Cache extensions
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.cache-env.outputs.dir }}
-          key: ${{ steps.cache-env.outputs.key }}
-          restore-keys: ${{ steps.cache-env.outputs.key }}
-
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          extensions: ${{ env.extensions }}
-          ini-values: date.timezone='UTC'
-          coverage: pcov
-
-      - name: Determine composer cache directory
-        if: matrix.os == 'ubuntu-latest'
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-composer-${{ matrix.dependencies }}-
-
-      - name: Install dependencies with composer
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Run mysql tests with phpunit
-        run: vendor/bin/phpunit --group mysql --colors=always
+  tests-dev:
+    name: MySQL tests
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mysql-dev-${{ github.ref }}
+      coverage-driver: none
+      database-env: '{"MYSQL_ROOT_PASSWORD":"root","MYSQL_DATABASE":"yiitest"}'
+      database-health-cmd: mysqladmin ping
+      database-image: mysql
+      database-port: "3306"
+      database-type: mysql
+      database-versions: '["latest"]'
+      extensions: curl, intl, pdo, pdo_mysql
+      os: '["ubuntu-22.04"]'
+      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      phpunit-group: mysql

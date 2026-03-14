@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -12,7 +13,7 @@ namespace yii\caching;
  *
  * By calling [[invalidate()]], you can invalidate all cached data items that are associated with the specified tag name(s).
  *
- * ```php
+ * ```
  * // setting multiple cache keys to store data forever and tagging them with "user-123"
  * Yii::$app->cache->set('user_42_profile', '', 0, new TagDependency(['tags' => 'user-123']));
  * Yii::$app->cache->set('user_42_stats', '', 0, new TagDependency(['tags' => 'user-123']));

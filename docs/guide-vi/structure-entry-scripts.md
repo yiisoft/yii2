@@ -16,7 +16,7 @@ thông qua dòng lệnh `./yii <route> [arguments] [options]`.
 Entry scripts có chức năng chính như sau:
 
 * Khai báo các hằng số ở phạm vi toàn cục;
-* Đăng ký [Composer autoloader](http://getcomposer.org/doc/01-basic-usage.md#autoloading);
+* Đăng ký [Composer autoloader](https://getcomposer.org/doc/01-basic-usage.md#autoloading);
 * Tải các file class của [[Yii]];
 * Tải cấu hình ứng dụng;
 * Tạo và cấu hình các phiên bản [application](structure-applications.md);

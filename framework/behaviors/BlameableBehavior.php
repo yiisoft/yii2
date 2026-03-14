@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\behaviors;
@@ -15,7 +16,7 @@ use yii\db\BaseActiveRecord;
  *
  * To use BlameableBehavior, insert the following code to your ActiveRecord class:
  *
- * ```php
+ * ```
  * use yii\behaviors\BlameableBehavior;
  *
  * public function behaviors()
@@ -36,7 +37,7 @@ use yii\db\BaseActiveRecord;
  * If your attribute names are different, you may configure the [[createdByAttribute]] and [[updatedByAttribute]]
  * properties like the following:
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -53,6 +54,9 @@ use yii\db\BaseActiveRecord;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
+ *
+ * @template T of BaseActiveRecord = BaseActiveRecord
+ * @extends AttributeBehavior<T>
  */
 class BlameableBehavior extends AttributeBehavior
 {

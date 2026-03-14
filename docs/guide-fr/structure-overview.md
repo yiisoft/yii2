@@ -2,7 +2,7 @@ Vue d'ensemble
 ========
 
 Les applications Yii sont organisées suivant le modèle de conception 
-[model-view-controller (MVC)](http://wikipedia.org/wiki/Model-view-controller). Les [Modèles](structure-models.md) 
+[model-view-controller (MVC)](https://fr.wikipedia.org/wiki/Mod%C3%A8le-vue-contr%C3%B4leur). Les [Modèles](structure-models.md) 
 représentent les données, la logique métier et les règles; les [vues](structure-views.md) sont les représentations
 visuelles des modèles, et les [contrôleurs](structure-controllers.md) prennent une entrée et la convertissent en 
 commandes pour les [modèles](structure-models.md) et les [vues](structure-views.md).

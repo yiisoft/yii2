@@ -5,7 +5,7 @@ Cuando se maneja una petición al API RESTful, una aplicación realiza usualment
 con el formato de la respuesta:
 
 1. Determinar varios factores que pueden afectar al formato de la respuesta, como son el tipo de medio, lenguaje, versión, etc.
-   Este proceso es también conocido como [negociación de contenido (content negotiation)](http://en.wikipedia.org/wiki/Content_negotiation).
+   Este proceso es también conocido como [negociación de contenido (content negotiation)](https://es.wikipedia.org/wiki/Negociaci%C3%B3n_de_contenido).
 2. La conversión de objetos recurso en arrays, como está descrito en la sección [Recursos (Resources)](rest-resources.md).
    Esto es realizado por la clase [[yii\rest\Serializer]].
 3. La conversión de arrays en cadenas con el formato determinado por el paso de negociación de contenido. Esto es

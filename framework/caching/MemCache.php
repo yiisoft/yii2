@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -28,7 +29,7 @@ use yii\base\InvalidConfigException;
  *
  * To use MemCache as the cache application component, configure the application as follows,
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'cache' => [
@@ -56,7 +57,7 @@ use yii\base\InvalidConfigException;
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
  * @property-read \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache
- * component. This property is read-only.
+ * component.
  * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
  * property differs in getter and setter. See [[getServers()]] and [[setServers()]] for details.
  *

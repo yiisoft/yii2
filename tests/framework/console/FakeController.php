@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console;
@@ -50,16 +51,20 @@ class FakeController extends Controller
         ];
     }
 
-    public function actionIndex()
+    public function actionIndex(): void
     {
         self::$_wasActionIndexCalled = true;
     }
 
     public function actionAksi1($fromParam, $other = 'default')
     {
-        return[$fromParam, $other];
+        return [$fromParam, $other];
     }
 
+    /**
+     * @param string $value the string value
+     * @return array
+     */
     public function actionAksi2(array $values, $value)
     {
         return [$values, $value];
@@ -89,11 +94,6 @@ class FakeController extends Controller
         return func_get_args();
     }
 
-    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
-    {
-        return $simpleArgument;
-    }
-
     public function actionStatus($status = 0)
     {
         return $status;
@@ -104,5 +104,10 @@ class FakeController extends Controller
         $response = new Response();
         $response->exitStatus = (int) $status;
         return $response;
+    }
+
+    public function actionVariadic($foo, $bar, ...$baz)
+    {
+        return [$foo, $bar, $baz];
     }
 }

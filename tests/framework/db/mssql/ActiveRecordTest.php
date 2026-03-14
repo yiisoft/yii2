@@ -1,14 +1,18 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\db\Exception;
+use yii\db\Expression;
 use yiiunit\data\ar\TestTrigger;
 use yiiunit\data\ar\TestTriggerAlert;
+use yiiunit\data\ar\Type;
 
 /**
  * @group db
@@ -18,15 +22,44 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     public $driverName = 'sqlsrv';
 
-    public function testExplicitPkOnAutoIncrement()
+    public function testExplicitPkOnAutoIncrement(): void
     {
         $this->markTestSkipped('MSSQL does not support explicit value for an IDENTITY column.');
     }
 
+    public function testCastValues(): void
+    {
+        $model = new Type();
+        $model->int_col = 123;
+        $model->int_col2 = 456;
+        $model->smallint_col = 42;
+        $model->char_col = '1337';
+        $model->char_col2 = 'test';
+        $model->char_col3 = 'test123';
+        $model->float_col = 3.742;
+        $model->float_col2 = 42.1337;
+        $model->bool_col = true;
+        $model->bool_col2 = false;
+        $model->save(false);
+
+        /** @var Type $model */
+        $model = Type::find()->one();
+        $this->assertSame(123, $model->int_col);
+        $this->assertSame(456, $model->int_col2);
+        $this->assertSame(42, $model->smallint_col);
+        $this->assertSame('1337', trim((string) $model->char_col));
+        $this->assertSame('test', $model->char_col2);
+        $this->assertSame('test123', $model->char_col3);
+        //$this->assertSame(3.742, $model->float_col);
+        //$this->assertSame(42.1337, $model->float_col2);
+        //$this->assertSame(true, $model->bool_col);
+        //$this->assertSame(false, $model->bool_col2);
+    }
+
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function testSaveWithTrigger()
+    public function testSaveWithTrigger(): void
     {
         $db = $this->getConnection();
 
@@ -58,9 +91,9 @@ END';
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function testSaveWithComputedColumn()
+    public function testSaveWithComputedColumn(): void
     {
         $db = $this->getConnection();
 
@@ -82,5 +115,40 @@ END';
         $record->stringcol = 'test';
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testSaveWithRowVersionColumn(): void
+    {
+        $db = $this->getConnection();
+
+        $sql = 'ALTER TABLE [dbo].[test_trigger] ADD [RV] rowversion';
+        $db->createCommand($sql)->execute();
+
+        $record = new TestTrigger();
+        $record->stringcol = 'test';
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
+        $this->assertEquals('test', $record->stringcol);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testSaveWithRowVersionNullColumn(): void
+    {
+        $db = $this->getConnection();
+
+        $sql = 'ALTER TABLE [dbo].[test_trigger] ADD [RV] rowversion NULL';
+        $db->createCommand($sql)->execute();
+
+        $record = new TestTrigger();
+        $record->stringcol = 'test';
+        $record->RV = new Expression('DEFAULT');
+        $this->assertTrue($record->save(false));
+        $this->assertEquals(1, $record->id);
+        $this->assertEquals('test', $record->stringcol);
     }
 }

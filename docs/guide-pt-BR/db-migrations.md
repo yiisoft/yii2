@@ -169,7 +169,7 @@ Observe que normalmente quando você realiza múltiplas operações em `safeUp()
 em `safeDown()`. No exemplo acima nós primeiramente criamos a tabela e depois inserimos uma túpla em `safeUp()`; enquanto
 em `safeDown()` nós primeiramente apagamos o registro e depois eliminamos a tabela.
 
-> Observação: Nem todos os SGBDs suportam transações. E algumas requisições de banco não podem ser encapsuladas em uma transação. Para alguns exemplos, referir a [commit implícito](http://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). Se este for o caso, implemente os métodos `up()` e `down()`.
+> Observação: Nem todos os SGBDs suportam transações. E algumas requisições de banco não podem ser encapsuladas em uma transação. Para alguns exemplos, referir a [commit implícito](https://dev.mysql.com/doc/refman/5.1/en/implicit-commit.html). Se este for o caso, implemente os métodos `up()` e `down()`.
 
 
 ### Métodos de Acesso ao Banco de Dados <span id="db-accessing-methods"></span>

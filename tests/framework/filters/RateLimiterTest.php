@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters;
@@ -14,7 +15,6 @@ use yii\web\Response;
 use yii\web\User;
 use yiiunit\framework\filters\stubs\ExposedLogger;
 use yiiunit\framework\filters\stubs\RateLimit;
-use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**
@@ -22,7 +22,7 @@ use yiiunit\TestCase;
  */
 class RateLimiterTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -30,41 +30,42 @@ class RateLimiterTest extends TestCase
 
         $this->mockWebApplication();
     }
-    protected function tearDown()
+
+    protected function tearDown(): void
     {
         parent::tearDown();
         Yii::setLogger(null);
     }
 
-    public function testInitFilledRequest()
+    public function testInitFilledRequest(): void
     {
         $rateLimiter = new RateLimiter(['request' => 'Request']);
 
         $this->assertEquals('Request', $rateLimiter->request);
     }
 
-    public function testInitNotFilledRequest()
+    public function testInitNotFilledRequest(): void
     {
         $rateLimiter = new RateLimiter();
 
-        $this->assertInstanceOf(Request::className(), $rateLimiter->request);
+        $this->assertInstanceOf(Request::class, $rateLimiter->request);
     }
 
-    public function testInitFilledResponse()
+    public function testInitFilledResponse(): void
     {
         $rateLimiter = new RateLimiter(['response' => 'Response']);
 
         $this->assertEquals('Response', $rateLimiter->response);
     }
 
-    public function testInitNotFilledResponse()
+    public function testInitNotFilledResponse(): void
     {
         $rateLimiter = new RateLimiter();
 
-        $this->assertInstanceOf(Response::className(), $rateLimiter->response);
+        $this->assertInstanceOf(Response::class, $rateLimiter->response);
     }
 
-    public function testBeforeActionUserInstanceOfRateLimitInterface()
+    public function testBeforeActionUserInstanceOfRateLimitInterface(): void
     {
         $rateLimiter = new RateLimiter();
         $rateLimit = new RateLimit();
@@ -78,19 +79,22 @@ class RateLimiterTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testBeforeActionUserNotInstanceOfRateLimitInterface()
+    public function testBeforeActionUserNotInstanceOfRateLimitInterface(): void
     {
         $rateLimiter = new RateLimiter(['user' => 'User']);
 
         $result = $rateLimiter->beforeAction('test');
 
-        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
+        $this->assertContains(
+            'Rate limit skipped: "user" does not implement RateLimitInterface.',
+            Yii::getLogger()->messages
+        );
         $this->assertTrue($result);
     }
 
-    public function testBeforeActionEmptyUser()
+    public function testBeforeActionEmptyUser(): void
     {
-        $user = new User(['identityClass' => RateLimit::className()]);
+        $user = new User(['identityClass' => RateLimit::class]);
         Yii::$app->set('user', $user);
         $rateLimiter = new RateLimiter();
 
@@ -100,9 +104,8 @@ class RateLimiterTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testCheckRateLimitTooManyRequests()
+    public function testCheckRateLimitTooManyRequests(): void
     {
-        /* @var $rateLimit UserIdentity|\Prophecy\ObjectProphecy */
         $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([1, 1])
@@ -113,9 +116,8 @@ class RateLimiterTest extends TestCase
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 
-    public function testCheckRateaddRateLimitHeaders()
+    public function testCheckRateaddRateLimitHeaders(): void
     {
-        /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
         $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([2, 10])
@@ -130,7 +132,7 @@ class RateLimiterTest extends TestCase
         $this->assertEquals(5, $headers->get('X-Rate-Limit-Reset'));
     }
 
-    public function testAddRateLimitHeadersDisabledRateLimitHeaders()
+    public function testAddRateLimitHeadersDisabledRateLimitHeaders(): void
     {
         $rateLimiter = new RateLimiter();
         $rateLimiter->enableRateLimitHeaders = false;
@@ -140,7 +142,7 @@ class RateLimiterTest extends TestCase
         $this->assertCount(0, $response->getHeaders());
     }
 
-    public function testAddRateLimitHeadersEnabledRateLimitHeaders()
+    public function testAddRateLimitHeadersEnabledRateLimitHeaders(): void
     {
         $rateLimiter = new RateLimiter();
         $rateLimiter->enableRateLimitHeaders = true;
@@ -153,17 +155,20 @@ class RateLimiterTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/18236
      */
-    public function testUserWithClosureFunction()
+    public function testUserWithClosureFunction(): void
     {
         $rateLimiter = new RateLimiter();
-        $rateLimiter->user = function($action) {
-            return new User(['identityClass' => RateLimit::className()]);
+        $rateLimiter->user = function ($action) {
+            return new User(['identityClass' => RateLimit::class]);
         };
         $rateLimiter->beforeAction('test');
 
         // testing the evaluation of user closure, which in this case returns not the expect object and therefore
         // the log message "does not implement RateLimitInterface" is expected.
-        $this->assertInstanceOf(User::className(), $rateLimiter->user);
-        $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
+        $this->assertInstanceOf(User::class, $rateLimiter->user);
+        $this->assertContains(
+            'Rate limit skipped: "user" does not implement RateLimitInterface.',
+            Yii::getLogger()->messages
+        );
     }
 }

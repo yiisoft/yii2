@@ -1,4 +1,4 @@
-Псевдонимы 
+Псевдонимы
 =========
 
 Псевдонимы используются для обозначения путей к файлам или URL адресов и помогают избежать использования абсолютных путей
@@ -17,7 +17,7 @@ Yii framework, а `@web` можно использовать для получе
 Yii::setAlias('@foo', '/path/to/foo');
 
 // псевдоним URL
-Yii::setAlias('@bar', 'http://www.example.com');
+Yii::setAlias('@bar', 'https://www.example.com');
 
 // псевдоним конкретного файла, содержащего класс \foo\Bar
 Yii::setAlias('@foo/Bar.php', '/definitely/not/foo/Bar.php');
@@ -37,7 +37,7 @@ Yii::setAlias('@foobar', '@foo/bar');
 ```
 
 Корневые псевдонимы, как правило, создаются на этапе [предварительной загрузки (bootstrapping)](runtime-bootstrapping.md).
-Например, вы можете вызвать [[Yii::setAlias()]] в [входном скрипте](structure-entry-scripts.md). Для удобства, в
+Например, вы можете вызвать [[Yii::setAlias()]] во [входном скрипте](structure-entry-scripts.md). Для удобства, в
 [приложении (Application)](structure-applications.md) предусмотрено свойство `aliases`, которое можно задать через
 [конфигурацию приложения](concept-configurations.md):
 
@@ -46,7 +46,7 @@ return [
     // ...
     'aliases' => [
         '@foo' => '/path/to/foo',
-        '@bar' => 'http://www.example.com',
+        '@bar' => 'https://www.example.com',
     ],
 ];
 ```
@@ -60,7 +60,7 @@ return [
 
 ```php
 echo Yii::getAlias('@foo');               // выведет: /path/to/foo
-echo Yii::getAlias('@bar');               // выведет: http://www.example.com
+echo Yii::getAlias('@bar');               // выведет: https://www.example.com
 echo Yii::getAlias('@foo/bar/file.php');  // выведет: /path/to/foo/bar/file.php
 ```
 
@@ -69,7 +69,7 @@ echo Yii::getAlias('@foo/bar/file.php');  // выведет: /path/to/foo/bar/fi
 
 > Note: Метод [[Yii::getAlias()]] не проверяет фактического существования получаемого пути или URL.
 
-Корневой псевдоним может содержать знаки '/'. При этом метод [[Yii::getAlias()]] корректно определит, какая часть
+Корневой псевдоним может содержать знаки `/`. При этом метод [[Yii::getAlias()]] корректно определит, какая часть
 псевдонима является корневой и верно сформирует путь или URL:
 
 ```php
@@ -79,7 +79,7 @@ Yii::getAlias('@foo/test/file.php');  // выведет: /path/to/foo/test/file.
 Yii::getAlias('@foo/bar/file.php');   // выведет: /path2/bar/file.php
 ```
 
-Если бы `@foo/bar` не был объявлен корневым псевдонимом, последняя строка вывела бы  `/path/to/foo/bar/file.php`.
+Если бы `@foo/bar` не был объявлен корневым псевдонимом, последняя строка вывела бы `/path/to/foo/bar/file.php`.
 
 
 Использование псевдонимов <span id="using-aliases"></span>

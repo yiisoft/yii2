@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\tests\unit\framework\db\pgsql;
@@ -18,7 +19,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 {
     public $driverName = 'pgsql';
 
-    public function testAutoQuoting()
+    public function testAutoQuoting(): void
     {
         $db = $this->getConnection(false);
 
@@ -27,7 +28,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
-    public function testBooleanValuesInsert()
+    public function testBooleanValuesInsert(): void
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
@@ -44,12 +45,14 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->queryScalar());
     }
 
-    public function testBooleanValuesBatchInsert()
+    public function testBooleanValuesBatchInsert(): void
     {
         $db = $this->getConnection();
         $command = $db->createCommand();
-        $command->batchInsert('bool_values',
-            ['bool_col'], [
+        $command->batchInsert(
+            'bool_values',
+            ['bool_col'],
+            [
                 [true],
                 [false],
             ]
@@ -62,22 +65,22 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->queryScalar());
     }
 
-    public function testLastInsertId()
+    public function testLastInsertId(): void
     {
         $db = $this->getConnection();
 
         $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('public.profile_id_seq'));
+        $this->assertSame('3', $db->getSchema()->getLastInsertID('public.profile_id_seq'));
 
         $sql = 'INSERT INTO {{schema1.profile}}([[description]]) VALUES (\'non duplicate\')';
         $command = $db->createCommand($sql);
         $command->execute();
-        $this->assertEquals(3, $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
+        $this->assertSame('3', $db->getSchema()->getLastInsertID('schema1.profile_id_seq'));
     }
 
-    public function dataProviderGetRawSql()
+    public static function dataProviderGetRawSql(): array
     {
         return array_merge(parent::dataProviderGetRawSql(), [
             [
@@ -91,7 +94,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * @see https://github.com/yiisoft/yii2/issues/11498
      */
-    public function testSaveSerializedObject()
+    public function testSaveSerializedObject(): void
     {
         if (\defined('HHVM_VERSION')) {
             $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob colums in the way they are used here.');
@@ -114,7 +117,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertEquals(1, $command->execute());
     }
 
-    public function batchInsertSqlProvider()
+    public static function batchInsertSqlProvider(): array
     {
         $data = parent::batchInsertSqlProvider();
         $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") VALUES (NULL, NULL, \'Kyiv {{city}}, Ukraine\')';
@@ -154,7 +157,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     /**
      * @see https://github.com/yiisoft/yii2/issues/15827
      */
-    public function testIssue15827()
+    public function testIssue15827(): void
     {
         $db = $this->getConnection();
 
@@ -164,7 +167,8 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $this->assertSame(1, $inserted);
 
 
-        $found = $db->createCommand(<<<PGSQL
+        $found = $db->createCommand(
+            <<<PGSQL
             SELECT *
             FROM array_and_json_types
             WHERE jsonb_col @> '{"Some not existing key": "random value"}'
@@ -172,7 +176,8 @@ PGSQL
         )->execute();
         $this->assertSame(0, $found);
 
-        $found = $db->createCommand(<<<PGSQL
+        $found = $db->createCommand(
+            <<<PGSQL
             SELECT *
             FROM array_and_json_types
             WHERE jsonb_col @> '{"Solution date": "13.01.2011"}'

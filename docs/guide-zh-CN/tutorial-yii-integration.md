@@ -41,7 +41,7 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 我们推荐你把它的安装代码置于`Yii.php` 的导入之前，
 这样 Yii 的官方自动加载器可以拥有更高的优先级。
 
-若一个类库并没有提供自动加载器，但是他的类库命名方式符合 [PSR-4](http://www.php-fig.org/psr/psr-4/) 标准，
+若一个类库并没有提供自动加载器，但是他的类库命名方式符合 [PSR-4](https://www.php-fig.org/psr/psr-4/) 标准，
 你可以使用 Yii 官方的自动加载器来自动加载这些类。
 你只需给他们的每个根命名空间声明一下[根路径别名](concept-aliases.md#defining-aliases)。
 比如，假设说你已经在目录 `vendor/foo/bar` 里安装了一个类库，且这些类库的根命名空间为 `xyz`。

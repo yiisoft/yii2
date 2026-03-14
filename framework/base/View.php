@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -20,8 +21,9 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
+ * @property-read DynamicContentAwareInterface[] $dynamicContents Class instances supporting dynamic contents.
  * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
- * rendered. This property is read-only.
+ * rendered.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -31,20 +33,19 @@ class View extends Component implements DynamicContentAwareInterface
     /**
      * @event Event an event that is triggered by [[beginPage()]].
      */
-    const EVENT_BEGIN_PAGE = 'beginPage';
+    public const EVENT_BEGIN_PAGE = 'beginPage';
     /**
      * @event Event an event that is triggered by [[endPage()]].
      */
-    const EVENT_END_PAGE = 'endPage';
+    public const EVENT_END_PAGE = 'endPage';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right before it renders a view file.
      */
-    const EVENT_BEFORE_RENDER = 'beforeRender';
+    public const EVENT_BEFORE_RENDER = 'beforeRender';
     /**
      * @event ViewEvent an event that is triggered by [[renderFile()]] right after it renders a view file.
      */
-    const EVENT_AFTER_RENDER = 'afterRender';
-
+    public const EVENT_AFTER_RENDER = 'afterRender';
     /**
      * @var ViewContextInterface the context under which the [[renderFile()]] method is being invoked.
      */
@@ -54,11 +55,11 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $params = [];
     /**
-     * @var array a list of available renderers indexed by their corresponding supported file extensions.
+     * @var array|null a list of available renderers indexed by their corresponding supported file extensions.
      * Each renderer may be a view renderer object or the configuration for creating the renderer object.
      * For example, the following configuration enables both Smarty and Twig view renderers:
      *
-     * ```php
+     * ```
      * [
      *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
      *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
@@ -74,7 +75,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public $defaultExtension = 'php';
     /**
-     * @var Theme|array|string the theme object or the configuration for creating the theme object.
+     * @var Theme|array|string|null the theme object or the configuration for creating the theme object.
      * If not set, it means theming is not enabled.
      */
     public $theme;
@@ -142,7 +143,7 @@ class View extends Component implements DynamicContentAwareInterface
      *
      * @param string $view the view name.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
+     * @param object|null $context the context to be assigned to the view and can later be accessed via [[context]]
      * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
      * the view file corresponding to a relative view name.
      * @return string the rendering result
@@ -160,7 +161,7 @@ class View extends Component implements DynamicContentAwareInterface
      * Finds the view file based on the given view name.
      * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
      * on how to specify this parameter.
-     * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
+     * @param object|null $context the context to be assigned to the view and can later be accessed via [[context]]
      * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
      * the view file corresponding to a relative view name.
      * @return string the view file path. Note that the file may not exist.
@@ -215,7 +216,7 @@ class View extends Component implements DynamicContentAwareInterface
      *
      * @param string $viewFile the view file. This can be either an absolute file path or an alias of it.
      * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param object $context the context that the view should use for rendering the view. If null,
+     * @param object|null $context the context that the view should use for rendering the view. If null,
      * existing [[context]] will be used.
      * @return string the rendering result
      * @throws ViewNotFoundException if the view file does not exist
@@ -250,7 +251,7 @@ class View extends Component implements DynamicContentAwareInterface
                 if (is_array($this->renderers[$ext]) || is_string($this->renderers[$ext])) {
                     $this->renderers[$ext] = Yii::createObject($this->renderers[$ext]);
                 }
-                /* @var $renderer ViewRenderer */
+                /** @var ViewRenderer $renderer */
                 $renderer = $this->renderers[$ext];
                 $output = $renderer->render($this, $viewFile, $params);
             } else {
@@ -335,7 +336,7 @@ class View extends Component implements DynamicContentAwareInterface
      * @param string $_file_ the view file.
      * @param array $_params_ the parameters (name-value pairs) that will be extracted and made available in the view file.
      * @return string the rendering result
-     * @throws \Exception
+     * @throws \Throwable
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
@@ -420,7 +421,7 @@ class View extends Component implements DynamicContentAwareInterface
             }
         }
         $this->dynamicPlaceholders[$placeholder] = $statements;
-}
+    }
 
     /**
      * Evaluates the given PHP statements.
@@ -496,7 +497,7 @@ class View extends Component implements DynamicContentAwareInterface
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
-     * ```php
+     * ```
      * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
      * //...layout content here...
      * <?php $this->endContent(); ?>
@@ -533,7 +534,7 @@ class View extends Component implements DynamicContentAwareInterface
      * call to end the cache and save the content into cache.
      * A typical usage of fragment caching is as follows,
      *
-     * ```php
+     * ```
      * if ($this->beginCache($id)) {
      *     // ...generate content here
      *     $this->endCache();
@@ -549,7 +550,7 @@ class View extends Component implements DynamicContentAwareInterface
     {
         $properties['id'] = $id;
         $properties['view'] = $this;
-        /* @var $cache FragmentCache */
+        /** @var FragmentCache $cache */
         $cache = FragmentCache::begin($properties);
         if ($cache->getCachedContent() !== false) {
             $this->endCache();

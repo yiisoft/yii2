@@ -42,7 +42,7 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 Karna baris tersebut, aplikasi anda harusnya sudah berada pada mode _development_, dan secara otomatis mengaktifkan Gii karena konfigurasi sebelumnya. Anda dapat mengakses Gii melalui URL di bawah ini:
 
 ```
-http://hostname/index.php?r=gii
+https://hostname/index.php?r=gii
 ```
 
 > Note: Jika anda mengakses Gii melalui komputer diluar komputer localhost anda, secara default akses tidak akan diperbolehkan
@@ -107,7 +107,7 @@ Mari kita coba <span id="trying-it-out"></span>
 Untuk melihat bagaimana proses kerjanya, gunakan browser anda untuk mengakses URL dibawah ini:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 Anda akan melihat tabel data yang menampilkan negara dari tabel pada database. Anda dapat mengurutkan tabel,

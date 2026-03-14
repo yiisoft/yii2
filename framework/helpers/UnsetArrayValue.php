@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -12,7 +13,7 @@ namespace yii\helpers;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * $array1 = [
  *     'ids' => [
  *         1,
@@ -35,7 +36,7 @@ namespace yii\helpers;
  *
  * The result will be
  *
- * ```php
+ * ```
  * [
  *     'ids' => [
  *         1,

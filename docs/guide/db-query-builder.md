@@ -298,7 +298,7 @@ the operator can be one of the following:
   should be applied. Note that when using an escape mapping (or the third operand is not provided),
   the values will be automatically enclosed within a pair of percentage characters.
 
-  > Note: When using PostgreSQL you may also use [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
+  > Note: When using PostgreSQL you may also use [`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE)
   > instead of `like` for case-insensitive matching.
 
 - `or like`: similar to the `like` operator except that `OR` is used to concatenate the `LIKE`
@@ -879,10 +879,10 @@ Using the operator format, it would look like the following:
 ```php
 [
     'and',
-    '>', 'posts', $minLimit,
-    '>', 'comments', $minLimit,
-    '>', 'reactions', $minLimit,
-    '>', 'subscriptions', $minLimit
+    ['>', 'posts', $minLimit],
+    ['>', 'comments', $minLimit],
+    ['>', 'reactions', $minLimit],
+    ['>', 'subscriptions', $minLimit]
 ]
 ```
 
@@ -926,7 +926,7 @@ class AllGreaterCondition implements \yii\db\conditions\ConditionInterface
 So we can create a condition object:
 
 ```php
-$conditon = new AllGreaterCondition(['col1', 'col2'], 42);
+$condition = new AllGreaterCondition(['col1', 'col2'], 42);
 ```
 
 But `QueryBuilder` still does not know, to make an SQL condition out of this object.

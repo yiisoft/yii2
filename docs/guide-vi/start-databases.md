@@ -216,7 +216,7 @@ Xem demo <span id="trying-it-out"></span>
 Truy cập vào Url sau và xem kết quả:
 
 ```
-http://hostname/index.php?r=country/index
+https://hostname/index.php?r=country/index
 ```
 
 ![Danh sách Country](images/start-country-list.png)
@@ -226,7 +226,7 @@ Nếu bạn click vào button "2", bạn sẽ thấy 5 country khác trong CSDL:
 Bạn để ý rằng URL trong trình duyệt cũng thay đổi.
 
 ```
-http://hostname/index.php?r=country/index&page=2
+https://hostname/index.php?r=country/index&page=2
 ```
 
 Trong luồng xử lý này, đối tượng [[yii\data\Pagination|Pagination]] sẽ cung cấp tất cả những hàm cần thiết cho việc phân trang:

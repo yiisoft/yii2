@@ -1,13 +1,13 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
 
-use Yii;
 use yii\base\BaseObject;
 use yii\helpers\StringHelper;
 
@@ -26,12 +26,11 @@ class ColumnSchemaBuilder extends BaseObject
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
     // @since 2.0.8
-    const CATEGORY_PK = 'pk';
-    const CATEGORY_STRING = 'string';
-    const CATEGORY_NUMERIC = 'numeric';
-    const CATEGORY_TIME = 'time';
-    const CATEGORY_OTHER = 'other';
-
+    public const CATEGORY_PK = 'pk';
+    public const CATEGORY_STRING = 'string';
+    public const CATEGORY_NUMERIC = 'numeric';
+    public const CATEGORY_TIME = 'time';
+    public const CATEGORY_OTHER = 'other';
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */
@@ -124,8 +123,8 @@ class ColumnSchemaBuilder extends BaseObject
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
-     * @param int|string|array $length length or precision of the column. See [[$length]].
-     * @param \yii\db\Connection $db the current database connection. See [[$db]].
+     * @param int|string|array|null $length length or precision of the column. See [[$length]].
+     * @param \yii\db\Connection|null $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($type, $length = null, $db = null, $config = [])

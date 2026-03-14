@@ -59,7 +59,7 @@ Dans quelques cas rares, vous désirez installer quelques, ou toutes les, extens
 2. Installer la classe *autoloader* procurée par les extensions, si elles en possèdent.
 3. Télécharger et installer toutes les extensions dont vos extensions dépendent selon les instructions.
  
-Si une extension ne possède pas de classe *autoloader* mais obéit à la [norme PSR-4](http://www.php-fig.org/psr/psr-4/), vous pouvez utiliser la classe *autoloader* procurée par Yii pour charger automatiquement les classes d'extension. Tout ce que vous avez à faire, c'est de déclarer un [alias racine](concept-aliases.md#defining-aliases) pour le dossier racine de l'extension. Par exemple, en supposant que vous avez installé une extension dans le dossier `vendor/mycompany/myext`, et que les classes d'extension sont sous l'espace de noms `myext`, alors vous pouvez inclure le code suivant dans la configuration de votre application :
+Si une extension ne possède pas de classe *autoloader* mais obéit à la [norme PSR-4](https://www.php-fig.org/psr/psr-4/), vous pouvez utiliser la classe *autoloader* procurée par Yii pour charger automatiquement les classes d'extension. Tout ce que vous avez à faire, c'est de déclarer un [alias racine](concept-aliases.md#defining-aliases) pour le dossier racine de l'extension. Par exemple, en supposant que vous avez installé une extension dans le dossier `vendor/mycompany/myext`, et que les classes d'extension sont sous l'espace de noms `myext`, alors vous pouvez inclure le code suivant dans la configuration de votre application :
 
 ```php
 [
@@ -148,7 +148,7 @@ Losqu'un utilisateur exécute `composer install` pour installer une extension, l
 
 Bien sûr, votre extension dépend de Yii. C'est pourquoi, vous devez lister  (`yiisoft/yii2`) dans l'entrée `require` dans `composer.json`. Si votre extension dépend aussi d'autres extensions ou bibliothèques de tierces parties, vous devez les lister également. Assurez-vous que vous de lister également les contraintes de versions appropriées (p. ex. `1.*`, `@stable`) pour chacun des paquets dont votre extension dépend. Utilisez des dépendances stables lorsque votre extension est publiée dans une version stable. 
 
-La plupart des paquets JavaScript/CSS sont gérés par [Bower](http://bower.io/) et/ou [NPM](https://www.npmjs.com/),
+La plupart des paquets JavaScript/CSS sont gérés par [Bower](https://bower.io/) et/ou [NPM](https://www.npmjs.com/),
 plutôt que par Composer. Yii utilise le [greffon *assets* de Composer(https://github.com/fxpio/composer-asset-plugin) pour activer la gestion de ce genre de paquets par Composer. Si votre extension dépend d'un paquet Bower, vous pouvez simplement lister la dépendance dans  `composer.json` comme ceci : 
 
 ```json
@@ -193,7 +193,7 @@ Parce que les extensions sont prévues pour être utilisées par d'autres person
 
 #### Espaces de noms <span id="namespaces"></span>
 
-Pour éviter les collisions de noms et rendre le chargement des classes de votre extension automatique, vous devez utiliser des espaces de noms et nommer les classes de votre extension en respectant la [norme PSR-4](http://www.php-fig.org/psr/psr-4/) ou la [norme PSR-0](http://www.php-fig.org/psr/psr-0/).
+Pour éviter les collisions de noms et rendre le chargement des classes de votre extension automatique, vous devez utiliser des espaces de noms et nommer les classes de votre extension en respectant la [norme PSR-4](https://www.php-fig.org/psr/psr-4/) ou la [norme PSR-0](https://www.php-fig.org/psr/psr-0/).
 
 Vos noms de classe doivent commencer par  `vendorName\extensionName`, où `extensionName` est similaire au nom du projet dans le nom du paquet sauf qu'il doit contenir le préfixe `yii2-`. Par exemple, pour l'extension `yiisoft/yii2-imagine`, nous utilisons l'espace de noms `yii\imagine` pour ses classes. 
 
@@ -278,7 +278,7 @@ Il est recommandé que créiez des cas de test variés pour tester votre extensi
 
 #### Numérotation des versions <span id="versioning"></span>
 
-Vous devriez donner à chacune des versions publiées de votre extension un numéro (p. ex. `1.0.1`). Nous recommandons de suivre la pratique de la [numérotation sémantique des versions](http://semver.org) lors de la détermination d'un numéro de version. 
+Vous devriez donner à chacune des versions publiées de votre extension un numéro (p. ex. `1.0.1`). Nous recommandons de suivre la pratique de la [numérotation sémantique des versions](https://semver.org) lors de la détermination d'un numéro de version. 
 
 
 #### Publication <span id="releasing"></span>
@@ -286,7 +286,7 @@ Vous devriez donner à chacune des versions publiées de votre extension un num�
 Pour permettre aux autres personnes de connaître votre extension, vous devez la publier. Si c'est la première fois que vous publiez l'extension, vous devez l'enregistrer sur un dépôt Composer tel que [Packagist](https://packagist.org/). Ensuite, tout ce que vous avez à faire, c'est de créer une balise de version (p. ex. `v1.0.1`) sur le dépôt VCS de votre extension et de notifier au dépôt Composer la nouvelle version. Les gens seront capables de trouver votre nouvelle version et, soit de l'installer, soit de la mettre à jour via le dépôt Composer. 
 
 Dans les versions de votre extension, en plus des fichiers de code, vous devez envisager d'inclure ce qui suit par aider les gens à connaître votre extension et à l'utiliser :
-* Un ficher *readme* (lisez-moi) dans le dossier racine du paquet : il doit décrire ce que fait votre extension, comment l'installer et l'utiliser. Nous vous recommandons de l'écrire dans le format [Markdown](http://daringfireball.net/projects/markdown/) et de nommer ce fichier `readme.md`.
+* Un ficher *readme* (lisez-moi) dans le dossier racine du paquet : il doit décrire ce que fait votre extension, comment l'installer et l'utiliser. Nous vous recommandons de l'écrire dans le format [Markdown](https://daringfireball.net/projects/markdown/) et de nommer ce fichier `readme.md`.
 * Un fichier *changelog* (journal des modifications) dans le dossier racine du paquet : il liste les changements apportés dans chacune des versions. Ce fichier peut être écrit dans le format Markdown et nommé `changelog.md`.
 * Un fichier *upgrade* (mise à jour) dans le dossier racine du paquet : il donne les instructions sur la manière de mettre l'extension à jour en partant d'une version précédente.   Ce fichier peut être écrit dans le format Markdown et nommé `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: ces derniers sont nécessaires si votre extension fournit de nombreuses fonctionnalités qui ne peuvent être couvertes dans le fichier readme. 
@@ -303,21 +303,21 @@ Yii fournit les extensions du noyau suivantes (ou ["les extensions officielles"]
 
 - [yiisoft/yii2-apidoc](https://www.yiiframework.com/extension/yiisoft/yii2-apidoc) : fournit un générateur  d'API extensible et de haute performance. Elle est aussi utilisée pour générer l'API du noyau du framework.  
 - [yiisoft/yii2-authclient](https://www.yiiframework.com/extension/yiisoft/yii2-authclient) : fournit un jeu de clients d'authentification courants tels que  Facebook OAuth2 client, GitHub OAuth2 client.
-- [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap) : fournit un jeu d'objets graphiques qui encapsulent les composants et les greffons de [Bootstrap](http://getbootstrap.com/).
+- [yiisoft/yii2-bootstrap](https://www.yiiframework.com/extension/yiisoft/yii2-bootstrap) : fournit un jeu d'objets graphiques qui encapsulent les composants et les greffons de [Bootstrap](https://getbootstrap.com/).
 - [yiisoft/yii2-debug](https://www.yiiframework.com/extension/yiisoft/yii2-debug) : fournit la prise en charge du débogage des applications Yii. Lorsque cette extension est utilisée, une barre de débogage apparaît au pied de chacune des pages. Cette extension fournit aussi un jeu de pages autonomes pour afficher des informations de débogage plus détaillées. 
 - [yiisoft/yii2-elasticsearch](https://www.yiiframework.com/extension/yiisoft/yii2-elasticsearch) : fournit la prise en charge d'[Elasticsearch](https://www.elastic.co/). Elle inclut un moteur de requêtes/recherches de base et met en œuvre le motif [Active Record](db-active-record.md) qui permet de stocker des enregistrement actifs dans Elasticsearch.
 - [yiisoft/yii2-faker](https://www.yiiframework.com/extension/yiisoft/yii2-faker) : fournit la prise en charge de [Faker](https://www.yiiframework.com/extension/fzaninotto/Faker) pour générer des données factices pour vous.
 - [yiisoft/yii2-gii](https://www.yiiframework.com/extension/yiisoft/yii2-gii) : fournit un générateur de code basé sur le Web qui est hautement extensible et peut être utilisé pour générer rapidement des modèles, des formulaires, des modules, des requêtes CRUD, etc. 
 - [yiisoft/yii2-httpclient](https://www.yiiframework.com/extension/yiisoft/yii2-httpclient) : provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) : fournit des fonctionnalités couramment utilisées de manipulation d'images basées sur [Imagine](https://www.yiiframework.com/extension/yiisoft/yii2-imagine).
-- [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
+- [yiisoft/yii2-jui](https://www.yiiframework.com/extension/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](https://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://www.yiiframework.com/extension/yiisoft/yii2-mongodb) : fournit la prise en charge de [MongoDB](https://www.mongodb.com/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, les migrations, la mise en cache, la génération de code, etc.
 - [yiisoft/yii2-queue](https://www.yiiframework.com/extension/yiisoft/yii2-queue): fournit la prise en charge pour exécuter des tâches en asynchrone via des queues. Il prend en charge les queues en se basant sur, DB, Redis, RabbitMQ, AMQP, Beanstalk et Gearman.
-- [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis) : fournit la prise en charge de [redis](http://redis.io/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la mise en cache, etc.
-- [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell): fournit un interprète de commandes (shell) basé sur [psysh](http://psysh.org/).
-- [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](http://www.smarty.net/).
+- [yiisoft/yii2-redis](https://github.com/yiisoft/yii2-redis) : fournit la prise en charge de [redis](https://redis.io/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la mise en cache, etc.
+- [yiisoft/yii2-shell](https://www.yiiframework.com/extension/yiisoft/yii2-shell): fournit un interprète de commandes (shell) basé sur [psysh](https://psysh.org/).
+- [yiisoft/yii2-smarty](https://www.yiiframework.com/extension/yiisoft/yii2-smarty) : fournit un moteur de modèles basé sur  [Smarty](https://www.smarty.net/).
 - [yiisoft/yii2-sphinx](https://github.com/yiisoft/yii2-sphinx) : fournit la prise en charge de [Sphinx](https://www.yiiframework.com/extension/yiisoft/yii2-sphinx). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, la génération de code, etc.
-- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](http://swiftmailer.org/).
+- [yiisoft/yii2-swiftmailer](https://www.yiiframework.com/extension/yiisoft/yii2-swiftmailer) : fournit les fonctionnalités d'envoi de courriels basées sur [swiftmailer](https://swiftmailer.symfony.com/).
 - [yiisoft/yii2-twig](https://www.yiiframework.com/extension/yiisoft/yii2-twig) : fournit un moteur de modèles basé sur [Twig](https://twig.symfony.com/).
 
 Les extensions officielles suivantes sont valables pour les versions Yii 2.1 et plus récentes. Vous n'avez pas besoin de les installer car elles sont incluse dans le cœur du framework.
@@ -327,7 +327,7 @@ Les extensions officielles suivantes sont valables pour les versions Yii 2.1 et 
 - [yiisoft/yii2-jquery](https://www.yiiframework.com/extension/yiisoft/yii2-jquery):
   fournit une prise en charge de [jQuery](https://jquery.com/).
 - [yiisoft/yii2-maskedinput](https://www.yiiframework.com/extension/yiisoft/yii2-maskedinput):
-  fournit un composant graphique de saisie masqué basé sur [jQuery Input Mask plugin](http://robinherbots.github.io/Inputmask/).
+  fournit un composant graphique de saisie masqué basé sur [jQuery Input Mask plugin](https://robinherbots.github.io/Inputmask/).
 - [yiisoft/yii2-mssql](https://www.yiiframework.com/extension/yiisoft/yii2-mssql):
   fournit la prise en charge de [MSSQL](https://www.microsoft.com/sql-server/).
 - [yiisoft/yii2-oracle](https://www.yiiframework.com/extension/yiisoft/yii2-oracle):

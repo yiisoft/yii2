@@ -1,9 +1,12 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -11,10 +14,17 @@ use yii\base\Behavior;
 use yii\base\Component;
 use yiiunit\TestCase;
 
+/**
+ * We use `mixin` here to avoid PHPStan errors when testing `attachBehavior`.
+ * @mixin BarBehavior
+ */
 class BarClass extends Component
 {
 }
 
+/**
+ * @mixin BarBehavior
+ */
 class FooClass extends Component
 {
     public function behaviors()
@@ -25,6 +35,9 @@ class FooClass extends Component
     }
 }
 
+/**
+ * @method string magicBehaviorMethod()
+ */
 class BarBehavior extends Behavior
 {
     public static $attachCount = 0;
@@ -55,13 +68,13 @@ class BarBehavior extends Behavior
         return parent::hasMethod($name);
     }
 
-    public function attach($owner)
+    public function attach($owner): void
     {
         self::$attachCount++;
         parent::attach($owner);
     }
 
-    public function detach()
+    public function detach(): void
     {
         self::$detachCount++;
         parent::detach();
@@ -73,20 +86,20 @@ class BarBehavior extends Behavior
  */
 class BehaviorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockApplication();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         gc_enable();
         gc_collect_cycles();
     }
 
-    public function testAttachAndAccessingWithName()
+    public function testAttachAndAccessingWithName(): void
     {
         BarBehavior::$attachCount = 0;
         BarBehavior::$detachCount = 0;
@@ -98,8 +111,11 @@ class BehaviorTest extends TestCase
         $this->assertEquals(0, BarBehavior::$detachCount);
         $this->assertEquals('behavior property', $bar->behaviorProperty);
         $this->assertEquals('behavior method', $bar->behaviorMethod());
-        $this->assertEquals('behavior property', $bar->getBehavior('bar')->behaviorProperty);
-        $this->assertEquals('behavior method', $bar->getBehavior('bar')->behaviorMethod());
+
+        /** @var BarBehavior $barBehavior */
+        $barBehavior = $bar->getBehavior('bar');
+        $this->assertEquals('behavior property', $barBehavior->behaviorProperty);
+        $this->assertEquals('behavior method', $barBehavior->behaviorMethod());
 
         $behavior = new BarBehavior(['behaviorProperty' => 'reattached']);
         $bar->attachBehavior('bar', $behavior);
@@ -108,7 +124,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals('reattached', $bar->behaviorProperty);
     }
 
-    public function testAttachAndAccessingAnonymous()
+    public function testAttachAndAccessingAnonymous(): void
     {
         BarBehavior::$attachCount = 0;
         BarBehavior::$detachCount = 0;
@@ -122,7 +138,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals('behavior method', $bar->behaviorMethod());
     }
 
-    public function testAutomaticAttach()
+    public function testAutomaticAttach(): void
     {
         BarBehavior::$attachCount = 0;
         BarBehavior::$detachCount = 0;
@@ -136,7 +152,7 @@ class BehaviorTest extends TestCase
         $this->assertEquals(0, BarBehavior::$detachCount);
     }
 
-    public function testMagicMethods()
+    public function testMagicMethods(): void
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
@@ -149,14 +165,17 @@ class BehaviorTest extends TestCase
         $this->assertEquals('Magic Behavior Method Result!', $bar->magicBehaviorMethod());
     }
 
-    public function testCallUnknownMethod()
+    public function testCallUnknownMethod(): void
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
-        $this->expectException('yii\base\UnknownMethodException');
 
         $this->assertFalse($bar->hasMethod('nomagicBehaviorMethod'));
         $bar->attachBehavior('bar', $behavior);
+
+        $this->expectException('yii\base\UnknownMethodException');
+        // We intentionally call a non-existent method to test that an exception is thrown
+        // @phpstan-ignore method.notFound
         $bar->nomagicBehaviorMethod();
     }
 }

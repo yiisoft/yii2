@@ -166,7 +166,7 @@ Probándolo <span id="trying-it-out"></span>
 Para ver cómo funciona, utiliza tu navegador para ir al siguiente URL:
 
 ```
-http://hostname/index.php?r=site/entry
+https://hostname/index.php?r=site/entry
 ```
 
 Verás una página que muestra un formulario con dos campos de input. Adelante de cada campo de input, será mostrada también 

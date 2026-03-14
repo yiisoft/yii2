@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -18,7 +19,7 @@ use yii\helpers\StringHelper;
  *
  * In order to enable this parser you should configure [[Request::parsers]] in the following way:
  *
- * ```php
+ * ```
  * return [
  *     'components' => [
  *         'request' => [
@@ -41,7 +42,7 @@ use yii\helpers\StringHelper;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * use yii\web\UploadedFile;
  *
  * $restRequestData = Yii::$app->request->getBodyParams();

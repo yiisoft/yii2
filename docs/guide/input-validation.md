@@ -748,7 +748,7 @@ JS;
 
 ### Deferred Validation <span id="deferred-validation"></span>
 
-If you need to perform asynchronous client-side validation, you can create [Deferred objects](http://api.jquery.com/category/deferred-object/).
+If you need to perform asynchronous client-side validation, you can create [Deferred objects](https://api.jquery.com/category/deferred-object/).
 For example, to perform a custom AJAX validation, you can use the following code:
 
 ```php

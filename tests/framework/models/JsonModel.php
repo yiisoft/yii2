@@ -1,12 +1,15 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\models;
 
+use JsonSerializable;
+use ReturnTypeWillChange;
 use yii\base\DynamicModel;
 
 /**
@@ -14,7 +17,7 @@ use yii\base\DynamicModel;
  *
  * {@inheritdoc}
  */
-class JsonModel extends DynamicModel implements \JsonSerializable
+class JsonModel extends DynamicModel implements JsonSerializable
 {
     /**
      * @var array
@@ -24,6 +27,7 @@ class JsonModel extends DynamicModel implements \JsonSerializable
     /**
      * @return array
      */
+    #[ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return $this->data;
@@ -32,9 +36,9 @@ class JsonModel extends DynamicModel implements \JsonSerializable
     /**
      * @inheritdoc
      */
-    public function init()
+    public function init(): void
     {
-       $this->defineAttribute('name');
+        $this->defineAttribute('name');
     }
 
     /**

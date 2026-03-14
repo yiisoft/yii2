@@ -1,7 +1,7 @@
 Представлення
 =============
 
-Представлення є частиною архітектури [MVC](http://uk.wikipedia.org/wiki/Модель-вид-контролер).
+Представлення є частиною архітектури [MVC](https://uk.wikipedia.org/wiki/Модель-вид-контролер).
 Це код, який відповідає за відображення даних кінцевим користувачам. У веб-додатку представлення зазвичай створені
 у вигляді *шаблонів представлень*, які є файлами скриптів PHP, що містять переважно HTML-код та презентаційний PHP-код.
 Управління ними здійснюється за допомогою [компонента додатку](structure-application-components.md) [[yii\web\View|view]], який надає часто використовувані методи
@@ -20,9 +20,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Вхід';
 ?>
@@ -324,8 +326,10 @@ $this->params['breadcrumbs'][] = 'Про нас';
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

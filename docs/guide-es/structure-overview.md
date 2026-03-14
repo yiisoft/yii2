@@ -1,7 +1,7 @@
 Información general
 ===================
 
-Las aplicaciones realizadas con Yii están organizadas de acuerdo al patrón de diseño [modelo-vista-controlador (MVC)](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Los
+Las aplicaciones realizadas con Yii están organizadas de acuerdo al patrón de diseño [modelo-vista-controlador (MVC)](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Los
 [modelos](structure-models.md) representan datos, la lógica de negocios y sus reglas; las [vistas](structure-views.md) 
 son la representación de salida de los modelos; y finalmente, los [controladores](structure-controllers.md) que toman datos de entrada y los convierten en instrucciones para los [modelos](structure-models.md) y [vistas](structure-views.md). 
 

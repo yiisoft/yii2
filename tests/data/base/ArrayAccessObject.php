@@ -1,11 +1,17 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\base;
+
+use ArrayAccess;
+use ReturnTypeWillChange;
 
 /**
  * ArrayAccessObject
@@ -14,7 +20,7 @@ namespace yiiunit\data\base;
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14.1
  */
-class ArrayAccessObject extends TraversableObject implements \ArrayAccess
+class ArrayAccessObject extends TraversableObject implements ArrayAccess
 {
     /**
      * Whether a offset exists
@@ -29,7 +35,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * The return value will be casted to boolean if non-boolean was returned.
      * @since 2.0.14.1
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->data[$offset]);
     }
@@ -44,6 +50,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return mixed Can return all value types.
      * @since 2.0.14.1
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data[$offset];
@@ -62,7 +69,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return void
      * @since 2.0.14.1
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->data[$offset] = $value;
     }
@@ -77,7 +84,7 @@ class ArrayAccessObject extends TraversableObject implements \ArrayAccess
      * @return void
      * @since 2.0.14.1
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->data[$offset]);
     }

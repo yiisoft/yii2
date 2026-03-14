@@ -42,7 +42,7 @@ know about:
 
 - If a value is `null`, the corresponding attribute will not be rendered.
 - Attributes whose values are of boolean type will be treated as
-  [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributess).
 - The values of attributes will be HTML-encoded using [[yii\helpers\Html::encode()|Html::encode()]].
 - If the value of an attribute is an array, it will be handled as follows:
  
@@ -349,7 +349,7 @@ If you want to use an external style in a CSS file:
 generates
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -399,7 +399,7 @@ In order to generate an image tag, use the following:
 
 generates
 
-<img src="http://example.com/images/logo.png" alt="My logo" />
+<img src="https://example.com/images/logo.png" alt="My logo" />
 ```
 
 Besides [aliases](concept-aliases.md), the first argument can accept routes, parameters and URLs, in the same way [Url::to()](helper-url.md) does.

@@ -1,3 +1,11 @@
+<?php
+
+/**
+ * @var array $foreignKeys
+ * @var string $table
+ */
+
+?>
 <?php foreach ($foreignKeys as $column => $fkData): ?>
 
         // creates index for column `<?= $column ?>`

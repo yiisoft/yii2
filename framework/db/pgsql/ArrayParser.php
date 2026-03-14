@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\pgsql;
@@ -13,6 +14,7 @@ namespace yii\db\pgsql;
  * @author Sergei Tigrov <rrr-r@ya.ru>
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
+ * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 class ArrayParser
 {
@@ -80,7 +82,7 @@ class ArrayParser
      *
      * @param string $value
      * @param int $i parse starting position
-     * @return null|string
+     * @return string|null
      */
     private function parseString($value, &$i)
     {

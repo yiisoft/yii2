@@ -117,7 +117,7 @@ Seguridad
 * **TBD** [Autenticación](security-authentication.md)
 * **TBD** [Autorización](security-authorization.md)
 * **TBD** [Trabajar con contraseñas](security-passwords.md)
-* **TBD** [Autenticar Clientes](security-auth-clients.md)
+* [Autenticar Clientes](https://www.yiiframework.com/extension/yiisoft/yii2-authclient/doc/guide)
 * **TBD** [Buenas prácticas](security-best-practices.md)
 
 

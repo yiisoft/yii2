@@ -1,18 +1,21 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters\auth;
+
+use yii\base\Component;
 
 /**
  * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
  *
  * You may use HttpBasicAuth by attaching it as a behavior to a controller or module, like the following:
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -29,7 +32,7 @@ namespace yii\filters\auth;
  *
  * If you want to authenticate users using username and password, you should provide the [[auth]] function for example like the following:
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -56,6 +59,9 @@ namespace yii\filters\auth;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends AuthMethod<T>
  */
 class HttpBasicAuth extends AuthMethod
 {
@@ -64,14 +70,14 @@ class HttpBasicAuth extends AuthMethod
      */
     public $realm = 'api';
     /**
-     * @var callable a PHP callable that will authenticate the user with the HTTP basic auth information.
+     * @var callable|null a PHP callable that will authenticate the user with the HTTP basic auth information.
      * The callable receives a username and a password as its parameters. It should return an identity object
      * that matches the username and password. Null should be returned if there is no such identity.
      * The callable will be called only if current user is not authenticated.
      *
      * The following code is a typical implementation of this callable:
      *
-     * ```php
+     * ```
      * function ($username, $password) {
      *     return \app\models\User::findOne([
      *         'username' => $username,

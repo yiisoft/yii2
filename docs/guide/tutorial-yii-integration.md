@@ -41,7 +41,7 @@ If a library carries its own class autoloader, you may install it in the [entry 
 of your application. It is recommended the installation is done before you include the `Yii.php` file so that
 the Yii class autoloader can take precedence in autoloading classes.
 
-If a library does not provide a class autoloader, but its class naming follows [PSR-4](http://www.php-fig.org/psr/psr-4/),
+If a library does not provide a class autoloader, but its class naming follows [PSR-4](https://www.php-fig.org/psr/psr-4/),
 you may use the Yii class autoloader to autoload the classes. All you need to do is just to declare a
 [root alias](concept-aliases.md#defining-aliases) for each root namespace used in its classes. For example,
 assume you have installed a library in the directory `vendor/foo/bar`, and the library classes are under

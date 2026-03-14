@@ -11,8 +11,8 @@
 
 功能测试是借助于具有良好文档的 Codeception 框架来实现的：
 
-- [Codeception for Yii framework](http://codeception.com/for/yii)
-- [Codeception 的功能测试](http://codeception.com/docs/04-FunctionalTests)
+- [Codeception for Yii framework](https://codeception.com/for/yii)
+- [Codeception 的功能测试](https://codeception.com/docs/04-FunctionalTests)
 
 ## 运行基本模板和高级模板的测试
 

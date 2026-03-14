@@ -31,4 +31,4 @@
     - Фейсбук: <https://www.facebook.com/groups/yiitalk/>
     - Твіттер: <https://twitter.com/yiiframework>
     - LinkedIn: <https://www.linkedin.com/groups/yii-framework-1483367>
-    - Stackoverflow: <http://stackoverflow.com/questions/tagged/yii2>
+    - Stackoverflow: <https://stackoverflow.com/questions/tagged/yii2>

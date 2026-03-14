@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\data;
 
+use ReflectionClass;
 use yii\data\BaseDataProvider;
 use yiiunit\TestCase;
 
@@ -15,12 +17,18 @@ use yiiunit\TestCase;
  */
 class BaseDataProviderTest extends TestCase
 {
-    public function testGenerateId()
+    public function testGenerateId(): void
     {
-        $rc = new \ReflectionClass(BaseDataProvider::className());
+        $rc = new ReflectionClass(BaseDataProvider::class);
         $rp = $rc->getProperty('counter');
-        $rp->setAccessible(true);
-        $rp->setValue(null);
+
+        // @link https://wiki.php.net/rfc/deprecations_php_8_5#deprecate_reflectionsetaccessible
+        // @link https://wiki.php.net/rfc/make-reflection-setaccessible-no-op
+        if (PHP_VERSION_ID < 80100) {
+            $rp->setAccessible(true);
+        }
+
+        $rp->setValue(new ConcreteDataProvider(), null);
 
         $this->assertNull((new ConcreteDataProvider())->id);
         $this->assertNotNull((new ConcreteDataProvider())->id);

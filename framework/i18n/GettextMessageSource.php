@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -29,9 +30,8 @@ use yii\base\InvalidArgumentException;
  */
 class GettextMessageSource extends MessageSource
 {
-    const MO_FILE_EXT = '.mo';
-    const PO_FILE_EXT = '.po';
-
+    public const MO_FILE_EXT = '.mo';
+    public const PO_FILE_EXT = '.po';
     /**
      * @var string base directory of messages files
      */
@@ -131,7 +131,7 @@ class GettextMessageSource extends MessageSource
     protected function getMessageFilePath($language)
     {
         $language = (string) $language;
-        if ($language !== '' && !preg_match('/^[a-z_-]+$/i', $language)) {
+        if ($language !== '' && !preg_match('/^[a-z0-9_-]+$/i', $language)) {
             throw new InvalidArgumentException(sprintf('Invalid language code: "%s".', $language));
         }
         $messageFile = Yii::getAlias($this->basePath) . '/' . $language . '/' . $this->catalog;

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db;
@@ -24,7 +25,7 @@ interface QueryInterface
 {
     /**
      * Executes the query and returns all results as an array.
-     * @param Connection $db the database connection used to execute the query.
+     * @param Connection|null $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
      * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
@@ -32,7 +33,7 @@ interface QueryInterface
 
     /**
      * Executes the query and returns a single row of result.
-     * @param Connection $db the database connection used to execute the query.
+     * @param Connection|null $db the database connection used to execute the query.
      * If this parameter is not given, the `db` application component will be used.
      * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
@@ -62,7 +63,7 @@ interface QueryInterface
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($row)
      * {
      *     // return the index value corresponding to $row
@@ -82,7 +83,7 @@ interface QueryInterface
      * - operator format: `[operator, operand1, operand2, ...]`
      *
      * A condition in hash format represents the following SQL expression in general:
-     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array,
+     * `column1=value1 AND column2=value2 AND ...`. In case when a value is an array or sub-query,
      * an `IN` expression will be generated. And if a value is `null`, `IS NULL` will be used
      * in the generated expression. Below are some examples:
      *

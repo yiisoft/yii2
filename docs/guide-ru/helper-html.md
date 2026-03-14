@@ -45,7 +45,7 @@ Html-помощник
 
 - Если значение равно `null`, соответствующий атрибут не будет выведен.
 - Атрибуты, значения которых имеют тип boolean, будут интерпретированы как
-  [логические атрибуты](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+  [логические атрибуты](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
 - Значения атрибутов будут экранированы с использованием метода [[yii\helpers\Html::encode()|Html::encode()]].
 - Если в качестве значения атрибута передан массив, он будет обработан следующим образом:
 
@@ -369,7 +369,7 @@ echo Html::getAttributeName('dates[0]');
 В результате получится:
 
 <!--[if IE 5]>
-    <link href="http://example.com/css/ie5.css" />
+    <link href="https://example.com/css/ie5.css" />
 <![endif]-->
 ```
 
@@ -420,7 +420,7 @@ echo Html::getAttributeName('dates[0]');
 
 в результате получится:
 
-<img src="http://example.com/images/logo.png" alt="Наш логотип" />
+<img src="https://example.com/images/logo.png" alt="Наш логотип" />
 ```
 
 Помимо [псевдонимов](concept-aliases.md) первый аргумент может принимать маршруты, параметры и URL-адреса таким же образом

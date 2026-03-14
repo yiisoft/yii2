@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\data;
@@ -26,7 +27,7 @@ use yii\web\Request;
  *
  * Controller action:
  *
- * ```php
+ * ```
  * public function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
@@ -45,7 +46,7 @@ use yii\web\Request;
  *
  * View:
  *
- * ```php
+ * ```
  * foreach ($models as $model) {
  *     // display $model here
  * }
@@ -60,13 +61,13 @@ use yii\web\Request;
  *
  * @property-read int $limit The limit of the data. This may be used to set the LIMIT value for a SQL
  * statement for fetching the current page of data. Note that if the page size is infinite, a value -1 will be
- * returned. This property is read-only.
+ * returned.
  * @property-read array $links The links for navigational purpose. The array keys specify the purpose of the
- * links (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs. This property is read-only.
+ * links (e.g. [[LINK_FIRST]]), and the array values are the corresponding URLs.
  * @property-read int $offset The offset of the data. This may be used to set the OFFSET value for a SQL
- * statement for fetching the current page of data. This property is read-only.
+ * statement for fetching the current page of data.
  * @property int $page The zero-based current page number.
- * @property-read int $pageCount Number of pages. This property is read-only.
+ * @property-read int $pageCount Number of pages.
  * @property int $pageSize The number of items per page. If it is less than 1, it means the page size is
  * infinite, and thus a single page contains all items.
  *
@@ -75,11 +76,10 @@ use yii\web\Request;
  */
 class Pagination extends BaseObject implements Linkable
 {
-    const LINK_NEXT = 'next';
-    const LINK_PREV = 'prev';
-    const LINK_FIRST = 'first';
-    const LINK_LAST = 'last';
-
+    public const LINK_NEXT = 'next';
+    public const LINK_PREV = 'prev';
+    public const LINK_FIRST = 'first';
+    public const LINK_LAST = 'last';
     /**
      * @var string name of the parameter storing the current page index.
      * @see params
@@ -96,12 +96,12 @@ class Pagination extends BaseObject implements Linkable
      */
     public $forcePageParam = true;
     /**
-     * @var string the route of the controller action for displaying the paged contents.
+     * @var string|null the route of the controller action for displaying the paged contents.
      * If not set, it means using the currently requested route.
      */
     public $route;
     /**
-     * @var array parameters (name => value) that should be used to obtain the current page number
+     * @var array|null parameters (name => value) that should be used to obtain the current page number
      * and to create new pagination URLs. If not set, all parameters from $_GET will be used instead.
      *
      * In order to add hash to all links use `array_merge($_GET, ['#' => 'my-hash'])`.
@@ -111,7 +111,7 @@ class Pagination extends BaseObject implements Linkable
      */
     public $params;
     /**
-     * @var \yii\web\UrlManager the URL manager used for creating pagination URLs. If not set,
+     * @var \yii\web\UrlManager|null the URL manager used for creating pagination URLs. If not set,
      * the "urlManager" application component will be used.
      */
     public $urlManager;
@@ -133,13 +133,13 @@ class Pagination extends BaseObject implements Linkable
      */
     public $defaultPageSize = 20;
     /**
-     * @var array|false the page size limits. The first array element stands for the minimal page size, and the second
-     * the maximal page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
+     * @var array|false the page size limits. The first array element defines the minimum page size, and the second
+     * the maximum page size. If this is false, it means [[pageSize]] should always return the value of [[defaultPageSize]].
      */
     public $pageSizeLimit = [1, 50];
 
     /**
-     * @var int number of items on each page.
+     * @var int|null number of items on each page.
      * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
      */
     private $_pageSize;
@@ -250,7 +250,7 @@ class Pagination extends BaseObject implements Linkable
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
      * @param int $page the zero-based page number that the URL should point to.
-     * @param int $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
+     * @param int|null $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
      * @param bool $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the created URL
      * @see params
@@ -339,7 +339,7 @@ class Pagination extends BaseObject implements Linkable
      * Returns the value of the specified query parameter.
      * This method returns the named parameter value from [[params]]. Null is returned if the value does not exist.
      * @param string $name the parameter name
-     * @param string $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
+     * @param string|null $defaultValue the value to be returned when the specified parameter does not exist in [[params]].
      * @return string|null the parameter value
      */
     protected function getQueryParam($name, $defaultValue = null)

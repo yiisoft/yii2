@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\filters;
@@ -25,20 +26,20 @@ use yiiunit\TestCase;
  */
 class PageCacheTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $_SERVER['SCRIPT_FILENAME'] = '/index.php';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         CacheTestCase::$time = null;
         CacheTestCase::$microtime = null;
     }
 
-    public function cacheTestCaseProvider()
+    public static function cacheTestCaseProvider(): array
     {
         return [
             // Basic
@@ -116,6 +117,16 @@ class PageCacheTest extends TestCase
                     'test-header-2' => false,
                 ],
             ]],
+            [[
+                'name' => 'originalNameHeaders',
+                'properties' => [
+                    'cacheHeaders' => ['Test-Header-1'],
+                ],
+                'headers' => [
+                    'Test-Header-1' => true,
+                    'Test-Header-2' => false,
+                ],
+            ]],
 
             // All together
             [[
@@ -140,7 +151,7 @@ class PageCacheTest extends TestCase
      * @dataProvider cacheTestCaseProvider
      * @param array $testCase
      */
-    public function testCache($testCase)
+    public function testCache($testCase): void
     {
         $testCase = ArrayHelper::merge([
             'properties' => [],
@@ -210,7 +221,7 @@ class PageCacheTest extends TestCase
         $filter = new PageCache(array_merge([
             'cache' => $cache,
             'view' => new View(),
-        ]), $testCase['properties']);
+        ], $testCase['properties']));
         Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
         $this->assertFalse($filter->beforeAction($action), $testCase['name']);
         // Content
@@ -233,16 +244,18 @@ class PageCacheTest extends TestCase
         }
         // Headers
         if (isset($testCase['headers'])) {
+            $headersExpected = Yii::$app->response->headers->toOriginalArray();
             foreach ($testCase['headers'] as $name => $expected) {
                 $this->assertSame($expected, Yii::$app->response->headers->has($name), $testCase['name']);
                 if ($expected) {
                     $this->assertSame($headers[$name], Yii::$app->response->headers->get($name), $testCase['name']);
+                    $this->assertArrayHasKey($name, $headersExpected);
                 }
             }
         }
     }
 
-    public function testExpired()
+    public function testExpired(): void
     {
         CacheTestCase::$time = time();
         CacheTestCase::$microtime = microtime(true);
@@ -287,7 +300,7 @@ class PageCacheTest extends TestCase
         ob_end_clean();
     }
 
-    public function testVaryByRoute()
+    public function testVaryByRoute(): void
     {
         $testCases = [
             false,
@@ -338,7 +351,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testVariations()
+    public function testVariations(): void
     {
         $testCases = [
             [true, 'name' => 'value'],
@@ -390,7 +403,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testDependency()
+    public function testDependency(): void
     {
         $testCases = [
             false,
@@ -409,7 +422,7 @@ class PageCacheTest extends TestCase
                 'cache' => $cache = new ArrayCache(),
                 'view' => new View(),
                 'dependency' => [
-                    'class' => ExpressionDependency::className(),
+                    'class' => ExpressionDependency::class,
                     'expression' => 'Yii::$app->params[\'dependency\']',
                 ],
             ]);
@@ -447,7 +460,7 @@ class PageCacheTest extends TestCase
         }
     }
 
-    public function testCalculateCacheKey()
+    public function testCalculateCacheKey(): void
     {
         $expected = ['yii\filters\PageCache', 'test', 'ru'];
         Yii::$app->requestedRoute = 'test';
@@ -459,5 +472,25 @@ class PageCacheTest extends TestCase
 
         $keys = $this->invokeMethod(new PageCache(), 'calculateCacheKey');
         $this->assertEquals(['yii\filters\PageCache', 'test'], $keys);
+    }
+
+    public function testClosureVariations(): void
+    {
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function () {
+                return [
+                    'foobar'
+                ];
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobar'], $keys);
+
+        // test type cast of string
+        $keys = $this->invokeMethod(new PageCache([
+            'variations' => function () {
+                return 'foobarstring';
+            }
+        ]), 'calculateCacheKey');
+        $this->assertEquals(['yii\filters\PageCache', 'test', 'foobarstring'], $keys);
     }
 }

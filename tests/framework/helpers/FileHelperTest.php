@@ -1,12 +1,17 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
+namespace yiiunit\framework\helpers;
+
+use Exception;
+use stdClass;
+use Yii;
 use yii\helpers\FileHelper;
-use yii\helpers\VarDumper;
 use yiiunit\TestCase;
 
 /**
@@ -21,9 +26,9 @@ class FileHelperTest extends TestCase
      */
     private $testFilePath = '';
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . get_class($this);
+        $this->testFilePath = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . str_replace('\\', '_', get_class($this)) . uniqid();
         $this->createDir($this->testFilePath);
         if (!file_exists($this->testFilePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
@@ -56,7 +61,7 @@ class FileHelperTest extends TestCase
         return $mode === '0700';
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         $this->removeDir($this->testFilePath);
     }
@@ -140,13 +145,13 @@ class FileHelperTest extends TestCase
      */
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
-        $expectedMode = sprintf('%o', $expectedMode);
+        $expectedMode = sprintf('%04o', $expectedMode);
         $this->assertEquals($expectedMode, $this->getMode($fileName), $message);
     }
 
     // Tests :
 
-    public function testCreateDirectory()
+    public function testCreateDirectory(): void
     {
         $basePath = $this->testFilePath;
         $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
@@ -162,7 +167,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testCreateDirectory
      */
-    public function testCopyDirectory()
+    public function testCopyDirectory(): void
     {
         $srcDirName = 'test_src_dir';
         $files = [
@@ -187,7 +192,7 @@ class FileHelperTest extends TestCase
         }
     }
 
-    public function testCopyDirectoryRecursive()
+    public function testCopyDirectoryRecursive(): void
     {
         $srcDirName = 'test_src_dir_rec';
         $structure = [
@@ -228,7 +233,7 @@ class FileHelperTest extends TestCase
         $checker($structure, $dstDirName);
     }
 
-    public function testCopyDirectoryNotRecursive()
+    public function testCopyDirectoryNotRecursive(): void
     {
         $srcDirName = 'test_src_dir_not_rec';
         $structure = [
@@ -258,7 +263,7 @@ class FileHelperTest extends TestCase
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
 
             if (is_array($content)) {
-                $this->assertFileNotExists($fileName);
+                $this->assertFileDoesNotExist($fileName);
             } else {
                 $this->assertFileExists($fileName);
                 $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
@@ -269,7 +274,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testCopyDirectory
      */
-    public function testCopyDirectoryPermissions()
+    public function testCopyDirectoryPermissions(): void
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             $this->markTestSkipped("Can't reliably test it on Windows because fileperms() always return 0777.");
@@ -305,7 +310,7 @@ class FileHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/10710
      */
-    public function testCopyDirectoryToItself()
+    public function testCopyDirectoryToItself(): void
     {
         $dirName = 'test_dir';
 
@@ -322,7 +327,7 @@ class FileHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/10710
      */
-    public function testCopyDirToSubdirOfItself()
+    public function testCopyDirToSubdirOfItself(): void
     {
         $this->createFileStructure([
             'data' => [],
@@ -340,7 +345,7 @@ class FileHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/10710
      */
-    public function testCopyDirToAnotherWithSameName()
+    public function testCopyDirToAnotherWithSameName(): void
     {
         $this->createFileStructure([
             'data' => [],
@@ -357,7 +362,7 @@ class FileHelperTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/10710
      */
-    public function testCopyDirWithSameName()
+    public function testCopyDirWithSameName(): void
     {
         $this->createFileStructure([
             'data' => [],
@@ -368,9 +373,11 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
+
+        $this->assertTrue(true);
     }
 
-    public function testRemoveDirectory()
+    public function testRemoveDirectory(): void
     {
         $dirName = 'test_dir_for_remove';
         $this->createFileStructure([
@@ -389,13 +396,13 @@ class FileHelperTest extends TestCase
 
         FileHelper::removeDirectory($dirName);
 
-        $this->assertFileNotExists($dirName, 'Unable to remove directory!');
+        $this->assertFileDoesNotExist($dirName, 'Unable to remove directory!');
 
         // should be silent about non-existing directories
         FileHelper::removeDirectory($basePath . DIRECTORY_SEPARATOR . 'nonExisting');
     }
 
-    public function testRemoveDirectorySymlinks1()
+    public function testRemoveDirectorySymlinks1(): void
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             $this->markTestSkipped('Cannot test this on MS Windows since symlinks are uncommon for it.');
@@ -432,13 +439,13 @@ class FileHelperTest extends TestCase
         $this->assertTrue(is_dir($basePath . 'directory'));
         $this->assertFileExists($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory still have it's file
         $this->assertFalse(is_dir($basePath . 'symlinks'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
         $this->assertFalse(is_dir($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
     }
 
-    public function testRemoveDirectorySymlinks2()
+    public function testRemoveDirectorySymlinks2(): void
     {
         if (DIRECTORY_SEPARATOR === '\\') {
             $this->markTestSkipped('Cannot test this on MS Windows since symlinks are uncommon for it.');
@@ -473,15 +480,15 @@ class FileHelperTest extends TestCase
 
         $this->assertFileExists($basePath . 'file');
         $this->assertTrue(is_dir($basePath . 'directory'));
-        $this->assertFileNotExists($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory doesn't have it's file now
+        $this->assertFileDoesNotExist($basePath . 'directory' . DIRECTORY_SEPARATOR . 'standard-file-1'); // symlinked directory doesn't have it's file now
         $this->assertFalse(is_dir($basePath . 'symlinks'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'standard-file-2');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-file');
         $this->assertFalse(is_dir($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory'));
-        $this->assertFileNotExists($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
+        $this->assertFileDoesNotExist($basePath . 'symlinks' . DIRECTORY_SEPARATOR . 'symlinked-directory' . DIRECTORY_SEPARATOR . 'standard-file-1');
     }
 
-    public function testFindFiles()
+    public function testFindFiles(): void
     {
         $dirName = 'test_dir';
         $this->createFileStructure([
@@ -512,7 +519,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testFindFiles
      */
-    public function testFindFileFilter()
+    public function testFindFileFilter(): void
     {
         $dirName = 'test_dir';
         $passedFileName = 'passed.txt';
@@ -537,7 +544,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testFindFiles
      */
-    public function testFindFilesRecursiveWithSymLink()
+    public function testFindFilesRecursiveWithSymLink(): void
     {
         $dirName = 'test_dir';
         $this->createFileStructure([
@@ -565,7 +572,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testFindFiles
      */
-    public function testFindFilesNotRecursive()
+    public function testFindFilesNotRecursive(): void
     {
         $dirName = 'test_dir';
         $this->createFileStructure([
@@ -589,7 +596,7 @@ class FileHelperTest extends TestCase
     /**
      * @depends testFindFiles
      */
-    public function testFindFilesExclude()
+    public function testFindFilesExclude(): void
     {
         $basePath = $this->testFilePath . DIRECTORY_SEPARATOR;
         $dirs = ['', 'one', 'one' . DIRECTORY_SEPARATOR . 'two', 'three'];
@@ -653,12 +660,21 @@ class FileHelperTest extends TestCase
             );
         }));
         $this->assertEquals($expect, $foundFiles);
+
+        // negative pattern
+        $foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one/*', '!/one/two']]);
+        sort($foundFiles);
+        $expect = array_values(array_filter($flat, function ($p) {
+            return strpos($p, DIRECTORY_SEPARATOR . 'one') === false || strpos($p, DIRECTORY_SEPARATOR . 'two') !== false;
+        }));
+
+        $this->assertEquals($expect, $foundFiles);
     }
 
     /**
      * @depends testFindFilesExclude
      */
-    public function testFindFilesCaseSensitive()
+    public function testFindFilesCaseSensitive(): void
     {
         $dirName = 'test_dir';
         $this->createFileStructure([
@@ -685,7 +701,7 @@ class FileHelperTest extends TestCase
         $this->assertCount(2, $foundFiles);
     }
 
-    public function testGetMimeTypeByExtension()
+    public function testGetMimeTypeByExtension(): void
     {
         $magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type.php';
         $mimeTypeMap = [
@@ -702,13 +718,13 @@ class FileHelperTest extends TestCase
         }
     }
 
-    public function testGetMimeType()
+    public function testGetMimeType(): void
     {
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';
         file_put_contents($file, 'some text');
         $this->assertEquals('text/plain', FileHelper::getMimeType($file));
 
-        // see http://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
+        // see https://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
         // JSON/JSONP should not use text/plain - see http://jibbering.com/blog/?p=514
         // with "fileinfo" extension enabled, returned MIME is not quite correctly "text/plain"
         // without "fileinfo" it falls back to getMimeTypeByExtension() and returns application/json
@@ -717,7 +733,25 @@ class FileHelperTest extends TestCase
         $this->assertTrue(in_array(FileHelper::getMimeType($file), ['application/json', 'text/plain']));
     }
 
-    public function testNormalizePath()
+    public function testGetUploadedImageMimeTypes(): void
+    {
+        $ds = DIRECTORY_SEPARATOR;
+        $phpunitPath = Yii::getAlias('@yiiunit');
+        $runtimeLocation = Yii::getAlias('@yiiunit/runtime');
+        $resourceSourceLocation = "{$phpunitPath}{$ds}framework{$ds}validators{$ds}data{$ds}mimeType";
+
+        $pngFile = "{$runtimeLocation}{$ds}php1234";
+        copy("{$resourceSourceLocation}{$ds}test.png", $pngFile);
+
+        $this->assertEquals('image/png', FileHelper::getMimeType($pngFile));
+
+        $jpgFile = "{$runtimeLocation}{$ds}php4567";
+        copy("{$resourceSourceLocation}{$ds}test.jpg", $jpgFile);
+
+        $this->assertEquals('image/jpeg', FileHelper::getMimeType($jpgFile));
+    }
+
+    public function testNormalizePath(): void
     {
         $ds = DIRECTORY_SEPARATOR;
         $this->assertEquals("{$ds}a{$ds}b", FileHelper::normalizePath('//a\b/'));
@@ -751,7 +785,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals('ftp://192.168.1.100/test', FileHelper::normalizePath('ftp://192.168.1.100/test/'));
     }
 
-    public function testLocalizedDirectory()
+    public function testLocalizedDirectory(): void
     {
         $this->createFileStructure([
             'views' => [
@@ -782,7 +816,7 @@ class FileHelperTest extends TestCase
      * @depends testCopyDirectory
      * @depends testFindFiles
      */
-    public function testCopyDirectoryExclude()
+    public function testCopyDirectoryExclude(): void
     {
         $srcDirName = 'test_src_dir';
         $textFiles = [
@@ -843,7 +877,7 @@ class FileHelperTest extends TestCase
      * @depends testCopyDirectory
      * @depends testFindFiles
      */
-    public function testCopyDirectoryEmptyDirectories()
+    public function testCopyDirectoryEmptyDirectories(): void
     {
         list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
 
@@ -868,7 +902,7 @@ class FileHelperTest extends TestCase
      * @depends testCopyDirectory
      * @depends testFindFiles
      */
-    public function testCopyDirectoryNoEmptyDirectories()
+    public function testCopyDirectoryNoEmptyDirectories(): void
     {
         list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
 
@@ -883,16 +917,16 @@ class FileHelperTest extends TestCase
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file1.txt');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
-        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
-        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+        $this->assertFileDoesNotExist($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
+        $this->assertFileDoesNotExist($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
     }
 
-    public function testFindDirectories()
+    public function testFindDirectories(): void
     {
         $dirName = 'test_dir';
         $this->createFileStructure([
             $dirName => [
-               'test_sub_dir' => [
+                'test_sub_dir' => [
                     'file_1.txt' => 'sub dir file 1 content',
                 ],
                 'second_sub_dir' => [
@@ -939,7 +973,7 @@ class FileHelperTest extends TestCase
         $this->assertEquals($expectedFiles, $foundFiles);
     }
 
-    public function testChangeOwnership()
+    public function testChangeOwnership(): void
     {
         if (DIRECTORY_SEPARATOR !== '/') {
             $this->markTestSkipped('FileHelper::changeOwnership() fails silently on Windows, nothing to test.');
@@ -975,7 +1009,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected created test file owner to be current user.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected created test file group to be current group.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
 
 
         /////////////////
@@ -988,7 +1022,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be changed.');
 
         if ($currentUserId !== 0) {
             $this->markTestInComplete(__METHOD__ . ' could only run partially, chown() can only to be tested as root user. Current user: ' . $currentUserName);
@@ -1004,7 +1038,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership, fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as numeric string (should be treated as integer)
         $ownership = '10002';
@@ -1012,7 +1046,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership, fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as string
         $ownership = $currentUserName;
@@ -1020,7 +1054,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership, posix_getpwuid(fileowner($testFile))['name'], 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as numeric string with trailing colon (should be treated as integer)
         $ownership = '10003:';
@@ -1028,7 +1062,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership, fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as string with trailing colon
         $ownership = $currentUserName . ':';
@@ -1036,7 +1070,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals(substr($ownership, 0, -1), posix_getpwuid(fileowner($testFile))['name'], 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as indexed array (integer value)
         $ownership = [10004];
@@ -1044,7 +1078,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership[0], fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as indexed array (numeric string value)
         $ownership = ['10005'];
@@ -1052,7 +1086,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership[0], fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user ownership as associative array (string value)
         $ownership = ['user' => $currentUserName];
@@ -1060,7 +1094,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership['user'], posix_getpwuid(fileowner($testFile))['name'], 'Expected created test file owner to be changed.');
         $this->assertEquals($currentGroupId, filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         ///////////////////////
         /// Group Ownership ///
@@ -1072,7 +1106,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals((int)substr($ownership, 1), filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as string
         $ownership = ':' . $currentGroupName;
@@ -1080,7 +1114,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals(substr($ownership, 1), posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as associative array (integer value)
         $ownership = ['group' => 10007];
@@ -1088,7 +1122,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as associative array (numeric string value)
         $ownership = ['group' => '10008'];
@@ -1096,7 +1130,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals((int)$ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test group ownership as associative array (string value)
         $ownership = ['group' => $currentGroupName];
@@ -1104,7 +1138,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($currentUserId, fileowner($testFile), 'Expected file owner to be unchanged.');
         $this->assertEquals($ownership['group'], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         /////////////////////////////////
         /// User- and Group Ownership ///
@@ -1116,7 +1150,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)explode(':', $ownership)[0], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals((int)explode(':', $ownership)[1], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as string
         $ownership = $currentUserName . ':' . $currentGroupName;
@@ -1124,7 +1158,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals(explode(':', $ownership)[0], posix_getpwuid(fileowner($testFile))['name'], 'Expected file owner to be changed.');
         $this->assertEquals(explode(':', $ownership)[1], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as indexed array (integer values)
         $ownership = [10011, 10012];
@@ -1132,7 +1166,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership[0], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals($ownership[1], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as indexed array (numeric string values)
         $ownership = ['10013', '10014'];
@@ -1140,7 +1174,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership[0], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals((int)$ownership[1], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as indexed array (string values)
         $ownership = [$currentUserName, $currentGroupName];
@@ -1148,7 +1182,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership[0], posix_getpwuid(fileowner($testFile))['name'], 'Expected file owner to be changed.');
         $this->assertEquals($ownership[1], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as associative array (integer values)
         $ownership = ['group' => 10015, 'user' => 10016]; // user/group reversed on purpose
@@ -1156,7 +1190,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership['user'], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals($ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as associative array (numeric string values)
         $ownership = ['group' => '10017', 'user' => '10018']; // user/group reversed on purpose
@@ -1164,7 +1198,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals((int)$ownership['user'], fileowner($testFile), 'Expected file owner to be changed.');
         $this->assertEquals((int)$ownership['group'], filegroup($testFile), 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         // Test user and group ownership as associative array (string values)
         $ownership = ['group' => $currentGroupName, 'user' => $currentUserName]; // user/group reversed on purpose
@@ -1172,7 +1206,7 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals($ownership['user'], posix_getpwuid(fileowner($testFile))['name'], 'Expected file owner to be changed.');
         $this->assertEquals($ownership['group'], posix_getgrgid(filegroup($testFile))['name'], 'Expected created test file group to be changed.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected file mode to be unchanged.');
 
         ///////////////////////////////////////
         /// Mode, User- and Group Ownership ///
@@ -1185,11 +1219,10 @@ class FileHelperTest extends TestCase
         clearstatcache(true, $testFile);
         $this->assertEquals(explode(':', $ownership)[0], fileowner($testFile), 'Expected created test file owner to be changed.');
         $this->assertEquals(explode(':', $ownership)[1], filegroup($testFile), 'Expected file group to be unchanged.');
-        $this->assertEquals('0'.decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected created test file mode to be changed.');
-
+        $this->assertEquals('0' . decoct($fileMode), substr(decoct(fileperms($testFile)), -4), 'Expected created test file mode to be changed.');
     }
 
-    public function testChangeOwnershipNonExistingUser()
+    public function testChangeOwnershipNonExistingUser(): void
     {
         $dirName = 'change_ownership_non_existing_user';
         $fileName = 'file_1.txt';
@@ -1205,8 +1238,8 @@ class FileHelperTest extends TestCase
         $ownership = 'non_existing_user';
         try {
             FileHelper::changeOwnership($testFile, $ownership);
-            throw new \Exception('FileHelper::changeOwnership() should have thrown error for non existing user.');
-        } catch(\Exception $e) {
+            throw new Exception('FileHelper::changeOwnership() should have thrown error for non existing user.');
+        } catch (Exception $e) {
             $this->assertEquals('chown(): Unable to find uid for non_existing_user', $e->getMessage());
         }
     }
@@ -1217,7 +1250,7 @@ class FileHelperTest extends TestCase
      * @param mixed $ownership
      * @param mixed $mode
      */
-    public function testChangeOwnershipInvalidArguments($useFile, $ownership, $mode)
+    public function testChangeOwnershipInvalidArguments($useFile, $ownership, $mode): void
     {
         $dirName = 'change_ownership_invalid_arguments';
         $fileName = 'file_1.txt';
@@ -1233,7 +1266,7 @@ class FileHelperTest extends TestCase
         FileHelper::changeOwnership($useFile ? $file : null, $ownership, $mode);
     }
 
-    public function changeOwnershipInvalidArgumentsProvider()
+    public static function changeOwnershipInvalidArgumentsProvider(): array
     {
         return [
             [false, '123:123', null],
@@ -1241,6 +1274,62 @@ class FileHelperTest extends TestCase
             [true, ['user' => new stdClass()], null],
             [true, ['group' => new stdClass()], null],
             [true, null, 'test'],
+        ];
+    }
+
+    /**
+     * @dataProvider getExtensionsByMimeTypeProvider
+     * @param string $mimeType
+     * @param array $extensions
+     * @return void
+     */
+    public function testGetExtensionsByMimeType($mimeType, $extensions): void
+    {
+        $this->assertEquals($extensions, FileHelper::getExtensionsByMimeType($mimeType));
+    }
+
+    public static function getExtensionsByMimeTypeProvider(): array
+    {
+        return [
+            [
+                'application/json',
+                [
+                    'json',
+                ],
+            ],
+            [
+                'image/jpeg',
+                [ // Note: For backwards compatibility the (alphabetic) order of `framework/helpers/mimeTypes.php` is expected.
+                    'jfif',
+                    'jpe',
+                    'jpeg',
+                    'jpg',
+                    'pjp',
+                    'pjpeg',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getExtensionByMimeTypeProvider
+     * @param string $mimeType
+     * @param bool $preferShort
+     * @param array $extension
+     * @return void
+     */
+    public function testGetExtensionByMimeType($mimeType, $preferShort, $extension): void
+    {
+        $this->assertEquals($extension, FileHelper::getExtensionByMimeType($mimeType, $preferShort));
+    }
+
+    public static function getExtensionByMimeTypeProvider(): array
+    {
+        return [
+            ['application/json', true, 'json'],
+            ['application/json', false, 'json'],
+            ['image/jpeg', true, 'jpg'],
+            ['image/jpeg', false, 'jpeg'],
         ];
     }
 }

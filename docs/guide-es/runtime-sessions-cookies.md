@@ -120,7 +120,7 @@ Por defecto la clase [[yii\web\Session]] almacena los datos de sesión como fich
 
 * [[yii\web\DbSession]]: almacena los datos de sesión en una tabla en la base de datos.
 * [[yii\web\CacheSession]]: almacena los datos de sesión en una caché con la ayuda de la configuración del [componente caché](caching-data.md#cache-components).
-* [[yii\redis\Session]]: almacena los datos de sesión usando [redis](http://redis.io/) como medio de almacenamiento.
+* [[yii\redis\Session]]: almacena los datos de sesión usando [redis](https://redis.io/) como medio de almacenamiento.
 * [[yii\mongodb\Session]]: almacena los datos de sesión en [MongoDB](https://www.mongodb.com/).
 
 Todas estas clases de sesión soportan los mismos métodos de la API. Como consecuencia, puedes cambiar el uso de diferentes almacenamientos de sesión sin la necesidad de modificar el código de tu aplicación que usa sesiones.

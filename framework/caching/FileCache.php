@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\caching;
@@ -57,7 +58,7 @@ class FileCache extends Cache
      */
     public $gcProbability = 10;
     /**
-     * @var int the permission to be set for newly created cache files.
+     * @var int|null the permission to be set for newly created cache files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
@@ -131,7 +132,7 @@ class FileCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param string $value the value to be cached. Other types (If you have disabled [[serializer]]) unable to get is
      * correct in [[getValue()]].
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached value will expire. Fewer than or equal to 0 means 1 year expiration time.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
@@ -155,11 +156,22 @@ class FileCache extends Cache
                 $duration = 31536000; // 1 year
             }
 
-            return @touch($cacheFile, $duration + time());
+            if (@touch($cacheFile, $duration + time())) {
+                clearstatcache();
+                return true;
+            }
+
+            return false;
         }
 
-        $error = error_get_last();
-        Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
+        $message = "Unable to write cache file '{$cacheFile}'";
+
+        if ($error = error_get_last()) {
+            $message .= ": {$error['message']}";
+        }
+
+        Yii::warning($message, __METHOD__);
+
         return false;
     }
 
@@ -265,20 +277,26 @@ class FileCache extends Cache
                     continue;
                 }
                 $fullPath = $path . DIRECTORY_SEPARATOR . $file;
+                $message = null;
                 if (is_dir($fullPath)) {
                     $this->gcRecursive($fullPath, $expiredOnly);
                     if (!$expiredOnly) {
                         if (!@rmdir($fullPath)) {
-                            $error = error_get_last();
-                            Yii::warning("Unable to remove directory '{$fullPath}': {$error['message']}", __METHOD__);
+                            $message = "Unable to remove directory '$fullPath'";
+                            if ($error = error_get_last()) {
+                                $message .= ": {$error['message']}";
+                            }
                         }
                     }
                 } elseif (!$expiredOnly || $expiredOnly && @filemtime($fullPath) < time()) {
                     if (!@unlink($fullPath)) {
-                        $error = error_get_last();
-                        Yii::warning("Unable to remove file '{$fullPath}': {$error['message']}", __METHOD__);
+                        $message = "Unable to remove file '$fullPath'";
+                        if ($error = error_get_last()) {
+                            $message .= ": {$error['message']}";
+                        }
                     }
                 }
+                $message and Yii::warning($message, __METHOD__);
             }
             closedir($handle);
         }

@@ -114,9 +114,11 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 ```php
 use app\models\ProductCategory;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\Product */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\Product $model
+ */
 
 echo $form->field($model, 'product_category')->dropdownList(
     ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
@@ -166,7 +168,7 @@ Pjax::end();
 
 Это означет, что поддержка файлов и значений submit-кнопок через AJAX или виджет
 [[yii\widgets\Pjax|Pjax]] зависит от 
-[поддержки в браузере](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+[поддержки в браузере](https://developer.mozilla.org/ru/docs/Web/API/FormData#%D1%81%D0%BE%D0%B2%D0%BC%D0%B5%D1%81%D1%82%D0%B8%D0%BC%D0%BE%D1%81%D1%82%D1%8C)
 класса `FormData`.
 
 

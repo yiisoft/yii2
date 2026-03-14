@@ -225,7 +225,7 @@ Probándolo <span id="trying-it-out"></span>
 Para ver cómo funciona, utiliza a la siguiente URL en tu navegador:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Lista de Países](images/start-country-list.png)
@@ -235,7 +235,7 @@ Si haces click en el botón "2", verás que la página muestra otros cinco país
 Observa más cuidadosamente y verás que la URL en el navegador cambia a
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Entre bastidores, [[yii\data\Pagination|Pagination]] está realizando su magia.

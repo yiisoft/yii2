@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -12,7 +13,7 @@ namespace yii\helpers;
  *
  * Basic usage is the following:
  *
- * ```php
+ * ```
  * $myHtml = Markdown::process($myText); // use original markdown flavor
  * $myHtml = Markdown::process($myText, 'gfm'); // use github flavored markdown
  * $myHtml = Markdown::process($myText, 'extra'); // use markdown extra

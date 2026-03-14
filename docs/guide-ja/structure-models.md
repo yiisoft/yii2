@@ -1,7 +1,7 @@
 モデル
 ======
 
-モデルは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
+モデルは [MVC](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
 これは、ビジネスのデータ、規則、ロジックを表現するオブジェクトです。
 
 モデル・クラスは、[[yii\base\Model]] またはその子クラスを拡張することによって作成することが出来ます。
@@ -198,7 +198,7 @@ class User extends ActiveRecord
 > Info: 上記の例と後続の例では、モデル・クラスは [[yii\db\ActiveRecord]] を拡張するものとなっています。
   というのは、複数のシナリオを使用することは、通常は、[アクティブ・レコード](db-active-record.md) クラスで発生するからです。
 
-`seanarios()` メソッドは、キーがシナリオの名前であり、値が対応する *アクティブな属性* である配列を返します。
+`scenarios()` メソッドは、キーがシナリオの名前であり、値が対応する *アクティブな属性* である配列を返します。
 アクティブな属性とは、[一括代入](#massive-assignment) することが出来て、[検証](#validation-rules) の対象になる属性です。
 上記の例では、`login` シナリオにおいては `username` と `password` の属性がアクティブであり、
 一方、`register` シナリオにおいては、`username` と `password` に加えて `email` もアクティブです。
@@ -293,6 +293,8 @@ public function rules()
 
         // "login" シナリオでは、username と password が必須
         [['username', 'password'], 'required', 'on' => self::SCENARIO_LOGIN],
+        
+        [['username'], 'string'], // username は文字列でなければならない。この規則は全てのシナリオに適用される
     ];
 }
 ```

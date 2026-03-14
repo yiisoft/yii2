@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -26,11 +27,15 @@ use yii\helpers\Url;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-import-type RegisterJsFileOptions from View
+ * @phpstan-import-type RegisterCssFileOptions from View
+ * @phpstan-import-type PublishOptions from AssetManager
  */
 class AssetBundle extends BaseObject
 {
     /**
-     * @var string the directory that contains the source asset files for this asset bundle.
+     * @var string|null the directory that contains the source asset files for this asset bundle.
      * A source asset file is a file that is part of your source code repository of your Web application.
      *
      * You must set this property if the directory containing the source asset files is not Web accessible.
@@ -44,7 +49,7 @@ class AssetBundle extends BaseObject
      */
     public $sourcePath;
     /**
-     * @var string the Web-accessible directory that contains the asset files in this bundle.
+     * @var string|null the Web-accessible directory that contains the asset files in this bundle.
      *
      * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
      * when it publishes the asset files from [[sourcePath]].
@@ -53,7 +58,7 @@ class AssetBundle extends BaseObject
      */
     public $basePath;
     /**
-     * @var string the base URL for the relative asset files listed in [[js]] and [[css]].
+     * @var string|null the base URL for the relative asset files listed in [[js]] and [[css]].
      *
      * If [[sourcePath]] is set, this property will be *overwritten* by [[AssetManager]]
      * when it publishes the asset files from [[sourcePath]].
@@ -62,11 +67,11 @@ class AssetBundle extends BaseObject
      */
     public $baseUrl;
     /**
-     * @var array list of bundle class names that this bundle depends on.
+     * @var class-string[] list of bundle class names that this bundle depends on.
      *
      * For example:
      *
-     * ```php
+     * ```
      * public $depends = [
      *    'yii\web\YiiAsset',
      *    'yii\bootstrap\BootstrapAsset',
@@ -75,11 +80,11 @@ class AssetBundle extends BaseObject
      */
     public $depends = [];
     /**
-     * @var array list of JavaScript files that this bundle contains. Each JavaScript file can be
+     * @var (string|array<array-key, mixed>)[] list of JavaScript files that this bundle contains. Each JavaScript file can be
      * specified in one of the following formats:
      *
      * - an absolute URL representing an external asset. For example,
-     *   `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
+     *   `https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` or
      *   `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
      * - a relative path representing a local asset (e.g. `js/main.js`). The actual file path of a local
      *   asset can be determined by prefixing [[basePath]] to the relative path, and the actual URL
@@ -92,24 +97,24 @@ class AssetBundle extends BaseObject
      */
     public $js = [];
     /**
-     * @var array list of CSS files that this bundle contains. Each CSS file can be specified
+     * @var (string|array<array-key, mixed>)[] list of CSS files that this bundle contains. Each CSS file can be specified
      * in one of the three formats as explained in [[js]].
      *
      * Note that only a forward slash "/" should be used as directory separator.
      */
     public $css = [];
     /**
-     * @var array the options that will be passed to [[View::registerJsFile()]]
+     * @var RegisterJsFileOptions the options that will be passed to [[View::registerJsFile()]]
      * when registering the JS files in this bundle.
      */
     public $jsOptions = [];
     /**
-     * @var array the options that will be passed to [[View::registerCssFile()]]
+     * @var RegisterCssFileOptions the options that will be passed to [[View::registerCssFile()]]
      * when registering the CSS files in this bundle.
      */
     public $cssOptions = [];
     /**
-     * @var array the options to be passed to [[AssetManager::publish()]] when the asset bundle
+     * @var PublishOptions the options to be passed to [[AssetManager::publish()]] when the asset bundle
      * is being published. This property is used only when [[sourcePath]] is set.
      */
     public $publishOptions = [];
@@ -122,7 +127,10 @@ class AssetBundle extends BaseObject
      */
     public static function register($view)
     {
-        return $view->registerAssetBundle(get_called_class());
+        /** @var static $result */
+        $result = $view->registerAssetBundle(get_called_class());
+
+        return $result;
     }
 
     /**

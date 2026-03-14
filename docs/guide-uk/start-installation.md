@@ -147,13 +147,13 @@ http://localhost:8080/
   і не розгортаєте його на робочому сервері.
 
 Додаток, встановлений за інструкціями, наведеними вище, буде працювати одразу як
-з [Apache HTTP server](http://httpd.apache.org/), так і з [Nginx HTTP server](http://nginx.org/) на
+з [Apache HTTP server](https://httpd.apache.org/), так і з [Nginx HTTP server](https://nginx.org/) на
 Windows, Mac OS X чи Linux із встановленим PHP 5.4 або вище. Yii 2.0 також сумісний із віртуальною машиною Фейсбука
-[HHVM](http://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
+[HHVM](https://hhvm.com/), однак є деякі крайні випадки, де HHVM поводиться інакше,
 ніж рідний PHP, тому ви повинні бути дуже уважними при використанні HHVM.  
 
-На робочому сервері вам напевно захочеться змінити URL додатку з `http://www.example.com/basic/web/index.php`
-на `http://www.example.com/index.php`. Для цього необхідно змінити кореневу директорію в налаштуваннях веб-сервера на `basic/web`.
+На робочому сервері вам напевно захочеться змінити URL додатку з `https://www.example.com/basic/web/index.php`
+на `https://www.example.com/index.php`. Для цього необхідно змінити кореневу директорію в налаштуваннях веб-сервера на `basic/web`.
 Додатково можна сховати `index.php` із URL, як це описано у розділі [Маршрутизація та створення URL](runtime-routing.md). 
 Далі буде описано як налаштувати Apache або Nginx для цих цілей.
 
@@ -191,7 +191,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Рекомендовані налаштування Nginx <span id="recommended-nginx-configuration"></span>
 
-Для використання [Nginx](http://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://www.php.net/install.fpm).
+Для використання [Nginx](https://wiki.nginx.org/) вам потрібно встановити PHP як [FPM SAPI](https://www.php.net/install.fpm).
 Використовуйте наступні параметри Nginx, замінивши `path/to/basic/web` на коректний шлях до
 `basic/web`, а `mysite.test` на актуальний домен.
 

@@ -12,10 +12,10 @@ class Alpha extends BaseObject
     public $color = true;
 
     public function __construct(
-        Beta $beta = null,
-        QuxInterface $omega = null,
-        Unknown $unknown = null,
-        AbstractColor $color = null
+        ?Beta $beta = null,
+        ?QuxInterface $omega = null,
+        ?Unknown $unknown = null,
+        ?AbstractColor $color = null
     ) {
         $this->beta = $beta;
         $this->omega = $omega;

@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\rbac;
 
+use yii\rbac\ManagerInterface;
 use yii\caching\FileCache;
 use yii\rbac\DbManager;
 
@@ -19,7 +21,7 @@ use yii\rbac\DbManager;
 class MySQLManagerCacheTest extends MySQLManagerTest
 {
     /**
-     * @return \yii\rbac\ManagerInterface
+     * @return ManagerInterface
      */
     protected function createManager()
     {

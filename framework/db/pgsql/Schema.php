@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\pgsql;
 
+use Yii;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\Constraint;
@@ -18,6 +20,7 @@ use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -25,14 +28,16 @@ use yii\helpers\ArrayHelper;
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
 
-    const TYPE_JSONB = 'jsonb';
-
+    public const TYPE_JSONB = 'jsonb';
     /**
      * @var string the default schema used for the current session.
      */
@@ -44,7 +49,7 @@ class Schema extends \yii\db\Schema implements ConstraintFinderInterface
     /**
      * @var array mapping from physical column types (keys) to abstract
      * column types (values)
-     * @see http://www.postgresql.org/docs/current/static/datatype.html#DATATYPE-TABLE
+     * @see https://www.postgresql.org/docs/current/datatype.html#DATATYPE-TABLE
      */
     public $typeMap = [
         'bit' => self::TYPE_INTEGER,
@@ -288,7 +293,7 @@ SQL;
      */
     public function createQueryBuilder()
     {
-        return new QueryBuilder($this->db);
+        return Yii::createObject(QueryBuilder::className(), [$this->db]);
     }
 
     /**
@@ -339,7 +344,7 @@ SQL;
         $tableSchema = $this->quoteValue($table->schemaName);
 
         //We need to extract the constraints de hard way since:
-        //http://www.postgresql.org/message-id/26677.1086673982@sss.pgh.pa.us
+        //https://www.postgresql.org/message-id/26677.1086673982@sss.pgh.pa.us
 
         $sql = <<<SQL
 select
@@ -424,7 +429,7 @@ SQL;
      *
      * Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],
@@ -551,10 +556,13 @@ SQL;
             } elseif ($column->defaultValue) {
                 if (
                     in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
-                    in_array(
-                        strtoupper($column->defaultValue),
-                        ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
-                        true
+                    (
+                        in_array(
+                            strtoupper($column->defaultValue),
+                            ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
+                            true
+                        ) ||
+                        (false !== strpos($column->defaultValue, '('))
                     )
                 ) {
                     $column->defaultValue = new Expression($column->defaultValue);
@@ -584,7 +592,7 @@ SQL;
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -593,8 +601,7 @@ SQL;
         $column->allowNull = $info['is_nullable'];
         $column->autoIncrement = $info['is_autoinc'];
         $column->comment = $info['column_comment'];
-        if ($info['type_scheme'] !== null && !in_array($info['type_scheme'], [$this->defaultSchema, 'pg_catalog'], true)
-        ) {
+        if ($info['type_scheme'] !== null && !in_array($info['type_scheme'], [$this->defaultSchema, 'pg_catalog'], true)) {
             $column->dbType = $info['type_scheme'] . '.' . $info['data_type'];
         } else {
             $column->dbType = $info['data_type'];

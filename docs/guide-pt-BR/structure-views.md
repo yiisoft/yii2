@@ -1,7 +1,7 @@
 Visões (Views)
 ===========
 
-As views fazem parte da arquitetura [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller).
+As views fazem parte da arquitetura [MVC](https://pt.wikipedia.org/wiki/MVC).
 São a parte do código responsável por apresentar dados aos usuários finais. Em um aplicação Web,
 views geralmente são criadas em termos de *view templates* (modelos de view)
  que são arquivos PHP contendo principalmente códigos HTML e
@@ -24,9 +24,11 @@ as partes de conteúdo dinâmicas, tais como o título da página e o formulári
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Login';
 ?>
@@ -61,7 +63,7 @@ desencadeiam a [renderização da view ](#rendering-views).
 Ao criar views que geram páginas HTML, é importante que você codifique
 e/ou filtre os dados que vêm de usuários antes de exibí-los. Caso contrário,
 sua aplicação poderá estar sujeita a um ataque de
-[cross-site scripting](http://en.wikipedia.org/wiki/Cross-site_scripting).
+[cross-site scripting](https://pt.wikipedia.org/wiki/Cross-site_scripting).
 
 Para exibir um texto simples, codifique-o antes por chamar o método
 [[yii\helpers\Html::encode()]]. Por exemplo, o código a seguir codifica o nome do
@@ -365,8 +367,10 @@ como tags no head, menu principal, etc.
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -607,7 +611,7 @@ Componentes de view fornecem úteis recursos relacionados. Cada um deles está d
 * [manipulação de client scripts](output-client-scripts.md): permite que você registre e renderize CSS e JavaScript.
 * [manipulando asset bundle](structure-assets.md): permite que você registre e renderize [recursos estáticos (asset bundles)](structure-assets.md).
 * [template engines alternativos](tutorial-template-engines.md): permite que você use outros template engines, tais como o [Twig](https://twig.symfony.com/)
-  e [Smarty](http://www.smarty.net/).
+  e [Smarty](https://www.smarty.net/).
 
 Você também pode usar os seguintes recursos que, embora simples, são úteis quando estiver desenvolvendo suas páginas.
 

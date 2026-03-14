@@ -105,7 +105,7 @@ Dla przykładu, ETag może być zmieniony dla strony w momencie, gdy użyty na n
 Zasobożerne generowanie ETagów może przekreślić cały zysk z użycia `HttpCache` i wprowadzić niepotrzebny narzut, ponieważ muszą być one
 określane przy każdym żądaniu. Z tego powodu należy używać jak najprostszych metod generujących.
 
-> Note: Aby spełnić wymagania [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4),
+> Note: Aby spełnić wymagania [RFC 7232](https://datatracker.ietf.org/doc/html/rfc7232#section-2.4),
   `HttpCache` przesyła zarówno nagłówek `ETag`, jak i `Last-Modified`, jeśli oba są skonfigurowane.
   Jeśli klient wysyła nagłówek `If-None-Match` razem z `If-Modified-Since`, tylko pierwszy z nich jest brany pod uwagę.
 

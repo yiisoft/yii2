@@ -1,7 +1,7 @@
 ビュー
 ======
 
-ビューは [MVC](http://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
+ビューは [MVC](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
 ビューはエンド・ユーザにデータを表示することに責任を持つコードです。
 ウェブ・アプリケーションにおいては、ビューは、通常、*ビュー・テンプレート* の形式、すなわち、
 主として HTML コードと表示目的の PHP コードを含む PHP スクリプト・ファイルとして作成されます。
@@ -20,9 +20,11 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'ログイン';
 ?>
@@ -51,7 +53,7 @@ $this->title = 'ログイン';
 ### セキュリティ <span id="security"></span>
 
 HTML ページを生成するビューを作成するときは、エンド・ユーザから受け取るデータを表示する前にエンコード および/または フィルタすることが重要です。
-そうしなければ、あなたのアプリケーションは [クロス・サイト・スクリプティング](http://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) 攻撃を
+そうしなければ、あなたのアプリケーションは [クロス・サイト・スクリプティング](https://ja.wikipedia.org/wiki/%E3%82%AF%E3%83%AD%E3%82%B9%E3%82%B5%E3%82%A4%E3%83%88%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0) 攻撃を
 こうむるおそれがあります。
 
 プレーン・テキストを表示するためには、まず [[yii\helpers\Html::encode()]] を呼んでエンコードします。
@@ -324,8 +326,10 @@ $this->params['breadcrumbs'][] = 'About Us';
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

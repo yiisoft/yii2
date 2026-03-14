@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\mutex;
@@ -18,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Application configuration example:
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'mutex' => [
@@ -49,7 +50,7 @@ class FileMutex extends Mutex
      */
     public $mutexPath = '@runtime/mutex';
     /**
-     * @var int the permission to be set for newly created mutex files.
+     * @var int|null the permission to be set for newly created mutex files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
@@ -62,7 +63,7 @@ class FileMutex extends Mutex
      */
     public $dirMode = 0775;
     /**
-     * @var bool whether file handling should assume a Windows file system.
+     * @var bool|null whether file handling should assume a Windows file system.
      * This value will determine how [[releaseLock()]] goes about deleting the lock file.
      * If not set, it will be determined by checking the DIRECTORY_SEPARATOR constant.
      * @since 2.0.16

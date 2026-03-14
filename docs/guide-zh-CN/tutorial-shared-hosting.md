@@ -58,7 +58,7 @@ RewriteRule . index.php
 
 为了运行 Yii，你的 web 服务器必须匹配它的环境要求。最低的要求必须是 PHP 5.4。
 为了检查环境配置，将 `requirements.php` 从你的根目录拷贝到 webroot 目录，
-并通过浏览器输入 URL `http://example.com/requirements.php` 运行它。最后，检查结束后别忘了删除这个文件哦！
+并通过浏览器输入 URL `https://example.com/requirements.php` 运行它。最后，检查结束后别忘了删除这个文件哦！
 
 部署一个高级应用程序模板
 ---------------------------------

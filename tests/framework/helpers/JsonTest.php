@@ -1,12 +1,18 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\helpers;
 
+use stdClass;
+use SplStack;
+use yii\base\InvalidArgumentException;
+use DateTime;
+use DateTimeZone;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
@@ -19,7 +25,7 @@ use yiiunit\TestCase;
  */
 class JsonTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -27,7 +33,7 @@ class JsonTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testEncode()
+    public function testEncode(): void
     {
         // Arrayable data encoding
         $dataArrayable = $this->getMockBuilder('\yii\base\Arrayable')->getMock();
@@ -64,7 +70,7 @@ class JsonTest extends TestCase
         // empty data encoding
         $data = [];
         $this->assertSame('[]', Json::encode($data));
-        $data = new \stdClass();
+        $data = new stdClass();
         $this->assertSame('{}', Json::encode($data));
 
         // expression encoding
@@ -95,9 +101,22 @@ class JsonTest extends TestCase
         $data = new JsonModel();
         $data->data = (object) null;
         $this->assertSame('{}', Json::encode($data));
+
+        // Generator (Only supported since PHP 5.5)
+        if (PHP_VERSION_ID >= 50500) {
+            $data = eval(<<<'PHP'
+                return function () {
+                    foreach (['a' => 1, 'b' => 2] as $name => $value) {
+                        yield $name => $value;
+                    }
+                };
+PHP
+            );
+            $this->assertSame('{"a":1,"b":2}', Json::encode($data()));
+        }
     }
 
-    public function testHtmlEncode()
+    public function testHtmlEncode(): void
     {
         // HTML escaped chars
         $data = '&<>"\'/';
@@ -163,14 +182,14 @@ class JsonTest extends TestCase
         $document = simplexml_load_string($xml);
         $this->assertSame('{"child1":{},"child2":{"subElement":"sub"}}', Json::encode($document));
 
-        $postsStack = new \SplStack();
+        $postsStack = new SplStack();
         $postsStack->push(new Post(915, 'record1'));
         $postsStack->push(new Post(456, 'record2'));
 
         $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
-    public function testDecode()
+    public function testDecode(): void
     {
         // empty value
         $json = '';
@@ -192,26 +211,37 @@ class JsonTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidArgumentException
-     * @expectedExceptionMessage Invalid JSON data.
      * @covers ::decode
      */
-    public function testDecodeInvalidParamException()
+    public function testDecodeInvalidArgumentException(): void
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid JSON data.');
+
         Json::decode([]);
     }
 
     /**
      * @covers ::decode
      */
-    public function testHandleJsonError()
+    public function testHandleJsonError(): void
     {
         // basic syntax error
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidArgumentException $e) {
-            $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            if (PHP_VERSION_ID >= 80600) {
+                $this->assertStringContainsString(
+                    Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'],
+                    $e->getMessage(),
+                );
+            } else {
+                $this->assertSame(
+                    Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'],
+                    $e->getMessage(),
+                );
+            }
         }
 
         // unsupported type since PHP 5.5
@@ -220,16 +250,22 @@ class JsonTest extends TestCase
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidArgumentException $e) {
-            if (PHP_VERSION_ID >= 50500) {
-                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
+        } catch (InvalidArgumentException $e) {
+            if (PHP_VERSION_ID >= 80600) {
+                $this->assertStringContainsString(
+                    Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'],
+                    $e->getMessage(),
+                );
             } else {
-                $this->assertSame(Json::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
+                $this->assertSame(
+                    Json::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'],
+                    $e->getMessage(),
+                );
             }
         }
     }
 
-    public function testErrorSummary()
+    public function testErrorSummary(): void
     {
         $model = new JsonModel();
         $model->name = 'not_an_integer';
@@ -245,9 +281,9 @@ class JsonTest extends TestCase
      * @see https://github.com/yiisoft/yii2/issues/17760
      * @covers ::encode
      */
-    public function testEncodeDateTime()
+    public function testEncodeDateTime(): void
     {
-        $input = new \DateTime('October 12, 2014', new \DateTimeZone('UTC'));
+        $input = new DateTime('October 12, 2014', new DateTimeZone('UTC'));
         $output = Json::encode($input);
         $this->assertEquals('{"date":"2014-10-12 00:00:00.000000","timezone_type":3,"timezone":"UTC"}', $output);
     }
@@ -255,7 +291,7 @@ class JsonTest extends TestCase
     /**
      * @covers ::encode
      */
-    public function testPrettyPrint()
+    public function testPrettyPrint(): void
     {
         $defaultValue = Json::$prettyPrint;
         $input = ['a' => 1, 'b' => 2];

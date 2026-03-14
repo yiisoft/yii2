@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\widgets;
@@ -19,8 +20,6 @@ use yii\web\JsExpression;
  * ActiveField represents a form input field within an [[ActiveForm]].
  *
  * For more details and usage information on ActiveField, see the [guide article on forms](guide:input-forms).
- *
- * @property-read string $inputId The attribute `id` of the input element
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -99,33 +98,33 @@ class ActiveField extends Component
      */
     public $hintOptions = ['class' => 'hint-block'];
     /**
-     * @var bool whether to enable client-side data validation.
+     * @var bool|null whether to enable client-side data validation.
      * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
      */
     public $enableClientValidation;
     /**
-     * @var bool whether to enable AJAX-based data validation.
+     * @var bool|null whether to enable AJAX-based data validation.
      * If not set, it will take the value of [[ActiveForm::enableAjaxValidation]].
      */
     public $enableAjaxValidation;
     /**
-     * @var bool whether to perform validation when the value of the input field is changed.
+     * @var bool|null whether to perform validation when the value of the input field is changed.
      * If not set, it will take the value of [[ActiveForm::validateOnChange]].
      */
     public $validateOnChange;
     /**
-     * @var bool whether to perform validation when the input field loses focus.
+     * @var bool|null whether to perform validation when the input field loses focus.
      * If not set, it will take the value of [[ActiveForm::validateOnBlur]].
      */
     public $validateOnBlur;
     /**
-     * @var bool whether to perform validation while the user is typing in the input field.
+     * @var bool|null whether to perform validation while the user is typing in the input field.
      * If not set, it will take the value of [[ActiveForm::validateOnType]].
      * @see validationDelay
      */
     public $validateOnType;
     /**
-     * @var int number of milliseconds that the validation should be delayed when the user types in the field
+     * @var int|null number of milliseconds that the validation should be delayed when the user types in the field
      * and [[validateOnType]] is set `true`.
      * If not set, it will take the value of [[ActiveForm::validationDelay]].
      */
@@ -176,12 +175,14 @@ class ActiveField extends Component
         // use trigger_error to bypass this limitation
         try {
             return $this->render();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
         } catch (\Throwable $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
+            if (PHP_VERSION_ID < 70400) {
+                trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+
+                return '';
+            }
+
+            throw $e;
         }
     }
 
@@ -189,12 +190,12 @@ class ActiveField extends Component
      * Renders the whole field.
      * This method will generate the label, error tag, input tag and hint tag (if any), and
      * assemble them into HTML according to [[template]].
-     * @param string|callable $content the content within the field container.
+     * @param string|callable|null $content the content within the field container.
      * If `null` (not set), the default methods will be called to generate the label, error tag and input tag,
      * and use them as the content.
      * If a callable, it will be called to generate the content. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($field) {
      *     return $html;
      * }
@@ -266,10 +267,10 @@ class ActiveField extends Component
 
     /**
      * Generates a label tag for [[attribute]].
-     * @param null|string|false $label the label to use. If `null`, the label will be generated via [[Model::getAttributeLabel()]].
+     * @param string|null|false $label the label to use. If `null`, the label will be generated via [[Model::getAttributeLabel()]].
      * If `false`, the generated field will not contain the label part.
      * Note that this will NOT be [[Html::encode()|encoded]].
-     * @param null|array $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
+     * @param array|null $options the tag options in terms of name-value pairs. It will be merged with [[labelOptions]].
      * The options will be rendered as the attributes of the resulting tag. The values will be HTML-encoded
      * using [[Html::encode()]]. If a value is `null`, the corresponding attribute will not be rendered.
      * @return $this the field object itself.
@@ -325,7 +326,7 @@ class ActiveField extends Component
 
     /**
      * Renders the hint tag.
-     * @param string|bool $content the hint content.
+     * @param string|bool|null $content the hint content.
      * If `null`, the hint will be generated via [[Model::getAttributeHint()]].
      * If `false`, the generated field will not contain the hint part.
      * Note that this will NOT be [[Html::encode()|encoded]].
@@ -757,7 +758,7 @@ class ActiveField extends Component
      * For example to use the [[MaskedInput]] widget to get some date input, you can use
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
-     * ```php
+     * ```
      * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);
@@ -772,7 +773,7 @@ class ActiveField extends Component
      */
     public function widget($class, $config = [])
     {
-        /* @var $class \yii\base\Widget */
+        /** @var \yii\base\Widget $class */
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
@@ -831,7 +832,7 @@ class ActiveField extends Component
         if ($clientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
-                /* @var $validator \yii\validators\Validator */
+                /** @var \yii\validators\Validator $validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {
@@ -849,7 +850,7 @@ class ActiveField extends Component
         $options = [];
 
         $inputID = $this->getInputId();
-        $options['id'] = Html::getInputId($this->model, $this->attribute);
+        $options['id'] = $inputID ?: Html::getInputId($this->model, $this->attribute);
         $options['name'] = $this->attribute;
 
         $options['container'] = isset($this->selectors['container']) ? $this->selectors['container'] : ".field-$inputID";

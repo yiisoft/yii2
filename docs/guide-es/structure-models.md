@@ -2,7 +2,7 @@ Modelos
 =======
 
 Los modelos forman parte de la arquitectura 
-[MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Son objetos que representan datos de 
+[MVC](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador). Son objetos que representan datos de 
 negocio, reglas y lógica.
 
 Se pueden crear clases modelo extendiendo a [[yii\base\Model]] o a sus clases hijas. La clase base [[yii\base\Model]] 

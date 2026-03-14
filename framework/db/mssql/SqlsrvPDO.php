@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\mssql;
@@ -24,8 +25,9 @@ class SqlsrvPDO extends \PDO
      * But when parameter is not specified it works as expected and returns actual
      * last inserted ID (like the other PDO drivers).
      * @param string|null $sequence the sequence name. Defaults to null.
-     * @return int last inserted ID value.
+     * @return string|false last inserted ID value.
      */
+    #[\ReturnTypeWillChange]
     public function lastInsertId($sequence = null)
     {
         return !$sequence ? parent::lastInsertId() : parent::lastInsertId($sequence);

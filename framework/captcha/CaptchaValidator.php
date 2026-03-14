@@ -1,16 +1,19 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\Json;
 use yii\validators\ValidationAsset;
 use yii\validators\Validator;
+use yii\web\Controller;
 
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
@@ -64,15 +67,16 @@ class CaptchaValidator extends Validator
 
     /**
      * Creates the CAPTCHA action object from the route specified by [[captchaAction]].
-     * @return \yii\captcha\CaptchaAction the action object
+     * @return CaptchaAction the action object
      * @throws InvalidConfigException
      */
     public function createCaptchaAction()
     {
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
-            /* @var $controller \yii\base\Controller */
+            /** @var Controller $controller */
             list($controller, $actionID) = $ca;
+            /** @var CaptchaAction|null $action */
             $action = $controller->createAction($actionID);
             if ($action !== null) {
                 return $action;
@@ -89,7 +93,7 @@ class CaptchaValidator extends Validator
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
 
-        return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return 'yii.validation.captcha(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**

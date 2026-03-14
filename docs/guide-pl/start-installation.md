@@ -112,7 +112,7 @@ Dostępne są również inne opcje instalacji:
 Instalowanie zasobów <span id="installing-assets"></span>
 --------------------
 
-Yii używa menadżerów pakietów [Bower](http://bower.io/) i/lub [NPM](https://www.npmjs.com/) do instalacji bibliotek 
+Yii używa menadżerów pakietów [Bower](https://bower.io/) i/lub [NPM](https://www.npmjs.com/) do instalacji bibliotek 
 zasobów (CSS i JavaScript). Proces pobierania tych bibliotek korzysta z Composera, pozwalając na rozwiązywanie zależności 
 pakietów PHP i CSS/JavaScript w tym samym czasie, za pomocą serwisu [asset-packagist.org](https://asset-packagist.org) 
 lub wtyczki [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).  
@@ -186,13 +186,13 @@ Konfigurowanie serwerów WWW <span id="configuring-web-servers"></span>
 > Info: Możesz pominąć tą sekcję, jeśli tylko testujesz Yii, bez zamiaru zamieszczania aplikacji na serwerze produkcyjnym.
 
 Aplikacja zainstalowana według powyższych instrukcji powinna działać bezproblemowo zarówno na 
-[serwerze HTTP Apache](http://httpd.apache.org) jak i [serwerze HTTP Nginx](http://nginx.org), na systemie 
+[serwerze HTTP Apache](https://httpd.apache.org) jak i [serwerze HTTP Nginx](https://nginx.org), na systemie 
 operacyjnym Windows, Mac OS X oraz Linux, posiadającym zainstalowane PHP 5.4 lub nowsze. Yii 2.0 jest również kompatybilne 
-z [facebookowym HHVM](http://hhvm.com), są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, 
+z [facebookowym HHVM](https://hhvm.com), są jednak przypadki, gdzie Yii zachowuje się inaczej w HHVM niż w natywnym PHP, 
 dlatego powinieneś zachować szczególną ostrożność używając HHVM.
 
 Na serwerze produkcyjnym możesz skonfigurować swój host tak, aby aplikacja była dostępna pod adresem 
-`http://www.example.com/index.php` zamiast `http://www.example.com/basic/web/index.php`. Taka konfiguracja wymaga wskazania 
+`https://www.example.com/index.php` zamiast `https://www.example.com/basic/web/index.php`. Taka konfiguracja wymaga wskazania 
 głównego katalogu serwera jako katalogu `basic/web`. Jeśli chcesz ukryć `index.php` w adresie URL, skorzystaj z informacji 
 opisanych w dziale [routing i tworzenie adresów URL](runtime-routing.md).  
 W tej sekcji dowiesz się, jak skonfigurować Twój serwer Apache lub Nginx, aby osiągnąć te cele.
@@ -234,7 +234,7 @@ DocumentRoot "path/to/basic/web"
 
 ### Zalecane ustawienia Nginx <span id="recommended-nginx-configuration"></span>
 
-Aby użyć [Nginx](http://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](https://www.php.net/install.fpm).
+Aby użyć [Nginx](https://wiki.nginx.org/) powinienieś zainstalować PHP jako [FPM SAPI](https://www.php.net/install.fpm).
 Możesz użyć przedstawionej poniżej konfiguracji Nginx, zastępując jedynie ścieżkę `path/to/basic/web` aktualną ścieżką 
 do `basic/web` Twojej aplikacji oraz `mysite.test` aktualną nazwą hosta.
 

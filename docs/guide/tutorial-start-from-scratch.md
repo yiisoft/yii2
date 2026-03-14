@@ -42,7 +42,7 @@ Make a Package
 --------------
 
 With the template defined, create a Git repository from it, and push your files there. If you're going to open source 
-your template, [Github](http://github.com) is the best place to host it. If you intend to keep your template 
+your template, [Github](https://github.com) is the best place to host it. If you intend to keep your template 
 non-collaborative, any Git repository site will do.
 
 Next, you need to register your package for Composer's sake. For public templates, the package should be registered 

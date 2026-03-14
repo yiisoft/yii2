@@ -1,13 +1,13 @@
 <?php
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
+ *
+ * @var YiiRequirementChecker $this
+ * @var array $summary
+ * @var array[] $requirements
  */
-
-/* @var $this YiiRequirementChecker */
-/* @var $summary array */
-/* @var $requirements array[] */
 
 echo "\nYii Application Requirement Checker\n\n";
 

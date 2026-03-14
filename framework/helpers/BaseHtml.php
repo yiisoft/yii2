@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\helpers;
@@ -31,7 +32,7 @@ class BaseHtml
     public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
-     * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
+     * @see https://html.spec.whatwg.org/multipage/syntax.html#void-element
      */
     public static $voidElements = [
         'area' => 1,
@@ -94,6 +95,13 @@ class BaseHtml
      * @since 2.0.3
      */
     public static $dataAttributes = ['aria', 'data', 'data-ng', 'ng'];
+    /**
+     * @var bool whether to removes duplicate class names in tag attribute `class`
+     * @see mergeCssClasses()
+     * @see renderTagAttributes()
+     * @since 2.0.44
+     */
+    public static $normalizeClassAttribute = false;
 
 
     /**
@@ -108,7 +116,7 @@ class BaseHtml
      */
     public static function encode($content, $doubleEncode = true)
     {
-        return htmlspecialchars($content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
+        return htmlspecialchars((string)$content, ENT_QUOTES | ENT_SUBSTITUTE, Yii::$app ? Yii::$app->charset : 'UTF-8', $doubleEncode);
     }
 
     /**
@@ -198,6 +206,11 @@ class BaseHtml
      */
     public static function style($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->styleOptions)) {
+            $options = array_merge($view->styleOptions, $options);
+        }
+
         return static::tag('style', $content, $options);
     }
 
@@ -212,6 +225,11 @@ class BaseHtml
      */
     public static function script($content, $options = [])
     {
+        $view = Yii::$app->getView();
+        if ($view instanceof \yii\web\View && !empty($view->scriptOptions)) {
+            $options = array_merge($view->scriptOptions, $options);
+        }
+
         return static::tag('script', $content, $options);
     }
 
@@ -395,7 +413,7 @@ class BaseHtml
      * If you want to use an absolute url you can call [[Url::to()]] yourself, before passing the URL to this method,
      * like this:
      *
-     * ```php
+     * ```
      * Html::a('link text', Url::to($url, true))
      * ```
      *
@@ -565,7 +583,7 @@ class BaseHtml
 
     /**
      * Generates an input button.
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -585,7 +603,7 @@ class BaseHtml
      * Be careful when naming form elements such as submit buttons. According to the [jQuery documentation](https://api.jquery.com/submit/) there
      * are some reserved names that can cause conflicts, e.g. `submit`, `length`, or `method`.
      *
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -601,7 +619,7 @@ class BaseHtml
 
     /**
      * Generates a reset input button.
-     * @param string $label the value attribute. If it is null, the value attribute will not be generated.
+     * @param string|null $label the value attribute. If it is null, the value attribute will not be generated.
      * @param array $options the attributes of the button tag. The values will be HTML-encoded using [[encode()]].
      * Attributes whose value is null will be ignored and not put in the tag returned.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
@@ -785,7 +803,8 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|bool|array|null $selection the selected value(s). String/boolean for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -799,14 +818,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -842,7 +861,8 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|bool|array|null $selection the selected value(s). String for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -856,14 +876,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -942,7 +962,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1035,7 +1055,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1111,7 +1131,7 @@ class BaseHtml
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($item, $index)
      *   ```
      *
@@ -1162,7 +1182,7 @@ class BaseHtml
      * - item: callable, a callback that is used to generate each individual list item.
      *   The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($item, $index)
      *   ```
      *
@@ -1251,6 +1271,7 @@ class BaseHtml
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
      *   only the first error message for each attribute will be shown. Defaults to `false`.
      *   Option is available since 2.0.10.
+     * - emptyClass: string, the class name that is added to an empty summary.
      *
      * The rest of the options will be rendered as the attributes of the container tag.
      *
@@ -1262,12 +1283,17 @@ class BaseHtml
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
         $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
+        $emptyClass = ArrayHelper::remove($options, 'emptyClass', null);
         unset($options['header']);
         $lines = self::collectErrors($models, $encode, $showAllErrors);
         if (empty($lines)) {
             // still render the placeholder for client-side validation use
             $content = '<ul></ul>';
-            $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+            if ($emptyClass !== null) {
+                $options['class'] = $emptyClass;
+            } else {
+                $options['style'] = isset($options['style']) ? rtrim($options['style'], ';') . '; display:none' : 'display:none';
+            }
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
@@ -1645,14 +1671,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -1700,14 +1726,14 @@ class BaseHtml
      * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
      *   to override the value and to set other tag attributes:
      *
-     *   ```php
+     *   ```
      *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
      *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
-     *   ```php
+     *   ```
      *   [
      *       'value1' => ['disabled' => true],
      *       'value2' => ['label' => 'value 2'],
@@ -1760,7 +1786,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1801,7 +1827,7 @@ class BaseHtml
      * - item: callable, a callback that can be used to customize the generation of the HTML code
      *   corresponding to a single item in $items. The signature of this callback must be:
      *
-     *   ```php
+     *   ```
      *   function ($index, $label, $name, $checked, $value)
      *   ```
      *
@@ -1847,7 +1873,8 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|bool|null $selection the selected value(s). String/boolean for single or array for multiple
+     * selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1865,7 +1892,17 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         if (ArrayHelper::isTraversable($selection)) {
-            $selection = array_map('strval', ArrayHelper::toArray($selection));
+            $normalizedSelection = [];
+            foreach (ArrayHelper::toArray($selection) as $selectionItem) {
+                if (is_bool($selectionItem)) {
+                    $normalizedSelection[] = $selectionItem ? '1' : '0';
+                } else {
+                    $normalizedSelection[] = (string)$selectionItem;
+                }
+            }
+            $selection = $normalizedSelection;
+        } elseif (is_bool($selection)) {
+            $selection = $selection ? '1' : '0';
         }
 
         $lines = [];
@@ -1906,9 +1943,20 @@ class BaseHtml
                 $attrs = isset($options[$key]) ? $options[$key] : [];
                 $attrs['value'] = (string) $key;
                 if (!array_key_exists('selected', $attrs)) {
-                    $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn((string)$key, $selection, $strict));
+                    $selected = false;
+                    if ($selection !== null) {
+                        if (ArrayHelper::isTraversable($selection)) {
+                            $selected = ArrayHelper::isIn((string)$key, $selection, $strict);
+                        } elseif ($key === '' || $selection === '') {
+                            $selected = $selection === $key;
+                        } elseif ($strict) {
+                            $selected = !strcmp((string)$key, (string)$selection);
+                        } else {
+                            $selected = $selection == $key;
+                        }
+                    }
+
+                    $attrs['selected'] = $selected;
                 }
                 $text = $encode ? static::encode($value) : $value;
                 if ($encodeSpaces) {
@@ -1925,7 +1973,7 @@ class BaseHtml
      * Renders the HTML tag attributes.
      *
      * Attributes whose values are of boolean type will be treated as
-     * [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
+     * [boolean attributes](https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attributes).
      *
      * Attributes whose values are null will not be rendered.
      *
@@ -1981,7 +2029,12 @@ class BaseHtml
                     if (empty($value)) {
                         continue;
                     }
-                    $html .= " $name=\"" . static::encode(implode(' ', $value)) . '"';
+                    if (static::$normalizeClassAttribute === true && count($value) > 1) {
+                        // removes duplicate classes
+                        $value = explode(' ', implode(' ', $value));
+                        $value = array_unique($value);
+                    }
+                    $html .= " $name=\"" . static::encode(implode(' ', array_filter($value))) . '"';
                 } elseif ($name === 'style') {
                     if (empty($value)) {
                         continue;
@@ -2005,7 +2058,7 @@ class BaseHtml
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
      *
-     * ```php
+     * ```
      * $options = ['class' => ['persistent' => 'initial']];
      * Html::addCssClass($options, ['persistent' => 'override']);
      * var_dump($options['class']); // outputs: array('persistent' => 'initial');
@@ -2047,7 +2100,7 @@ class BaseHtml
             }
         }
 
-        return array_unique($existingClasses);
+        return static::$normalizeClassAttribute ? array_unique($existingClasses) : $existingClasses;
     }
 
     /**
@@ -2087,7 +2140,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * Html::addCssStyle($options, 'width: 100px; height: 200px');
      * ```
      *
@@ -2122,7 +2175,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * Html::removeCssStyle($options, ['width', 'height']);
      * ```
      *
@@ -2147,7 +2200,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * print_r(Html::cssStyleFromArray(['width' => '100px', 'height' => '200px']));
      * // will display: 'width: 100px; height: 200px;'
      * ```
@@ -2174,7 +2227,7 @@ class BaseHtml
      *
      * For example,
      *
-     * ```php
+     * ```
      * print_r(Html::cssStyleToArray('width: 100px; height: 200px;'));
      * // will display: ['width' => '100px', 'height' => '200px']
      * ```
@@ -2232,7 +2285,7 @@ class BaseHtml
      *
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression
-     * @return string|array the corresponding attribute value
+     * @return string|array|null the corresponding attribute value
      * @throws InvalidArgumentException if the attribute name contains non-word characters.
      */
     public static function getAttributeValue($model, $attribute)

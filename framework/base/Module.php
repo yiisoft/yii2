@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\base;
@@ -25,13 +26,12 @@ use yii\di\ServiceLocator;
  *
  * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must
  * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
- * example. This property is write-only.
+ * example.
  * @property string $basePath The root directory of the module.
- * @property-read string $controllerPath The directory that contains the controller classes. This property is
- * read-only.
+ * @property string $controllerPath The directory that contains the controller classes.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
- * @property-read string $uniqueId The unique ID of the module. This property is read-only.
+ * @property-read string $uniqueId The unique ID of the module.
  * @property string $version The version of this module. Note that the type of this property differs in getter
  * and setter. See [[getVersion()]] and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
@@ -45,12 +45,11 @@ class Module extends ServiceLocator
      * @event ActionEvent an event raised before executing a controller action.
      * You may set [[ActionEvent::isValid]] to be `false` to cancel the action execution.
      */
-    const EVENT_BEFORE_ACTION = 'beforeAction';
+    public const EVENT_BEFORE_ACTION = 'beforeAction';
     /**
      * @event ActionEvent an event raised after executing a controller action.
      */
-    const EVENT_AFTER_ACTION = 'afterAction';
-
+    public const EVENT_AFTER_ACTION = 'afterAction';
     /**
      * @var array custom module parameters (name => value).
      */
@@ -78,7 +77,7 @@ class Module extends ServiceLocator
      * the controller's fully qualified class name, and the rest of the name-value pairs
      * in the array are used to initialize the corresponding controller properties. For example,
      *
-     * ```php
+     * ```
      * [
      *   'account' => 'app\controllers\UserController',
      *   'article' => [
@@ -116,6 +115,10 @@ class Module extends ServiceLocator
      */
     private $_basePath;
     /**
+     * @var string The root directory that contains the controller classes for this module.
+     */
+    private $_controllerPath;
+    /**
      * @var string the root directory that contains view files for this module
      */
     private $_viewPath;
@@ -128,11 +131,11 @@ class Module extends ServiceLocator
      */
     private $_modules = [];
     /**
-     * @var string|callable the version of this module.
+     * @var string|callable|null the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
-     * ```php
+     * ```
      * function (Module $module) {
      *     //return string|int
      * }
@@ -148,8 +151,8 @@ class Module extends ServiceLocator
     /**
      * Constructor.
      * @param string $id the ID of this module.
-     * @param Module $parent the parent module (if any).
-     * @param array $config name-value pairs that will be used to initialize the object properties.
+     * @param Module|null $parent the parent module (if any).
+     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties.
      */
     public function __construct($id, $parent = null, $config = [])
     {
@@ -254,7 +257,22 @@ class Module extends ServiceLocator
      */
     public function getControllerPath()
     {
-        return Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
+        if ($this->_controllerPath === null) {
+            $this->_controllerPath = Yii::getAlias('@' . str_replace('\\', '/', $this->controllerNamespace));
+        }
+
+        return $this->_controllerPath;
+    }
+
+    /**
+     * Sets the directory that contains the controller classes.
+     * @param string $path the root directory that contains the controller classes.
+     * @throws InvalidArgumentException if the directory is invalid.
+     * @since 2.0.44
+     */
+    public function setControllerPath($path)
+    {
+        $this->_controllerPath = Yii::getAlias($path);
     }
 
     /**
@@ -324,11 +342,11 @@ class Module extends ServiceLocator
 
     /**
      * Sets current module version.
-     * @param string|callable $version the version of this module.
+     * @param string|callable|null $version the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
-     * ```php
+     * ```
      * function (Module $module) {
      *     //return string
      * }
@@ -360,14 +378,11 @@ class Module extends ServiceLocator
      * Defines path aliases.
      * This method calls [[Yii::setAlias()]] to register the path aliases.
      * This method is provided so that you can define path aliases when configuring a module.
-     * @property array list of path aliases to be defined. The array keys are alias names
-     * (must start with `@`) and the array values are the corresponding paths or aliases.
-     * See [[setAliases()]] for an example.
      * @param array $aliases list of path aliases to be defined. The array keys are alias names
      * (must start with `@`) and the array values are the corresponding paths or aliases.
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     '@models' => '@app/models', // an existing alias
      *     '@backend' => __DIR__ . '/../backend',  // a directory
@@ -423,7 +438,7 @@ class Module extends ServiceLocator
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::debug("Loading module: $id", __METHOD__);
-                /* @var $module Module */
+                /** @var self $module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
                 $module::setInstance($module);
                 return $this->_modules[$id] = $module;
@@ -491,7 +506,7 @@ class Module extends ServiceLocator
      *
      * The following is an example for registering two sub-modules:
      *
-     * ```php
+     * ```
      * [
      *     'comment' => [
      *         'class' => 'app\modules\comment\CommentModule',
@@ -527,7 +542,6 @@ class Module extends ServiceLocator
     {
         $parts = $this->createController($route);
         if (is_array($parts)) {
-            /* @var $controller Controller */
             list($controller, $actionID) = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
@@ -561,9 +575,12 @@ class Module extends ServiceLocator
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
      * @param string $route the route consisting of module, controller and action IDs.
-     * @return array|bool If the controller is created successfully, it will be returned together
+     * @return array{Controller<static>, string}|false If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
+     *
+     * @phpstan-return array{Controller<static>, string}|false
+     * @psalm-return array{Controller<self>, string}|false
      */
     public function createController($route)
     {
@@ -617,9 +634,12 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller<static>|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
+     *
+     * @phpstan-return Controller<static>|null
+     * @psalm-return Controller<self>|null
      */
     public function createControllerByID($id)
     {
@@ -638,7 +658,7 @@ class Module extends ServiceLocator
 
         $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
                 return ucfirst($matches[1]);
-            }, ucfirst($className)) . 'Controller';
+        }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
@@ -684,7 +704,7 @@ class Module extends ServiceLocator
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function beforeAction($action)
      * {
      *     if (!parent::beforeAction($action)) {
@@ -697,8 +717,11 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action to be executed.
+     * @param Action<Controller<static>> $action the action to be executed.
      * @return bool whether the action should continue to be executed.
+     *
+     * @phpstan-param Action<Controller<static>> $action
+     * @psalm-param Action<Controller<self>> $action
      */
     public function beforeAction($action)
     {
@@ -715,7 +738,7 @@ class Module extends ServiceLocator
      *
      * If you override this method, your code should look like the following:
      *
-     * ```php
+     * ```
      * public function afterAction($action, $result)
      * {
      *     $result = parent::afterAction($action, $result);
@@ -724,9 +747,12 @@ class Module extends ServiceLocator
      * }
      * ```
      *
-     * @param Action $action the action just executed.
+     * @param Action<Controller<static>> $action the action just executed.
      * @param mixed $result the action return result.
      * @return mixed the processed action result.
+     *
+     * @phpstan-param Action<Controller<static>> $action
+     * @psalm-param Action<Controller<self>> $action
      */
     public function afterAction($action, $result)
     {

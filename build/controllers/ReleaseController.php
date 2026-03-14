@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\build\controllers;
 
 use Yii;
 use yii\base\Exception;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
@@ -39,6 +41,8 @@ use yii\helpers\FileHelper;
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class ReleaseController extends Controller
 {
@@ -218,10 +222,10 @@ class ReleaseController extends Controller
         $gitDir = reset($what) === 'framework' ? 'framework/' : '';
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. {$gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
-        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. {$gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.com/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
@@ -436,7 +440,7 @@ class ReleaseController extends Controller
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('updating mimetype magic file and mime aliases...', Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"], ["$frameworkPath/helpers/mimeAliases.php"]);
+        $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
@@ -489,22 +493,22 @@ class ReleaseController extends Controller
         // $this->composerSetStability($what, $version);
 
 
-//        $this->resortChangelogs($what, $version);
-  //        $this->closeChangelogs($what, $version);
-  //        $this->composerSetStability($what, $version);
-  //        if (in_array('framework', $what)) {
-  //            $this->updateYiiVersion($version);
-  //        }
+        //        $this->resortChangelogs($what, $version);
+        //        $this->closeChangelogs($what, $version);
+        //        $this->composerSetStability($what, $version);
+        //        if (in_array('framework', $what)) {
+        //            $this->updateYiiVersion($version);
+        //        }
 
 
         // if done:
         //     * ./build/build release/done framework 2.0.0-dev 2.0.0-rc
         //     * ./build/build release/done redis 2.0.0-dev 2.0.0-rc
-//            $this->openChangelogs($what, $nextVersion);
-//            $this->composerSetStability($what, 'dev');
-//            if (in_array('framework', $what)) {
-//                $this->updateYiiVersion($devVersion);
-//            }
+        //            $this->openChangelogs($what, $nextVersion);
+        //            $this->composerSetStability($what, 'dev');
+        //            if (in_array('framework', $what)) {
+        //                $this->updateYiiVersion($devVersion);
+        //            }
 
 
 
@@ -875,8 +879,10 @@ class ReleaseController extends Controller
         $state = 'start';
         foreach ($lines as $l => $line) {
             // starting from the changelogs headline
-            if (isset($lines[$l - 2]) && strpos($lines[$l - 2], $version) !== false &&
-                isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0) {
+            if (
+                isset($lines[$l - 2]) && strpos($lines[$l - 2], $version) !== false &&
+                isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0
+            ) {
                 $state = 'changelog';
             }
             if ($state === 'changelog' && isset($lines[$l + 1]) && strncmp($lines[$l + 1], '---', 3) === 0) {
@@ -885,7 +891,10 @@ class ReleaseController extends Controller
             // add continued lines to the last item to keep them together
             if (!empty(${$state}) && trim($line) !== '' && strncmp($line, '- ', 2) !== 0) {
                 end(${$state});
-                ${$state}[key(${$state})] .= "\n" . $line;
+
+                if (($k = key(${$state})) !== null) {
+                    ${$state}[$k] .= "\n" . $line;
+                }
             } else {
                 ${$state}[] = $line;
             }
@@ -990,9 +999,10 @@ class ReleaseController extends Controller
     protected function updateYiiVersion($frameworkPath, $version)
     {
         $this->sed(
-            '/function getVersion\(\)\R    \{\R        return \'(.+?)\';/',
+            '/function getVersion\(\)\R {4}\{\R {8}return \'(.+?)\';/',
             "function getVersion()\n    {\n        return '$version';",
-            $frameworkPath . '/BaseYii.php');
+            $frameworkPath . '/BaseYii.php'
+        );
     }
 
     protected function sed($pattern, $replace, $files)
@@ -1021,8 +1031,7 @@ class ReleaseController extends Controller
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
 
             // exclude 3.0.0-alpha1 tag
-            if (($key = array_search('3.0.0-alpha1', $tags, true)) !== false)
-            {
+            if (($key = array_search('3.0.0-alpha1', $tags, true)) !== false) {
                 unset($tags[$key]);
             }
 
@@ -1032,8 +1041,8 @@ class ReleaseController extends Controller
         return $versions;
     }
 
-    const MINOR = 'minor';
-    const PATCH = 'patch';
+    public const MINOR = 'minor';
+    public const PATCH = 'patch';
 
     protected function getNextVersions(array $versions, $type)
     {
@@ -1045,14 +1054,14 @@ class ReleaseController extends Controller
             $parts = explode('.', $v);
             switch ($type) {
                 case self::MINOR:
-                    $parts[1]++;
+                    $parts[1] = (int) $parts[1] + 1;
                     $parts[2] = 0;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }
                     break;
                 case self::PATCH:
-                    $parts[2]++;
+                    $parts[2] = (int) $parts[2] + 1;
                     if (isset($parts[3])) {
                         unset($parts[3]);
                     }

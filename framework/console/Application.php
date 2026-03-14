@@ -1,14 +1,16 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\console;
 
 use Yii;
 use yii\base\InvalidRouteException;
+use yii\base\Module;
 
 // define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
 // https://www.php.net/manual/en/features.commandline.io-streams.php
@@ -50,10 +52,9 @@ defined('STDERR') or define('STDERR', fopen('php://stderr', 'w'));
  * yii help
  * ```
  *
- * @property-read ErrorHandler $errorHandler The error handler application component. This property is
- * read-only.
- * @property-read Request $request The request component. This property is read-only.
- * @property-read Response $response The response component. This property is read-only.
+ * @property-read ErrorHandler $errorHandler The error handler application component.
+ * @property-read Request $request The request component.
+ * @property-read Response $response The response component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,8 +64,7 @@ class Application extends \yii\base\Application
     /**
      * The option name for specifying the application configuration file path.
      */
-    const OPTION_APPCONFIG = 'appconfig';
-
+    public const OPTION_APPCONFIG = 'appconfig';
     /**
      * @var string the default route of this application. Defaults to 'help',
      * meaning the `help` command.
@@ -76,7 +76,7 @@ class Application extends \yii\base\Application
      */
     public $enableCoreCommands = true;
     /**
-     * @var Controller the currently active controller instance
+     * @var Controller|null the currently active controller instance
      */
     public $controller;
 
@@ -165,13 +165,13 @@ class Application extends \yii\base\Application
      * For example, to run `public function actionTest($a, $b)` assuming that the controller has options the following
      * code should be used:
      *
-     * ```php
+     * ```
      * \Yii::$app->runAction('controller/test', ['option' => 'value', $a, $b]);
      * ```
      *
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
-     * @return int|Response the result of the action. This can be either an exit code or Response object.
+     * @return int|Response|null the result of the action. This can be either an exit code or Response object.
      * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treated as `0` as well.
      * @throws Exception if the route is invalid
      */

@@ -1,29 +1,33 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\di\stubs;
+
+use yii\base\BaseObject;
+use Yii;
 
 /**
  * @author Yusup Hambali <supalpuket@gmail.com>
  * @since 2.0.31
  */
-class FooBaz extends \yii\base\BaseObject
+class FooBaz extends BaseObject
 {
     public $fooDependent = [];
 
-    public function init()
+    public function init(): void
     {
         // default config usually used by Yii
-        $dependentConfig = array_merge(['class' => FooDependent::className()], $this->fooDependent);
-        $this->fooDependent = \Yii::createObject($dependentConfig);
+        $dependentConfig = array_merge(['class' => FooDependent::class], $this->fooDependent);
+        $this->fooDependent = Yii::createObject($dependentConfig);
     }
 }
 
-class FooDependent extends \yii\base\BaseObject
+class FooDependent extends BaseObject
 {
 }
 

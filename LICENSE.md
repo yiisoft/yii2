@@ -1,4 +1,4 @@
-Copyright © 2008 by Yii Software LLC (http://www.yiisoft.com)
+Copyright © 2008 by Yii Software (https://www.yiiframework.com/)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@ are met:
    notice, this list of conditions and the following disclaimer in
    the documentation and/or other materials provided with the
    distribution.
- * Neither the name of Yii Software LLC nor the names of its
+ * Neither the name of Yii Software nor the names of its
    contributors may be used to endorse or promote products derived
    from this software without specific prior written permission.
 

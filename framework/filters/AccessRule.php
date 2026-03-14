@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\filters;
@@ -12,6 +13,7 @@ use yii\base\Action;
 use yii\base\Component;
 use yii\base\Controller;
 use yii\base\InvalidConfigException;
+use yii\base\Module;
 use yii\helpers\IpHelper;
 use yii\helpers\StringHelper;
 use yii\web\Request;
@@ -28,14 +30,14 @@ class AccessRule extends Component
     /**
      * @var bool whether this is an 'allow' rule or 'deny' rule.
      */
-    public $allow;
+    public $allow = false;
     /**
-     * @var array list of action IDs that this rule applies to. The comparison is case-sensitive.
+     * @var array|null list of action IDs that this rule applies to. The comparison is case-sensitive.
      * If not set or empty, it means this rule applies to all actions.
      */
     public $actions;
     /**
-     * @var array list of the controller IDs that this rule applies to.
+     * @var array|null list of the controller IDs that this rule applies to.
      *
      * The comparison uses [[\yii\base\Controller::uniqueId]], so each controller ID is prefixed
      * with the module ID (if any). For a `product` controller in the application, you would specify
@@ -50,7 +52,7 @@ class AccessRule extends Component
      */
     public $controllers;
     /**
-     * @var array list of roles that this rule applies to (requires properly configured User component).
+     * @var array|null list of roles that this rule applies to (requires properly configured User component).
      * Two special roles are recognized, and they are checked via [[User::isGuest]]:
      *
      * - `?`: matches a guest user (not authenticated yet)
@@ -67,7 +69,7 @@ class AccessRule extends Component
      */
     public $roles;
     /**
-     * @var array list of RBAC (Role-Based Access Control) permissions that this rules applies to.
+     * @var array|null list of RBAC (Role-Based Access Control) permissions that this rules applies to.
      * [[User::can()]] will be called to check access.
      *
      * If this property is not set or empty, it means this rule applies regardless of permissions.
@@ -83,7 +85,7 @@ class AccessRule extends Component
      * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an
      * ID from the current request, you may use the following:
      *
-     * ```php
+     * ```
      * ['postId' => Yii::$app->request->get('id')]
      * ```
      *
@@ -91,7 +93,7 @@ class AccessRule extends Component
      * evaluate the array values only if they are needed, for example when a model needs to be
      * loaded like in the following code:
      *
-     * ```php
+     * ```
      * 'rules' => [
      *     [
      *         'allow' => true,
@@ -111,7 +113,7 @@ class AccessRule extends Component
      */
     public $roleParams = [];
     /**
-     * @var array list of user IP addresses that this rule applies to. An IP address
+     * @var array|null list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
      * For example, '192.168.*' matches all IP addresses in the segment '192.168.'.
      * It may also contain a pattern/mask like '172.16.0.0/12' which would match all IPs from the
@@ -122,7 +124,7 @@ class AccessRule extends Component
      */
     public $ips;
     /**
-     * @var array list of request methods (e.g. `GET`, `POST`) that this rule applies to.
+     * @var array|null list of request methods (e.g. `GET`, `POST`) that this rule applies to.
      * If not set or empty, it means this rule applies to all request methods.
      * @see \yii\web\Request::method
      */
@@ -131,7 +133,7 @@ class AccessRule extends Component
      * @var callable a callback that will be called to determine if the rule should be applied.
      * The signature of the callback should be as follows:
      *
-     * ```php
+     * ```
      * function ($rule, $action)
      * ```
      *
@@ -140,7 +142,7 @@ class AccessRule extends Component
      */
     public $matchCallback;
     /**
-     * @var callable a callback that will be called if this rule determines the access to
+     * @var callable|null a callback that will be called if this rule determines the access to
      * the current action should be denied. This is the case when this rule matches
      * and [[$allow]] is set to `false`.
      *
@@ -150,7 +152,7 @@ class AccessRule extends Component
      *
      * The signature of the callback should be as follows:
      *
-     * ```php
+     * ```
      * function ($rule, $action)
      * ```
      *
@@ -169,7 +171,8 @@ class AccessRule extends Component
      */
     public function allows($action, $user, $request)
     {
-        if ($this->matchAction($action)
+        if (
+            $this->matchAction($action)
             && $this->matchRole($user)
             && $this->matchIP($request->getUserIP())
             && $this->matchVerb($request->getMethod())

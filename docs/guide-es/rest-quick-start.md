@@ -9,7 +9,7 @@ En particular, Yii soporta las siguientes características sobre APIs RESTful;
 * Formato de respuesta de negocio (soporta JSON y XML por defecto);
 * Personalización de objetos serializados con soporte para campos de salida seleccionables;
 * Formateo apropiado de colecciones de datos y validación de errores;
-* Soporte para [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS);
+* Soporte para [HATEOAS](https://es.wikipedia.org/wiki/HATEOAS);
 * Eficiente enrutamiento con una adecuada comprobación del verbo(verb) HTTP;
 * Incorporado soporte para las `OPTIONS` y `HEAD` verbos;
 * Autenticación y autorización;

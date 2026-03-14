@@ -7,7 +7,7 @@ Tutti i diritti riservati.
 
 2014 (c) Yii Software LLC.
 
-Traduzione italiana a cura di Lorenzo Milesi ([yetopen.it](http://www.yetopen.it)).
+Traduzione italiana a cura di Lorenzo Milesi ([yetopen.it](https://www.yetopen.it)).
 
 
 Introduzione

@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\web;
@@ -23,7 +24,7 @@ use yii\di\Instance;
  * The following example shows how you can configure the application to use DbSession:
  * Add the following to your application config under `components`:
  *
- * ```php
+ * ```
  * 'session' => [
  *     'class' => 'yii\web\DbSession',
  *     // 'db' => 'mydb',
@@ -50,7 +51,7 @@ class DbSession extends MultiFieldSession
      * @var string the name of the DB table that stores the session data.
      * The table should be pre-created as follows:
      *
-     * ```sql
+     * ```
      * CREATE TABLE session
      * (
      *     id CHAR(40) NOT NULL PRIMARY KEY,
@@ -133,14 +134,14 @@ class DbSession extends MultiFieldSession
             return;
         }
 
-        $row = $this->db->useMaster(function() use ($oldID) {
+        $row = $this->db->useMaster(function () use ($oldID) {
             return (new Query())->from($this->sessionTable)
                ->where(['id' => $oldID])
                ->createCommand($this->db)
                ->queryOne();
         });
 
-        if ($row !== false) {
+        if ($row !== false && $this->getIsActive()) {
             if ($deleteOldSession) {
                 $this->db->createCommand()
                     ->update($this->sessionTable, ['id' => $newID], ['id' => $oldID])
@@ -151,11 +152,6 @@ class DbSession extends MultiFieldSession
                     ->insert($this->sessionTable, $row)
                     ->execute();
             }
-        } else {
-            // shouldn't reach here normally
-            $this->db->createCommand()
-                ->insert($this->sessionTable, $this->composeFields($newID, ''))
-                ->execute();
         }
     }
 
@@ -176,7 +172,7 @@ class DbSession extends MultiFieldSession
      * Session read handler.
      * @internal Do not call this method directly.
      * @param string $id session ID
-     * @return string the session data
+     * @return string|false the session data, or false on failure
      */
     public function readSession($id)
     {
@@ -252,15 +248,13 @@ class DbSession extends MultiFieldSession
      * Session GC (garbage collection) handler.
      * @internal Do not call this method directly.
      * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-     * @return bool whether session is GCed successfully
+     * @return int|false the number of deleted sessions on success, or false on failure
      */
     public function gcSession($maxLifetime)
     {
-        $this->db->createCommand()
+        return $this->db->createCommand()
             ->delete($this->sessionTable, '[[expire]]<:expire', [':expire' => time()])
             ->execute();
-
-        return true;
     }
 
     /**

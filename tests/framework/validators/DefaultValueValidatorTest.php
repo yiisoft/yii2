@@ -1,12 +1,14 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\validators;
 
+use stdclass;
 use yii\validators\DefaultValueValidator;
 use yiiunit\TestCase;
 
@@ -15,7 +17,7 @@ use yiiunit\TestCase;
  */
 class DefaultValueValidatorTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -23,11 +25,11 @@ class DefaultValueValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateAttribute()
+    public function testValidateAttribute(): void
     {
         $val = new DefaultValueValidator();
         $val->value = 'test_value';
-        $obj = new \stdclass();
+        $obj = new stdclass();
         $obj->attrA = 'attrA';
         $obj->attrB = null;
         $obj->attrC = '';
@@ -43,5 +45,20 @@ class DefaultValueValidatorTest extends TestCase
         $this->assertEquals($objB->attrA, $obj->attrA);
         $val->validateAttribute($obj, 'attrA');
         $this->assertEquals($objB->attrA, $obj->attrA);
+    }
+
+    public function testValidateAttributeWithClosure(): void
+    {
+        $val = new DefaultValueValidator();
+        $val->value = function ($model, $attribute) {
+            return $attribute . '_default';
+        };
+        $obj = new stdclass();
+        $obj->attrA = null;
+        $obj->attrB = 'existing';
+        $val->validateAttribute($obj, 'attrA');
+        $this->assertSame('attrA_default', $obj->attrA);
+        $val->validateAttribute($obj, 'attrB');
+        $this->assertSame('existing', $obj->attrB);
     }
 }

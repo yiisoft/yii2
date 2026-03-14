@@ -80,7 +80,7 @@ There are several special rules for, and limitations on, the properties defined 
 * A normal call to `property_exists()` does not work to determine magic properties. You should call [[yii\base\BaseObject::canGetProperty()|canGetProperty()]]
   or [[yii\base\BaseObject::canSetProperty()|canSetProperty()]] respectively.
 
-Returning back to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned,
+Returning to the problem described at the beginning of this guide, instead of calling `trim()` everywhere a `label` value is assigned,
 `trim()` now only needs to be invoked within the setter `setLabel()`.
 And if a new requirement makes it necessary that the label be initially capitalized, the `setLabel()` method can quickly
 be modified without touching any other code. The one change will universally affect every assignment to `label`.

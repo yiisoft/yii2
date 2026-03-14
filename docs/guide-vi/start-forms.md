@@ -127,7 +127,7 @@ Nếu không có lỗi gì, action sẽ trả về (render) view tên là `entry
 
 > Lưu ý: ở bài hướng dẫn này, chúng ta chỉ xác nhận trang khi có dũ liệu hợp lệ. Bài thực hành này,
   bạn cần lưu ý việc sử dụng các phương thức [[yii\web\Controller::refresh()|refresh()]] hoặc [[yii\web\Controller::redirect()|redirect()]]
-  nhằm để tránh [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
+  nhằm để tránh [form resubmission problems](https://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
 Tạo Views <span id="creating-views"></span>
@@ -182,7 +182,7 @@ Thử xem kết quả <span id="trying-it-out"></span>
 Truy cập vào URL sau để xem kết quả:
 
 ```
-http://hostname/index.php?r=site/entry
+https://hostname/index.php?r=site/entry
 ```
 
 Bạn sẽ thấy trang Web cùng với việc hiển thị form chứa 2 trường để nhập dữ liệu . Trước mỗi trường nhập liệu, có nhãn được chỉ định những dữ liệu nhập vào . 

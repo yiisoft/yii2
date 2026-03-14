@@ -1,0 +1,72 @@
+name: ci-mariadb
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "eslint.config.js"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
+
+jobs:
+  tests:
+    name: MariaDB tests with coverage
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mariadb-${{ github.ref }}
+      coverage-driver: xdebug
+      database-env: '{"MARIADB_ROOT_PASSWORD":"root","MARIADB_DATABASE":"yiitest"}'
+      database-health-cmd: mariadb-admin ping
+      database-image: mariadb
+      database-port: "3306"
+      database-type: mysql
+      database-versions: '["10.4","latest"]'
+      extensions: curl, intl, pdo, pdo_mysql
+      os: '["ubuntu-22.04"]'
+      php-version: '["7.4","8.5"]'
+      phpunit-group: mysql
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  tests-dev:
+    name: MariaDB tests
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mariadb-dev-${{ github.ref }}
+      coverage-driver: none
+      database-env: '{"MARIADB_ROOT_PASSWORD":"root","MARIADB_DATABASE":"yiitest"}'
+      database-health-cmd: mariadb-admin ping
+      database-image: mariadb
+      database-port: "3306"
+      database-type: mysql
+      database-versions: '["latest"]'
+      extensions: curl, intl, pdo, pdo_mysql
+      os: '["ubuntu-22.04"]'
+      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      phpunit-group: mysql

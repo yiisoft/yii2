@@ -1,7 +1,7 @@
 Active Record
 =============
 
-[Active Record](http://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
+[Active Record](https://en.wikipedia.org/wiki/Active_record_pattern) provides an object-oriented interface
 for accessing and manipulating data stored in databases. An Active Record class is associated with a database table,
 an Active Record instance corresponds to a row of that table, and an *attribute* of an Active Record
 instance represents the value of a particular column in that row. Instead of writing raw SQL statements,
@@ -532,7 +532,7 @@ that will be encoded by [QueryBuilder](db-query-builder.md) to an PgSQL string r
 You can also use conditions for JSON columns:
 
 ```php
-$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])])
 ```
 
 To learn more about expressions building system read the [Query Builder – Adding custom Conditions and Expressions](db-query-builder.md#adding-custom-conditions-and-expressions)
@@ -649,6 +649,17 @@ life cycle will happen:
 > - [[yii\db\ActiveRecord::deleteAll()]]
 > - [[yii\db\ActiveRecord::updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()]] 
+
+> Note: DI is not supported by default due to performance concerns. You can add support if needed by overriding
+> the [[yii\db\ActiveRecord::instantiate()|instantiate()]] method to instantiate the class via [[Yii::createObject()]]:
+> 
+> ```php
+> public static function instantiate($row)
+> {
+>     return Yii::createObject(static::class);
+> }
+> ```
+
 
 ### Refreshing Data Life Cycle <span id="refreshing-data-life-cycle"></span>
 

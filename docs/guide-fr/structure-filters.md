@@ -117,7 +117,7 @@ Pour plus de détails sur le contrôle d'accès en général, reportez-vous à l
 ### Filtres de méthodes d'authentification <span id="auth-method-filters"></span>
 
 Les filtres de méthodes d'authentification sont utilisés pour authentifier un utilisateur qui utilise des méthodes d'authentification variées comme
-[HTTP Basic Auth](http://en.wikipedia.org/wiki/Basic_access_authentication) ou [OAuth 2](http://oauth.net/2/). Les classes de filtre sont dans l'espace de noms `yii\filters\auth`.
+[HTTP Basic Auth](https://en.wikipedia.org/wiki/Basic_access_authentication) ou [OAuth 2](https://oauth.net/2/). Les classes de filtre sont dans l'espace de noms `yii\filters\auth`.
 
 L'exemple qui suit montre comment vous pouvez utiliser [[yii\filters\auth\HttpBasicAuth]] pour authentifier un utilisateur qui utilise un jeton d'accès basé sur la méthode  *HTTP Basic Auth*. Notez qu'afin que cela fonctionne, votre [[yii\web\User::identityClass|classe *identity* de l'utilisateur]] doit implémenter l'interface [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]].
 
@@ -250,7 +250,7 @@ Reportez-vous à la section [Page Caching](caching-page.md) pour plus de détail
 
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
-*RateLimiter* met en œuvre un algorithme de limitation de débit basé sur  l'[algorithme leaky bucket](http://en.wikipedia.org/wiki/Leaky_bucket). On l'utilise en premier lieu dans la mise en œuvre des API pleinement REST. Reportez-vous à la section [limitation de débit](rest-rate-limiting.md) pour plus de détails sur l'utilisation de ce filtre.
+*RateLimiter* met en œuvre un algorithme de limitation de débit basé sur  l'[algorithme leaky bucket](https://en.wikipedia.org/wiki/Leaky_bucket). On l'utilise en premier lieu dans la mise en œuvre des API pleinement REST. Reportez-vous à la section [limitation de débit](rest-rate-limiting.md) pour plus de détails sur l'utilisation de ce filtre.
 
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
@@ -279,7 +279,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-*Cross-origin resource sharing* [CORS](https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS) est un mécanisme qui permet à des ressource (e.g. fonts, JavaScript, etc.) d'être requises d'un autre domaine en dehors du domaine dont la ressource est originaire. En particulier, les appels AJAX de Javascript peuvent utiliser le mécanisme *XMLHttpRequest*. Autrement, de telles requêtes "cross-domain" (inter domaines) seraient interdites par les navigateurs, à cause de la politique de sécurité dite d'origine identique (*same origin*). *CORS* définit une manière par laquelle le navigateur et le serveur interagissent pour déterminer si, oui ou non, la requête *cross-origin* (inter-site) est autorisée. 
+*Cross-origin resource sharing* [CORS](https://developer.mozilla.org/fr/docs/Web/HTTP/CORS) est un mécanisme qui permet à des ressource (e.g. fonts, JavaScript, etc.) d'être requises d'un autre domaine en dehors du domaine dont la ressource est originaire. En particulier, les appels AJAX de Javascript peuvent utiliser le mécanisme *XMLHttpRequest*. Autrement, de telles requêtes "cross-domain" (inter domaines) seraient interdites par les navigateurs, à cause de la politique de sécurité dite d'origine identique (*same origin*). *CORS* définit une manière par laquelle le navigateur et le serveur interagissent pour déterminer si, oui ou non, la requête *cross-origin* (inter-site) est autorisée. 
 
 Le [[yii\filters\Cors|filtre Cors]] doit être défini avant les filtres d'authentification et/ou d'autorisation pour garantir que les entêtes CORS sont toujours envoyés.
 
@@ -302,13 +302,13 @@ Consultez également la section sur les [contrôleurs REST](rest-controllers.md#
 
 Les filtrages Cors peuvent être peaufinés via la propriété [[yii\filters\Cors::$cors|$cors]].
 
-* `cors['Origin']`: un tableau utilisé pour définir les origines autorisées. Peut être `['*']` (tout le monde) ou `['http://www.myserver.net', 'http://www.myotherserver.com']`. Valeur par défaut  `['*']`.
+* `cors['Origin']`: un tableau utilisé pour définir les origines autorisées. Peut être `['*']` (tout le monde) ou `['https://www.myserver.net', 'https://www.myotherserver.com']`. Valeur par défaut  `['*']`.
 * `cors['Access-Control-Request-Method']`: un tableau des verbes autorisés tel que `['GET', 'OPTIONS', 'HEAD']`.  Valeur par défaut `['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS']`.
 * `cors['Access-Control-Request-Headers']`: un tableau des entêtes autorisés. Peut être`['*']` tous les entêtes ou certains spécifiquement `['X-Request-With']`. Valeur par défaut `['*']`.
 * `cors['Access-Control-Allow-Credentials']`: définit si la requête courante peut être faite en utilisant des identifiants de connexion.  Peut être `true` (vrai), `false` (faux) ou  `null` (non défini). Valeur par défaut `null`.
 * `cors['Access-Control-Max-Age']`: définit la durée de vie des requêtes de pré-vérification (*preflight requests*). Valeur par défaut `86400`.
 
-Par exemple, autoriser  CORS pour l'origine  `http://www.myserver.net` avec les méthodes `GET`, `HEAD` et `OPTIONS` :
+Par exemple, autoriser  CORS pour l'origine  `https://www.myserver.net` avec les méthodes `GET`, `HEAD` et `OPTIONS` :
 
 ```php
 use yii\filters\Cors;
@@ -320,7 +320,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
         ],
@@ -340,7 +340,7 @@ public function behaviors()
         [
             'class' => Cors::class,
             'cors' => [
-                'Origin' => ['http://www.myserver.net'],
+                'Origin' => ['https://www.myserver.net'],
                 'Access-Control-Request-Method' => ['GET', 'HEAD', 'OPTIONS'],
             ],
             'actions' => [

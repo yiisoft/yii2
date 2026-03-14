@@ -49,7 +49,7 @@ Você pode atualizar o Composer executando o comando `composer self-update`.
 > A quantidade de solicitações depende do número de dependências que sua aplicação possui e pode extrapolar a
 > **taxa limite da API do Github**. Se você atingir esse limite, o Composer pode pedir a você suas credenciais de login para obter um
 > token de acesso à API Github. Em conexões rápidas você pode atingir esse limite antes que o Composer consiga lidar com a situação, então, recomendamos
-> configurar um toke de acesso antes de instalar o Yii.
+> configurar um token de acesso antes de instalar o Yii.
 > Por favor, consulte a [documentação do Composer sobre tokens da API Github](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > para instruções de como fazer isso.
 
@@ -120,7 +120,7 @@ No entanto, existem outras opções de instalação disponíveis:
 Instalando Recursos Estáticos (Assets) <span id="installing-assets"></span>
 -----------------
 
-Yii utiliza os pacotes [Bower](http://bower.io/) e/ou [NPM](https://www.npmjs.com/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
+Yii utiliza os pacotes [Bower](https://bower.io/) e/ou [NPM](https://www.npmjs.com/) para a instalação das bibliotecas de recursos estáticos (CSS and JavaScript).
 Ele usa composer para obter essa bibliotecas, permitindo que versões de pacotes PHP, CSS e Javascrtip possam ser definidas/instaladas ao mesmo tempo.
 Isto é possível por usar ou [asset-packagist.org](https://asset-packagist.org) ou [composer asset plugin](https://github.com/fxpio/composer-asset-plugin).
 Por favor, consulta a [documentação sobre Assets](structure-assets.md) para mais detalhes.
@@ -186,13 +186,13 @@ Configurando Servidores Web <span id="configuring-web-servers"></span>
 > Info: Você pode pular essa subseção por enquanto se estiver fazendo somente um test drive do Yii sem a intenção de publicá-lo em um servidor de produção.
 
 A aplicação instalada de acordo com as instruções acima deve funcionar imediatamente
-com um [Servidor HTTP Apache](http://httpd.apache.org/) ou um [Servidor HTTP Nginx](http://nginx.org/),
+com um [Servidor HTTP Apache](https://httpd.apache.org/) ou um [Servidor HTTP Nginx](https://nginx.org/),
 no Windows, Mac OS X ou Linux usando PHP 5.4 ou superior. O Yii 2.0 também é compatível
-com o [HHVM](http://hhvm.com/) do Facebook. No entanto, existem alguns casos extremos em que o HHVM se comporta diferentemente do PHP nativo, então você terá que ter um cuidado extra quando usar o HHVM.
+com o [HHVM](https://hhvm.com/) do Facebook. No entanto, existem alguns casos extremos em que o HHVM se comporta diferentemente do PHP nativo, então você terá que ter um cuidado extra quando usar o HHVM.
 
 Em um servidor de produção, você pode querer configurar o seu servidor Web de
-modo que a aplicação possa ser acessada pela URL `http://www.example.com/index.php`
-ao invés de `http://www.example.com/basico/web/index.php`. Tal configuração requer que
+modo que a aplicação possa ser acessada pela URL `https://www.example.com/index.php`
+ao invés de `https://www.example.com/basico/web/index.php`. Tal configuração requer que
 você aponte a raiz dos documentos de seu servidor Web para o diretório `basico/web`.
 Você também pode querer ocultar o `index.php` da URL, conforme descrito na seção
 [Roteamento e Criação de URL](runtime-routing.md). Nessa sub-seção, você
@@ -242,7 +242,7 @@ DocumentRoot "caminho/para/basico/web"
 
 ### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
-Para usar o [Nginx](http://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/install.fpm). Use a seguinte configuração do Nginx,
+Para usar o [Nginx](https://wiki.nginx.org/), você deve ter instalado o PHP como um [FPM SAPI](https://www.php.net/manual/pt_BR/install.fpm.php). Use a seguinte configuração do Nginx,
 substituindo `caminho/para/basico/web` com o caminho real para `basico/web` e `mysite.test` com o nome de host real a servir.
 
 ```nginx

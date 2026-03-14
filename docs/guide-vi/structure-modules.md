@@ -14,7 +14,7 @@ Một module được tổ chức dưới dạng như một thư mục được 
 Trong thư mục, còn có các thư mục con, như là `controllers`, `models`, `views`, những thư mục này chứa các controllers,
 models, views, và các đoạn mã khác, giống như trong một ứng dụng. Ví dụ sau đây cho thấy nội dung trong một module:
 
-```js
+```
 forum/
     Module.php                   tập tin lớp module
     controllers/                 chứa các tệp controller

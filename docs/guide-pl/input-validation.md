@@ -702,7 +702,7 @@ JS;
 
 ### Kolejkowa walidacja <span id="deferred-validation"></span>
 
-Jeśli potrzebujesz przeprowadzić asynchroniczną walidację po stronie klienta, możesz utworzyć [obiekt kolejkujący](http://api.jquery.com/category/deferred-object/).
+Jeśli potrzebujesz przeprowadzić asynchroniczną walidację po stronie klienta, możesz utworzyć [obiekt kolejkujący](https://api.jquery.com/category/deferred-object/).
 Dla przykładu, aby przeprowadzić niestandardową walidację AJAX, możesz użyć następującego kodu:
 
 ```php

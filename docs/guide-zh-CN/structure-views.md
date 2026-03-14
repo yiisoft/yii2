@@ -1,7 +1,7 @@
 视图
 =====
 
-视图是 [MVC](http://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) 模式中的一部分。
+视图是 [MVC](https://zh.wikipedia.org/wiki/MVC) 模式中的一部分。
 它是展示数据到终端用户的代码，在网页应用中，
 根据*视图模板*来创建视图，视图模板为PHP脚本文件，
 主要包含HTML代码和展示类PHP代码，通过[[yii\web\View|view]]应用组件来管理，
@@ -20,9 +20,11 @@ HTML代码把它组织成一个漂亮的HTML页面。
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Login';
 ?>
@@ -52,7 +54,7 @@ $this->title = 'Login';
 
 当创建生成HTML页面的视图时，在显示之前将用户输入数据进行转码和过滤非常重要，
 否则，你的应用可能会被
-[跨站脚本](http://en.wikipedia.org/wiki/Cross-site_scripting) 攻击。
+[跨站脚本](https://zh.wikipedia.org/wiki/%E8%B7%A8%E7%B6%B2%E7%AB%99%E6%8C%87%E4%BB%A4%E7%A2%BC) 攻击。
 
 要显示纯文本，先调用 [[yii\helpers\Html::encode()]] 进行转码，
 例如如下代码将用户名在显示前先转码：
@@ -324,8 +326,10 @@ $this->params['breadcrumbs'][] = 'About Us';
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string 字符串 */
+/**
+ * @var \yii\web\View $this
+ * @var string $content 字符串
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

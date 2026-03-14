@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\db\conditions;
@@ -26,7 +27,7 @@ interface ConditionInterface extends ExpressionInterface
      * @param string $operator operator in uppercase.
      * @param array $operands array of corresponding operands
      *
-     * @return $this
+     * @return static
      * @throws InvalidParamException if input parameters are not suitable for this condition
      */
     public static function fromArrayDefinition($operator, $operands);

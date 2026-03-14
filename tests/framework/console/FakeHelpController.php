@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\console;
@@ -16,6 +17,7 @@ class FakeHelpController extends HelpController
     public function actionIndex($command = null)
     {
         self::$_actionIndexLastCallParams = func_get_args();
+        return 0;
     }
 
     public static function getActionIndexLastCallParams()

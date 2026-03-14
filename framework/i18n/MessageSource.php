@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\i18n;
@@ -25,15 +26,14 @@ class MessageSource extends Component
     /**
      * @event MissingTranslationEvent an event that is triggered when a message translation is not found.
      */
-    const EVENT_MISSING_TRANSLATION = 'missingTranslation';
-
+    public const EVENT_MISSING_TRANSLATION = 'missingTranslation';
     /**
      * @var bool whether to force message translation when the source and target languages are the same.
      * Defaults to false, meaning translation is only performed when source and target languages are different.
      */
     public $forceTranslation = false;
     /**
-     * @var string the language that the original messages are in. If not set, it will use the value of
+     * @var string|null the language that the original messages are in. If not set, it will use the value of
      * [[\yii\base\Application::sourceLanguage]].
      */
     public $sourceLanguage;

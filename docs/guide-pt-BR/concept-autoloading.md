@@ -12,7 +12,7 @@ Usando o Autoloader do Yii <span id="using-yii-autoloader"></span>
 
 Para fazer uso da autoloader de classe do Yii, você deve seguir duas regras simples ao criar e nomear suas classes:
 
-* Cada classe deve estar debaixo de um [namespace](https://www.php.net/manual/en/language.namespaces.php) (exemplo. `foo\bar\MyClass`)
+* Cada classe deve estar debaixo de um [namespace](https://www.php.net/manual/pt_BR/language.namespaces.php) (exemplo. `foo\bar\MyClass`)
 * Cada classe deve ser salvo em um arquivo individual cujo caminho é determinado pelo seguinte algoritmo:
 
 ```php

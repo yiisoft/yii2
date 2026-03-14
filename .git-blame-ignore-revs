@@ -1,0 +1,26 @@
+# Reformat code to be PSR-2 compatible
+b5f8a4dc22d5f8188405a2099d85fc154226c9b2
+# Added php-cs-fixer coding standards validation to Travis CI
+ba0ab403b52124c941dbeb46fbd9efdc12252a5d
+# Coding style fixes
+9d327baa8b2c80b53d4d405678f03e6b89ff6e38
+# Add visibility for all class elements
+c82da8dc829d557e82b12edbed9e37003dfcc9a3
+# Fix codestyle in build and tests
+909396074eef92d62dd34b4709bb7351e722bec3
+# Add void return to method in tests
+d71f7309aeec1ac0fef223840cb65bbbf96f1f99
+# Use `::class` instead of `::className()` in tests
+c960f93dfeefe760eb44bcdfa4463dcc7b29cc43
+# Replace deprecated PHPUnit mock builder `setMethods()` usage with `createPartialMock()`, `onlyMethods()` and `addMethods()` methods
+80545100b3f40423118b5cd413fcdb9c7dd7fa5e
+# Make test data providers static and declare array return types
+da20adc82aef3eb5ae0bad3889fe6695e6424f06
+# Fix codestyle in `tests`
+2f8e62d6b64324099b44cbac69395fef0e53b13e
+# Short array syntax
+1f6a8230732d829cdf2f3ca6755e4ac32f2c6f4f
+# CS fixes.
+7a7d2a9c06c099de8064729ca3fc95fb24241b75
+# Fixed error PHPCS latest version in `PHP 8.5`
+f66d5c8864712aef233b8131c2f99721101f61d0

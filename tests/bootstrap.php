@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 // ensure we get report on all possible php errors
@@ -23,10 +24,9 @@ require_once __DIR__ . '/../framework/Yii.php';
 
 Yii::setAlias('@yiiunit', __DIR__);
 
-if (getenv('TEST_RUNTIME_PATH')) {
-    Yii::setAlias('@yiiunit/runtime', getenv('TEST_RUNTIME_PATH'));
-    Yii::setAlias('@runtime', getenv('TEST_RUNTIME_PATH'));
+if (getenv('IS_LOCAL_TESTS')) {
+    Yii::setAlias('@yiiunit/runtime', '/tmp/runtime');
+    Yii::setAlias('@runtime', '/tmp/runtime');
 }
 
-require_once __DIR__ . '/compatibility.php';
 require_once __DIR__ . '/TestCase.php';

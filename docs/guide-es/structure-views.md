@@ -1,7 +1,7 @@
 Vistas
 ======
 
-Las Vistas (views) son una parte de la arquitectura [MVC](http://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
+Las Vistas (views) son una parte de la arquitectura [MVC](https://es.wikipedia.org/wiki/Modelo%E2%80%93vista%E2%80%93controlador).
 Estas son el código responsable de presentar los datos al usuario final. En una aplicación Web, las vistas son usualmente creadas
 en términos de *templates* que son archivos PHP que contienen principalmente HTML y PHP.
 Estas son manejadas por el [componente de la aplicación](structure-application-components.md) [[yii\web\View|view]], el cual provee los métodos comúnmente utilizados
@@ -20,9 +20,11 @@ título de la página y el formulario mismo, mientras que el código HTML organi
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/* @var $this yii\web\View */
-/* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\LoginForm */
+/**
+ * @var \yii\web\View $this
+ * @var \yii\widgets\ActiveForm $form
+ * @var \app\models\LoginForm $model
+ */
 
 $this->title = 'Login';
 ?>
@@ -52,7 +54,7 @@ o algún otro objeto que dispara la [renderización de la vista](#rendering-view
 
 Al crear vistas que generan páginas HTML, es importante que codifiques (encode) y/o filtres los datos
 provenientes de los usuarios antes de mostrarlos. De otro modo, tu aplicación puede estar expuesta
-a ataques tipo [cross-site scripting](http://es.wikipedia.org/wiki/Cross-site_scripting).
+a ataques tipo [cross-site scripting](https://es.wikipedia.org/wiki/Cross-site_scripting).
 
 Para mostrar un texto plano, codifícalos previamente utilizando [[yii\helpers\Html::encode()]]. Por ejemplo, el siguiente código aplica
 una codificación del nombre de usuario antes de mostrarlo:
@@ -324,8 +326,10 @@ bastante el código del layout. En la práctica, probablemente le agregues más 
 <?php
 use yii\helpers\Html;
 
-/* @var $this yii\web\View */
-/* @var $content string */
+/**
+ * @var \yii\web\View $this
+ * @var string $content
+ */
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>

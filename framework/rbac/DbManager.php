@@ -1,8 +1,9 @@
 <?php
+
 /**
- * @link http://www.yiiframework.com/
+ * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
+ * @license https://www.yiiframework.com/license/
  */
 
 namespace yii\rbac;
@@ -62,7 +63,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|array|string|null the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -87,17 +88,22 @@ class DbManager extends BaseManager
      * @since 2.0.3
      */
     public $cacheKey = 'rbac';
+    /**
+     * @var string the key used to store user RBAC roles in cache
+     * @since 2.0.48
+     */
+    public $rolesCacheSuffix = 'roles';
 
     /**
-     * @var Item[] all auth items (name => Item)
+     * @var Item[]|null all auth items (name => Item)
      */
     protected $items;
     /**
-     * @var Rule[] all auth rules (name => Rule)
+     * @var Rule[]|null all auth rules (name => Rule)
      */
     protected $rules;
     /**
-     * @var array auth item parent-child relationships (childName => list of parents)
+     * @var array|null auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
     /**
@@ -431,7 +437,9 @@ class DbManager extends BaseManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            $items[$row['name']] = $this->populateItem($row);
+            /** @var Role|Permission $item */
+            $item = $this->populateItem($row);
+            $items[$row['name']] = $item;
         }
 
         return $items;
@@ -471,6 +479,14 @@ class DbManager extends BaseManager
             return [];
         }
 
+        if ($this->cache !== null) {
+            $data = $this->cache->get($this->getUserRolesCacheKey($userId));
+
+            if ($data !== false) {
+                return $data;
+            }
+        }
+
         $query = (new Query())->select('b.*')
             ->from(['a' => $this->assignmentTable, 'b' => $this->itemTable])
             ->where('{{a}}.[[item_name]]={{b}}.[[name]]')
@@ -479,7 +495,13 @@ class DbManager extends BaseManager
 
         $roles = $this->getDefaultRoleInstances();
         foreach ($query->all($this->db) as $row) {
-            $roles[$row['name']] = $this->populateItem($row);
+            /** @var Role $role */
+            $role = $this->populateItem($row);
+            $roles[$row['name']] = $role;
+        }
+
+        if ($this->cache !== null) {
+            $this->cacheUserRolesData($userId, $roles);
         }
 
         return $roles;
@@ -525,7 +547,9 @@ class DbManager extends BaseManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            /** @var Permission $permission */
+            $permission = $this->populateItem($row);
+            $permissions[$row['name']] = $permission;
         }
 
         return $permissions;
@@ -562,7 +586,9 @@ class DbManager extends BaseManager
 
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            /** @var Permission $permission */
+            $permission = $this->populateItem($row);
+            $permissions[$row['name']] = $permission;
         }
 
         return $permissions;
@@ -596,7 +622,9 @@ class DbManager extends BaseManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            $permissions[$row['name']] = $this->populateItem($row);
+            /** @var Permission $permission */
+            $permission = $this->populateItem($row);
+            $permissions[$row['name']] = $permission;
         }
 
         return $permissions;
@@ -654,7 +682,9 @@ class DbManager extends BaseManager
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
-
+        if (!$data) {
+            return null;
+        }
         return unserialize($data);
     }
 
@@ -675,7 +705,9 @@ class DbManager extends BaseManager
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            $rules[$row['name']] = unserialize($data);
+            if ($data) {
+                $rules[$row['name']] = unserialize($data);
+            }
         }
 
         return $rules;
@@ -861,6 +893,9 @@ class DbManager extends BaseManager
             ])->execute();
 
         unset($this->checkAccessAssignments[(string) $userId]);
+
+        $this->invalidateCache();
+
         return $assignment;
     }
 
@@ -874,9 +909,13 @@ class DbManager extends BaseManager
         }
 
         unset($this->checkAccessAssignments[(string) $userId]);
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
     }
 
     /**
@@ -889,9 +928,13 @@ class DbManager extends BaseManager
         }
 
         unset($this->checkAccessAssignments[(string) $userId]);
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
+
+        $this->invalidateCache();
+
+        return $result;
     }
 
     /**
@@ -984,6 +1027,16 @@ class DbManager extends BaseManager
             $this->items = null;
             $this->rules = null;
             $this->parents = null;
+
+            $cachedUserIds = $this->cache->get($this->getUserRolesCachedSetKey());
+
+            if ($cachedUserIds !== false) {
+                foreach ($cachedUserIds as $userId) {
+                    $this->cache->delete($this->getUserRolesCacheKey($userId));
+                }
+
+                $this->cache->delete($this->getUserRolesCachedSetKey());
+            }
         }
         $this->checkAccessAssignments = [];
     }
@@ -1013,7 +1066,9 @@ class DbManager extends BaseManager
             if (is_resource($data)) {
                 $data = stream_get_contents($data);
             }
-            $this->rules[$row['name']] = unserialize($data);
+            if ($data) {
+                $this->rules[$row['name']] = unserialize($data);
+            }
         }
 
         $query = (new Query())->from($this->itemChildTable);
@@ -1054,5 +1109,29 @@ class DbManager extends BaseManager
     protected function isEmptyUserId($userId)
     {
         return !isset($userId) || $userId === '';
+    }
+
+    private function getUserRolesCacheKey($userId)
+    {
+        return $this->cacheKey . $this->rolesCacheSuffix . $userId;
+    }
+
+    private function getUserRolesCachedSetKey()
+    {
+        return $this->cacheKey . $this->rolesCacheSuffix;
+    }
+
+    private function cacheUserRolesData($userId, $roles)
+    {
+        $cachedUserIds = $this->cache->get($this->getUserRolesCachedSetKey());
+
+        if ($cachedUserIds === false) {
+            $cachedUserIds = [];
+        }
+
+        $cachedUserIds[] = $userId;
+
+        $this->cache->set($this->getUserRolesCacheKey($userId), $roles);
+        $this->cache->set($this->getUserRolesCachedSetKey(), $cachedUserIds);
     }
 }

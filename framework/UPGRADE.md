@@ -12,7 +12,7 @@ Upgrading in general is as simple as updating your dependency in your composer.j
 running `composer update`. In a big application however there may be more things to consider,
 which are explained in the following.
 
-> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
+> Note: This document assumes you have composer [installed globally](https://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer)
 so that you can run the `composer` command. If you have a `composer.phar` file inside of your project you need to
 replace `composer` with `php composer.phar` in the following.
 
@@ -51,10 +51,343 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.53
+-----------------------
+
+* Raised minimum supported PHP version to `7.4`.
+* Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
+will need to replace them with alternative caching solutions.
+
+* Extensive static analysis template annotations (generics) have been added throughout the framework to improve type inference 
+  with PHPStan and Psalm. These include:
+  
+  - **Actions**: `Action`, `InlineAction`, and all action classes now have generic type parameters for their controller type
+  - **Controllers**: `Controller` classes now have generic type parameters for their module type
+  - **Filters**: All filter classes (including `ActionFilter` and authentication filters) now have generic type parameters
+  - **Database**: `ActiveQuery` has generic type parameter for the model type, `ActiveRecord` has template methods for fluent interfaces, `Schema` classes have generic type parameters for column schema types
+  - **Dependency Injection**: `Container` and `Instance` classes have generic type parameters for object types
+  - **Applications**: `Application` and `BaseYii` have generic type parameters for user identity types
+  - **Behaviors**: Comprehensive generic annotations for all behavior classes (see the 2.0.52 upgrade notes for details on `Behavior` usage)
+  
+  If you are using static analysis tools like PHPStan or Psalm in your application and extend any of these framework classes,
+  you may need to add appropriate template annotations to maintain proper type inference. In most cases, the framework will
+  infer the types automatically, but for complex inheritance hierarchies you may need to explicitly declare template parameters.
+  
+  For example, when creating a custom action:
+  
+  ```php
+  use yii\base\Action;
+  use app\controllers\SiteController;
+  
+  /**
+   * @extends Action<SiteController>
+   */
+  class CustomAction extends Action
+  {
+      public function run()
+      {
+          // $this->controller is now properly typed as SiteController
+      }
+  }
+  ```
+
+Upgrade from Yii 2.0.52
+-----------------------
+
+* Static analysis template annotations have been added to `yii\base\Behavior` and related behavior classes.
+  The `Behavior` class now uses PHPStan and Psalm template annotations to provide better type inference for the `$owner` property.
+  
+  If you are using static analysis tools like PHPStan or Psalm in your application and have custom behavior classes,
+  you may need to add template annotations to avoid `MissingTemplateParam` errors.
+  
+  **Example for a simple behavior:**
+  
+  ```php
+  use yii\base\Behavior;
+  use yii\db\ActiveRecord;
+  
+  /**
+   * @extends Behavior<ActiveRecord>
+   */
+  class TestBehavior extends Behavior
+  {
+      public function events(): array
+      {
+          return [
+              ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+          ];
+      }
+      
+      public function beforeInsert(\yii\base\ModelEvent $event): void
+      {
+          // $this->owner is now properly typed as ActiveRecord
+      }
+  }
+  ```
+  
+  **Example for a behavior with its own template parameter:**
+  
+  If you're creating a reusable behavior that should work with different component types,
+  you can define your own template parameter:
+  
+  ```php
+  use yii\base\Behavior;
+  use yii\db\ActiveRecord;
+  
+  /**
+   * @template T of ActiveRecord
+   * @extends Behavior<T>
+   */
+  class ReusableBehavior extends Behavior
+  {
+      // The $owner property inherited from Behavior will be typed as T
+      // This allows your behavior to work with any ActiveRecord subclass
+  }
+  ```
+  
+  This allows static analysis to infer the type of `$owner` without having to add type annotations throughout your code.
+  The framework's built-in behaviors (like `TimestampBehavior`, `BlameableBehavior`, etc.) have already been updated with
+  these annotations.
+
+* `ErrorHandler::convertExceptionToError()` has been deprecated and will be removed in version 2.2.0.
+
+  This method was deprecated due to `PHP 8.4` deprecating the use of `E_USER_ERROR` with `trigger_error()`.
+  The framework now handles exceptions in `__toString()` methods more appropriately based on the PHP version.
+
+  **Before (deprecated):**
+  ```php
+  public function __toString() {
+      try {
+          return $this->render();
+      } catch (\Throwable $e) {
+          ErrorHandler::convertExceptionToError($e);
+          return '';
+      }
+  }
+  ```
+
+  **After (recommended):**
+  ```php
+  public function __toString() {
+      try {
+          return $this->render();
+      } catch (\Throwable $e) {
+          if (PHP_VERSION_ID < 70400) {
+              trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+              return '';
+          }
+          throw $e;
+      }
+  }
+  ```
+
+* There was a bug when loading fixtures into PostgreSQL database, the table sequences were not reset. If you used a work-around or if you depended on this behavior, you are advised to review your code.
+
+Upgrade from Yii 2.0.51
+-----------------------
+
+* The function signature for `yii\web\Session::readSession()` and `yii\web\Session::gcSession()` have been changed.
+  They now have the same return types as `\SessionHandlerInterface::read()` and `\SessionHandlerInterface::gc()` respectively.
+  In case those methods have overwritten you will need to update your child classes accordingly.
+
+Upgrade from Yii 2.0.50
+-----------------------
+
+* Correcting the behavior for `JSON` column type in `MariaDb`.
+
+  Columns that are created as `JSON` now automatically add a Check constraint for `json_valid` to the according column.
+  If Yii2 detects that a column has this `json_valid` constraint, data passed into or fetched from it is automatically serialized/deserialized.
+
+  While this does affect migrations created before the update when running them afterwards, it doesn't retroactively change tables created through migrations before the update!
+  This means that running a migration script that invokes `yii\db\Migration::json()` for a MariaDb database will create a different database schema after the update than it did before.
+
+  To preserve the old behavior, migrations need to be changed to instead create a `LONGTEXT` column without a constraint:
+
+```php
+<?php
+class m251103_091000_example_migration extends Migration {
+    public function up() {
+        // before
+        $this->addColumn('MyTable', 'json_data', $this->json()->null()->after('other_column'));
+        // after
+        $this->addColumn('MyTable', 'json_data', "LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin' AFTER other_column");
+    }
+}
+```
+ 
+  To make use of the new behavior, add the json_valid constraint to according columns on pre-existing databases
+  and remove any JSON serialization/deserialization logic that was in place before this change (as (de)serialization is now done by Yii2).
+
+  Example usage of `JSON` column type in `db`:
+  
+  ```php
+  <?php
+  
+  use yii\db\Schema;
+  
+  $db = Yii::$app->db;
+  $command = $db->createCommand();
+  
+  // Create a table with a JSON column
+  $command->createTable(
+      'products',
+      [
+          'id' => Schema::TYPE_PK,
+          'details' => Schema::TYPE_JSON,
+      ],
+  )->execute();
+  
+  // Insert a new product
+  $command->insert(
+      'products',
+      [
+          'details' => [
+              'name' => 'apple',
+              'price' => 100,
+              'color' => 'blue',
+              'size' => 'small',
+          ],
+      ],
+  )->execute();
+  
+  // Read all products
+  $records = $db->createCommand('SELECT * FROM products')->queryAll();
+  ```
+  
+  Example usage of `JSON` column type in `ActiveRecord`:
+  
+  ```php
+  <?php
+  
+  namespace app\model;
+  
+  use yii\db\ActiveRecord;
+  
+  class ProductModel extends ActiveRecord
+  {
+      public static function tableName()
+      {
+          return 'products';
+      }
+  
+      public function rules()
+      {
+          return [
+              [['details'], 'safe'],
+          ];
+      }
+  }
+  ```
+  
+  ```php
+  <?php
+  
+  use app\model\ProductModel;
+  
+  // Create a new product
+  $product = new ProductModel();
+  
+  // Set the product details
+  $product->details = [
+      'name' => 'windows',
+      'color' => 'red',
+      'price' => 200,
+      'size' => 'large',
+  ];
+  
+  // Save the product
+  $product->save();
+  
+  // Read the first product
+  $product = ProductModel::findOne(1);
+  
+  // Get the product details
+  $details = $product->details;
+  
+  echo 'Name: ' . $details['name'];
+  echo 'Color: ' . $details['color'];
+  echo 'Size: ' . $details['size'];
+  
+  // Read all products with color red
+  $products = ProductModel::find()
+      ->where(new \yii\db\Expression('JSON_EXTRACT(details, "$.color") = :color', [':color' => 'red']))
+      ->all();
+  
+  // Loop through all products
+  foreach ($products as $product) {
+      $details = $product->details;
+      echo 'Name: ' . $details['name'];
+      echo 'Color: ' . $details['color'];
+      echo 'Size: ' . $details['size'];
+  }
+  ```
+
+Upgrade from Yii 2.0.48
+-----------------------
+
+* Since Yii 2.0.49 the `yii\console\Controller::select()` function supports a default value and respects
+  the `yii\console\Controller::$interactive` setting. Before the user was always prompted to select an option
+  regardless of the `$interactive` setting. Now the `$default` value is automatically returned when `$interactive` is 
+  `false`.
+* The function signature for `yii\console\Controller::select()` and `yii\helpers\BaseConsole::select()` have changed.
+  They now have an additional `$default = null` parameter. In case those methods are overwritten you will need to
+  update your child classes accordingly.
+
+Upgrade from Yii 2.0.46
+-----------------------
+
+* The default "scope" of the `yii\mutex\MysqlMutex` has changed, the name of the mutex now includes the name of the
+  database by default. Before this change the "scope" of the `MysqlMutex` was "server wide".
+  No matter which database was used, the mutex lock was acquired for the entire server, since version 2.0.47 
+  the "scope" of the mutex will be limited to the database being used. 
+  This might impact your application if …
+    * The database name of the database connection specified in the `MysqlMutex::$db` property is set dynamically
+      (or changes in any other way during your application execution):  
+      Depending on your application you might want to set the `MysqlMutex::$keyPrefix` property (see below).
+    * The database connection specified in the `MysqlMutex::$db` does not include a database name:  
+      You must specify the `MysqlMutex::$keyPrefix` property (see below).
+  
+  If you need to specify/lock the "scope" of the `MysqlMutex` you can specify the `$keyPrefix` property.  
+  For example in your application config:   
+    ```php
+    'mutex' => [
+        'class' => 'yii\mutex\MysqlMutex',
+        'db' => 'db',
+        'keyPrefix' => 'myPrefix' // Your custom prefix which determines the "scope" of the mutex.
+    ],
+    ```
+  > Warning: Even if you're not impacted by the aforementioned conditions and even if you specify the `$keyPrefix`,
+    if you rely on a locked mutex during and/or across your application deployment
+    (e.g. switching over in a live environment from an old version to a new version of your application)
+    you will have to make sure any running process that acquired a lock finishes before switching over to the new 
+    version of your application. A lock acquired before the deployment will *not* be mutually exclusive with a 
+    lock acquired after the deployment (even if they have the same name). 
+
+Upgrade from Yii 2.0.45
+-----------------------
+
+* Changes in `Inflector::camel2words()` introduced in 2.0.45 were reverted, so it works as in pre-2.0.45. If you need
+  2.0.45 behavior, [introduce your own method](https://github.com/yiisoft/yii2/pull/19495/files).
+* `yii\log\FileTarget::$rotateByCopy` is now deprecated and setting it to `false` has no effect since rotating of 
+  the files is done only by copy.
+* `yii\validators\UniqueValidator` and `yii\validators\ExistValidator`, when used on multiple attributes, now only
+  generate an error on a single attribute. Previously, they would report a separate error on each attribute.
+  Old behavior can be achieved by setting `'skipOnError' => false`, but this might have undesired side effects with
+  additional validators on one of the target attributes.
+  See [issue #19407](https://github.com/yiisoft/yii2/issues/19407)
+
+Upgrade from Yii 2.0.44
+-----------------------
+
+* `yii\filters\PageCache::$cacheHeaders` now takes a case-sensitive list of header names since PageCache is no longer 
+  storing the normalized (lowercase) versions of them so make sure this list is properly updated and your page cache 
+  is recreated.
+
 Upgrade from Yii 2.0.43
 -----------------------
 
-* `Json::encode()` can now handle zero-indexed objects in same way as `json_encode()` and keep them as objects. In order to avoid breaking backwards compatibility this behavior could be enabled by a new option flag but is disabled by default.
+* `Json::encode()` can now handle zero-indexed objects in same way as `json_encode()` and keep them as objects. In order 
+  to avoid breaking backwards compatibility this behavior could be enabled by a new option flag but is disabled by default.
   * Set `yii/helpers/Json::$keepObjectType = true` anywhere in your application code
   * Or configure json response formatter to enable it for all JSON responses:
       ```php
@@ -68,7 +401,11 @@ Upgrade from Yii 2.0.43
         ],
       ],
       ```
-* `yii\caching\Cache::multiSet()` now uses the default cache duration (`yii\caching\Cache::$defaultDuration`) when no duration is provided. A duration of 0 should be explicitly passed if items should not expire.
+* `yii\caching\Cache::multiSet()` now uses the default cache duration (`yii\caching\Cache::$defaultDuration`) when no 
+  duration is provided. A duration of 0 should be explicitly passed if items should not expire.
+* Default value of `yii\console\controllers\MessageController::$translator` is updated to `['Yii::t', '\Yii::t']`, since 
+  old value of `'Yii::t'` didn't match `\Yii::t` calls on PHP 8. If configuration file for "extract" command overrides 
+  default value, update config file accordingly. See [issue #18941](https://github.com/yiisoft/yii2/issues/18941)
 
 Upgrade from Yii 2.0.42
 -----------------------
@@ -450,7 +787,7 @@ Upgrade from Yii 2.0.13
 * `yii\db\QueryBuilder::conditionBuilders` property and method-based condition builders are no longer used. 
   Class-based conditions and builders are introduced instead to provide more flexibility, extensibility and
   space to customization. In case you rely on that property or override any of default condition builders, follow the 
-  special [guide article](http://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
+  special [guide article](https://www.yiiframework.com/doc-2.0/guide-db-query-builder.html#adding-custom-conditions-and-expressions)
   to update your code.
 
 * Protected method `yii\db\ActiveQueryTrait::createModels()` does not apply indexes as defined in `indexBy` property anymore.  
@@ -481,7 +818,7 @@ Upgrade from Yii 2.0.12
   was insecure as the header could have been set by a malicious client on a non-HTTPS connection.
   With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
   `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
-  this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+  this in the Request configuration. See the [guide](https://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
 
   This setting also affects you when Yii is running on IIS webserver, which sets the `X-Rewrite-Url` header.
   This header is now filtered by default and must be listed in trusted hosts to be detected by Yii:
@@ -674,7 +1011,7 @@ Upgrade from Yii 2.0.6
   initialization to support wider range of allowed characters. Because of this change:
 
   - You are required to flush your application cache to remove outdated `UrlRule` serialized objects.
-    See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
+    See the [Cache Flushing Guide](https://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
   - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
     in order to replace temporary IDs with parameter names after doing matching.
 
@@ -750,7 +1087,7 @@ If you've extended `yii\base\Security` to override any of the config constants y
 Upgrade from Yii 2.0.0
 ----------------------
 
-* Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
+* Upgraded Twitter Bootstrap to [version 3.3.x](https://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
   If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
   adding the following line in the `require` section:
 

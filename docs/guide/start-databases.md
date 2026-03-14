@@ -106,7 +106,7 @@ class Country extends ActiveRecord
 }
 ```
 
-The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside of it! With just the above code, 
+The `Country` class extends from [[yii\db\ActiveRecord]]. You do not need to write any code inside it! With just the above code, 
 Yii will guess the associated table name from the class name. 
 
 > Info: If no direct match can be made from the class name to the table name, you can
@@ -231,7 +231,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how all of the above code works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=country%2Findex
+https://hostname/index.php?r=country%2Findex
 ```
 
 ![Country List](images/start-country-list.png)
@@ -241,7 +241,7 @@ If you click on the button "2", you will see the page display another five count
 Observe more carefully and you will find that the URL in the browser also changes to
 
 ```
-http://hostname/index.php?r=country%2Findex&page=2
+https://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:

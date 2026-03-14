@@ -299,7 +299,7 @@ $query->where([$column => $value]);
   値が自動的に一対のパーセント記号によって囲まれることに注意してください。
 
   > Note: PostgreSQL を使っている場合は、`like` の代りに、大文字と小文字を区別しない比較のための
-  > [`ilike`](http://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
+  > [`ilike`](https://www.postgresql.org/docs/8.3/static/functions-matching.html#FUNCTIONS-LIKE) を使うことも出来ます。
 
 - `or like`: オペランド 2 が配列である場合に `LIKE` 述語が `OR` によって結合される以外は、
   `like` 演算子と同じです。
@@ -540,14 +540,14 @@ $query->limit(10)->offset(20);
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 [[yii\db\Query::join()|join()]] メソッドは SQL クエリの `JOIN` 句を指定します。例えば、
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 [[yii\db\Query::join()|join()]] メソッドは、四つのパラメータを取ります。
- 
+
 - `$type`: 結合のタイプ、例えば、`'INNER JOIN'`、`'LEFT JOIN'`。
 - `$table`: 結合されるテーブルの名前。
 - `$on`: オプション。結合条件、すなわち、`ON` 句。

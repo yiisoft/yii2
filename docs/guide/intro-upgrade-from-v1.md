@@ -265,7 +265,7 @@ Themes work completely differently in 2.0. They are now based on a path mapping 
 view file path to a themed view file path. For example, if the path map for a theme is
 `['/web/views' => '/web/themes/basic']`, then the themed version for the view file
 `/web/views/site/index.php` will be `/web/themes/basic/site/index.php`. For this reason, themes can now
-be applied to any view file, even a view rendered outside of the context of a controller or a widget.
+be applied to any view file, even a view rendered outside the context of a controller or a widget.
 
 Also, there is no more `CThemeManager` component. Instead, `theme` is a configurable property of the `view`
 application component.

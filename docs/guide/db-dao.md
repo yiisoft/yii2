@@ -11,11 +11,11 @@ you have to take extra effort to create a database-agnostic application.
 
 In Yii 2.0, DAO supports the following databases out of the box:
 
-- [MySQL](http://www.mysql.com/)
+- [MySQL](https://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
-- [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
-- [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
+- [SQLite](https://sqlite.org/)
+- [PostgreSQL](https://www.postgresql.org/): version 8.4 or higher
+- [CUBRID](https://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
@@ -275,7 +275,7 @@ a database table if they do not already exist (matching unique constraints), or 
 ```php
 Yii::$app->db->createCommand()->upsert('pages', [
     'name' => 'Front page',
-    'url' => 'http://example.com/', // url is unique
+    'url' => 'https://example.com/', // url is unique
     'visits' => 0,
 ], [
     'visits' => new \yii\db\Expression('visits + 1'),
@@ -427,7 +427,7 @@ Usage of other levels will result in an exception being thrown.
 specify the isolation level directly when starting the transaction.
 You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
 
-[isolation levels]: http://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
+[isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
 ### Nesting Transactions <span id="nesting-transactions"></span>
@@ -477,7 +477,7 @@ try {
 
 ## Replication and Read-Write Splitting <span id="read-write-splitting"></span>
 
-Many DBMS support [database replication](http://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
+Many DBMS support [database replication](https://en.wikipedia.org/wiki/Replication_(computing)#Database_replication)
 to get better database availability and faster server response time. With database replication, data are replicated
 from the so-called *master servers* to *slave servers*. All writes and updates must take place on the master servers,
 while reads may also take place on the slave servers.
@@ -682,5 +682,5 @@ $table = Yii::$app->db->getTableSchema('post');
 ```
 
 The method returns a [[yii\db\TableSchema]] object which contains the information about the table's columns,
-primary keys, foreign keys, etc. All these information are mainly utilized by [query builder](db-query-builder.md) 
+primary keys, foreign keys, etc. All this information is mainly utilized by [query builder](db-query-builder.md) 
 and [active record](db-active-record.md) to help you write database-agnostic code. 

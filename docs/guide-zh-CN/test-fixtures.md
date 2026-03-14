@@ -108,7 +108,7 @@ class UserProfileFixture extends ActiveFixture
 使用 Fixtures
 --------------
 
-如果你使用 [CodeCeption](http://codeception.com/) 作为你的 Yii 代码测试框架，
+如果你使用 [CodeCeption](https://codeception.com/) 作为你的 Yii 代码测试框架，
 你需要考虑使用 `yii2-codeception` 扩展，这个扩展包含内置的机制来支持加载和访问 Fixtures。
 如果你使用其他的测试框架，为了达到加载和访问 Fixture 的目的，
 你需要在你的测试用例中使用 [[yii\test\FixtureTrait]]。

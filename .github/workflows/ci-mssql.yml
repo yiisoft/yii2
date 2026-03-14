@@ -1,103 +1,78 @@
-on:
-  - pull_request
-  - push
-
 name: ci-mssql
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request: &ignore-paths
+    paths-ignore:
+      - ".appveyor.yml"
+      - ".dockerignore"
+      - ".editorconfig"
+      - ".git-blame-ignore-revs"
+      - ".gitattributes"
+      - ".github/CONTRIBUTING.md"
+      - ".github/FUNDING.yml"
+      - ".github/ISSUE_TEMPLATE.md"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
+      - ".github/SECURITY.md"
+      - ".gitignore"
+      - ".gitlab-ci.yml"
+      - "code-of-conduct.md"
+      - "docs/**"
+      - "framework/.gitignore"
+      - "framework/.phpstorm.meta.php"
+      - "framework/CHANGELOG.md"
+      - "framework/LICENSE.md"
+      - "framework/README.md"
+      - "framework/UPGRADE.md"
+      - "eslint.config.js"
+      - "LICENSE.md"
+      - "README.md"
+      - "ROADMAP.md"
+
+  push: *ignore-paths
 
 jobs:
   tests:
-    name: PHP ${{ matrix.php }}-mssql-${{ matrix.mssql }}
+    name: MSSQL tests with coverage
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mssql-${{ github.ref }}
+      coverage-driver: xdebug
+      database-env: '{"SA_PASSWORD":"YourStrong!Passw0rd","ACCEPT_EULA":"Y","MSSQL_PID":"Developer"}'
+      database-health-cmd: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'
+      database-image: mcr.microsoft.com/mssql/server
+      database-port: "1433"
+      database-type: mssql
+      database-versions: '["2019-latest","2022-latest"]'
+      extensions: curl, intl, pdo, pdo_sqlsrv
+      hook: |
+        sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+        docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q "IF DB_ID(N'yiitest') IS NULL CREATE DATABASE yiitest;"
+      os: '["ubuntu-22.04"]'
+      php-version: '["7.4","8.5"]'
+      phpunit-group: mssql
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-    env:
-      key: cache
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - php: '7.0'
-            extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.1'
-            extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.2'
-            extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.3'
-            extensions: pdo, pdo_sqlsrv-5.8.1
-            mssql: 'server:2017-latest'
-          - php: '7.4'
-            extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2017-latest'
-          - php: '7.4'
-            extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2019-latest'
-          - php: '8.0'
-            extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2017-latest'
-          - php: '8.0'
-            extensions: pdo, pdo_sqlsrv
-            mssql: 'server:2019-latest'
-
-    services:
-      mssql:
-          image: mcr.microsoft.com/mssql/${{ matrix.mssql }}
-          env:
-              SA_PASSWORD: YourStrong!Passw0rd
-              ACCEPT_EULA: Y
-              MSSQL_PID: Developer
-          ports:
-              - 1433:1433
-          options: --name=mssql --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'" --health-interval=10s --health-timeout=5s --health-retries=3
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2.3.4
-
-      - name: Create MS SQL Database
-        run: docker exec -i mssql /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'CREATE DATABASE yiitest'
-
-      - name: Install PHP with extensions
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php }}
-          extensions: ${{ matrix.extensions }}
-          ini-values: date.timezone='UTC'
-          tools: composer:v2, pecl
-
-      - name: Determine composer cache directory on Linux
-        run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.COMPOSER_CACHE_DIR }}
-          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php }}-composer-
-
-      - name: Update composer
-        run: composer self-update
-
-      - name: Install dependencies with composer
-        run: composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: Install dependencies with composer php 8.0
-        if: matrix.php == '8.0'
-        run: composer update --ignore-platform-reqs --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      - name: PHP Unit tests for PHP 7.1
-        run: vendor/bin/phpunit --coverage-clover=coverage.clover --group mssql --colors=always
-        if: matrix.php == '7.1'
-
-      - name: Run tests with phpunit without coverage
-        run: vendor/bin/phpunit --group mssql --colors=always
-
-      - name: Code coverage
-        run: |
-          wget https://scrutinizer-ci.com/ocular.phar
-          php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-        if: matrix.php == '7.1'
-        continue-on-error: true # if is fork
+  tests-dev:
+    name: MSSQL tests
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    with:
+      concurrency-group: mssql-dev-${{ github.ref }}
+      coverage-driver: none
+      database-env: '{"SA_PASSWORD":"YourStrong!Passw0rd","ACCEPT_EULA":"Y","MSSQL_PID":"Developer"}'
+      database-health-cmd: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'
+      database-image: mcr.microsoft.com/mssql/server
+      database-port: "1433"
+      database-type: mssql
+      database-versions: '["2022-latest"]'
+      extensions: curl, intl, pdo, pdo_sqlsrv
+      hook: |
+        sudo ACCEPT_EULA=Y apt-get install -y msodbcsql18
+        docker exec -i database /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q "IF DB_ID(N'yiitest') IS NULL CREATE DATABASE yiitest;"
+      os: '["ubuntu-22.04"]'
+      php-version: '["8.0","8.1","8.2","8.3","8.4"]'
+      phpunit-group: mssql

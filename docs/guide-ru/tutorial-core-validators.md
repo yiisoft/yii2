@@ -115,7 +115,7 @@ public function rules()
 описанном здесь: [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
 - `format`: формат даты/времени, согласно которому должна быть сделана проверка.
-   Значение может быть паттерном, описанным в [руководстве ICU](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
+   Значение может быть паттерном, описанным в [руководстве ICU](https://unicode-org.github.io/icu/userguide/format_parse/datetime/#datetime-format-syntax)
    или форматом PHP префиксированным `php:`. Формат должен приниматься классом `Datetime`. Подробнее о нём можно
    прочитать в [руководстве PHP по date_create_from_format()](https://www.php.net/manual/ru/datetime.createfromformat.php).
    Если значение не задано, используется `Yii::$app->formatter->dateFormat`.

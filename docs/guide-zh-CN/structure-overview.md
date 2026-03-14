@@ -1,7 +1,7 @@
 总览
 ========
 
-Yii 应用参照[模型-视图-控制器 （MVC）](http://wikipedia.org/wiki/Model-view-controller)
+Yii 应用参照[模型-视图-控制器 （MVC）](https://zh.wikipedia.org/wiki/MVC)
 设计模式来组织。 [模型](structure-models.md)代表数据、业务逻辑和规则；
 [视图](structure-views.md)展示模型的输出；[控制器](structure-controllers.md)
 接受出入并将其转换为[模型](structure-models.md)和[视图](structure-views.md)命令。
