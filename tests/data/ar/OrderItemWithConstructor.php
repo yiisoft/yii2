@@ -1,11 +1,16 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\ar;
+
+use ReflectionClass;
 
 /**
  * OrderItemWithConstructor.
@@ -36,11 +41,11 @@ class OrderItemWithConstructor extends ActiveRecord
 
     public static function instantiate($row)
     {
-        return (new \ReflectionClass(static::className()))->newInstanceWithoutConstructor();
+        return (new ReflectionClass(static::class))->newInstanceWithoutConstructor();
     }
 
     public function getOrder()
     {
-        return $this->hasOne(OrderWithConstructor::className(), ['id' => 'order_id']);
+        return $this->hasOne(OrderWithConstructor::class, ['id' => 'order_id']);
     }
 }

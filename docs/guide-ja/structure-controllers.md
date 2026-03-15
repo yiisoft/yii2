@@ -1,7 +1,7 @@
 コントローラ
 ============
 
-コントローラは [MVC](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を成すものです。
+コントローラは [MVC](https://ja.wikipedia.org/wiki/Model_View_Controller) アーキテクチャの一部を構成するものです。
 それは [[yii\base\Controller]] を拡張したクラスのオブジェクトであり、リクエストの処理とレスポンスの生成について責任を負います。
 具体的には、コントローラは、[アプリケーション](structure-applications.md) から制御を引き継いだ後、
 入ってきたリクエストのデータを分析し、それを [モデル](structure-models.md) に引き渡して、

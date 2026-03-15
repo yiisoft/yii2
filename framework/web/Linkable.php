@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,7 @@ interface Linkable
      *
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     'self' => 'https://example.com/users/1',
      *     'friends' => [

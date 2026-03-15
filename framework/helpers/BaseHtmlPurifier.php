@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,7 @@ class BaseHtmlPurifier
      *
      *   Here is a usage example of such a function:
      *
-     *   ```php
+     *   ```
      *   // Allow the HTML5 data attribute `data-type` on `img` elements.
      *   $content = HtmlPurifier::process($content, function ($config) {
      *     $config->getHTMLDefinition(true)

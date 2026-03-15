@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ namespace yii\helpers;
  *
  * VarDumper can be used as follows,
  *
- * ```php
+ * ```
  * VarDumper::dump($var);
  * ```
  *

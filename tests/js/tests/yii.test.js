@@ -74,7 +74,8 @@ describe('yii', function () {
 
     jsdom({
         html: fs.readFileSync('tests/js/data/yii.html', 'utf-8'),
-        src: fs.readFileSync(jQueryPath, 'utf-8')
+        src: fs.readFileSync(jQueryPath, 'utf-8'),
+        url: "http://foo.bar"
     });
 
     before(function () {

@@ -1,14 +1,16 @@
 <?php
-/* @var $file string|null */
-/* @var $line int|null */
-/* @var $class string|null */
-/* @var $method string|null */
-/* @var $index int */
-/* @var $lines string[] */
-/* @var $begin int */
-/* @var $end int */
-/* @var $args array */
-/* @var $handler \yii\web\ErrorHandler */
+/**
+ * @var string|null $file
+ * @var int|null $line
+ * @var string|null $class
+ * @var string|null $method
+ * @var int $index
+ * @var string[] $lines
+ * @var int $begin
+ * @var int $end
+ * @var array $args
+ * @var \yii\web\ErrorHandler $handler
+ */
 $html = <<<HTML
 IDE
 <svg class="icon icon--new-window" focusable="false" aria-hidden="true" width="16" height="16">

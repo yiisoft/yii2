@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,7 +22,7 @@ use yii\helpers\Json;
 class StringValidator extends Validator
 {
     /**
-     * @var int|array specifies the length limit of the value to be validated.
+     * @var int|array|null specifies the length limit of the value to be validated.
      * This can be specified in one of the following forms:
      *
      * - an integer: the exact length that the value should be of;

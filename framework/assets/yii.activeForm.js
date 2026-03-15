@@ -330,7 +330,7 @@
                 this.$form = $form;
                 var $input = findInput($form, this);
 
-                var disabled = $input.toArray().reduce(function(result, next) {
+                var disabled = $input.toArray().reduce(function (result, next) {
                     return result && $(next).is(':disabled');
                 }, true);
                 if (disabled) {
@@ -733,8 +733,7 @@
 
         var errorAttributes = [], $input;
         $.each(data.attributes, function () {
-            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form,
-                this, messages));
+            var hasError = (submitting && updateInput($form, this, messages)) || (!submitting && attrHasError($form, this, messages));
             $input = findInput($form, this);
 
             if (!$input.is(':disabled') && !this.cancelled && hasError) {

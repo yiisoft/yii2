@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,7 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
     /**
      * @return array
      */
-    public function typesProvider()
+    public static function typesProvider(): array
     {
         return [
             ['integer UNSIGNED', Schema::TYPE_INTEGER, null, [

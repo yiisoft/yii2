@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,7 +8,10 @@
 
 namespace yiiunit\framework\log;
 
+use yii\base\InvalidConfigException;
 use yii\log\EmailTarget;
+use yii\mail\BaseMailer;
+use yii\mail\BaseMessage;
 use yiiunit\TestCase;
 
 /**
@@ -24,30 +28,29 @@ class EmailTargetTest extends TestCase
     /**
      * Set up mailer.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
-        $this->mailer = $this->getMockBuilder('yii\\mail\\BaseMailer')
-            ->setMethods(['compose'])
-            ->getMockForAbstractClass();
+        $this->mailer = $this->createPartialMock(BaseMailer::class, ['compose', 'sendMessage']);
     }
 
     /**
      * @covers \yii\log\EmailTarget::init()
      */
-    public function testInitWithOptionTo()
+    public function testInitWithOptionTo(): void
     {
         $target = new EmailTarget(['mailer' => $this->mailer, 'message' => ['to' => 'developer1@example.com']]);
-        $this->assertInternalType('object', $target); // should be no exception during `init()`
+        $this->assertIsObject($target); // should be no exception during `init()`
     }
 
     /**
      * @covers \yii\log\EmailTarget::init()
-     * @expectedException \yii\base\InvalidConfigException
-     * @expectedExceptionMessage The "to" option must be set for EmailTarget::message.
      */
-    public function testInitWithoutOptionTo()
+    public function testInitWithoutOptionTo(): void
     {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('The "to" option must be set for EmailTarget::message.');
+
         new EmailTarget(['mailer' => $this->mailer]);
     }
 
@@ -55,15 +58,15 @@ class EmailTargetTest extends TestCase
      * @covers \yii\log\EmailTarget::export()
      * @covers \yii\log\EmailTarget::composeMessage()
      */
-    public function testExportWithSubject()
+    public function testExportWithSubject(): void
     {
         $message1 = ['A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 1'];
         $message2 = ['A very looooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 2'];
         $messages = [$message1, $message2];
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
-        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
-            ->setMethods(['setTextBody', 'send', 'setSubject'])
+        $message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['setTextBody', 'send', 'setSubject'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(true);
 
@@ -73,8 +76,9 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
-        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
-            ->setMethods(['formatMessage'])
+        /** @var EmailTarget $mailTarget */
+        $mailTarget = $this->getMockBuilder(EmailTarget::class)
+            ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
@@ -100,15 +104,15 @@ class EmailTargetTest extends TestCase
      * @covers \yii\log\EmailTarget::export()
      * @covers \yii\log\EmailTarget::composeMessage()
      */
-    public function testExportWithoutSubject()
+    public function testExportWithoutSubject(): void
     {
         $message1 = ['A veeeeery loooooooooooooooooooooooooooooooooooooooooooooooooooooooong message 3'];
         $message2 = ['Message 4'];
         $messages = [$message1, $message2];
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
-        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
-            ->setMethods(['setTextBody', 'send', 'setSubject'])
+        $message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['setTextBody', 'send', 'setSubject'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(true);
 
@@ -118,8 +122,9 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
-        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
-            ->setMethods(['formatMessage'])
+        /** @var EmailTarget $mailTarget */
+        $mailTarget = $this->getMockBuilder(EmailTarget::class)
+            ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
@@ -145,15 +150,17 @@ class EmailTargetTest extends TestCase
      *
      * See https://github.com/yiisoft/yii2/issues/14296
      */
-    public function testExportWithSendFailure()
+    public function testExportWithSendFailure(): void
     {
-        $message = $this->getMockBuilder('yii\\mail\\BaseMessage')
-            ->setMethods(['send'])
+        $message = $this->getMockBuilder(BaseMessage::class)
+            ->onlyMethods(['send'])
             ->getMockForAbstractClass();
         $message->method('send')->willReturn(false);
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
-        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
-            ->setMethods(['formatMessage'])
+
+        /** @var EmailTarget $mailTarget */
+        $mailTarget = $this->getMockBuilder(EmailTarget::class)
+            ->onlyMethods(['formatMessage'])
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
@@ -163,6 +170,7 @@ class EmailTargetTest extends TestCase
                 ],
             ])
             ->getMock();
+
         $this->expectException('yii\log\LogRuntimeException');
         $mailTarget->export();
     }

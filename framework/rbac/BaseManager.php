@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -42,8 +43,8 @@ abstract class BaseManager extends Component implements ManagerInterface
 
     /**
      * Returns the items of the specified type.
-     * @param int $type the auth item type (either [[Item::TYPE_ROLE]] or [[Item::TYPE_PERMISSION]]
-     * @return Item[] the auth items of the specified type.
+     * @param Item::TYPE_ROLE|Item::TYPE_PERMISSION $type the auth item type (either [[Item::TYPE_ROLE]] or [[Item::TYPE_PERMISSION]]
+     * @return ($type is Item::TYPE_ROLE ? Role[] : Permission[]) the auth items of the specified type.
      */
     abstract protected function getItems($type);
 
@@ -177,7 +178,12 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function getRole($name)
     {
         $item = $this->getItem($name);
-        return $item instanceof Item && $item->type == Item::TYPE_ROLE ? $item : null;
+        if ($item instanceof Item && $item->type == Item::TYPE_ROLE) {
+            /** @var Role $item */
+            return $item;
+        }
+
+        return null;
     }
 
     /**
@@ -186,7 +192,12 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function getPermission($name)
     {
         $item = $this->getItem($name);
-        return $item instanceof Item && $item->type == Item::TYPE_PERMISSION ? $item : null;
+        if ($item instanceof Item && $item->type == Item::TYPE_PERMISSION) {
+            /** @var Permission $item */
+            return $item;
+        }
+
+        return null;
     }
 
     /**

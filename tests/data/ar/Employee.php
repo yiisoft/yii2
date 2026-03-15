@@ -55,7 +55,7 @@ class Employee extends ActiveRecord
     public function getDepartment()
     {
         return $this
-            ->hasOne(Department::className(), [
+            ->hasOne(Department::class, [
                 'id' => 'department_id',
             ])
             ->inverseOf('employees')
@@ -70,7 +70,7 @@ class Employee extends ActiveRecord
     public function getDossier()
     {
         return $this
-            ->hasOne(Dossier::className(), [
+            ->hasOne(Dossier::class, [
                 'department_id' => 'department_id',
                 'employee_id' => 'id',
             ])

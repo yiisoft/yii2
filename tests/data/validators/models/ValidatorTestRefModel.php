@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -26,6 +27,6 @@ class ValidatorTestRefModel extends ActiveRecord
 
     public function getMain()
     {
-        return $this->hasOne(ValidatorTestMainModel::className(), ['id' => 'ref']);
+        return $this->hasOne(ValidatorTestMainModel::class, ['id' => 'ref']);
     }
 }

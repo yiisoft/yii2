@@ -95,7 +95,7 @@ yii.validation = (function ($) {
         },
 
         validateImage: function (file, messages, options, deferred, fileReader, image) {
-            image.onload = function() {
+            image.onload = function () {
                 validateImageSize(file, image, messages, options);
                 deferred.resolve();
             };
@@ -379,7 +379,8 @@ yii.validation = (function ($) {
         }
     };
 
-    function getUploadedFiles(attribute, messages, options) {
+    function getUploadedFiles(attribute, messages, options)
+    {
         // Skip validation if File API is not available
         if (typeof File === "undefined") {
             return [];
@@ -415,12 +416,13 @@ yii.validation = (function ($) {
         return files;
     }
 
-    function validateFile(file, messages, options) {
+    function validateFile(file, messages, options)
+    {
         if (options.extensions && options.extensions.length > 0) {
             var found = false;
             var filename = file.name.toLowerCase();
 
-            for (var index=0; index < options.extensions.length; index++) {
+            for (var index = 0; index < options.extensions.length; index++) {
                 var ext = options.extensions[index].toLowerCase();
                 if ((ext === '' && filename.indexOf('.') === -1) || (filename.substr(filename.length - options.extensions[index].length - 1) === ('.' + ext))) {
                     found = true;
@@ -448,7 +450,8 @@ yii.validation = (function ($) {
         }
     }
 
-    function validateMimeType(mimeTypes, fileType) {
+    function validateMimeType(mimeTypes, fileType)
+    {
         for (var i = 0, len = mimeTypes.length; i < len; i++) {
             if (new RegExp(mimeTypes[i]).test(fileType)) {
                 return true;
@@ -458,7 +461,8 @@ yii.validation = (function ($) {
         return false;
     }
 
-    function validateImageSize(file, image, messages, options) {
+    function validateImageSize(file, image, messages, options)
+    {
         if (options.minWidth && image.width < options.minWidth) {
             messages.push(options.underWidth.replace(/\{file\}/g, file.name));
         }
@@ -479,7 +483,8 @@ yii.validation = (function ($) {
     /**
      * PHP: `trim($path, ' /')`, JS: `yii.helpers.trim(path, {chars: ' /'})`
      */
-    function trimString(value, options = {skipOnEmpty: true, chars: null}) {
+    function trimString(value, options = {skipOnEmpty: true, chars: null})
+    {
         if (options.skipOnEmpty !== false && pub.isEmpty(value)) {
             return value;
         }

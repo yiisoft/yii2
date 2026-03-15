@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -119,7 +120,7 @@ return [
     '{delta, plural, =1{a day} other{# days}} ago' => 'prije {delta, plural, =1{dan} one{# dan} few{# dana} many{# dana} other{# dana}}',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => 'prije {delta, plural, =1{minut} one{# minut} few{# minuta} many{# minuta} other{# minuta}}',
     '{delta, plural, =1{a month} other{# months}} ago' => 'prije {delta, plural, =1{mjesec} one{# mjesec} few{# mjeseci} many{# mjeseci} other{# mjeseci}}',
-    '{delta, plural, =1{a second} other{# seconds}} ago' => 'prije {delta, plural, =1{sekundu} one{# sekundu} few{# sekundi} many{# sekundi} other{# sekundi}',
+    '{delta, plural, =1{a second} other{# seconds}} ago' => 'prije {delta, plural, =1{sekundu} one{# sekundu} few{# sekundi} many{# sekundi} other{# sekundi}}',
     '{delta, plural, =1{a year} other{# years}} ago' => 'prije {delta, plural, =1{godinu} one{# godinu} few{# godina} many{# godina} other{# godina}}',
     '{delta, plural, =1{an hour} other{# hours}} ago' => 'prije {delta, plural, =1{sat} one{# sat} few{# sati} many{# sati} other{# sati}}',
     '{nFormatted} B' => '{nFormatted} B',

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\base\Widget" method="widget" argument="0" targetValue="false" targetInArray="key">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+        <classMethod class="\yii\base\Widget" method="begin" argument="0" targetValue="false" targetInArray="key">
+            <properties protected="false" private="false" xpath="$variable"/>
+        </classMethod>
+
+        <classMethod class="\yii\widgets\ActiveForm" method="field" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\widgets\ActiveForm" method="beginField" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+    </definitions>
+</meta-storm>

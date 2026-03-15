@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -30,13 +31,12 @@ class ActiveForm extends Widget
      * Add validation state class to container tag
      * @since 2.0.14
      */
-    const VALIDATION_STATE_ON_CONTAINER = 'container';
+    public const VALIDATION_STATE_ON_CONTAINER = 'container';
     /**
      * Add validation state class to input tag
      * @since 2.0.14
      */
-    const VALIDATION_STATE_ON_INPUT = 'input';
-
+    public const VALIDATION_STATE_ON_INPUT = 'input';
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
@@ -50,7 +50,7 @@ class ActiveForm extends Widget
      * will add new parameters instead of replacing existing ones.
      * You may set [[action]] explicitly to avoid this:
      *
-     * ```php
+     * ```
      * $form = ActiveForm::begin([
      *     'method' => 'get',
      *     'action' => ['controller/action'],
@@ -73,7 +73,7 @@ class ActiveForm extends Widget
      * This can be either a configuration array or an anonymous function returning a configuration array.
      * If the latter, the signature should be as follows:
      *
-     * ```php
+     * ```
      * function ($model, $attribute)
      * ```
      *
@@ -377,7 +377,7 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ```php
+     * ```
      * $model = new Post;
      * $model->load(Yii::$app->request->post());
      * if (Yii::$app->request->isAjax) {
@@ -390,7 +390,7 @@ class ActiveForm extends Widget
      * To validate multiple models, simply pass each model as a parameter to this method, like
      * the following:
      *
-     * ```php
+     * ```
      * ActiveForm::validate($model1, $model2, ...);
      * ```
      *
@@ -402,7 +402,7 @@ class ActiveForm extends Widget
      * When this method is used to validate multiple models, this parameter will be interpreted
      * as a model.
      *
-     * @return array the error message array indexed by the attribute IDs.
+     * @return array<string, array<string>> the error message array indexed by the attribute IDs.
      */
     public static function validate($model, $attributes = null)
     {
@@ -414,7 +414,7 @@ class ActiveForm extends Widget
         } else {
             $models = [$model];
         }
-        /* @var $model Model */
+        /** @var Model $model */
         foreach ($models as $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {
@@ -432,7 +432,7 @@ class ActiveForm extends Widget
      * For example, you may use the following code in a controller action to respond
      * to an AJAX validation request:
      *
-     * ```php
+     * ```
      * // ... load $models ...
      * if (Yii::$app->request->isAjax) {
      *     Yii::$app->response->format = Response::FORMAT_JSON;
@@ -450,7 +450,7 @@ class ActiveForm extends Widget
     public static function validateMultiple($models, $attributes = null)
     {
         $result = [];
-        /* @var $model Model */
+        /** @var Model $model */
         foreach ($models as $i => $model) {
             $model->validate($attributes);
             foreach ($model->getErrors() as $attribute => $errors) {

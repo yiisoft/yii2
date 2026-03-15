@@ -9,7 +9,7 @@ POST や GET のパラメータなどの環境変数を設定しておいてか�
 経験則から言うと、特別なウェブ・サーバ設定や JavaScript による複雑な UI を持たない場合は、
 機能テストの方を選ぶべきです。
 
-機能テストは Codeception フレームワークの助けを借りて実装されています。これにつては、優れたドキュメントがあります。
+機能テストは Codeception フレームワークの助けを借りて実装されています。これについては、優れたドキュメントがあります。
 
 - [Codeception for Yii framework](https://codeception.com/for/yii)
 - [Codeception Functional Tests](https://codeception.com/docs/04-FunctionalTests)

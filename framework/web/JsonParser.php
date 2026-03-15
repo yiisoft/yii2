@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +16,7 @@ use yii\helpers\Json;
  *
  * To enable parsing for JSON requests you can configure [[Request::parsers]] using this class:
  *
- * ```php
+ * ```
  * 'request' => [
  *     'parsers' => [
  *         'application/json' => 'yii\web\JsonParser',

@@ -1,11 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db\mssql\Type;
+namespace yiiunit\framework\db\mssql\type;
 
 use yii\db\Query;
 use yiiunit\framework\db\DatabaseTestCase;
@@ -18,7 +19,7 @@ class VarbinaryTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
-    public function testVarbinary()
+    public function testVarbinary(): void
     {
         $db = $this->getConnection();
 

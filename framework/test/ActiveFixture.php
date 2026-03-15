@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -85,6 +86,9 @@ class ActiveFixture extends BaseActiveFixture
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
         }
+        if ($table->sequenceName !== null) {
+            $this->db->createCommand()->executeResetSequence($table->fullName);
+        }
     }
 
     /**
@@ -100,7 +104,6 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-
             if ($this->dataDirectory !== null) {
                 $dataFile = $this->getTableSchema()->fullName . '.php';
             } else {
@@ -148,7 +151,7 @@ class ActiveFixture extends BaseActiveFixture
         $db = $this->db;
         $tableName = $this->tableName;
         if ($tableName === null) {
-            /* @var $modelClass \yii\db\ActiveRecord */
+            /** @var \yii\db\ActiveRecord $modelClass */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
         }

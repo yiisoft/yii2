@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -14,7 +15,7 @@ namespace yii\db;
  * it will be replaced with the [[expression]] property value without any
  * DB escaping or quoting. For example,
  *
- * ```php
+ * ```
  * $expression = new Expression('NOW()');
  * $now = (new \yii\db\Query)->select($expression)->scalar();  // SELECT NOW();
  * echo $now; // prints the current date

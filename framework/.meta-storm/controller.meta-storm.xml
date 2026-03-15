@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\base\Controller" method="render" argument="0">
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/modules/([^\\/]+)/controllers/" to="/themes/default/modules/$1/views/"/>
+                </directoryProcessors>
+            </files>
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/controllers/" to="/views/"/>
+                </directoryProcessors>
+            </files>
+        </classMethod>
+        <classMethod class="\yii\base\Controller" method="renderPartial" argument="0">
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/modules/([^\\/]+)/controllers/" to="/themes/default/modules/$1/views/"/>
+                </directoryProcessors>
+            </files>
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/controllers/" to="/views/"/>
+                </directoryProcessors>
+            </files>
+        </classMethod>
+        <classMethod class="\yii\base\Controller" method="renderFile" argument="0">
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/modules/([^\\/]+)/controllers/" to="/themes/default/modules/$1/views/"/>
+                </directoryProcessors>
+            </files>
+            <files extension="php" relatedTo="file">
+                <directoryProcessors>
+                    <regexp from="Controller\.php" to=""/>
+                    <regexp from="([a-z])([A-Z])" to="$1-$2"/>
+                    <case from="/[^/]+$" case="lower"/>
+                    <regexp from="/controllers/" to="/views/"/>
+                </directoryProcessors>
+            </files>
+        </classMethod>
+    </definitions>
+    <envs>
+        <env name="yiisoft/yii2:view-theme" value="default"/>
+    </envs>
+</meta-storm>

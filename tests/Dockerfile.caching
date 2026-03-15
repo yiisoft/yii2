@@ -1,0 +1,9 @@
+FROM yiisoftware/yii2-php:8.4-apache
+
+RUN apt-get update && apt-get install -y --no-install-recommends libmemcached-dev zlib1g-dev libzip-dev
+RUN pecl install memcached
+RUN docker-php-ext-enable memcached
+
+WORKDIR /project
+COPY ./ /project
+RUN composer install --prefer-dist

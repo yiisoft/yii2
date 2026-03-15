@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\helpers\BaseHtml" method="tag" argument="0">
+            <collection name="GLOBAL:html-tags"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="beginTag" argument="0">
+            <collection name="GLOBAL:html-tags"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="endTag" argument="0">
+            <collection name="GLOBAL:html-tags"/>
+        </classMethod>
+
+        <classMethod class="\yii\helpers\BaseHtml" method="activeLabel" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeHint" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="error" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeInput" argument="2">
+            <properties protected="false" private="false" relatedArgument="1" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeTextInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="setActivePlaceholder" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeHiddenInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activePasswordInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeFileInput" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeTextarea" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeCheckbox" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeBooleanInput" argument="2">
+            <properties protected="false" private="false" relatedArgument="1" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeDropDownList" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeListBox" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeCheckboxList" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="activeRadioList" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="getAttributeValue" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="getInputName" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+        <classMethod class="\yii\helpers\BaseHtml" method="getInputId" argument="1">
+            <properties protected="false" private="false" relatedArgument="0" relatedTo="argument"/>
+        </classMethod>
+    </definitions>
+</meta-storm>

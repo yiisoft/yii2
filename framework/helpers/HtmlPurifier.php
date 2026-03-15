@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -12,13 +13,13 @@ namespace yii\helpers;
  *
  * Basic usage is the following:
  *
- * ```php
+ * ```
  * echo HtmlPurifier::process($html);
  * ```
  *
  * If you want to configure it:
  *
- * ```php
+ * ```
  * echo HtmlPurifier::process($html, [
  *     'Attr.EnableID' => true,
  * ]);
