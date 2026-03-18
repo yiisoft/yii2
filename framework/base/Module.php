@@ -767,6 +767,9 @@ class Module extends ServiceLocator
      *
      * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
      * The parent module may be the application.
+     *
+     * @return ($throwException is true ? object : object|null) the component of the specified ID. If `$throwException` is false and `$id`
+     *  is not registered before, null will be returned.
      */
     public function get($id, $throwException = true)
     {
