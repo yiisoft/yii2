@@ -2386,14 +2386,18 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [],
                 ['id'],
                 '',
-                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp3 THEN :qp4 ELSE [[status]] END, [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp2 WHEN [[id]]=:qp5 THEN UPPER(name) ELSE [[name]] END WHERE [[id]] IN (:qp0, :qp3, :qp5)',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp4 THEN :qp5 ELSE [[status]] END, [[name]]=CASE WHEN [[id]]=:qp2 THEN :qp3 WHEN [[id]]=:qp6 THEN UPPER(name) ELSE [[name]] END WHERE [[id]] IN (:qp7, :qp8, :qp9)',
                 [
                     ':qp0' => 1,
                     ':qp1' => 1,
-                    ':qp2' => 'Tom',
-                    ':qp3' => 2,
-                    ':qp4' => 0,
-                    ':qp5' => 3,
+                    ':qp2' => 1,
+                    ':qp3' => 'Tom',
+                    ':qp4' => 2,
+                    ':qp5' => 0,
+                    ':qp6' => 3,
+                    ':qp7' => 1,
+                    ':qp8' => 2,
+                    ':qp9' => 3,
                 ],
             ],
             'null key value' => [
@@ -2411,11 +2415,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [],
                 ['id'],
                 '',
-                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]] IS NULL THEN :qp0 WHEN [[id]]=:qp1 THEN :qp2 ELSE [[status]] END WHERE ([[id]] IN (:qp1) OR [[id]] IS NULL)',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]] IS NULL THEN :qp0 WHEN [[id]]=:qp1 THEN :qp2 ELSE [[status]] END WHERE ([[id]] IN (:qp3) OR [[id]] IS NULL)',
                 [
                     ':qp0' => 1,
                     ':qp1' => 2,
                     ':qp2' => 0,
+                    ':qp3' => 2,
                 ],
             ],
             'composite key' => [
@@ -2427,7 +2432,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [],
                 ['int_col', 'char_col'],
                 '',
-                'UPDATE {{%type}} SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 AND [[char_col]]=:qp1 THEN :qp2 WHEN [[int_col]]=:qp3 AND [[char_col]]=:qp4 THEN :qp5 ELSE [[float_col]] END WHERE ([[int_col]]=:qp0 AND [[char_col]]=:qp1) OR ([[int_col]]=:qp3 AND [[char_col]]=:qp4)',
+                'UPDATE {{%type}} SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 AND [[char_col]]=:qp1 THEN :qp2 WHEN [[int_col]]=:qp3 AND [[char_col]]=:qp4 THEN :qp5 ELSE [[float_col]] END WHERE ([[int_col]]=:qp6 AND [[char_col]]=:qp7) OR ([[int_col]]=:qp8 AND [[char_col]]=:qp9)',
                 [
                     ':qp0' => 1,
                     ':qp1' => 'a',
@@ -2435,6 +2440,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     ':qp3' => 2,
                     ':qp4' => 'b',
                     ':qp5' => 2.5,
+                    ':qp6' => 1,
+                    ':qp7' => 'a',
+                    ':qp8' => 2,
+                    ':qp9' => 'b',
                 ],
             ],
             'columns parameter with indexed rows' => [
@@ -2446,12 +2455,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ['id', 'status'],
                 ['id'],
                 '',
-                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[status]] END WHERE [[id]] IN (:qp0, :qp2)',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[status]] END WHERE [[id]] IN (:qp4, :qp5)',
                 [
                     ':qp0' => 1,
                     ':qp1' => 1,
                     ':qp2' => 2,
                     ':qp3' => 0,
+                    ':qp4' => 1,
+                    ':qp5' => 2,
                 ],
             ],
             'string condition' => [
@@ -2463,12 +2474,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [],
                 ['id'],
                 'active=1',
-                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[status]] END WHERE ([[id]] IN (:qp0, :qp2)) AND (active=1)',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[status]] END WHERE ([[id]] IN (:qp4, :qp5)) AND (active=1)',
                 [
                     ':qp0' => 1,
                     ':qp1' => 1,
                     ':qp2' => 2,
                     ':qp3' => 0,
+                    ':qp4' => 1,
+                    ':qp5' => 2,
                 ],
             ],
         ];
@@ -2538,13 +2551,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE [[id]] IN (:qp0)',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE [[id]] IN (:qp2)',
             ),
             $actualSQL,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 1,
+            ':qp2' => 1,
         ], $actualParams);
     }
 
@@ -2606,13 +2620,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[unknown_table]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE [[id]] IN (:qp0)',
+                'UPDATE [[unknown_table]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE [[id]] IN (:qp2)',
             ),
             $actualSQL,
         );
         $this->assertSame([
             ':qp0' => 'k1',
             ':qp1' => 1,
+            ':qp2' => 'k1',
         ], $actualParams);
     }
 
@@ -2628,13 +2643,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END WHERE [[int_col]] IN (:qp0)',
+                'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END WHERE [[int_col]] IN (:qp2)',
             ),
             $actualSQL,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 2.5,
+            ':qp2' => 1,
         ], $actualParams);
     }
 
@@ -2648,7 +2664,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 AND [[status]]=:qp1 THEN :qp2 WHEN [[id]]=:qp3 AND [[status]]=:qp4 THEN :qp5 ELSE [[name]] END WHERE ([[id]]=:qp0 AND [[status]]=:qp1) OR ([[id]]=:qp3 AND [[status]]=:qp4)',
+                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 AND [[status]]=:qp1 THEN :qp2 WHEN [[id]]=:qp3 AND [[status]]=:qp4 THEN :qp5 ELSE [[name]] END WHERE ([[id]]=:qp6 AND [[status]]=:qp7) OR ([[id]]=:qp8 AND [[status]]=:qp9)',
             ),
             $actualSQL,
         );
@@ -2659,6 +2675,10 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ':qp3' => 2,
             ':qp4' => 20,
             ':qp5' => 'Jerry',
+            ':qp6' => 1,
+            ':qp7' => 10,
+            ':qp8' => 2,
+            ':qp9' => 20,
         ], $actualParams);
     }
 
@@ -2672,7 +2692,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[name]] END WHERE [[id]] IN (:qp0, :qp2)',
+                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp1 WHEN [[id]]=:qp2 THEN :qp3 ELSE [[name]] END WHERE [[id]] IN (:qp4, :qp5)',
             ),
             $actualSQL,
         );
@@ -2681,6 +2701,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ':qp1' => 'active',
             ':qp2' => 2,
             ':qp3' => 'inactive',
+            ':qp4' => 1,
+            ':qp5' => 2,
         ], $actualParams);
     }
 
@@ -2704,13 +2726,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE ([[id]] IN (:qp0)) AND (active=1)',
+                'UPDATE [[customer]] SET [[status]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[status]] END WHERE ([[id]] IN (:qp2)) AND (active=1)',
             ),
             $actualSQL,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 1,
+            ':qp2' => 1,
         ], $actualParams);
     }
 
@@ -2723,7 +2746,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[name]] END WHERE ([[id]] IN (:qp0)) AND ([[status]]=:qp2)',
+                'UPDATE [[customer]] SET [[name]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[name]] END WHERE ([[id]] IN (:qp2)) AND ([[status]]=:qp3)',
             ),
             $actualSQL,
         );
@@ -2731,6 +2754,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ':qp0' => 1,
             ':qp1' => 'Tom',
             ':qp2' => 1,
+            ':qp3' => 1,
         ], $actualParams);
     }
 
@@ -2743,13 +2767,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         $this->assertSame(
             $this->replaceQuotes(
-                'UPDATE [[animal]] SET [[type]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[type]] END WHERE [[id]] IN (:qp0)',
+                'UPDATE [[animal]] SET [[type]]=CASE WHEN [[id]]=:qp0 THEN :qp1 ELSE [[type]] END WHERE [[id]] IN (:qp2)',
             ),
             $actualSQL,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 'cat',
+            ':qp2' => 1,
         ], $actualParams);
     }
 

@@ -462,12 +462,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     * @param string $table the table that data will be saved into.
-     * @param array $columns the column data (name => value) to be saved into the table.
-     * @return array normalized columns
+     * {@inheritdoc}
      */
-    private function normalizeTableRowData($table, $columns, &$params)
+    protected function normalizeTableRowData($table, $columns, &$params)
     {
         if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
@@ -628,53 +625,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $rows = $this->resolveColumnNames($rows, $columns);
         $keys = $this->resolveKeys($table, $keys);
 
-        $normalizedRows = [];
-        foreach ($rows as $row) {
-            if ($row instanceof \Traversable) {
-                $row = iterator_to_array($row);
-            }
-            if (!is_array($row)) {
-                $normalizedRows[] = $row;
-                continue;
-            }
-
-            $keyValues = [];
-            foreach ($keys as $keyCol) {
-                if (array_key_exists($keyCol, $row)) {
-                    $keyValues[$keyCol] = $row[$keyCol];
-                    unset($row[$keyCol]);
-                }
-            }
-            $row = $this->normalizeTableRowData($table, $row, $params);
-            foreach ($keyValues as $keyCol => $keyValue) {
-                $row[$keyCol] = $keyValue;
-            }
-            $normalizedRows[] = $row;
-        }
-
-        $sql = parent::batchUpdate($table, $normalizedRows, [], $keys, $condition, $params);
-        if ($sql === '' || empty($params)) {
-            return $sql;
-        }
-
-        // The parent's batchUpdate() reuses key placeholders in both CASE/WHEN and WHERE IN clauses.
-        // MSSQL's sqlsrv PDO driver does not support using a named parameter more than once,
-        // so we renumber all placeholders to make each occurrence unique.
-        $expandedParams = [];
-        $sql = preg_replace_callback('/:([a-zA-Z_][a-zA-Z0-9_]*)/', function ($matches) use (&$expandedParams, $params) {
-            $name = ':' . $matches[1];
-            if (!array_key_exists($name, $params)) {
-                return $matches[0];
-            }
-
-            $expandedName = ':qp' . count($expandedParams);
-            $expandedParams[$expandedName] = $params[$name];
-
-            return $expandedName;
-        }, $sql);
-        $params = $expandedParams;
-
-        return $sql;
+        return parent::batchUpdate($table, $this->normalizeBatchUpdateRows($table, $rows, $keys, $params), [], $keys, $condition, $params);
     }
 
     /**

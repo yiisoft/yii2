@@ -305,7 +305,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function insert($table, $columns, &$params)
     {
-        return parent::insert($table, $this->normalizeTableRowData($table, $columns), $params);
+        return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
     }
 
     /**
@@ -315,9 +315,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        $insertColumns = $this->normalizeTableRowData($table, $insertColumns);
+        $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
         if (!is_bool($updateColumns)) {
-            $updateColumns = $this->normalizeTableRowData($table, $updateColumns);
+            $updateColumns = $this->normalizeTableRowData($table, $updateColumns, $params);
         }
         if (version_compare($this->db->getServerVersion(), '9.5', '<')) {
             return $this->oldUpsert($table, $insertColumns, $updateColumns, $params);
@@ -455,7 +455,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function update($table, $columns, $condition, &$params)
     {
-        return parent::update($table, $this->normalizeTableRowData($table, $columns), $condition, $params);
+        return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
 
     /**
@@ -466,44 +466,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $rows = $this->resolveColumnNames($rows, $columns);
         $keys = $this->resolveKeys($table, $keys);
 
-        $normalizedRows = [];
-        foreach ($rows as $row) {
-            if ($row instanceof \Traversable) {
-                $row = iterator_to_array($row);
-            }
-            if (!is_array($row)) {
-                $normalizedRows[] = $row;
-                continue;
-            }
-
-            $keyValues = [];
-            foreach ($keys as $keyCol) {
-                if (array_key_exists($keyCol, $row)) {
-                    $keyValues[$keyCol] = $row[$keyCol];
-                    unset($row[$keyCol]);
-                }
-            }
-            $row = $this->normalizeTableRowData($table, $row);
-            foreach ($keyValues as $keyCol => $keyValue) {
-                $row[$keyCol] = $keyValue;
-            }
-            $normalizedRows[] = $row;
-        }
-
-        return parent::batchUpdate($table, $normalizedRows, [], $keys, $condition, $params);
+        return parent::batchUpdate($table, $this->normalizeBatchUpdateRows($table, $rows, $keys, $params), [], $keys, $condition, $params);
     }
 
     /**
-     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     *
-     * @param string $table the table that data will be saved into.
-     * @param array|Query $columns the column data (name => value) to be saved into the table or instance
-     * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
-     * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
-     * @return array|Query normalized columns
-     * @since 2.0.9
+     * {@inheritdoc}
      */
-    private function normalizeTableRowData($table, $columns)
+    protected function normalizeTableRowData($table, $columns, &$params)
     {
         if ($columns instanceof Query) {
             return $columns;

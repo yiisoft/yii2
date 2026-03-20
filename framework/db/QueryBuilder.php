@@ -550,9 +550,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
         $casesByColumn = [];
         $seenKeyValues = [];
-        $keyPlaceholders = [];
-        $hasNullKey = false;
-        $compositeKeyConditions = [];
+        $rowKeyData = [];
 
         foreach ($rows as $row) {
             if ($row instanceof \Traversable) {
@@ -600,37 +598,26 @@ class QueryBuilder extends \yii\base\BaseObject
             }
             $seenKeyValues[$keyHash] = true;
 
-            $whenParts = [];
-            foreach ($keys as $keyCol) {
-                $kv = $keyData[$keyCol];
-                if ($kv === null) {
-                    $whenParts[] = $quotedKeys[$keyCol] . ' IS NULL';
-                    if ($isSingleKey) {
-                        $hasNullKey = true;
-                    }
-                } else {
-                    $placeholder = $this->bindParam($kv, $params);
-                    $whenParts[] = $quotedKeys[$keyCol] . '=' . $placeholder;
-                    if ($isSingleKey) {
-                        $keyPlaceholders[] = $placeholder;
-                    }
-                }
-            }
-
-            $whenCondition = implode(' AND ', $whenParts);
-
-            if (!$isSingleKey) {
-                $compositeKeyConditions[] = '(' . $whenCondition . ')';
-            }
+            $rowKeyData[] = $keyData;
 
             foreach ($row as $column => $value) {
+                $whenParts = [];
+                foreach ($keys as $keyCol) {
+                    $kv = $keyData[$keyCol];
+                    if ($kv === null) {
+                        $whenParts[] = $quotedKeys[$keyCol] . ' IS NULL';
+                    } else {
+                        $whenParts[] = $quotedKeys[$keyCol] . '=' . $this->bindParam($kv, $params);
+                    }
+                }
+
                 $value = isset($columnSchemas[$column]) ? $columnSchemas[$column]->dbTypecast($value) : $value;
                 if ($value instanceof ExpressionInterface) {
                     $valueSql = $this->buildExpression($value, $params);
                 } else {
                     $valueSql = $this->bindParam($value, $params);
                 }
-                $casesByColumn[$column][] = 'WHEN ' . $whenCondition . ' THEN ' . $valueSql;
+                $casesByColumn[$column][] = 'WHEN ' . implode(' AND ', $whenParts) . ' THEN ' . $valueSql;
             }
         }
 
@@ -647,7 +634,17 @@ class QueryBuilder extends \yii\base\BaseObject
         $sql = 'UPDATE ' . $this->db->quoteTableName($table) . ' SET ' . implode(', ', $sets);
 
         if ($isSingleKey) {
-            $quotedKey = $quotedKeys[$keys[0]];
+            $keyCol = $keys[0];
+            $quotedKey = $quotedKeys[$keyCol];
+            $keyPlaceholders = [];
+            $hasNullKey = false;
+            foreach ($rowKeyData as $keyData) {
+                if ($keyData[$keyCol] === null) {
+                    $hasNullKey = true;
+                } else {
+                    $keyPlaceholders[] = $this->bindParam($keyData[$keyCol], $params);
+                }
+            }
             if ($hasNullKey) {
                 if (!empty($keyPlaceholders)) {
                     $whereSql = '(' . $quotedKey . ' IN (' . implode(', ', $keyPlaceholders) . ') OR ' . $quotedKey . ' IS NULL)';
@@ -658,6 +655,18 @@ class QueryBuilder extends \yii\base\BaseObject
                 $whereSql = $quotedKey . ' IN (' . implode(', ', $keyPlaceholders) . ')';
             }
         } else {
+            $compositeKeyConditions = [];
+            foreach ($rowKeyData as $keyData) {
+                $parts = [];
+                foreach ($keys as $kc) {
+                    if ($keyData[$kc] === null) {
+                        $parts[] = $quotedKeys[$kc] . ' IS NULL';
+                    } else {
+                        $parts[] = $quotedKeys[$kc] . '=' . $this->bindParam($keyData[$kc], $params);
+                    }
+                }
+                $compositeKeyConditions[] = '(' . implode(' AND ', $parts) . ')';
+            }
             $whereSql = implode(' OR ', $compositeKeyConditions);
         }
 
@@ -731,6 +740,64 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return $resolvedRows;
+    }
+
+    /**
+     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     *
+     * Override this method in DBMS-specific query builders to handle binary columns or other special types.
+     *
+     * @param string $table the table that data will be saved into.
+     * @param array $columns the column data (name => value) to be saved into the table.
+     * @param array $params the binding parameters that will be modified by this method.
+     * @return array normalized columns.
+     * @since 2.0.55
+     */
+    protected function normalizeTableRowData($table, $columns, &$params)
+    {
+        return $columns;
+    }
+
+    /**
+     * Normalizes rows for batch update by temporarily extracting key columns before normalization.
+     *
+     * Key columns are excluded from [[normalizeTableRowData()]] to prevent unwanted type conversion
+     * (e.g. varbinary encoding of key values in MSSQL), then restored afterward.
+     *
+     * @param string $table the table name.
+     * @param array $rows the rows to normalize.
+     * @param array $keys the key column names.
+     * @param array $params the binding parameters that will be modified by this method.
+     * @return array normalized rows.
+     * @since 2.0.55
+     */
+    protected function normalizeBatchUpdateRows($table, $rows, $keys, &$params)
+    {
+        $normalizedRows = [];
+        foreach ($rows as $row) {
+            if ($row instanceof \Traversable) {
+                $row = iterator_to_array($row);
+            }
+            if (!is_array($row)) {
+                $normalizedRows[] = $row;
+                continue;
+            }
+
+            $keyValues = [];
+            foreach ($keys as $keyCol) {
+                if (array_key_exists($keyCol, $row)) {
+                    $keyValues[$keyCol] = $row[$keyCol];
+                    unset($row[$keyCol]);
+                }
+            }
+            $row = $this->normalizeTableRowData($table, $row, $params);
+            foreach ($keyValues as $keyCol => $keyValue) {
+                $row[$keyCol] = $keyValue;
+            }
+            $normalizedRows[] = $row;
+        }
+
+        return $normalizedRows;
     }
 
     /**
