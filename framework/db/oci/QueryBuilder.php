@@ -357,35 +357,8 @@ EOD;
         $tableSchema = $schema->getTableSchema($table);
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
 
-        if (empty($keys)) {
-            if ($tableSchema !== null && !empty($tableSchema->primaryKey)) {
-                $keys = $tableSchema->primaryKey;
-            } else {
-                throw new InvalidConfigException(
-                    'The $keys parameter must be specified because the table "' . $table . '" has no primary key defined.'
-                );
-            }
-        }
-
-        if (!empty($columns)) {
-            $resolvedRows = [];
-            $columnCount = count($columns);
-            foreach ($rows as $row) {
-                if ($row instanceof \Traversable) {
-                    $row = iterator_to_array($row);
-                }
-                if (!is_array($row)) {
-                    throw new InvalidArgumentException('Each batch update row must be an array.');
-                }
-                if (count($row) !== $columnCount) {
-                    throw new InvalidArgumentException(
-                        'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
-                    );
-                }
-                $resolvedRows[] = array_combine($columns, array_values($row));
-            }
-            $rows = $resolvedRows;
-        }
+        $keys = $this->resolveKeys($table, $keys);
+        $rows = $this->resolveColumnNames($rows, $columns);
 
         $preparedRows = [];
         $updatedColumns = [];

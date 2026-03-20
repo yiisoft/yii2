@@ -625,40 +625,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
     {
-        if (!empty($columns)) {
-            $resolvedRows = [];
-            $columnCount = count($columns);
-            foreach ($rows as $row) {
-                if ($row instanceof \Traversable) {
-                    $row = iterator_to_array($row);
-                }
-                if (!is_array($row)) {
-                    throw new InvalidArgumentException('Each batch update row must be an array.');
-                }
-                if (count($row) !== $columnCount) {
-                    throw new InvalidArgumentException(
-                        'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
-                    );
-                }
-                $resolvedRows[] = array_combine($columns, array_values($row));
-            }
-            $rows = $resolvedRows;
-            $columns = [];
-        }
-
-        if (empty($keys)) {
-            $tableSchema = $this->db->getSchema()->getTableSchema($table);
-            if ($tableSchema !== null && !empty($tableSchema->primaryKey)) {
-                $keys = $tableSchema->primaryKey;
-            } else {
-                throw new InvalidConfigException(
-                    'The $keys parameter must be specified because the table "' . $table . '" has no primary key defined.'
-                );
-            }
-        }
+        $rows = $this->resolveColumnNames($rows, $columns);
+        $keys = $this->resolveKeys($table, $keys);
 
         $normalizedRows = [];
         foreach ($rows as $row) {
+            if ($row instanceof \Traversable) {
+                $row = iterator_to_array($row);
+            }
             if (!is_array($row)) {
                 $normalizedRows[] = $row;
                 continue;
@@ -683,6 +657,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return $sql;
         }
 
+        // The parent's batchUpdate() reuses key placeholders in both CASE/WHEN and WHERE IN clauses.
+        // MSSQL's sqlsrv PDO driver does not support using a named parameter more than once,
+        // so we renumber all placeholders to make each occurrence unique.
         $expandedParams = [];
         $sql = preg_replace_callback('/:([a-zA-Z_][a-zA-Z0-9_]*)/', function ($matches) use (&$expandedParams, $params) {
             $name = ':' . $matches[1];

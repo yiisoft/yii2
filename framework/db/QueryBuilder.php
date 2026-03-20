@@ -539,35 +539,8 @@ class QueryBuilder extends \yii\base\BaseObject
         $tableSchema = $schema->getTableSchema($table);
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
 
-        if (empty($keys)) {
-            if ($tableSchema !== null && !empty($tableSchema->primaryKey)) {
-                $keys = $tableSchema->primaryKey;
-            } else {
-                throw new InvalidConfigException(
-                    'The $keys parameter must be specified because the table "' . $table . '" has no primary key defined.'
-                );
-            }
-        }
-
-        if (!empty($columns)) {
-            $resolvedRows = [];
-            $columnCount = count($columns);
-            foreach ($rows as $row) {
-                if ($row instanceof \Traversable) {
-                    $row = iterator_to_array($row);
-                }
-                if (!is_array($row)) {
-                    throw new InvalidArgumentException('Each batch update row must be an array.');
-                }
-                if (count($row) !== $columnCount) {
-                    throw new InvalidArgumentException(
-                        'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
-                    );
-                }
-                $resolvedRows[] = array_combine($columns, array_values($row));
-            }
-            $rows = $resolvedRows;
-        }
+        $keys = $this->resolveKeys($table, $keys);
+        $rows = $this->resolveColumnNames($rows, $columns);
 
         $isSingleKey = count($keys) === 1;
         $quotedKeys = [];
@@ -696,6 +669,68 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return $sql . ' WHERE ' . $whereSql;
+    }
+
+    /**
+     * Resolves batch update keys from the table's primary key when `$keys` is empty.
+     *
+     * @param string $table the table name.
+     * @param array $keys the provided keys.
+     * @return array resolved keys.
+     * @throws InvalidConfigException if `$keys` is empty and the table has no primary key.
+     * @since 2.0.55
+     */
+    protected function resolveKeys($table, $keys)
+    {
+        if (!empty($keys)) {
+            return $keys;
+        }
+
+        $tableSchema = $this->db->getSchema()->getTableSchema($table);
+        if ($tableSchema !== null && !empty($tableSchema->primaryKey)) {
+            return $tableSchema->primaryKey;
+        }
+
+        throw new InvalidConfigException(
+            'The $keys parameter must be specified because the table "' . $table . '" has no primary key defined.'
+        );
+    }
+
+    /**
+     * Resolves batch update row column names.
+     *
+     * When `$columns` is specified, converts indexed arrays to associative arrays
+     * using column names as keys (same convention as [[batchInsert()]]).
+     *
+     * @param array|\Generator $rows the rows to resolve.
+     * @param array $columns list of column names.
+     * @return array resolved rows as associative arrays.
+     * @since 2.0.55
+     */
+    protected function resolveColumnNames($rows, $columns)
+    {
+        if (empty($columns)) {
+            return $rows;
+        }
+
+        $resolvedRows = [];
+        $columnCount = count($columns);
+        foreach ($rows as $row) {
+            if ($row instanceof \Traversable) {
+                $row = iterator_to_array($row);
+            }
+            if (!is_array($row)) {
+                throw new InvalidArgumentException('Each batch update row must be an array.');
+            }
+            if (count($row) !== $columnCount) {
+                throw new InvalidArgumentException(
+                    'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
+                );
+            }
+            $resolvedRows[] = array_combine($columns, array_values($row));
+        }
+
+        return $resolvedRows;
     }
 
     /**
