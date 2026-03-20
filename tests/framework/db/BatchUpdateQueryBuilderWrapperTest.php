@@ -27,12 +27,13 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         ], [], ['id'], '', $params);
 
         $this->assertSame(
-            'UPDATE "customer" SET "status"=CASE WHEN "id"=:qp0 THEN :qp1 ELSE "status" END WHERE "id" IN (:qp0)',
+            'UPDATE "customer" SET "status"=CASE WHEN "id"=:qp0 THEN :qp1 ELSE "status" END WHERE "id" IN (:qp2)',
             $sql,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 1,
+            ':qp2' => 1,
         ], $params);
     }
 
@@ -49,12 +50,13 @@ class BatchUpdateQueryBuilderWrapperTest extends \yiiunit\TestCase
         ], [], ['id'], '', $params);
 
         $this->assertSame(
-            'UPDATE "customer" SET "status"=CASE WHEN "id"=:qp0 THEN :qp1 ELSE "status" END WHERE "id" IN (:qp0)',
+            'UPDATE "customer" SET "status"=CASE WHEN "id"=:qp0 THEN :qp1 ELSE "status" END WHERE "id" IN (:qp2)',
             $sql,
         );
         $this->assertSame([
             ':qp0' => 1,
             ':qp1' => 1,
+            ':qp2' => 1,
         ], $params);
     }
 
