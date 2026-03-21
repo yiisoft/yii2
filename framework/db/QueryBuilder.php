@@ -540,6 +540,7 @@ class QueryBuilder extends \yii\base\BaseObject
         $columnSchemas = $tableSchema !== null ? $tableSchema->columns : [];
 
         $keys = $this->resolveKeys($table, $keys);
+        $rows = $this->prepareRows($rows);
         $rows = $this->resolveColumnNames($rows, $columns);
 
         $isSingleKey = count($keys) === 1;
@@ -553,13 +554,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $rowKeyData = [];
 
         foreach ($rows as $row) {
-            if ($row instanceof \Traversable) {
-                $row = iterator_to_array($row);
-            }
-            if (!is_array($row)) {
-                throw new InvalidArgumentException('Each batch update row must be an array.');
-            }
-
             $keyData = [];
             $keyHashParts = [];
             foreach ($keys as $keyCol) {
@@ -706,14 +700,37 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * Converts Traversable objects to arrays and validates that all rows are arrays.
+     *
+     * @param array|\Generator $rows the rows to prepare.
+     * @return array[] prepared rows.
+     * @since 2.0.55
+     */
+    protected function prepareRows($rows)
+    {
+        $prepared = [];
+        foreach ($rows as $row) {
+            if ($row instanceof \Traversable) {
+                $row = iterator_to_array($row);
+            }
+            if (!is_array($row)) {
+                throw new InvalidArgumentException('Each batch update row must be an array.');
+            }
+            $prepared[] = $row;
+        }
+
+        return $prepared;
+    }
+
+    /**
      * Resolves batch update row column names.
      *
      * When `$columns` is specified, converts indexed arrays to associative arrays
      * using column names as keys (same convention as [[batchInsert()]]).
      *
-     * @param array|\Generator $rows the rows to resolve.
+     * @param array[] $rows the rows to resolve (already prepared by [[prepareRows()]]).
      * @param array $columns list of column names.
-     * @return array resolved rows as associative arrays.
+     * @return array[] resolved rows as associative arrays.
      * @since 2.0.55
      */
     protected function resolveColumnNames($rows, $columns)
@@ -725,12 +742,6 @@ class QueryBuilder extends \yii\base\BaseObject
         $resolvedRows = [];
         $columnCount = count($columns);
         foreach ($rows as $row) {
-            if ($row instanceof \Traversable) {
-                $row = iterator_to_array($row);
-            }
-            if (!is_array($row)) {
-                throw new InvalidArgumentException('Each batch update row must be an array.');
-            }
             if (count($row) !== $columnCount) {
                 throw new InvalidArgumentException(
                     'Each batch update row must have exactly ' . $columnCount . ' values when $columns is specified.'
@@ -749,11 +760,10 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $table the table that data will be saved into.
      * @param array $columns the column data (name => value) to be saved into the table.
-     * @param array $params the binding parameters that will be modified by this method.
      * @return array normalized columns.
      * @since 2.0.55
      */
-    protected function normalizeTableRowData($table, $columns, &$params)
+    protected function normalizeTableRowData($table, $columns)
     {
         return $columns;
     }
@@ -767,22 +777,13 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table the table name.
      * @param array $rows the rows to normalize.
      * @param array $keys the key column names.
-     * @param array $params the binding parameters that will be modified by this method.
      * @return array normalized rows.
      * @since 2.0.55
      */
-    protected function normalizeBatchUpdateRows($table, $rows, $keys, &$params)
+    protected function normalizeBatchUpdateRows($table, $rows, $keys)
     {
         $normalizedRows = [];
         foreach ($rows as $row) {
-            if ($row instanceof \Traversable) {
-                $row = iterator_to_array($row);
-            }
-            if (!is_array($row)) {
-                $normalizedRows[] = $row;
-                continue;
-            }
-
             $keyValues = [];
             foreach ($keys as $keyCol) {
                 if (array_key_exists($keyCol, $row)) {
@@ -790,7 +791,7 @@ class QueryBuilder extends \yii\base\BaseObject
                     unset($row[$keyCol]);
                 }
             }
-            $row = $this->normalizeTableRowData($table, $row, $params);
+            $row = $this->normalizeTableRowData($table, $row);
             foreach ($keyValues as $keyCol => $keyValue) {
                 $row[$keyCol] = $keyValue;
             }

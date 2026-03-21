@@ -305,7 +305,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function insert($table, $columns, &$params)
     {
-        return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
+        return parent::insert($table, $this->normalizeTableRowData($table, $columns), $params);
     }
 
     /**
@@ -315,9 +315,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
+        $insertColumns = $this->normalizeTableRowData($table, $insertColumns);
         if (!is_bool($updateColumns)) {
-            $updateColumns = $this->normalizeTableRowData($table, $updateColumns, $params);
+            $updateColumns = $this->normalizeTableRowData($table, $updateColumns);
         }
         if (version_compare($this->db->getServerVersion(), '9.5', '<')) {
             return $this->oldUpsert($table, $insertColumns, $updateColumns, $params);
@@ -455,7 +455,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function update($table, $columns, $condition, &$params)
     {
-        return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
+        return parent::update($table, $this->normalizeTableRowData($table, $columns), $condition, $params);
     }
 
     /**
@@ -463,16 +463,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
     {
-        $rows = $this->resolveColumnNames($rows, $columns);
         $keys = $this->resolveKeys($table, $keys);
+        $rows = $this->prepareRows($rows);
+        $rows = $this->resolveColumnNames($rows, $columns);
 
-        return parent::batchUpdate($table, $this->normalizeBatchUpdateRows($table, $rows, $keys, $params), [], $keys, $condition, $params);
+        return parent::batchUpdate($table, $this->normalizeBatchUpdateRows($table, $rows, $keys), [], $keys, $condition, $params);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function normalizeTableRowData($table, $columns, &$params)
+    protected function normalizeTableRowData($table, $columns)
     {
         if ($columns instanceof Query) {
             return $columns;
