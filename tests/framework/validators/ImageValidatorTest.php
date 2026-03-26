@@ -50,7 +50,7 @@ class ImageValidatorTest extends TestCase
 
         $notImage = $this->createTestFile('test.txt');
         $error = '';
-        $this->assertFalse($val->validate($notImage, $error));
+        $this->assertFalse(@$val->validate($notImage, $error));
         $this->assertStringContainsString('is not an image', $error);
     }
 
