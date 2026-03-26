@@ -28,7 +28,6 @@ Yii Framework 2 Change Log
 - Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 - Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
-- Enh #20760: Suppress PHP warning from `getimagesize()` in `ImageValidator::validateImage()` since the error is already handled by the return value check (WarLikeLaux)
 
 
 2.0.54 January 09, 2026
