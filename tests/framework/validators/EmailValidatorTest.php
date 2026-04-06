@@ -255,5 +255,4 @@ class EmailValidatorTest extends TestCase
 
         $this->assertNotNull($validator->message);
     }
-
 }

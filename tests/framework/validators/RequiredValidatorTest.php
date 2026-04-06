@@ -150,7 +150,6 @@ class RequiredValidatorTest extends TestCase
         $this->assertStringContainsString('blank', $errors[0]);
         $this->assertStringNotContainsString('{requiredValue}', $errors[0]);
     }
-
 }
 
 class ModelForReqValidator extends Model
