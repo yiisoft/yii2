@@ -16,6 +16,7 @@ class FakeHelpControllerWithoutOutput extends HelpController
 
     public function stdout($string)
     {
-        return $this->outputString .= $string;
+        $this->outputString .= $string;
+        return 0;
     }
 }

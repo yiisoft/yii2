@@ -19,13 +19,17 @@ class CacheableWidgetBehaviorTest extends TestCase
 {
     /**
      * Default-initialized simple cacheable widget mock.
+     *
+     * @var MockObject&SimpleCacheableWidget
      */
     private MockObject|SimpleCacheableWidget|CacheableWidgetBehavior|null $simpleWidget = null;
 
     /**
      * Default-initialized dynamic cacheable widget mock.
+     *
+     * @var MockObject&DynamicCacheableWidget
      */
-    private MockObject|SimpleCacheableWidget|CacheableWidgetBehavior|null $dynamicWidget = null;
+    private MockObject|DynamicCacheableWidget|CacheableWidgetBehavior|null $dynamicWidget = null;
 
     /**
      * {@inheritdoc}
@@ -111,6 +115,9 @@ class CacheableWidgetBehaviorTest extends TestCase
 
     /**
      * Returns a widget mock.
+     * @template T of BaseCacheableWidget
+     * @param class-string<T> $widgetClass
+     * @return T&MockObject
      */
     private function getWidgetMock(string $widgetClass): MockObject
     {
@@ -122,6 +129,9 @@ class CacheableWidgetBehaviorTest extends TestCase
     }
 }
 
+/**
+ * @mixin CacheableWidgetBehavior
+ */
 class BaseCacheableWidget extends Widget
 {
     /**

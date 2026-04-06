@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -109,7 +110,7 @@ use yii\validators\StringValidator;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  *
- * @template T of Model|BaseActiveRecord
+ * @template T of Model|BaseActiveRecord = Model|BaseActiveRecord
  * @extends Behavior<T>
  */
 class AttributeTypecastBehavior extends Behavior
@@ -118,12 +119,8 @@ class AttributeTypecastBehavior extends Behavior
     public const TYPE_FLOAT = 'float';
     public const TYPE_BOOLEAN = 'boolean';
     public const TYPE_STRING = 'string';
-
     /**
-     * @var Model|BaseActiveRecord|null the owner of this behavior.
-     *
-     * @phpstan-var T|null
-     * @psalm-var T|null
+     * @var T|null the owner of this behavior.
      */
     public $owner;
     /**

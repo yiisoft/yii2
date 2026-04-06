@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -310,7 +311,7 @@ class Sort extends BaseObject
      * ]
      * ```
      *
-     * @param string $param the value of the [[sortParam]].
+     * @param mixed $param the value of the [[sortParam]].
      * @return array the valid sort attributes.
      * @since 2.0.12
      * @see separator for the attribute name separator.

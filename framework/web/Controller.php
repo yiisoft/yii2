@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,7 +28,7 @@ use yii\base\Module;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Module
+ * @template T of Module = Module
  * @extends BaseController<T>
  */
 class Controller extends BaseController
@@ -57,7 +58,7 @@ class Controller extends BaseController
      */
     public function renderAjax($view, $params = [])
     {
-        /** @var View */
+        /** @var View $viewComponent */
         $viewComponent = $this->getView();
 
         return $viewComponent->renderAjax($view, $params, $this);
@@ -121,19 +122,13 @@ class Controller extends BaseController
      * This method will check the parameter names that the action requires and return
      * the provided parameters according to the requirement. If there is any missing parameter,
      * an exception will be thrown.
-     * @param Action $action the action to be bound with parameters
-     * @param array $params the parameters to be bound to the action
-     * @return array the valid parameters that the action can run with.
+     * @param Action<static> $action the action to be bound with parameters
+     * @param array<array-key, mixed> $params the parameters to be bound to the action
+     * @return mixed[] the valid parameters that the action can run with.
      * @throws BadRequestHttpException if there are missing or invalid parameters.
      *
-     * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
-     *
-     * @phpstan-param array<array-key, mixed> $params
-     * @psalm-param array<array-key, mixed> $params
-     *
-     * @phpstan-return mixed[]
-     * @psalm-return mixed[]
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function bindActionParams($action, $params)
     {
@@ -207,9 +202,7 @@ class Controller extends BaseController
      * if the function parameter has a single named type.
      * @param mixed $param The parameter value.
      * @param \ReflectionNamedType $type
-     * @return array The resulting parameter value and a boolean indicating whether the value is valid.
-     *
-     * @phpstan-return array{mixed, bool}
+     * @return array{mixed, bool} The resulting parameter value and a boolean indicating whether the value is valid.
      */
     private function filterSingleTypeActionParam($param, $type)
     {
@@ -253,9 +246,7 @@ class Controller extends BaseController
      * if the function parameter has a union type.
      * @param mixed $param The parameter value.
      * @param \ReflectionUnionType $type
-     * @return array The resulting parameter value and a boolean indicating whether the value is valid.
-     *
-     * @phpstan-return array{mixed, bool}
+     * @return array{mixed, bool} The resulting parameter value and a boolean indicating whether the value is valid.
      */
     private function filterUnionTypeActionParam($param, $type)
     {

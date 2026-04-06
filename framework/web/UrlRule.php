@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -66,7 +67,6 @@ class UrlRule extends BaseObject implements UrlRuleInterface
      * @since 2.0.12
      */
     public const CREATE_STATUS_PARAMS_MISMATCH = 4;
-
     /**
      * @var string|null the name of this rule. If not set, it will use [[pattern]] as the name.
      */

@@ -394,6 +394,9 @@ class SortTest extends TestCase
 
 class CustomSort extends Sort
 {
+    /**
+     * @param list<array{field: string, dir: string}> $params
+     */
     protected function parseSortParam($params)
     {
         $attributes = [];

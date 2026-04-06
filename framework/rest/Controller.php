@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,7 @@ use yii\base\Module;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Module
+ * @template T of Module = Module
  * @extends WebController<T>
  */
 class Controller extends WebController

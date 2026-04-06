@@ -11,6 +11,7 @@ namespace yiiunit\framework\filters;
 use yiiunit\TestCase;
 use yii\rbac\BaseManager;
 use Closure;
+use PHPUnit\Framework\MockObject\MockObject;
 use Yii;
 use yii\base\Action;
 use yii\base\InvalidConfigException;
@@ -37,9 +38,12 @@ class AccessRuleTest extends TestCase
         $this->mockWebApplication();
     }
 
-    protected function mockRequest(string $method = 'GET'): Request
+    /**
+     * @param string $method
+     * @return Request&MockObject
+     */
+    protected function mockRequest($method = 'GET')
     {
-        /** @var Request $request */
         $request = $this->createPartialMock(Request::class, ['getMethod']);
         $request->method('getMethod')->willReturn($method);
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -27,7 +28,7 @@ use yii\helpers\Inflector;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of Application
+ * @template T of Application = Application
  * @extends Controller<T>
  */
 abstract class BaseMigrateController extends Controller
@@ -36,7 +37,6 @@ abstract class BaseMigrateController extends Controller
      * The name of the dummy migration that marks the beginning of the whole migration history.
      */
     public const BASE_MIGRATION = 'm000000_000000_base';
-
     /**
      * @var string the default command action.
      */
@@ -127,12 +127,12 @@ abstract class BaseMigrateController extends Controller
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
-     * @param Action $action the action to be executed.
+     * @param Action<static> $action the action to be executed.
      * @throws InvalidConfigException if directory specified in migrationPath doesn't exist and action isn't "create".
      * @return bool whether the action should continue to be executed.
      *
-     * @phpstan-param Action<$this> $action
-     * @psalm-param Action<$this> $action
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function beforeAction($action)
     {

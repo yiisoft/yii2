@@ -39,7 +39,12 @@
     <!-- generate relative paths -->
     <arg name="basepath" value="."/>
 
-    <!-- Exclude files and directories -->
+    <!-- directories to check -->
+    <file>build</file>
+    <file>framework</file>
+    <file>tests</file>
+
+    <!-- exclude directories -->
     <exclude-pattern>framework/caching/migrations/*</exclude-pattern>
     <exclude-pattern>framework/i18n/migrations/*</exclude-pattern>
     <exclude-pattern>framework/log/migrations/*</exclude-pattern>
@@ -47,6 +52,7 @@
     <exclude-pattern>framework/views/*</exclude-pattern>
     <exclude-pattern>framework/web/migrations/*</exclude-pattern>
     <exclude-pattern>tests/data/views/*</exclude-pattern>
+    <exclude-pattern>tests/runtime/*</exclude-pattern>
     <exclude-pattern>tests/js/*</exclude-pattern>
     <exclude-pattern>tests/runtime/*</exclude-pattern>
 </ruleset>

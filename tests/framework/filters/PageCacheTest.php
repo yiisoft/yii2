@@ -219,7 +219,7 @@ class PageCacheTest extends TestCase
         $this->mockWebApplication();
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);
-        $filter = new PageCache(['cache' => $cache, 'view' => new View()], $testCase['properties']);
+        $filter = new PageCache(array_merge(['cache' => $cache, 'view' => new View()], $testCase['properties']));
         Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
         $this->assertFalse($filter->beforeAction($action), $testCase['name']);
         // Content

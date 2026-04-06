@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -82,7 +83,6 @@ abstract class Application extends Module
      * Application state used by [[state]]: application has ended.
      */
     public const STATE_END = 6;
-
     /**
      * @var string the namespace that controller classes are located in.
      * This namespace will be used to load controller classes by prepending it to the controller class name.
@@ -114,9 +114,6 @@ abstract class Application extends Module
     public $sourceLanguage = 'en-US';
     /**
      * @var Controller|null the currently active controller instance
-     *
-     * @phpstan-var Controller<Module>|null
-     * @psalm-var Controller<Module>|null
      */
     public $controller;
     /**
@@ -129,14 +126,11 @@ abstract class Application extends Module
      */
     public $requestedRoute;
     /**
-     * @var Action|null the requested Action. If null, it means the request cannot be resolved into an action.
-     *
-     * @phpstan-var Action<covariant Controller<Module>>|null
-     * @psalm-var Action<covariant Controller<Module>>|null
+     * @var Action<covariant Controller>|null the requested Action. If null, it means the request cannot be resolved into an action.
      */
     public $requestedAction;
     /**
-     * @var array the parameters supplied to the requested action.
+     * @var array|null the parameters supplied to the requested action.
      */
     public $requestedParams;
     /**
@@ -192,12 +186,9 @@ abstract class Application extends Module
 
     /**
      * Constructor.
-     * @param array $config name-value pairs that will be used to initialize the object properties.
+     * @param array<array-key, mixed> $config name-value pairs that will be used to initialize the object properties.
      * Note that the configuration must contain both [[id]] and [[basePath]].
      * @throws InvalidConfigException if either [[id]] or [[basePath]] configuration is missing.
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
      */
     public function __construct($config = [])
     {

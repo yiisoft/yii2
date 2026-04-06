@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -89,10 +90,7 @@ class BaseObject implements Configurable
      * - the last parameter of the constructor is a configuration array, like `$config` here.
      * - call the parent implementation at the end of the constructor.
      *
-     * @param array $config name-value pairs that will be used to initialize the object properties
-     *
-     * @phpstan-param array<string, mixed> $config
-     * @psalm-param array<string, mixed> $config
+     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties
      */
     public function __construct($config = [])
     {

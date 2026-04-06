@@ -38,9 +38,9 @@ concurrency:
 
 jobs:
   test:
-    name: NPM 10 on ubuntu-latest
+    name: NPM 10 on ubuntu-22.04
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Monitor action permissions.

@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\filters;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Yii;
 use yii\base\Action;
 use yii\filters\AjaxFilter;
@@ -21,9 +22,12 @@ use yiiunit\TestCase;
  */
 class AjaxFilterTest extends TestCase
 {
-    protected function mockRequest(bool $isAjax = false): Request
+    /**
+     * @param bool $isAjax
+     * @return Request&MockObject
+     */
+    protected function mockRequest($isAjax)
     {
-        /** @var Request $request */
         $request = $this->createPartialMock(Request::class, ['getIsAjax']);
         $request->method('getIsAjax')->willReturn($isAjax);
 

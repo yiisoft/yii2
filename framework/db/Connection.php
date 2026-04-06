@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -120,7 +121,8 @@ use yii\caching\CacheInterface;
  * @property-read PDO $masterPdo The PDO instance for the currently active master connection.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
  * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
- * @property-read Schema $schema The schema information for the database opened by this connection.
+ * @property-read Schema $schema The schema information for the database opened by this
+ * connection.
  * @property-read string $serverVersion Server version as a string.
  * @property-read Connection|null $slave The currently active slave connection. `null` is returned if there is
  * no slave available and `$fallbackToMaster` is false.
@@ -131,9 +133,6 @@ use yii\caching\CacheInterface;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @phpstan-property-read Schema<ColumnSchema> $schema
- * @psalm-property-read Schema<ColumnSchema> $schema
  */
 class Connection extends Component
 {
@@ -153,7 +152,6 @@ class Connection extends Component
      * @event \yii\base\Event an event that is triggered right after a top-level transaction is rolled back
      */
     public const EVENT_ROLLBACK_TRANSACTION = 'rollbackTransaction';
-
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
      * Please refer to the [PHP manual](https://www.php.net/manual/en/pdo.construct.php) on
@@ -428,8 +426,6 @@ class Connection extends Component
     private $_transaction;
     /**
      * @var Schema|null the database schema
-     *
-     * @phpstan-var Schema<ColumnSchema>|null
      */
     private $_schema;
     /**
@@ -846,9 +842,6 @@ class Connection extends Component
      * Returns the schema information for the database opened by this connection.
      * @return Schema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
-     *
-     * @phpstan-return Schema<ColumnSchema>
-     * @psalm-return Schema<ColumnSchema>
      */
     public function getSchema()
     {

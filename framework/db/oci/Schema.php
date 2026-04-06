@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,7 @@ use yii\db\Schema as BaseSchema;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @template T of ColumnSchema
+ * @template T of ColumnSchema = ColumnSchema
  * @extends BaseSchema<T>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface
@@ -197,6 +198,7 @@ LEFT JOIN "SYS"."USER_IND_COLUMNS" "uicol"
 LEFT JOIN "SYS"."USER_CONSTRAINTS" "uc"
     ON "uc"."OWNER" = "ui"."TABLE_OWNER" AND "uc"."CONSTRAINT_NAME" = "ui"."INDEX_NAME" AND "uc"."CONSTRAINT_TYPE" = 'P'
 WHERE "ui"."TABLE_OWNER" = :schemaName AND "ui"."TABLE_NAME" = :tableName
+    AND "ui"."INDEX_TYPE" != 'LOB'
 ORDER BY "uicol"."COLUMN_POSITION" ASC
 SQL;
 
@@ -401,10 +403,7 @@ SQL;
      * Creates ColumnSchema instance.
      *
      * @param array $column
-     * @return ColumnSchema
-     *
-     * @phpstan-return T
-     * @psalm-return T
+     * @return T
      */
     protected function createColumn($column)
     {

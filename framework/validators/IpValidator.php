@@ -49,7 +49,6 @@ class IpValidator extends Validator
      * @see ranges
      */
     public const NEGATION_CHAR = '!';
-
     /**
      * @var array The network aliases, that can be used in [[ranges]].
      *  - key - alias name

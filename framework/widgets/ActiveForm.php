@@ -37,7 +37,6 @@ class ActiveForm extends Widget
      * @since 2.0.14
      */
     public const VALIDATION_STATE_ON_INPUT = 'input';
-
     /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
@@ -383,10 +382,7 @@ class ActiveForm extends Widget
      * When this method is used to validate multiple models, this parameter will be interpreted
      * as a model.
      *
-     * @return array the error message array indexed by the attribute IDs.
-     *
-     * @phpstan-return array<string,array<string>>
-     * @psalm-return array<string,array<string>>
+     * @return array<string, array<string>> the error message array indexed by the attribute IDs.
      */
     public static function validate($model, $attributes = null)
     {

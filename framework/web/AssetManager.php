@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -40,15 +41,6 @@ use yii\helpers\Url;
  * @since 2.0
  *
  * @phpstan-type PublishOptions array{
- *     only?: string[],
- *     except?: string[],
- *     caseSensitive?: bool,
- *     beforeCopy?: callable,
- *     afterCopy?: callable,
- *     forceCopy?: bool,
- * }
- *
- * @psalm-type PublishOptions = array{
  *     only?: string[],
  *     except?: string[],
  *     caseSensitive?: bool,
@@ -401,7 +393,7 @@ class AssetManager extends Component
     }
 
     /**
-     * @var AssetConverterInterface
+     * @var array|string|AssetConverterInterface|null
      */
     private $_converter;
 
@@ -425,9 +417,9 @@ class AssetManager extends Component
 
     /**
      * Sets the asset converter.
-     * @param array|AssetConverterInterface $value the asset converter. This can be either
+     * @param array|string|AssetConverterInterface $value the asset converter. This can be either
      * an object implementing the [[AssetConverterInterface]], or a configuration
-     * array that can be used to create the asset converter object.
+     * array that can be used to create the asset converter object, or a class name.
      */
     public function setConverter($value)
     {
@@ -464,7 +456,7 @@ class AssetManager extends Component
      * discussion: https://code.google.com/archive/p/yii/issues/2579
      *
      * @param string $path the asset (file or directory) to be published
-     * @param array $options the options to be applied when publishing a directory.
+     * @param PublishOptions $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.
@@ -481,9 +473,6 @@ class AssetManager extends Component
      * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidArgumentException if the asset to be published does not exist.
      * @throws InvalidConfigException if the target directory [[basePath]] is not writeable.
-     *
-     * @phpstan-param PublishOptions $options
-     * @psalm-param PublishOptions $options
      */
     public function publish($path, $options = [])
     {

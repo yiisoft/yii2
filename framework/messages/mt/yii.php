@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Message translations.
  *
@@ -16,6 +17,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
+
 return [
     ' and ' => ' u ',
     '"{attribute}" does not support operator "{operator}".' => '"{attribute}" ma jappoġġjax l-operatur "{operator}".',
