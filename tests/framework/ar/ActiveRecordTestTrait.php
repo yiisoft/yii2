@@ -836,7 +836,7 @@ trait ActiveRecordTestTrait
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
 
-        // via table is covered in \yiiunit\framework\db\ActiveRecordTest::testUnlinkAllViaTable()
+        // via table is covered in \yiiunit\base\db\BaseActiveRecord::testUnlinkAllViaTable()
     }
 
     public function testUnlinkAllAndConditionSetNull(): void

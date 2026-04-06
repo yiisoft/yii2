@@ -6,8 +6,9 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
@@ -43,7 +44,7 @@ use yiiunit\data\ar\CroppedType;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\TestCase;
 
-abstract class ActiveRecordTest extends DatabaseTestCase
+abstract class BaseActiveRecord extends DatabaseTestCase
 {
     use ActiveRecordTestTrait;
 

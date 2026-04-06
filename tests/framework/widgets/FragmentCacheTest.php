@@ -198,10 +198,6 @@ class FragmentCacheTest extends TestCase
 
     public function testVariations(): void
     {
-        $this->setOutputCallback(function ($output) {
-            return null;
-        });
-
         ob_start();
         ob_implicit_flush(false);
         $view = new View();

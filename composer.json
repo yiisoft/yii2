@@ -68,10 +68,8 @@
         "yiisoft/yii2": "self.version"
     },
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-mbstring": "*",
-        "ext-ctype": "*",
-        "lib-pcre": "*",
         "yiisoft/yii2-composer": "~2.0.4",
         "ezyang/htmlpurifier": "^4.17",
         "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0"
@@ -79,9 +77,8 @@
     "require-dev": {
         "cebe/indent": "~1.0.2",
         "dealerdirect/phpcodesniffer-composer-installer": "*",
-        "dms/phpunit-arraysubset-asserts": "^0.5",
-        "php-forge/foxy": "^0.1",
-        "phpunit/phpunit": "^9.6",
+        "php-forge/foxy": "^0.2",
+        "phpunit/phpunit": "^11.5",
         "yiisoft/yii2-coding-standards": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0"
@@ -112,6 +109,7 @@
     ],
     "scripts": {
         "cs": "./vendor/bin/phpcs",
-        "cs-fix": "./vendor/bin/phpcbf"
+        "cs-fix": "./vendor/bin/phpcbf",
+        "static": "./vendor/bin/phpstan --memory-limit=-1"
     }
 }

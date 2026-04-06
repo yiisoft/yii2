@@ -475,6 +475,834 @@ parameters:
 			path: framework/test/DbFixture.php
 
 		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Category\:\:\$orders\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveQuery.php
+
+		-
+			message: '#^Variable \$category in PHPDoc tag @var does not match assigned variable \$categories\.$#'
+			identifier: varTag.differentVariable
+			count: 1
+			path: tests/base/db/BaseActiveQuery.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$customer_id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$isNewRecord\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 5
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$itemsFor8\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$itemsWithNullFK\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 13
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$orderItems\.$#'
+			identifier: property.notFound
+			count: 5
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$orderItemsWithNullFK\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$orders\.$#'
+			identifier: property.notFound
+			count: 9
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$ordersWithNullFK\.$#'
+			identifier: property.notFound
+			count: 5
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$quantity\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$relatedRecords\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$subtotal\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$total\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$virtualCustomer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ActiveRecordInterface\:\:\$virtualCustomerId\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\BaseActiveRecord\:\:\$expensiveOrders\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\BaseActiveRecord\:\:\$expensiveOrdersWithNullFK\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\BaseActiveRecord\:\:\$orders\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\BaseActiveRecord\:\:\$ordersWithNullFK\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Category\:\:\$limitedItems\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Category\:\:\$orders\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Customer\:\:\$orderItems\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Customer\:\:\$orders\.$#'
+			identifier: property.notFound
+			count: 5
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Customer\:\:\$orders2\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\CustomerWithAlias\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\CustomerWithAlias\:\:\$orders2\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$bookItems\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$books\.$#'
+			identifier: property.notFound
+			count: 12
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$books2\.$#'
+			identifier: property.notFound
+			count: 9
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksExplicit\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksExplicitA\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksQuerysyntax\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksQuerysyntaxA\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksViaTable\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksWithNullFK\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$booksWithNullFKViaTable\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$customer\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$customer2\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$customerJoinedWithProfile\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$customerJoinedWithProfileIndexOrdered\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 31
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$itemsIndexed\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$limitedItems\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$movieItems\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$orderItems\.$#'
+			identifier: property.notFound
+			count: 9
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\Order\:\:\$quantityOrderItems\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\OrderItem\:\:\$custom\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\OrderItem\:\:\$item\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\OrderItem\:\:\$order\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\OrderItem\:\:\$orderItemCompositeNoJoin\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\ar\\OrderItem\:\:\$orderItemCompositeWithJoin\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to property \$id on an unknown class yiiunit\\framework\\ar\\ActiveRecord\.$#'
+			identifier: class.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Access to property \$orderItems on an unknown class yiiunit\\framework\\ar\\ActiveRecord\.$#'
+			identifier: class.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveQuery\:\:applyAlias\(\)\.$#'
+			identifier: method.notFound
+			count: 7
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveQuery\<yiiunit\\data\\ar\\Order\>\:\:applyAlias\(\)\.$#'
+			identifier: method.notFound
+			count: 7
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveQueryInterface\:\:active\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:canGetProperty\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:canSetProperty\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:getOrders\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:hasProperty\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:isRelationPopulated\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:refresh\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:unlinkAll\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ActiveRecordInterface\:\:updateCounters\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to an undefined static method yii\\db\\ActiveRecordInterface\:\:updateAllCounters\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method afterSave\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 23
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertArrayHasKey\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 30
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertCount\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 92
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertEmpty\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertEquals\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 97
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertFalse\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 22
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertInstanceOf\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 19
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertNotNull\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 8
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertNull\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 16
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method assertTrue\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 39
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method canGetProperty\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecord\.$#'
+			identifier: class.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method canSetProperty\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecord\.$#'
+			identifier: class.notFound
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method getCustomerClass\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method getOrderClass\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Call to method getOrderWithNullFKClass\(\) on an unknown class yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$books on array\<mixed\>\|yii\\db\\ActiveRecord\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$id on array\<mixed\>\|yii\\db\\ActiveRecord\.$#'
+			identifier: property.nonObject
+			count: 10
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$items on array\<mixed\>\|yii\\db\\ActiveRecord\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$name on array\|yii\\db\\ActiveRecordInterface\.$#'
+			identifier: property.nonObject
+			count: 4
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$orders on array\|yii\\db\\ActiveRecordInterface\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$ordersWithItems on array\|yii\\db\\ActiveRecordInterface\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$primaryKey on null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot access property \$relatedRecords on array\|yii\\db\\ActiveRecordInterface\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Cannot call method isRelationPopulated\(\) on array\|yii\\db\\ActiveRecordInterface\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Class yiiunit\\extensions\\redis\\ActiveRecordTest not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Method yii\\db\\ActiveQueryInterface\:\:with\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 13
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Method yii\\db\\ActiveQueryInterface\:\:with\(\) invoked with 2 parameters, 0 required\.$#'
+			identifier: arguments.count
+			count: 2
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Offset 0 does not exist on yiiunit\\data\\ar\\OrderItemWithConstructor\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$customer contains unknown class yiiunit\\framework\\ar\\ActiveRecord\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^PHPDoc tag @var for variable \$this has invalid type yiiunit\\framework\\ar\\ActiveRecordTestTrait\.$#'
+			identifier: varTag.trait
+			count: 27
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^PHPDoc tag @var with type yiiunit\\framework\\ar\\ActiveRecordTestTrait\|yiiunit\\TestCase is not subtype of native type \$this\(yiiunit\\base\\db\\BaseActiveRecord\)\.$#'
+			identifier: varTag.nativeType
+			count: 33
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$stringcol \(string\) does not accept null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$var1 \(int\) does not accept null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$var1 \(int\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$var2 \(int\) does not accept null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$var2 \(int\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$var3 \(int\) does not accept null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\NullValues\:\:\$var3 \(int\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\Order\:\:\$total \(string\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Variable \$count might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Variable \$customer in PHPDoc tag @var does not match assigned variable \$class\.$#'
+			identifier: varTag.differentVariable
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Variable \$customer might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Variable \$orders might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: tests/base/db/BaseActiveRecord.php
+
+		-
+			message: '#^Anonymous function has an unused use \$update\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\Schema\:\:getTableChecks\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\Schema\:\:getTableForeignKeys\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\Schema\:\:getTablePrimaryKey\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\Schema\:\:getTableUniques\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Cannot access property \$foreignKeys on null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Method yii\\db\\Command\:\:queryOne\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Offset 0 does not exist on array\{\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 8
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Variable \$expression might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: tests/base/db/BaseCommand.php
+
+		-
+			message: '#^Anonymous function has an unused use \$update\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: tests/base/db/BaseQuery.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$condition with type array\|string is not subtype of native type array\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/base/db/BaseQueryBuilder.php
+
+		-
+			message: '#^Access to an undefined property yii\\db\\ColumnSchema\:\:\$dimension\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/db/BaseSchema.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$expected with type mixed is not subtype of native type array\|bool\|yii\\db\\Constraint\|null\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/base/db/BaseSchema.php
+
+		-
+			message: '#^Access to an undefined property yii\\log\\Target\:\:\$db\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/log/BaseDbTarget.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestRefModel\:\:\$a_field\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/validators/BaseExistValidator.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestMainModel\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/validators/BaseUniqueValidator.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestRefModel\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/validators/BaseUniqueValidator.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestRefModel\:\:\$ref\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/base/validators/BaseUniqueValidator.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\Customer\:\:\$email \(string\) does not accept array\<int, string\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/validators/BaseUniqueValidator.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\Customer\:\:\$name \(string\) does not accept array\<int, string\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/validators/BaseUniqueValidator.php
+
+		-
+			message: '#^Property yiiunit\\data\\ar\\Order\:\:\$total \(string\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/base/validators/BaseUniqueValidator.php
+
+		-
+			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sessionDb\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/base/web/session/BaseDbSession.php
+
+		-
 			message: '#^Access to an undefined property yiiunit\\framework\\base\\NewComponent\:\:\$as f\.$#'
 			identifier: property.notFound
 			count: 1
@@ -496,6 +1324,12 @@ parameters:
 			message: '#^Call to an undefined method yiiunit\\framework\\console\\controllers\\MigrateControllerTest\:\:assertNotStringContainsString\(\)\.$#'
 			identifier: method.notFound
 			count: 2
+			path: tests/framework/console/controllers/MigrateControllerTest.php
+
+		-
+			message: '#^Call to an undefined method yiiunit\\framework\\console\\controllers\\MigrateControllerTest\:\:setOutputCallback\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: tests/framework/console/controllers/MigrateControllerTest.php
 
 		-

@@ -16,7 +16,7 @@ use yiiunit\data\validators\models\ValidatorTestMainModel;
  * @group oci
  * @group validators
  */
-class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorTest
+class UniqueValidatorTest extends \yiiunit\base\validators\BaseUniqueValidator
 {
     public $driverName = 'oci';
 

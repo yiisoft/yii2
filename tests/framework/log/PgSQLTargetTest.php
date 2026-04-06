@@ -13,7 +13,7 @@ namespace yiiunit\framework\log;
  * @group pgsql
  * @group log
  */
-class PgSQLTargetTest extends DbTargetTest
+class PgSQLTargetTest extends \yiiunit\base\log\BaseDbTarget
 {
     protected static $driverName = 'pgsql';
 }

@@ -15,7 +15,7 @@ use yii\db\Transaction;
  * @group db
  * @group oci
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends \yiiunit\base\db\BaseConnection
 {
     protected $driverName = 'oci';
 

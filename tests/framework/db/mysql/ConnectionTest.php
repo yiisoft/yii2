@@ -14,7 +14,7 @@ use yii\db\Connection;
  * @group db
  * @group mysql
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends \yiiunit\base\db\BaseConnection
 {
     protected $driverName = 'mysql';
 

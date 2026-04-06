@@ -19,7 +19,7 @@ use yiiunit\framework\web\stubs\ModelStub;
  *
  * @group web
  */
-class JsonResponseFormatterTest extends FormatterTest
+class JsonResponseFormatterTest extends \yiiunit\base\web\BaseFormatter
 {
     /**
      * @return JsonResponseFormatter

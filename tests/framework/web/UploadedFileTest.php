@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\MultipartFormDataParser;
 use yii\web\UploadedFile;
 use yiiunit\framework\web\stubs\ModelStub;
 use yiiunit\framework\web\stubs\VendorImage;
@@ -105,8 +106,14 @@ class UploadedFileTest extends TestCase
         $model = new ModelStub();
         $targetFile = '@runtime/test_saved_uploaded_file_' . time();
 
-        (new MultipartFormDataParserTest())->testParse();
-        $_FILES['ModelStub'] = $_FILES['Item']; // $_FILES[Item] here from testParse() above
+        $parser = new MultipartFormDataParser();
+        $boundary = '---------------------------22472926011618';
+        $contentType = 'multipart/form-data; boundary=' . $boundary;
+        $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"Item[file]\"; filename=\"item-file.txt\"\nContent-Type: text/plain\r\n\r\nitem file content";
+        $rawBody .= "\r\n--{$boundary}--";
+        $parser->parse($rawBody, $contentType);
+
+        $_FILES['ModelStub'] = $_FILES['Item']; // $_FILES[Item] here from parser above
         $tmpFile = UploadedFile::getInstance($model, 'file');
 
         $this->assertEquals($tmpFile->saveAs($targetFile, $deleteTempFile = false), true);

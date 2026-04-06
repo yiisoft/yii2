@@ -8,7 +8,7 @@ use yiiunit\data\ar\Storage;
  * @group db
  * @group mysql
  */
-class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
+class BaseActiveRecordTest extends \yiiunit\base\db\BaseActiveRecordTemplate
 {
     public $driverName = 'mysql';
 

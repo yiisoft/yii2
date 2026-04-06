@@ -54,7 +54,7 @@ for both A and B.
 Upgrade from Yii 2.0.x
 -----------------------
 
-* Raised minimum supported PHP version to `8.1`.
+* Raised minimum supported PHP version to `8.3`.
 * All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
   you must update your code before upgrading.
 * Support for CUBRID database has been removed.

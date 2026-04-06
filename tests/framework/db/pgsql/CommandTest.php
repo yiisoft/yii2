@@ -15,7 +15,7 @@ use yii\db\JsonExpression;
  * @group db
  * @group pgsql
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends \yiiunit\base\db\BaseCommand
 {
     public $driverName = 'pgsql';
 

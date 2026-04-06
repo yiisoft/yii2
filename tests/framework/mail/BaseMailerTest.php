@@ -305,7 +305,7 @@ TEXT
             ],
         );
 
-        $mailerMock->expects($this->once())->method('beforeSend')->with($message)->will($this->returnValue(true));
+        $mailerMock->expects($this->once())->method('beforeSend')->with($message)->willReturn(true);
         $mailerMock->expects($this->once())->method('afterSend')->with($message, true);
 
         $mailerMock->send($message);

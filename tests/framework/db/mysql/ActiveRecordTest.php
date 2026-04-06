@@ -15,7 +15,7 @@ use yiiunit\data\ar\Type;
  * @group db
  * @group mysql
  */
-class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
 {
     public $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';

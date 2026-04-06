@@ -15,7 +15,7 @@ use yii\helpers\VarDumper;
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with PHP message format.
  */
-class PHPMessageControllerTest extends BaseMessageControllerTest
+class PHPMessageControllerTest extends \yiiunit\base\console\controllers\BaseMessageController
 {
     protected $messagePath;
 

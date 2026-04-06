@@ -18,7 +18,7 @@ use yiiunit\data\ar\Type;
  * @group db
  * @group mssql
  */
-class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
 {
     public $driverName = 'sqlsrv';
     protected static string $driverNameStatic = 'sqlsrv';

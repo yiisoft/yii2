@@ -25,7 +25,7 @@ use yiiunit\TestCase;
  * @group db
  * @group pgsql
  */
-class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
 {
     protected $driverName = 'pgsql';
     protected static string $driverNameStatic = 'pgsql';

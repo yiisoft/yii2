@@ -6,8 +6,9 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
 use Yii;
 use Exception;
 use Closure;
@@ -30,7 +31,7 @@ use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\base\TraversableObject;
 
-abstract class QueryBuilderTest extends DatabaseTestCase
+abstract class BaseQueryBuilder extends DatabaseTestCase
 {
     use SchemaBuilderTrait;
 
@@ -2195,7 +2196,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 'customer',
                 ['address'],
                 [["SQL-danger chars are escaped: '); --"]],
-                'expected' => "INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')",
+                "INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')",
             ],
             [
                 'customer',
@@ -2214,7 +2215,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 'type',
                 ['bool_col', 'bool_col2'],
                 [[false, null]],
-                'expected' => 'INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)',
+                'INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)',
             ],
             [
                 '{{%type}}',
@@ -2227,7 +2228,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '{{%type}}',
                 ['{{%type}}.[[bool_col]]', '[[time]]'],
                 [[false, new Expression('now()')]],
-                'expected' => 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())',
+                'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())',
                 false,
             ],
         ];

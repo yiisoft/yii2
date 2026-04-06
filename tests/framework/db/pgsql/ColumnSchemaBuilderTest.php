@@ -15,7 +15,7 @@ use yii\db\ColumnSchemaBuilder;
  * @group db
  * @group pgsql
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
 {
     public $driverName = 'pgsql';
 

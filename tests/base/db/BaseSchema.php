@@ -6,8 +6,11 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\AnyCaseValue;
+use yiiunit\framework\db\AnyValue;
+use yiiunit\framework\db\DatabaseTestCase;
 use Exception;
 use PDO;
 use yii\caching\ArrayCache;
@@ -22,7 +25,7 @@ use yii\db\IndexConstraint;
 use yii\db\Schema;
 use yii\db\TableSchema;
 
-abstract class SchemaTest extends DatabaseTestCase
+abstract class BaseSchema extends DatabaseTestCase
 {
     /**
      * @var string[]

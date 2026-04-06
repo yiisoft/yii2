@@ -6,14 +6,15 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
 use yii\db\BatchQueryResult;
 use yii\db\Query;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 
-abstract class BatchQueryResultTest extends DatabaseTestCase
+abstract class BaseBatchQueryResult extends DatabaseTestCase
 {
     protected function setUp(): void
     {

@@ -16,7 +16,7 @@ use yiiunit\data\ar\Type;
  * @group pgsql
  * @group validators
  */
-class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorTest
+class UniqueValidatorTest extends \yiiunit\base\validators\BaseUniqueValidator
 {
     public $driverName = 'pgsql';
 

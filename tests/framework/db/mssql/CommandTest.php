@@ -15,7 +15,7 @@ use yii\db\Query;
  * @group db
  * @group mssql
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends \yiiunit\base\db\BaseCommand
 {
     protected $driverName = 'sqlsrv';
 

@@ -16,7 +16,7 @@ use yii\db\Schema;
  * @group db
  * @group oci
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
 {
     public $driverName = 'oci';
 

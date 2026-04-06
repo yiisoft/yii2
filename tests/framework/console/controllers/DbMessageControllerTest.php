@@ -25,7 +25,7 @@ use yii\db\Connection;
  * @group db
  * @group mysql
  */
-class DbMessageControllerTest extends BaseMessageControllerTest
+class DbMessageControllerTest extends \yiiunit\base\console\controllers\BaseMessageController
 {
     protected static $driverName = 'mysql';
     protected static $database;

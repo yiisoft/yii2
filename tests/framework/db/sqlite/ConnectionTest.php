@@ -19,7 +19,7 @@ use yiiunit\data\ar\Customer;
  * @group db
  * @group sqlite
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends \yiiunit\base\db\BaseConnection
 {
     protected $driverName = 'sqlite';
 

@@ -121,11 +121,15 @@ class CacheableWidgetBehaviorTest extends TestCase
      */
     private function getWidgetMock(string $widgetClass): MockObject
     {
-        return $this->getMockBuilder($widgetClass)
+        $mock = $this->getMockBuilder($widgetClass)
             ->onlyMethods(['run'])
             ->enableOriginalConstructor()
-            ->enableProxyingToOriginalMethods()
             ->getMock();
+
+        $parentRun = (new \ReflectionClass($widgetClass))->getMethod('run')->getClosure($mock);
+        $mock->method('run')->willReturnCallback($parentRun);
+
+        return $mock;
     }
 }
 

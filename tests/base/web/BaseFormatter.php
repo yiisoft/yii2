@@ -6,13 +6,13 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web;
+namespace yiiunit\base\web;
 
 use yiiunit\TestCase;
 use yii\web\Response;
 use yii\web\ResponseFormatterInterface;
 
-abstract class FormatterTest extends TestCase
+abstract class BaseFormatter extends TestCase
 {
     /**
      * @var Response

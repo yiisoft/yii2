@@ -15,7 +15,7 @@ use yii\db\Query;
  * @group db
  * @group mysql
  */
-class QueryTest extends \yiiunit\framework\db\QueryTest
+class QueryTest extends \yiiunit\base\db\BaseQuery
 {
     protected $driverName = 'mysql';
 

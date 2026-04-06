@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\console\controllers;
+namespace yiiunit\base\console\controllers;
 
 use Yii;
 use yii\base\Module;
@@ -14,13 +14,14 @@ use yii\console\controllers\MessageController;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
+use yiiunit\framework\console\controllers\StdOutBufferControllerTrait;
 use yiiunit\TestCase;
 
 /**
  * Base for [[\yii\console\controllers\MessageController]] unit tests.
  * @see MessageController
  */
-abstract class BaseMessageControllerTest extends TestCase
+abstract class BaseMessageController extends TestCase
 {
     protected $sourcePath = '';
     protected $configFileName = '';
@@ -65,7 +66,7 @@ abstract class BaseMessageControllerTest extends TestCase
     protected function createMessageController()
     {
         $module = $this->getMockBuilder(Module::class)
-            ->addMethods(['fake'])
+            ->onlyMethods([])
             ->setConstructorArgs(['console'])
             ->getMock();
 

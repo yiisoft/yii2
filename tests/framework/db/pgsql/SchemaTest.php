@@ -18,7 +18,7 @@ use yiiunit\data\ar\Type;
  * @group db
  * @group pgsql
  */
-class SchemaTest extends \yiiunit\framework\db\SchemaTest
+class SchemaTest extends \yiiunit\base\db\BaseSchema
 {
     public $driverName = 'pgsql';
 

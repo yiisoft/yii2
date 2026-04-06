@@ -19,7 +19,7 @@ use yii\db\Schema;
  * @group db
  * @group oci
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends \yiiunit\base\db\BaseCommand
 {
     protected $driverName = 'oci';
 

@@ -6,13 +6,14 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\Expression;
 use yii\db\Schema;
 
-abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
+abstract class BaseColumnSchemaBuilder extends DatabaseTestCase
 {
     /**
      * @param string $type

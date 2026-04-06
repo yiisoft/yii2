@@ -16,7 +16,7 @@ use yii\db\sqlite\Schema;
  * @group db
  * @group sqlite
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends \yiiunit\base\db\BaseCommand
 {
     protected $driverName = 'sqlite';
 

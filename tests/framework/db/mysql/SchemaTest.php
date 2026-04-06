@@ -18,7 +18,7 @@ use yiiunit\framework\db\AnyCaseValue;
  * @group db
  * @group mysql
  */
-class SchemaTest extends \yiiunit\framework\db\SchemaTest
+class SchemaTest extends \yiiunit\base\db\BaseSchema
 {
     public $driverName = 'mysql';
 

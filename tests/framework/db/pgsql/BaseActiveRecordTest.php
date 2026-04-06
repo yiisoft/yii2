@@ -9,7 +9,7 @@ use yiiunit\data\ar\ActiveRecord;
  * @group db
  * @group pgsql
  */
-class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
+class BaseActiveRecordTest extends \yiiunit\base\db\BaseActiveRecordTemplate
 {
     public $driverName = 'pgsql';
 

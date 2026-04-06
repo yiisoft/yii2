@@ -23,7 +23,7 @@ Installation
 ------------
 
 > [!IMPORTANT]
-> - The minimum required [PHP](https://www.php.net/) version of Yii is PHP `8.1`.
+> - The minimum required [PHP](https://www.php.net/) version of Yii is PHP `8.3`.
 
 - [Follow the Definitive Guide](https://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.

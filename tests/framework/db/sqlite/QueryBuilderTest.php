@@ -21,7 +21,7 @@ use yiiunit\data\base\TraversableObject;
  * @group db
  * @group sqlite
  */
-class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
+class QueryBuilderTest extends \yiiunit\base\db\BaseQueryBuilder
 {
     protected $driverName = 'sqlite';
     protected static string $driverNameStatic = 'sqlite';
@@ -135,7 +135,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
-        $data['escape-danger-chars']['expected'] = "INSERT INTO `customer` (`address`) VALUES ('SQL-danger chars are escaped: ''); --')";
+        $data['escape-danger-chars'][3] = "INSERT INTO `customer` (`address`) VALUES ('SQL-danger chars are escaped: ''); --')";
         return $data;
     }
 

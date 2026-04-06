@@ -6,8 +6,9 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
 use Exception;
 use Yii;
 use yii\base\InvalidConfigException;
@@ -17,7 +18,7 @@ use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;
 
-abstract class ConnectionTest extends DatabaseTestCase
+abstract class BaseConnection extends DatabaseTestCase
 {
     public function testConstruct(): void
     {

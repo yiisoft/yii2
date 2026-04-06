@@ -21,7 +21,7 @@ use yii\db\Schema;
  * @group db
  * @group mysql
  */
-class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
+class QueryBuilderTest extends \yiiunit\base\db\BaseQueryBuilder
 {
     protected $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';

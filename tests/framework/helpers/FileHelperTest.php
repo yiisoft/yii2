@@ -1220,11 +1220,21 @@ class FileHelperTest extends TestCase
 
         // Test user ownership as integer with file mode (Due to the nature of chown we can't use PHPUnit's `expectException`)
         $ownership = 'non_existing_user';
+
+        set_error_handler(
+            static function (int $severity): bool {
+                return $severity === E_WARNING;
+            }
+        );
+
         try {
             FileHelper::changeOwnership($testFile, $ownership);
             throw new Exception('FileHelper::changeOwnership() should have thrown error for non existing user.');
         } catch (Exception $e) {
-            $this->assertEquals('chown(): Unable to find uid for non_existing_user', $e->getMessage());
+            $this->assertStringContainsString('Unable to change user ownership of "', $e->getMessage());
+            $this->assertStringContainsString('" to "non_existing_user".', $e->getMessage());
+        } finally {
+            restore_error_handler();
         }
     }
 

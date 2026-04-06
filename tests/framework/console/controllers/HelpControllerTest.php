@@ -35,7 +35,7 @@ class HelpControllerTest extends TestCase
     protected function createController()
     {
         $module = $this->getMockBuilder(Module::class)
-            ->addMethods(['fake'])
+            ->onlyMethods([])
             ->setConstructorArgs(['console'])
             ->getMock();
 

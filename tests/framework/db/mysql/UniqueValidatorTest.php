@@ -13,7 +13,7 @@ namespace yiiunit\framework\db\mysql;
  * @group mysql
  * @group validators
  */
-class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorTest
+class UniqueValidatorTest extends \yiiunit\base\validators\BaseUniqueValidator
 {
     public $driverName = 'mysql';
 }

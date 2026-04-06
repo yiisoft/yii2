@@ -6,8 +6,9 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
 use PDO;
 use Throwable;
 use yii\base\InvalidArgumentException;
@@ -23,7 +24,7 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\db\Schema;
 
-abstract class CommandTest extends DatabaseTestCase
+abstract class BaseCommand extends DatabaseTestCase
 {
     protected $upsertTestCharCast = 'CAST([[address]] AS VARCHAR(255))';
 

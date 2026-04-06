@@ -15,7 +15,7 @@ use yii\i18n\GettextPoFile;
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with PO message format.
  */
-class POMessageControllerTest extends BaseMessageControllerTest
+class POMessageControllerTest extends \yiiunit\base\console\controllers\BaseMessageController
 {
     protected $messagePath;
     protected $catalog = 'messages';

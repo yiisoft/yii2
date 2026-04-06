@@ -1,10 +1,11 @@
 <?php
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\framework\db\DatabaseTestCase;
 
-abstract class BaseActiveRecordTest extends DatabaseTestCase
+abstract class BaseActiveRecordTemplate extends DatabaseTestCase
 {
     protected function setUp(): void
     {
@@ -12,7 +13,7 @@ abstract class BaseActiveRecordTest extends DatabaseTestCase
         ActiveRecord::$db = $this->getConnection();
     }
 
-    public function provideArrayValueWithChange()
+    public static function provideArrayValueWithChange()
     {
         return [
             'not an associative array with data change' => [

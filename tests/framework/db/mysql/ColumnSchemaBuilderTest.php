@@ -16,7 +16,7 @@ use yii\db\mysql\Schema;
  * @group db
  * @group mysql
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
 {
     protected $driverName = 'mysql';
 

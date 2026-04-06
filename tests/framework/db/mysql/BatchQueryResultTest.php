@@ -12,7 +12,7 @@ namespace yiiunit\framework\db\mysql;
  * @group db
  * @group mysql
  */
-class BatchQueryResultTest extends \yiiunit\framework\db\BatchQueryResultTest
+class BatchQueryResultTest extends \yiiunit\base\db\BaseBatchQueryResult
 {
     public $driverName = 'mysql';
 }

@@ -49,7 +49,7 @@ jobs:
       database-versions: '["5.7","latest"]'
       extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-22.04"]'
-      php-version: '["8.1","8.5"]'
+      php-version: '["8.5"]'
       phpunit-group: mysql
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -68,5 +68,5 @@ jobs:
       database-versions: '["latest"]'
       extensions: curl, intl, pdo, pdo_mysql
       os: '["ubuntu-22.04"]'
-      php-version: '["8.2","8.3","8.4"]'
+      php-version: '["8.3","8.4"]'
       phpunit-group: mysql

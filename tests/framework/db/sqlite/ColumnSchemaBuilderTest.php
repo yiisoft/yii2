@@ -16,7 +16,7 @@ use yii\db\sqlite\ColumnSchemaBuilder;
  * @group db
  * @group sqlite
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
 {
     public $driverName = 'sqlite';
 

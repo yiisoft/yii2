@@ -15,7 +15,7 @@ use yii\db\ColumnSchemaBuilder;
  * @group db
  * @group mssql
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
 {
     public $driverName = 'sqlsrv';
 

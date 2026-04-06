@@ -44,7 +44,7 @@ jobs:
       enable-concurrency: true
       extensions: curl, intl, pdo, pdo_sqlite
       os: '["ubuntu-22.04","windows-latest"]'
-      php-version: '["8.1","8.5"]'
+      php-version: '["8.5"]'
       phpunit-group: sqlite
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -58,5 +58,5 @@ jobs:
       enable-concurrency: true
       extensions: curl, intl, pdo, pdo_sqlite
       os: '["ubuntu-22.04"]'
-      php-version: '["8.2","8.3","8.4"]'
+      php-version: '["8.3","8.4"]'
       phpunit-group: sqlite

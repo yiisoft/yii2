@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\data\ar;
 
 use yii\db\ActiveQuery;
-use yiiunit\framework\db\ActiveRecordTest;
+use yiiunit\base\db\BaseActiveRecord;
 
 /**
  * Class Customer.
@@ -106,8 +106,8 @@ class Customer extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes): void
     {
-        ActiveRecordTest::$afterSaveInsert = $insert;
-        ActiveRecordTest::$afterSaveNewRecord = $this->isNewRecord;
+        BaseActiveRecord::$afterSaveInsert = $insert;
+        BaseActiveRecord::$afterSaveNewRecord = $this->isNewRecord;
         parent::afterSave($insert, $changedAttributes);
     }
 

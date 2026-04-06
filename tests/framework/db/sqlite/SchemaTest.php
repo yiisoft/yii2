@@ -16,7 +16,7 @@ use yiiunit\framework\db\AnyValue;
  * @group db
  * @group sqlite
  */
-class SchemaTest extends \yiiunit\framework\db\SchemaTest
+class SchemaTest extends \yiiunit\base\db\BaseSchema
 {
     protected $driverName = 'sqlite';
 

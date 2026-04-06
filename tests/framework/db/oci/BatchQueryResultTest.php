@@ -12,7 +12,7 @@ namespace yiiunit\framework\db\oci;
  * @group db
  * @group oci
  */
-class BatchQueryResultTest extends \yiiunit\framework\db\BatchQueryResultTest
+class BatchQueryResultTest extends \yiiunit\base\db\BaseBatchQueryResult
 {
     public $driverName = 'oci';
 }

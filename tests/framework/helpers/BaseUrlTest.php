@@ -34,7 +34,7 @@ class BaseUrlTest extends TestCase
             'relative url and https scheme will return input url' => [
                 'url' => 'acme.com?name=bugs.bunny',
                 'scheme' => 'https',
-                'expected result' => 'acme.com?name=bugs.bunny',
+                'expected' => 'acme.com?name=bugs.bunny',
             ],
             'relative url and another url as parameter will return input url' => [
                 'url' => 'acme.com/test?tnt-link=https://tnt.com/',

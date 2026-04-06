@@ -35,7 +35,7 @@ class DependencyTest extends TestCase
 
     public function testGenerateReusableHash(): void
     {
-        $dependency = $this->getMockForAbstractClass(Dependency::class);
+        $dependency = $this->getMockBuilder(Dependency::class)->onlyMethods(['generateDependencyData'])->getMock();
         $dependency->data = 'dummy';
 
         $result = $this->invokeMethod($dependency, 'generateReusableHash');
@@ -45,8 +45,8 @@ class DependencyTest extends TestCase
 
     public function testIsChanged(): void
     {
-        $dependency = $this->getMockForAbstractClass(Dependency::class);
-        $cache = $this->getMockForAbstractClass(Cache::class);
+        $dependency = $this->getMockBuilder(Dependency::class)->onlyMethods(['generateDependencyData'])->getMock();
+        $cache = $this->getMockBuilder(Cache::class)->onlyMethods(['getValue', 'setValue', 'addValue', 'deleteValue', 'flushValues'])->getMock();
 
         $result = $dependency->isChanged($cache);
         $this->assertFalse($result);

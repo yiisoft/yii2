@@ -12,7 +12,7 @@ namespace yiiunit\framework\db\mssql;
  * @group db
  * @group mssql
  */
-class BatchQueryResultTest extends \yiiunit\framework\db\BatchQueryResultTest
+class BatchQueryResultTest extends \yiiunit\base\db\BaseBatchQueryResult
 {
     public $driverName = 'sqlsrv';
 }

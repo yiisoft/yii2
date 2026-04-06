@@ -24,7 +24,9 @@ namespace yiiunit\framework\i18n {
         public static function setIntlStatus($test): void
         {
             static::$enableIntl = null;
-            if (str_starts_with($test->getName(false), 'testIntl')) {
+            $testName = $test->name();
+
+            if (strncmp($testName, 'testIntl', 8) === 0) {
                 static::$enableIntl = true;
                 if (!extension_loaded('intl')) {
                     $test->markTestSkipped('intl extension is not installed.');

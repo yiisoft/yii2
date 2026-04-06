@@ -20,7 +20,7 @@ use yiiunit\data\ar\Type;
  * @group db
  * @group oci
  */
-class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
 {
     protected $driverName = 'oci';
     protected static string $driverNameStatic = 'oci';
