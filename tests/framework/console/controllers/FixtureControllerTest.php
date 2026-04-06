@@ -246,6 +246,5 @@ class FixtureConsoledController extends FixtureController
 {
     public function stdout($string): void
     {
-        return 0;
     }
 }
