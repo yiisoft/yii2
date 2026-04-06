@@ -211,7 +211,7 @@ class ActiveForm extends Widget
         }
 
         if (
-            Yii::$app->useJquery &&
+            Yii::$app?->useJquery &&
             $this->enableClientScript &&
             !$this->clientScript instanceof ActiveFormJqueryClientScript
         ) {

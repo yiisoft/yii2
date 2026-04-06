@@ -69,7 +69,7 @@ class RequiredValidator extends Validator
                 : Yii::t('yii', '{attribute} must be "{requiredValue}".');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => RequireValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

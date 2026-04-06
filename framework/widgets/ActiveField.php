@@ -845,7 +845,7 @@ class ActiveField extends Component
      */
     protected function getClientOptions()
     {
-        if (Yii::$app->useJquery == false) {
+        if (Yii::$app?->useJquery == false) {
             return [];
         }
 

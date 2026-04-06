@@ -142,7 +142,7 @@ class CompareValidator extends Validator
             }
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => CompareValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

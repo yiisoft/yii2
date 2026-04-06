@@ -296,7 +296,7 @@ class GridView extends BaseListView
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
             $this->clientScript ??= ['class' => GridViewJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

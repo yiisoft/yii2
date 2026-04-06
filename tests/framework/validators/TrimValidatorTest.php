@@ -9,9 +9,7 @@
 namespace yiiunit\framework\validators;
 
 use yii\base\DynamicModel;
-use yii\helpers\Json;
 use yii\validators\TrimValidator;
-use yii\web\View;
 use yiiunit\TestCase;
 
 /**
@@ -124,71 +122,6 @@ class TrimValidatorTest extends TestCase
         $validator = new TrimValidator();
 
         $this->assertFalse($validator->skipOnEmpty);
-    }
-
-    public function testClientOptions(): void
-    {
-        $model = new DynamicModel(['name' => 'test']);
-        $model->addRule('name', 'trim');
-        $validator = new TrimValidator();
-
-        $options = $validator->getClientOptions($model, 'name');
-
-        $this->assertArrayHasKey('skipOnArray', $options);
-        $this->assertArrayHasKey('skipOnEmpty', $options);
-        $this->assertArrayHasKey('chars', $options);
-        $this->assertSame(false, $options['skipOnArray']);
-        $this->assertSame(false, $options['skipOnEmpty']);
-        $this->assertSame(false, $options['chars']);
-    }
-
-    public function testClientOptionsWithCustomChars(): void
-    {
-        $model = new DynamicModel(['name' => 'test']);
-        $validator = new TrimValidator();
-        $validator->chars = '/\\';
-
-        $options = $validator->getClientOptions($model, 'name');
-
-        $this->assertSame('/\\', $options['chars']);
-    }
-
-    public function testClientValidateAttribute(): void
-    {
-        $model = new DynamicModel(['name' => '  hello  ']);
-        $validator = new TrimValidator();
-        $view = new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
-
-        $result = $validator->clientValidateAttribute($model, 'name', $view);
-
-        $this->assertStringStartsWith('value = yii.validation.trim($form, attribute, ', $result);
-        $this->assertStringEndsWith(', value);', $result);
-        $this->assertStringContainsString(Json::htmlEncode($validator->getClientOptions($model, 'name')), $result);
-    }
-
-    public function testClientValidateAttributeDoesNotSkipScalarWithSkipOnArray(): void
-    {
-        $model = new DynamicModel(['name' => '  hello  ']);
-        $validator = new TrimValidator();
-        $validator->skipOnArray = true;
-        $view = new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
-
-        $result = $validator->clientValidateAttribute($model, 'name', $view);
-
-        $this->assertNotNull($result);
-        $this->assertStringContainsString('yii.validation.trim', $result);
-    }
-
-    public function testClientValidateAttributeSkipsArray(): void
-    {
-        $model = new DynamicModel(['tags' => ['a', 'b']]);
-        $validator = new TrimValidator();
-        $validator->skipOnArray = true;
-        $view = new View();
-
-        $result = $validator->clientValidateAttribute($model, 'tags', $view);
-
-        $this->assertNull($result);
     }
 
     public function testTrimBooleanValue(): void

@@ -99,7 +99,7 @@ class ImageValidator extends FileValidator
      */
     public function init()
     {
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => ImageValidatorJqueryClientScript::class];
         }
 

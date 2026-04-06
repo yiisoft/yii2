@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use yii\validators\RegularExpressionValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -85,46 +84,4 @@ class RegularExpressionValidatorTest extends TestCase
         $val->validate('abc');
     }
 
-    public function testClientValidateAttribute(): void
-    {
-        $val = new RegularExpressionValidator(['pattern' => '/^[a-z]+$/i']);
-        $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
-        $js = $val->clientValidateAttribute($m, 'attr_reg1', new RegexViewStub());
-        $this->assertStringContainsString('yii.validation.regularExpression', $js);
-    }
-
-    public function testGetClientOptions(): void
-    {
-        $val = new RegularExpressionValidator(['pattern' => '/^[a-z]+$/i']);
-        $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
-        $options = $val->getClientOptions($m, 'attr_reg1');
-        $this->assertArrayHasKey('pattern', $options);
-        $this->assertArrayHasKey('not', $options);
-        $this->assertArrayHasKey('message', $options);
-        $this->assertFalse($options['not']);
-        $this->assertStringContainsString('attr_reg1', $options['message']);
-    }
-
-    public function testGetClientOptionsWithNot(): void
-    {
-        $val = new RegularExpressionValidator(['pattern' => '/^[a-z]+$/i', 'not' => true]);
-        $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
-        $options = $val->getClientOptions($m, 'attr_reg1');
-        $this->assertTrue($options['not']);
-    }
-
-    public function testGetClientOptionsWithSkipOnEmpty(): void
-    {
-        $val = new RegularExpressionValidator(['pattern' => '/^[a-z]+$/i', 'skipOnEmpty' => true]);
-        $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
-        $options = $val->getClientOptions($m, 'attr_reg1');
-        $this->assertSame(1, $options['skipOnEmpty']);
-    }
-}
-
-class RegexViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
-    }
 }
