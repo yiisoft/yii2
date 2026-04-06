@@ -38,4 +38,4 @@ jobs:
   phpcs:
     uses: yiisoft/yii2-actions/.github/workflows/linter.yml@master
     with:
-      php-version: '["7.4", "8.5"]'
+      php-version: '["8.1", "8.5"]'
