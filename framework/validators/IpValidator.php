@@ -49,7 +49,6 @@ class IpValidator extends Validator
      * @see ranges
      */
     public const NEGATION_CHAR = '!';
-
     /**
      * @var array The network aliases, that can be used in [[ranges]].
      *  - key - alias name
@@ -239,7 +238,7 @@ class IpValidator extends Validator
             $this->notInRange = Yii::t('yii', '{attribute} is not in the allowed range.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => IpValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

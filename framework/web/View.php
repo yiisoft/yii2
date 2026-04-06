@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -49,20 +50,7 @@ use yii\helpers\Url;
  *     ...
  * }
  *
- * @psalm-type RegisterJsFileOptions = array{
- *     depends?: class-string[],
- *     position?: int,
- *     appendTimestamp?: bool,
- *     ...
- * }
- *
  * @phpstan-type RegisterCssFileOptions array{
- *     depends?: class-string[],
- *     appendTimestamp?: bool,
- *     ...
- * }
- *
- * @psalm-type RegisterCssFileOptions = array{
  *     depends?: class-string[],
  *     appendTimestamp?: bool,
  *     ...
@@ -115,7 +103,6 @@ class View extends \yii\base\View
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
     public const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
-
     /**
      * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
      * are the registered [[AssetBundle]] objects.
@@ -469,7 +456,7 @@ class View extends \yii\base\View
      * and [[registerAssetBundle()]] instead.
      *
      * @param string $url the CSS file to be registered.
-     * @param array $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
+     * @param RegisterCssFileOptions $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
      * the supported options. The following options are specially handled and are not treated as HTML attributes:
      *
      * - `depends`: array, specifies the names of the asset bundles that this CSS file depends on.
@@ -479,9 +466,6 @@ class View extends \yii\base\View
      * $url as the key. If two CSS files are registered with the same key, the latter
      * will overwrite the former.
      * @throws InvalidConfigException
-     *
-     * @phpstan-param RegisterCssFileOptions $options
-     * @psalm-param RegisterCssFileOptions $options
      */
     public function registerCssFile($url, $options = [], $key = null)
     {
@@ -566,7 +550,7 @@ class View extends \yii\base\View
                 $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');
                 $timestamp = @filemtime(Yii::getAlias('@webroot/' . $trimmedUrl, false));
                 if ($timestamp > 0) {
-                    $url = $timestamp ? "$url?v=$timestamp" : $url;
+                    $url = "$url?v=$timestamp";
                 }
             }
             if ($type === 'js') {
@@ -595,7 +579,7 @@ class View extends \yii\base\View
      * and [[registerAssetBundle()]] instead.
      *
      * @param string $url the JS file to be registered.
-     * @param array $options the HTML attributes for the script tag. The following options are specially handled
+     * @param RegisterJsFileOptions $options the HTML attributes for the script tag. The following options are specially handled
      * and are not treated as HTML attributes:
      *
      * - `depends`: array, specifies the names of the asset bundles that this JS file depends on.
@@ -612,9 +596,6 @@ class View extends \yii\base\View
      * will overwrite the former. Note that position option takes precedence, thus files registered with the same key,
      * but different position option will not override each other.
      * @throws InvalidConfigException
-     *
-     * @phpstan-param RegisterJsFileOptions $options
-     * @psalm-param RegisterJsFileOptions $options
      */
     public function registerJsFile($url, $options = [], $key = null)
     {

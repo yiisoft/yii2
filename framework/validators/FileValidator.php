@@ -204,7 +204,7 @@ class FileValidator extends Validator
             $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => FileValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

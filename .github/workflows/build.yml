@@ -49,10 +49,10 @@ jobs:
     name: PHP ${{ matrix.php }}
 
     env:
-      COVERAGE_DRIVER: ${{ matrix.php < 8.1 && 'xdebug' || 'pcov' }}
+      COVERAGE_DRIVER: pcov
       IGNORE_PLATFORM_REQS: false
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services: &memcached-service
       memcached:
@@ -81,7 +81,7 @@ jobs:
         uses: ./.github/actions/php-setup
         with:
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
-          extensions: ${{ matrix.php < 8.0 && 'apc' || 'apcu' }}, ${{ env.PHP_EXTENSIONS }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
           ignore-platform-reqs: ${{ env.IGNORE_PLATFORM_REQS }}
           ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
@@ -100,7 +100,7 @@ jobs:
       COVERAGE_DRIVER: none
       IGNORE_PLATFORM_REQS: true
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services: *memcached-service
 

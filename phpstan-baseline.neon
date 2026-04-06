@@ -1,19 +1,19 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Call to an undefined method T of yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
+			message: '#^Call to an undefined method T of yii\\base\\Model \= yii\\base\\Model\:\:canSetOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: '#^Call to an undefined method T of yii\\base\\Model\:\:setOldAttribute\(\)\.$#'
+			message: '#^Call to an undefined method T of yii\\base\\Model \= yii\\base\\Model\:\:setOldAttribute\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: framework/behaviors/AttributeTypecastBehavior.php
 
 		-
-			message: '#^Argument of an invalid type \$this\(yii\\caching\\Dependency\) supplied for foreach, only iterables are supported\.$#'
+			message: '#^Argument of an invalid type static\(yii\\caching\\Dependency\) supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
 			path: framework/caching/Dependency.php
@@ -473,3 +473,117 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: framework/test/DbFixture.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\framework\\base\\NewComponent\:\:\$as f\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/framework/base/ComponentTest.php
+
+		-
+			message: '#^Property yiiunit\\framework\\console\\ControllerTest\:\:\$controller \(yiiunit\\framework\\console\\FakeController\) does not accept yiiunit\\framework\\console\\FakePhp71Controller\.$#'
+			identifier: assign.propertyType
+			count: 5
+			path: tests/framework/console/ControllerTest.php
+
+		-
+			message: '#^Return type \(void\) of method yiiunit\\framework\\console\\controllers\\FixtureConsoledController\:\:stdout\(\) should be compatible with return type \(bool\|int\) of method yii\\console\\Controller\<yii\\console\\Application\>\:\:stdout\(\)$#'
+			identifier: method.childReturnType
+			count: 1
+			path: tests/framework/console/controllers/FixtureControllerTest.php
+
+		-
+			message: '#^Call to an undefined method yiiunit\\framework\\console\\controllers\\MigrateControllerTest\:\:assertNotStringContainsString\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: tests/framework/console/controllers/MigrateControllerTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&yii\\web\\User\:\:\$identityCLass\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/framework/filters/AccessRuleTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/BooleanValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/jquery/validators/CompareValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA_repeat\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/framework/jquery/validators/CompareValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/EmailValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/FileValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/ImageValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/IpValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/NumberValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/jquery/validators/RangeValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 2
+			path: tests/framework/jquery/validators/RegularExpressionValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/jquery/validators/RequireValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/jquery/validators/StringValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/jquery/validators/TrimValidatorJqueryClientScriptTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/jquery/validators/UrlValidatorJqueryClientScriptTest.php

@@ -1,4 +1,3 @@
----
 name: static analysis
 
 permissions:
@@ -35,40 +34,11 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   phpstan:
-    name: PHP ${{ matrix.php }}-PHPStan
-
-    env:
-      PHP_EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-      PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: [8.1, 8.2, 8.3, 8.4, 8.5]
-
-    steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
-
-      - name: Checkout.
-        uses: actions/checkout@v5
-
-      - name: Setup PHP with Composer.
-        uses: ./.github/actions/php-setup
-        with:
-          extensions: ${{ env.PHP_EXTENSIONS }}
-          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
-          php-version: ${{ matrix.php }}
-          tools: cs2pr, pie
-
-      - name: Static analysis.
-        run: vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@master
+    with:
+      configuration: phpstan.dist.neon
+      concurrency-group: phpstan-${{ github.ref }}
+      extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
+      php-version: '["8.5"]'

@@ -50,7 +50,7 @@ class RegularExpressionValidator extends Validator
             $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => RegularValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

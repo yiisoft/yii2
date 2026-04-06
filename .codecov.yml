@@ -1,0 +1,3 @@
+ignore:
+  - "framework/classes.php"
+  - "framework/views/messageConfig.php"

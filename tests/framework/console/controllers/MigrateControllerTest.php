@@ -26,6 +26,7 @@ use yiiunit\TestCase;
  */
 class MigrateControllerTest extends TestCase
 {
+    /** @use MigrateControllerTestTrait<EchoMigrateController> */
     use MigrateControllerTestTrait;
 
     protected function setUp(): void

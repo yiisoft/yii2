@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -436,7 +437,7 @@ class DbManager extends BaseManager
 
         $items = [];
         foreach ($query->all($this->db) as $row) {
-            /** @var Role|Permission */
+            /** @var Role|Permission $item */
             $item = $this->populateItem($row);
             $items[$row['name']] = $item;
         }
@@ -494,7 +495,7 @@ class DbManager extends BaseManager
 
         $roles = $this->getDefaultRoleInstances();
         foreach ($query->all($this->db) as $row) {
-            /** @var Role */
+            /** @var Role $role */
             $role = $this->populateItem($row);
             $roles[$row['name']] = $role;
         }
@@ -546,7 +547,7 @@ class DbManager extends BaseManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            /** @var Permission */
+            /** @var Permission $permission */
             $permission = $this->populateItem($row);
             $permissions[$row['name']] = $permission;
         }
@@ -585,7 +586,7 @@ class DbManager extends BaseManager
 
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            /** @var Permission */
+            /** @var Permission $permission */
             $permission = $this->populateItem($row);
             $permissions[$row['name']] = $permission;
         }
@@ -621,7 +622,7 @@ class DbManager extends BaseManager
         ]);
         $permissions = [];
         foreach ($query->all($this->db) as $row) {
-            /** @var Permission */
+            /** @var Permission $permission */
             $permission = $this->populateItem($row);
             $permissions[$row['name']] = $permission;
         }

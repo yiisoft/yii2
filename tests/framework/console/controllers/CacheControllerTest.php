@@ -10,6 +10,8 @@ namespace yiiunit\framework\console\controllers;
 
 use Yii;
 use yii\caching\ArrayCache;
+use yii\caching\CacheInterface;
+use yii\console\Application;
 use yii\console\controllers\CacheController;
 use yiiunit\TestCase;
 
@@ -20,6 +22,12 @@ use yiiunit\TestCase;
  * @group console
  * @group db
  * @group mysql
+ *
+ * @phpstan-type TestApplication Application&object{
+ *     firstCache: ArrayCache,
+ *     secondCache: ArrayCache,
+ *     thirdCache: CacheInterface,
+ * }
  */
 class CacheControllerTest extends TestCase
 {
@@ -28,7 +36,12 @@ class CacheControllerTest extends TestCase
      */
     private $_cacheController;
 
-    private string $driverName = 'mysql';
+    /**
+     * @var TestApplication
+     */
+    private $application;
+
+    private $driverName = 'mysql';
 
     protected function setUp(): void
     {
@@ -67,17 +80,22 @@ class CacheControllerTest extends TestCase
             ],
         ]);
 
+        /** @var TestApplication $application */
+        $application = Yii::$app;
+
+        $this->application = $application;
+
         $this->_cacheController = Yii::createObject([
             'class' => 'yiiunit\framework\console\controllers\SilencedCacheController',
             'interactive' => false,
         ], [null, null]); //id and module are null
 
         if (isset($config['fixture'])) {
-            Yii::$app->db->open();
+            $this->application->db->open();
             $lines = explode(';', file_get_contents($config['fixture']));
             foreach ($lines as $line) {
                 if (trim($line) !== '') {
-                    Yii::$app->db->pdo->exec($line);
+                    $this->application->db->pdo->exec($line);
                 }
             }
         }
@@ -85,27 +103,27 @@ class CacheControllerTest extends TestCase
 
     public function testFlushOne(): void
     {
-        Yii::$app->firstCache->set('firstKey', 'firstValue');
-        Yii::$app->firstCache->set('secondKey', 'secondValue');
-        Yii::$app->secondCache->set('thirdKey', 'thirdValue');
+        $this->application->firstCache->set('firstKey', 'firstValue');
+        $this->application->firstCache->set('secondKey', 'secondValue');
+        $this->application->secondCache->set('thirdKey', 'thirdValue');
 
         $this->_cacheController->actionFlush('firstCache');
 
-        $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
-        $this->assertEquals('thirdValue', Yii::$app->secondCache->get('thirdKey'), 'second cache data should not be flushed');
+        $this->assertFalse($this->application->firstCache->get('firstKey'), 'first cache data should be flushed');
+        $this->assertFalse($this->application->firstCache->get('secondKey'), 'first cache data should be flushed');
+        $this->assertEquals('thirdValue', $this->application->secondCache->get('thirdKey'), 'second cache data should not be flushed');
     }
 
     public function testClearSchema(): void
     {
-        $schema = Yii::$app->db->schema;
-        Yii::$app->db->createCommand()->createTable('test_schema_cache', ['id' => 'pk'])->execute();
+        $schema = $this->application->db->schema;
+        $this->application->db->createCommand()->createTable('test_schema_cache', ['id' => 'pk'])->execute();
         $noCacheSchemas = $schema->getTableSchemas('', true);
         $cacheSchema = $schema->getTableSchemas('', false);
 
         $this->assertEquals($noCacheSchemas, $cacheSchema, 'Schema should not be modified.');
 
-        Yii::$app->db->createCommand()->dropTable('test_schema_cache')->execute();
+        $this->application->db->createCommand()->dropTable('test_schema_cache')->execute();
         $noCacheSchemas = $schema->getTableSchemas('', true);
         $this->assertNotEquals($noCacheSchemas, $cacheSchema, 'Schemas should be different.');
 
@@ -116,24 +134,24 @@ class CacheControllerTest extends TestCase
 
     public function testFlushBoth(): void
     {
-        Yii::$app->firstCache->set('firstKey', 'firstValue');
-        Yii::$app->firstCache->set('secondKey', 'secondValue');
-        Yii::$app->secondCache->set('thirdKey', 'secondValue');
+        $this->application->firstCache->set('firstKey', 'firstValue');
+        $this->application->firstCache->set('secondKey', 'secondValue');
+        $this->application->secondCache->set('thirdKey', 'secondValue');
 
         $this->_cacheController->actionFlush('firstCache', 'secondCache');
 
-        $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
+        $this->assertFalse($this->application->firstCache->get('firstKey'), 'first cache data should be flushed');
+        $this->assertFalse($this->application->firstCache->get('secondKey'), 'first cache data should be flushed');
+        $this->assertFalse($this->application->secondCache->get('thirdKey'), 'second cache data should be flushed');
     }
 
     public function testNotFoundFlush(): void
     {
-        Yii::$app->firstCache->set('firstKey', 'firstValue');
+        $this->application->firstCache->set('firstKey', 'firstValue');
 
         $this->_cacheController->actionFlush('notExistingCache');
 
-        $this->assertEquals('firstValue', Yii::$app->firstCache->get('firstKey'), 'first cache data should not be flushed');
+        $this->assertEquals('firstValue', $this->application->firstCache->get('firstKey'), 'first cache data should not be flushed');
     }
 
     public function testNothingToFlushException(): void
@@ -146,14 +164,14 @@ class CacheControllerTest extends TestCase
 
     public function testFlushAll(): void
     {
-        Yii::$app->firstCache->set('firstKey', 'firstValue');
-        Yii::$app->secondCache->set('secondKey', 'secondValue');
-        Yii::$app->thirdCache->set('thirdKey', 'thirdValue');
+        $this->application->firstCache->set('firstKey', 'firstValue');
+        $this->application->secondCache->set('secondKey', 'secondValue');
+        $this->application->thirdCache->set('thirdKey', 'thirdValue');
 
         $this->_cacheController->actionFlushAll();
 
-        $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->secondCache->get('secondKey'), 'second cache data should be flushed');
-        $this->assertFalse(Yii::$app->thirdCache->get('thirdKey'), 'third cache data should be flushed');
+        $this->assertFalse($this->application->firstCache->get('firstKey'), 'first cache data should be flushed');
+        $this->assertFalse($this->application->secondCache->get('secondKey'), 'second cache data should be flushed');
+        $this->assertFalse($this->application->thirdCache->get('thirdKey'), 'third cache data should be flushed');
     }
 }

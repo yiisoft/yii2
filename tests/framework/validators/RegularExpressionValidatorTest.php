@@ -56,6 +56,21 @@ class RegularExpressionValidatorTest extends TestCase
         $this->assertTrue($m->hasErrors('attr_reg1'));
     }
 
+    public function testValidateAttributeWithNotFlag(): void
+    {
+        $val = new RegularExpressionValidator([
+            'pattern' => '/^[a-zA-Z0-9]+$/',
+            'not' => true,
+        ]);
+        $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
+        $val->validateAttribute($m, 'attr_reg1');
+        $this->assertTrue($m->hasErrors('attr_reg1'));
+
+        $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc!!!']);
+        $val->validateAttribute($m, 'attr_reg1');
+        $this->assertFalse($m->hasErrors('attr_reg1'));
+    }
+
     public function testMessageSetOnInit(): void
     {
         $val = new RegularExpressionValidator(['pattern' => '/^[a-zA-Z0-9](\.)?([^\/]*)$/m']);

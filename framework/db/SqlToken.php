@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -32,7 +33,6 @@ class SqlToken extends BaseObject implements \ArrayAccess
     public const TYPE_OPERATOR = 5;
     public const TYPE_IDENTIFIER = 6;
     public const TYPE_STRING_LITERAL = 7;
-
     /**
      * @var int token type. It has to be one of the following constants:
      *

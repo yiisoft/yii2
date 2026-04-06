@@ -88,7 +88,7 @@ class EmailValidator extends Validator
             $this->message = Yii::t('yii', '{attribute} is not a valid email address.');
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => EmailValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

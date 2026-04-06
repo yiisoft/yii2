@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -54,7 +55,6 @@ class DateValidator extends Validator
      * @see type
      */
     public const TYPE_TIME = 'time';
-
     /**
      * @var string the type of the validator. Indicates, whether a date, time or datetime value should be validated.
      * This property influences the default value of [[format]] and also sets the correct behavior when [[format]] is one of the intl

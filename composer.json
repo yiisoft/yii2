@@ -83,7 +83,8 @@
         "php-forge/foxy": "^0.1",
         "phpunit/phpunit": "^9.6",
         "yiisoft/yii2-coding-standards": "^3.0",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-phpunit": "^2.0"
     },
     "suggest": {
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
@@ -108,5 +109,9 @@
     },
     "bin": [
         "framework/yii"
-    ]
+    ],
+    "scripts": {
+        "cs": "./vendor/bin/phpcs",
+        "cs-fix": "./vendor/bin/phpcbf"
+    }
 }

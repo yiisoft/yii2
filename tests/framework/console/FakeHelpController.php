@@ -14,9 +14,10 @@ class FakeHelpController extends HelpController
 {
     private static ?array $_actionIndexLastCallParams = null;
 
-    public function actionIndex($command = null): void
+    public function actionIndex($command = null)
     {
         self::$_actionIndexLastCallParams = func_get_args();
+        return 0;
     }
 
     public static function getActionIndexLastCallParams()

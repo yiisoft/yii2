@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -47,7 +48,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @since 2.0.6
      */
     public const INDEX_GIN = 'gin';
-
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
@@ -208,10 +208,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        /**
-         * @var Schema
-         * @phpstan-var Schema<ColumnSchema>
-         */
+        /** @var Schema $dbSchema */
         $dbSchema = $this->db->getSchema();
         $enable = $check ? 'ENABLE' : 'DISABLE';
         $schema = $schema ?: $dbSchema->defaultSchema;
@@ -381,10 +378,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $updateColumns = false;
         }
 
-        /**
-         * @var Schema $schema
-         * @phpstan-var Schema<ColumnSchema>
-         */
+        /** @var Schema $schema */
         $schema = $this->db->getSchema();
         if (!$insertColumns instanceof Query) {
             $tableSchema = $schema->getTableSchema($table);

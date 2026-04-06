@@ -47,7 +47,6 @@ class CompareValidator extends Validator
      * @see type
      */
     public const TYPE_NUMBER = 'number';
-
     /**
      * @var string the name of the attribute to be compared with. When both this property
      * and [[compareValue]] are set, the latter takes precedence. If neither is set,
@@ -58,7 +57,7 @@ class CompareValidator extends Validator
      */
     public $compareAttribute;
     /**
-     * @var mixed the constant value to be compared with  or an anonymous function
+     * @var mixed the constant value to be compared with or an anonymous function
      * that returns the constant value. When both this property and
      * [[compareAttribute]] are set, this property takes precedence.
      * The signature of the anonymous function should be as follows,
@@ -143,7 +142,7 @@ class CompareValidator extends Validator
             }
         }
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => CompareValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

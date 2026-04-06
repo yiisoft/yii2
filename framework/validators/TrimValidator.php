@@ -45,7 +45,7 @@ class TrimValidator extends Validator
     {
         parent::init();
 
-        if (Yii::$app->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript ??= ['class' => TrimValidatorJqueryClientScript::class];
             $this->clientScript = Yii::createObject($this->clientScript);
         }

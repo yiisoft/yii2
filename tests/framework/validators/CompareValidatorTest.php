@@ -265,128 +265,136 @@ class CompareValidatorTest extends TestCase
         $this->fail('InvalidConfigException expected none received');
     }
 
-    /**
-     * @dataProvider \yiiunit\framework\validators\providers\CompareValidatorProvider::numericTypeConversionProvider
-     *
-     * @phpstan-param array<string, mixed> $validatorConfig
-     */
-    public function testValidateAttributeWithNumericTypeConversion(
-        array $validatorConfig,
-        int|string $attributeValue,
-        string|null $compareAttributeValue,
-        bool $expectedValidation,
-        string $expectedMessage,
-    ): void {
-        $model = new FakedValidationModel();
-
-        $model->attr_test = $attributeValue;
-
-        $validator = new CompareValidator($validatorConfig);
-
-        if ($compareAttributeValue !== null) {
-            $model->attr_compare = $compareAttributeValue;
-        }
-
-        $validator->validateAttribute($model, 'attr_test');
-
-        $this->assertSame($expectedValidation, $model->hasErrors('attr_test'), $expectedMessage);
+    public function testValidateValueWithTypeNumber(): void
+    {
+        $val = new CompareValidator(['compareValue' => 10, 'type' => CompareValidator::TYPE_NUMBER]);
+        $this->assertTrue($val->validate(10));
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate(10.0));
+        $this->assertFalse($val->validate(11));
     }
 
-    /**
-     * @dataProvider \yiiunit\framework\validators\providers\CompareValidatorProvider::numericValueConversionProvider
-     */
-    public function testValidateValueWithNumericTypeConversion(
-        array $validatorConfig,
-        float|int|string $attributeValue,
-        bool $expectedResult,
-        string $expectedMessage,
-    ): void {
-        $validator = new CompareValidator($validatorConfig);
+    public function testCompareValuesWithTypeNumber(): void
+    {
+        $val = new CompareValidator(['compareValue' => 100, 'type' => CompareValidator::TYPE_NUMBER, 'operator' => '>']);
+        $this->assertTrue($val->validate(101));
+        $this->assertFalse($val->validate(100));
+        $this->assertFalse($val->validate(99));
 
-        $result = $validator->validate($attributeValue);
-
-        $this->assertSame($expectedResult, $result, $expectedMessage);
+        $val->operator = '<';
+        $val->message = null;
+        $val->init();
+        $this->assertTrue($val->validate(99));
+        $this->assertFalse($val->validate(100));
+        $this->assertFalse($val->validate(101));
     }
 
     public function testValidateAttributeWithClosure(): void
     {
-        $expectedValue = 42;
-        $closureExecuted = false;
+        $val = new CompareValidator([
+            'compareValue' => function ($model, $attribute) {
+                return $model->attr_test_val;
+            },
+        ]);
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_test' => 'hello',
+            'attr_test_val' => 'hello',
+        ]);
+        $val->validateAttribute($model, 'attr_test');
+        $this->assertFalse($model->hasErrors('attr_test'));
 
-        $closure = static function () use ($expectedValue, &$closureExecuted): int {
-            $closureExecuted = true;
-
-            return $expectedValue;
-        };
-
-        $model = new FakedValidationModel();
-
-        $model->attr_test = $expectedValue;
-
-        $validator = new CompareValidator(['compareValue' => $closure]);
-
-        $validator->validateAttribute($model, 'attr_test');
-
-        $this->assertTrue(
-            $closureExecuted,
-            'Closure should be executed during validation',
-        );
-        $this->assertFalse(
-            $model->hasErrors('attr_test'),
-            'Validation should pass when values match',
-        );
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_test' => 'hello',
+            'attr_test_val' => 'world',
+        ]);
+        $val = new CompareValidator([
+            'compareValue' => function ($model, $attribute) {
+                return $model->attr_test_val;
+            },
+        ]);
+        $val->validateAttribute($model, 'attr_test');
+        $this->assertTrue($model->hasErrors('attr_test'));
     }
 
-    public function testValidateAttributeWithClosureFailure(): void
+    public function testValidateValueWithClosure(): void
     {
-        $expectedValue = 100;
-        $actualValue = 50;
-
-        $model = new FakedValidationModel();
-
-        $model->attr_test = $actualValue;
-
-        $validator = new CompareValidator(['compareValue' => static fn(): int => $expectedValue]);
-
-        $validator->validateAttribute($model, 'attr_test');
-
-        $this->assertTrue(
-            $model->hasErrors('attr_test'),
-            'Validation should fail when values do not match',
-        );
+        $val = new CompareValidator(['compareValue' => function () {
+            return 42;
+        }]);
+        $this->assertTrue($val->validate(42));
+        $this->assertFalse($val->validate(43));
     }
 
-    public function testValidateAttributeWithClosureAndOperator(): void
+    public function defaultMessagePerOperatorProvider(): array
     {
-        $compareValue = 75;
+        return [
+            ['==', 'equal to'],
+            ['===', 'equal to'],
+            ['!=', 'not be equal'],
+            ['!==', 'not be equal'],
+            ['>', 'greater than'],
+            ['>=', 'greater than or equal'],
+            ['<', 'less than'],
+            ['<=', 'less than or equal'],
+        ];
+    }
 
-        $model = new FakedValidationModel();
+    /**
+     * @dataProvider defaultMessagePerOperatorProvider
+     */
+    public function testDefaultMessagePerOperator(string $operator, string $expectedSubstring): void
+    {
+        $val = new CompareValidator(['operator' => $operator, 'compareValue' => 1]);
+        $this->assertStringContainsString($expectedSubstring, $val->message);
+    }
 
-        $model->attr_test = 100;
+    public function testValidateAttributeCompareAttributeHasErrorMessage(): void
+    {
+        $val = new CompareValidator(['compareAttribute' => 'attr_x', 'skipOnError' => false]);
+        $model = FakedValidationModel::createWithAttributes(['attr_x' => 10, 'attr_y' => 10]);
+        $model->addError('attr_x', 'invalid');
+        $val->validateAttribute($model, 'attr_y');
+        $errors = $model->getErrors('attr_y');
+        $this->assertStringContainsString('attr_x', $errors[0]);
+        $this->assertStringContainsString('is invalid', $errors[0]);
+    }
 
-        $validator = new CompareValidator(
-            [
-                'compareValue' => static fn(): int => $compareValue,
-                'operator' => '>',
-            ],
-        );
+    public function testValidateValueErrorContainsCompareValue(): void
+    {
+        $val = new CompareValidator(['compareValue' => 'expected']);
+        $val->validate('wrong', $error);
+        $this->assertStringContainsString('expected', $error);
+    }
 
-        $validator->validateAttribute($model, 'attr_test');
+    public function testTypeNumberCastsToFloat(): void
+    {
+        $val = new CompareValidator([
+            'compareValue' => '10',
+            'type' => CompareValidator::TYPE_NUMBER,
+            'operator' => '===',
+        ]);
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate(10));
+        $this->assertTrue($val->validate(10.0));
+    }
 
-        $this->assertFalse(
-            $model->hasErrors('attr_test'),
-            "Validation should pass when '100' > '75'.",
-        );
+    public function testCompareAttributeErrorEarlyReturn(): void
+    {
+        $val = new CompareValidator(['compareAttribute' => 'attr_x', 'skipOnError' => false]);
+        $model = FakedValidationModel::createWithAttributes(['attr_x' => 5, 'attr_y' => 99]);
+        $model->addError('attr_x', 'bad value');
+        $val->validateAttribute($model, 'attr_y');
 
-        $model2 = new FakedValidationModel();
+        $errors = $model->getErrors('attr_y');
+        $this->assertCount(1, $errors);
+        $this->assertStringContainsString('is invalid', $errors[0]);
+    }
 
-        $model2->attr_test = 50;
-
-        $validator->validateAttribute($model2, 'attr_test');
-
-        $this->assertTrue(
-            $model2->hasErrors('attr_test'),
-            "Validation should fail when '50' is not > '75'."
-        );
+    public function testDefaultOperatorFallsThrough(): void
+    {
+        $val = new CompareValidator(['compareValue' => 5]);
+        $val->operator = '<>';
+        $this->assertFalse($val->validate(5));
+        $this->assertFalse($val->validate(999));
     }
 }

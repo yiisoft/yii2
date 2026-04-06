@@ -18,8 +18,8 @@ class SilencedCacheController extends CacheController
     /**
      * {@inheritdoc}
      */
-    public function stdout($string): void
+    public function stdout($string)
     {
-        // do nothing
+        return 0;
     }
 }

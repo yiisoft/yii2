@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -38,7 +39,7 @@ use yii\caching\TagDependency;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
  *
- * @template T of ColumnSchema
+ * @template T of ColumnSchema = ColumnSchema
  */
 abstract class Schema extends BaseObject
 {
@@ -70,7 +71,6 @@ abstract class Schema extends BaseObject
      * data format of the cache changes.
      */
     public const SCHEMA_CACHE_VERSION = 1;
-
     /**
      * @var Connection the database connection
      */
@@ -87,11 +87,8 @@ abstract class Schema extends BaseObject
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
     /**
-     * @var string|array column schema class or class config
+     * @var class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...} column schema class or class config
      * @since 2.0.11
-     *
-     * @phpstan-var class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}
-     * @psalm-var class-string<T>|array{class?: class-string<T>, __class?: class-string<T>, ...}
      */
     public $columnSchemaClass = 'yii\db\ColumnSchema';
 
@@ -178,11 +175,8 @@ abstract class Schema extends BaseObject
     /**
      * Creates a column schema for the database.
      * This method may be overridden by child classes to create a DBMS-specific column schema.
-     * @return ColumnSchema column schema instance.
+     * @return T column schema instance.
      * @throws InvalidConfigException if a column schema class cannot be created.
-     *
-     * @phpstan-return T
-     * @psalm-return T
      */
     protected function createColumnSchema()
     {

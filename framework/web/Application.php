@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,7 +10,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidRouteException;
-use yii\base\Module;
 use yii\helpers\Url;
 
 /**
@@ -17,20 +17,17 @@ use yii\helpers\Url;
  *
  * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
+ * @template TUserIdentity of IdentityInterface = IdentityInterface
+ *
  * @property-read ErrorHandler $errorHandler The error handler application component.
  * @property string $homeUrl The homepage URL.
  * @property-read Request $request The request component.
  * @property-read Response $response The response component.
  * @property-read Session $session The session component.
- * @property-read User $user The user component.
+ * @property-read User<TUserIdentity> $user The user component.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @template TUserIdentity of IdentityInterface
- *
- * @phpstan-property-read User<TUserIdentity> $user
- * @psalm-property-read User<TUserIdentity> $user
  */
 class Application extends \yii\base\Application
 {
@@ -59,9 +56,6 @@ class Application extends \yii\base\Application
     public $catchAll;
     /**
      * @var Controller|null the currently active controller instance
-     *
-     * @phpstan-var Controller<Module>|null
-     * @psalm-var Controller<Module>|null
      */
     public $controller;
     /**
@@ -198,10 +192,7 @@ class Application extends \yii\base\Application
 
     /**
      * Returns the user component.
-     * @return User the user component.
-     *
-     * @phpstan-return User<TUserIdentity>
-     * @psalm-return User<TUserIdentity>
+     * @return User<TUserIdentity> the user component.
      */
     public function getUser()
     {

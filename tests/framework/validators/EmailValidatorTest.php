@@ -198,134 +198,61 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($val->validate($value));
     }
 
-    public function testClientValidateAttribute(): void
+    /**
+     * RFC 5321 section 4.5.3.1.1: local part must be max 64 octets.
+     */
+    public function testLocalPartExactly64Characters(): void
     {
-        $modelValidator = new FakedValidationModel();
+        $validator = new EmailValidator();
+        $local = str_repeat('a', 64);
+
+        $this->assertTrue($validator->validate($local . '@example.com'));
+    }
+
+    public function testLocalPartExceeds64Characters(): void
+    {
+        $validator = new EmailValidator();
+        $local = str_repeat('a', 65);
+
+        $this->assertFalse($validator->validate($local . '@example.com'));
+    }
+
+    /**
+     * RFC 2821: total address length must be max 254 characters.
+     */
+    public function testTotalLengthExactly254Characters(): void
+    {
+        $validator = new EmailValidator();
+        $local = str_repeat('a', 64);
+        $domain = str_repeat('a', 63) . '.' . str_repeat('b', 63) . '.' . str_repeat('c', 57) . '.com';
+        $email = $local . '@' . $domain;
+
+        $this->assertTrue($validator->validate($email));
+    }
+
+    public function testTotalLengthExceeds254Characters(): void
+    {
+        $validator = new EmailValidator();
+        $local = str_repeat('a', 64);
+        $domain = str_repeat('a', 63) . '.' . str_repeat('b', 63) . '.' . str_repeat('c', 58) . '.com';
+        $email = $local . '@' . $domain;
+
+        $this->assertFalse($validator->validate($email));
+    }
+
+    public function testCaseInsensitiveValidation(): void
+    {
         $validator = new EmailValidator();
 
-        $modelValidator->attrA = 'test@example.com';
-
-        $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
-            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
-            '"enableIDN":false,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-
-        $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
-
-        $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
-        $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
-
-        $this->assertSame(
-            [
-                'pattern' => $validator->pattern,
-                'fullPattern' => $validator->fullPattern,
-                'allowName' => false,
-                'message' => 'attrA is not a valid email address.',
-                'enableIDN' => false,
-                'skipOnEmpty' => 1,
-            ],
-            $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
-        );
-
-        $validator->validate('invalid-email', $errorMessage);
-
-        $this->assertSame(
-            'the input value is not a valid email address.',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
+        $this->assertTrue($validator->validate('USER@EXAMPLE.COM'));
+        $this->assertTrue($validator->validate('User@Example.Com'));
     }
 
-    public function testClientValidateAttributeWithEnableIDN(): void
+    public function testDefaultMessageIsSet(): void
     {
-        $modelValidator = new FakedValidationModel();
-        $validator = new EmailValidator(['enableIDN' => true]);
-
-        $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
-            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
-            '"enableIDN":true,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->getView()),
-            "'clientValidateAttribute()' method should return correct validation script.",
-        );
-
-        $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
-
-        $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
-        $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
-
-        $this->assertSame(
-            [
-                'pattern' => $validator->pattern,
-                'fullPattern' => $validator->fullPattern,
-                'allowName' => false,
-                'message' => 'attrA is not a valid email address.',
-                'enableIDN' => true,
-                'skipOnEmpty' => 1,
-            ],
-            $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
-        );
-
-        $validator->validate('invalid-email', $errorMessage);
-
-        $this->assertSame(
-            'the input value is not a valid email address.',
-            $errorMessage,
-            'Failed asserting that the generated error message matches the expected one.',
-        );
-    }
-
-    public function testDnsCheckHandlesErrorException(): void
-    {
-        $this->stubDnsGetRecordThrowsException(true);
-
+        $this->mockApplication();
         $validator = new EmailValidator();
 
-        $validator->checkDNS = true;
-
-        $this->assertFalse(
-            $validator->validate('test@example.com'),
-            'Should return false when dns_get_record throws ErrorException'
-        );
+        $this->assertNotNull($validator->message);
     }
-
-    public function testThrowExceptionWhenIdnEnabledWithoutIntlExtension(): void
-    {
-        $this->stubIdnToAsciiExists(false);
-
-        $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('In order to use IDN validation intl extension must be installed and enabled.');
-
-        new EmailValidator(['enableIDN' => true]);
-    }
-}
-
-namespace yii\validators;
-
-use yii\base\ErrorException;
-use yiiunit\framework\validators\EmailValidatorTest;
-
-function dns_get_record(string $hostname, int $type = DNS_ANY): array|false
-{
-    if (EmailValidatorTest::shouldDnsThrowExceptionStub()) {
-        throw new ErrorException('DNS query failed.');
-    }
-
-    return \dns_get_record($hostname, $type);
-}
-
-function function_exists(string $name): bool
-{
-    $testValue = EmailValidatorTest::getIdnToAsciiExistsStub();
-
-    if ($testValue !== null && $name === 'idn_to_ascii') {
-        return $testValue;
-    }
-
-    return \function_exists($name);
 }

@@ -25,7 +25,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 class FixtureControllerTest extends DatabaseTestCase
 {
     /**
-     * @var FixtureConsoledController
+     * @var FixtureConsoledController|null
      */
     private $_fixtureController;
 

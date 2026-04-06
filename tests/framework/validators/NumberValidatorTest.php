@@ -575,6 +575,13 @@ class NumberValidatorTest extends TestCase
         $this->assertFalse($val->validate("\t1.1"));
         $this->assertFalse($val->validate("1.1\t"));
     }
+
+    public function testValidateValueRejectsArrayWhenAllowArrayIsFalse(): void
+    {
+        $val = new NumberValidator();
+        $this->assertFalse($val->allowArray);
+        $this->assertFalse($val->validate([1, 2, 3]));
+    }
 }
 
 class TestClass implements \Stringable

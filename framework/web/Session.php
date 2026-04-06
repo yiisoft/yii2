@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -480,10 +481,10 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      */
     public function getGCProbability()
     {
-        /** @phpstan-var numeric-string|false */
+        /** @var numeric-string|false $gcProbability */
         $gcProbability = ini_get('session.gc_probability');
 
-        /** @phpstan-var numeric-string|false */
+        /** @var numeric-string|false $gcDivisor */
         $gcDivisor = ini_get('session.gc_divisor');
 
         return (float) ($gcProbability / $gcDivisor * 100);

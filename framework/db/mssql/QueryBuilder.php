@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -280,10 +281,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        /**
-         * @var Schema
-         * @phpstan-var Schema<ColumnSchema>
-         */
+        /** @var Schema $dbSchema */
         $dbSchema = $this->db->getSchema();
         $enable = $check ? 'CHECK' : 'NOCHECK';
         $schema = $schema ?: $dbSchema->defaultSchema;

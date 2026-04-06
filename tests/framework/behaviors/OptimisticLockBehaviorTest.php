@@ -78,7 +78,7 @@ class OptimisticLockBehaviorTest extends TestCase
             OptimisticLockBehavior::class,
         ];
         $model = new ActiveRecordLockVersion();
-        $model->version = 0;
+        $model->version = '0';
         $this->assertEquals(true, $model->save(false), 'model is successfully saved');
 
         // upgrade model
@@ -281,8 +281,12 @@ class OptimisticLockBehaviorTest extends TestCase
  * Test Active Record class with [[OptimisticLockBehavior]] behavior attached.
  *
  * @property int $id
+ * @property string $version
  * @property int $created_at
  * @property int $updated_at
+ *
+ * We use `mixin` here to avoid PHPStan errors.
+ * @mixin OptimisticLockBehavior
  */
 class ActiveRecordLockVersion extends ActiveRecord
 {
