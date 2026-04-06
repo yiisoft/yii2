@@ -129,7 +129,7 @@ class DbSession extends MultiFieldSession
         parent::regenerateID(false);
         $newID = session_id();
         // if session id regeneration failed, no need to create/update it.
-        if (empty($newID)) {
+        if ($newID === '') {
             Yii::warning('Failed to generate new session ID', __METHOD__);
             return;
         }
