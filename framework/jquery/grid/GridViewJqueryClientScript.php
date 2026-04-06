@@ -42,7 +42,17 @@ class GridViewJqueryClientScript implements ClientScriptInterface
         $filterSelector = "#$id input, #$id select";
 
         if (isset($object->filterSelector)) {
-            $filterSelector .= ', ' . $object->filterSelector;
+            $additionalFilterSelector = $object->filterSelector;
+
+            if ($object->filterSelector instanceof \Closure) {
+                $additionalFilterSelector = ($object->filterSelector)($object->getId(), $id);
+            }
+
+            if ($object->overrideFilterSelector) {
+                $filterSelector = $additionalFilterSelector;
+            } else {
+                $filterSelector .= ', ' . $additionalFilterSelector;
+            }
         }
 
         return [
