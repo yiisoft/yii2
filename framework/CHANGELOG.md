@@ -31,6 +31,7 @@ Yii Framework 2 Change Log
 - Bug #20573: Fix `checkbox`/`radio` label rendering when `enclosedByLabel` is `false` and raise code coverage `100%` in `ActiveField::class` (terabytesoftw)
 - Enh #20582: Make jQuery optional (terabytesoftw)
 - Enh #20801: Update PHP `8.3` and PHPUnit `11.5` compatibility (terabytesoftw)
+- Chg #20804: Remove Yii runtime autoloader (`Yii::autoload()`, `Yii::$classMap`, `framework/classes.php`); rely on Composer autoload and fix related PSR-4 ambiguities in tests and legacy files (terabytesoftw)
 
 2.0.54 under development
 ------------------------

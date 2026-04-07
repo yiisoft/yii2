@@ -58,16 +58,21 @@ the `xyz` root namespace. You can include the following code in your application
 If neither of the above is the case, it is likely that the library relies on PHP include path configuration to
 correctly locate and include class files. Simply follow its instruction on how to configure the PHP include path.
 
-In the worst case when the library requires explicitly including every class file, you can use the following method
-to include the classes on demand:
+In the worst case when the library requires explicitly including every class file, you can register the classes
+through Composer's autoloader instead. Add an `autoload.classmap` entry to your application's `composer.json`
+pointing at the directory or files that contain the library classes, then run `composer dump-autoload`:
 
-* Identify which classes the library contains.
-* List the classes and the corresponding file paths in `Yii::$classMap` in the [entry script](structure-entry-scripts.md)
-  of the application. For example,
-```php
-Yii::$classMap['Class1'] = 'path/to/Class1.php';
-Yii::$classMap['Class2'] = 'path/to/Class2.php';
+```json
+{
+    "autoload": {
+        "classmap": [
+            "path/to/library/"
+        ]
+    }
+}
 ```
+
+Composer will scan the listed paths and build a class-to-file map automatically.
 
 
 Using Yii in Third-Party Systems <span id="using-yii-in-others"></span>
@@ -160,15 +165,14 @@ class Yii extends \yii\BaseYii
     // copy-paste the code from YiiBase (1.x) here
 }
 
-spl_autoload_unregister(array('YiiBase','autoload'));
-spl_autoload_register(array('Yii','autoload'));
-
-Yii::$classMap = include($yii2path . '/classes.php');
-// register Yii 2 autoloader via Yii 1
-Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;
 ```
+
+> Note: starting with Yii `22.x`, the framework no longer ships its own autoloader (`Yii::autoload()` and
+> `Yii::$classMap` have been removed). Yii 2 classes are loaded exclusively through Composer's autoloader,
+> so make sure `vendor/autoload.php` is required before this customized `Yii.php` file. The Yii 1 autoloader
+> remains in place for Yii 1 classes.
 
 That's all! Now in any part of your code, you can use `Yii::$app` to access the Yii 2 application instance, while
 `Yii::app()` will give you the Yii 1 application instance:

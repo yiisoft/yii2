@@ -89,13 +89,28 @@
     "autoload": {
         "psr-4": {
             "yii\\": "framework/"
-        }
+        },
+        "classmap": ["framework/Yii.php"],
+        "exclude-from-classmap": [
+            "/framework/caching/migrations/",
+            "/framework/i18n/migrations/",
+            "/framework/log/migrations/",
+            "/framework/rbac/migrations/",
+            "/framework/web/migrations/",
+            "/framework/requirements/YiiRequirementChecker.php"
+        ],
+        "files": [
+            "framework/requirements/YiiRequirementChecker.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
             "yii\\build\\": "build/",
             "yiiunit\\": "tests/"
-        }
+        },
+        "exclude-from-classmap": [
+            "/tests/framework/db/stubs/BackedEnumStubs.php"
+        ]
     },
     "config": {
         "allow-plugins": {

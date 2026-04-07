@@ -65,16 +65,29 @@ class ArrayHelper extends BaseArrayHelper
 }
 ```
 
-Save your class in a file named `ArrayHelper.php`. The file can be in any directory, for example `@app/components`.
+Save your class in a file named `ArrayHelper.php`, for example under `src/components/ArrayHelper.php`.
 
-Next, in your application's [entry script](structure-entry-scripts.md), add the following line of code
-after including the `yii.php` file to tell the [Yii class autoloader](concept-autoloading.md) to load your custom
-class instead of the original helper class from the framework:
+Next, configure Composer's autoloader in your application's `composer.json` so that your custom class replaces
+the framework one. Add a `classmap` entry pointing at your override and an `exclude-from-classmap` entry that
+hides the original framework file:
 
-```php
-Yii::$classMap['yii\helpers\ArrayHelper'] = '@app/components/ArrayHelper.php';
+```json
+{
+    "autoload": {
+        "classmap": [
+            "src/components/ArrayHelper.php"
+        ],
+        "exclude-from-classmap": [
+            "vendor/yiisoft/yii2/framework/helpers/ArrayHelper.php"
+        ]
+    }
+}
 ```
 
+Then run `composer dump-autoload` (use `-o` in production). Composer will load your override from
+`src/components/ArrayHelper.php` and skip the vendor file. See the [class autoloading guide](concept-autoloading.md)
+for more details.
+
 Note that customizing of helper classes is only useful if you want to change the behavior of an existing function
-of the helpers. If you want to add additional functions to use in your application, you may be better off creating a separate
-helper for that.
+of the helpers. If you want to add additional functions to use in your application, you may be better off creating a
+separate helper for that.

@@ -3,9 +3,6 @@ Automation
 
 There are some tasks that are done automatically when working on Yii:
 
-- Generation of the classmap `classes.php` located under the framework root directory.
-  Run `./build/build classmap` to generate it.
-
 - Generation of the `@property` annotations in class files that describe properties introduced by getters and setters.
   Run `./build/build php-doc/property` to update them.
 
