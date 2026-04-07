@@ -35,7 +35,7 @@ All framework classes are now loaded exclusively by Composer:
     - `autoload-dev` — development and test-only classes.
 3. Regenerate the autoload files after editing `composer.json`:
 
-   ```
+   ```bash
    composer dump-autoload -o
    ```
 
@@ -104,9 +104,9 @@ declare(strict_types=1);
 
 namespace yii\web;
 
-class Request extends \yii\web\Request
+class Request
 {
-    // custom behavior
+    // full reimplementation of yii\web\Request, with your custom behavior
 }
 ```
 
@@ -114,9 +114,20 @@ Then run `composer dump-autoload -o`. Composer loads the override from `src/over
 skips the vendor file thanks to `exclude-from-classmap`. The override survives optimized and
 authoritative classmaps because it is resolved at autoload-generation time, not at runtime.
 
-> Note: if you redeclare the class from scratch (instead of extending), drop the `extends` clause and
-> reimplement the full public surface. Either approach works; the choice depends on how much of the
-> original behavior you want to keep.
+> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN
+> `yii\web\Request` is now defined exclusively by your override file. You **cannot** write
+> `class Request extends \yii\web\Request` inside `namespace yii\web;` — that would be self-inheritance
+> and PHP will reject it. You must reimplement the full public surface of the original class.
+>
+> If you only need to *extend* the framework class, do **not** use `exclude-from-classmap`. Instead,
+> declare a subclass under a different FQCN (for example `app\components\Request extends \yii\web\Request`)
+> and point the `request` application component at the new class via the application configuration:
+>
+> ```php
+> 'components' => [
+>     'request' => ['class' => \app\components\Request::class],
+> ],
+> ```
 
 #### Installing Yii from an archive file (non-Composer install)
 

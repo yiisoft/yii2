@@ -94,15 +94,25 @@ declare(strict_types=1);
 
 namespace yii\web;
 
-class Request extends \yii\web\Request
+class Request
 {
-    // custom behavior
+    // full reimplementation of yii\web\Request, with your custom behavior
 }
 ```
 
 Then run `composer dump-autoload -o`. Composer will load the override from `src/overrides/Request.php` and
 skip the vendor file thanks to `exclude-from-classmap`. The override survives optimized and authoritative
 classmaps because it is resolved at autoload-generation time, not at runtime.
+
+> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN
+> `yii\web\Request` is now defined exclusively by your override file. You **cannot** write
+> `class Request extends \yii\web\Request` inside `namespace yii\web;` — that would be self-inheritance
+> and PHP will reject it. You must reimplement the full public surface of the original class.
+>
+> If you only need to *extend* the framework class without replacing it, do **not** use
+> `exclude-from-classmap`. Declare a subclass under a different FQCN (for example
+> `app\components\Request extends \yii\web\Request`) and point the `request` application component at
+> your subclass via the application configuration.
 
 
 Optimizing autoloading for production
@@ -111,14 +121,14 @@ Optimizing autoloading for production
 Composer can build a single optimized class map for production deployments, which is the modern equivalent of
 the old `framework/classes.php` file:
 
-```
+```bash
 composer dump-autoload -o
 ```
 
 For maximum performance use the authoritative classmap, which tells Composer to never fall back to filesystem
 lookups (any class not in the map is considered absent):
 
-```
+```bash
 composer dump-autoload --classmap-authoritative
 ```
 
