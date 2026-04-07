@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yiiunit\base\validators\BaseUniqueValidator;
+
 /**
  * @group db
  * @group mssql
  * @group validators
  */
-class UniqueValidatorTest extends \yiiunit\framework\validators\UniqueValidatorTest
+class UniqueValidatorTest extends BaseUniqueValidator
 {
     public $driverName = 'sqlsrv';
 }

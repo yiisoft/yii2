@@ -8,7 +8,7 @@
 
 namespace yiiunit\framework\web\session\sqlite;
 
-use yiiunit\framework\web\session\AbstractDbSessionTest;
+use yiiunit\base\web\session\BaseDbSession;
 use Yii;
 
 /**
@@ -19,7 +19,7 @@ use Yii;
  * @group db
  * @group db-session
  */
-class DbSessionTest extends AbstractDbSessionTest
+class DbSessionTest extends BaseDbSession
 {
     protected function setUp(): void
     {

@@ -8,7 +8,7 @@
 
 namespace yiiunit\framework\web\session\mssql;
 
-use yiiunit\framework\web\session\AbstractDbSessionTest;
+use yiiunit\base\web\session\BaseDbSession;
 
 /**
  * Class DbSessionTest.
@@ -19,7 +19,7 @@ use yiiunit\framework\web\session\AbstractDbSessionTest;
  * @group db-session
  * @group mssql
  */
-class DbSessionTest extends AbstractDbSessionTest
+class DbSessionTest extends BaseDbSession
 {
     protected function getDriverNames()
     {

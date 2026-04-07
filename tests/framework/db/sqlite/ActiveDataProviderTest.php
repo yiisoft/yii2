@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yiiunit\base\data\BaseActiveDataProvider;
+
 /**
  * @group db
  * @group sqlite
  * @group data
  */
-class ActiveDataProviderTest extends \yiiunit\framework\data\ActiveDataProviderTest
+class ActiveDataProviderTest extends BaseActiveDataProvider
 {
     public $driverName = 'sqlite';
 }

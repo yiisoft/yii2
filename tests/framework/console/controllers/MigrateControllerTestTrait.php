@@ -81,7 +81,7 @@ trait MigrateControllerTestTrait
     protected function createMigrateController(array $config = [])
     {
         $module = $this->getMockBuilder(Module::class)
-            ->addMethods(['fake'])
+            ->onlyMethods([])
             ->setConstructorArgs(['console'])
             ->getMock();
 

@@ -16,12 +16,13 @@ use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
+use yiiunit\base\db\BaseQueryBuilder;
 
 /**
  * @group db
  * @group mysql
  */
-class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
+class QueryBuilderTest extends BaseQueryBuilder
 {
     protected $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';

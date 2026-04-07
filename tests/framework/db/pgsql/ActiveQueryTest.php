@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yiiunit\base\db\BaseActiveQuery;
+
 /**
  * @group db
  * @group pgsql
  */
-class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
+class ActiveQueryTest extends BaseActiveQuery
 {
     public $driverName = 'pgsql';
 }

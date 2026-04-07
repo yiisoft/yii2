@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\data;
+namespace yiiunit\base\data;
 
 use yii\base\InvalidCallException;
 use yii\data\ActiveDataProvider;
@@ -25,7 +25,7 @@ use yiiunit\framework\db\UnqueryableQueryMock;
  * @group data
  * @group db
  */
-abstract class ActiveDataProviderTest extends DatabaseTestCase
+abstract class BaseActiveDataProvider extends DatabaseTestCase
 {
     protected function setUp(): void
     {

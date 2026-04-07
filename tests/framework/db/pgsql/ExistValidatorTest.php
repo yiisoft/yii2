@@ -9,13 +9,14 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\validators\ExistValidator;
+use yiiunit\base\validators\BaseExistValidator;
 
 /**
  * @group db
  * @group pgsql
  * @group validators
  */
-class ExistValidatorTest extends \yiiunit\framework\validators\ExistValidatorTest
+class ExistValidatorTest extends BaseExistValidator
 {
     public $driverName = 'pgsql';
 

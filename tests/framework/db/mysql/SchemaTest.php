@@ -13,12 +13,13 @@ use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;
 use yiiunit\framework\db\AnyCaseValue;
+use yiiunit\base\db\BaseSchema;
 
 /**
  * @group db
  * @group mysql
  */
-class SchemaTest extends \yiiunit\framework\db\SchemaTest
+class SchemaTest extends BaseSchema
 {
     public $driverName = 'mysql';
 

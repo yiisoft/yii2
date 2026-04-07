@@ -15,12 +15,13 @@ use yiiunit\data\ar\DefaultPk;
 use yiiunit\data\ar\DefaultMultiplePk;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
+use yiiunit\base\db\BaseActiveRecord;
 
 /**
  * @group db
  * @group oci
  */
-class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
+class ActiveRecordTest extends BaseActiveRecord
 {
     protected $driverName = 'oci';
     protected static string $driverNameStatic = 'oci';

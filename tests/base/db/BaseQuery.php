@@ -6,15 +6,17 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\framework\db\GetTablesAliasTestTrait;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\db\Schema;
 
-abstract class QueryTest extends DatabaseTestCase
+abstract class BaseQuery extends DatabaseTestCase
 {
     use GetTablesAliasTestTrait;
 

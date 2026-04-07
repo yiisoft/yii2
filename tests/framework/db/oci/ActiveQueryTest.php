@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yiiunit\base\db\BaseActiveQuery;
+
 /**
  * @group db
  * @group oci
  */
-class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
+class ActiveQueryTest extends BaseActiveQuery
 {
     public $driverName = 'oci';
 }

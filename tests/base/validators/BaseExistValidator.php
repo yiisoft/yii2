@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\validators;
+namespace yiiunit\base\validators;
 
 use yii\base\Exception;
 use yii\validators\ExistValidator;
@@ -18,7 +18,7 @@ use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
 
-abstract class ExistValidatorTest extends DatabaseTestCase
+abstract class BaseExistValidator extends DatabaseTestCase
 {
     protected function setUp(): void
     {

@@ -14,12 +14,13 @@ use yii\caching\ArrayCache;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\db\Schema;
+use yiiunit\base\db\BaseCommand;
 
 /**
  * @group db
  * @group oci
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends BaseCommand
 {
     protected $driverName = 'oci';
 

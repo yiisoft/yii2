@@ -3,12 +3,13 @@
 namespace yiiunit\framework\db\mysql;
 
 use yiiunit\data\ar\Storage;
+use yiiunit\base\db\BaseActiveRecordTemplate;
 
 /**
  * @group db
  * @group mysql
  */
-class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
+class BaseActiveRecordTest extends BaseActiveRecordTemplate
 {
     public $driverName = 'mysql';
 

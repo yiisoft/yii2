@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yiiunit\base\db\BaseBatchQueryResult;
+
 /**
  * @group db
  * @group pgsql
  */
-class BatchQueryResultTest extends \yiiunit\framework\db\BatchQueryResultTest
+class BatchQueryResultTest extends BaseBatchQueryResult
 {
     public $driverName = 'pgsql';
 }

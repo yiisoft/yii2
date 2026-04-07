@@ -77,7 +77,7 @@ class AssetControllerTest extends TestCase
     protected function createAssetController()
     {
         $module = $this->getMockBuilder(Module::class)
-            ->addMethods(['fake'])
+            ->onlyMethods([])
             ->setConstructorArgs(['console'])
             ->getMock();
 

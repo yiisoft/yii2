@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\log;
 
+use yiiunit\base\log\BaseDbTarget;
+
 /**
  * @group db
  * @group sqlite
  * @group log
  */
-class SqliteTargetTest extends DbTargetTest
+class SqliteTargetTest extends BaseDbTarget
 {
     protected static $driverName = 'sqlite';
 

@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yiiunit\base\db\BaseBatchQueryResult;
+
 /**
  * @group db
  * @group mysql
  */
-class BatchQueryResultTest extends \yiiunit\framework\db\BatchQueryResultTest
+class BatchQueryResultTest extends BaseBatchQueryResult
 {
     public $driverName = 'mysql';
 }

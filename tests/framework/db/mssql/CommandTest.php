@@ -10,12 +10,13 @@ namespace yiiunit\framework\db\mssql;
 
 use yii\db\pgsql\Schema;
 use yii\db\Query;
+use yiiunit\base\db\BaseCommand;
 
 /**
  * @group db
  * @group mssql
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends BaseCommand
 {
     protected $driverName = 'sqlsrv';
 

@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #20547: `PHP` 8.4 fixes for implicit nullability deprecation (terabytesoftw)
 - Bug #20573: Fix `checkbox`/`radio` label rendering when `enclosedByLabel` is `false` and raise code coverage `100%` in `ActiveField::class` (terabytesoftw)
 - Enh #20582: Make jQuery optional (terabytesoftw)
+- Enh #20801: Update PHP `8.3` and PHPUnit `11.5` compatibility (terabytesoftw)
 
 2.0.54 under development
 ------------------------

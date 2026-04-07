@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\log;
+namespace yiiunit\base\log;
 
 use yii\console\Application;
 use yii\console\Controller;
@@ -26,7 +26,7 @@ use yiiunit\TestCase;
  * @group db
  * @group log
  */
-abstract class DbTargetTest extends TestCase
+abstract class BaseDbTarget extends TestCase
 {
     protected static $database;
     protected static $driverName = 'mysql';

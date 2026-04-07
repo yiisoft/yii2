@@ -13,7 +13,6 @@ namespace yiiunit\framework\widgets;
 use yiiunit\TestCase;
 use Exception;
 use yii\validators\Validator;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Yii;
 use yii\base\DynamicModel;
 use yii\web\AssetManager;
@@ -30,8 +29,6 @@ use yii\widgets\MaskedInput;
  */
 class ActiveFieldTest extends TestCase
 {
-    use ArraySubsetAsserts;
-
     private \yiiunit\framework\widgets\ActiveFieldExtend $activeField;
     /**
      * @var DynamicModel
@@ -799,29 +796,33 @@ class ActiveFieldTest extends TestCase
 
         $this->activeField->textInput();
 
-        $this->assertArraySubset(
-            [
-                'id' => 'custom-input-id',
-                'name' => $this->attributeName,
-                'container' => '.field-custom-input-id',
-                'input' => '#custom-input-id',
-            ],
-            $this->activeField->getClientOptions(),
-            message: "'getClientOptions()' method should return correct options array.",
-        );
+        $clientOptions = $this->activeField->getClientOptions();
+        $expected = [
+            'id' => 'custom-input-id',
+            'name' => $this->attributeName,
+            'container' => '.field-custom-input-id',
+            'input' => '#custom-input-id',
+        ];
+
+        foreach ($expected as $key => $value) {
+            $this->assertArrayHasKey($key, $clientOptions, "'getClientOptions()' method should return correct options array.");
+            $this->assertSame($value, $clientOptions[$key], "'getClientOptions()' method should return correct options array.");
+        }
 
         $this->activeField->textInput(['id' => 'custom-textinput-id']);
 
-        $this->assertArraySubset(
-            [
-                'id' => 'custom-textinput-id',
-                'name' => $this->attributeName,
-                'container' => '.field-custom-textinput-id',
-                'input' => '#custom-textinput-id',
-            ],
-            $this->activeField->getClientOptions(),
-            message: "'getClientOptions()' method should return correct options array.",
-        );
+        $clientOptions = $this->activeField->getClientOptions();
+        $expected = [
+            'id' => 'custom-textinput-id',
+            'name' => $this->attributeName,
+            'container' => '.field-custom-textinput-id',
+            'input' => '#custom-textinput-id',
+        ];
+
+        foreach ($expected as $key => $value) {
+            $this->assertArrayHasKey($key, $clientOptions, "'getClientOptions()' method should return correct options array.");
+            $this->assertSame($value, $clientOptions[$key], "'getClientOptions()' method should return correct options array.");
+        }
     }
 
     public function testAriaAttributes(): void

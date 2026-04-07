@@ -167,37 +167,37 @@ class BaseYiiTest extends TestCase
             ->method('log')
             ->willReturnCallback(
                 function (...$parameters) use ($matcher): void {
-                    if ($matcher->getInvocationCount() === 1) {
+                    if ($matcher->numberOfInvocations() === 1) {
                         $this->assertEquals('info message', $parameters[0]);
                         $this->assertEquals(Logger::LEVEL_INFO, $parameters[1]);
                         $this->assertEquals('info category', $parameters[2]);
                     }
 
-                    if ($matcher->getInvocationCount() === 2) {
+                    if ($matcher->numberOfInvocations() === 2) {
                         $this->assertEquals('warning message', $parameters[0]);
                         $this->assertEquals(Logger::LEVEL_WARNING, $parameters[1]);
                         $this->assertEquals('warning category', $parameters[2]);
                     }
 
-                    if ($matcher->getInvocationCount() === 3) {
+                    if ($matcher->numberOfInvocations() === 3) {
                         $this->assertEquals('trace message', $parameters[0]);
                         $this->assertEquals(Logger::LEVEL_TRACE, $parameters[1]);
                         $this->assertEquals('trace category', $parameters[2]);
                     }
 
-                    if ($matcher->getInvocationCount() === 4) {
+                    if ($matcher->numberOfInvocations() === 4) {
                         $this->assertEquals('error message', $parameters[0]);
                         $this->assertEquals(Logger::LEVEL_ERROR, $parameters[1]);
                         $this->assertEquals('error category', $parameters[2]);
                     }
 
-                    if ($matcher->getInvocationCount() === 5) {
+                    if ($matcher->numberOfInvocations() === 5) {
                         $this->assertEquals('beginProfile message', $parameters[0]);
                         $this->assertEquals(Logger::LEVEL_PROFILE_BEGIN, $parameters[1]);
                         $this->assertEquals('beginProfile category', $parameters[2]);
                     }
 
-                    if ($matcher->getInvocationCount() === 6) {
+                    if ($matcher->numberOfInvocations() === 6) {
                         $this->assertEquals('endProfile message', $parameters[0]);
                         $this->assertEquals(Logger::LEVEL_PROFILE_END, $parameters[1]);
                         $this->assertEquals('endProfile category', $parameters[2]);

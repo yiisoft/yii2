@@ -9,12 +9,13 @@
 namespace yiiunit\framework\db\mysql;
 
 use yii\db\Connection;
+use yiiunit\base\db\BaseConnection;
 
 /**
  * @group db
  * @group mysql
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'mysql';
 

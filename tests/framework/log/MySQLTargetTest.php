@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\log;
 
+use yiiunit\base\log\BaseDbTarget;
+
 /**
  * @group db
  * @group mysql
  * @group log
  */
-class MySQLTargetTest extends DbTargetTest
+class MySQLTargetTest extends BaseDbTarget
 {
     protected static $driverName = 'mysql';
 }

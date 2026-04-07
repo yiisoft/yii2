@@ -9,12 +9,13 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\db\Query;
+use yiiunit\base\db\BaseQuery;
 
 /**
  * @group db
  * @group pgsql
  */
-class QueryTest extends \yiiunit\framework\db\QueryTest
+class QueryTest extends BaseQuery
 {
     public $driverName = 'pgsql';
 

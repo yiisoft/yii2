@@ -9,13 +9,14 @@
 namespace yiiunit\framework\db\mssql;
 
 use yii\db\ColumnSchemaBuilder;
+use yiiunit\base\db\BaseColumnSchemaBuilder;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MSSQL.
  * @group db
  * @group mssql
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilder
 {
     public $driverName = 'sqlsrv';
 

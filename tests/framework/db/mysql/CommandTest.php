@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yiiunit\base\db\BaseCommand;
+
 /**
  * @group db
  * @group mysql
  */
-class CommandTest extends \yiiunit\framework\db\CommandTest
+class CommandTest extends BaseCommand
 {
     public $driverName = 'mysql';
 

@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yiiunit\base\db\BaseActiveQuery;
+
 /**
  * @group db
  * @group sqlite
  */
-class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
+class ActiveQueryTest extends BaseActiveQuery
 {
     public $driverName = 'sqlite';
 }

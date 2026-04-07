@@ -9,13 +9,14 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\db\ColumnSchemaBuilder;
+use yiiunit\base\db\BaseColumnSchemaBuilder;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle.
  * @group db
  * @group pgsql
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilder
 {
     public $driverName = 'pgsql';
 

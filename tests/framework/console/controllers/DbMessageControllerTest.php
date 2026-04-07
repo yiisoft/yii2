@@ -18,6 +18,7 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\console\ExitCode;
 use yii\db\Connection;
+use yiiunit\base\console\controllers\BaseMessageController;
 
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with DB message format.
@@ -25,7 +26,7 @@ use yii\db\Connection;
  * @group db
  * @group mysql
  */
-class DbMessageControllerTest extends BaseMessageControllerTest
+class DbMessageControllerTest extends BaseMessageController
 {
     protected static $driverName = 'mysql';
     protected static $database;

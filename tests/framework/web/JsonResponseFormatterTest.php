@@ -12,6 +12,7 @@ use SplStack;
 use yii\helpers\Json;
 use yii\web\JsonResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
+use yiiunit\base\web\BaseFormatter;
 
 /**
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -19,7 +20,7 @@ use yiiunit\framework\web\stubs\ModelStub;
  *
  * @group web
  */
-class JsonResponseFormatterTest extends FormatterTest
+class JsonResponseFormatterTest extends BaseFormatter
 {
     /**
      * @return JsonResponseFormatter

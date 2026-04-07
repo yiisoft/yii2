@@ -48,13 +48,18 @@ jobs:
         uses: GitHubSecurityLab/actions-permissions/monitor@v1
 
       - name: Checkout.
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
+
+      - name: Install PHP.
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
 
       - name: Install dependencies.
         run: composer update $DEFAULT_COMPOSER_FLAGS
 
       - name: Install node.js.
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 

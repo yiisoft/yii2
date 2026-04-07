@@ -10,13 +10,14 @@ namespace yiiunit\framework\db\mysql;
 
 use yii\db\mysql\ColumnSchemaBuilder;
 use yii\db\mysql\Schema;
+use yiiunit\base\db\BaseColumnSchemaBuilder;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MySQL.
  * @group db
  * @group mysql
  */
-class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilder
 {
     protected $driverName = 'mysql';
 

@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web\session;
+namespace yiiunit\base\web\session;
 
 use PDO;
 use Exception;
@@ -17,12 +17,13 @@ use yii\db\Migration;
 use yii\db\Query;
 use yii\web\DbSession;
 use yiiunit\framework\console\controllers\EchoMigrateController;
+use yiiunit\framework\web\session\SessionTestTrait;
 use yiiunit\TestCase;
 
 /**
  * @group db
  */
-abstract class AbstractDbSessionTest extends TestCase
+abstract class BaseDbSession extends TestCase
 {
     use SessionTestTrait;
 

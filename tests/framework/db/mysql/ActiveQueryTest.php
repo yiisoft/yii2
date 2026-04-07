@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yiiunit\base\db\BaseActiveQuery;
+
 /**
  * @group db
  * @group mysql
  */
-class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
+class ActiveQueryTest extends BaseActiveQuery
 {
     public $driverName = 'mysql';
 }

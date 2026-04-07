@@ -64,9 +64,9 @@ class EmailTargetTest extends TestCase
         $messages = [$message1, $message2];
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
-        $message = $this->getMockBuilder(BaseMessage::class)
+        $message = $this->getMockBuilder(TestMessage::class)
             ->onlyMethods(['setTextBody', 'send', 'setSubject'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
@@ -110,9 +110,9 @@ class EmailTargetTest extends TestCase
         $messages = [$message1, $message2];
         $textBody = wordwrap(implode("\n", [$message1[0], $message2[0]]), 70);
 
-        $message = $this->getMockBuilder(BaseMessage::class)
+        $message = $this->getMockBuilder(TestMessage::class)
             ->onlyMethods(['setTextBody', 'send', 'setSubject'])
-            ->getMockForAbstractClass();
+            ->getMock();
         $message->method('send')->willReturn(true);
 
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
@@ -151,9 +151,9 @@ class EmailTargetTest extends TestCase
      */
     public function testExportWithSendFailure(): void
     {
-        $message = $this->getMockBuilder(BaseMessage::class)
-            ->onlyMethods(['send'])
-            ->getMockForAbstractClass();
+        $message = $this->getMockBuilder(TestMessage::class)
+            ->onlyMethods(['setTextBody', 'send', 'setSubject'])
+            ->getMock();
         $message->method('send')->willReturn(false);
         $this->mailer->expects($this->once())->method('compose')->willReturn($message);
 
@@ -172,5 +172,86 @@ class EmailTargetTest extends TestCase
 
         $this->expectException('yii\log\LogRuntimeException');
         $mailTarget->export();
+    }
+}
+
+/**
+ * Concrete test stub of {@see BaseMessage} that implements all abstract methods as no-ops,
+ * allowing PHPUnit to mock it without using the deprecated MockBuilder::getMockForAbstractClass().
+ */
+class TestMessage extends BaseMessage
+{
+    public function getCharset()
+    {
+    }
+    public function setCharset($charset)
+    {
+        return $this;
+    }
+    public function getFrom()
+    {
+    }
+    public function setFrom($from)
+    {
+        return $this;
+    }
+    public function getTo()
+    {
+    }
+    public function setTo($to)
+    {
+        return $this;
+    }
+    public function getCc()
+    {
+    }
+    public function setCc($cc)
+    {
+        return $this;
+    }
+    public function getBcc()
+    {
+    }
+    public function setBcc($bcc)
+    {
+        return $this;
+    }
+    public function getSubject()
+    {
+    }
+    public function setSubject($subject)
+    {
+        return $this;
+    }
+    public function getReplyTo()
+    {
+    }
+    public function setReplyTo($replyTo)
+    {
+        return $this;
+    }
+    public function setTextBody($text)
+    {
+        return $this;
+    }
+    public function setHtmlBody($html)
+    {
+        return $this;
+    }
+    public function attachContent($content, array $options = [])
+    {
+    }
+    public function attach($fileName, array $options = [])
+    {
+    }
+    public function embed($fileName, array $options = [])
+    {
+    }
+    public function embedContent($content, array $options = [])
+    {
+    }
+    public function toString()
+    {
+        return '';
     }
 }

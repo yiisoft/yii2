@@ -199,13 +199,13 @@ namespace yiiunit\framework\log {
                 ->expects($matcher)
                 ->method('collect')
                 ->willReturnCallback(
-                    function (...$parameters) use ($matcher): void {
-                        if ($matcher->getInvocationCount() === 1) {
+                    function (...$parameters) use ($matcher, $target1): void {
+                        if ($matcher->numberOfInvocations() === 1) {
                             $this->assertEquals('messages', $parameters[0]);
                             $this->assertTrue($parameters[1]);
                         }
 
-                        if ($matcher->getInvocationCount() === 2) {
+                        if ($matcher->numberOfInvocations() === 2) {
                             $callback = function ($arg) use ($target1): bool {
                                 if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
                                     return false;

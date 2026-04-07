@@ -5,7 +5,7 @@ description: Run PHPUnit tests with coverage and configurable options.
 inputs:
   additional-args:
     description: Additional PHPUnit arguments.
-    default: "--log-junit junit.xml --verbose"
+    default: "--log-junit junit.xml"
     required: false
     type: string
   configuration:
@@ -92,7 +92,12 @@ runs:
         add_param "--configuration" "$CONFIG_INPUT"
         add_param "--testsuite" "$SUITE_INPUT"
         add_param "--group" "$GROUP_INPUT"
-        add_param "--exclude-group" "$EXCLUDE_GROUP_INPUT"
+
+        if [ -n "$EXCLUDE_GROUP_INPUT" ]; then
+          for group in $EXCLUDE_GROUP_INPUT; do
+            PHPUNIT_CMD="$PHPUNIT_CMD --exclude-group $group"
+          done
+        fi
 
         if [ -n "$DEBUG_INPUT" ]; then
           PHPUNIT_CMD="$PHPUNIT_CMD $DEBUG_INPUT"

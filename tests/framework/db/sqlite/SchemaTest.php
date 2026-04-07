@@ -11,12 +11,13 @@ namespace yiiunit\framework\db\sqlite;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yiiunit\framework\db\AnyValue;
+use yiiunit\base\db\BaseSchema;
 
 /**
  * @group db
  * @group sqlite
  */
-class SchemaTest extends \yiiunit\framework\db\SchemaTest
+class SchemaTest extends BaseSchema
 {
     protected $driverName = 'sqlite';
 

@@ -325,7 +325,7 @@ class CompareValidatorTest extends TestCase
         $this->assertFalse($val->validate(43));
     }
 
-    public function defaultMessagePerOperatorProvider(): array
+    public static function defaultMessagePerOperatorProvider(): array
     {
         return [
             ['==', 'equal to'],

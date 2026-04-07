@@ -63,10 +63,8 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.3",
         "ext-mbstring": "*",
-        "ext-ctype": "*",
-        "lib-pcre": "*",
         "yiisoft/yii2-composer": "~2.0.4",
         "ezyang/htmlpurifier": "^4.17",
         "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0"

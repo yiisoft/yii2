@@ -6,8 +6,10 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db;
+namespace yiiunit\base\db;
 
+use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\framework\db\GetTablesAliasTestTrait;
 use yii\base\Event;
 use yii\db\ActiveQuery;
 use yii\db\Connection;
@@ -21,7 +23,7 @@ use yiiunit\data\ar\Profile;
 /**
  * Class ActiveQueryTest the base class for testing ActiveQuery.
  */
-abstract class ActiveQueryTest extends DatabaseTestCase
+abstract class BaseActiveQuery extends DatabaseTestCase
 {
     use GetTablesAliasTestTrait;
 

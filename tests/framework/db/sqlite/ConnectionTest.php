@@ -14,12 +14,13 @@ use yii\db\Exception;
 use yii\db\Transaction;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
+use yiiunit\base\db\BaseConnection;
 
 /**
  * @group db
  * @group sqlite
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'sqlite';
 

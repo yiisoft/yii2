@@ -9,12 +9,13 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\db\Transaction;
+use yiiunit\base\db\BaseConnection;
 
 /**
  * @group db
  * @group pgsql
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'pgsql';
 

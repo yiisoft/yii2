@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yiiunit\base\db\BaseBatchQueryResult;
+
 /**
  * @group db
  * @group sqlite
  */
-class BatchQueryResultTest extends \yiiunit\framework\db\BatchQueryResultTest
+class BatchQueryResultTest extends BaseBatchQueryResult
 {
     public $driverName = 'sqlite';
 }

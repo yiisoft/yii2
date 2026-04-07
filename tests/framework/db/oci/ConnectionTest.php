@@ -10,12 +10,13 @@ namespace yiiunit\framework\db\oci;
 
 use yii\db\Connection;
 use yii\db\Transaction;
+use yiiunit\base\db\BaseConnection;
 
 /**
  * @group db
  * @group oci
  */
-class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
+class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'oci';
 

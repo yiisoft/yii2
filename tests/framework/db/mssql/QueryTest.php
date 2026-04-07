@@ -9,12 +9,13 @@
 namespace yiiunit\framework\db\mssql;
 
 use yii\db\Query;
+use yiiunit\base\db\BaseQuery;
 
 /**
  * @group db
  * @group mssql
  */
-class QueryTest extends \yiiunit\framework\db\QueryTest
+class QueryTest extends BaseQuery
 {
     protected $driverName = 'sqlsrv';
 
