@@ -597,6 +597,10 @@ class PhpDocController extends ConsoleController
 
         // TODO move these checks to different action
         $lines = explode("\n", $newDoc);
+        if (!array_key_exists(1, $lines)) {
+            return false;
+        }
+
         $firstLine = trim($lines[1]);
         if ($firstLine === '*' || strncmp($firstLine, '* @', 3) === 0) {
             $this->stderr("[WARN] Class $className has no short description.\n", Console::FG_YELLOW, Console::BOLD);
