@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,7 +24,7 @@ use yii\helpers\Url;
  * You can modify its configuration by adding an array to your application config under `components`
  * as shown in the following example:
  *
- * ```php
+ * ```
  * 'assetManager' => [
  *     'bundles' => [
  *         // you can override AssetBundle configs here
@@ -38,6 +39,15 @@ use yii\helpers\Url;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-type PublishOptions array{
+ *     only?: string[],
+ *     except?: string[],
+ *     caseSensitive?: bool,
+ *     beforeCopy?: callable,
+ *     afterCopy?: callable,
+ *     forceCopy?: bool,
+ * }
  */
 class AssetManager extends Component
 {
@@ -56,7 +66,7 @@ class AssetManager extends Component
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ```php
+     * ```
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
@@ -89,7 +99,7 @@ class AssetManager extends Component
      * In the following example, any assets ending with `jquery.min.js` will be replaced with `jquery/dist/jquery.js`
      * which is relative to [[baseUrl]] and [[basePath]].
      *
-     * ```php
+     * ```
      * [
      *     'jquery.min.js' => 'jquery/dist/jquery.js',
      * ]
@@ -97,7 +107,7 @@ class AssetManager extends Component
      *
      * You may also use aliases while specifying map value, for example:
      *
-     * ```php
+     * ```
      * [
      *     'jquery.min.js' => '@web/js/jquery/jquery.js',
      * ]
@@ -117,7 +127,7 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ```apache
+     * ```
      * Options FollowSymLinks
      * ```
      */
@@ -188,7 +198,7 @@ class AssetManager extends Component
      *
      * Example of an implementation using MD4 hash:
      *
-     * ```php
+     * ```
      * function ($path) {
      *     return hash('md4', $path);
      * }
@@ -288,7 +298,7 @@ class AssetManager extends Component
         if (!isset($config['class'])) {
             $config['class'] = $name;
         }
-        /* @var $bundle AssetBundle */
+        /** @var AssetBundle $bundle */
         $bundle = Yii::createObject($config);
         if ($publish) {
             $bundle->publish($this);
@@ -383,7 +393,7 @@ class AssetManager extends Component
     }
 
     /**
-     * @var AssetConverterInterface
+     * @var array|string|AssetConverterInterface|null
      */
     private $_converter;
 
@@ -407,9 +417,9 @@ class AssetManager extends Component
 
     /**
      * Sets the asset converter.
-     * @param array|AssetConverterInterface $value the asset converter. This can be either
+     * @param array|string|AssetConverterInterface $value the asset converter. This can be either
      * an object implementing the [[AssetConverterInterface]], or a configuration
-     * array that can be used to create the asset converter object.
+     * array that can be used to create the asset converter object, or a class name.
      */
     public function setConverter($value)
     {
@@ -446,7 +456,7 @@ class AssetManager extends Component
      * discussion: https://code.google.com/archive/p/yii/issues/2579
      *
      * @param string $path the asset (file or directory) to be published
-     * @param array $options the options to be applied when publishing a directory.
+     * @param PublishOptions $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
      * - only: array, list of patterns that the file paths should match if they want to be copied.

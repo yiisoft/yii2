@@ -51,6 +51,276 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.53
+-----------------------
+
+* Raised minimum supported PHP version to `7.4`.
+* Deprecated caching components: `XCache` and `ZendDataCache` have been removed. If you were using these components, you
+will need to replace them with alternative caching solutions.
+
+* Extensive static analysis template annotations (generics) have been added throughout the framework to improve type inference 
+  with PHPStan and Psalm. These include:
+  
+  - **Actions**: `Action`, `InlineAction`, and all action classes now have generic type parameters for their controller type
+  - **Controllers**: `Controller` classes now have generic type parameters for their module type
+  - **Filters**: All filter classes (including `ActionFilter` and authentication filters) now have generic type parameters
+  - **Database**: `ActiveQuery` has generic type parameter for the model type, `ActiveRecord` has template methods for fluent interfaces, `Schema` classes have generic type parameters for column schema types
+  - **Dependency Injection**: `Container` and `Instance` classes have generic type parameters for object types
+  - **Applications**: `Application` and `BaseYii` have generic type parameters for user identity types
+  - **Behaviors**: Comprehensive generic annotations for all behavior classes (see the 2.0.52 upgrade notes for details on `Behavior` usage)
+  
+  If you are using static analysis tools like PHPStan or Psalm in your application and extend any of these framework classes,
+  you may need to add appropriate template annotations to maintain proper type inference. In most cases, the framework will
+  infer the types automatically, but for complex inheritance hierarchies you may need to explicitly declare template parameters.
+  
+  For example, when creating a custom action:
+  
+  ```php
+  use yii\base\Action;
+  use app\controllers\SiteController;
+  
+  /**
+   * @extends Action<SiteController>
+   */
+  class CustomAction extends Action
+  {
+      public function run()
+      {
+          // $this->controller is now properly typed as SiteController
+      }
+  }
+  ```
+
+Upgrade from Yii 2.0.52
+-----------------------
+
+* Static analysis template annotations have been added to `yii\base\Behavior` and related behavior classes.
+  The `Behavior` class now uses PHPStan and Psalm template annotations to provide better type inference for the `$owner` property.
+  
+  If you are using static analysis tools like PHPStan or Psalm in your application and have custom behavior classes,
+  you may need to add template annotations to avoid `MissingTemplateParam` errors.
+  
+  **Example for a simple behavior:**
+  
+  ```php
+  use yii\base\Behavior;
+  use yii\db\ActiveRecord;
+  
+  /**
+   * @extends Behavior<ActiveRecord>
+   */
+  class TestBehavior extends Behavior
+  {
+      public function events(): array
+      {
+          return [
+              ActiveRecord::EVENT_BEFORE_INSERT => 'beforeInsert',
+          ];
+      }
+      
+      public function beforeInsert(\yii\base\ModelEvent $event): void
+      {
+          // $this->owner is now properly typed as ActiveRecord
+      }
+  }
+  ```
+  
+  **Example for a behavior with its own template parameter:**
+  
+  If you're creating a reusable behavior that should work with different component types,
+  you can define your own template parameter:
+  
+  ```php
+  use yii\base\Behavior;
+  use yii\db\ActiveRecord;
+  
+  /**
+   * @template T of ActiveRecord
+   * @extends Behavior<T>
+   */
+  class ReusableBehavior extends Behavior
+  {
+      // The $owner property inherited from Behavior will be typed as T
+      // This allows your behavior to work with any ActiveRecord subclass
+  }
+  ```
+  
+  This allows static analysis to infer the type of `$owner` without having to add type annotations throughout your code.
+  The framework's built-in behaviors (like `TimestampBehavior`, `BlameableBehavior`, etc.) have already been updated with
+  these annotations.
+
+* `ErrorHandler::convertExceptionToError()` has been deprecated and will be removed in version 2.2.0.
+
+  This method was deprecated due to `PHP 8.4` deprecating the use of `E_USER_ERROR` with `trigger_error()`.
+  The framework now handles exceptions in `__toString()` methods more appropriately based on the PHP version.
+
+  **Before (deprecated):**
+  ```php
+  public function __toString() {
+      try {
+          return $this->render();
+      } catch (\Throwable $e) {
+          ErrorHandler::convertExceptionToError($e);
+          return '';
+      }
+  }
+  ```
+
+  **After (recommended):**
+  ```php
+  public function __toString() {
+      try {
+          return $this->render();
+      } catch (\Throwable $e) {
+          if (PHP_VERSION_ID < 70400) {
+              trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+              return '';
+          }
+          throw $e;
+      }
+  }
+  ```
+
+* There was a bug when loading fixtures into PostgreSQL database, the table sequences were not reset. If you used a work-around or if you depended on this behavior, you are advised to review your code.
+
+Upgrade from Yii 2.0.51
+-----------------------
+
+* The function signature for `yii\web\Session::readSession()` and `yii\web\Session::gcSession()` have been changed.
+  They now have the same return types as `\SessionHandlerInterface::read()` and `\SessionHandlerInterface::gc()` respectively.
+  In case those methods have overwritten you will need to update your child classes accordingly.
+
+Upgrade from Yii 2.0.50
+-----------------------
+
+* Correcting the behavior for `JSON` column type in `MariaDb`.
+
+  Columns that are created as `JSON` now automatically add a Check constraint for `json_valid` to the according column.
+  If Yii2 detects that a column has this `json_valid` constraint, data passed into or fetched from it is automatically serialized/deserialized.
+
+  While this does affect migrations created before the update when running them afterwards, it doesn't retroactively change tables created through migrations before the update!
+  This means that running a migration script that invokes `yii\db\Migration::json()` for a MariaDb database will create a different database schema after the update than it did before.
+
+  To preserve the old behavior, migrations need to be changed to instead create a `LONGTEXT` column without a constraint:
+
+```php
+<?php
+class m251103_091000_example_migration extends Migration {
+    public function up() {
+        // before
+        $this->addColumn('MyTable', 'json_data', $this->json()->null()->after('other_column'));
+        // after
+        $this->addColumn('MyTable', 'json_data', "LONGTEXT NULL DEFAULT NULL COLLATE 'utf8mb4_bin' AFTER other_column");
+    }
+}
+```
+ 
+  To make use of the new behavior, add the json_valid constraint to according columns on pre-existing databases
+  and remove any JSON serialization/deserialization logic that was in place before this change (as (de)serialization is now done by Yii2).
+
+  Example usage of `JSON` column type in `db`:
+  
+  ```php
+  <?php
+  
+  use yii\db\Schema;
+  
+  $db = Yii::$app->db;
+  $command = $db->createCommand();
+  
+  // Create a table with a JSON column
+  $command->createTable(
+      'products',
+      [
+          'id' => Schema::TYPE_PK,
+          'details' => Schema::TYPE_JSON,
+      ],
+  )->execute();
+  
+  // Insert a new product
+  $command->insert(
+      'products',
+      [
+          'details' => [
+              'name' => 'apple',
+              'price' => 100,
+              'color' => 'blue',
+              'size' => 'small',
+          ],
+      ],
+  )->execute();
+  
+  // Read all products
+  $records = $db->createCommand('SELECT * FROM products')->queryAll();
+  ```
+  
+  Example usage of `JSON` column type in `ActiveRecord`:
+  
+  ```php
+  <?php
+  
+  namespace app\model;
+  
+  use yii\db\ActiveRecord;
+  
+  class ProductModel extends ActiveRecord
+  {
+      public static function tableName()
+      {
+          return 'products';
+      }
+  
+      public function rules()
+      {
+          return [
+              [['details'], 'safe'],
+          ];
+      }
+  }
+  ```
+  
+  ```php
+  <?php
+  
+  use app\model\ProductModel;
+  
+  // Create a new product
+  $product = new ProductModel();
+  
+  // Set the product details
+  $product->details = [
+      'name' => 'windows',
+      'color' => 'red',
+      'price' => 200,
+      'size' => 'large',
+  ];
+  
+  // Save the product
+  $product->save();
+  
+  // Read the first product
+  $product = ProductModel::findOne(1);
+  
+  // Get the product details
+  $details = $product->details;
+  
+  echo 'Name: ' . $details['name'];
+  echo 'Color: ' . $details['color'];
+  echo 'Size: ' . $details['size'];
+  
+  // Read all products with color red
+  $products = ProductModel::find()
+      ->where(new \yii\db\Expression('JSON_EXTRACT(details, "$.color") = :color', [':color' => 'red']))
+      ->all();
+  
+  // Loop through all products
+  foreach ($products as $product) {
+      $details = $product->details;
+      echo 'Name: ' . $details['name'];
+      echo 'Color: ' . $details['color'];
+      echo 'Size: ' . $details['size'];
+  }
+  ```
 
 Upgrade from Yii 2.0.48
 -----------------------

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,7 +10,12 @@ namespace yii\filters;
 
 use Closure;
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
+use yii\base\Controller;
+use yii\base\Module;
+use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\TooManyRequestsHttpException;
@@ -19,7 +25,7 @@ use yii\web\TooManyRequestsHttpException;
  *
  * You may use RateLimiter by attaching it as a behavior to a controller or module, like the following,
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -37,6 +43,9 @@ use yii\web\TooManyRequestsHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class RateLimiter extends ActionFilter
 {
@@ -49,10 +58,10 @@ class RateLimiter extends ActionFilter
      */
     public $errorMessage = 'Rate limit exceeded.';
     /**
-     * @var RateLimitInterface|Closure|null the user object that implements the RateLimitInterface. If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
+     * @var RateLimitInterface|IdentityInterface|Closure|null the user object that implements the RateLimitInterface. If not set, it will take the value of `Yii::$app->user->getIdentity(false)`.
      * {@since 2.0.38} It's possible to provide a closure function in order to assign the user identity on runtime. Using a closure to assign the user identity is recommend
      * when you are **not** using the standard `Yii::$app->user` component. See the example below:
-     * ```php
+     * ```
      * 'user' => function() {
      *     return Yii::$app->apiUser->identity;
      * }
@@ -112,7 +121,7 @@ class RateLimiter extends ActionFilter
      * @param RateLimitInterface $user the current user
      * @param Request $request
      * @param Response $response
-     * @param \yii\base\Action $action the action to be executed
+     * @param Action $action the action to be executed
      * @throws TooManyRequestsHttpException if rate limit exceeds
      */
     public function checkRateLimit($user, $request, $response, $action)

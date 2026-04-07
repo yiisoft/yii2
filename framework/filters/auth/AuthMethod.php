@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +11,7 @@ namespace yii\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\helpers\StringHelper;
 use yii\web\Request;
 use yii\web\Response;
@@ -21,6 +23,9 @@ use yii\web\User;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 abstract class AuthMethod extends ActionFilter implements AuthInterface
 {

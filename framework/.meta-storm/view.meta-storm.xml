@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<meta-storm xmlns="meta-storm">
+    <definitions>
+        <classMethod class="\yii\web\View" method="render" argument="0">
+            <files extension="php" xpath="$directory"/>
+        </classMethod>
+    </definitions>
+</meta-storm>

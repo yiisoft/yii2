@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,6 +11,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\caching\ApcCache;
 use yii\caching\CacheInterface;
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
@@ -43,6 +45,9 @@ use yii\helpers\Console;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
+ *
+ * @template T of Application = Application
+ * @extends Controller<T>
  */
 class CacheController extends Controller
 {
@@ -169,6 +174,8 @@ class CacheController extends Controller
         } catch (\Exception $e) {
             $this->stdout($e->getMessage() . "\n\n", Console::FG_RED);
         }
+
+        return ExitCode::OK;
     }
 
     /**

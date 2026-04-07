@@ -4,6 +4,10 @@ namespace yiiunit\framework\db\mysql;
 
 use yiiunit\data\ar\Storage;
 
+/**
+ * @group db
+ * @group mysql
+ */
 class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
 {
     public $driverName = 'mysql';
@@ -13,7 +17,7 @@ class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
      *
      * @dataProvider provideArrayValueWithChange
      */
-    public function testJsonDirtyAttributesWithDataChange($actual, $modified)
+    public function testJsonDirtyAttributesWithDataChange($actual, $modified): void
     {
         if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
             $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');

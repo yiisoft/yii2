@@ -437,6 +437,35 @@ public function getEventHandlers($name)
 [Раздел руководства](guide:file-name.md#subsection)
 ```
 
+##### Примеры кода
+
+В примерах кода должен использоваться синтаксис Markdown, но не должен указываться язык.
+Указание языка в примерах кода может привести к нарушению их отображения в некоторых IDE. Пример:
+
+```php
+/**
+ * Correct code example:
+ * 
+ * ```
+ * $object->doMagic();
+ * ```
+ */
+public function doMagic()
+{
+}
+
+/**
+ * Incorrect code example:
+ * 
+ * ```php
+ * $object->doMagic();
+ * ```
+ */
+public function doMagic()
+{
+}
+```
+
 
 #### Комментарии
 

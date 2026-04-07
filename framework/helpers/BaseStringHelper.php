@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -50,6 +51,30 @@ class BaseStringHelper
         }
 
         return mb_substr((string)$string, $start, $length, '8bit');
+    }
+
+    /**
+     * Converts php.ini style size to bytes.
+     *
+     * @param string $string php.ini style size. Examples: `512M`, `1024K`, `1G`, `256`.
+     * @return int the number of bytes equivalent to the specified string.
+     * @since 2.0.54
+     */
+    public static function convertIniSizeToBytes($string)
+    {
+        switch (substr($string, -1)) {
+            case 'M':
+            case 'm':
+                return (int) $string * 1048576;
+            case 'K':
+            case 'k':
+                return (int) $string * 1024;
+            case 'G':
+            case 'g':
+                return (int) $string * 1073741824;
+            default:
+                return (int) $string;
+        }
     }
 
     /**
@@ -313,9 +338,14 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result, function ($value) {
-                return $value !== '';
-            }));
+            $result = array_values(
+                array_filter(
+                    $result,
+                    function ($value) {
+                        return $value !== '';
+                    }
+                )
+            );
         }
 
         return $result;
@@ -343,7 +373,7 @@ class BaseStringHelper
      */
     public static function normalizeNumber($value)
     {
-        $value = (string) $value;
+        $value = (string)$value;
 
         $localeInfo = localeconv();
         $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
@@ -396,7 +426,7 @@ class BaseStringHelper
     {
         // . and , are the only decimal separators known in ICU data,
         // so its safe to call str_replace here
-        return str_replace(',', '.', (string) $number);
+        return str_replace(',', '.', (string)$number);
     }
 
     /**
@@ -422,14 +452,14 @@ class BaseStringHelper
 
         $replacements = [
             '\\\\\\\\' => '\\\\',
-            '\\\\\\*' => '[*]',
-            '\\\\\\?' => '[?]',
-            '\*' => '.*',
-            '\?' => '.',
-            '\[\!' => '[^',
-            '\[' => '[',
-            '\]' => ']',
-            '\-' => '-',
+            '\\\\\\*'  => '[*]',
+            '\\\\\\?'  => '[?]',
+            '\*'       => '.*',
+            '\?'       => '.',
+            '\[\!'     => '[^',
+            '\['       => '[',
+            '\]'       => ']',
+            '\-'       => '-',
         ];
 
         if (isset($options['escape']) && !$options['escape']) {
@@ -461,6 +491,7 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucfirst.php
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucfirst($string, $encoding = 'UTF-8')
     {
@@ -478,10 +509,11 @@ class BaseStringHelper
      * @return string
      * @see https://www.php.net/manual/en/function.ucwords
      * @since 2.0.16
+     * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
      */
     public static function mb_ucwords($string, $encoding = 'UTF-8')
     {
-        $string = (string) $string;
+        $string = (string)$string;
         if (empty($string)) {
             return $string;
         }
@@ -504,16 +536,17 @@ class BaseStringHelper
      *
      * @param string $string The input string.
      * @param int $start The starting position from where to begin masking.
-     *                   This can be a positive or negative integer.
-     *                   Positive values count from the beginning,
-     *                   negative values count from the end of the string.
+     * This can be a positive or negative integer.
+     * Positive values count from the beginning,
+     * negative values count from the end of the string.
      * @param int $length The length of the section to be masked.
-     *                    The masking will start from the $start position
-     *                    and continue for $length characters.
+     * The masking will start from the $start position
+     * and continue for $length characters.
      * @param string $mask The character to use for masking. The default is '*'.
      * @return string The masked string.
      */
-    public static function mask($string, $start, $length, $mask = '*') {
+    public static function mask($string, $start, $length, $mask = '*')
+    {
         $strLength = mb_strlen($string, 'UTF-8');
 
         // Return original string if start position is out of bounds

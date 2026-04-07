@@ -537,7 +537,7 @@ $customer->loadDefaultValues();
 Можно также использовать условия для столбцов JSON:
 
 ```php
-$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])
+$query->andWhere(['=', 'json', new ArrayExpression(['foo' => 'bar'])])
 ```
 Дополнительные сведения о системе построения выражений см. [Query Builder – добавление пользовательских условий и выражений](db-query-builder.md#adding-custom-conditions-and-expressions)
 

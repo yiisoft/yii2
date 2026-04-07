@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +25,7 @@ use yii\base\InvalidConfigException;
  *
  * For example,
  *
- * ```php
+ * ```
  * $query = new Query;
  * // compose the query
  * $query->select('id, name')
@@ -83,13 +84,13 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * @var array|null how to join with other tables. Each array element represents the specification
      * of one join which has the following structure:
      *
-     * ```php
+     * ```
      * [$joinType, $tableName, $joinCondition]
      * ```
      *
      * For example,
      *
-     * ```php
+     * ```
      * [
      *     ['INNER JOIN', 'user', 'user.id = author_id'],
      *     ['LEFT JOIN', 'team', 'team.id = team_id'],
@@ -167,7 +168,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * This method is called by [[QueryBuilder]] when it starts to build SQL from a query object.
      * You may override this method to do some final preparation work when converting a query into a SQL statement.
      * @param QueryBuilder $builder
-     * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
+     * @return self a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
     public function prepare($builder)
     {
@@ -183,7 +184,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      *
      * For example,
      *
-     * ```php
+     * ```
      * $query = (new Query)->from('user');
      * foreach ($query->batch() as $rows) {
      *     // $rows is an array of 100 or fewer rows from user table
@@ -212,7 +213,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * This method is similar to [[batch()]] except that in each iteration of the result,
      * only one row of data is returned. For example,
      *
-     * ```php
+     * ```
      * $query = (new Query)->from('user');
      * foreach ($query->each() as $row) {
      * }
@@ -650,7 +651,7 @@ PATTERN;
      * Note, that if [[select]] has not been specified before, you should include `*` explicitly
      * if you want to select all remaining columns too:
      *
-     * ```php
+     * ```
      * $query->addSelect(["*", "CONCAT(first_name, ' ', last_name) AS full_name"])->one();
      * ```
      *
@@ -797,7 +798,7 @@ PATTERN;
      *
      * Here are some examples:
      *
-     * ```php
+     * ```
      * // SELECT * FROM  `user` `u`, `profile`;
      * $query = (new \yii\db\Query)->from(['u' => 'user', 'profile']);
      *
@@ -956,7 +957,7 @@ PATTERN;
      * match the `post.author_id` column value against the string `'user.id'`.
      * It is recommended to use the string syntax here which is more suited for a join:
      *
-     * ```php
+     * ```
      * 'post.author_id = user.id'
      * ```
      *
@@ -1173,7 +1174,7 @@ PATTERN;
      *
      * The following code shows the difference between this method and [[having()]]:
      *
-     * ```php
+     * ```
      * // HAVING `age`=:age
      * $query->filterHaving(['name' => null, 'age' => 20]);
      * // HAVING `age`=:age

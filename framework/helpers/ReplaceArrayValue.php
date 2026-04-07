@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -14,7 +15,7 @@ use yii\base\InvalidConfigException;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * $array1 = [
  *     'ids' => [
  *         1,
@@ -40,7 +41,7 @@ use yii\base\InvalidConfigException;
  *
  * The result will be
  *
- * ```php
+ * ```
  * [
  *     'ids' => [
  *         1,

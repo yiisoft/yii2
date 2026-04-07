@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -204,7 +205,7 @@ class MessageFormatter extends Component
      * @param array $givenParams The array of values to insert into the format string.
      * @param array $resultingParams Modified array of parameters.
      * @param array $map
-     * @return string The pattern string with placeholders replaced.
+     * @return string|false The pattern string with placeholders replaced.
      */
     private function replaceNamedArguments($pattern, $givenParams, &$resultingParams = [], &$map = [])
     {
@@ -422,7 +423,8 @@ class MessageFormatter extends Component
                         $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7, $charset)) - 7, $charset));
                         $selector = trim(mb_substr($selector, $pos + 1, mb_strlen($selector, $charset), $charset));
                     }
-                    if ($message === false && $selector === 'other' ||
+                    if (
+                        $message === false && $selector === 'other' ||
                         strncmp($selector, '=', 1) === 0 && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {

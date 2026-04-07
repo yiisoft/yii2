@@ -353,7 +353,8 @@ window.yii = (function ($) {
         }
     };
 
-    function initCsrfHandler() {
+    function initCsrfHandler()
+    {
         // automatically send CSRF token for all AJAX requests
         $.ajaxPrefilter(function (options, originalOptions, xhr) {
             if (!options.crossDomain && pub.getCsrfParam()) {
@@ -363,7 +364,8 @@ window.yii = (function ($) {
         pub.refreshCsrfToken();
     }
 
-    function initRedirectHandler() {
+    function initRedirectHandler()
+    {
         // handle AJAX redirection
         $(document).ajaxComplete(function (event, xhr) {
             var url = xhr && xhr.getResponseHeader('X-Redirect');
@@ -373,7 +375,8 @@ window.yii = (function ($) {
         });
     }
 
-    function initAssetFilters() {
+    function initAssetFilters()
+    {
         /**
          * Used for storing loaded scripts and information about loading each script if it's in the process of loading.
          * A single script can have one of the following values:
@@ -472,7 +475,8 @@ window.yii = (function ($) {
         });
     }
 
-    function initDataMethods() {
+    function initDataMethods()
+    {
         var handler = function (event) {
             var $this = $(this),
                 method = $this.data('method'),
@@ -499,7 +503,8 @@ window.yii = (function ($) {
             .on('change.yii', pub.changeableSelector, handler);
     }
 
-    function isReloadableAsset(url) {
+    function isReloadableAsset(url)
+    {
         for (var i = 0; i < pub.reloadableScripts.length; i++) {
             var rule = getAbsoluteUrl(pub.reloadableScripts[i]);
             var match = new RegExp("^" + escapeRegExp(rule).split('\\*').join('.+') + "$").test(url);
@@ -512,7 +517,8 @@ window.yii = (function ($) {
     }
 
     // https://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex/6969486#6969486
-    function escapeRegExp(str) {
+    function escapeRegExp(str)
+    {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
@@ -521,7 +527,8 @@ window.yii = (function ($) {
      * @param {string} url Initial URL
      * @returns {string}
      */
-    function getAbsoluteUrl(url) {
+    function getAbsoluteUrl(url)
+    {
         return url.charAt(0) === '/' ? pub.getBaseCurrentUrl() + url : url;
     }
 

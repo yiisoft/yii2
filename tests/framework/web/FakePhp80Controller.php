@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,6 +16,9 @@ class FakePhp80Controller extends Controller
 
     public function actionInjection(int|string $arg, int|string $second)
     {
+    }
 
+    public function actionArrayOrInt(array|int $foo)
+    {
     }
 }

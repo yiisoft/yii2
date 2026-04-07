@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,14 +18,18 @@ use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
+use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from MS SQL Server databases (version 2008 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
+ *
+ * @template T of ColumnSchema = ColumnSchema
+ * @extends BaseSchema<T>
  */
-class Schema extends \yii\db\Schema implements ConstraintFinderInterface
+class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ViewFinderTrait;
     use ConstraintFinderTrait;
@@ -371,7 +376,7 @@ SQL;
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * @return T the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -408,7 +413,15 @@ SQL;
                 }
 
                 if ($isVersion2017orLater === false) {
-                    $column->type = $this->booleanTypeLegacy($column->size, $type);
+                    if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
+                        $column->type = 'boolean';
+                    } elseif ($type === 'bit') {
+                        if ($column->size > 32) {
+                            $column->type = 'bigint';
+                        } elseif ($column->size === 32) {
+                            $column->type = 'integer';
+                        }
+                    }
                 }
             }
         }
@@ -433,7 +446,7 @@ SQL;
     protected function findColumns($table)
     {
         $columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
-        $whereSql = "[t1].[table_name] = " . $this->db->quoteValue($table->name);
+        $whereSql = '[t1].[table_name] = ' . $this->db->quoteValue($table->name);
         if ($table->catalogName !== null) {
             $columnsTableName = "{$table->catalogName}.{$columnsTableName}";
             $whereSql .= " AND [t1].[table_catalog] = '{$table->catalogName}'";
@@ -626,7 +639,7 @@ SQL;
      *
      * Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *     'IndexName1' => ['col1' [, ...]],
      *     'IndexName2' => ['col2' [, ...]],
@@ -814,28 +827,5 @@ SQL;
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return Yii::createObject(ColumnSchemaBuilder::className(), [$type, $length, $this->db]);
-    }
-
-    /**
-     * Assigns a type boolean for the column type bit, for legacy versions of MSSQL.
-     *
-     * @param int $size column size.
-     * @param string $type column type.
-     *
-     * @return string column type.
-     */
-    private function booleanTypeLegacy($size, $type)
-    {
-        if ($size === 1 && ($type === 'tinyint' || $type === 'bit')) {
-            return 'boolean';
-        } elseif ($type === 'bit') {
-            if ($size > 32) {
-                return 'bigint';
-            } elseif ($size === 32) {
-                return 'integer';
-            }
-        }
-
-        return $type;
     }
 }

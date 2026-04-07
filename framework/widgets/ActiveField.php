@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -174,12 +175,14 @@ class ActiveField extends Component
         // use trigger_error to bypass this limitation
         try {
             return $this->render();
-        } catch (\Exception $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
         } catch (\Throwable $e) {
-            ErrorHandler::convertExceptionToError($e);
-            return '';
+            if (PHP_VERSION_ID < 70400) {
+                trigger_error(ErrorHandler::convertExceptionToString($e), E_USER_ERROR);
+
+                return '';
+            }
+
+            throw $e;
         }
     }
 
@@ -192,7 +195,7 @@ class ActiveField extends Component
      * and use them as the content.
      * If a callable, it will be called to generate the content. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function ($field) {
      *     return $html;
      * }
@@ -755,7 +758,7 @@ class ActiveField extends Component
      * For example to use the [[MaskedInput]] widget to get some date input, you can use
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
-     * ```php
+     * ```
      * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);
@@ -770,7 +773,7 @@ class ActiveField extends Component
      */
     public function widget($class, $config = [])
     {
-        /* @var $class \yii\base\Widget */
+        /** @var \yii\base\Widget $class */
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
@@ -829,7 +832,7 @@ class ActiveField extends Component
         if ($clientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
-                /* @var $validator \yii\validators\Validator */
+                /** @var \yii\validators\Validator $validator */
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {

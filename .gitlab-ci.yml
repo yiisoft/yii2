@@ -109,5 +109,5 @@ travis:
     - docker-compose up --build -d
     # wait for dbs ...
     - sleep 10
-    - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,xcache,zenddata,cubrid
+    - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,cubrid
 

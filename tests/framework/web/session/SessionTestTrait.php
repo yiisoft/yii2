@@ -1,13 +1,12 @@
 <?php
 
-
 namespace yiiunit\framework\web\session;
 
 use yii\web\Session;
 
 trait SessionTestTrait
 {
-    public function initStrictModeTest($class)
+    public function initStrictModeTest($class): void
     {
         /** @var Session $session */
         $session = new $class();

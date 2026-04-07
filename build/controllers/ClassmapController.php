@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yii\build\controllers;
 
+use yii\console\Application;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\FileHelper;
@@ -16,6 +18,8 @@ use yii\helpers\FileHelper;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @extends Controller<Application>
  */
 class ClassmapController extends Controller
 {

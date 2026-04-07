@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -14,7 +15,7 @@ use yii\base\InvalidConfigException;
  *
  * For example:
  *
- * ```php
+ * ```
  * new JsonExpression(['a' => 1, 'b' => 2]); // will be encoded to '{"a": 1, "b": 2}'
  * ```
  *
@@ -23,9 +24,8 @@ use yii\base\InvalidConfigException;
  */
 class JsonExpression implements ExpressionInterface, \JsonSerializable
 {
-    const TYPE_JSON = 'json';
-    const TYPE_JSONB = 'jsonb';
-
+    public const TYPE_JSON = 'json';
+    public const TYPE_JSONB = 'jsonb';
     /**
      * @var mixed the value to be encoded to JSON.
      * The value must be compatible with [\yii\helpers\Json::encode()|Json::encode()]] input requirements.

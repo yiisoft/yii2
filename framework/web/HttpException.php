@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,7 @@ use yii\base\UserException;
  *
  * Throwing an HttpException like in the following example will result in the 404 page to be displayed.
  *
- * ```php
+ * ```
  * if ($item === null) { // item does not exist
  *     throw new \yii\web\HttpException(404, 'The requested Item could not be found.');
  * }

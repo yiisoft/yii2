@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Application configuration example:
  *
- * ```php
+ * ```
  * [
  *     'components' => [
  *         'mutex' => [
