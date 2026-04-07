@@ -80,7 +80,7 @@ for example swapping `yii\web\Request`. The Composer equivalent uses `classmap` 
             "src/overrides/Request.php"
         ],
         "exclude-from-classmap": [
-            "vendor/yiisoft/yii2/framework/web/Request.php"
+            "vendor/yiisoft/yii2/web/Request.php"
         ]
     }
 }

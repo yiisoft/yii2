@@ -78,7 +78,7 @@ hides the original framework file:
             "src/components/ArrayHelper.php"
         ],
         "exclude-from-classmap": [
-            "vendor/yiisoft/yii2/framework/helpers/ArrayHelper.php"
+            "vendor/yiisoft/yii2/helpers/ArrayHelper.php"
         ]
     }
 }
