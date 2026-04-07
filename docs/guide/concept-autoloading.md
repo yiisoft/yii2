@@ -9,8 +9,8 @@ compliant autoloader. The framework no longer registers its own SPL autoloader a
 
 > Note: For simplicity of description, in this section we will only talk about autoloading of classes. However, keep in
   mind that the content described here applies to autoloading of interfaces, traits, and enums as well.
-
-> Info: Upgrading from Yii `2.0.x`? See [`UPGRADE-22.md`](https://github.com/yiisoft/yii2/blob/master/framework/UPGRADE-22.md)
+>
+> Info: Upgrading from Yii `2.0.x`? See [`UPGRADE-22.md`](../../framework/UPGRADE-22.md)
   for the migration steps and runnable examples.
 
 
