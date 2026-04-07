@@ -238,16 +238,16 @@ class TestMessage extends BaseMessage
     {
         return $this;
     }
-    public function attachContent($content, array $options = []): void
+    public function attachContent($content, array $options = [])
     {
     }
-    public function attach($fileName, array $options = []): void
+    public function attach($fileName, array $options = [])
     {
     }
-    public function embed($fileName, array $options = []): void
+    public function embed($fileName, array $options = [])
     {
     }
-    public function embedContent($content, array $options = []): void
+    public function embedContent($content, array $options = [])
     {
     }
     public function toString()
