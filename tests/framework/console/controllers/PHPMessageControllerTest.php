@@ -11,11 +11,12 @@ namespace yiiunit\framework\console\controllers;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
+use yiiunit\base\console\controllers\BaseMessageController;
 
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with PHP message format.
  */
-class PHPMessageControllerTest extends \yiiunit\base\console\controllers\BaseMessageController
+class PHPMessageControllerTest extends BaseMessageController
 {
     protected $messagePath;
 

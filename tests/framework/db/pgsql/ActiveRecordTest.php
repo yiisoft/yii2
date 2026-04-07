@@ -20,12 +20,13 @@ use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\TestCase;
+use yiiunit\base\db\BaseActiveRecord;
 
 /**
  * @group db
  * @group pgsql
  */
-class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
+class ActiveRecordTest extends BaseActiveRecord
 {
     protected $driverName = 'pgsql';
     protected static string $driverNameStatic = 'pgsql';

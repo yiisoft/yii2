@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yiiunit\base\validators\BaseExistValidator;
+
 /**
  * @group db
  * @group sqlite
  * @group validators
  */
-class ExistValidatorTest extends \yiiunit\base\validators\BaseExistValidator
+class ExistValidatorTest extends BaseExistValidator
 {
     public $driverName = 'sqlite';
 }

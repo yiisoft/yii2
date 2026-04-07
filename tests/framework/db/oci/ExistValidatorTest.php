@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yiiunit\base\validators\BaseExistValidator;
+
 /**
  * @group db
  * @group oci
  * @group validators
  */
-class ExistValidatorTest extends \yiiunit\base\validators\BaseExistValidator
+class ExistValidatorTest extends BaseExistValidator
 {
     public $driverName = 'oci';
 }

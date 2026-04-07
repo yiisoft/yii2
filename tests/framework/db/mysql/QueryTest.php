@@ -10,12 +10,13 @@ namespace yiiunit\framework\db\mysql;
 
 use yii\db\Expression;
 use yii\db\Query;
+use yiiunit\base\db\BaseQuery;
 
 /**
  * @group db
  * @group mysql
  */
-class QueryTest extends \yiiunit\base\db\BaseQuery
+class QueryTest extends BaseQuery
 {
     protected $driverName = 'mysql';
 

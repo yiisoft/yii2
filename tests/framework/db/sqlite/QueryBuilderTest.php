@@ -16,12 +16,13 @@ use yii\db\Query;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;
 use yiiunit\data\base\TraversableObject;
+use yiiunit\base\db\BaseQueryBuilder;
 
 /**
  * @group db
  * @group sqlite
  */
-class QueryBuilderTest extends \yiiunit\base\db\BaseQueryBuilder
+class QueryBuilderTest extends BaseQueryBuilder
 {
     protected $driverName = 'sqlite';
     protected static string $driverNameStatic = 'sqlite';

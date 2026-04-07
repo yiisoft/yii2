@@ -11,12 +11,13 @@ namespace yiiunit\framework\db\mssql;
 use yii\db\Expression;
 use yii\db\Query;
 use yiiunit\data\base\TraversableObject;
+use yiiunit\base\db\BaseQueryBuilder;
 
 /**
  * @group db
  * @group mssql
  */
-class QueryBuilderTest extends \yiiunit\base\db\BaseQueryBuilder
+class QueryBuilderTest extends BaseQueryBuilder
 {
     public $driverName = 'sqlsrv';
     public static string $driverNameStatic = 'sqlsrv';

@@ -4,12 +4,13 @@ namespace yiiunit\framework\db\pgsql;
 
 use yii\db\JsonExpression;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\base\db\BaseActiveRecordTemplate;
 
 /**
  * @group db
  * @group pgsql
  */
-class BaseActiveRecordTest extends \yiiunit\base\db\BaseActiveRecordTemplate
+class BaseActiveRecordTest extends BaseActiveRecordTemplate
 {
     public $driverName = 'pgsql';
 

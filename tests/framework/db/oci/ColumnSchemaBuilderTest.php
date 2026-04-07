@@ -10,13 +10,14 @@ namespace yiiunit\framework\db\oci;
 
 use yii\db\oci\ColumnSchemaBuilder;
 use yii\db\Schema;
+use yiiunit\base\db\BaseColumnSchemaBuilder;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle.
  * @group db
  * @group oci
  */
-class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
+class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilder
 {
     public $driverName = 'oci';
 

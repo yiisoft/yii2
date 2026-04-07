@@ -19,7 +19,7 @@ use yiiunit\base\web\session\BaseDbSession;
  * @group db-session
  * @group pgsql
  */
-class DbSessionTest extends \yiiunit\base\web\session\BaseDbSession
+class DbSessionTest extends BaseDbSession
 {
     protected function setUp(): void
     {

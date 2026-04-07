@@ -19,7 +19,7 @@ use yiiunit\base\web\session\BaseDbSession;
  * @group db-session
  * @group mysql
  */
-class DbSessionTest extends \yiiunit\base\web\session\BaseDbSession
+class DbSessionTest extends BaseDbSession
 {
     protected function getDriverNames()
     {

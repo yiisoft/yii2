@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yiiunit\base\db\BaseActiveQuery;
+
 /**
  * @group db
  * @group mssql
  */
-class ActiveQueryTest extends \yiiunit\base\db\BaseActiveQuery
+class ActiveQueryTest extends BaseActiveQuery
 {
     public $driverName = 'sqlsrv';
 }

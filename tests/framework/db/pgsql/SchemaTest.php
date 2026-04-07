@@ -13,12 +13,13 @@ use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
+use yiiunit\base\db\BaseSchema;
 
 /**
  * @group db
  * @group pgsql
  */
-class SchemaTest extends \yiiunit\base\db\BaseSchema
+class SchemaTest extends BaseSchema
 {
     public $driverName = 'pgsql';
 

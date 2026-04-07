@@ -19,7 +19,7 @@ use Yii;
  * @group db
  * @group db-session
  */
-class DbSessionTest extends \yiiunit\base\web\session\BaseDbSession
+class DbSessionTest extends BaseDbSession
 {
     protected function setUp(): void
     {

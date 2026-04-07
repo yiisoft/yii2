@@ -10,13 +10,14 @@ namespace yiiunit\framework\db\sqlite;
 
 use yii\db\Schema;
 use yii\db\sqlite\ColumnSchemaBuilder;
+use yiiunit\base\db\BaseColumnSchemaBuilder;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite.
  * @group db
  * @group sqlite
  */
-class ColumnSchemaBuilderTest extends \yiiunit\base\db\BaseColumnSchemaBuilder
+class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilder
 {
     public $driverName = 'sqlite';
 

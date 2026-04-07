@@ -12,12 +12,13 @@ use Exception;
 use yii\db\CheckConstraint;
 use yii\db\oci\Schema;
 use yiiunit\framework\db\AnyValue;
+use yiiunit\base\db\BaseSchema;
 
 /**
  * @group db
  * @group oci
  */
-class SchemaTest extends \yiiunit\base\db\BaseSchema
+class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
 

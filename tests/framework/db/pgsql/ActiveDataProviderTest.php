@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yiiunit\base\data\BaseActiveDataProvider;
+
 /**
  * @group db
  * @group pgsql
  * @group data
  */
-class ActiveDataProviderTest extends \yiiunit\base\data\BaseActiveDataProvider
+class ActiveDataProviderTest extends BaseActiveDataProvider
 {
     public $driverName = 'pgsql';
 }

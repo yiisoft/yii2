@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use yiiunit\base\db\BaseActiveRecord;
+
 /**
  * @group db
  * @group sqlite
  */
-class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
+class ActiveRecordTest extends BaseActiveRecord
 {
     protected $driverName = 'sqlite';
     protected static string $driverNameStatic = 'sqlite';

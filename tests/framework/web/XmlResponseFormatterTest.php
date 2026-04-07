@@ -11,6 +11,7 @@ namespace yiiunit\framework\web;
 use SplStack;
 use yii\web\XmlResponseFormatter;
 use yiiunit\framework\web\stubs\ModelStub;
+use yiiunit\base\web\BaseFormatter;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -18,7 +19,7 @@ use yiiunit\framework\web\stubs\ModelStub;
  *
  * @group web
  */
-class XmlResponseFormatterTest extends \yiiunit\base\web\BaseFormatter
+class XmlResponseFormatterTest extends BaseFormatter
 {
     /**
      * @param array $options

@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yiiunit\base\data\BaseActiveDataProvider;
+
 /**
  * @group db
  * @group mysql
  * @group data
  */
-class ActiveDataProviderTest extends \yiiunit\base\data\BaseActiveDataProvider
+class ActiveDataProviderTest extends BaseActiveDataProvider
 {
     public $driverName = 'mysql';
 }

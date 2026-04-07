@@ -10,12 +10,13 @@ namespace yii\tests\unit\framework\db\pgsql;
 
 use yii\db\ArrayExpression;
 use yii\db\JsonExpression;
+use yiiunit\base\db\BaseCommand;
 
 /**
  * @group db
  * @group pgsql
  */
-class CommandTest extends \yiiunit\base\db\BaseCommand
+class CommandTest extends BaseCommand
 {
     public $driverName = 'pgsql';
 

@@ -13,12 +13,13 @@ use yii\db\Connection;
 use yii\db\DefaultValueConstraint;
 use yii\db\mssql\Schema;
 use yiiunit\framework\db\AnyValue;
+use yiiunit\base\db\BaseSchema;
 
 /**
  * @group db
  * @group mssql
  */
-class SchemaTest extends \yiiunit\base\db\BaseSchema
+class SchemaTest extends BaseSchema
 {
     public $driverName = 'sqlsrv';
 

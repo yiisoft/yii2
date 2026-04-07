@@ -10,12 +10,13 @@ namespace yiiunit\framework\db\mysql;
 
 use yiiunit\data\ar\Storage;
 use yiiunit\data\ar\Type;
+use yiiunit\base\db\BaseActiveRecord;
 
 /**
  * @group db
  * @group mysql
  */
-class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
+class ActiveRecordTest extends BaseActiveRecord
 {
     public $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';

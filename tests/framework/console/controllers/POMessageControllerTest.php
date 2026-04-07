@@ -11,11 +11,12 @@ namespace yiiunit\framework\console\controllers;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\i18n\GettextPoFile;
+use yiiunit\base\console\controllers\BaseMessageController;
 
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with PO message format.
  */
-class POMessageControllerTest extends \yiiunit\base\console\controllers\BaseMessageController
+class POMessageControllerTest extends BaseMessageController
 {
     protected $messagePath;
     protected $catalog = 'messages';

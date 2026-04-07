@@ -10,13 +10,14 @@ namespace yiiunit\framework\db\pgsql;
 
 use yii\validators\UniqueValidator;
 use yiiunit\data\ar\Type;
+use yiiunit\base\validators\BaseUniqueValidator;
 
 /**
  * @group db
  * @group pgsql
  * @group validators
  */
-class UniqueValidatorTest extends \yiiunit\base\validators\BaseUniqueValidator
+class UniqueValidatorTest extends BaseUniqueValidator
 {
     public $driverName = 'pgsql';
 

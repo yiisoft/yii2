@@ -16,12 +16,13 @@ use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
 use yii\db\Query;
 use yiiunit\data\base\TraversableObject;
+use yiiunit\base\db\BaseQueryBuilder;
 
 /**
  * @group db
  * @group oci
  */
-class QueryBuilderTest extends \yiiunit\base\db\BaseQueryBuilder
+class QueryBuilderTest extends BaseQueryBuilder
 {
     public $driverName = 'oci';
     protected static string $driverNameStatic = 'oci';

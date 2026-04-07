@@ -17,12 +17,13 @@ use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
 use yiiunit\data\base\TraversableObject;
+use yiiunit\base\db\BaseQueryBuilder;
 
 /**
  * @group db
  * @group pgsql
  */
-class QueryBuilderTest extends \yiiunit\base\db\BaseQueryBuilder
+class QueryBuilderTest extends BaseQueryBuilder
 {
     public $driverName = 'pgsql';
     protected static string $driverNameStatic = 'pgsql';

@@ -13,12 +13,13 @@ use yii\db\Expression;
 use yiiunit\data\ar\TestTrigger;
 use yiiunit\data\ar\TestTriggerAlert;
 use yiiunit\data\ar\Type;
+use yiiunit\base\db\BaseActiveRecord;
 
 /**
  * @group db
  * @group mssql
  */
-class ActiveRecordTest extends \yiiunit\base\db\BaseActiveRecord
+class ActiveRecordTest extends BaseActiveRecord
 {
     public $driverName = 'sqlsrv';
     protected static string $driverNameStatic = 'sqlsrv';

@@ -10,13 +10,14 @@ namespace yiiunit\framework\db\oci;
 
 use yii\validators\UniqueValidator;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
+use yiiunit\base\validators\BaseUniqueValidator;
 
 /**
  * @group db
  * @group oci
  * @group validators
  */
-class UniqueValidatorTest extends \yiiunit\base\validators\BaseUniqueValidator
+class UniqueValidatorTest extends BaseUniqueValidator
 {
     public $driverName = 'oci';
 
