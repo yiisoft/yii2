@@ -42,7 +42,7 @@ Adding your own classes
 -----------------------
 
 The application templates ship with PSR-4 mappings already configured, so you only need to drop your classes
-into the right directory and they will be picked up automatically no `composer dump-autoload` required during
+into the right directory and they will be picked up automatically; no `composer dump-autoload` is required during
 development.
 
 In the [Basic Project Template](start-installation.md) the `app\` namespace is mapped to the application root,
