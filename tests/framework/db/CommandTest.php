@@ -1658,6 +1658,17 @@ SQL;
         $this->assertTrue(true);
     }
 
+    public function testExecuteResetSequence(): void
+    {
+        $db = $this->getConnection();
+
+        $result = $db->createCommand()->executeResetSequence('item');
+        $this->assertIsInt($result);
+
+        $result = $db->createCommand()->executeResetSequence('item', 4);
+        $this->assertIsInt($result);
+    }
+
     public function testBindValuesSupportsEnums(): void
     {
         if (version_compare(PHP_VERSION, '8.1.0') >= 0) {
