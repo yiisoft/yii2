@@ -9,10 +9,11 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
-use yii\db\Query;
 use yii\db\PdoValue;
+use yii\db\Query;
 use yii\helpers\StringHelper;
 
 /**
@@ -458,16 +459,21 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     *
-     * @param string $table the table that data will be saved into.
-     * @param array|Query $columns the column data (name => value) to be saved into the table or instance
-     * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
-     * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
-     * @return array|Query normalized columns
-     * @since 2.0.9
+     * {@inheritdoc}
      */
-    private function normalizeTableRowData($table, $columns)
+    public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
+    {
+        $keys = $this->resolveKeys($table, $keys);
+        $rows = $this->prepareRows($rows);
+        $rows = $this->resolveColumnNames($rows, $columns);
+
+        return parent::batchUpdate($table, $this->normalizeBatchUpdateRows($table, $rows, $keys), [], $keys, $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function normalizeTableRowData($table, $columns)
     {
         if ($columns instanceof Query) {
             return $columns;

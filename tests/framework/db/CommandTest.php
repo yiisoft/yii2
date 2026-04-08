@@ -325,6 +325,51 @@ SQL;
         include __DIR__ . '/testBatchInsertWithYield.php';
     }
 
+    public function testBatchUpdate(): void
+    {
+        $db = $this->getConnection();
+        $db->createCommand()->delete('customer')->execute();
+        $db->createCommand()->batchInsert('customer', ['id', 'email', 'name', 'address', 'status'], [
+            [1, 'u1@example.com', 'u1', 'a1', 0],
+            [2, 'u2@example.com', 'u2', 'a2', 0],
+            [3, 'u3@example.com', 'u3', 'a3', 0],
+            [4, 'u4@example.com', 'u4', 'a4', 0],
+        ])->execute();
+
+        $db->createCommand()->batchUpdate('customer', [
+            ['id' => 1, 'name' => 'updated-1', 'status' => 1],
+            ['id' => 2, 'address' => 'updated-a2'],
+            ['id' => 3],
+            ['id' => 4, 'name' => 'updated-u4'],
+        ], [], ['id'])->execute();
+
+        $rows = (new Query())
+            ->select(['id', 'name', 'address', 'status'])
+            ->from('customer')
+            ->where(['id' => [1, 2, 3, 4]])
+            ->orderBy(['id' => SORT_ASC])
+            ->all($db);
+
+        $this->assertEquals([
+            ['id' => 1, 'name' => 'updated-1', 'address' => 'a1', 'status' => 1],
+            ['id' => 2, 'name' => 'u2', 'address' => 'updated-a2', 'status' => 0],
+            ['id' => 3, 'name' => 'u3', 'address' => 'a3', 'status' => 0],
+            ['id' => 4, 'name' => 'updated-u4', 'address' => 'a4', 'status' => 0],
+        ], $rows);
+    }
+
+    public function testBatchUpdateWithoutUpdatableColumns(): void
+    {
+        $db = $this->getConnection();
+
+        $result = $db->createCommand()->batchUpdate('customer', [
+            ['id' => 1],
+            ['id' => 2],
+        ], [], ['id'])->execute();
+
+        $this->assertSame(0, $result);
+    }
+
     /**
      * Test batch insert with different data types.
      *
@@ -421,6 +466,43 @@ SQL;
         ];
     }
 
+    public static function batchUpdateSqlProvider(): array
+    {
+        return [
+            'sparse rows' => [
+                'table' => 'type',
+                'rows' => [
+                    ['int_col' => 1, 'float_col' => 2.5, 'char_col' => 'A'],
+                    ['int_col' => 2, 'char_col' => new Expression('UPPER(:ph)', [':ph' => 'b'])],
+                    ['int_col' => 3],
+                ],
+                'columns' => [],
+                'keys' => ['int_col'],
+                'condition' => '',
+                'expected' => 'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END, [[char_col]]=CASE WHEN [[int_col]]=:qp2 THEN :qp3 WHEN [[int_col]]=:qp4 THEN UPPER(:ph) ELSE [[char_col]] END WHERE [[int_col]] IN (:qp6, :qp7)',
+                'expectedParams' => [
+                    ':qp0' => 1,
+                    ':qp1' => 2.5,
+                    ':qp2' => 1,
+                    ':qp3' => 'A',
+                    ':qp4' => 2,
+                    ':ph' => 'b',
+                    ':qp6' => 1,
+                    ':qp7' => 2,
+                ],
+            ],
+            'empty rows represented by ArrayObject' => [
+                'table' => 'type',
+                'rows' => new ArrayObject(),
+                'columns' => [],
+                'keys' => ['int_col'],
+                'condition' => '',
+                'expected' => '',
+                'expectedParams' => [],
+            ],
+        ];
+    }
+
     /**
      * Make sure that `{{something}}` in values will not be encoded
      * https://github.com/yiisoft/yii2/issues/11242.
@@ -438,6 +520,25 @@ SQL;
         $command->batchInsert($table, $columns, $values);
         $command->prepare(false);
         $this->assertSame($expected, $command->getSql());
+        $this->assertSame($expectedParams, $command->params);
+    }
+
+    /**
+     * @dataProvider batchUpdateSqlProvider
+     * @param string $table
+     * @param array|\Generator $rows
+     * @param array $columns
+     * @param array $keys
+     * @param string $condition
+     * @param string $expected
+     * @param array $expectedParams
+     */
+    public function testBatchUpdateSQL($table, $rows, $columns, $keys, $condition, $expected, array $expectedParams = []): void
+    {
+        $command = $this->getConnection()->createCommand();
+        $command->batchUpdate($table, $rows, $columns, $keys, $condition);
+        $command->prepare(false);
+        $this->assertSame($this->replaceQuotes($expected), $command->getSql());
         $this->assertSame($expectedParams, $command->params);
     }
 

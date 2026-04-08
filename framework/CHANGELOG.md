@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 - Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
+- Enh #20763: Added `yii\db\Command::batchUpdate()`, `yii\db\QueryBuilder::batchUpdate()` and `yii\db\Migration::batchUpdate()` for multi-row updates with per-row values, composite key support, `$columns` and `$condition` parameters (WarLikeLaux)
 
 
 2.0.54 January 09, 2026

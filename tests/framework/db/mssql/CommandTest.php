@@ -133,6 +133,69 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         return $data;
     }
 
+    public function testBatchUpdate(): void
+    {
+        $db = $this->getConnection();
+        $db->createCommand()->delete('customer')->execute();
+        $emails = ['u1@example.com', 'u2@example.com', 'u3@example.com', 'u4@example.com'];
+        $db->createCommand()->batchInsert('customer', ['email', 'name', 'address', 'status'], [
+            ['u1@example.com', 'u1', 'a1', 0],
+            ['u2@example.com', 'u2', 'a2', 0],
+            ['u3@example.com', 'u3', 'a3', 0],
+            ['u4@example.com', 'u4', 'a4', 0],
+        ])->execute();
+
+        $insertedRows = (new Query())
+            ->select(['id', 'email'])
+            ->from('customer')
+            ->where(['email' => $emails])
+            ->all($db);
+        $ids = [];
+        foreach ($insertedRows as $row) {
+            $ids[$row['email']] = $row['id'];
+        }
+        $this->assertCount(4, $ids);
+
+        $db->createCommand()->batchUpdate('customer', [
+            ['id' => $ids['u1@example.com'], 'name' => 'updated-1', 'status' => 1],
+            ['id' => $ids['u2@example.com'], 'address' => 'updated-a2'],
+            ['id' => $ids['u3@example.com']],
+            ['id' => $ids['u4@example.com'], 'name' => 'updated-u4'],
+        ], [], ['id'])->execute();
+
+        $rows = (new Query())
+            ->select(['id', 'email', 'name', 'address', 'status'])
+            ->from('customer')
+            ->where(['email' => $emails])
+            ->orderBy(['email' => SORT_ASC])
+            ->all($db);
+
+        $this->assertEquals([
+            ['id' => $ids['u1@example.com'], 'email' => 'u1@example.com', 'name' => 'updated-1', 'address' => 'a1', 'status' => 1],
+            ['id' => $ids['u2@example.com'], 'email' => 'u2@example.com', 'name' => 'u2', 'address' => 'updated-a2', 'status' => 0],
+            ['id' => $ids['u3@example.com'], 'email' => 'u3@example.com', 'name' => 'u3', 'address' => 'a3', 'status' => 0],
+            ['id' => $ids['u4@example.com'], 'email' => 'u4@example.com', 'name' => 'updated-u4', 'address' => 'a4', 'status' => 0],
+        ], $rows);
+    }
+
+    public static function batchUpdateSqlProvider(): array
+    {
+        $data = parent::batchUpdateSqlProvider();
+        $data['sparse rows']['expected'] = 'UPDATE [[type]] SET [[float_col]]=CASE WHEN [[int_col]]=:qp0 THEN :qp1 ELSE [[float_col]] END, [[char_col]]=CASE WHEN [[int_col]]=:qp2 THEN :qp3 WHEN [[int_col]]=:qp4 THEN UPPER(:ph) ELSE [[char_col]] END WHERE [[int_col]] IN (:qp6, :qp7)';
+        $data['sparse rows']['expectedParams'] = [
+            ':qp0' => 1,
+            ':qp1' => '2.5',
+            ':qp2' => 1,
+            ':qp3' => 'A',
+            ':qp4' => 2,
+            ':ph' => 'b',
+            ':qp6' => 1,
+            ':qp7' => 2,
+        ];
+
+        return $data;
+    }
+
     public function testUpsertVarbinary(): void
     {
         $db = $this->getConnection();
