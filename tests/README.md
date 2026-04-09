@@ -18,10 +18,22 @@ Run PHPUnit in the yii repo base directory.
 vendor/bin/phpunit
 ```
 
+You can also run the same command through Composer:
+
+```bash
+composer test
+```
+
 You can run tests for specific groups only:
 
 ```bash
 vendor/bin/phpunit --group=mysql,base,i18n
+```
+
+Composer forwards extra PHPUnit arguments after `--`, for example:
+
+```bash
+composer test -- --group mysql
 ```
 
 You can get a list of available groups via `vendor/bin/phpunit --list-groups`.
@@ -128,7 +140,7 @@ Start the Oracle container and run the tests manually:
 
 ```bash
 docker compose -f tests/docker/docker-compose.oracle.yml up -d --wait
-vendor/bin/phpunit -v --group oci
+vendor/bin/phpunit --group oci
 docker compose -f tests/docker/docker-compose.oracle.yml down -v
 ```
 
@@ -136,6 +148,6 @@ docker compose -f tests/docker/docker-compose.oracle.yml down -v
 
 ```bash
 docker compose -f tests/docker/docker-compose.pgsql.yml up -d --wait
-vendor/bin/phpunit -v --group pgsql
+vendor/bin/phpunit --group pgsql
 docker compose -f tests/docker/docker-compose.pgsql.yml down -v
 ```
