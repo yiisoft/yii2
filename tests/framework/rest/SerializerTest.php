@@ -478,6 +478,137 @@ class SerializerTest extends TestCase
             ],
         ], $serializer->serialize([$model1, $model2, 'testKey' => $model3]));
     }
+
+    public function testSerializeModelHeadRequest(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'HEAD';
+        $serializer = new Serializer();
+        $model = new TestModel();
+
+        $this->assertNull($serializer->serialize($model));
+
+        unset($_SERVER['REQUEST_METHOD']);
+    }
+
+    public function testSerializeDataProviderHeadRequest(): void
+    {
+        $_SERVER['REQUEST_METHOD'] = 'HEAD';
+        $serializer = new Serializer();
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => [
+                ['id' => 1, 'username' => 'Bob'],
+            ],
+            'pagination' => [
+                'route' => '/',
+            ],
+        ]);
+
+        $this->assertNull($serializer->serialize($dataProvider));
+
+        $headers = Yii::$app->response->getHeaders();
+        $this->assertSame(1, $headers->get('X-Pagination-Total-Count'));
+
+        unset($_SERVER['REQUEST_METHOD']);
+    }
+
+    public function testSerializeDataProviderWithCollectionEnvelope(): void
+    {
+        $serializer = new Serializer();
+        $serializer->collectionEnvelope = 'items';
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => [
+                ['id' => 1, 'username' => 'Bob'],
+                ['id' => 2, 'username' => 'Tom'],
+            ],
+            'pagination' => [
+                'route' => '/',
+                'pageSize' => 10,
+            ],
+        ]);
+
+        $result = $serializer->serialize($dataProvider);
+
+        $this->assertSame([
+            ['id' => 1, 'username' => 'Bob'],
+            ['id' => 2, 'username' => 'Tom'],
+        ], $result['items']);
+        $this->assertArrayHasKey('_links', $result);
+        $this->assertArrayHasKey('_meta', $result);
+        $this->assertSame(2, $result['_meta']['totalCount']);
+        $this->assertSame(1, $result['_meta']['pageCount']);
+        $this->assertSame(1, $result['_meta']['currentPage']);
+        $this->assertSame(10, $result['_meta']['perPage']);
+    }
+
+    public function testSerializeDataProviderWithCollectionEnvelopeWithoutPagination(): void
+    {
+        $serializer = new Serializer();
+        $serializer->collectionEnvelope = 'items';
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => [
+                ['id' => 1, 'username' => 'Bob'],
+            ],
+            'pagination' => false,
+        ]);
+
+        $result = $serializer->serialize($dataProvider);
+
+        $this->assertSame([
+            'items' => [
+                ['id' => 1, 'username' => 'Bob'],
+            ],
+        ], $result);
+    }
+
+    public function testAddPaginationHeaders(): void
+    {
+        $serializer = new Serializer();
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => [
+                ['id' => 1],
+                ['id' => 2],
+                ['id' => 3],
+            ],
+            'pagination' => [
+                'route' => '/',
+                'pageSize' => 2,
+                'page' => 0,
+            ],
+        ]);
+
+        $serializer->serialize($dataProvider);
+
+        $headers = Yii::$app->response->getHeaders();
+        $this->assertSame(3, $headers->get('X-Pagination-Total-Count'));
+        $this->assertSame(2, $headers->get('X-Pagination-Page-Count'));
+        $this->assertSame(1, $headers->get('X-Pagination-Current-Page'));
+        $this->assertSame(2, $headers->get('X-Pagination-Per-Page'));
+        $this->assertStringContainsString('rel=self', $headers->get('Link'));
+    }
+
+    public function testSerializeNonObjectData(): void
+    {
+        $serializer = new Serializer();
+
+        $this->assertSame('plain string', $serializer->serialize('plain string'));
+        $this->assertSame(42, $serializer->serialize(42));
+        $this->assertNull($serializer->serialize(null));
+    }
+
+    public function testSerializeDataProviderWithArrayableModels(): void
+    {
+        $serializer = new Serializer();
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => [new TestModel()],
+            'pagination' => false,
+        ]);
+
+        $result = $serializer->serialize($dataProvider);
+        $this->assertSame([['field1' => 'test', 'field2' => 2]], $result);
+    }
 }
 
 class TestModel extends Model
