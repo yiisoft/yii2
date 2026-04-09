@@ -3,32 +3,33 @@
 ## DIRECTORY STRUCTURE
 
     data/            models, config and other test data
-        config.php   this file contains configuration for database and caching backends
+        config.php   this file contains host-side configuration for database backends
+    docker/          Docker Compose files for local backend services
     framework/       the framework unit tests
     runtime/         the application runtime dir for the yii test app
 
 ## HOW TO RUN THE TESTS
 
-Make sure you have PHPUnit installed and that you installed all composer dependencies (run `composer update` in the repo base directory).
+Make sure all Composer dependencies are installed in the repository root.
 
 Run PHPUnit in the yii repo base directory.
 
-```
-phpunit
+```bash
+vendor/bin/phpunit
 ```
 
 You can run tests for specific groups only:
 
-```
-phpunit --group=mysql,base,i18n
+```bash
+vendor/bin/phpunit --group=mysql,base,i18n
 ```
 
-You can get a list of available groups via `phpunit --list-groups`.
+You can get a list of available groups via `vendor/bin/phpunit --list-groups`.
 
 A single test class could be run like the following:
 
-```
-phpunit tests/framework/base/ObjectTest.php
+```bash
+vendor/bin/phpunit tests/framework/base/ObjectTest.php
 ```
 
 ## TEST CONFIGURATION
@@ -36,12 +37,16 @@ phpunit tests/framework/base/ObjectTest.php
 PHPUnit configuration is in `phpunit.xml.dist` in repository root folder.
 You can create your own phpunit.xml to override dist config.
 
-Database and other backend system configuration can be found in `tests/data/config.php`
-adjust them to your needs to allow testing databases and caching in your environment.
-You can override configuration values by creating a `config.local.php` file
-and manipulate the `$config` variable.
-For example to change MySQL username and password your `config.local.php` should
-contain the following:
+Database and backend configuration can be found in `tests/data/config.php`.
+The default host-side settings expect services to be reachable on:
+
+- `127.0.0.1:3306` for MySQL-compatible backends
+- `localhost:5432` for PostgreSQL
+- `127.0.0.1:1433` for SQL Server
+- `localhost:1521/FREE` for Oracle
+
+You can override configuration values by creating a `tests/data/config.local.php` file and manipulating the `$config` 
+variable. For example, to change MySQL username and password your `config.local.php` should contain the following:
 
 ```php
 <?php
@@ -49,55 +54,88 @@ $config['databases']['mysql']['username'] = 'yiitest';
 $config['databases']['mysql']['password'] = 'changeme';
 ```
 
-## DOCKERIZED TESTING
+## Dockerized testing
 
-Get started by going to the `tests` directory and copy the environment configuration.
+Docker Compose files for local backend services are stored in `tests/docker/`.
+These files start only the external services. PHPUnit always runs on the host and connects using the defaults from 
+`tests/data/config.php`.
 
-```bash
-cd tests
-cp .env-dist .env
-```
-
-The newly created `.env` file defines the configuration files used by `docker-compose`. By default MySQL, Postgres etc. services are disabled.
-
-> You can choose services available for testing by merging `docker-compose.[...].yml` files in `.env`. For example, if you only want to test with MySQL, you can modify the `COMPOSE_FILE` variable as follows:
-
-```env
-COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml
-```
-
-> Note: The files `docker-compose.caching.yml` and `docker-compose.mssql.yml` cannot be merged with `docker-compose.yml`.
-
-### Running tests via shell script
-
-You need to go to the `tests` directory and run the `test-local.sh` script. The first argument can be: `default`, `caching`, `mssql`, `pgsql`, `mysql`. You can pass additional arguments to this script to control the behavior of PHPUnit. For example:
+There is no `.env-dist` or shell wrapper anymore. If you need to override the image used by a backend, pass the variable
+inline when starting the service. For example:
 
 ```bash
-cd tests
-sh test-local.sh default --exclude caching,db
+DOCKER_MYSQL_IMAGE=mysql:8.4 docker compose -f tests/docker/docker-compose.mysql.yml up -d --wait
 ```
 
-### Manually running the tests
+Stop the running service before starting another backend that uses the same host port.
 
-You can also run tests manually. To do this, you need to start the container and run the tests. For example:
+### MariaDB
 
 ```bash
-docker compose up -d
-docker compose exec php vendor/bin/phpunit -v
+docker compose -f tests/docker/docker-compose.mariadb.yml up -d --wait
+vendor/bin/phpunit --group mysql
+docker compose -f tests/docker/docker-compose.mariadb.yml down -v
+```
+
+MariaDB uses the same PHPUnit group as MySQL.
+
+### Memcached caching tests
+
+> [!IMPORTANT]
+> Caching tests require the `memcached` PHP extension installed locally.
+
+```bash
+docker compose -f tests/docker/docker-compose.caching.yml up -d --wait
+vendor/bin/phpunit --group caching --exclude-group db
+docker compose -f tests/docker/docker-compose.caching.yml down -v
+```
+
+### MSSQL
+
+> [!IMPORTANT]
+> MSSQL tests require the `pdo_sqlsrv` PHP extension installed locally.
+
+Start the SQL Server container, create the `yiitest` database inside the container,
+run the test group, and then stop the service:
+
+```bash
+docker compose -f tests/docker/docker-compose.mssql.yml up -d --wait
+docker compose -f tests/docker/docker-compose.mssql.yml exec -T mssql \
+  /opt/mssql-tools18/bin/sqlcmd \
+  -C \
+  -S localhost \
+  -U SA \
+  -P 'YourStrong!Passw0rd' \
+  -Q "IF DB_ID(N'yiitest') IS NULL CREATE DATABASE yiitest;"
+vendor/bin/phpunit --group mssql
+docker compose -f tests/docker/docker-compose.mssql.yml down -v
+```
+
+### MySQL
+
+```bash
+docker compose -f tests/docker/docker-compose.mysql.yml up -d --wait
+vendor/bin/phpunit --group mysql
+docker compose -f tests/docker/docker-compose.mysql.yml down -v
 ```
 
 ### Oracle tests
 
 > [!IMPORTANT]
-> Oracle tests require `oci8` and `pdo_oci` PHP extensions installed locally. The `docker-compose.oracle.yml` only starts the Oracle database container; PHPUnit runs on the host.
+> Oracle tests require the `oci8` and `pdo_oci` PHP extensions installed locally.
 
 Start the Oracle container and run the tests manually:
 
 ```bash
-cd tests
-COMPOSE_FILE=docker-compose.oracle.yml docker compose up -d --wait
-cd ..
+docker compose -f tests/docker/docker-compose.oracle.yml up -d --wait
 vendor/bin/phpunit -v --group oci
-cd tests
-COMPOSE_FILE=docker-compose.oracle.yml docker compose down -v
+docker compose -f tests/docker/docker-compose.oracle.yml down -v
+```
+
+### PostgreSQL
+
+```bash
+docker compose -f tests/docker/docker-compose.pgsql.yml up -d --wait
+vendor/bin/phpunit -v --group pgsql
+docker compose -f tests/docker/docker-compose.pgsql.yml down -v
 ```

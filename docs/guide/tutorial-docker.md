@@ -84,7 +84,8 @@ executes a bash in a *running* `php` service
 
 ### Yii framework tests
 
-You can run the dockerized framework tests for Yii itself as described [here](https://github.com/yiisoft/yii2/blob/master/tests/README.md#dockerized-testing).
+Yii's local framework test backends are defined in `tests/docker/docker-compose.*.yml`.
+Start the required backend with `docker compose -f tests/docker/docker-compose.<backend>.yml up -d --wait`, then run PHPUnit on the host as described [here](https://github.com/yiisoft/yii2/blob/master/tests/README.md#dockerized-testing).
 
 ### Database administration tools
 

@@ -28,5 +28,3 @@ if (getenv('IS_LOCAL_TESTS')) {
     Yii::setAlias('@yiiunit/runtime', '/tmp/runtime');
     Yii::setAlias('@runtime', '/tmp/runtime');
 }
-
-require_once __DIR__ . '/TestCase.php';

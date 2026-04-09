@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: ${DOCKER_MYSQL_IMAGE:-mysql:latest}
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: yiitest
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: tmpfs
+        target: /var/lib/mysql
+    healthcheck:
+      test: [
+        "CMD",
+        "mysqladmin",
+        "ping",
+      ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
