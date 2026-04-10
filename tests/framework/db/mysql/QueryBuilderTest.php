@@ -82,13 +82,11 @@ class QueryBuilderTest extends BaseQueryBuilder
          * Disabled due bug in MySQL extension
          * @link https://bugs.php.net/bug.php?id=70384
          */
-        if (version_compare(PHP_VERSION, '5.6', '>=')) {
-            $columns[] = [
-                Schema::TYPE_JSON,
-                $this->json(),
-                'json',
-            ];
-        }
+        $columns[] = [
+            Schema::TYPE_JSON,
+            $this->json(),
+            'json',
+        ];
 
         return array_merge(parent::columnTypes(), $this->columnTimeTypes(), $columns);
     }

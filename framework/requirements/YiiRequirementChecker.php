@@ -5,8 +5,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
-if (version_compare(PHP_VERSION, '4.3', '<')) {
-    echo 'At least PHP 4.3 is required to run this script!';
+if (version_compare(PHP_VERSION, '8.3', '<')) {
+    echo 'At least PHP 8.3 is required to run this script!';
     exit(1);
 }
 
@@ -46,8 +46,8 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * );
  * ```
  *
- * Note: this class definition does not match ordinary Yii style, because it should match PHP 4.3
- * and should not use features from newer PHP versions!
+ * Note: this class intentionally keeps a conservative standalone style
+ * for compatibility with requirement-check bootstrap environments.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
