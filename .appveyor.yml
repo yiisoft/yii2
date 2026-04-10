@@ -30,7 +30,7 @@ install:
     - echo extension=php_mbstring.dll >> php.ini
     - echo extension=php_openssl.dll >> php.ini
     - echo extension=php_pdo_sqlite.dll >> php.ini
-    - appveyor DownloadFile https://windows.php.net/downloads/pecl/releases/apcu/5.1.28/php_apcu-5.1.28-8.3-ts-vs16-x64.zip -FileName C:\tools\apcu.zip
+    - appveyor DownloadFile https://windows.php.net/downloads/pecl/releases/apcu/5.1.28/php_apcu-5.1.28-8.3-nts-vs16-x64.zip -FileName C:\tools\apcu.zip
     - 7z x C:\tools\apcu.zip -oC:\tools\php\ext php_apcu.dll -y
     - echo extension=php_apcu.dll >> php.ini
     - echo apc.enable_cli=1 >> php.ini
