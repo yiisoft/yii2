@@ -32,4 +32,7 @@
       <directory suffix="Exception.php">framework/base</directory>
     </exclude>
   </source>
+  <extensions>
+    <bootstrap class="yiiunit\support\MockerExtension"/>
+  </extensions>
 </phpunit>

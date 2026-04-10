@@ -129,6 +129,28 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
   It does not remove jQuery from your application if you've included it manually or through other extensions. 
   You are responsible for ensuring your application works correctly without jQuery when this option is disabled.
 
+### ApcCache renamed to ApcuCache
+
+The `yii\caching\ApcCache` class has been renamed to `yii\caching\ApcuCache`. The legacy APC extension (`ext-apc`) is
+not available in PHP >= `8.0`, so the dual-mode `$useApcu` property has been removed.
+
+- Replace all references to `yii\caching\ApcCache` with `yii\caching\ApcuCache`.
+- Remove any `'useApcu' => true` configuration, as it is no longer needed.
+- Migration example:
+
+```php
+// before
+'cache' => [
+    'class' => 'yii\caching\ApcCache',
+    'useApcu' => true,
+],
+
+// after
+'cache' => [
+    'class' => 'yii\caching\ApcuCache',
+],
+```  
+
 ### CUBRID database support removed
 
 Yii `22.x` no longer includes support for the CUBRID database driver. Applications that still depend on CUBRID must
