@@ -1,13 +1,13 @@
-Upgrading Instructions for Yii Framework 22.x
-=============================================
+# Upgrading Instructions for Yii Framework 22.x
 
 This file contains the upgrade notes for the Yii Framework `22.x` line. These notes highlight changes that break 
 backwards compatibility from the `2.0.x` line and that require action when upgrading an application.
 
 For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 
-Upgrade from Yii 2.0.x
-----------------------
+## Upgrade from Yii 2.0.x
+
+### General upgrade notes
 
 * Raised minimum supported PHP version to `8.3`.
 * All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
