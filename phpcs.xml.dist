@@ -9,6 +9,8 @@
         <exclude name="PSR12.Files.FileHeader.SpacingAfterDocblockBlock"/>
         <!-- Exclude false positive for PSR12.Files.FileHeader.SpacingAfterTagBlock -->
         <exclude name="PSR12.Files.FileHeader.SpacingAfterTagBlock"/>
+        <!-- Allow declare(strict_types=1) before the file-level docblock -->
+        <exclude name="PSR12.Files.FileHeader.IncorrectOrder"/>
     </rule>
 
     <!-- TODO: fix errors -->

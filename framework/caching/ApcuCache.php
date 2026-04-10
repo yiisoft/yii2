@@ -1,0 +1,181 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
+namespace yii\caching;
+
+use yii\base\InvalidConfigException;
+
+use function apcu_add;
+use function apcu_clear_cache;
+use function apcu_delete;
+use function apcu_exists;
+use function apcu_fetch;
+use function apcu_store;
+use function array_keys;
+use function is_array;
+
+/**
+ * ApcuCache provides APCu caching in terms of an application component.
+ *
+ * To use this application component, the [APCu PHP extension](https://www.php.net/apcu) must be loaded.
+ *
+ * In order to enable APCu for CLI you should add "apc.enable_cli = 1" to your `php.ini`.
+ *
+ * See [[Cache]] for common cache operations that ApcuCache supports.
+ *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 2.2
+ */
+class ApcuCache extends Cache
+{
+    /**
+     * Initializes this application component.
+     *
+     * It checks if the APCu extension is loaded.
+     */
+    public function init()
+    {
+        parent::init();
+
+        if (!extension_loaded('apcu')) {
+            throw new InvalidConfigException('ApcuCache requires PHP apcu extension to be loaded.');
+        }
+    }
+
+    /**
+     * Checks whether a specified key exists in the cache.
+     *
+     * This can be faster than getting the value from the cache if the data is big.
+     *
+     * Note that this method does not check whether the dependency associated with the cached data, if there is any, has
+     * changed. So a call to [[get]] may return `false` while exists returns `true`.
+     *
+     * @param mixed $key a key identifying the cached value. This can be a simple string or a complex data structure
+     * consisting of factors representing the key.
+     *
+     * @return bool `true` if a value exists in cache, `false` if the value is not in the cache or expired.
+     */
+    public function exists($key)
+    {
+        $key = $this->buildKey($key);
+
+        return apcu_exists($key);
+    }
+
+    /**
+     * Retrieves a value from cache with a specified key.
+     *
+     * @param string $key a unique key identifying the cached value.
+     *
+     * @return mixed|false the value stored in cache, `false` if the value is not in the cache or expired.
+     */
+    protected function getValue($key)
+    {
+        return apcu_fetch($key);
+    }
+
+    /**
+     * Retrieves multiple values from cache with the specified keys.
+     *
+     * @param array $keys a list of keys identifying the cached values.
+     *
+     * @return array a list of cached values indexed by the keys.
+     */
+    protected function getValues($keys)
+    {
+        $values = apcu_fetch($keys);
+
+        return is_array($values) ? $values : [];
+    }
+
+    /**
+     * Stores a value identified by a key in cache.
+     *
+     * @param string $key the key identifying the value to be cached.
+     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]], it
+     * could be something else.
+     * @param int $duration the number of seconds in which the cached value will expire. `0` means never expire.
+     *
+     * @return bool `true` if the value is successfully stored into cache, `false` otherwise.
+     */
+    protected function setValue($key, $value, $duration)
+    {
+        return apcu_store($key, $value, $duration);
+    }
+
+    /**
+     * Stores multiple key-value pairs in cache.
+     *
+     * @param array $data array where key corresponds to cache key while value is the value stored.
+     * @param int $duration the number of seconds in which the cached values will expire. `0` means never expire.
+     *
+     * @return array array of failed keys.
+     */
+    protected function setValues($data, $duration)
+    {
+        $result = apcu_store($data, null, $duration);
+
+        return is_array($result) ? array_keys($result) : [];
+    }
+
+    /**
+     * Stores a value identified by a key into cache if the cache does not contain this key.
+     *
+     * @param string $key the key identifying the value to be cached.
+     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]], it
+     * could be something else.
+     * @param int $duration the number of seconds in which the cached value will expire. `0` means never expire.
+     *
+     * @return bool `true` if the value is successfully stored into cache, `false` otherwise.
+     */
+    protected function addValue($key, $value, $duration)
+    {
+        return apcu_add($key, $value, $duration);
+    }
+
+    /**
+     * Adds multiple key-value pairs to cache.
+     *
+     * @param array $data array where key corresponds to cache key while value is the value stored.
+     * @param int $duration the number of seconds in which the cached values will expire. `0` means never expire.
+     *
+     * @return array array of failed keys.
+     */
+    protected function addValues($data, $duration)
+    {
+        $result = apcu_add($data, null, $duration);
+
+        return is_array($result) ? array_keys($result) : [];
+    }
+
+    /**
+     * Deletes a value with the specified key from cache.
+     *
+     * @param string $key the key of the value to be deleted.
+     *
+     * @return bool if no error happens during deletion.
+     */
+    protected function deleteValue($key)
+    {
+        return apcu_delete($key);
+    }
+
+    /**
+     * Deletes all values from cache.
+     *
+     * @return bool whether the flush operation was successful.
+     */
+    protected function flushValues()
+    {
+        return apcu_clear_cache();
+    }
+}

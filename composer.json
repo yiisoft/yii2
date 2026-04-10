@@ -79,6 +79,7 @@
         "dealerdirect/phpcodesniffer-composer-installer": "*",
         "php-forge/foxy": "^0.2",
         "phpunit/phpunit": "^11.5",
+        "xepozz/internal-mocker": "^1.4",
         "yiisoft/yii2-coding-standards": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0"

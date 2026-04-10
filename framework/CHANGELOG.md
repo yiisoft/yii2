@@ -34,20 +34,8 @@ Yii Framework 2 Change Log
 - Chg #20804: Remove Yii runtime autoloader (`Yii::autoload()`, `Yii::$classMap`, `framework/classes.php`); rely on Composer autoload and fix related PSR-4 ambiguities in tests and legacy files (terabytesoftw)
 - Chg #15058: Remove remaining HHVM support from core error handling, tests, and the English installation guide (terabytesoftw)
 - Chg: Remove PHP < `8.3` version guards and dead fallbacks across framework and tests (terabytesoftw)
+- Chg #20808: Rename `ApcCache` to `ApcuCache` and remove legacy APC extension support (terabytesoftw)
 
-2.0.54 under development
-------------------------
-
-- Bug #20542: Fix `Formatter` working with more complex ICU unit data structure (OndrejVasicek)
-- Bug #20483: Fix `CompositeAuth` making bad assumptions on `AuthInterface` implementations (sammousa)
-- Bug #20432: Fix PHPStan/Psalm annotations for `ActiveQuery::asArray` (max-s-lab)
-- Bug #20437: Fix PHPStan/Psalm annotations for `BaseArrayHelper::merge` (max-s-lab)
-- Enh #20434: Added PHPStan/Psalm annotations for `hasMany` and `hasOne` methods (max-s-lab)
-- Enh #20433: Added PHPStan/Psalm annotations for some controllers methods: `beforeAction`, `afterAction` and `bindActionParams` (max-s-lab)
-- Enh #20442: Add PHPStan/Psalm annotations for `yii\base\Controller` methods: `runAction`, `run`, `render`, `renderPartial` and `renderFile` (max-s-lab)
-- Bug #20453: Fix PHPStan/Psalm types in `yii\web\View` (max-s-lab)
-- Enh #20461: Add PHPStan/Psalm annotations for `yii\filters\auth\AuthInterface` (max-s-lab)
-- Bug #20459: Fix return type in `RequestParserInterface::parse` (max-s-lab)
 
 2.0.55 under development
 ------------------------
