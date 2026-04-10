@@ -1,25 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\jquery\validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
+use yii\jquery\validators\NumberValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 use yii\validators\NumberValidator;
+use yii\validators\ValidationAsset;
 use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\TestCase;
 
 /**
- * @group jquery
- * @group validators
+ * Unit tests for {@see NumberValidator} client validation script.
  */
-final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
+#[Group('jquery')]
+#[Group('validators')]
+final class NumberValidatorJqueryClientScriptTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -38,34 +44,36 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new NumberValidator();
 
         $modelValidator->attrA = 123.45;
 
-        $this->assertSame(
-            'yii.validation.number(value, messages, {"pattern":/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/,' .
-            '"message":"attrA must be a number.","skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new NumberValidator();
+
+        self::assertSame(
+            <<<JS
+            yii.validation.number(value, messages, {"pattern":/^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$/,"message":"attrA must be a number.","skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
 
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => $validator->numberPattern,
                 'message' => 'attrA must be a number.',
                 'skipOnEmpty' => 1,
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('invalid-number', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value must be a number.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -83,16 +91,25 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'max' => 10,
             ],
         );
+
         $model = new FakedValidationModel();
 
         $js = $val->clientValidateAttribute(
             $model,
             'attr_number',
-            new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]),
+            new View(['assetBundles' => [ValidationAsset::class => true]]),
         );
 
-        $this->assertStringContainsString('"min":5', $js);
-        $this->assertStringContainsString('"max":10', $js);
+        self::assertStringContainsString(
+            '"min":5',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'min' value.",
+        );
+        self::assertStringContainsString(
+            '"max":10',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'max' value.",
+        );
 
         $val = new NumberValidator(
             [
@@ -105,11 +122,19 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $js = $val->clientValidateAttribute(
             $model,
             'attr_number',
-            new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]),
+            new View(['assetBundles' => [ValidationAsset::class => true]]),
         );
 
-        $this->assertStringContainsString('"min":5', $js);
-        $this->assertStringContainsString('"max":10', $js);
+        self::assertStringContainsString(
+            '"min":5',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'min' value.",
+        );
+        self::assertStringContainsString(
+            '"max":10',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'max' value.",
+        );
 
         $val = new NumberValidator(
             [
@@ -122,11 +147,19 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $js = $val->clientValidateAttribute(
             $model,
             'attr_number',
-            new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]),
+            new View(['assetBundles' => [ValidationAsset::class => true]]),
         );
 
-        $this->assertStringContainsString('"min":5.65', $js);
-        $this->assertStringContainsString('"max":13.37', $js);
+        self::assertStringContainsString(
+            '"min":5.65',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'min' value.",
+        );
+        self::assertStringContainsString(
+            '"max":13.37',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'max' value.",
+        );
 
         $val = new NumberValidator(
             [
@@ -139,11 +172,41 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $js = $val->clientValidateAttribute(
             $model,
             'attr_number',
-            new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]),
+            new View(['assetBundles' => [ValidationAsset::class => true]]),
         );
 
-        $this->assertStringContainsString('"min":5.65', $js);
-        $this->assertStringContainsString('"max":13.37', $js);
+        self::assertStringContainsString(
+            '"min":5.65',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'min' value.",
+        );
+        self::assertStringContainsString(
+            '"max":13.37',
+            $js,
+            "Failed asserting that the generated client validation script contains the expected 'max' value.",
+        );
+    }
+
+    public function testClientValidateAttributeWithCustomClientScriptAndUseJqueryFalse(): void
+    {
+        Yii::$app->useJquery = false;
+
+        $validator = new NumberValidator(
+            [
+                'clientScript' => ['class' => NumberValidatorJqueryClientScript::class],
+            ],
+        );
+
+        self::assertInstanceOf(
+            ClientValidatorScriptInterface::class,
+            $validator->clientScript,
+            'Should instantiate custom clientScript array config via Yii::createObject even when useJquery is false.',
+        );
+        self::assertInstanceOf(
+            NumberValidatorJqueryClientScript::class,
+            $validator->clientScript,
+            'Should be an instance of NumberValidatorJqueryClientScript.',
+        );
     }
 
     public function testClientValidateAttributeWithUseJqueryFalse(): void
@@ -151,6 +214,9 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 50;
+
         $validator = new NumberValidator(
             [
                 'min' => 10,
@@ -158,24 +224,22 @@ final class NumberValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 50;
-
-        $this->assertNull(
+        self::assertNull(
             $validator->clientScript,
-            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+            "Should be 'null' when 'useJquery' is 'false'.",
         );
-        $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+        self::assertNull(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return 'null' value.",
         );
-        $this->assertEmpty(
+        self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
+            'Should return an empty array.',
         );
 
         $validator->validate(5, $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value must be no less than 10.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',

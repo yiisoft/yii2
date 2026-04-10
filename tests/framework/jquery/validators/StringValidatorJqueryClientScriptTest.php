@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\jquery\validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\validators\StringValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\TestCase;
 
 /**
- * @group jquery
- * @group validators
+ * Unit tests for {@see StringValidator} client validation script.
  */
-final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
+#[Group('jquery')]
+#[Group('validators')]
+final class StringValidatorJqueryClientScriptTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -38,6 +40,9 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'test';
+
         $validator = new StringValidator(
             [
                 'min' => 3,
@@ -45,16 +50,14 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'test';
-
-        $this->assertSame(
-            'yii.validation.string(value, messages, {"message":"attrA must be a string.","min":3,' .
-            '"tooShort":"attrA should contain at least 3 characters.","max":10,' .
-            '"tooLong":"attrA should contain at most 10 characters.","skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        self::assertSame(
+            <<<JS
+            yii.validation.string(value, messages, {"message":"attrA must be a string.","min":3,"tooShort":"attrA should contain at least 3 characters.","max":10,"tooLong":"attrA should contain at most 10 characters.","skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'message' => 'attrA must be a string.',
                 'min' => 3,
@@ -64,12 +67,12 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('so', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value should contain at least 3 characters.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -79,17 +82,19 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithLength(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new StringValidator(['length' => 5]);
 
         $modelValidator->attrA = 'hello';
 
-        $this->assertSame(
-            'yii.validation.string(value, messages, {"message":"attrA must be a string.","is":5,' .
-            '"notEqual":"attrA should contain 5 characters.","skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new StringValidator(['length' => 5]);
+
+        self::assertSame(
+            <<<JS
+            yii.validation.string(value, messages, {"message":"attrA must be a string.","is":5,"notEqual":"attrA should contain 5 characters.","skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'message' => 'attrA must be a string.',
                 'is' => 5,
@@ -97,12 +102,12 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value should contain 5 characters.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -114,6 +119,9 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'test';
+
         $validator = new StringValidator(
             [
                 'min' => 3,
@@ -121,24 +129,22 @@ final class StringValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'test';
-
-        $this->assertNull(
+        self::assertNull(
             $validator->clientScript,
-            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+            "Should be 'null' when 'useJquery' is 'false'.",
         );
-        $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+        self::assertNull(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return 'null' value.",
         );
-        $this->assertEmpty(
+        self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
+            'Should return an empty array.',
         );
 
         $validator->validate('so', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value should contain at least 3 characters.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',

@@ -83,8 +83,11 @@ class NumberValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
 
-        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            $this->clientScript ??= ['class' => NumberValidatorJqueryClientScript::class];
+        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
+            $this->clientScript = ['class' => NumberValidatorJqueryClientScript::class];
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

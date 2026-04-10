@@ -66,8 +66,11 @@ class UrlValidator extends Validator
             $this->message = Yii::t('yii', '{attribute} is not a valid URL.');
         }
 
-        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            $this->clientScript ??= ['class' => UrlValidatorJqueryClientScript::class];
+        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
+            $this->clientScript = ['class' => UrlValidatorJqueryClientScript::class];
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

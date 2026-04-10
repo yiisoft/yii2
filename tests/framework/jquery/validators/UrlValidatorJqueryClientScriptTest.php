@@ -1,24 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\jquery\validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\validators\UrlValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\TestCase;
 
 /**
- * @group jquery
+ * Unit tests for {@see UrlValidator} client validation script.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 2.2
  */
-final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
+#[Group('jquery')]
+#[Group('validators')]
+final class UrlValidatorJqueryClientScriptTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -37,23 +43,24 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new UrlValidator();
 
         $modelValidator->attrA = 'https://www.example.com';
 
-        $this->assertSame(
-            'yii.validation.url(value, messages, {' .
-            '"pattern":/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i,' .
-            '"message":"attrA is not a valid URL.","enableIDN":false,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new UrlValidator();
+
+        self::assertSame(
+            <<<JS
+            yii.validation.url(value, messages, {"pattern":/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i,"message":"attrA is not a valid URL.","enableIDN":false,"skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
 
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => '/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i',
                 'message' => 'attrA is not a valid URL.',
@@ -61,12 +68,12 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid URL.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -76,22 +83,24 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithCustomPattern(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new UrlValidator(['pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i']);
 
         $modelValidator->attrA = 'example.com';
 
-        $this->assertSame(
-            'yii.validation.url(value, messages, {"pattern":/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i,' .
-            '"message":"attrA is not a valid URL.","enableIDN":false,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new UrlValidator(['pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i']);
+
+        self::assertSame(
+            <<<JS
+            yii.validation.url(value, messages, {"pattern":/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i,"message":"attrA is not a valid URL.","enableIDN":false,"skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
 
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => '/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i',
                 'message' => 'attrA is not a valid URL.',
@@ -99,12 +108,12 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid URL.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -114,23 +123,24 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithDefaultScheme(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new UrlValidator(['defaultScheme' => 'https']);
 
         $modelValidator->attrA = 'www.example.com';
 
-        $this->assertSame(
-            'yii.validation.url(value, messages, {' .
-            '"pattern":/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i,' .
-            '"message":"attrA is not a valid URL.","enableIDN":false,"skipOnEmpty":1,"defaultScheme":"https"});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new UrlValidator(['defaultScheme' => 'https']);
+
+        self::assertSame(
+            <<<JS
+            yii.validation.url(value, messages, {"pattern":/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i,"message":"attrA is not a valid URL.","enableIDN":false,"skipOnEmpty":1,"defaultScheme":"https"});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
 
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => '/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i',
                 'message' => 'attrA is not a valid URL.',
@@ -139,12 +149,12 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'defaultScheme' => 'https',
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid URL.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -154,21 +164,22 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithEnableIDN(): void
     {
         $modelValidator = new FakedValidationModel();
+
         $validator = new UrlValidator(['enableIDN' => true]);
 
-        $this->assertSame(
-            'yii.validation.url(value, messages, {' .
-            '"pattern":/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i,' .
-            '"message":"attrA is not a valid URL.","enableIDN":true,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        self::assertSame(
+            <<<JS
+            yii.validation.url(value, messages, {"pattern":/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i,"message":"attrA is not a valid URL.","enableIDN":true,"skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
 
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => '/^(http|https):\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i',
                 'message' => 'attrA is not a valid URL.',
@@ -176,12 +187,12 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid URL.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -193,6 +204,9 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'https://www.example.com';
+
         $validator = new UrlValidator(
             [
                 'validSchemes' => [
@@ -204,24 +218,22 @@ final class UrlValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'https://www.example.com';
-
-        $this->assertNull(
+        self::assertNull(
             $validator->clientScript,
-            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+            "Should be 'null' when 'useJquery' is 'false'.",
         );
-        $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+        self::assertNull(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return 'null' value.",
         );
-        $this->assertEmpty(
+        self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
+            'Should return an empty array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid URL.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',

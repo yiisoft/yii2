@@ -8,9 +8,16 @@
 
 namespace yii\validators;
 
+use Closure;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+
+use function call_user_func;
+use function in_array;
+use function is_array;
+use function is_object;
+use function is_scalar;
 
 /**
  * Validator is the base class for all validators.
@@ -191,7 +198,6 @@ class Validator extends Component
      */
     public $whenClient;
 
-
     /**
      * Creates a validator object.
      * @param string|\Closure $type the validator type. This can be either:
@@ -209,7 +215,7 @@ class Validator extends Component
     {
         $params['attributes'] = $attributes;
 
-        if ($type instanceof \Closure) {
+        if ($type instanceof Closure) {
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
         } elseif (!isset(static::$builtInValidators[$type]) && $model->hasMethod($type)) {
@@ -324,7 +330,7 @@ class Validator extends Component
             return true;
         }
 
-        list($message, $params) = $result;
+        [$message, $params] = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
         if (is_array($value)) {
             $params['value'] = 'array()';
