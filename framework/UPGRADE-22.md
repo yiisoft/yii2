@@ -131,11 +131,23 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 
 ### CUBRID database support removed
 
-Yii 22.x no longer includes support for the CUBRID database driver. Applications that still depend on CUBRID must
-migrate to a supported database engine before upgrading to Yii 22.x.
+Yii `22.x` no longer includes support for the CUBRID database driver. Applications that still depend on CUBRID must
+migrate to a supported database engine before upgrading to Yii `22.x`.
 
 There is no compatibility layer for CUBRID in this release. The framework no longer ships CUBRID-specific database
 classes, configuration entries, fixtures, or test coverage.
+
+### HHVM support removed
+
+All HHVM-specific code has been removed from the framework. Yii `22.x` targets PHP `8.3+` on the Zend engine only.
+
+- `yii\base\ErrorException::E_HHVM_FATAL_ERROR` constant has been removed.
+- `yii\base\ErrorHandler::handleHhvmError()` method has been removed.
+- `yii\base\ErrorHandler` no longer registers a HHVM-specific error handler when `HHVM_VERSION` is defined.
+- HHVM-specific test skips and workarounds have been removed.
+
+If your application references `ErrorException::E_HHVM_FATAL_ERROR` or `ErrorHandler::handleHhvmError()`, remove those 
+references when upgrading.
 
 ### Yii runtime autoloader removed
 
@@ -153,10 +165,9 @@ All framework classes are now loaded exclusively by Composer:
 
 #### What you must do
 
-1. Remove any code that writes to `Yii::$classMap` or calls `Yii::autoload()`. Both no longer exist and
-   will produce a fatal error.
-2. Make sure every class your application uses is reachable through Composer autoload. Declare it under
-   one of:
+1. Remove any code that writes to `Yii::$classMap` or calls `Yii::autoload()`. Both no longer exist and will produce a 
+   fatal error.
+2. Make sure every class your application uses is reachable through Composer autoload. Declare it under one of:
     - `autoload.psr-4` — namespace mapping (preferred for application code).
     - `autoload.classmap` — explicit class-to-file mapping (use for non-PSR-4 files or vendor overrides).
     - `autoload.exclude-from-classmap` — paired with `classmap` when overriding a vendor class.
@@ -190,14 +201,13 @@ After (in the application's `composer.json`):
 }
 ```
 
-Place the class at `src/helpers/MyHelper.php` with `namespace app\helpers;` and run
-`composer dump-autoload`. No runtime registration is required.
+Place the class at `src/helpers/MyHelper.php` with `namespace app\helpers;` and run `composer dump-autoload`. No runtime
+registration is required.
 
 #### Migration example: overriding a framework class
 
-The most common reason for writing to `Yii::$classMap` was to *replace* a framework class with a custom
-implementation, for example swapping `yii\web\Request`. The Composer equivalent uses `classmap` together
-with `exclude-from-classmap`.
+The most common reason for writing to `Yii::$classMap` was to *replace* a framework class with a custom implementation, 
+for example swapping `yii\web\Request`. The Composer equivalent uses `classmap` together with `exclude-from-classmap`.
 
 Before (runtime override via `$classMap`, no longer supported):
 
@@ -242,14 +252,14 @@ Then run `composer dump-autoload -o`. Composer loads the override from `src/over
 skips the vendor file thanks to `exclude-from-classmap`. The override survives optimized and
 authoritative classmaps because it is resolved at autoload-generation time, not at runtime.
 
-> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN
-> `yii\web\Request` is now defined exclusively by your override file. You **cannot** write
-> `class Request extends \yii\web\Request` inside `namespace yii\web;` — that would be self-inheritance
-> and PHP will reject it. You must reimplement the full public surface of the original class.
+> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN `yii\web\Request` is 
+> now defined exclusively by your override file. You **cannot** write `class Request extends \yii\web\Request` inside 
+> `namespace yii\web;` — that would be self-inheritance and PHP will reject it. You must reimplement the full public 
+> surface of the original class.
 >
-> If you only need to *extend* the framework class, do **not** use `exclude-from-classmap`. Instead,
-> declare a subclass under a different FQCN (for example `app\components\Request extends \yii\web\Request`)
-> and point the `request` application component at the new class via the application configuration:
+> If you only need to *extend* the framework class, do **not** use `exclude-from-classmap`. Instead, declare a subclass 
+> under a different FQCN (for example `app\components\Request extends \yii\web\Request`) and point the `request` 
+> application component at the new class via the application configuration:
 >
 > ```php
 > 'components' => [
@@ -259,18 +269,16 @@ authoritative classmaps because it is resolved at autoload-generation time, not 
 
 #### Installing Yii from an archive file (non-Composer install)
 
-Yii 2 can still be installed from a downloadable archive file as documented in the
-[installation guide](../docs/guide/start-installation.md). The archive published at
-`yiiframework.com/download/` ships a prebuilt `vendor/` directory generated with `composer install`,
-so it already contains `vendor/autoload.php`. The standard application templates (`basic`, `advanced`)
-require `vendor/autoload.php` from their entry scripts (`web/index.php`, `yii`) before any framework
-class is referenced, so the archive-install path keeps working unchanged with this release.
+Yii 2 can still be installed from a downloadable archive file as documented in the [installation guide](../docs/guide/start-installation.md). 
+The archive published at `yiiframework.com/download/` ships a prebuilt `vendor/` directory generated with 
+`composer install`, so it already contains `vendor/autoload.php`. The standard application templates (`basic`, `advanced`)
+require `vendor/autoload.php` from their entry scripts (`web/index.php`, `yii`) before any framework class is referenced, 
+so the archive-install path keeps working unchanged with this release.
 
-What is **no longer supported** is bootstrapping the framework by requiring `framework/Yii.php` (or
-the legacy `framework/classes.php`) *without* having Composer's autoloader active. There is no
-runtime fallback anymore: `vendor/autoload.php` MUST be loaded first. If you maintain a custom entry
-script that historically skipped Composer's autoloader, add `require __DIR__ . '/vendor/autoload.php';`
-before any reference to `Yii` or `yii\…` classes.
+What is **no longer supported** is bootstrapping the framework by requiring `framework/Yii.php` (or the legacy 
+`framework/classes.php`) *without* having Composer's autoloader active. There is no runtime fallback anymore: 
+`vendor/autoload.php` MUST be loaded first. If you maintain a custom entry script that historically skipped Composer's 
+autoloader, add `require __DIR__ . '/vendor/autoload.php';` before any reference to `Yii` or `yii\…` classes.
 
 #### Adding test-only classes
 

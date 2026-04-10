@@ -535,8 +535,6 @@ class NumberValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
 
-        // the check is here for HHVM that
-        // was losing handler for unknown reason
         if (is_resource($fp)) {
             fclose($fp);
         }

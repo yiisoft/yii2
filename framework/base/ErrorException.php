@@ -8,6 +8,8 @@
 
 namespace yii\base;
 
+use function in_array;
+
 /**
  * ErrorException represents a PHP error.
  *
@@ -18,15 +20,6 @@ namespace yii\base;
  */
 class ErrorException extends \ErrorException
 {
-    /**
-     * This constant represents a fatal error in the HHVM engine.
-     *
-     * PHP Zend runtime won't call the error handler on fatals, HHVM will, with an error code of 16777217
-     * We will handle fatal error a bit different on HHVM.
-     * @see https://github.com/facebook/hhvm/blob/master/hphp/runtime/base/runtime-error.h#L62
-     * @since 2.0.6
-     */
-    public const E_HHVM_FATAL_ERROR = 16777217; // E_ERROR | (1 << 24)
     /**
      * Constructs the exception.
      * @link https://www.php.net/manual/en/errorexception.construct.php
@@ -105,7 +98,18 @@ class ErrorException extends \ErrorException
      */
     public static function isFatalError($error)
     {
-        return isset($error['type']) && in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING, self::E_HHVM_FATAL_ERROR]);
+        return isset($error['type'])
+            && in_array(
+                $error['type'],
+                [
+                    E_ERROR,
+                    E_PARSE,
+                    E_CORE_ERROR,
+                    E_CORE_WARNING,
+                    E_COMPILE_ERROR,
+                    E_COMPILE_WARNING,
+                ],
+            );
     }
 
     /**
@@ -128,7 +132,6 @@ class ErrorException extends \ErrorException
             E_USER_NOTICE => 'PHP User Notice',
             E_USER_WARNING => 'PHP User Warning',
             E_WARNING => 'PHP Warning',
-            self::E_HHVM_FATAL_ERROR => 'HHVM Fatal Error',
         ];
 
         return $names[$this->getCode()] ?? 'Error';

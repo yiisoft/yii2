@@ -23,10 +23,6 @@ class DbSessionTest extends BaseDbSession
 {
     protected function setUp(): void
     {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob columns in the way they are used here.');
-        }
-
         parent::setUp();
     }
 

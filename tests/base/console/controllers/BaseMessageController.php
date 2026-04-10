@@ -99,8 +99,6 @@ abstract class BaseMessageController extends TestCase
             unlink($this->configFileName);
         }
         $fileContent = '<?php return ' . VarDumper::export($config) . ';';
-        // save new config on random name to bypass HHVM cache
-        // https://github.com/facebook/hhvm/issues/1447
         file_put_contents($this->generateConfigFileName(), $fileContent);
     }
 
