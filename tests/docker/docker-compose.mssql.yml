@@ -1,24 +1,17 @@
 services:
-  php:
-    build:
-      context: ..
-      dockerfile: tests/Dockerfile.mssql
-    ports:
-      - 80
-    volumes:
-      - ../tests/data/config-docker.php:/project/tests/data/config.php
-    environment:
-      IS_LOCAL_TESTS: 1
-    depends_on:
-      mssql:
-        condition: service_healthy
-
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       SA_PASSWORD: YourStrong!Passw0rd
       ACCEPT_EULA: Y
       MSSQL_PID: Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - type: tmpfs
+        target: /var/opt/mssql
+        tmpfs:
+          mode: 0777
     healthcheck:
       test:
         [

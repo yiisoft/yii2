@@ -1,0 +1,20 @@
+services:
+  mariadb:
+    image: ${DOCKER_MARIADB_IMAGE:-mariadb:latest}
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: yiitest
+    ports:
+      - "3306:3306"
+    volumes:
+      - type: tmpfs
+        target: /var/lib/mysql
+    healthcheck:
+      test: [
+        "CMD",
+        "mariadb-admin",
+        "ping",
+      ]
+      interval: 10s
+      timeout: 3s
+      retries: 5

@@ -7,11 +7,14 @@ services:
       - "1521:1521"
     shm_size: "1g"
     healthcheck:
-      test: ["CMD", "healthcheck.sh"]
+      test: [
+        "CMD",
+        "healthcheck.sh",
+      ]
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 5s
       start_interval: 5s
     volumes:
-      - ./data/oci:/container-entrypoint-startdb.d:ro
+      - ../data/oci:/container-entrypoint-startdb.d:ro
