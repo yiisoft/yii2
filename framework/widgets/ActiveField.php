@@ -932,14 +932,15 @@ class ActiveField extends Component
     {
         if (isset($options['label']) && $options['label'] !== false && $this->parts['{label}'] === '') {
             $tag = false;
+            $labelOptions = $this->labelOptions;
 
-            if (!empty($options['labelOptions'])) {
+            if (array_key_exists('labelOptions', $options)) {
                 $tag = $options['labelOptions']['tag'] ?? 'label';
 
                 unset($options['labelOptions']['tag']);
 
-                $this->labelOptions = [
-                    ...$this->labelOptions,
+                $labelOptions = [
+                    ...$labelOptions,
                     ...$options['labelOptions'],
                 ];
             }
@@ -952,11 +953,11 @@ class ActiveField extends Component
                     $this->attribute,
                     [
                         'label' => $options['label'],
-                        ...$this->labelOptions,
+                        ...$labelOptions,
                     ],
                 );
             } else {
-                $labelOpts = $this->labelOptions;
+                $labelOpts = $labelOptions;
 
                 unset($labelOpts['label'], $labelOpts['for']);
 

@@ -323,7 +323,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEmpty(
             $this->activeField->parts['{label}'],
-            "Failed asserting that 'label()' does not render.",
+            'Failed asserting that label does not render.',
         );
     }
 
@@ -335,7 +335,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEmpty(
             $this->activeField->parts['{label}'],
-            "Failed asserting that 'label()' does not render.",
+            'Failed asserting that label does not render.',
         );
     }
 
@@ -475,7 +475,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEmpty(
             $this->activeField->parts['{label}'],
-            "Failed asserting that 'label()' does not render.",
+            'Failed asserting that label does not render.',
         );
 
         // $label = 'Label Name'
@@ -1161,6 +1161,94 @@ class ActiveFieldTest extends TestCase
             $expectedLabel,
             $this->activeField->parts['{label}'],
             "Should render the expected label when 'enclosedByLabel' is 'false'.",
+        );
+    }
+
+    public function testRadioEnclosedByLabelFalsePreservesExistingLabel(): void
+    {
+        $this->activeField->label('Existing Label');
+        $this->activeField->radio(['label' => 'Radio Label'], false);
+
+        self::assertSame(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Existing Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Should preserve the label set by a prior label call.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalsePreservesExistingLabel(): void
+    {
+        $this->activeField->label('Existing Label');
+        $this->activeField->checkbox(['label' => 'Checkbox Label'], false);
+
+        self::assertSame(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Existing Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            'Should preserve the label set by a prior label call.',
+        );
+    }
+
+    public function testRadioEnclosedByLabelFalseWithEmptyLabelOptions(): void
+    {
+        $this->activeField->radio(
+            [
+                'label' => 'Radio Label',
+                'labelOptions' => [],
+            ],
+            false,
+        );
+
+        self::assertSame(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Radio Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            "Empty 'labelOptions' should default to a wrapped label tag.",
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithEmptyLabelOptions(): void
+    {
+        $this->activeField->checkbox(
+            [
+                'label' => 'Checkbox Label',
+                'labelOptions' => [],
+            ],
+            false,
+        );
+
+        self::assertSame(
+            <<<HTML
+            <label class="control-label" for="activefieldtestmodel-attributename">Checkbox Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            "Empty 'labelOptions' should default to a wrapped label tag.",
+        );
+    }
+
+    public function testGenerateLabelDoesNotMutateLabelOptions(): void
+    {
+        $originalLabelOptions = $this->activeField->labelOptions;
+
+        $this->activeField->radio(
+            [
+                'label' => 'Radio Label',
+                'labelOptions' => [
+                    'class' => 'temporary-class',
+                    'data-temp' => 'value',
+                ],
+            ],
+            false,
+        );
+
+        self::assertSame(
+            $originalLabelOptions,
+            $this->activeField->labelOptions,
+            "Should not mutate 'labelOptions' property when generating the label.",
         );
     }
 
