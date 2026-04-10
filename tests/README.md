@@ -2,11 +2,13 @@
 
 ## DIRECTORY STRUCTURE
 
-    data/            models, config and other test data
-        config.php   this file contains host-side configuration for database backends
-    docker/          Docker Compose files for local backend services
-    framework/       the framework unit tests
-    runtime/         the application runtime dir for the yii test app
+```text
+data/            models, config and other test data
+    config.php   this file contains host-side configuration for database backends
+docker/          Docker Compose files for local backend services
+framework/       the framework unit tests
+runtime/         the application runtime dir for the yii test app
+```
 
 ## HOW TO RUN THE TESTS
 

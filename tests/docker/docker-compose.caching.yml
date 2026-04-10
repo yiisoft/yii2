@@ -5,7 +5,9 @@ services:
       - "11211:11211"
     healthcheck:
       test: [
-        "CMD-SHELL",
+        "CMD",
+        "bash",
+        "-c",
         "exec 3<>/dev/tcp/127.0.0.1/11211 && echo 'stats' >&3 && grep -q STAT <&3",
       ]
       interval: 10s
