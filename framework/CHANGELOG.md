@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh #20801: Update PHP `8.3` and PHPUnit `11.5` compatibility (terabytesoftw)
 - Chg #20804: Remove Yii runtime autoloader (`Yii::autoload()`, `Yii::$classMap`, `framework/classes.php`); rely on Composer autoload and fix related PSR-4 ambiguities in tests and legacy files (terabytesoftw)
 - Chg #15058: Remove remaining HHVM support from core error handling, tests, and the English installation guide (terabytesoftw)
+- Chg: Remove PHP < `8.3` version guards and dead fallbacks across framework and tests (terabytesoftw)
 
 2.0.54 under development
 ------------------------

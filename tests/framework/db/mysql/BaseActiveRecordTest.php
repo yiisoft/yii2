@@ -23,10 +23,6 @@ class BaseActiveRecordTest extends BaseActiveRecordTemplate
         if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
             $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');
         }
-        if (version_compare(PHP_VERSION, '5.6', '<')) {
-            $this->markTestSkipped('JSON columns are not supported in PDO for PHP < 5.6');
-        }
-
         $createdStorage = new Storage(['data' => $actual]);
 
         $createdStorage->save();

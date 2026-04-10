@@ -107,10 +107,8 @@ class FormatterDateTest extends TestCase
         $value->setTimestamp(1_451_606_400); // Fri, 01 Jan 2016 00:00:00 (UTC)
         $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $value = new DateTimeImmutable('2016-01-01 00:00:00', new DateTimeZone('UTC'));
-            $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
-        }
+        $value = new DateTimeImmutable('2016-01-01 00:00:00', new DateTimeZone('UTC'));
+        $this->assertSame('۱۳۹۴', $this->formatter->asDate($value, 'php:Y'));
 
         // Buddhist calendar
         $this->formatter->locale = 'fr_FR@calendar=buddhist';
@@ -124,10 +122,8 @@ class FormatterDateTest extends TestCase
         $value->setTimestamp(1_451_606_400); // Fri, 01 Jan 2016 00:00:00 (UTC)
         $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $value = new DateTimeImmutable('2016-01-01 00:00:00', new DateTimeZone('UTC'));
-            $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
-        }
+        $value = new DateTimeImmutable('2016-01-01 00:00:00', new DateTimeZone('UTC'));
+        $this->assertSame('2559', $this->formatter->asDate($value, 'php:Y'));
     }
 
     public function testIntlAsTime(): void
@@ -151,11 +147,9 @@ class FormatterDateTest extends TestCase
         $this->assertSameAnyWhitespace(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
         $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
 
-        if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-            $value = new DateTimeImmutable();
-            $this->assertSameAnyWhitespace(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
-            $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
-        }
+        $value = new DateTimeImmutable();
+        $this->assertSameAnyWhitespace(date('g:i:s A', $value->getTimestamp()), $this->formatter->asTime($value));
+        $this->assertSame(date('h:i:s A', $value->getTimestamp()), $this->formatter->asTime($value, 'php:h:i:s A'));
 
         // empty input
         $this->assertSameAnyWhitespace('12:00:00 AM', $this->formatter->asTime(''));
@@ -611,10 +605,8 @@ class FormatterDateTest extends TestCase
             $result[] = [$tz[0], '2014-08-10T14:41:00+02:00',         '2014-01-01T13:41:00+01:00']; // ISO 8601
             $result[] = [$tz[0], new DateTime('2014-08-10 12:41:00', $utc), new DateTime('2014-01-01 12:41:00', $utc)];
             $result[] = [$tz[0], new DateTime('2014-08-10 14:41:00', $berlin), new DateTime('2014-01-01 13:41:00', $berlin)];
-            if (version_compare(PHP_VERSION, '5.5.0', '>=')) {
-                $result[] = [$tz[0], new DateTimeImmutable('2014-08-10 12:41:00', $utc), new DateTimeImmutable('2014-01-01 12:41:00', $utc)];
-                $result[] = [$tz[0], new DateTimeImmutable('2014-08-10 14:41:00', $berlin), new DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
-            }
+            $result[] = [$tz[0], new DateTimeImmutable('2014-08-10 12:41:00', $utc), new DateTimeImmutable('2014-01-01 12:41:00', $utc)];
+            $result[] = [$tz[0], new DateTimeImmutable('2014-08-10 14:41:00', $berlin), new DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
         }
 
         return $result;

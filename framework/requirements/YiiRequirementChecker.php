@@ -5,8 +5,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
-if (version_compare(PHP_VERSION, '4.3', '<')) {
-    echo 'At least PHP 4.3 is required to run this script!';
+if (version_compare(PHP_VERSION, '8.3', '<')) {
+    echo 'At least PHP 8.3 is required to run this script!';
     exit(1);
 }
 
