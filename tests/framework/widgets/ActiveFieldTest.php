@@ -1,28 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\widgets;
 
-use yiiunit\TestCase;
 use Exception;
-use yii\validators\Validator;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Depends;
 use Yii;
 use yii\base\DynamicModel;
+use yii\validators\Validator;
 use yii\web\AssetManager;
 use yii\web\View;
 use yii\widgets\ActiveField;
 use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
 use yii\widgets\MaskedInput;
+use yiiunit\framework\widgets\providers\ActiveFieldProvider;
+use yiiunit\TestCase;
+
+use function array_keys;
+use function array_map;
+use function sprintf;
 
 /**
+ *  * Unit tests for {@see ActiveField} widget.
+ *
  * @author Nelson J Morais <njmorais@gmail.com>
  *
  * @group widgets
@@ -497,9 +506,7 @@ class ActiveFieldTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider \yiiunit\framework\widgets\providers\ActiveFieldProvider::hintDataProvider
-     */
+    #[DataProviderExternal(ActiveFieldProvider::class, 'hint')]
     public function testHint(bool|string|null $hint, string $expectedHtml): void
     {
         $this->activeField->hint($hint);
@@ -1040,10 +1047,9 @@ class ActiveFieldTest extends TestCase
     }
 
     /**
-     * @depends testHiddenInput
-     *
      * @see https://github.com/yiisoft/yii2/issues/14773
      */
+    #[Depends('testHiddenInput')]
     public function testOptionsClass(): void
     {
         $this->activeField->options = ['class' => 'test-wrapper'];
@@ -1134,235 +1140,27 @@ class ActiveFieldTest extends TestCase
         );
     }
 
-    public function testRadioEnclosedByLabelFalseWithLabelOptions(): void
+    #[DataProviderExternal(ActiveFieldProvider::class, 'radioEnclosedByLabelFalse')]
+    public function testRadioEnclosedByLabelFalse(array $options, string $expectedLabel): void
     {
-        $this->activeField->radio(
-            [
-                'label' => 'Select Option A',
-                'labelOptions' => [
-                    'class' => 'custom-radio-label',
-                    'data-option' => 'option-a',
-                ],
-            ],
-            false,
-        );
+        $this->activeField->radio($options, false);
 
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="custom-radio-label" data-option="option-a" for="activefieldtestmodel-attributename">Select Option A</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
+        self::assertSame(
+            $expectedLabel,
+            $this->activeField->parts['{label}'],
+            "Should render the expected label when 'enclosedByLabel' is 'false'.",
         );
     }
 
-    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndLabelFalse(): void
+    #[DataProviderExternal(ActiveFieldProvider::class, 'checkboxEnclosedByLabelFalse')]
+    public function testCheckboxEnclosedByLabelFalse(array $options, string $expectedLabel): void
     {
-        $this->activeField->radio(['label' => false], false);
+        $this->activeField->checkbox($options, false);
 
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->normalizeHTML($this->activeField->render()),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndTagLabel(): void
-    {
-        $this->activeField->radio(
-            [
-                'label' => 'Choose This Option',
-                'labelOptions' => [
-                    'class' => 'radio-option-label',
-                    'data-value' => 'choice-1',
-                    'tag' => 'span',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <span class="radio-option-label" data-value="choice-1">Choose This Option</span>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testRadioEnclosedByLabelFalseWithLabelOptionsAndTagLabelFalse(): void
-    {
-        $this->activeField->radio(
-            [
-                'label' => '<div class="custom-label-wrapper"><strong>Premium Option</strong> <em>(Recommended)</em></div>',
-                'labelOptions' => [
-                    'tag' => false,
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <div class="custom-label-wrapper"><strong>Premium Option</strong> <em>(Recommended)</em></div>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testRadioEnclosedByLabelFalseWithoutLabelOptions(): void
-    {
-        $this->activeField->radio(['label' => 'Select Option A'], false);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            Select Option A
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithLabelOptions(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => 'Custom Label',
-                'labelOptions' => [
-                    'class' => 'custom-label-class',
-                    'data-test' => 'custom-label-data',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="custom-label-class" data-test="custom-label-data" for="activefieldtestmodel-attributename">Custom Label</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndLabelFalse(): void
-    {
-        $this->activeField->checkbox(['label' => false], false);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->normalizeHTML($this->activeField->render()),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndTagLabel(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => 'Custom Label',
-                'labelOptions' => [
-                    'class' => 'custom-label-class',
-                    'data-test' => 'custom-label-data',
-                    'tag' => 'span',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <span class="custom-label-class" data-test="custom-label-data">Custom Label</span>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithLabelOptionsAndTagLabelFalse(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => '<div class="custom-label-wrapper"><strong>Custom</strong> <em>Label</em></div>',
-                'labelOptions' => [
-                    'tag' => false,
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <div class="custom-label-wrapper"><strong>Custom</strong> <em>Label</em></div>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithoutLabelOptions(): void
-    {
-        $this->activeField->checkbox(['label' => 'Custom Label'], false);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            Custom Label
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
+        self::assertSame(
+            $expectedLabel,
+            $this->activeField->parts['{label}'],
+            "Should render the expected label when 'enclosedByLabel' is 'false'.",
         );
     }
 
@@ -1507,130 +1305,6 @@ class ActiveFieldTest extends TestCase
         );
     }
 
-    public function testRadioEnclosedByLabelFalse(): void
-    {
-        $this->activeField->radio([], false);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testRadioEnclosedByLabelFalseWithCustomLabel(): void
-    {
-        $this->activeField->radio(
-            [
-                'label' => 'Select Option A',
-                'labelOptions' => [
-                    'class' => 'custom-radio-label',
-                    'data-option' => 'option-a',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="custom-radio-label" data-option="option-a" for="activefieldtestmodel-attributename">Select Option A</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testRadioEnclosedByLabelFalseWithCustomLabelFalse(): void
-    {
-        $this->activeField->radio(
-            [
-                'label' => false,
-                'labelOptions' => [
-                    'class' => 'custom-radio-label',
-                    'data-option' => 'option-a',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->normalizeHTML($this->activeField->render()),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-
-    public function testRadioEnclosedByLabelFalseWithCustomLabelTag(): void
-    {
-        $this->activeField->radio(
-            [
-                'label' => 'Choose This Option',
-                'labelOptions' => [
-                    'class' => 'radio-option-label',
-                    'data-value' => 'choice-1',
-                    'tag' => 'span',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <span class="radio-option-label" data-value="choice-1">Choose This Option</span>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testRadioEnclosedByLabelFalseWithCustomLabelTagFalse(): void
-    {
-        $this->activeField->radio(
-            [
-                'label' => '<div class="radio-custom-wrapper"><strong>Premium Option</strong> <em>(Recommended)</em></div>',
-                'labelOptions' => ['tag' => false],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <div class="radio-custom-wrapper"><strong>Premium Option</strong> <em>(Recommended)</em></div>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
     public function testRadioEnclosedByLabelTrue(): void
     {
         $this->activeField->radio([], true);
@@ -1644,131 +1318,6 @@ class ActiveFieldTest extends TestCase
             </div>
             HTML,
             $this->normalizeHTML($this->activeField->render()),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalse(): void
-    {
-        $this->activeField->checkbox([], false);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithCustomLabel(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => 'Custom Label',
-                'labelOptions' => [
-                    'class' => 'custom-label-class',
-                    'data-test' => 'custom-label-data',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="custom-label-class" data-test="custom-label-data" for="activefieldtestmodel-attributename">Custom Label</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithCustomLabelFalse(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => false,
-                'labelOptions' => [
-                    'class' => 'custom-label-class',
-                    'data-test' => 'custom-label-data',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->normalizeHTML($this->activeField->render()),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithCustomLabelTag(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => 'Custom Label',
-                'labelOptions' => [
-                    'class' => 'custom-label-class',
-                    'data-test' => 'custom-label-data',
-                    'tag' => 'span',
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <span class="custom-label-class" data-test="custom-label-data">Custom Label</span>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
-            'Rendered HTML does not match expected output',
-        );
-    }
-
-    public function testCheckboxEnclosedByLabelFalseWithCustomLabelTagFalse(): void
-    {
-        $this->activeField->checkbox(
-            [
-                'label' => 'Custom Label',
-                'labelOptions' => [
-                    'tag' => false,
-                ],
-            ],
-            false,
-        );
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            Custom Label
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1">
-            <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
-            </div>
-            HTML,
-            $this->activeField->render(),
             'Rendered HTML does not match expected output',
         );
     }
@@ -2040,11 +1589,14 @@ class TestMaskedInput extends MaskedInput
 
     public function run()
     {
-        return 'Options: ' . implode(', ', array_map(
-            fn($v, $k) => sprintf('%s="%s"', $k, $v),
-            $this->options,
-            array_keys($this->options)
-        ));
+        return 'Options: ' . implode(
+            ', ',
+            array_map(
+                static fn ($v, $k): string => sprintf('%s="%s"', $k, $v),
+                $this->options,
+                array_keys($this->options),
+            ),
+        );
     }
 }
 
