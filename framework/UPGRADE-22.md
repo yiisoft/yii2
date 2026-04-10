@@ -12,18 +12,6 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 * Raised minimum supported PHP version to `8.3`.
 * All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
   you must update your code before upgrading.
-* `yii\widgets\ActiveField::label()` method now supports a `tag` option to control the wrapper element. This provides
-  flexibility for custom label rendering while maintaining full backward compatibility:
-
-  - `tag => 'label'` default generates standard `<label>` element with `for` attribute.
-  - `tag => false`  renders label content without any wrapper tag.
-  - `tag => 'span'/'div'/etc` uses specified HTML element as wrapper.
-
-  Example usage:
-
-  ```php
-  $field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
-  ```
 * jQuery is now optional in the framework. A new `useJquery` property has been added to `yii\console\Application` and
   `yii\web\Application` to control whether jQuery-based client scripts are used. The default values differ by
   application type: `yii\web\Application::$useJquery` defaults to `true`, maintaining full backward compatibility for
@@ -128,6 +116,45 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 * Note: Setting `useJquery` to `false` only prevents the framework from registering jQuery-based scripts. 
   It does not remove jQuery from your application if you've included it manually or through other extensions. 
   You are responsible for ensuring your application works correctly without jQuery when this option is disabled.
+
+### ActiveField label, radio, and checkbox enhancements
+
+`yii\widgets\ActiveField::label()` now supports a `tag` option in `$options` to control the wrapper element:
+
+- `tag => 'label'` (default) generates a standard `<label>` element with `for` attribute.
+- `tag => false` renders label content without any wrapping tag.
+- `tag => 'span'`/`'div'`/etc. uses the specified HTML element as wrapper.
+
+Example usage:
+
+```php
+$field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
+```
+
+Additionally, `radio()` and `checkbox()` now support a `tag` sub-option inside `labelOptions` when
+`enclosedByLabel` is `false`. This provides flexible label rendering for radio buttons and checkboxes:
+
+```php
+// Render radio label as a <span> instead of <label>
+$field->radio(
+    [
+        'label' => 'Option A',
+        'labelOptions' => ['tag' => 'span', 'class' => 'custom-label'],
+    ],
+    false,
+);
+
+// Render checkbox label without any wrapping tag
+$field->checkbox(
+    [
+        'label' => '<strong>Accept Terms</strong>',
+        'labelOptions' => ['tag' => false],
+    ],
+    false,
+);
+```
+
+These changes are fully backward compatible. Existing code continues to work without modification.
 
 ### ApcCache renamed to ApcuCache
 

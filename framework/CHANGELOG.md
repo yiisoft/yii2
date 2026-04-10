@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Chg #15058: Remove remaining HHVM support from core error handling, tests, and the English installation guide (terabytesoftw)
 - Chg: Remove PHP < `8.3` version guards and dead fallbacks across framework and tests (terabytesoftw)
 - Chg #20808: Rename `ApcCache` to `ApcuCache` and remove legacy APC extension support (terabytesoftw)
+- Bug: Fix `ActiveField::generateLabel()` to strip `label`/`for` attributes for custom tags and preserve prior label in `radio()`/`checkbox()` (terabytesoftw)
 
 
 2.0.55 under development
