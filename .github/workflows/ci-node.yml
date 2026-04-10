@@ -23,6 +23,7 @@ on:
       - "framework/LICENSE.md"
       - "framework/README.md"
       - "framework/UPGRADE.md"
+      - "framework/UPGRADE-22.md"
       - "LICENSE.md"
       - "README.md"
       - "ROADMAP.md"
