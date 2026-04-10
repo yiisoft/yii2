@@ -191,8 +191,6 @@ final class NumberValidatorJqueryClientScriptTest extends TestCase
     {
         Yii::$app->useJquery = false;
 
-        $modelValidator = new FakedValidationModel();
-
         $validator = new NumberValidator(
             [
                 'clientScript' => ['class' => NumberValidatorJqueryClientScript::class],
