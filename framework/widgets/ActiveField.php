@@ -576,11 +576,11 @@ class ActiveField extends Component
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
-        $this->parts['{label}'] ??= '';
-
         if (!$enclosedByLabel) {
             $options = $this->generateLabel($options);
         }
+
+        $this->parts['{label}'] ??= '';
 
         $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
 
@@ -623,11 +623,11 @@ class ActiveField extends Component
         $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
-        $this->parts['{label}'] ??= '';
-
         if (!$enclosedByLabel) {
             $options = $this->generateLabel($options);
         }
+
+        $this->parts['{label}'] ??= '';
 
         $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
 
@@ -930,7 +930,7 @@ class ActiveField extends Component
      */
     protected function generateLabel(array $options): array
     {
-        if (isset($options['label']) && $options['label'] !== false && $this->parts['{label}'] === '') {
+        if (isset($options['label']) && $options['label'] !== false && !array_key_exists('{label}', $this->parts)) {
             $tag = false;
             $labelOptions = $this->labelOptions;
 
@@ -952,8 +952,8 @@ class ActiveField extends Component
                     $this->model,
                     $this->attribute,
                     [
-                        'label' => $options['label'],
                         ...$labelOptions,
+                        'label' => $options['label'],
                     ],
                 );
             } else {

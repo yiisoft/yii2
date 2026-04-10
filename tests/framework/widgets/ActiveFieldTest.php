@@ -13,6 +13,7 @@ namespace yiiunit\framework\widgets;
 use Exception;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Depends;
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\base\DynamicModel;
 use yii\validators\Validator;
@@ -30,12 +31,12 @@ use function array_map;
 use function sprintf;
 
 /**
- *  * Unit tests for {@see ActiveField} widget.
+ * Unit tests for {@see ActiveField} widget.
  *
  * @author Nelson J Morais <njmorais@gmail.com>
- *
- * @group widgets
  */
+#[Group('widgets')]
+#[Group('active-field')]
 class ActiveFieldTest extends TestCase
 {
     private \yiiunit\framework\widgets\ActiveFieldExtend $activeField;
@@ -1192,6 +1193,30 @@ class ActiveFieldTest extends TestCase
         );
     }
 
+    public function testRadioEnclosedByLabelFalsePreservesLabelFalse(): void
+    {
+        $this->activeField->label(false);
+        $this->activeField->radio(['label' => 'Radio Label'], false);
+
+        self::assertSame(
+            '',
+            $this->activeField->parts['{label}'],
+            "Should preserve label 'false' and not regenerate a label.",
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalsePreservesLabelFalse(): void
+    {
+        $this->activeField->label(false);
+        $this->activeField->checkbox(['label' => 'Checkbox Label'], false);
+
+        self::assertSame(
+            '',
+            $this->activeField->parts['{label}'],
+            "Should preserve label 'false' and not regenerate a label.",
+        );
+    }
+
     public function testRadioEnclosedByLabelFalseWithEmptyLabelOptions(): void
     {
         $this->activeField->radio(
@@ -1249,6 +1274,27 @@ class ActiveFieldTest extends TestCase
             $originalLabelOptions,
             $this->activeField->labelOptions,
             "Should not mutate 'labelOptions' property when generating the label.",
+        );
+    }
+
+    public function testRadioExplicitLabelOverridesLabelOptionsLabel(): void
+    {
+        $this->activeField->labelOptions = ['label' => false];
+
+        $this->activeField->radio(
+            [
+                'label' => 'Explicit Radio Label',
+                'labelOptions' => ['class' => 'custom'],
+            ],
+            false,
+        );
+
+        self::assertSame(
+            <<<HTML
+            <label class="custom" for="activefieldtestmodel-attributename">Explicit Radio Label</label>
+            HTML,
+            $this->activeField->parts['{label}'],
+            "Explicit radio label should override 'labelOptions' when| label value is 'false'.",
         );
     }
 
