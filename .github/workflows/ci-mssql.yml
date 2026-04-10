@@ -27,6 +27,7 @@ on:
       - "framework/LICENSE.md"
       - "framework/README.md"
       - "framework/UPGRADE.md"
+      - "framework/UPGRADE-22.md"
       - "eslint.config.js"
       - "LICENSE.md"
       - "README.md"
