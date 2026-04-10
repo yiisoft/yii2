@@ -25,9 +25,11 @@ Upgrade from Yii 2.0.x
   $field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
   ```
 * jQuery is now optional in the framework. A new `useJquery` property has been added to `yii\console\Application` and
-  `yii\web\Application` to control whether jQuery-based client scripts are used. The default value is `true`,  
-  maintaining full backward compatibility with existing applications. When the value is `false`, jQuery is not used and
-  framework uses plain JavaScript instead.
+  `yii\web\Application` to control whether jQuery-based client scripts are used. The default values differ by
+  application type: `yii\web\Application::$useJquery` defaults to `true`, maintaining full backward compatibility for
+  web applications, while `yii\console\Application::$useJquery` defaults to `false` because console applications do not
+  register client-side scripts unless you explicitly enable them. Where client-side scripts apply, setting the property
+  to `false` disables jQuery-based scripts and framework uses plain JavaScript instead.
   
   To disable jQuery globally, configure your application:
   
