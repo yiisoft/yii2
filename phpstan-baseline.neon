@@ -1402,7 +1402,7 @@ parameters:
 			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
 			identifier: property.notFound
 			count: 4
-			path: tests/framework/jquery/validators/RequireValidatorJqueryClientScriptTest.php
+			path: tests/framework/jquery/validators/RequiredValidatorJqueryClientScriptTest.php
 
 		-
 			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attrA\.$#'
