@@ -12,6 +12,8 @@ namespace yiiunit\framework\jquery\validators;
 
 use PHPUnit\Framework\Attributes\Group;
 use Yii;
+use yii\jquery\validators\NumberValidatorJqueryClientScript;
+use yii\validators\client\ClientValidatorScriptInterface;
 use yii\validators\NumberValidator;
 use yii\validators\ValidationAsset;
 use yii\web\View;
@@ -182,6 +184,30 @@ final class NumberValidatorJqueryClientScriptTest extends TestCase
             '"max":13.37',
             $js,
             "Failed asserting that the generated client validation script contains the expected 'max' value.",
+        );
+    }
+
+    public function testClientValidateAttributeWithCustomClientScriptAndUseJqueryFalse(): void
+    {
+        Yii::$app->useJquery = false;
+
+        $modelValidator = new FakedValidationModel();
+
+        $validator = new NumberValidator(
+            [
+                'clientScript' => ['class' => NumberValidatorJqueryClientScript::class],
+            ],
+        );
+
+        self::assertInstanceOf(
+            ClientValidatorScriptInterface::class,
+            $validator->clientScript,
+            'Should instantiate custom clientScript array config via Yii::createObject even when useJquery is false.',
+        );
+        self::assertInstanceOf(
+            NumberValidatorJqueryClientScript::class,
+            $validator->clientScript,
+            'Should be an instance of NumberValidatorJqueryClientScript.',
         );
     }
 

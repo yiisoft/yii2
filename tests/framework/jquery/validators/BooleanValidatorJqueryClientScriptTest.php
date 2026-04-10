@@ -105,7 +105,7 @@ final class BooleanValidatorJqueryClientScriptTest extends TestCase
         );
         self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            'Sould return an empty array.',
+            'Should return an empty array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);

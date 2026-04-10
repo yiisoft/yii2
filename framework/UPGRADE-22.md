@@ -100,7 +100,7 @@ jQuery is no longer hardcoded in validators and widgets. A new `useJquery` prope
 scripts are registered. It defaults to `true` on `yii\web\Application` (full backward compatibility) and to `false` on 
 `yii\console\Application` (no client scripts in console context).
 
-**No action required** for existing web applications  the default behavior is fully backward compatible.
+**No action required** for existing web applications; the default behavior is fully backward compatible.
 
 #### New interfaces
 
