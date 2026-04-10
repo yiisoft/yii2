@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
+use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -73,5 +74,25 @@ class BooleanValidatorTest extends TestCase
         $this->assertFalse($obj->hasErrors('attrB'));
         $val->validateAttribute($obj, 'attrD');
         $this->assertTrue($obj->hasErrors('attrD'));
+    }
+
+    public function testClientValidateAttributeReturnsNullWithoutJquery(): void
+    {
+        $this->destroyApplication();
+
+        $validator = new BooleanValidator(
+            [
+                'trueValue' => true,
+                'falseValue' => false,
+                'strict' => true,
+            ],
+        );
+        $obj = new FakedValidationModel();
+        $obj->attrB = '1';
+
+        self::assertNull(
+            $validator->clientValidateAttribute($obj, 'attrB', new View()),
+            "Should return 'null' when no application context exists.",
+        );
     }
 }

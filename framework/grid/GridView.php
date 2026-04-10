@@ -296,8 +296,11 @@ class GridView extends BaseListView
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
         }
 
-        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientScriptInterface) {
-            $this->clientScript ??= ['class' => GridViewJqueryClientScript::class];
+        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
+            $this->clientScript = ['class' => GridViewJqueryClientScript::class];
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
 
@@ -334,12 +337,10 @@ class GridView extends BaseListView
      */
     public function renderSection($name)
     {
-        switch ($name) {
-            case '{errors}':
-                return $this->renderErrors();
-            default:
-                return parent::renderSection($name);
-        }
+        return match ($name) {
+            '{errors}' => $this->renderErrors(),
+            default => parent::renderSection($name),
+        };
     }
 
     /**
@@ -441,7 +442,7 @@ class GridView extends BaseListView
             $content .= $this->renderFilters();
         }
 
-        return "<thead>\n" . $content . "\n</thead>";
+        return "<thead>\n{$content}\n</thead>";
     }
 
     /**
@@ -460,7 +461,7 @@ class GridView extends BaseListView
             $content .= $this->renderFilters();
         }
 
-        return "<tfoot>\n" . $content . "\n</tfoot>";
+        return "<tfoot>\n{$content}\n</tfoot>";
     }
 
     /**
@@ -584,8 +585,8 @@ class GridView extends BaseListView
             'class' => $this->dataColumnClass ?: DataColumn::class,
             'grid' => $this,
             'attribute' => $matches[1],
-            'format' => isset($matches[3]) ? $matches[3] : 'text',
-            'label' => isset($matches[5]) ? $matches[5] : null,
+            'format' => $matches[3] ?? 'text',
+            'label' => $matches[5] ?? null,
         ]);
     }
 

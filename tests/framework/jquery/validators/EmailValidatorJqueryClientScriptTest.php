@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\jquery\validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\validators\EmailValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\TestCase;
 
 /**
- * @group jquery
- * @group validators
+ * Unit tests for {@see EmailValidator} client validation script.
  */
-final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
+#[Group('jquery')]
+#[Group('validators')]
+final class EmailValidatorJqueryClientScriptTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -38,16 +40,17 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new EmailValidator();
 
         $modelValidator->attrA = 'test@example.com';
 
-        $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
-            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
-            '"enableIDN":false,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new EmailValidator();
+
+        self::assertSame(
+            <<<JS
+            yii.validation.email(value, messages, {"pattern":{$validator->pattern},"fullPattern":{$validator->fullPattern},"allowName":false,"message":"attrA is not a valid email address.","enableIDN":false,"skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
@@ -55,7 +58,7 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
         $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => $validator->pattern,
                 'fullPattern' => $validator->fullPattern,
@@ -65,12 +68,12 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('invalid-email', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid email address.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -80,14 +83,15 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithEnableIDN(): void
     {
         $modelValidator = new FakedValidationModel();
+
         $validator = new EmailValidator(['enableIDN' => true]);
 
-        $this->assertSame(
-            'yii.validation.email(value, messages, {"pattern":' . $validator->pattern . ',"fullPattern":' .
-            $validator->fullPattern . ',"allowName":false,"message":"attrA is not a valid email address.",' .
-            '"enableIDN":true,"skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        self::assertSame(
+            <<<JS
+            yii.validation.email(value, messages, {"pattern":{$validator->pattern},"fullPattern":{$validator->fullPattern},"allowName":false,"message":"attrA is not a valid email address.","enableIDN":true,"skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
 
         $clientOptions = $validator->getClientOptions($modelValidator, 'attrA');
@@ -95,7 +99,7 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         $clientOptions['pattern'] = (string) ($clientOptions['pattern'] ?? '');
         $clientOptions['fullPattern'] = (string) ($clientOptions['fullPattern'] ?? '');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 'pattern' => $validator->pattern,
                 'fullPattern' => $validator->fullPattern,
@@ -105,12 +109,12 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $clientOptions,
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('invalid-email', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid email address.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -122,6 +126,9 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'test@example.com';
+
         $validator = new EmailValidator(
             [
                 'allowName' => true,
@@ -129,24 +136,22 @@ final class EmailValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'test@example.com';
-
-        $this->assertNull(
+        self::assertNull(
             $validator->clientScript,
-            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+            "Should be 'null' when 'useJquery' is 'false'.",
         );
-        $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+        self::assertNull(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return 'null' value.",
         );
-        $this->assertEmpty(
+        self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
+            'Should return an empty array.',
         );
 
         $validator->validate('invalid-email', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is not a valid email address.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',

@@ -12,110 +12,6 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 * Raised minimum supported PHP version to `8.3`.
 * All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
   you must update your code before upgrading.
-* jQuery is now optional in the framework. A new `useJquery` property has been added to `yii\console\Application` and
-  `yii\web\Application` to control whether jQuery-based client scripts are used. The default values differ by
-  application type: `yii\web\Application::$useJquery` defaults to `true`, maintaining full backward compatibility for
-  web applications, while `yii\console\Application::$useJquery` defaults to `false` because console applications do not
-  register client-side scripts unless you explicitly enable them. Where client-side scripts apply, setting the property
-  to `false` disables jQuery-based scripts and framework uses plain JavaScript instead.
-  
-  To disable jQuery globally, configure your application:
-  
-  ```php
-  return [
-      'useJquery' => false,
-      // ... other config
-  ];
-  ```
-  
-  Or dynamically at runtime:
-  
-  ```php
-  Yii::$app->useJquery = false;
-  ```
-
-* Two new interfaces have been introduced to support alternative client-side script implementations:
-  
-  - `yii\web\client\ClientScriptInterface` - for widgets and components (ActiveForm, GridView, etc.)
-  - `yii\validators\client\ClientValidatorScriptInterface` - for validators
-  
-  These interfaces allow you to provide custom client-side validation and behavior without jQuery dependency.
-
-* Widgets and validators now support a `clientScript` configuration option to specify custom client script handlers:
-  
-  ```php
-  // Using default jQuery behavior (no changes needed)
-  $form = ActiveForm::begin([]);
-  
-  // Using custom client script implementation without jQuery
-  $form = ActiveForm::begin(['clientScript' => MyCustomClientScript::class]);
-  ```
-  
-  The following components support custom client scripts via the new interfaces:
-
-  - `yii\widgets\ActiveForm` and `yii\widgets\ActiveField`
-  - `yii\grid\GridView` and `yii\grid\CheckboxColumn`
-  - All built-in validators (RequiredValidator, EmailValidator, StringValidator, etc.)
-
-* If you are extending any of the following classes and overriding client-side script generation methods, you should 
-  review your code to ensure compatibility:
-  
-  - `yii\widgets\ActiveForm::getClientOptions()`
-  - `yii\widgets\ActiveField::getClientOptions()`
-  - `yii\validators\Validator::clientValidateAttribute()`
-  
-  The default implementations now delegate to the configured `clientScript` handler when jQuery is enabled.
-
-* Example of implementing a custom client script handler:
-  
-  ```php
-  use yii\base\BaseObject;
-  use yii\web\client\ClientScriptInterface;
-  use yii\web\View;
-  use yii\widgets\ActiveField;
-  use yii\widgets\ActiveForm;  
-  
-  /**
-   * @template T of ActiveForm|ActiveField
-   * @implements ClientScriptInterface<T>
-   */
-  class MyCustomClientScript implements ClientScriptInterface
-  {
-      public function getClientOptions(BaseObject $object, array $options = []): array
-      {
-          // Return client-side options for your custom implementation
-          return [
-              'myOption' => 'value',
-          ];
-      }
-      
-      public function register(BaseObject $object, View $view, array $options = []): void
-      {
-          // Register your custom JavaScript/CSS assets
-          MyCustomAsset::register($view);
-          
-          // Register initialization script
-          $view->registerJs("MyCustomLib.init('#" . $object->options['id'] . "');");
-      }
-  }
-  ```
-
-* If your application doesn't use jQuery and you want to completely remove the dependency, after setting `useJquery` to
-  `false`, you'll need to provide your own client script implementations for any widgets or validators that require 
-  client-side functionality. Alternatively, you can disable client-side validation entirely:
-  
-  ```php
-  $form = ActiveForm::begin(
-      [
-          'enableClientValidation' => false,
-          'enableAjaxValidation' => false,
-      ],
-  );
-  ```
-
-* Note: Setting `useJquery` to `false` only prevents the framework from registering jQuery-based scripts. 
-  It does not remove jQuery from your application if you've included it manually or through other extensions. 
-  You are responsible for ensuring your application works correctly without jQuery when this option is disabled.
 
 ### ActiveField label, radio, and checkbox enhancements
 
@@ -198,6 +94,91 @@ All HHVM-specific code has been removed from the framework. Yii `22.x` targets P
 If your application references `ErrorException::E_HHVM_FATAL_ERROR` or `ErrorHandler::handleHhvmError()`, remove those 
 references when upgrading.
 
+### jQuery is now optional (strategy pattern)
+
+jQuery is no longer hardcoded in validators and widgets. A new `useJquery` property controls whether jQuery-based client 
+scripts are registered. It defaults to `true` on `yii\web\Application` (full backward compatibility) and to `false` on 
+`yii\console\Application` (no client scripts in console context).
+
+**No action required** for existing web applications  the default behavior is fully backward compatible.
+
+#### New interfaces
+
+Two interfaces allow replacing the jQuery implementation with any alternative:
+
+- `yii\web\client\ClientScriptInterface` strategy for widgets and components (`ActiveForm`, `GridView`,
+  `CheckboxColumn`).
+- `yii\validators\client\ClientValidatorScriptInterface` strategy for validators.
+
+#### New `clientScript` property
+
+All 13 built-in validators that support client-side validation and the widgets listed below now expose a `clientScript`
+property that accepts an array config or an object implementing the matching interface:
+
+- `yii\widgets\ActiveForm` and `yii\widgets\ActiveField`
+- `yii\grid\GridView` and `yii\grid\CheckboxColumn`
+- `BooleanValidator`, `CompareValidator`, `EmailValidator`, `FileValidator`, `ImageValidator`, `IpValidator`,
+  `NumberValidator`, `RangeValidator`, `RegularExpressionValidator`, `RequiredValidator`, `StringValidator`,
+  `TrimValidator`, `UrlValidator`
+
+The custom strategy is **always instantiated** regardless of `useJquery`, enabling framework-agnostic client scripts.
+
+#### New method
+
+`Validator::getFormattedClientMessage(string $message, array $params): string` public wrapper around the protected
+`formatMessage()`, used by extracted jQuery client script classes when composing error messages.
+
+#### Opting out of jQuery
+
+```php
+// In application configuration
+return [
+    'useJquery' => false,
+    // ... other config
+];
+```
+
+When `useJquery` is `false` and no custom `clientScript` strategy is configured:
+
+- `clientValidateAttribute()` returns `null` on all built-in validators.
+- `getClientOptions()` returns `[]` on all built-in validators.
+- `ActiveForm`, `GridView`, and `CheckboxColumn` do not register their built-in jQuery plugins.
+- No built-in `JqueryAsset`, `ValidationAsset`, `ActiveFormAsset`, or `GridViewAsset` bundles are registered.
+
+#### Custom client script strategy
+
+```php
+// Custom validator client script works even when useJquery is false
+public function rules(): array
+{
+    return [
+        ['username', 'required', 'clientScript' => ['class' => MyRequiredClientScript::class]],
+    ];
+}
+
+// Custom form client script
+ActiveForm::begin(
+    [
+        'clientScript' => ['class' => MyFormClientScript::class],
+    ],
+);
+```
+
+#### BC impact on subclasses
+
+If you extend any of the following classes and override client-side script generation methods, review your code for
+compatibility:
+
+- `yii\widgets\ActiveForm::getClientOptions()`
+- `yii\widgets\ActiveField::getClientOptions()`
+- `yii\validators\Validator::clientValidateAttribute()`
+
+The default implementations now delegate to the configured `$clientScript` handler when jQuery is enabled. Subclasses
+that call `parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
+
+> **Note:** Setting `useJquery` to `false` only prevents the framework from registering jQuery-based scripts. It does
+> not remove jQuery from your application if you have included it manually or through other extensions.
+
 ### Yii runtime autoloader removed
 
 The framework no longer registers its own SPL autoloader. The following public API has been removed:
@@ -217,10 +198,10 @@ All framework classes are now loaded exclusively by Composer:
 1. Remove any code that writes to `Yii::$classMap` or calls `Yii::autoload()`. Both no longer exist and will produce a 
    fatal error.
 2. Make sure every class your application uses is reachable through Composer autoload. Declare it under one of:
-    - `autoload.psr-4` — namespace mapping (preferred for application code).
-    - `autoload.classmap` — explicit class-to-file mapping (use for non-PSR-4 files or vendor overrides).
-    - `autoload.exclude-from-classmap` — paired with `classmap` when overriding a vendor class.
-    - `autoload-dev` — development and test-only classes.
+    - `autoload.psr-4` namespace mapping (preferred for application code).
+    - `autoload.classmap` explicit class-to-file mapping (use for non-PSR-4 files or vendor overrides).
+    - `autoload.exclude-from-classmap` paired with `classmap` when overriding a vendor class.
+    - `autoload-dev` development and test-only classes.
 3. Regenerate the autoload files after editing `composer.json`:
 
    ```bash
@@ -303,7 +284,7 @@ authoritative classmaps because it is resolved at autoload-generation time, not 
 
 > Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN `yii\web\Request` is 
 > now defined exclusively by your override file. You **cannot** write `class Request extends \yii\web\Request` inside 
-> `namespace yii\web;` — that would be self-inheritance and PHP will reject it. You must reimplement the full public 
+> `namespace yii\web;` that would be self-inheritance and PHP will reject it. You must reimplement the full public 
 > surface of the original class.
 >
 > If you only need to *extend* the framework class, do **not** use `exclude-from-classmap`. Instead, declare a subclass 

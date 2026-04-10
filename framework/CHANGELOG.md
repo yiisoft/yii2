@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Chg: Remove PHP < `8.3` version guards and dead fallbacks across framework and tests (terabytesoftw)
 - Chg #20808: Rename `ApcCache` to `ApcuCache` and remove legacy APC extension support (terabytesoftw)
 - Bug: Fix `ActiveField::generateLabel()` to strip `label`/`for` attributes for custom tags and preserve prior label in `radio()`/`checkbox()` (terabytesoftw)
+- Bug: Fix `clientScript` not being instantiated in validators when a custom array config is set and `useJquery` is `false` (terabytesoftw)
 
 
 2.0.55 under development

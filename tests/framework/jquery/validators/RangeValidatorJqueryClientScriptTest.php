@@ -1,25 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\jquery\validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\validators\RangeValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\TestCase;
 
 /**
- * @group jquery
- * @group validators
+ * Unit tests for {@see RangeValidator} client validation script.
  */
-final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
+#[Group('jquery')]
+#[Group('validators')]
+final class RangeValidatorJqueryClientScriptTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -38,6 +40,9 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'apple';
+
         $validator = new RangeValidator(
             [
                 'range' => [
@@ -48,15 +53,14 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'apple';
-
-        $this->assertSame(
-            'yii.validation.range(value, messages, {"range":["apple","banana","cherry"],"not":false,' .
-            '"message":"attrA is invalid.","skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        self::assertSame(
+            <<<JS
+            yii.validation.range(value, messages, {"range":["apple","banana","cherry"],"not":false,"message":"attrA is invalid.","skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'range' => ['apple', 'banana', 'cherry'],
                 'not' => false,
@@ -64,12 +68,12 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is invalid.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -79,6 +83,9 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithAllowArray(): void
     {
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = ['red', 'blue'];
+
         $validator = new RangeValidator(
             [
                 'range' => [
@@ -90,15 +97,14 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = ['red', 'blue'];
-
-        $this->assertSame(
-            'yii.validation.range(value, messages, {"range":["blue","green","red"],"not":false,' .
-            '"message":"attrA is invalid.","skipOnEmpty":1,"allowArray":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        self::assertSame(
+            <<<JS
+            yii.validation.range(value, messages, {"range":["blue","green","red"],"not":false,"message":"attrA is invalid.","skipOnEmpty":1,"allowArray":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'range' => [
                     'blue',
@@ -111,7 +117,7 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'allowArray' => 1,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate(
@@ -122,7 +128,7 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             $errorMessage,
         );
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is invalid.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -132,6 +138,9 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithClosureRange(): void
     {
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'dynamic1';
+
         $validator = new RangeValidator(
             [
                 'range' => static fn(): array => [
@@ -142,15 +151,14 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'dynamic1';
-
-        $this->assertSame(
-            'yii.validation.range(value, messages, {"range":["dynamic1","dynamic2","dynamic3"],"not":false,' .
-            '"message":"attrA is invalid.","skipOnEmpty":1});',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        self::assertSame(
+            <<<JS
+            yii.validation.range(value, messages, {"range":["dynamic1","dynamic2","dynamic3"],"not":false,"message":"attrA is invalid.","skipOnEmpty":1});
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'range' => [
                     'dynamic1',
@@ -162,12 +170,12 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
                 'skipOnEmpty' => 1,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is invalid.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',
@@ -179,6 +187,9 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = 'option1';
+
         $validator = new RangeValidator(
             [
                 'range' => [
@@ -190,24 +201,22 @@ final class RangeValidatorJqueryClientScriptTest extends \yiiunit\TestCase
             ],
         );
 
-        $modelValidator->attrA = 'option1';
-
-        $this->assertNull(
+        self::assertNull(
             $validator->clientScript,
-            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+            "Should be 'null' when 'useJquery' is 'false'.",
         );
-        $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+        self::assertNull(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return 'null' value.",
         );
-        $this->assertEmpty(
+        self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
+            'Should return an empty array.',
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertSame(
+        self::assertSame(
             'the input value is invalid.',
             $errorMessage,
             'Failed asserting that the generated error message matches the expected one.',

@@ -1,25 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\jquery\validators;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\validators\TrimValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\TestCase;
 
 /**
- * @group jquery
- * @group validators
+ * Unit tests for {@see TrimValidator} client validation script.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 2.2
  */
-final class TrimValidatorJqueryClientScriptTest extends \yiiunit\TestCase
+#[Group('jquery')]
+#[Group('validators')]
+final class TrimValidatorJqueryClientScriptTest extends TestCase
 {
     protected function setUp(): void
     {
@@ -38,29 +43,31 @@ final class TrimValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttribute(): void
     {
         $modelValidator = new FakedValidationModel();
-        $validator = new TrimValidator();
 
         $modelValidator->attrA = '  test value  ';
 
-        $this->assertSame(
-            'value = yii.validation.trim($form, attribute, {"skipOnArray":false,"skipOnEmpty":false,' .
-            '"chars":false}, value);',
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return correct validation script.",
+        $validator = new TrimValidator();
+
+        self::assertSame(
+            <<<JS
+            value = yii.validation.trim(\$form, attribute, {"skipOnArray":false,"skipOnEmpty":false,"chars":false}, value);
+            JS,
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            'Should return correct validation script.',
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'skipOnArray' => false,
                 'skipOnEmpty' => false,
                 'chars' => false,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validateAttribute($modelValidator, 'attrA');
 
-        $this->assertSame(
+        self::assertSame(
             'test value',
             $modelValidator->attrA,
             'Should trim the attribute value.',
@@ -70,31 +77,28 @@ final class TrimValidatorJqueryClientScriptTest extends \yiiunit\TestCase
     public function testClientValidateAttributeWithSkipOnArray(): void
     {
         $modelValidator = new FakedValidationModel();
+
+        $modelValidator->attrA = ['  test  ', '  value  '];
+
         $validator = new TrimValidator(['skipOnArray' => true]);
 
-        $modelValidator->attrA = [
-            '  test  ',
-            '  value  ',
-        ];
-
-        $this->assertEmpty(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return empty string when 'skipOnArray' is 'true' and  value " .
-            'is array.',
+        self::assertEmpty(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return empty string when 'skipOnArray' is 'true' and value is array.",
         );
-        $this->assertSame(
+        self::assertSame(
             [
                 'skipOnArray' => true,
                 'skipOnEmpty' => false,
                 'chars' => false,
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return correct options array.",
+            'Should return correct options array.',
         );
 
         $validator->validateAttribute($modelValidator, 'attrA');
 
-        $this->assertSame(
+        self::assertSame(
             [
                 '  test  ',
                 '  value  ',
@@ -109,26 +113,27 @@ final class TrimValidatorJqueryClientScriptTest extends \yiiunit\TestCase
         Yii::$app->useJquery = false;
 
         $modelValidator = new FakedValidationModel();
-        $validator = new TrimValidator(['chars' => '/-']);
 
         $modelValidator->attrA = '//test-value--';
 
-        $this->assertNull(
+        $validator = new TrimValidator(['chars' => '/-']);
+
+        self::assertNull(
             $validator->clientScript,
-            "'ClientScript' property should be 'null' when 'useJquery' is 'false'.",
+            "Should be 'null' when 'useJquery' is 'false'.",
         );
-        $this->assertNull(
-            $validator->clientValidateAttribute($modelValidator, 'attrA', new View()),
-            "'clientValidateAttribute()' method should return 'null' value.",
+        self::assertNull(
+            $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
+            "Should return 'null' value.",
         );
-        $this->assertEmpty(
+        self::assertEmpty(
             $validator->getClientOptions($modelValidator, 'attrA'),
-            "'getClientOptions()' method should return an empty array.",
+            'Should return an empty array.',
         );
 
         $validator->validateAttribute($modelValidator, 'attrA');
 
-        $this->assertSame(
+        self::assertSame(
             'test-value',
             $modelValidator->attrA,
             'Should trim custom characters from the attribute value.',

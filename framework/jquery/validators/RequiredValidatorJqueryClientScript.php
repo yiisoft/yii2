@@ -19,7 +19,7 @@ use yii\validators\Validator;
 use yii\web\View;
 
 /**
- * RequireValidatorJqueryClientScript provides client-side validation script generation for required attributes.
+ * RequiredValidatorJqueryClientScript provides client-side validation script generation for required attributes.
  *
  * This class implements {@see ClientValidatorScriptInterface} to supply client-side validation options and register the
  * corresponding JavaScript code for required value validation in Yii2 forms using jQuery.
@@ -30,7 +30,7 @@ use yii\web\View;
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 2.2.0
  */
-class RequireValidatorJqueryClientScript implements ClientValidatorScriptInterface
+class RequiredValidatorJqueryClientScript implements ClientValidatorScriptInterface
 {
     public function getClientOptions(Validator $validator, Model $model, string $attribute): array
     {

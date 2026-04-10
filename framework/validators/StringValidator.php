@@ -109,8 +109,11 @@ class StringValidator extends Validator
             $this->notEqual = Yii::t('yii', '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.');
         }
 
-        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            $this->clientScript ??= ['class' => StringValidatorJqueryClientScript::class];
+        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
+            $this->clientScript = ['class' => StringValidatorJqueryClientScript::class];
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

@@ -9,7 +9,7 @@
 namespace yii\validators;
 
 use Yii;
-use yii\jquery\validators\RequireValidatorJqueryClientScript;
+use yii\jquery\validators\RequiredValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -69,8 +69,11 @@ class RequiredValidator extends Validator
                 : Yii::t('yii', '{attribute} must be "{requiredValue}".');
         }
 
-        if (Yii::$app?->useJquery && !$this->clientScript instanceof ClientValidatorScriptInterface) {
-            $this->clientScript ??= ['class' => RequireValidatorJqueryClientScript::class];
+        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
+            $this->clientScript = ['class' => RequiredValidatorJqueryClientScript::class];
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {
             $this->clientScript = Yii::createObject($this->clientScript);
         }
     }

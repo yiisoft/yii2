@@ -21,8 +21,8 @@ use yii\web\JsExpression;
 use yii\web\View;
 
 /**
- * RegularValidatorJqueryClientScript provides client-side validation script generation for regular expression
- * attributes.
+ * RegularExpressionValidatorJqueryClientScript provides client-side validation script generation for regular
+ * expression attributes.
  *
  * This class implements {@see ClientValidatorScriptInterface} to supply client-side validation options and register the
  * corresponding JavaScript code for regular expression validation in Yii2 forms using jQuery.
@@ -33,7 +33,7 @@ use yii\web\View;
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 2.2.0
  */
-class RegularValidatorJqueryClientScript implements ClientValidatorScriptInterface
+class RegularExpressionValidatorJqueryClientScript implements ClientValidatorScriptInterface
 {
     public function getClientOptions(Validator $validator, Model $model, string $attribute): array
     {
