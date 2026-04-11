@@ -14,7 +14,6 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\i18n\Formatter;
-use yii\jquery\grid\GridViewJqueryClientScript;
 use yii\web\client\ClientScriptInterface;
 use yii\widgets\BaseListView;
 
@@ -72,7 +71,7 @@ class GridView extends BaseListView
      * @var array the HTML attributes for the grid table element.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $tableOptions = ['class' => 'table table-striped table-bordered'];
+    public $tableOptions = [];
     /**
      * @var array the HTML attributes for the container tag of the grid view.
      * The "tag" element specifies the tag name of the container element and defaults to "div".
@@ -255,7 +254,7 @@ class GridView extends BaseListView
      * @var array the options for rendering every filter error message.
      * This is mainly used by [[Html::error()]] when rendering an error message next to every filter input field.
      */
-    public $filterErrorOptions = ['class' => 'help-block'];
+    public $filterErrorOptions = ['class' => 'field-error'];
     /**
      * @var bool whatever to apply filters on losing focus. Leaves an ability to manage filters via yiiGridView JS
      * @since 2.0.16
@@ -294,10 +293,6 @@ class GridView extends BaseListView
         }
         if (!isset($this->filterRowOptions['id'])) {
             $this->filterRowOptions['id'] = $this->options['id'] . '-filters';
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => GridViewJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientScriptInterface) {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -19,11 +20,18 @@ use yiiunit\TestCase;
  */
 class IpValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new IpValidator($config);
     }
 
     protected function tearDown(): void

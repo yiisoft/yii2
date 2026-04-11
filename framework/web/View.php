@@ -83,12 +83,12 @@ class View extends \yii\base\View
     public const POS_END = 3;
     /**
      * The location of registered JavaScript code block.
-     * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
+     * This means the JavaScript code block will be enclosed within a `DOMContentLoaded` event listener.
      */
     public const POS_READY = 4;
     /**
      * The location of registered JavaScript code block.
-     * This means the JavaScript code block will be enclosed within `jQuery(window).load()`.
+     * This means the JavaScript code block will be enclosed within a `window` load event listener.
      */
     public const POS_LOAD = 5;
     /**
@@ -157,15 +157,6 @@ class View extends \yii\base\View
      * @var \yii\web\AssetManager the asset manager.
      */
     private $_assetManager;
-    /**
-     * @var bool whether to use jQuery for POS_READY and POS_LOAD script positions.
-     *
-     * When `true` (default), maintains backward compatibility by using jQuery wrappers.
-     * When `false`, uses vanilla JavaScript equivalents.
-     *
-     * @since 22.0
-     */
-    public bool $useJquery = true;
 
     /**
      * Whether [[endPage()]] has been called and all files have been registered
@@ -482,14 +473,8 @@ class View extends \yii\base\View
      * - [[POS_HEAD]]: in the head section
      * - [[POS_BEGIN]]: at the beginning of the body section
      * - [[POS_END]]: at the end of the body section
-     * - [[POS_LOAD]]: enclosed within `jQuery(window).load()` when [[useJquery]] is `true`,
-     *   or executed when HTML page is completely loaded when `false`.
-     *   Note that by using this position with [[useJquery]] `true`, the method will automatically
-     *   register the `jQuery.js` file.
-     * - [[POS_READY]]: enclosed within `jQuery(document).ready()` when [[useJquery]] is `true`,
-     *   or executed when HTML document composition is ready when `false`. This is the default value.
-     *   Note that by using this position with [[useJquery]] true, the method will automatically
-     *   register the `jQuery.js` file.
+     * - [[POS_LOAD]]: enclosed within a `window` load event listener.
+     * - [[POS_READY]]: enclosed within a `DOMContentLoaded` event listener. This is the default value.
      * @param string|null $key the key that identifies the JS code block. If `null`, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
      * will overwrite the former.
@@ -498,11 +483,6 @@ class View extends \yii\base\View
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
-
-        // only auto-register jQuery if useJquery is `true` (maintains backward compatibility)
-        if ($this->useJquery && ($position === self::POS_READY || $position === self::POS_LOAD)) {
-            JqueryAsset::register($this);
-        }
     }
 
     /**
@@ -614,10 +594,8 @@ class View extends \yii\base\View
      * - [[POS_HEAD]]: in the head section. This is the default value.
      * - [[POS_BEGIN]]: at the beginning of the body section.
      * - [[POS_END]]: at the end of the body section.
-     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
-     *   Note that by using this position, the method will automatically register the jQuery js file.
-     * - [[POS_READY]]: enclosed within jQuery(document).ready().
-     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - [[POS_LOAD]]: enclosed within a `window` load event listener.
+     * - [[POS_READY]]: enclosed within a `DOMContentLoaded` event listener.
      *
      * @since 2.0.14
      */
@@ -732,13 +710,7 @@ class View extends \yii\base\View
      */
     protected function wrapReadyScript(string $script): string
     {
-        if ($this->useJquery) {
-            // jQuery wrapper (backward compatible)
-            return "jQuery(function ($) {\n{$script}\n});";
-        }
-
-        // Vanilla JavaScript wrapper
-        return "document.addEventListener('DOMContentLoaded', function(event) {\n{$script}\n});";
+        return "document.addEventListener('DOMContentLoaded', function (event) {\n{$script}\n});";
     }
 
     /**
@@ -752,12 +724,6 @@ class View extends \yii\base\View
      */
     protected function wrapLoadScript(string $script): string
     {
-        if ($this->useJquery) {
-            // jQuery wrapper (backward compatible)
-            return "jQuery(window).on('load', function () {\n{$script}\n});";
-        }
-
-        // Vanilla JavaScript wrapper
         return "window.addEventListener('load', function (event) {\n{$script}\n});";
     }
 }

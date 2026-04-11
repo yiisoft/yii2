@@ -37,7 +37,7 @@ class BreadcrumbsTest extends TestCase
         $this->breadcrumbs->homeLink = null;
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
 
-        $expectedHtml = "<ul class=\"breadcrumb\"><li><a href=\"/index.php\">Home</a></li>\n"
+        $expectedHtml = "<ul><li><a href=\"/index.php\">Home</a></li>\n"
             . "<li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . '</ul>';
@@ -60,7 +60,7 @@ class BreadcrumbsTest extends TestCase
         $this->breadcrumbs->homeLink = false;
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
 
-        $expectedHtml = "<ul class=\"breadcrumb\"><li class=\"active\">My Home Page</li>\n"
+        $expectedHtml = "<ul><li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . '</ul>';
 
@@ -77,7 +77,7 @@ class BreadcrumbsTest extends TestCase
         $this->breadcrumbs->homeLink = ['label' => 'home-link'];
         $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
 
-        $expectedHtml = "<ul class=\"breadcrumb\"><li>home-link</li>\n"
+        $expectedHtml = "<ul><li>home-link</li>\n"
             . "<li class=\"active\">My Home Page</li>\n"
             . "<li class=\"active\">http://my.example.com/yii2/link/page</li>\n"
             . '</ul>';

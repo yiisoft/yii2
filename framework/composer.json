@@ -66,8 +66,11 @@
         "php": ">=8.3",
         "ext-mbstring": "*",
         "yiisoft/yii2-composer": "~2.0.4",
-        "ezyang/htmlpurifier": "^4.17",
-        "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0"
+        "ezyang/htmlpurifier": "^4.19",
+        "cebe/markdown": "~1.2.0"
+    },
+    "suggest": {
+        "yiisoft/yii2-jquery": "Provides the jQuery implementation of the client-side script layer (ActiveForm, GridView, CheckboxColumn, Captcha, all built-in validators)."
     },
     "autoload": {
         "psr-4": {"yii\\": ""},

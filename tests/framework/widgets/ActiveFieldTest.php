@@ -83,11 +83,11 @@ class ActiveFieldTest extends TestCase
     {
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[{$this->attributeName}]">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -106,13 +106,13 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
+            <div class="field-activefieldtestmodel-attributename">
             <div class="custom-container">
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[{$this->attributeName}]">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             </div>
             </div>
@@ -131,11 +131,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-custom-input-id">
-            <label class="control-label" for="custom-input-id">Attribute Name</label>
-            <input type="text" id="custom-input-id" class="form-control" name="ActiveFieldTestModel[{$this->attributeName}]">
+            <div class="field-custom-input-id">
+            <label for="custom-input-id">Attribute Name</label>
+            <input type="text" id="custom-input-id" name="ActiveFieldTestModel[{$this->attributeName}]">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -149,7 +149,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename has-error">
+            <div class="field-activefieldtestmodel-attributename">
             HTML,
             $this->activeField->begin(),
             'Rendered HTML does not match expected output',
@@ -162,7 +162,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename required">
+            <div class="field-activefieldtestmodel-attributename required">
             HTML,
             $this->activeField->begin(),
             'Rendered HTML does not match expected output',
@@ -176,7 +176,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename required has-error">
+            <div class="field-activefieldtestmodel-attributename required">
             HTML,
             $this->activeField->begin(),
             'Rendered HTML does not match expected output',
@@ -189,7 +189,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertSame(
             <<<HTML
-            <article class="form-group field-activefieldtestmodel-attributename">
+            <article class="field-activefieldtestmodel-attributename">
             HTML,
             $this->activeField->begin(),
             'Rendered HTML does not match expected output',
@@ -252,7 +252,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -289,7 +289,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            <label for="activefieldtestmodel-attributename">{$label}</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -299,7 +299,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">{$paramLabel}</label>
+            <label for="activefieldtestmodel-attributename">{$paramLabel}</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -309,7 +309,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -363,7 +363,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            <label for="activefieldtestmodel-attributename">{$label}</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -376,7 +376,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename"></label>
+            <label for="activefieldtestmodel-attributename"></label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -465,7 +465,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -485,7 +485,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">{$label}</label>
+            <label for="activefieldtestmodel-attributename">{$label}</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Rendered HTML does not match expected output',
@@ -500,7 +500,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-0-attributename has-error">
+            <div class="field-activefieldtestmodel-0-attributename">
             HTML,
             $this->activeField->begin(),
             'Rendered HTML does not match expected output',
@@ -525,7 +525,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="password" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             HTML,
             $this->activeField->parts['{input}'],
             'Rendered HTML does not match expected output',
@@ -536,7 +536,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" weird="value">
+            <input type="password" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" weird="value">
             HTML,
             $this->activeField->parts['{input}'],
             'Rendered HTML does not match expected output',
@@ -549,7 +549,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="text" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             HTML,
             $this->activeField->parts['{input}'],
             'Rendered HTML does not match expected output',
@@ -562,7 +562,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="hidden" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             HTML,
             $this->activeField->parts['{input}'],
             'Rendered HTML does not match expected output',
@@ -580,7 +580,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" size="4">
             <option value="1">Item One</option>
             <option value="2">Item 2</option>
             </select>
@@ -605,7 +605,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" size="4">
             <option value="value1" disabled>Item One</option>
             <option value="value2" label="value 2">Item 2</option>
             </select>
@@ -631,7 +631,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" size="4">
             <option value="value1" disabled>Item One</option>
             <option value="value2" selected label="value 2">Item 2</option>
             </select>
@@ -647,11 +647,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label">Attribute Name</label>
+            <div class="field-activefieldtestmodel-attributename">
+            <label>Attribute Name</label>
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -683,101 +683,6 @@ class ActiveFieldTest extends TestCase
         );
     }
 
-    public function testGetClientOptionsClientValidation(): void
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-
-        $this->activeField->enableClientValidation = true;
-
-        $actualValue = $this->activeField->getClientOptions();
-
-        $this->assertEquals(
-            'function (attribute, value, messages, deferred, $form) {return true;}',
-            $actualValue['validate'],
-            'Client validation function is not as expected.',
-        );
-        $this->assertNotTrue(
-            isset($actualValue['validateOnChange']),
-            'Should not be set by default',
-        );
-        $this->assertNotTrue(
-            isset($actualValue['validateOnBlur']),
-            'Should not be set by default',
-        );
-        $this->assertNotTrue(
-            isset($actualValue['validateOnType']),
-            'Should not be set by default',
-        );
-        $this->assertNotTrue(
-            isset($actualValue['validationDelay']),
-            'Should not be set by default',
-        );
-        $this->assertNotTrue(
-            isset($actualValue['enableAjaxValidation']),
-            'Should not be set by default',
-        );
-
-        $this->activeField->validateOnChange = $expectedValidateOnChange = false;
-        $this->activeField->validateOnBlur = $expectedValidateOnBlur = false;
-        $this->activeField->validateOnType = $expectedValidateOnType = true;
-        $this->activeField->validationDelay = $expectedValidationDelay = 100;
-        $this->activeField->enableAjaxValidation = $expectedEnableAjaxValidation = true;
-
-        $actualValue = $this->activeField->getClientOptions();
-
-        $this->assertSame(
-            $expectedValidateOnChange,
-            $actualValue['validateOnChange'],
-            'Should be the same as the set value.',
-        );
-        $this->assertSame(
-            $expectedValidateOnBlur,
-            $actualValue['validateOnBlur'],
-            'Should be the same as the set value.',
-        );
-        $this->assertSame(
-            $expectedValidateOnType,
-            $actualValue['validateOnType'],
-            'Should be the same as the set value.',
-        );
-        $this->assertSame(
-            $expectedValidationDelay,
-            $actualValue['validationDelay'],
-            'Should be the same as the set value.',
-        );
-        $this->assertSame(
-            $expectedEnableAjaxValidation,
-            $actualValue['enableAjaxValidation'],
-            'Should be the same as the set value.',
-        );
-    }
-
-    public function testGetClientOptionsValidatorWhenClientSet(): void
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-
-        $this->activeField->enableAjaxValidation = true;
-
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-
-        foreach ($this->activeField->model->validators as $validator) {
-            $validator->whenClient = "function (attribute, value) { return 'yii2' == 'yii2'; }"; // js
-        }
-
-        $actualValue = $this->activeField->getClientOptions();
-
-        $expectedJsExpression = 'function (attribute, value, messages, deferred, $form) {if ((function (attribute, value) '
-            . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
-
-        $this->assertSame(
-            $expectedJsExpression,
-            $actualValue['validate']->expression,
-            'Client validation function is not as expected.',
-        );
-    }
-
     /**
      * @see https://github.com/yiisoft/yii2/issues/8779
      */
@@ -792,46 +697,6 @@ class ActiveFieldTest extends TestCase
         );
     }
 
-    /**
-     * @link https://github.com/yiisoft/yii2/issues/7627
-     */
-    public function testGetClientOptionsWithCustomInputId(): void
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-
-        $this->activeField->inputOptions['id'] = 'custom-input-id';
-
-        $this->activeField->textInput();
-
-        $clientOptions = $this->activeField->getClientOptions();
-        $expected = [
-            'id' => 'custom-input-id',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-input-id',
-            'input' => '#custom-input-id',
-        ];
-
-        foreach ($expected as $key => $value) {
-            $this->assertArrayHasKey($key, $clientOptions, "'getClientOptions()' method should return correct options array.");
-            $this->assertSame($value, $clientOptions[$key], "'getClientOptions()' method should return correct options array.");
-        }
-
-        $this->activeField->textInput(['id' => 'custom-textinput-id']);
-
-        $clientOptions = $this->activeField->getClientOptions();
-        $expected = [
-            'id' => 'custom-textinput-id',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-textinput-id',
-            'input' => '#custom-textinput-id',
-        ];
-
-        foreach ($expected as $key => $value) {
-            $this->assertArrayHasKey($key, $clientOptions, "'getClientOptions()' method should return correct options array.");
-            $this->assertSame($value, $clientOptions[$key], "'getClientOptions()' method should return correct options array.");
-        }
-    }
 
     public function testAriaAttributes(): void
     {
@@ -839,11 +704,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -859,11 +724,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename required">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true">
+            <div class="field-activefieldtestmodel-attributename required">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-required="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -879,11 +744,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename has-error">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -898,11 +763,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-0-attributename">
-            <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]">
+            <div class="field-activefieldtestmodel-0-attributename">
+            <label for="activefieldtestmodel-0-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-0-attributename" name="ActiveFieldTestModel[0][attributeName]">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -919,11 +784,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-0-attributename required">
-            <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
+            <div class="field-activefieldtestmodel-0-attributename required">
+            <label for="activefieldtestmodel-0-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-0-attributename" name="ActiveFieldTestModel[0][attributeName]" aria-required="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -940,11 +805,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-0-attributename has-error">
-            <label class="control-label" for="activefieldtestmodel-0-attributename">Attribute Name</label>
-            <input type="text" id="activefieldtestmodel-0-attributename" class="form-control" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
+            <div class="field-activefieldtestmodel-0-attributename">
+            <label for="activefieldtestmodel-0-attributename">Attribute Name</label>
+            <input type="text" id="activefieldtestmodel-0-attributename" name="ActiveFieldTestModel[0][attributeName]" aria-invalid="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -958,7 +823,7 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="hidden" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             HTML,
             trim($this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render()),
             'Rendered HTML does not match expected output',
@@ -1017,7 +882,6 @@ class ActiveFieldTest extends TestCase
         $widget = TestInputWidget::$lastInstance;
 
         $expectedOptions = [
-            'class' => 'form-control has-error',
             'aria-invalid' => 'true',
             'id' => 'activefieldtestmodel-attributename',
         ];
@@ -1035,7 +899,6 @@ class ActiveFieldTest extends TestCase
         $widget = TestInputWidget::$lastInstance;
 
         $expectedOptions = [
-            'class' => 'has-error',
             'aria-invalid' => 'true',
             'id' => 'activefieldtestmodel-attributename',
         ];
@@ -1058,7 +921,7 @@ class ActiveFieldTest extends TestCase
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="test-wrapper field-activefieldtestmodel-attributename">
-            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="hidden" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             </div>
             HTML,
             $this->normalizeHTML($this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render()),
@@ -1070,7 +933,7 @@ class ActiveFieldTest extends TestCase
         $this->assertEqualsWithoutLE(
             <<<HTML
             <div class="test-wrapper test-add field-activefieldtestmodel-attributename">
-            <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <input type="hidden" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             </div>
             HTML,
             $this->normalizeHTML($this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render()),
@@ -1172,7 +1035,7 @@ class ActiveFieldTest extends TestCase
 
         self::assertSame(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Existing Label</label>
+            <label for="activefieldtestmodel-attributename">Existing Label</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Should preserve the label set by a prior label call.',
@@ -1186,7 +1049,7 @@ class ActiveFieldTest extends TestCase
 
         self::assertSame(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Existing Label</label>
+            <label for="activefieldtestmodel-attributename">Existing Label</label>
             HTML,
             $this->activeField->parts['{label}'],
             'Should preserve the label set by a prior label call.',
@@ -1229,7 +1092,7 @@ class ActiveFieldTest extends TestCase
 
         self::assertSame(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Radio Label</label>
+            <label for="activefieldtestmodel-attributename">Radio Label</label>
             HTML,
             $this->activeField->parts['{label}'],
             "Empty 'labelOptions' should default to a wrapped label tag.",
@@ -1248,7 +1111,7 @@ class ActiveFieldTest extends TestCase
 
         self::assertSame(
             <<<HTML
-            <label class="control-label" for="activefieldtestmodel-attributename">Checkbox Label</label>
+            <label for="activefieldtestmodel-attributename">Checkbox Label</label>
             HTML,
             $this->activeField->parts['{label}'],
             "Empty 'labelOptions' should default to a wrapped label tag.",
@@ -1307,11 +1170,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="number" id="activefieldtestmodel-attributename" class="form-control has-error" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="number" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Input validation error</div>
+            <div class="field-error">Input validation error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1325,11 +1188,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="password" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1346,11 +1209,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="password" id="activefieldtestmodel-attributename" class="form-control has-error" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="password" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Password error</div>
+            <div class="field-error">Password error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1366,11 +1229,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-custom-file-id">
-            <label class="control-label" for="custom-file-id">Attribute Name</label>
+            <div class="field-custom-file-id">
+            <label for="custom-file-id">Attribute Name</label>
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><input type="file" id="custom-file-id" class="custom-file-input" name="ActiveFieldTestModel[attributeName]" data-test="file-upload" accept="image/*">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1388,11 +1251,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><input type="file" id="activefieldtestmodel-attributename" class="has-error" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><input type="file" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">File upload error</div>
+            <div class="field-error">File upload error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1406,11 +1269,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <textarea id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]"></textarea>
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <textarea id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]"></textarea>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1427,11 +1290,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <textarea id="activefieldtestmodel-attributename" class="form-control has-error" name="ActiveFieldTestModel[attributeName]" aria-invalid="true"></textarea>
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <textarea id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-invalid="true"></textarea>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1445,10 +1308,10 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
+            <div class="field-activefieldtestmodel-attributename">
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><label><input type="radio" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1"> Attribute Name</label>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->normalizeHTML($this->activeField->render()),
@@ -1462,10 +1325,10 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
+            <div class="field-activefieldtestmodel-attributename">
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value="0"><label><input type="checkbox" id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" value="1"> Attribute Name</label>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->normalizeHTML($this->activeField->render()),
@@ -1484,14 +1347,14 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <select id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]">
             <option value="1">Item One</option>
             <option value="2">Item Two</option>
             </select>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1508,13 +1371,13 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <select id="activefieldtestmodel-attributename" class="form-control has-error" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <select id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
             <option value="1">Item One</option>
             </select>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1536,14 +1399,14 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control has-error" name="ActiveFieldTestModel[attributeName]" size="4" aria-invalid="true">
+            <div class="field-activefieldtestmodel-attributename">
+            <label for="activefieldtestmodel-attributename">Attribute Name</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" name="ActiveFieldTestModel[attributeName]" size="4" aria-invalid="true">
             <option value="1">Item One</option>
             <option value="2">Item 2</option>
             </select>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1562,12 +1425,12 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label">Attribute Name</label>
+            <div class="field-activefieldtestmodel-attributename">
+            <label>Attribute Name</label>
             <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename"><label><input type="checkbox" name="ActiveFieldTestModel[attributeName][]" value="1"> Item One</label>
             <label><input type="checkbox" name="ActiveFieldTestModel[attributeName][]" value="2"> Item Two</label></div>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1584,11 +1447,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label">Attribute Name</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" class="has-error" aria-invalid="true"><label><input type="checkbox" name="ActiveFieldTestModel[attributeName][]" value="1"> Item One</label></div>
+            <div class="field-activefieldtestmodel-attributename">
+            <label>Attribute Name</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" aria-invalid="true"><label><input type="checkbox" name="ActiveFieldTestModel[attributeName][]" value="1"> Item One</label></div>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),
@@ -1605,11 +1468,11 @@ class ActiveFieldTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-activefieldtestmodel-attributename">
-            <label class="control-label">Attribute Name</label>
-            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" class="has-error" role="radiogroup" aria-invalid="true"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
+            <div class="field-activefieldtestmodel-attributename">
+            <label>Attribute Name</label>
+            <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><div id="activefieldtestmodel-attributename" role="radiogroup" aria-invalid="true"><label><input type="radio" name="ActiveFieldTestModel[attributeName]" value="1"> Item One</label></div>
             <div class="hint-block">Hint for attributeName attribute</div>
-            <div class="help-block">Some error</div>
+            <div class="field-error">Some error</div>
             </div>
             HTML,
             $this->activeField->render(),

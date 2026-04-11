@@ -11,7 +11,6 @@ namespace yii\validators;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
-use yii\jquery\validators\FileValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 use yii\web\UploadedFile;
 
@@ -202,10 +201,6 @@ class FileValidator extends Validator
             $this->mimeTypes = preg_split('/[\s,]+/', strtolower((string)$this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => FileValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

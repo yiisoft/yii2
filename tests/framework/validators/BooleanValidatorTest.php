@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
+use yii\validators\Validator;
 use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
@@ -20,11 +21,18 @@ use yiiunit\TestCase;
  */
 class BooleanValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new BooleanValidator($config);
     }
 
     protected function tearDown(): void

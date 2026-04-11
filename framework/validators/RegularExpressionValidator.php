@@ -10,7 +10,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\jquery\validators\RegularExpressionValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -48,10 +47,6 @@ class RegularExpressionValidator extends Validator
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is invalid.');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => RegularExpressionValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

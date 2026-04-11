@@ -10,7 +10,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\jquery\validators\UrlValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -64,10 +63,6 @@ class UrlValidator extends Validator
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is not a valid URL.');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => UrlValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

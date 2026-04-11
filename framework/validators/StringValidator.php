@@ -9,7 +9,6 @@
 namespace yii\validators;
 
 use Yii;
-use yii\jquery\validators\StringValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -107,10 +106,6 @@ class StringValidator extends Validator
         }
         if ($this->length !== null && $this->notEqual === null) {
             $this->notEqual = Yii::t('yii', '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => StringValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {
