@@ -74,6 +74,63 @@ not available in PHP >= `8.0`, so the dual-mode `$useApcu` property has been rem
 ],
 ```  
 
+### Bootstrap CSS class defaults removed
+
+Bootstrap-specific CSS class defaults have been removed from widget properties. The framework is now CSS-agnostic; no
+CSS framework is required or assumed. The following property defaults have changed:
+
+| Class                      | Property              | Old default                                                    | New default                                           |
+|----------------------------|-----------------------|----------------------------------------------------------------|-------------------------------------------------------|
+| `yii\widgets\ActiveField`  | `$options`            | `['class' => 'form-group']`                                    | `[]`                                                  |
+| `yii\widgets\ActiveField`  | `$inputOptions`       | `['class' => 'form-control']`                                  | `[]`                                                  |
+| `yii\widgets\ActiveField`  | `$errorOptions`       | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
+| `yii\widgets\ActiveField`  | `$labelOptions`       | `['class' => 'control-label']`                                 | `[]`                                                  |
+| `yii\widgets\ActiveForm`   | `$errorCssClass`      | `'has-error'`                                                  | `''`                                                  |
+| `yii\widgets\ActiveForm`   | `$successCssClass`    | `'has-success'`                                                | `''`                                                  |
+| `yii\grid\GridView`        | `$tableOptions`       | `['class' => 'table table-striped table-bordered']`            | `[]`                                                  |
+| `yii\grid\GridView`        | `$filterErrorOptions` | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
+| `yii\grid\DataColumn`      | `$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                    | `['id' => null]`                                      |
+| `yii\widgets\DetailView`   | `$options`            | `['class' => 'table table-striped table-bordered detail-view']`| `['class' => 'detail-view']`                          |
+| `yii\widgets\Breadcrumbs`  | `$options`            | `['class' => 'breadcrumb']`                                    | `[]`                                                  |
+| `yii\widgets\LinkPager`    | `$options`            | `['class' => 'pagination']`                                    | `[]`                                                  |
+| `yii\captcha\Captcha`      | `$options`            | `['class' => 'form-control']`                                  | `[]`                                                  |
+
+`yii\grid\ActionColumn::initDefaultButton()` no longer falls back to `glyphicon glyphicon-$iconName` markup when an
+icon name is not present in `$icons`. It now renders the icon name as plain text.
+
+**Migration.** If your application depends on Bootstrap CSS for these widgets, configure the old values explicitly.
+For `ActiveField`:
+
+```php
+$form->field(
+    $model, 
+    'username', 
+    [
+        'options'      => ['class' => 'form-group'],
+        'inputOptions' => ['class' => 'form-control'],
+        'errorOptions' => ['class' => 'help-block'],
+        'labelOptions' => ['class' => 'control-label'],
+    ],
+);
+```
+
+Or subclass `ActiveField` and override the properties once. For `ActiveForm`:
+
+```php
+$form = ActiveForm::begin(
+    [
+        'errorCssClass'   => 'has-error',
+        'successCssClass' => 'has-success',
+    ],
+);
+```
+
+**Note on `yii.activeForm.js` compatibility.** `ActiveField::$errorOptions` now defaults to `['class' => 'field-error']` 
+instead of `['class' => 'help-block']`. The client-side validation JavaScript in `yiisoft/yii2-jquery` still defaults 
+its error selector to `.help-block`, but `ActiveFormJqueryClientScript::getClientOptions()` passes the per-field `error`
+selector in the payload that overrides the JS default at runtime, so client-side validation keeps working against 
+`.field-error` with no manual configuration.
+
 ### CUBRID database support removed
 
 Yii `22.x` no longer includes support for the CUBRID database driver. Applications that still depend on CUBRID must
@@ -240,57 +297,6 @@ class AppAsset extends \yii\web\AssetBundle
     public $depends = [\yii\web\JqueryAsset::class];
 }
 ```
-
-### Bootstrap CSS class defaults removed
-
-Bootstrap-specific CSS class defaults have been removed from widget properties. The framework is now CSS-agnostic; no
-CSS framework is required or assumed. The following property defaults have changed:
-
-| Class                      | Property              | Old default                                                    | New default                                           |
-|----------------------------|-----------------------|----------------------------------------------------------------|-------------------------------------------------------|
-| `yii\widgets\ActiveField`  | `$options`            | `['class' => 'form-group']`                                    | `[]`                                                  |
-| `yii\widgets\ActiveField`  | `$inputOptions`       | `['class' => 'form-control']`                                  | `[]`                                                  |
-| `yii\widgets\ActiveField`  | `$errorOptions`       | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
-| `yii\widgets\ActiveField`  | `$labelOptions`       | `['class' => 'control-label']`                                 | `[]`                                                  |
-| `yii\widgets\ActiveForm`   | `$errorCssClass`      | `'has-error'`                                                  | `''`                                                  |
-| `yii\widgets\ActiveForm`   | `$successCssClass`    | `'has-success'`                                                | `''`                                                  |
-| `yii\grid\GridView`        | `$tableOptions`       | `['class' => 'table table-striped table-bordered']`            | `[]`                                                  |
-| `yii\grid\GridView`        | `$filterErrorOptions` | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
-| `yii\grid\DataColumn`      | `$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                    | `['id' => null]`                                      |
-| `yii\widgets\DetailView`   | `$options`            | `['class' => 'table table-striped table-bordered detail-view']`| `['class' => 'detail-view']`                          |
-| `yii\widgets\Breadcrumbs`  | `$options`            | `['class' => 'breadcrumb']`                                    | `[]`                                                  |
-| `yii\widgets\LinkPager`    | `$options`            | `['class' => 'pagination']`                                    | `[]`                                                  |
-| `yii\captcha\Captcha`      | `$options`            | `['class' => 'form-control']`                                  | `[]`                                                  |
-
-`yii\grid\ActionColumn::initDefaultButton()` no longer falls back to `glyphicon glyphicon-$iconName` markup when an
-icon name is not present in `$icons`. It now renders the icon name as plain text.
-
-**Migration.** If your application depends on Bootstrap CSS for these widgets, configure the old values explicitly.
-For `ActiveField`:
-
-```php
-$form->field($model, 'username', [
-    'options'      => ['class' => 'form-group'],
-    'inputOptions' => ['class' => 'form-control'],
-    'errorOptions' => ['class' => 'help-block'],
-    'labelOptions' => ['class' => 'control-label'],
-]);
-```
-
-Or subclass `ActiveField` and override the properties once. For `ActiveForm`:
-
-```php
-$form = ActiveForm::begin([
-    'errorCssClass'   => 'has-error',
-    'successCssClass' => 'has-success',
-]);
-```
-
-**Note on `yii.activeForm.js` compatibility.** `ActiveField::$errorOptions` now defaults to
-`['class' => 'field-error']` instead of `['class' => 'help-block']`. The client-side validation JavaScript in
-`yiisoft/yii2-jquery` still defaults its error selector to `.help-block`, but
-`ActiveFormJqueryClientScript::getClientOptions()` passes the per-field `error` selector in the payload that overrides
-the JS default at runtime, so client-side validation keeps working against `.field-error` with no manual configuration.
 
 ### Yii runtime autoloader removed
 
