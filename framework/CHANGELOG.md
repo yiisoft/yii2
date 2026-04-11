@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Chg #20808: Rename `ApcCache` to `ApcuCache` and remove legacy APC extension support (terabytesoftw)
 - Bug: Fix `ActiveField::generateLabel()` to strip `label`/`for` attributes for custom tags and preserve prior label in `radio()`/`checkbox()` (terabytesoftw)
 - Bug: Fix `clientScript` not being instantiated in validators when a custom array config is set and `useJquery` is `false` (terabytesoftw)
+- Bug: Fix `CompareValidator` client-side closure `compareValue` resolution to pass `($model, $attribute)` and avoid mutating validator state (terabytesoftw)
 
 
 2.0.55 under development

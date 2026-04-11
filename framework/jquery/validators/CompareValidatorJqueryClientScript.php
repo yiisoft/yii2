@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yii\jquery\validators;
 
+use Closure;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -19,8 +20,10 @@ use yii\validators\ValidationAsset;
 use yii\validators\Validator;
 use yii\web\View;
 
+use function call_user_func;
+
 /**
- * CompareValidatorJqueryClientScript provides client-side validation script generation for attribute comparison.
+ * Provides client-side validation script generation for attribute comparison.
  *
  * This class implements {@see ClientValidatorScriptInterface} to supply client-side validation options and register the
  * corresponding JavaScript code for comparison validation in Yii2 forms using jQuery.
@@ -29,20 +32,26 @@ use yii\web\View;
  * @implements ClientValidatorScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2.0
+ * @since 2.2
  */
 class CompareValidatorJqueryClientScript implements ClientValidatorScriptInterface
 {
     public function getClientOptions(Validator $validator, Model $model, string $attribute): array
     {
+        $resolvedCompareValue = $validator->compareValue;
+
+        if ($resolvedCompareValue instanceof Closure) {
+            $resolvedCompareValue = call_user_func($resolvedCompareValue, $model, $attribute);
+        }
+
         $options = [
             'operator' => $validator->operator,
             'type' => $validator->type,
         ];
 
-        if ($validator->compareValue !== null) {
-            $options['compareValue'] = $validator->compareValue;
-            $compareLabel = $compareValue = $compareValueOrAttribute = $validator->compareValue;
+        if ($resolvedCompareValue !== null) {
+            $options['compareValue'] = $resolvedCompareValue;
+            $compareLabel = $compareValue = $compareValueOrAttribute = $resolvedCompareValue;
         } else {
             $compareAttribute = $validator->compareAttribute === null ? $attribute . '_repeat' : $validator->compareAttribute;
 
@@ -71,10 +80,6 @@ class CompareValidatorJqueryClientScript implements ClientValidatorScriptInterfa
 
     public function register(Validator $validator, Model $model, string $attribute, View $view): string
     {
-        if ($validator->compareValue != null && $validator->compareValue instanceof \Closure) {
-            $validator->compareValue = call_user_func($validator->compareValue);
-        }
-
         ValidationAsset::register($view);
 
         $options = $this->getClientOptions($validator, $model, $attribute);

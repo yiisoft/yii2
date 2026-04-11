@@ -83,13 +83,13 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
     {
         $modelValidator = new FakedValidationModel();
 
-        $validator = new CompareValidator(
-            [
-                'compareValue' => static fn(): string => 'closure_value',
-                'operator' => '==',
-                'type' => CompareValidator::TYPE_STRING,
-            ],
-        );
+        $closureConfig = [
+            'compareValue' => static fn(FakedValidationModel $model, string $attribute): string => 'closure_value',
+            'operator' => '==',
+            'type' => CompareValidator::TYPE_STRING,
+        ];
+
+        $validator = new CompareValidator($closureConfig);
 
         self::assertSame(
             <<<JS
@@ -98,6 +98,9 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
             $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
             'Should return correct validation script.',
         );
+
+        $validator = new CompareValidator($closureConfig);
+
         self::assertSame(
             [
                 'operator' => '==',
@@ -108,6 +111,14 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
             'Should return correct options array.',
+        );
+
+        $validator = new CompareValidator(
+            [
+                'compareValue' => static fn(): string => 'closure_value',
+                'operator' => '==',
+                'type' => CompareValidator::TYPE_STRING,
+            ],
         );
 
         $validator->validate('someIncorrectValue', $errorMessage);
@@ -128,7 +139,6 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
 
         $validator = new CompareValidator(
             [
-                'compareAttribute' => 'attrA_repeat',
                 'operator' => '==',
                 'type' => CompareValidator::TYPE_STRING,
             ],
