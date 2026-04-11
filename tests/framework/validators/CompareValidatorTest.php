@@ -491,6 +491,8 @@ final class CompareValidatorTest extends TestCase
             "'getClientOptions()' should return correct options array.",
         );
 
+        $errorMessage = null;
+
         $validator->validate('someIncorrectValue', $errorMessage);
 
         self::assertSame(
@@ -558,6 +560,8 @@ final class CompareValidatorTest extends TestCase
                 'compareValue' => 'expected',
             ],
         );
+
+        $error = null;
 
         $validator->validate('wrong', $error);
 
