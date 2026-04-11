@@ -1321,18 +1321,6 @@ parameters:
 			path: tests/framework/console/controllers/FixtureControllerTest.php
 
 		-
-			message: '#^Call to an undefined method yiiunit\\framework\\console\\controllers\\MigrateControllerTest\:\:assertNotStringContainsString\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: tests/framework/console/controllers/MigrateControllerTest.php
-
-		-
-			message: '#^Call to an undefined method yiiunit\\framework\\console\\controllers\\MigrateControllerTest\:\:setOutputCallback\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: tests/framework/console/controllers/MigrateControllerTest.php
-
-		-
 			message: '#^Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&yii\\web\\User\:\:\$identityCLass\.$#'
 			identifier: property.notFound
 			count: 1

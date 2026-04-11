@@ -327,7 +327,7 @@ CODE;
 
         $output = $this->runMigrateControllerAction('new');
         $this->assertSame(ExitCode::OK, $this->getExitCode());
-        $this->assertNotStringContainsString('_test_new1', $output);
+        $this->assertStringNotContainsString('_test_new1', $output);
     }
 
     public function testMark(): void
@@ -422,7 +422,7 @@ CODE;
         $this->assertSame(ExitCode::OK, $this->getExitCode());
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
-        $this->assertNotStringContainsString("namespace {$this->migrationNamespace};", $fileContent);
+        $this->assertStringNotContainsString("namespace {$this->migrationNamespace};", $fileContent);
     }
 
     /**
