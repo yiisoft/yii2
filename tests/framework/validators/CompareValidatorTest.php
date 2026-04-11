@@ -22,7 +22,7 @@ use yiiunit\TestCase;
  * Unit test for {@see CompareValidator}.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2
+ * @since 22.0
  */
 #[Group('validators')]
 final class CompareValidatorTest extends TestCase

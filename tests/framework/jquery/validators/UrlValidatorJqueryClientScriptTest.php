@@ -20,7 +20,7 @@ use yiiunit\TestCase;
  * Unit tests for {@see UrlValidator} client validation script.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2
+ * @since 22.0
  */
 #[Group('jquery')]
 #[Group('validators')]

@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
-
-declare(strict_types=1);
 
 namespace yii\jquery\validators;
 
@@ -21,7 +21,7 @@ use yii\web\JsExpression;
 use yii\web\View;
 
 /**
- * UrlValidatorJqueryClientScript provides client-side validation script generation for URL attributes.
+ * Provides client-side validation script generation for URL attributes.
  *
  * This class implements {@see ClientValidatorScriptInterface} to supply client-side validation options and register the
  * corresponding JavaScript code for URL validation in Yii2 forms using jQuery.
@@ -30,7 +30,7 @@ use yii\web\View;
  * @implements ClientValidatorScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2.0
+ * @since 22.0
  */
 class UrlValidatorJqueryClientScript implements ClientValidatorScriptInterface
 {

@@ -65,7 +65,7 @@ class Application extends \yii\base\Application
      *
      * Set to `false` to disable automatic jQuery inclusion for these features.
      *
-     * @since 2.2.0
+     * @since 22.0
      */
     public bool $useJquery = true;
 

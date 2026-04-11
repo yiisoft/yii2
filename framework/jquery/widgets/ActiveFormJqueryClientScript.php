@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
-
-declare(strict_types=1);
 
 namespace yii\jquery\widgets;
 
@@ -27,7 +27,7 @@ use function in_array;
 use function preg_split;
 
 /**
- * ActiveFormJqueryClientScript provides jQuery-based client script integration for ActiveForm and ActiveField widgets.
+ * Provides jQuery-based client script integration for ActiveForm and ActiveField widgets.
  *
  * This class is responsible for generating and registering client-side validation options and scripts for Yii2
  * ActiveForm and ActiveField widgets, enabling AJAX and client validation via the `yii.activeForm` jQuery plugin.
@@ -36,7 +36,7 @@ use function preg_split;
  * @implements ClientScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2.0
+ * @since 22.0
  */
 class ActiveFormJqueryClientScript implements ClientScriptInterface
 {

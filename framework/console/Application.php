@@ -84,7 +84,7 @@ class Application extends \yii\base\Application
      *
      * When enabled, jQuery assets will be registered for validators and widgets that require it.
      *
-     * @since 2.2.0
+     * @since 22.0
      */
     public bool $useJquery = false;
 

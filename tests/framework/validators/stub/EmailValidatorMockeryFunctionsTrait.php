@@ -1,19 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\validators\stub;
 
 /**
+ * Trait that provides mockery functions for the {@see \yii\validators\EmailValidator} test cases.
+ *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  *
- * @since 2.2.0
+ * @since 22.0
  */
 trait EmailValidatorMockeryFunctionsTrait
 {

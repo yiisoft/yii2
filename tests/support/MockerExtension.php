@@ -25,7 +25,7 @@ use Xepozz\InternalMocker\MockerState;
  * PHPUnit extension that registers internal-function mocks for test execution.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2
+ * @since 22.0
  */
 final class MockerExtension implements Extension
 {

@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
-
-declare(strict_types=1);
 
 namespace yii\jquery\validators;
 
@@ -15,7 +15,7 @@ use yii\validators\ImageValidator;
 use yii\validators\Validator;
 
 /**
- * ImageValidatorJqueryClientScript provides client-side validation script generation for image attributes.
+ * Provides client-side validation script generation for image attributes.
  *
  * This class implements {@see ClientValidatorScriptInterface} to supply client-side validation options and register the
  * corresponding JavaScript code for image validation in Yii2 forms using jQuery.
@@ -23,7 +23,7 @@ use yii\validators\Validator;
  * @extends FileValidatorJqueryClientScript<ImageValidator>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2.0
+ * @since 22.0
  */
 class ImageValidatorJqueryClientScript extends FileValidatorJqueryClientScript
 {

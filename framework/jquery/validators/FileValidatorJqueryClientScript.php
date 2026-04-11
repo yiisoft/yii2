@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
-
-declare(strict_types=1);
 
 namespace yii\jquery\validators;
 
@@ -23,7 +23,7 @@ use yii\web\JsExpression;
 use yii\web\View;
 
 /**
- * FileValidatorJqueryClientScript provides client-side validation script generation for file attributes.
+ * Provides client-side validation script generation for file attributes.
  *
  * This class implements {@see ClientValidatorScriptInterface} to supply client-side validation options and register the
  * corresponding JavaScript code for file validation in Yii2 forms using jQuery.
@@ -32,7 +32,7 @@ use yii\web\View;
  * @implements ClientValidatorScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2.0
+ * @since 22.0
  */
 class FileValidatorJqueryClientScript implements ClientValidatorScriptInterface
 {
