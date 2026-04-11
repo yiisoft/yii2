@@ -32,8 +32,14 @@ class CookieCollectionTest extends TestCase
 
     public static function provideHasData(): array
     {
-        $pastTime = time() - 100;
-        $futureTime = time() + 100;
+        /**
+         * Use absolute timestamps so the data set is not sensitive to the time elapsed between the data provider
+         * evaluation and the actual test execution. Using `time() +/- 100` makes the "future" entries flip to "past" on
+         * long-running suites (for example, full coverage runs that exceed `100` seconds) and thus cause random test
+         * failures.
+         */
+        $pastTime = strtotime('2020-01-01 UTC');
+        $futureTime = strtotime('2100-01-01 UTC');
 
         return [
             [

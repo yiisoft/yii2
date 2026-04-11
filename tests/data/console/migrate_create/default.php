@@ -11,9 +11,6 @@ return <<<CODE
 
 {$namespace}use yii\db\Migration;
 
-/**
- * Class {$class}
- */
 class {$class} extends Migration
 {
     /**
