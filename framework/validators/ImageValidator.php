@@ -9,7 +9,6 @@
 namespace yii\validators;
 
 use Yii;
-use yii\jquery\validators\ImageValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 use yii\web\UploadedFile;
 
@@ -99,10 +98,6 @@ class ImageValidator extends FileValidator
      */
     public function init()
     {
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => ImageValidatorJqueryClientScript::class];
-        }
-
         parent::init();
 
         if ($this->notImage === null) {

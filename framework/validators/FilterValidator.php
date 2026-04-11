@@ -8,8 +8,9 @@
 
 namespace yii\validators;
 
+use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
+use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
  * FilterValidator converts the attribute value according to a filter.
@@ -59,6 +60,10 @@ class FilterValidator extends Validator
      * be applied when the value being validated is empty.
      */
     public $skipOnEmpty = false;
+    /**
+     * Client script class to use for client-side validation.
+     */
+    public array|ClientValidatorScriptInterface|null $clientScript = null;
 
 
     /**
@@ -69,6 +74,10 @@ class FilterValidator extends Validator
         parent::init();
         if ($this->filter === null) {
             throw new InvalidConfigException('The "filter" property must be set.');
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -88,14 +97,11 @@ class FilterValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        if ($this->filter !== 'trim') {
-            return null;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->register($this, $model, $attribute, $view);
         }
 
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'value = yii.validation.trim($form, attribute, ' . Json::htmlEncode($options) . ', value);';
+        return null;
     }
 
     /**

@@ -14,7 +14,6 @@ use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\jquery\widgets\ActiveFormJqueryClientScript;
 use yii\web\client\ClientScriptInterface;
 
 /**
@@ -98,11 +97,11 @@ class ActiveForm extends Widget
     /**
      * @var string the CSS class that is added to a field container when the associated attribute has validation error.
      */
-    public $errorCssClass = 'has-error';
+    public $errorCssClass = '';
     /**
      * @var string the CSS class that is added to a field container when the associated attribute is successfully validated.
      */
-    public $successCssClass = 'has-success';
+    public $successCssClass = '';
     /**
      * @var string the CSS class that is added to a field container when the associated attribute is being validated.
      */
@@ -208,10 +207,6 @@ class ActiveForm extends Widget
 
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false) && $this->enableClientScript) {
-            $this->clientScript = ['class' => ActiveFormJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientScriptInterface) {

@@ -14,6 +14,7 @@ use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yii\validators\FileValidator;
+use yii\validators\Validator;
 use yii\web\UploadedFile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\FakedValidationTypedModel;
@@ -24,11 +25,18 @@ use yiiunit\TestCase;
  */
 class FileValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new FileValidator($config);
     }
 
     protected function tearDown(): void

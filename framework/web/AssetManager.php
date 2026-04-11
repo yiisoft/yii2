@@ -63,16 +63,20 @@ class AssetManager extends Component
      * If this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
      * will always return null.
      *
-     * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
-     * (because you want to use your own styles):
+     * The following example shows how to override a specific asset bundle (e.g. to drop its CSS files, or to
+     * redirect JS/CSS files to a CDN). Replace `app\assets\AppAsset` with the FQCN of the bundle you want to
+     * customize:
      *
      * ```
      * [
-     *     'yii\bootstrap\BootstrapAsset' => [
+     *     'app\assets\AppAsset' => [
      *         'css' => [],
      *     ],
      * ]
      * ```
+     *
+     * You can also override specific source files of a bundle by providing a `sourcePath` and a map of
+     * replacements in the bundle configuration.
      */
     public $bundles = [];
     /**

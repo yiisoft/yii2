@@ -12,6 +12,7 @@ namespace yiiunit\framework\validators;
 
 use ArrayObject;
 use yii\validators\RangeValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -20,11 +21,18 @@ use yiiunit\TestCase;
  */
 class RangeValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new RangeValidator(array_merge(['range' => [1, 2, 3]], $config));
     }
 
     protected function tearDown(): void

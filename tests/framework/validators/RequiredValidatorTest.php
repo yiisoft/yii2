@@ -12,6 +12,7 @@ namespace yiiunit\framework\validators;
 
 use yii\base\Model;
 use yii\validators\RequiredValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -20,11 +21,18 @@ use yiiunit\TestCase;
  */
 class RequiredValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new RequiredValidator($config);
     }
 
     protected function tearDown(): void

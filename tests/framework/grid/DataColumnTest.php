@@ -115,7 +115,7 @@ class DataColumnTest extends TestCase
             'lastName' => 'string'
         ])->execute();
 
-        $filterInput = '<input type="text" class="form-control" name="Singer[lastName]" maxlength="25">';
+        $filterInput = '<input type="text" name="Singer[lastName]" maxlength="25">';
         $grid = new GridView([
             'dataProvider' => new ActiveDataProvider(),
             'filterModel' => new Singer(),
@@ -169,7 +169,7 @@ class DataColumnTest extends TestCase
 
         $this->assertEqualsWithoutLE(
             <<<'HTML'
-<select class="form-control" name="Order[customer_id]">
+<select name="Order[customer_id]">
 <option value=""></option>
 <option value="0">1</option>
 <option value="1">2</option>
@@ -219,7 +219,7 @@ HTML
 
         $this->assertEqualsWithoutLE(
             <<<'HTML'
-<select class="form-control" name="Order[customer_id]">
+<select name="Order[customer_id]">
 <option value=""></option>
 <option value="1">Yes</option>
 <option value="0">No</option>
@@ -254,7 +254,7 @@ HTML
         $dataColumn = $grid->columns[0];
 
         $this->assertEquals(
-            '<input type="text" class="form-control" name="RulesModel[user_id]">',
+            '<input type="text" name="RulesModel[user_id]">',
             $this->invokeMethod($dataColumn, 'renderFilterCellContent'),
         );
     }

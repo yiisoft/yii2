@@ -9,6 +9,7 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\FilterValidator;
+use yii\validators\Validator;
 use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
@@ -18,11 +19,26 @@ use yiiunit\TestCase;
  */
 class FilterValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
         // destroy application, Validator must work without Yii::$app
         $this->destroyApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new FilterValidator(array_merge(['filter' => 'trim'], $config));
+    }
+
+    public function testGetClientOptionsDelegatesToClientScript(): void
+    {
+        $this->markTestSkipped(
+            "'FilterValidator::getClientOptions()' has a native non-delegating implementation (returns " .
+            "'skipOnEmpty' based on the validator's configuration, not forwarded from '\$clientScript').",
+        );
     }
 
     public function testAssureExceptionOnInit(): void
@@ -67,17 +83,9 @@ class FilterValidatorTest extends TestCase
         return 'not null';
     }
 
-    public function testClientValidateAttributeWithTrimFilter(): void
+    public function testClientValidateAttributeReturnsNullWithoutClientScript(): void
     {
         $val = new FilterValidator(['filter' => 'trim']);
-        $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
-        $js = $val->clientValidateAttribute($m, 'attr_one', new FilterViewStub());
-        $this->assertStringContainsString('yii.validation.trim', $js);
-    }
-
-    public function testClientValidateAttributeWithNonTrimFilter(): void
-    {
-        $val = new FilterValidator(['filter' => 'strtolower']);
         $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
         $this->assertNull($val->clientValidateAttribute($m, 'attr_one', new FilterViewStub()));
     }

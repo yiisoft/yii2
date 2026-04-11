@@ -94,61 +94,78 @@ All HHVM-specific code has been removed from the framework. Yii `22.x` targets P
 If your application references `ErrorException::E_HHVM_FATAL_ERROR` or `ErrorHandler::handleHhvmError()`, remove those 
 references when upgrading.
 
-### jQuery is now optional (strategy pattern)
+### jQuery client scripts moved to `yiisoft/yii2-jquery`
 
-jQuery is no longer hardcoded in validators and widgets. A new `useJquery` property controls whether jQuery-based client 
-scripts are registered. It defaults to `true` on `yii\web\Application` (full backward compatibility) and to `false` on 
-`yii\console\Application` (no client scripts in console context).
+Every `*JqueryClientScript` class previously shipped under `framework/jquery/` has moved to the `yiisoft/yii2-jquery`
+extension. FQCNs and behaviour are identical, so application code that referenced them keeps working as long as the
+extension is installed:
 
-**No action required** for existing web applications; the default behavior is fully backward compatible.
+```bash
+composer require yiisoft/yii2-jquery
+```
+
+Then register the extension's Bootstrap in your application config:
+
+```php
+// config/web.php
+'bootstrap' => [\yii\jquery\Bootstrap::class],
+```
+
+The Bootstrap registers DI container defaults so that `$clientScript` is automatically populated on every supported
+widget and validator — `ActiveForm`, `GridView`, `CheckboxColumn`, `Captcha`, `CaptchaValidator`, `BooleanValidator`,
+`CompareValidator`, `EmailValidator`, `FileValidator`, `FilterValidator`, `ImageValidator`, `IpValidator`,
+`NumberValidator`, `RangeValidator`, `RegularExpressionValidator`, `RequiredValidator`, `StringValidator`,
+`TrimValidator`, `UrlValidator` — without any manual wiring.
+
+Asset bundles (`yii\web\JqueryAsset`, `yii\web\YiiAsset`, `yii\widgets\ActiveFormAsset`,
+`yii\widgets\MaskedInputAsset`, `yii\widgets\PjaxAsset`, `yii\grid\GridViewAsset`, `yii\validators\ValidationAsset`,
+`yii\captcha\CaptchaAsset`), JavaScript files (`yii.js`, `yii.activeForm.js`, `yii.validation.js`, `yii.gridView.js`,
+`yii.captcha.js`) and the `MaskedInput` / `Pjax` widgets **remain in the framework** in this release to preserve
+backwards compatibility with downstream extensions that depend on those public FQCNs. A later 22.x release will
+complete the extraction.
+
+The `$useJquery` property on `yii\web\Application`, `yii\console\Application` and `yii\web\View` has been removed.
+Activation of jQuery client scripts is now controlled entirely by whether `yiisoft/yii2-jquery` is installed and its
+`Bootstrap` is registered. Applications that do not install the extension get a jQuery-agnostic framework: widgets
+render HTML without client-side behaviour and validators perform server-side validation only.
 
 #### New interfaces
 
 Two interfaces allow replacing the jQuery implementation with any alternative:
 
 - `yii\web\client\ClientScriptInterface` strategy for widgets and components (`ActiveForm`, `GridView`,
-  `CheckboxColumn`).
-- `yii\validators\client\ClientValidatorScriptInterface` strategy for validators.
+  `CheckboxColumn`, `Captcha`).
+- `yii\validators\client\ClientValidatorScriptInterface` strategy for validators and `CaptchaValidator`.
 
 #### New `clientScript` property
 
-All 13 built-in validators that support client-side validation and the widgets listed below now expose a `clientScript`
-property that accepts an array config or an object implementing the matching interface:
+All 13 built-in validators that support client-side validation, the CAPTCHA widget / validator, and the widgets listed
+below expose a `clientScript` property that accepts an array config or an object implementing the matching interface:
 
 - `yii\widgets\ActiveForm` and `yii\widgets\ActiveField`
 - `yii\grid\GridView` and `yii\grid\CheckboxColumn`
+- `yii\captcha\Captcha` and `yii\captcha\CaptchaValidator`
 - `BooleanValidator`, `CompareValidator`, `EmailValidator`, `FileValidator`, `ImageValidator`, `IpValidator`,
   `NumberValidator`, `RangeValidator`, `RegularExpressionValidator`, `RequiredValidator`, `StringValidator`,
   `TrimValidator`, `UrlValidator`
-
-The custom strategy is **always instantiated** regardless of `useJquery`, enabling framework-agnostic client scripts.
 
 #### New method
 
 `Validator::getFormattedClientMessage(string $message, array $params): string` public wrapper around the protected
 `formatMessage()`, used by extracted jQuery client script classes when composing error messages.
 
-#### Opting out of jQuery
+#### Agnostic behaviour (no extension installed)
 
-```php
-// In application configuration
-return [
-    'useJquery' => false,
-    // ... other config
-];
-```
-
-When `useJquery` is `false` and no custom `clientScript` strategy is configured:
+When `yiisoft/yii2-jquery` is **not** installed and no custom `clientScript` strategy is configured:
 
 - `clientValidateAttribute()` returns `null` on all built-in validators.
 - `getClientOptions()` returns `[]` on all built-in validators.
-- `ActiveForm`, `GridView`, and `CheckboxColumn` do not register their built-in jQuery plugins.
-- No built-in `JqueryAsset`, `ValidationAsset`, `ActiveFormAsset`, or `GridViewAsset` bundles are registered.
+- `ActiveForm`, `GridView`, `CheckboxColumn` and `Captcha` do not register any client-side script.
 
 #### Custom client script strategy
 
 ```php
-// Custom validator client script works even when useJquery is false
+// Custom validator client script
 public function rules(): array
 {
     return [
@@ -172,12 +189,108 @@ compatibility:
 - `yii\widgets\ActiveForm::getClientOptions()`
 - `yii\widgets\ActiveField::getClientOptions()`
 - `yii\validators\Validator::clientValidateAttribute()`
+- `yii\captcha\Captcha::registerClientScript()` and `yii\captcha\Captcha::getClientOptions()` (now `public`).
+- `yii\captcha\CaptchaValidator::clientValidateAttribute()`
 
-The default implementations now delegate to the configured `$clientScript` handler when jQuery is enabled. Subclasses
-that call `parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
+The default implementations now delegate to the configured `$clientScript` handler. Subclasses that call
+`parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
 
-> **Note:** Setting `useJquery` to `false` only prevents the framework from registering jQuery-based scripts. It does
-> not remove jQuery from your application if you have included it manually or through other extensions.
+### `View::registerJs()` no longer assumes jQuery
+
+`yii\web\View::registerJs()` no longer calls `JqueryAsset::register($this)` automatically when the script position is
+`POS_READY` or `POS_LOAD`, and `View::wrapReadyScript()` / `wrapLoadScript()` now emit vanilla JavaScript event
+listeners instead of jQuery wrappers:
+
+| Position    | Old wrapper                                            | New wrapper                                                                            |
+|-------------|--------------------------------------------------------|----------------------------------------------------------------------------------------|
+| `POS_READY` | `jQuery(function ($) { ... });`                        | `document.addEventListener('DOMContentLoaded', function (event) { ... });`             |
+| `POS_LOAD`  | `jQuery(window).on('load', function () { ... });`      | `window.addEventListener('load', function (event) { ... });`                           |
+
+This is a behaviour change for applications that passed JavaScript fragments relying on `$` being bound inside the
+wrapper, for example:
+
+```php
+$this->registerJs("$('#foo').click(function () { ... });");
+```
+
+In 22.0 that code runs inside a `DOMContentLoaded` listener where `$` is **not** in scope. Two migration options:
+
+1. Wrap your own code explicitly, letting the jQuery plugin define `$`:
+
+   ```php
+   $this->registerJs("jQuery(function ($) { $('#foo').click(function () { ... }); });");
+   ```
+
+2. Replace the jQuery call with vanilla DOM APIs:
+
+   ```php
+   $this->registerJs("document.getElementById('foo').addEventListener('click', function () { ... });");
+   ```
+
+Option 1 keeps working transparently as long as `yiisoft/yii2-jquery` is installed and `JqueryAsset` (or any asset
+bundle that depends on it) has been registered somewhere in the request.
+
+Because `registerJs()` no longer auto-registers `JqueryAsset`, applications that only used inline `registerJs()` calls
+and never explicitly depended on any asset bundle will no longer pull in jQuery. If you still want jQuery on every page,
+register `JqueryAsset` (from `yiisoft/yii2-jquery`) in a layout-level asset bundle:
+
+```php
+class AppAsset extends \yii\web\AssetBundle
+{
+    public $depends = [\yii\web\JqueryAsset::class];
+}
+```
+
+### Bootstrap CSS class defaults removed
+
+Bootstrap-specific CSS class defaults have been removed from widget properties. The framework is now CSS-agnostic; no
+CSS framework is required or assumed. The following property defaults have changed:
+
+| Class                      | Property              | Old default                                                    | New default                                           |
+|----------------------------|-----------------------|----------------------------------------------------------------|-------------------------------------------------------|
+| `yii\widgets\ActiveField`  | `$options`            | `['class' => 'form-group']`                                    | `[]`                                                  |
+| `yii\widgets\ActiveField`  | `$inputOptions`       | `['class' => 'form-control']`                                  | `[]`                                                  |
+| `yii\widgets\ActiveField`  | `$errorOptions`       | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
+| `yii\widgets\ActiveField`  | `$labelOptions`       | `['class' => 'control-label']`                                 | `[]`                                                  |
+| `yii\widgets\ActiveForm`   | `$errorCssClass`      | `'has-error'`                                                  | `''`                                                  |
+| `yii\widgets\ActiveForm`   | `$successCssClass`    | `'has-success'`                                                | `''`                                                  |
+| `yii\grid\GridView`        | `$tableOptions`       | `['class' => 'table table-striped table-bordered']`            | `[]`                                                  |
+| `yii\grid\GridView`        | `$filterErrorOptions` | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
+| `yii\grid\DataColumn`      | `$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                    | `['id' => null]`                                      |
+| `yii\widgets\DetailView`   | `$options`            | `['class' => 'table table-striped table-bordered detail-view']`| `['class' => 'detail-view']`                          |
+| `yii\widgets\Breadcrumbs`  | `$options`            | `['class' => 'breadcrumb']`                                    | `[]`                                                  |
+| `yii\widgets\LinkPager`    | `$options`            | `['class' => 'pagination']`                                    | `[]`                                                  |
+| `yii\captcha\Captcha`      | `$options`            | `['class' => 'form-control']`                                  | `[]`                                                  |
+
+`yii\grid\ActionColumn::initDefaultButton()` no longer falls back to `glyphicon glyphicon-$iconName` markup when an
+icon name is not present in `$icons`. It now renders the icon name as plain text.
+
+**Migration.** If your application depends on Bootstrap CSS for these widgets, configure the old values explicitly.
+For `ActiveField`:
+
+```php
+$form->field($model, 'username', [
+    'options'      => ['class' => 'form-group'],
+    'inputOptions' => ['class' => 'form-control'],
+    'errorOptions' => ['class' => 'help-block'],
+    'labelOptions' => ['class' => 'control-label'],
+]);
+```
+
+Or subclass `ActiveField` and override the properties once. For `ActiveForm`:
+
+```php
+$form = ActiveForm::begin([
+    'errorCssClass'   => 'has-error',
+    'successCssClass' => 'has-success',
+]);
+```
+
+**Note on `yii.activeForm.js` compatibility.** `ActiveField::$errorOptions` now defaults to
+`['class' => 'field-error']` instead of `['class' => 'help-block']`. The client-side validation JavaScript in
+`yiisoft/yii2-jquery` still defaults its error selector to `.help-block`, but
+`ActiveFormJqueryClientScript::getClientOptions()` passes the per-field `error` selector in the payload that overrides
+the JS default at runtime, so client-side validation keeps working against `.field-error` with no manual configuration.
 
 ### Yii runtime autoloader removed
 

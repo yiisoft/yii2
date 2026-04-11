@@ -11,7 +11,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\IpHelper;
-use yii\jquery\validators\IpValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -236,10 +235,6 @@ class IpValidator extends Validator
         }
         if ($this->notInRange === null) {
             $this->notInRange = Yii::t('yii', '{attribute} is not in the allowed range.');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => IpValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

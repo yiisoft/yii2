@@ -117,7 +117,7 @@ class DataColumn extends Column
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $filterInputOptions = ['class' => 'form-control', 'id' => null];
+    public $filterInputOptions = ['id' => null];
     /**
      * @var string|null the attribute name of the [[GridView::filterModel]] associated with this column. If not set,
      * will have the same value as [[attribute]].

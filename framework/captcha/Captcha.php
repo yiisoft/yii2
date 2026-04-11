@@ -8,10 +8,11 @@
 
 namespace yii\captcha;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
-use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\web\client\ClientScriptInterface;
 use yii\widgets\InputWidget;
 
 /**
@@ -81,7 +82,15 @@ class Captcha extends InputWidget
      * @var array the HTML attributes for the input tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = ['class' => 'form-control'];
+    public $options = [];
+    /**
+     * Client script strategy used to register CAPTCHA client-side behaviour.
+     *
+     * When `null`, no client-side script is emitted and the widget renders plain HTML only. Assign an instance of a
+     * class implementing {@see ClientScriptInterface} (typically provided by `yiisoft/yii2-jquery` via DI) to enable
+     * client-side refresh and validation.
+     */
+    public array|ClientScriptInterface|null $clientScript = null;
 
 
     /**
@@ -95,6 +104,10 @@ class Captcha extends InputWidget
 
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
+        }
+
+        if ($this->clientScript !== null && !$this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript = Yii::createObject($this->clientScript);
         }
     }
 
@@ -123,19 +136,16 @@ class Captcha extends InputWidget
      */
     public function registerClientScript()
     {
-        $options = $this->getClientOptions();
-        $options = empty($options) ? '' : Json::htmlEncode($options);
-        $id = $this->imageOptions['id'];
-        $view = $this->getView();
-        CaptchaAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiCaptcha($options);");
+        if ($this->clientScript instanceof ClientScriptInterface) {
+            $this->clientScript->register($this, $this->getView());
+        }
     }
 
     /**
      * Returns the options for the captcha JS widget.
      * @return array the options
      */
-    protected function getClientOptions()
+    public function getClientOptions()
     {
         $route = $this->captchaAction;
         if (is_array($route)) {

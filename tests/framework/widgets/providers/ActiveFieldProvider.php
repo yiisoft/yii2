@@ -50,14 +50,14 @@ final class ActiveFieldProvider
                 'h3',
                 'Custom Label',
                 <<<HTML
-                <h3 class="control-label">Custom Label</h3>
+                <h3>Custom Label</h3>
                 HTML,
             ],
             'span' => [
                 'span',
                 null,
                 <<<HTML
-                <span class="control-label">Attribute Name</span>
+                <span>Attribute Name</span>
                 HTML,
             ],
         ];
