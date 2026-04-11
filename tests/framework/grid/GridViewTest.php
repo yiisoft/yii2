@@ -235,5 +235,4 @@ class GridViewTest extends TestCase
 
         $this->assertTrue(true);
     }
-
 }
