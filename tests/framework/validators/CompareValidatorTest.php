@@ -795,34 +795,32 @@ final class CompareValidatorTest extends TestCase
     public function testClientValidateAttributeWithClosureCompareValue(): void
     {
         $closureConfig = [
-            'compareValue' => static fn(FakedValidationModel $model, string $attribute): string => 'closure_value',
+            'compareValue' => static fn(FakedValidationModel $model, string $attribute): string => "{$attribute}_value",
             'operator' => '==',
             'type' => CompareValidator::TYPE_STRING,
         ];
 
-        $validator1 = new CompareValidator($closureConfig);
+        $validator = new CompareValidator($closureConfig);
 
         $model = new FakedValidationModel();
 
         self::assertSame(
             <<<JS
-            yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":"closure_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022closure_value\u0022."}, \$form);
+            yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":"attrA_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022attrA_value\u0022."}, \$form);
             JS,
-            $validator1->clientValidateAttribute($model, 'attrA', Yii::$app->getView()),
+            $validator->clientValidateAttribute($model, 'attrA', Yii::$app->getView()),
             'Should return correct validation script.',
         );
-
-        $validator2 = new CompareValidator($closureConfig);
 
         self::assertSame(
             [
                 'operator' => '==',
                 'type' => 'string',
-                'compareValue' => 'closure_value',
+                'compareValue' => 'attrB_value',
                 'skipOnEmpty' => 1,
-                'message' => 'attrA must be equal to "closure_value".',
+                'message' => 'attrB must be equal to "attrB_value".',
             ],
-            $validator2->getClientOptions($model, 'attrA'),
+            $validator->getClientOptions($model, 'attrB'),
             'Should return correct options array.',
         );
 
