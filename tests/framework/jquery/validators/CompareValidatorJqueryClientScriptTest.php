@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\jquery\validators;
 
+use Closure;
 use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\validators\CompareValidator;
@@ -81,8 +82,6 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
 
     public function testClientValidateAttributeWithClosureCompareValue(): void
     {
-        $modelValidator = new FakedValidationModel();
-
         $closureConfig = [
             'compareValue' => static fn(FakedValidationModel $model, string $attribute): string => 'closure_value',
             'operator' => '==',
@@ -91,6 +90,13 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
 
         $validator = new CompareValidator($closureConfig);
 
+        $modelValidator = new FakedValidationModel();
+
+        self::assertInstanceOf(
+            Closure::class,
+            $validator->compareValue,
+            'Should start as Closure before client validation.',
+        );
         self::assertSame(
             <<<JS
             yii.validation.compare(value, messages, {"operator":"==","type":"string","compareValue":"closure_value","skipOnEmpty":1,"message":"attrA must be equal to \u0022closure_value\u0022."}, \$form);
@@ -98,8 +104,19 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
             $validator->clientValidateAttribute($modelValidator, 'attrA', Yii::$app->view),
             'Should return correct validation script.',
         );
+        self::assertInstanceOf(
+            Closure::class,
+            $validator->compareValue,
+            'Should not resolve compareValue in-place.',
+        );
 
         $validator = new CompareValidator($closureConfig);
+
+        self::assertInstanceOf(
+            Closure::class,
+            $validator->compareValue,
+            'Should start as Closure before client validation.',
+        );
 
         self::assertSame(
             [
@@ -111,6 +128,11 @@ final class CompareValidatorJqueryClientScriptTest extends TestCase
             ],
             $validator->getClientOptions($modelValidator, 'attrA'),
             'Should return correct options array.',
+        );
+        self::assertInstanceOf(
+            Closure::class,
+            $validator->compareValue,
+            'Should not resolve compareValue in-place.',
         );
 
         $validator = new CompareValidator(

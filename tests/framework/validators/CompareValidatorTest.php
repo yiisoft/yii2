@@ -199,8 +199,9 @@ final class CompareValidatorTest extends TestCase
         $validator = new CompareValidator(
             [
                 'compareValue' => 10,
-                'type' => CompareValidator::TYPE_NUMBER],
-            );
+                'type' => CompareValidator::TYPE_NUMBER,
+            ],
+        );
 
         self::assertTrue(
             $validator->validate(10),
@@ -266,9 +267,21 @@ final class CompareValidatorTest extends TestCase
     {
         $expectedValue = 42;
         $closureExecuted = false;
+        $receivedModel = null;
+        $receivedAttribute = null;
 
-        $closure = static function () use ($expectedValue, &$closureExecuted): int {
+        $closure = static function (
+            FakedValidationModel $model,
+            string $attribute,
+        ) use (
+            $expectedValue,
+            &$closureExecuted,
+            &$receivedModel,
+            &$receivedAttribute,
+        ): int {
             $closureExecuted = true;
+            $receivedModel = $model;
+            $receivedAttribute = $attribute;
 
             return $expectedValue;
         };
@@ -288,6 +301,16 @@ final class CompareValidatorTest extends TestCase
         self::assertTrue(
             $closureExecuted,
             'Closure should be executed during validation.',
+        );
+        self::assertSame(
+            $model,
+            $receivedModel,
+            'Closure should receive the model as first parameter.',
+        );
+        self::assertSame(
+            'attr_test',
+            $receivedAttribute,
+            'Closure should receive the attribute as second parameter.',
         );
         self::assertFalse(
             $model->hasErrors('attr_test'),
@@ -768,7 +791,7 @@ final class CompareValidatorTest extends TestCase
     public function testClientValidateAttributeWithClosureCompareValue(): void
     {
         $closureConfig = [
-            'compareValue' => static fn(): string => 'closure_value',
+            'compareValue' => static fn(FakedValidationModel $model, string $attribute): string => 'closure_value',
             'operator' => '==',
             'type' => CompareValidator::TYPE_STRING,
         ];
@@ -799,7 +822,13 @@ final class CompareValidatorTest extends TestCase
             'Should return correct options array.',
         );
 
-        $validator3 = new CompareValidator($closureConfig);
+        $validator3 = new CompareValidator(
+            [
+                'compareValue' => static fn(): string => 'closure_value',
+                'operator' => '==',
+                'type' => CompareValidator::TYPE_STRING,
+            ],
+        );
 
         $errorMessage = null;
 
