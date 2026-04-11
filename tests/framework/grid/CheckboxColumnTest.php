@@ -37,17 +37,6 @@ class CheckboxColumnTest extends TestCase
         Yii::$app->assetManager->bundles['yii\web\JqueryAsset'] = false;
     }
 
-    protected function createWidgetInstance(array $config = []): BaseObject
-    {
-        return new CheckboxColumn(array_merge(['grid' => $this->getGrid()], $config));
-    }
-
-    protected function triggerClientScriptDispatch(BaseObject $widget): void
-    {
-        // `CheckboxColumn::init()` already invokes `registerClientScript()` at the end, so the dispatch happens at
-        // construction time. This method exists to satisfy the trait contract and is a no-op here.
-    }
-
     public function testInputName(): void
     {
         $column = new CheckboxColumn(['name' => 'selection', 'grid' => $this->getGrid()]);
@@ -119,5 +108,18 @@ class CheckboxColumnTest extends TestCase
         return new GridView([
             'dataProvider' => new ArrayDataProvider(['allModels' => [], 'totalCount' => 0]),
         ]);
+    }
+
+    protected function createWidgetInstance(array $config = []): BaseObject
+    {
+        return new CheckboxColumn(array_merge(['grid' => $this->getGrid()], $config));
+    }
+
+    /**
+     * `CheckboxColumn::init()` already invokes `registerClientScript()` at the end, so the dispatch happens at
+     * construction time. This method exists to satisfy the trait contract and is a no-op here.
+     */
+    protected function triggerClientScriptDispatch(BaseObject $widget): void
+    {
     }
 }

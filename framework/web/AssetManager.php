@@ -75,8 +75,10 @@ class AssetManager extends Component
      * ]
      * ```
      *
-     * You can also override specific source files of a bundle by providing a `sourcePath` and a map of
-     * replacements in the bundle configuration.
+     * To remap individual asset files (for example, to serve `jquery.js` from a CDN or a local build folder), use
+     * [[assetMap]] instead; it maps a source file name to its replacement URL and is resolved at publish/register time.
+     *
+     * A bundle may also set its own [[AssetBundle::sourcePath]] to point the entire bundle at an alternate directory.
      */
     public $bundles = [];
     /**

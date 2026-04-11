@@ -61,10 +61,15 @@ class FilterValidator extends Validator
      */
     public $skipOnEmpty = false;
     /**
-     * Client script class to use for client-side validation.
+     * Client script strategy used to register client-side filtering behaviour.
+     *
+     * When `null`, client-side filtering is disabled and `clientValidateAttribute()` returns `null`; the server-side
+     * filter still runs through `validateAttribute()`.
+     *
+     * Assign an instance of a class implementing {@see ClientValidatorScriptInterface} (typically provided by
+     * `yiisoft/yii2-jquery` via DI) to enable client-side execution of the filter (for example, the `trim` filter).
      */
     public array|ClientValidatorScriptInterface|null $clientScript = null;
-
 
     /**
      * {@inheritdoc}
