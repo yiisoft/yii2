@@ -448,7 +448,7 @@ class MigrateControllerTest extends TestCase
         $this->expectExceptionMessage('The migration name is too long.');
 
         $controller = $this->createMigrateController([]);
-        $params[0] = $migrationName;
+        $params = [$migrationName];
 
         ob_start();
 
