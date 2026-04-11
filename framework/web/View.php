@@ -163,7 +163,7 @@ class View extends \yii\base\View
      * When `true` (default), maintains backward compatibility by using jQuery wrappers.
      * When `false`, uses vanilla JavaScript equivalents.
      *
-     * @since 2.2.0
+     * @since 22.0
      */
     public bool $useJquery = true;
 
@@ -728,7 +728,7 @@ class View extends \yii\base\View
      *
      * @return string the wrapped script
      *
-     * @since 2.2.0
+     * @since 22.0
      */
     protected function wrapReadyScript(string $script): string
     {
@@ -748,7 +748,7 @@ class View extends \yii\base\View
      *
      * @return string the wrapped script
      *
-     * @since 2.2.0
+     * @since 22.0
      */
     protected function wrapLoadScript(string $script): string
     {

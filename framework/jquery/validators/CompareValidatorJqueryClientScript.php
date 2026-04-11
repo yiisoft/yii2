@@ -32,7 +32,7 @@ use function call_user_func;
  * @implements ClientValidatorScriptInterface<T>
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2
+ * @since 22.0
  */
 class CompareValidatorJqueryClientScript implements ClientValidatorScriptInterface
 {

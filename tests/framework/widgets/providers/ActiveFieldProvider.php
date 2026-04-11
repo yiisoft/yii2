@@ -14,7 +14,7 @@ declare(strict_types=1);
  * Provides representative input/output pairs for label, hint, radio, and checkbox attributes.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 2.2
+ * @since 22.0
  */
 
 namespace yiiunit\framework\widgets\providers;

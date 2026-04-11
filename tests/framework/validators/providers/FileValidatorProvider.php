@@ -1,19 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-declare(strict_types=1);
-
 namespace yiiunit\framework\validators\providers;
 
 /**
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  *
- * @since 2.2.0
+ * @since 22.0
  */
 final class FileValidatorProvider
 {

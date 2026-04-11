@@ -486,13 +486,11 @@ class Validator extends Component
      * parameters.
      *
      * @param string $message the message template to be formatted
-     * @param array $params the parameters to be inserted into the message
+     * @param array<string, mixed> $params the parameters to be inserted into the message
      *
      * @return string the formatted validation message
      *
-     * @phpstan-param array<string, mixed> $params
-     *
-     * @since 2.2.0
+     * @since 22.0
      */
     public function getFormattedClientMessage(string $message, array $params): string
     {
