@@ -10,7 +10,6 @@ namespace yiiunit\framework\grid;
 
 use yiiunit\TestCase;
 use yii\grid\ActionColumn;
-use yii\helpers\Html;
 
 /**
  * @author Vitaly S. <fornit1917@gmail.com>
@@ -52,12 +51,10 @@ class ActionColumnTest extends TestCase
         $column->urlCreator = fn($model, $key, $index) => 'http://test.com';
         $column->template = '{update}';
 
-        //test custom icon
-        $column->icons = [
-            'pencil' => Html::tag('span', '', ['class' => ['glyphicon', 'glyphicon-pencil']])
-        ];
+        //test icon fallback when the icon name is not present in $icons
+        $column->icons = [];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
-        $expectedHtml = '<td><a href="http://test.com" title="Update" aria-label="Update" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a></td>';
+        $expectedHtml = '<td><a href="http://test.com" title="Update" aria-label="Update" data-pjax="0"><span>pencil</span></a></td>';
         $this->assertEquals($expectedHtml, $columnContents);
 
         $column->buttons = [

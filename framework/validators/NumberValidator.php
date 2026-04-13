@@ -10,7 +10,6 @@ namespace yii\validators;
 
 use Yii;
 use yii\helpers\StringHelper;
-use yii\jquery\validators\NumberValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -81,10 +80,6 @@ class NumberValidator extends Validator
         }
         if ($this->max !== null && $this->tooBig === null) {
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => NumberValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

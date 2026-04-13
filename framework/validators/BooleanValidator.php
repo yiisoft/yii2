@@ -9,7 +9,6 @@
 namespace yii\validators;
 
 use Yii;
-use yii\jquery\validators\BooleanValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -51,10 +50,6 @@ class BooleanValidator extends Validator
 
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be either "{true}" or "{false}".');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => BooleanValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

@@ -17,12 +17,23 @@ use yii\helpers\Html;
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
  *
- * LinkPager works with a [[Pagination]] object which specifies the total number
- * of pages and the current page number.
+ * LinkPager works with a [[Pagination]] object which specifies the total number of pages and the current page number.
  *
- * Note that LinkPager only generates the necessary HTML markups. In order for it
- * to look like a real pager, you should provide some CSS styles for it.
- * With the default configuration, LinkPager should look good using Twitter Bootstrap CSS framework.
+ * Note that LinkPager only generates the necessary HTML markups. In order for it to look like a real pager, you should
+ * provide CSS styles for it.
+ *
+ * LinkPager is CSS-agnostic by default and does not apply any framework-specific classes; supply the classes your CSS
+ * framework expects via [[options]] and [[linkContainerOptions]]. For example, to opt back into Bootstrap pagination
+ * styles:
+ *
+ * ```php
+ * echo LinkPager::widget(
+ *     [
+ *         'pagination' => $pagination,
+ *         'options' => ['class' => 'pagination'],
+ *     ],
+ * );
+ * ```
  *
  * For more details and usage information on LinkPager, see the [guide article on pagination](guide:output-pagination).
  *
@@ -40,7 +51,7 @@ class LinkPager extends Widget
      * @var array HTML attributes for the pager container tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = ['class' => 'pagination'];
+    public $options = [];
     /**
      * @var array HTML attributes which will be applied to all link containers
      * @since 2.0.13

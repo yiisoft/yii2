@@ -580,25 +580,11 @@ class ViewTest extends TestCase
         );
     }
 
-    public function testRegisterJsWithJQueryEnabled(): void
+    public function testRegisterJsWithNativeWrappers(): void
     {
         $this->mockWebApplication(
             [
                 'components' => [
-                    'assetManager' => [
-                        'bundles' => [
-                            'yii\web\JqueryAsset' => [
-                                'sourcePath' => null,
-                                'js' => [
-                                    'https://code.jquery.com/jquery-3.7.1.min.js'
-                                ],
-                                'jsOptions' => [
-                                    'integrity' => 'sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=',
-                                    'crossorigin' => 'anonymous'
-                                ]
-                            ]
-                        ]
-                    ],
                     'request' => [
                         'scriptFile' => __DIR__ . '/baseUrl/index.php',
                         'scriptUrl' => '/baseUrl/index.php',
@@ -606,8 +592,6 @@ class ViewTest extends TestCase
                 ],
             ],
         );
-
-        $this->setUpAliases();
 
         $view = new View();
 
@@ -623,68 +607,7 @@ class ViewTest extends TestCase
             <body>
 
             content
-            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-            <script>jQuery(function ($) {
-            alert("ready");
-            });</script></body>
-            </html>
-
-            HTML,
-            $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']),
-        );
-
-        $view->registerJs('alert("loaded");', View::POS_LOAD);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Test</title>
-                </head>
-            <body>
-
-            content
-            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-            <script>jQuery(window).on('load', function () {
-            alert("loaded");
-            });</script></body>
-            </html>
-
-            HTML,
-            $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']),
-        );
-    }
-
-    public function testRegisterJsWithJQueryDisabled(): void
-    {
-        $this->mockWebApplication(
-            [
-                'components' => [
-                    'request' => [
-                        'scriptFile' => __DIR__ . '/baseUrl/index.php',
-                        'scriptUrl' => '/baseUrl/index.php',
-                    ],
-                ],
-            ],
-        );
-
-        $view = new View();
-        $view->useJquery = false;
-
-        $view->registerJs('alert("ready");', View::POS_READY);
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Test</title>
-                </head>
-            <body>
-
-            content
-            <script>document.addEventListener('DOMContentLoaded', function(event) {
+            <script>document.addEventListener('DOMContentLoaded', function (event) {
             alert("ready");
             });</script></body>
             </html>
@@ -720,20 +643,6 @@ class ViewTest extends TestCase
         $this->mockWebApplication(
             [
                 'components' => [
-                    'assetManager' => [
-                        'bundles' => [
-                            'yii\web\JqueryAsset' => [
-                                'sourcePath' => null,
-                                'js' => [
-                                    'https://code.jquery.com/jquery-3.7.1.min.js'
-                                ],
-                                'jsOptions' => [
-                                    'integrity' => 'sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=',
-                                    'crossorigin' => 'anonymous'
-                                ]
-                            ]
-                        ]
-                    ],
                     'request' => [
                         'scriptFile' => __DIR__ . '/baseUrl/index.php',
                         'scriptUrl' => '/baseUrl/index.php',
@@ -743,7 +652,6 @@ class ViewTest extends TestCase
         );
 
         $view = new View();
-        $view->useJquery = true;
 
         $view->registerJs('alert("ready");', View::POS_READY);
 
@@ -757,8 +665,7 @@ class ViewTest extends TestCase
             <body>
 
             test content
-            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-            <script>jQuery(function ($) {
+            <script>document.addEventListener('DOMContentLoaded', function (event) {
             alert("ready");
             });</script></body>
             </html>
@@ -779,8 +686,7 @@ class ViewTest extends TestCase
             <body>
 
             test content
-            <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-            <script>jQuery(window).on('load', function () {
+            <script>window.addEventListener('load', function (event) {
             alert("loaded");
             });</script></body>
             </html>

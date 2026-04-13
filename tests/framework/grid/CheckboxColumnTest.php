@@ -9,12 +9,14 @@
 namespace yiiunit\framework\grid;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\data\ArrayDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\grid\GridView;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yiiunit\framework\i18n\IntlTestHelper;
+use yiiunit\framework\widgets\ClientScriptDispatchTestTrait;
 use yiiunit\TestCase;
 
 /**
@@ -22,6 +24,8 @@ use yiiunit\TestCase;
  */
 class CheckboxColumnTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -104,5 +108,18 @@ class CheckboxColumnTest extends TestCase
         return new GridView([
             'dataProvider' => new ArrayDataProvider(['allModels' => [], 'totalCount' => 0]),
         ]);
+    }
+
+    protected function createWidgetInstance(array $config = []): BaseObject
+    {
+        return new CheckboxColumn(array_merge(['grid' => $this->getGrid()], $config));
+    }
+
+    /**
+     * `CheckboxColumn::init()` already invokes `registerClientScript()` at the end, so the dispatch happens at
+     * construction time. This method exists to satisfy the trait contract and is a no-op here.
+     */
+    protected function triggerClientScriptDispatch(BaseObject $widget): void
+    {
     }
 }

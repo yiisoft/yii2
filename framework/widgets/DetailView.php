@@ -113,7 +113,7 @@ class DetailView extends Widget
      * what container tag should be used. It defaults to `table` if not set.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $options = ['class' => 'table table-striped table-bordered detail-view'];
+    public $options = ['class' => 'detail-view'];
     /**
      * @var array|Formatter|null the formatter used to format model attribute values into displayable texts.
      * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]

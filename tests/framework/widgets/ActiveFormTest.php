@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\widgets;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\DynamicModel;
 use yii\base\InvalidCallException;
 use yii\widgets\ActiveForm;
@@ -20,6 +21,8 @@ use yii\widgets\ActiveForm;
  */
 final class ActiveFormTest extends \yiiunit\TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         $_SERVER['REQUEST_URI'] = 'https://example.com/';
@@ -29,6 +32,23 @@ final class ActiveFormTest extends \yiiunit\TestCase
         $this->mockWebApplication();
 
         Yii::$app->assetManager->hashCallback = static fn ($path): string => '5a1b552';
+    }
+
+    protected function createWidgetInstance(array $config = []): BaseObject
+    {
+        $form = new ActiveForm($config);
+
+        // `ActiveForm::init()` calls `ob_start()`; balance it so PHPUnit does not flag the test as risky for leaving
+        // an output buffer open.
+        ob_end_clean();
+
+        return $form;
+    }
+
+    protected function triggerClientScriptDispatch(BaseObject $widget): void
+    {
+        /** @var ActiveForm $widget */
+        $widget->registerClientScript();
     }
 
     protected function tearDown(): void
@@ -56,8 +76,8 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-name">
-            <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required>
+            <div class="field-dynamicmodel-name">
+            <input type="email" id="dynamicmodel-name" name="DynamicModel[name]" required>
             </div>
             HTML,
             (string) $form
@@ -66,8 +86,8 @@ final class ActiveFormTest extends \yiiunit\TestCase
         );
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-name">
-            <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]">
+            <div class="field-dynamicmodel-name">
+            <input type="email" id="dynamicmodel-name" name="DynamicModel[name]">
             </div>
             HTML,
             (string) $form
@@ -76,8 +96,8 @@ final class ActiveFormTest extends \yiiunit\TestCase
         );
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-name">
-            <input type="email" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" required="test">
+            <div class="field-dynamicmodel-name">
+            <input type="email" id="dynamicmodel-name" name="DynamicModel[name]" required="test">
             </div>
             HTML,
             (string) $form
@@ -107,8 +127,8 @@ final class ActiveFormTest extends \yiiunit\TestCase
         // https://github.com/yiisoft/yii2/issues/5356
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-categories">
-            <input type="hidden" name="DynamicModel[categories]" value=""><select id="dynamicmodel-categories" class="form-control" name="DynamicModel[categories][]" multiple size="4">
+            <div class="field-dynamicmodel-categories">
+            <input type="hidden" name="DynamicModel[categories]" value=""><select id="dynamicmodel-categories" name="DynamicModel[categories][]" multiple size="4">
             <option value="0">apple</option>
             <option value="1" selected>banana</option>
             <option value="2">avocado</option>
@@ -142,11 +162,11 @@ final class ActiveFormTest extends \yiiunit\TestCase
             <<<HTML
             <form id="someform" action="/someform" method="post">
             <input type="hidden" name="_csrf" value="{$csrfToken}">
-            <div class="form-group field-dynamicmodel-name">
-            <label class="control-label" for="dynamicmodel-name">Name</label>
-            <input type="text" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]">
+            <div class="field-dynamicmodel-name">
+            <label for="dynamicmodel-name">Name</label>
+            <input type="text" id="dynamicmodel-name" name="DynamicModel[name]">
 
-            <div class="help-block"></div>
+            <div class="field-error"></div>
             </div>
             </form>
             HTML,
@@ -200,28 +220,28 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-name">
-            <label class="control-label" for="dynamicmodel-name">Name</label>
-            <input type="text" id="dynamicmodel-name" class="form-control has-error" name="DynamicModel[name]" aria-invalid="true">
-            <div class="help-block">I have an error!</div>
+            <div class="field-dynamicmodel-name">
+            <label for="dynamicmodel-name">Name</label>
+            <input type="text" id="dynamicmodel-name" name="DynamicModel[name]" aria-invalid="true">
+            <div class="field-error">I have an error!</div>
             </div>
             HTML,
             $this->normalizeHTML((string) $form->field($model, 'name')),
         );
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-name">
-            <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
-            <div class="help-block">I have an error!</div>
+            <div class="field-dynamicmodel-name">
+            <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="checkbox" id="dynamicmodel-name" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
+            <div class="field-error">I have an error!</div>
             </div>
             HTML,
             $this->normalizeHTML((string) $form->field($model, 'name')->checkbox()),
         );
         $this->assertEqualsWithoutLE(
             <<<HTML
-            <div class="form-group field-dynamicmodel-name">
-            <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" class="has-error" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
-            <div class="help-block">I have an error!</div>
+            <div class="field-dynamicmodel-name">
+            <input type="hidden" name="DynamicModel[name]" value="0"><label><input type="radio" id="dynamicmodel-name" name="DynamicModel[name]" value="1" aria-invalid="true"> Name</label>
+            <div class="field-error">I have an error!</div>
             </div>
             HTML,
             $this->normalizeHTML((string) $form->field($model, 'name')->radio()),
@@ -267,10 +287,10 @@ final class ActiveFormTest extends \yiiunit\TestCase
         $this->assertEqualsWithoutLE(
             <<<HTML
             <form id="w0" action="/something" method="post">
-            <input type="hidden" name="_csrf" value="{$csrfToken}"><div class="form-group field-dynamicmodel-name">
-            <div class="default-field"><label class="control-label" for="dynamicmodel-name">Name</label><input type="text" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]"><div class="help-block"></div></div>
-            </div><div class="form-group field-dynamicmodel-email">
-            <div class="email-field"><label class="control-label" for="dynamicmodel-email">Email</label><input type="text" id="dynamicmodel-email" class="form-control" name="DynamicModel[email]"><div class="help-block"></div></div>
+            <input type="hidden" name="_csrf" value="{$csrfToken}"><div class="field-dynamicmodel-name">
+            <div class="default-field"><label for="dynamicmodel-name">Name</label><input type="text" id="dynamicmodel-name" name="DynamicModel[name]"><div class="field-error"></div></div>
+            </div><div class="field-dynamicmodel-email">
+            <div class="email-field"><label for="dynamicmodel-email">Email</label><input type="text" id="dynamicmodel-email" name="DynamicModel[email]"><div class="field-error"></div></div>
             </div></form>
             HTML,
             $expectedForm,
@@ -327,62 +347,6 @@ final class ActiveFormTest extends \yiiunit\TestCase
             HTML,
             $content,
             'Failed asserting that the generated form matches the expected form.',
-        );
-    }
-
-    public function testRegisterClientScript(): void
-    {
-        $model = new DynamicModel(['name']);
-
-        $model->addRule(['name'], 'required');
-
-        $view = Yii::$app->getView();
-
-        ob_start();
-        ob_implicit_flush(false);
-        $form = ActiveForm::begin(
-            [
-                'id' => 'w0',
-                'view' => $view,
-                'validateOnSubmit' => false,
-                'validationUrl' => '/custom/validation',
-            ],
-        );
-        echo $form->field($model, 'name');
-        $form::end();
-        $expectedForm = ob_get_clean();
-
-        $csrfToken = Yii::$app->request->csrfToken;
-        $validate = '"validate":function (attribute, value, messages, deferred, $form) {yii.validation.required(value, messages, {"message":"Name cannot be blank."});}';
-
-        $this->assertEqualsWithoutLE(
-            <<<HTML
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Test</title>
-                </head>
-            <body>
-
-            <form id="w0" action="/" method="post">
-            <input type="hidden" name="_csrf" value="{$csrfToken}"><div class="form-group field-dynamicmodel-name required">
-            <label class="control-label" for="dynamicmodel-name">Name</label>
-            <input type="text" id="dynamicmodel-name" class="form-control" name="DynamicModel[name]" aria-required="true">
-
-            <div class="help-block"></div>
-            </div></form>
-            <script src="/assets/5a1b552/jquery.js"></script>
-            <script src="/assets/5a1b552/yii.js"></script>
-            <script src="/assets/5a1b552/yii.validation.js"></script>
-            <script src="/assets/5a1b552/yii.activeForm.js"></script>
-            <script>jQuery(function ($) {
-            jQuery('#w0').yiiActiveForm([{"id":"dynamicmodel-name","name":"name","container":".field-dynamicmodel-name","input":"#dynamicmodel-name",$validate}], {"validateOnSubmit":false,"validationUrl":"\/custom\/validation"});
-            });</script></body>
-            </html>
-
-            HTML,
-            $view->render('@yiiunit/data/views/layout.php', ['content' => $expectedForm]),
-            'Failed asserting that the generated form matches the expected view.',
         );
     }
 

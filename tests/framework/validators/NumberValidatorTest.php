@@ -12,6 +12,7 @@ namespace yiiunit\framework\validators;
 
 use stdClass;
 use yii\validators\NumberValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -20,6 +21,8 @@ use yiiunit\TestCase;
  */
 class NumberValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     private array $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
     private array $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
     private string|bool $oldLocale;
@@ -31,6 +34,11 @@ class NumberValidatorTest extends TestCase
         $this->mockApplication();
 
         $this->oldLocale = setlocale(LC_NUMERIC, '0');
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new NumberValidator($config);
     }
 
     protected function tearDown(): void

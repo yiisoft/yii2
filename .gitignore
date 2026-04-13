@@ -1,53 +1,60 @@
-# phpstorm project files
-.idea
-*.iml
+# codecoverage (if present)
+code_coverage
 
-# netbeans project files
+# codeception (if present)
+c3.php
+
+# claude (if present)
+.claude
+
+# codex (if present)
+.codex
+
+# composer
+composer.lock
+
+# gitHub copilot config (if present)
+.github/agents/**
+.github/copilot-instructions.md
+.github/copilot/**
+.github/instructions/**
+.github/prompts/**
+.github/skills/**
+
+# mac ds_store (if present)
+.DS_Store
+
+# netbeans project (if present)
 nbproject
 
-# zend studio for eclipse project files
+# node_modules (if present)
+node_modules
+package-lock.json
+
+# phpstorm project (if present)
+.idea
+
+# phpactor (if present)
+.phpactor.*
+
+# phpunit (if present)
+.phpunit.cache
+.phpunit.result.cache
+phpunit.xml*
+
+# vagrant (if present)
+.vagrant
+
+# vendor
+vendor
+
+# vscode project (if present)
+.vscode
+
+# windows thumbnail cache (if present)
+Thumbs.db
+
+# zend studio for eclipse project (if present)
 .buildpath
 .project
 .settings
-
-# sublime text project / workspace files
-*.sublime-project
-*.sublime-workspace
-
-# visual studio code project files
-.vscode
-
-# windows thumbnail cache
-Thumbs.db
-
-# composer vendor dir
-/vendor
-
-# composer itself is not needed
-composer.phar
-
-# composer.lock in applications is ignored since it's automatically created by composer when application is installed
-/apps/*/composer.lock
-
-# Mac DS_Store Files
-.DS_Store
-
-# phpunit itself is not needed
-phpunit.phar
-# local phpunit config
-/phpunit.xml
-#phpunit cache
-.phpunit.result.cache
-
-# ignore dev installed apps and extensions
-/apps
-/extensions
-/packages
-
-# NPM packages
-/node_modules
-.env
-package-lock.json
-
-# local phpstan config
-phpstan.neon

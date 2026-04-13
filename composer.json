@@ -71,8 +71,8 @@
         "php": ">=8.3",
         "ext-mbstring": "*",
         "yiisoft/yii2-composer": "~2.0.4",
-        "ezyang/htmlpurifier": "^4.17",
-        "cebe/markdown": "~1.0.0 | ~1.1.0 | ~1.2.0"
+        "ezyang/htmlpurifier": "^4.19",
+        "cebe/markdown": "~1.2.0"
     },
     "require-dev": {
         "cebe/indent": "~1.0.2",
@@ -130,6 +130,10 @@
         "test": [
             "Composer\\Config::disableProcessTimeout",
             "./vendor/bin/phpunit"
+        ],
+        "test-coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "@php -d memory_limit=-1 ./vendor/bin/phpunit --coverage-html code_coverage"
         ]
     }
 }

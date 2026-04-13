@@ -171,7 +171,7 @@ class ActionColumn extends Column
     /**
      * Initializes the default button rendering callback for single button.
      * @param string $name Button name as it's written in template
-     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
+     * @param string $iconName The icon name used as key in [[$icons]]
      * @param array $additionalOptions Array of additional options
      * @since 2.0.11
      */
@@ -199,7 +199,7 @@ class ActionColumn extends Column
                 ], $additionalOptions, $this->buttonOptions);
                 $icon = isset($this->icons[$iconName])
                     ? $this->icons[$iconName]
-                    : Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
+                    : Html::tag('span', $iconName);
                 return Html::a($icon, $url, $options);
             };
         }

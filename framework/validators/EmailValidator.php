@@ -11,7 +11,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\InvalidConfigException;
-use yii\jquery\validators\EmailValidatorJqueryClientScript;
 use yii\validators\client\ClientValidatorScriptInterface;
 
 /**
@@ -86,10 +85,6 @@ class EmailValidator extends Validator
         }
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} is not a valid email address.');
-        }
-
-        if ($this->clientScript === null && (Yii::$app->useJquery ?? false)) {
-            $this->clientScript = ['class' => EmailValidatorJqueryClientScript::class];
         }
 
         if ($this->clientScript !== null && !$this->clientScript instanceof ClientValidatorScriptInterface) {

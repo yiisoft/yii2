@@ -12,6 +12,7 @@ namespace yiiunit\framework\validators;
 
 use stdClass;
 use yii\validators\StringValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -20,11 +21,18 @@ use yiiunit\TestCase;
  */
 class StringValidatorTest extends TestCase
 {
+    use ClientScriptDispatchTestTrait;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new StringValidator($config);
     }
 
     protected function tearDown(): void
