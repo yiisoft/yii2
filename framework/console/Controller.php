@@ -8,6 +8,11 @@
 
 namespace yii\console;
 
+use ReflectionIntersectionType;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionType;
+use ReflectionUnionType;
 use Yii;
 use yii\base\Action;
 use yii\base\InlineAction;
@@ -561,21 +566,20 @@ class Controller extends BaseController
     /**
      * Returns the help information for the anonymous arguments for the action.
      *
-     * The returned value should be an array. The keys are the argument names, and the values are
-     * the corresponding help information. Each value must be an array of the following structure:
+     * The returned value should be an array. The keys are the argument names, and the values are the corresponding help
+     * information. Each value must be an array of the following structure:
      *
-     * - required: bool, whether this argument is required
-     * - type: string|null, the PHP type(s) of this argument
-     * - default: mixed, the default value of this argument
-     * - comment: string, the description of this argument
+     * - required: bool, whether this argument is required.
+     * - type: string|null, the PHP type(s) of this argument.
+     * - default: mixed, the default value of this argument.
+     * - comment: string, the description of this argument.
      *
-     * The default implementation will return the help information extracted from the Reflection or
-     * DocBlock of the parameters corresponding to the action method.
+     * The default implementation will return the help information extracted from the Reflection or DocBlock of the
+     * parameters corresponding to the action method.
      *
      * @param Action<static> $action the action instance
      * @return array the help information of the action arguments
      *
-     * @phpstan-param Action<static> $action
      * @psalm-param Action<self> $action
      */
     public function getActionArgsHelp($action)
@@ -595,17 +599,12 @@ class Controller extends BaseController
 
         $args = [];
 
-        /** @var \ReflectionParameter $parameter */
+        /** @var ReflectionParameter $parameter */
         foreach ($method->getParameters() as $i => $parameter) {
             $type = null;
             $comment = '';
             if ($parameter->hasType()) {
-                $reflectionType = $parameter->getType();
-                $types = method_exists($reflectionType, 'getTypes') ? $reflectionType->getTypes() : [$reflectionType];
-                foreach ($types as $key => $reflectionType) {
-                    $types[$key] = $reflectionType->getName();
-                }
-                $type = implode('|', $types);
+                $type = $this->stringifyReflectionType($parameter->getType());
             }
             // find PhpDoc tag by property name or position
             $key = isset($phpDocParams[$parameter->name]) ? $parameter->name : (isset($phpDocParams[$i]) ? $i : null);
@@ -697,6 +696,50 @@ class Controller extends BaseController
         }
 
         return $options;
+    }
+
+    /**
+     * Converts a {@see ReflectionType} to its string representation.
+     *
+     * Handles named, nullable, union, intersection, and DNF (Disjunctive Normal Form) types.
+     *
+     * @param ReflectionType $type the reflection type to stringify.
+     *
+     * @return string the string representation of the type.
+     */
+    private function stringifyReflectionType(ReflectionType $type): string
+    {
+        if ($type instanceof ReflectionNamedType) {
+            return $type->getName();
+        }
+
+        if ($type instanceof ReflectionUnionType) {
+            $parts = array_map(
+                function (ReflectionType $nestedType): string {
+                    $str = $this->stringifyReflectionType($nestedType);
+
+                    if ($nestedType instanceof ReflectionIntersectionType) {
+                        return "({$str})";
+                    }
+
+                    return $str;
+                },
+                $type->getTypes(),
+            );
+
+            return implode('|', $parts);
+        }
+
+        if ($type instanceof ReflectionIntersectionType) {
+            $parts = array_map(
+                fn(ReflectionType $nestedType): string => $this->stringifyReflectionType($nestedType),
+                $type->getTypes(),
+            );
+
+            return implode('&', $parts);
+        }
+
+        return (string) $type;
     }
 
     private $_reflections = [];
