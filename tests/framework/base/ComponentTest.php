@@ -1118,9 +1118,15 @@ final class ComponentTest extends TestCase
 
     public function testHasMethodWithoutBehaviors(): void
     {
+        $this->component->attachBehavior('a', new NewBehavior());
+
         self::assertFalse(
             $this->component->hasMethod('test', false),
             "Should return false for behavior method when checkBehaviors is 'false'.",
+        );
+        self::assertTrue(
+            $this->component->hasMethod('test'),
+            "Sanity check: 'test' should be visible when checkBehaviors is enabled.",
         );
         self::assertTrue(
             $this->component->hasMethod('raiseEvent', false),
