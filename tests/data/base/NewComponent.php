@@ -79,7 +79,7 @@ final class NewComponent extends Component
         $this->_text = $value;
     }
 
-    public function setWriteOnly()
+    public function setWriteOnly($value): void
     {
     }
 }

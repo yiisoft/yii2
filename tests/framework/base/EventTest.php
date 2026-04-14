@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
-use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\Group;
 use stdClass;
 use yii\base\Component;
@@ -328,8 +327,6 @@ final class EventTest extends TestCase
         );
     }
 
-    #[Depends('testOn')]
-    #[Depends('testHasHandlers')]
     public function testOnWildcard(): void
     {
         Event::on(
@@ -362,8 +359,6 @@ final class EventTest extends TestCase
         );
     }
 
-    #[Depends('testOnWildcard')]
-    #[Depends('testOff')]
     public function testOffWildcard(): void
     {
         $handler = function ($event): void {

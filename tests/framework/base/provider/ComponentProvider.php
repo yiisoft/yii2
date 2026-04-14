@@ -15,6 +15,10 @@ namespace yiiunit\framework\base\provider;
  *
  * Provides representative input/output pairs for property accessibility checks.
  *
+ * The `*CheckVars` datasets exercise the `$checkVars` branch against a bare {@see \yiiunit\data\base\NewComponent}
+ * (no behaviors attached), while the `*CheckBehaviors` datasets exercise the `$checkBehaviors` branch against
+ * {@see \yiiunit\data\base\ComponentWithBehaviors} (with {@see \yiiunit\data\base\NewBehavior} attached).
+ *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
  */
@@ -23,26 +27,26 @@ final class ComponentProvider
     /**
      * @return array<string, array{string, bool, bool}>
      */
-    public static function hasProperty(): array
+    public static function hasPropertyCheckVars(): array
     {
-        return self::basePropertyMatrix();
+        return self::checkVarsMatrix();
     }
 
     /**
      * @return array<string, array{string, bool, bool}>
      */
-    public static function canGetProperty(): array
+    public static function canGetPropertyCheckVars(): array
     {
-        return self::basePropertyMatrix();
+        return self::checkVarsMatrix();
     }
 
     /**
      * @return array<string, array{string, bool, bool}>
      */
-    public static function canSetProperty(): array
+    public static function canSetPropertyCheckVars(): array
     {
         return [
-            ...self::basePropertyMatrix(),
+            ...self::checkVarsMatrix(),
             'read-only property' => [
                 'Object',
                 true,
@@ -54,20 +58,44 @@ final class ComponentProvider
     /**
      * @return array<string, array{string, bool, bool}>
      */
-    private static function basePropertyMatrix(): array
+    public static function hasPropertyCheckBehaviors(): array
+    {
+        return self::checkBehaviorsMatrix();
+    }
+
+    /**
+     * @return array<string, array{string, bool, bool}>
+     */
+    public static function canGetPropertyCheckBehaviors(): array
+    {
+        return self::checkBehaviorsMatrix();
+    }
+
+    /**
+     * @return array<string, array{string, bool, bool}>
+     */
+    public static function canSetPropertyCheckBehaviors(): array
+    {
+        return self::checkBehaviorsMatrix();
+    }
+
+    /**
+     * @return array<string, array{string, bool, bool}>
+     */
+    private static function checkVarsMatrix(): array
     {
         return [
-            'behavior property (PascalCase, case-sensitive)' => [
+            'public property (PascalCase, case-sensitive miss)' => [
                 'Content',
                 true,
                 false,
             ],
-            'behavior property with behaviors' => [
+            'public property (lower-case, checkVars on)' => [
                 'content',
                 true,
                 true,
             ],
-            'behavior property without behaviors' => [
+            'public property (lower-case, checkVars off)' => [
                 'content',
                 false,
                 false,
@@ -86,6 +114,40 @@ final class ComponentProvider
                 'Text',
                 true,
                 true,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, bool, bool}>
+     */
+    private static function checkBehaviorsMatrix(): array
+    {
+        return [
+            'behavior public property (checkBehaviors on)' => [
+                'p',
+                true,
+                true,
+            ],
+            'behavior public property (checkBehaviors off)' => [
+                'p',
+                false,
+                false,
+            ],
+            'behavior getter/setter property (checkBehaviors on)' => [
+                'p2',
+                true,
+                true,
+            ],
+            'behavior getter/setter property (checkBehaviors off)' => [
+                'p2',
+                false,
+                false,
+            ],
+            'non-existent property (checkBehaviors on)' => [
+                'missing',
+                true,
+                false,
             ],
         ];
     }

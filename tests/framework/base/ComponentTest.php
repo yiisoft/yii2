@@ -112,32 +112,68 @@ final class ComponentTest extends TestCase
         );
     }
 
-    #[DataProviderExternal(ComponentProvider::class, 'hasProperty')]
-    public function testHasProperty(string $property, bool $checkBehaviors, bool $expected): void
+    #[DataProviderExternal(ComponentProvider::class, 'hasPropertyCheckVars')]
+    public function testHasPropertyCheckVars(string $property, bool $checkVars, bool $expected): void
     {
         self::assertSame(
             $expected,
-            $this->component->hasProperty($property, $checkBehaviors),
+            $this->component->hasProperty($property, $checkVars),
             "Should return '" . ($expected ? 'true' : 'false') . "' for '$property'.",
         );
     }
 
-    #[DataProviderExternal(ComponentProvider::class, 'canGetProperty')]
-    public function testCanGetProperty(string $property, bool $checkBehaviors, bool $expected): void
+    #[DataProviderExternal(ComponentProvider::class, 'canGetPropertyCheckVars')]
+    public function testCanGetPropertyCheckVars(string $property, bool $checkVars, bool $expected): void
     {
         self::assertSame(
             $expected,
-            $this->component->canGetProperty($property, $checkBehaviors),
+            $this->component->canGetProperty($property, $checkVars),
             "Should return '" . ($expected ? 'true' : 'false') . "' for '$property'.",
         );
     }
 
-    #[DataProviderExternal(ComponentProvider::class, 'canSetProperty')]
-    public function testCanSetProperty(string $property, bool $checkBehaviors, bool $expected): void
+    #[DataProviderExternal(ComponentProvider::class, 'canSetPropertyCheckVars')]
+    public function testCanSetPropertyCheckVars(string $property, bool $checkVars, bool $expected): void
     {
         self::assertSame(
             $expected,
-            $this->component->canSetProperty($property, $checkBehaviors),
+            $this->component->canSetProperty($property, $checkVars),
+            "Should return '" . ($expected ? 'true' : 'false') . "' for '$property'.",
+        );
+    }
+
+    #[DataProviderExternal(ComponentProvider::class, 'hasPropertyCheckBehaviors')]
+    public function testHasPropertyCheckBehaviors(string $property, bool $checkBehaviors, bool $expected): void
+    {
+        $component = new ComponentWithBehaviors();
+
+        self::assertSame(
+            $expected,
+            $component->hasProperty($property, true, $checkBehaviors),
+            "Should return '" . ($expected ? 'true' : 'false') . "' for '$property'.",
+        );
+    }
+
+    #[DataProviderExternal(ComponentProvider::class, 'canGetPropertyCheckBehaviors')]
+    public function testCanGetPropertyCheckBehaviors(string $property, bool $checkBehaviors, bool $expected): void
+    {
+        $component = new ComponentWithBehaviors();
+
+        self::assertSame(
+            $expected,
+            $component->canGetProperty($property, true, $checkBehaviors),
+            "Should return '" . ($expected ? 'true' : 'false') . "' for '$property'.",
+        );
+    }
+
+    #[DataProviderExternal(ComponentProvider::class, 'canSetPropertyCheckBehaviors')]
+    public function testCanSetPropertyCheckBehaviors(string $property, bool $checkBehaviors, bool $expected): void
+    {
+        $component = new ComponentWithBehaviors();
+
+        self::assertSame(
+            $expected,
+            $component->canSetProperty($property, true, $checkBehaviors),
             "Should return '" . ($expected ? 'true' : 'false') . "' for '$property'.",
         );
     }
