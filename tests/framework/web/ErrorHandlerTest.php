@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,9 @@
 
 namespace yiiunit\framework\web;
 
+use Exception;
+use yii\BaseYii;
+use yii\web\Application;
 use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\View;
@@ -29,7 +33,7 @@ class ErrorHandlerTest extends TestCase
         ]);
     }
 
-    public function testCorrectResponseCodeInErrorView()
+    public function testCorrectResponseCodeInErrorView(): void
     {
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
@@ -42,7 +46,7 @@ Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
     }
 
-    public function testFormatRaw()
+    public function testFormatRaw(): void
     {
         Yii::$app->response->format = yii\web\Response::FORMAT_RAW;
 
@@ -50,7 +54,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $handler = Yii::$app->getErrorHandler();
 
         ob_start(); // suppress response output
-        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $this->invokeMethod($handler, 'renderException', [new Exception('Test Exception')]);
         $out = ob_get_clean();
 
         $this->assertStringContainsString('Test Exception', $out);
@@ -62,7 +66,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         );
     }
 
-    public function testFormatXml()
+    public function testFormatXml(): void
     {
         Yii::$app->response->format = yii\web\Response::FORMAT_XML;
 
@@ -70,7 +74,7 @@ Exception: yii\web\NotFoundHttpException', $out);
         $handler = Yii::$app->getErrorHandler();
 
         ob_start(); // suppress response output
-        $this->invokeMethod($handler, 'renderException', [new \Exception('Test Exception')]);
+        $this->invokeMethod($handler, 'renderException', [new Exception('Test Exception')]);
         $out = ob_get_clean();
 
         $this->assertStringContainsString('Test Exception', $out);
@@ -88,20 +92,19 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertArrayHasKey('line', $outArray);
     }
 
-    public function testClearAssetFilesInErrorView()
+    public function testClearAssetFilesInErrorView(): void
     {
         Yii::$app->getView()->registerJsFile('somefile.js');
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
         ob_start(); // suppress response output
-        $this->invokeMethod($handler, 'renderException', [new \Exception('Some Exception')]);
+        $this->invokeMethod($handler, 'renderException', [new Exception('Some Exception')]);
         ob_get_clean();
         $out = Yii::$app->response->data;
-        $this->assertEquals('Exception View
-', $out);
+        $this->assertEquals("Exception View\n", $out);
     }
 
-    public function testClearAssetFilesInErrorActionView()
+    public function testClearAssetFilesInErrorActionView(): void
     {
         Yii::$app->getErrorHandler()->errorAction = 'test/error';
         Yii::$app->getView()->registerJs("alert('hide me')", View::POS_END);
@@ -115,23 +118,23 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertStringNotContainsString('<script', $out);
     }
 
-    public function testRenderCallStackItem()
+    public function testRenderCallStackItem(): void
     {
         $handler = Yii::$app->getErrorHandler();
         $handler->traceLine = '<a href="netbeans://open?file={file}&line={line}">{html}</a>';
-        $file = \yii\BaseYii::getAlias('@yii/web/Application.php');
+        $file = BaseYii::getAlias('@yii/web/Application.php');
 
-        $out = $handler->renderCallStackItem($file, 63, \yii\web\Application::className(), null, null, null);
+        $out = $handler->renderCallStackItem($file, 63, Application::class, null, null, null);
 
         $this->assertStringContainsString('<a href="netbeans://open?file=' . $file . '&line=63">', $out);
     }
 
-    public function dataHtmlEncode()
+    public static function dataHtmlEncode(): array
     {
         return [
             [
                 "a \t=<>&\"'\x80`\n",
-                "a \t=&lt;&gt;&amp;\"'�`\n",
+                "a \t=&lt;&gt;&amp;&quot;&apos;�`\n",
             ],
             [
                 '<b>test</b>',
@@ -139,11 +142,11 @@ Exception: yii\web\NotFoundHttpException', $out);
             ],
             [
                 '"hello"',
-                '"hello"',
+                '&quot;hello&quot;',
             ],
             [
                 "'hello world'",
-                "'hello world'",
+                '&apos;hello world&apos;',
             ],
             [
                 'Chip&amp;Dale',
@@ -159,19 +162,19 @@ Exception: yii\web\NotFoundHttpException', $out);
     /**
      * @dataProvider dataHtmlEncode
      */
-    public function testHtmlEncode($text, $expected)
+    public function testHtmlEncode($text, $expected): void
     {
         $handler = Yii::$app->getErrorHandler();
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }
 
-    public function testHtmlEncodeWithUnicodeSequence()
+    public function testHtmlEncodeWithUnicodeSequence(): void
     {
         $handler = Yii::$app->getErrorHandler();
 
         $text = "a \t=<>&\"'\x80\u{20bd}`\u{000a}\u{000c}\u{0000}";
-        $expected = "a \t=&lt;&gt;&amp;\"'�₽`\n\u{000c}\u{0000}";
+        $expected = "a \t=&lt;&gt;&amp;&quot;&apos;�₽`\n\u{000c}\u{0000}";
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }

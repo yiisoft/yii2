@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\db\oci;
 
+use Exception;
 use yii\db\CheckConstraint;
 use yiiunit\framework\db\AnyValue;
 
@@ -102,13 +104,13 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * Autoincrement columns detection should be disabled for Oracle
      * because there is no way of associating a column with a sequence.
      */
-    public function testAutoincrementDisabled()
+    public function testAutoincrementDisabled(): void
     {
         $table = $this->getConnection(false)->schema->getTableSchema('order', true);
         $this->assertFalse($table->columns['id']->autoIncrement);
     }
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: check'][2][0]->expression = '"C_check" <> \'\'';
@@ -176,7 +178,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function testFindUniqueIndexes()
+    public function testFindUniqueIndexes(): void
     {
         if ($this->driverName === 'sqlsrv') {
             $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
@@ -186,7 +188,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',
@@ -194,7 +196,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'someCol3' => 'string',
         ])->execute();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
@@ -228,7 +230,53 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         ], $uniqueIndexes);
     }
 
-    public function testCompositeFk()
+    /**
+     * Verifies that LOB indexes (internal Oracle indexes for CLOB/BLOB columns) are excluded from
+     * {@see \yii\db\oci\Schema::loadTableIndexes()} results, preventing `null` column names and PHP deprecation
+     * warnings in {@see \yii\db\oci\Schema::quoteColumnName()}.
+     *
+     * @see https://github.com/yiisoft/yii2/pull/20697
+     */
+    public function testLobIndexesExcluded(): void
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema('lob_test') !== null) {
+            $db->createCommand()->dropTable('lob_test')->execute();
+        }
+
+        $db->createCommand()->setSql(
+            'CREATE TABLE "lob_test" ("id" NUMBER(10) NOT NULL, "content" CLOB, "data" BLOB, PRIMARY KEY ("id"))'
+        )->execute();
+
+        $indexes = $db->getSchema()->getTableIndexes('lob_test', true);
+
+        $this->assertCount(1, $indexes);
+
+        $primaryIndexes = array_values(
+            array_filter($indexes, static fn ($index) => $index->isPrimary),
+        );
+
+        $this->assertCount(1, $primaryIndexes);
+        $this->assertSame(['id'], $primaryIndexes[0]->columnNames);
+
+        foreach ($indexes as $index) {
+            foreach ($index->columnNames as $columnName) {
+                $this->assertNotNull(
+                    $columnName,
+                    'LOB index with "NULL" column name should be excluded',
+                );
+                $this->assertIsString(
+                    $columnName,
+                    'Index column name must be a string',
+                );
+            }
+        }
+
+        $db->createCommand()->dropTable('lob_test')->execute();
+    }
+
+    public function testCompositeFk(): void
     {
         $this->markTestSkipped('Should be fixed.');
     }

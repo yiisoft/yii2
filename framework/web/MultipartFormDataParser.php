@@ -19,7 +19,7 @@ use yii\helpers\StringHelper;
  *
  * In order to enable this parser you should configure [[Request::parsers]] in the following way:
  *
- * ```php
+ * ```
  * return [
  *     'components' => [
  *         'request' => [
@@ -42,7 +42,7 @@ use yii\helpers\StringHelper;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * use yii\web\UploadedFile;
  *
  * $restRequestData = Yii::$app->request->getBodyParams();

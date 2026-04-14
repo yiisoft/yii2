@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\behaviors;
 
@@ -63,7 +66,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function preserveNonEmptyValuesDataProvider()
+    public static function preserveNonEmptyValuesDataProvider(): array
     {
         return [
             [
@@ -105,7 +108,7 @@ class AttributesBehaviorTest extends TestCase
         $preserveNonEmptyValues,
         $name,
         $alias
-    ) {
+    ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -118,7 +121,7 @@ class AttributesBehaviorTest extends TestCase
     /**
      * @return array
      */
-    public function orderProvider()
+    public static function orderProvider(): array
     {
         return [
             [
@@ -150,7 +153,7 @@ class AttributesBehaviorTest extends TestCase
         $order,
         $name,
         $alias
-    ) {
+    ): void {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->order = $order;
         $model->name = $name;
@@ -169,6 +172,8 @@ class AttributesBehaviorTest extends TestCase
  * @property string $alias
  *
  * @property AttributesBehavior $attributesBehavior
+ *
+ * @mixin AttributesBehavior
  */
 class ActiveRecordWithAttributesBehavior extends ActiveRecord
 {
@@ -179,7 +184,7 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
     {
         return [
             'attributes' => [
-                'class' => AttributesBehavior::className(),
+                'class' => AttributesBehavior::class,
                 'attributes' => [
                     'alias' => [
                         self::EVENT_BEFORE_VALIDATE => function ($event) {
@@ -209,6 +214,9 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
      */
     public function getAttributesBehavior()
     {
-        return $this->getBehavior('attributes');
+        /** @var AttributesBehavior $result */
+        $result = $this->getBehavior('attributes');
+
+        return $result;
     }
 }

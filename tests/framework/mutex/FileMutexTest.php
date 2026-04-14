@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\mutex;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\mutex\FileMutex;
 use yiiunit\TestCase;
@@ -26,8 +28,8 @@ class FileMutexTest extends TestCase
      */
     protected function createMutex()
     {
-        return \Yii::createObject([
-            'class' => FileMutex::className(),
+        return Yii::createObject([
+            'class' => FileMutex::class,
             'mutexPath' => '@yiiunit/runtime/mutex',
         ]);
     }
@@ -38,7 +40,7 @@ class FileMutexTest extends TestCase
      * @param string $mutexName
      * @throws InvalidConfigException
      */
-    public function testDeleteLockFile($mutexName)
+    public function testDeleteLockFile($mutexName): void
     {
         $mutex = $this->createMutex();
         $fileName = $mutex->mutexPath . '/' . md5($mutexName) . '.lock';

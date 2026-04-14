@@ -24,7 +24,7 @@ use yii\base\NotSupportedException;
  *
  * For example,
  *
- * ```php
+ * ```
  * $users = $connection->createCommand('SELECT * FROM user')->queryAll();
  * ```
  *
@@ -37,7 +37,7 @@ use yii\base\NotSupportedException;
  * Command also supports building SQL statements by providing methods such as [[insert()]],
  * [[update()]], etc. For example, the following code will create and execute an INSERT SQL statement:
  *
- * ```php
+ * ```
  * $connection->createCommand()->insert('user', [
  *     'name' => 'Sam',
  *     'age' => 30,
@@ -62,7 +62,7 @@ class Command extends Component
      */
     public $db;
     /**
-     * @var \PDOStatement the PDOStatement object that this command is associated with
+     * @var \PDOStatement|null the PDOStatement object that this command is associated with
      */
     public $pdoStatement;
     /**
@@ -96,11 +96,11 @@ class Command extends Component
     protected $pendingParams = [];
 
     /**
-     * @var string the SQL statement that this command represents
+     * @var string|null the SQL statement that this command represents
      */
     private $_sql;
     /**
-     * @var string name of the table, which schema, should be refreshed after command execution.
+     * @var string|null name of the table, which schema, should be refreshed after command execution.
      */
     private $_refreshTableName;
     /**
@@ -466,7 +466,7 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
@@ -496,7 +496,7 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
@@ -538,7 +538,7 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $sql = $queryBuilder->upsert('pages', [
      *     'name' => 'Front page',
      *     'url' => 'https://example.com/', // url is unique
@@ -572,13 +572,13 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
      * ```
      *
      * or with using parameter binding for the condition:
      *
-     * ```php
+     * ```
      * $minAge = 30;
      * $connection->createCommand()->update('user', ['status' => 1], 'age > :minAge', [':minAge' => $minAge])->execute();
      * ```
@@ -606,13 +606,13 @@ class Command extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * $connection->createCommand()->delete('user', 'status = 0')->execute();
      * ```
      *
      * or with using parameter binding for the condition:
      *
-     * ```php
+     * ```
      * $status = 0;
      * $connection->createCommand()->delete('user', 'status = :status', [':status' => $status])->execute();
      * ```
@@ -649,7 +649,7 @@ class Command extends Component
      * inserted into the generated SQL.
      *
      * Example usage:
-     * ```php
+     * ```
      * Yii::$app->db->createCommand()->createTable('post', [
      *     'id' => 'pk',
      *     'title' => 'string',
@@ -1168,7 +1168,7 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\CacheInterface */
+                /** @var \yii\caching\CacheInterface $cache */
                 $cache = $info[0];
                 $cacheKey = $this->getCacheKey($method, $fetchMode, '');
                 $result = $cache->get($cacheKey);
@@ -1274,7 +1274,7 @@ class Command extends Component
      * Sets a callable (e.g. anonymous function) that is called when [[Exception]] is thrown
      * when executing the command. The signature of the callable should be:
      *
-     * ```php
+     * ```
      * function (\yii\db\Exception $e, $attempt)
      * {
      *     // return true or false (whether to retry the command or rethrow $e)

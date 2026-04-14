@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,7 +19,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 {
     public $driverName = 'mysql';
 
-    public function testCastValues()
+    public function testCastValues(): void
     {
         $model = new Type();
         $model->int_col = 123;
@@ -33,7 +34,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $model->bool_col2 = false;
         $model->save(false);
 
-        /* @var $model Type */
+        /** @var Type $model */
         $model = Type::find()->one();
         $this->assertSame(123, $model->int_col);
         $this->assertSame(456, $model->int_col2);
@@ -47,7 +48,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         //$this->assertSame(false, $model->bool_col2);
     }
 
-    public function testJsonColumn()
+    public function testJsonColumn(): void
     {
         if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
             $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');

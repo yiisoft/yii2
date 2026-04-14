@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use yii\base\NotSupportedException;
 use yii\db\DefaultValueConstraint;
 use yii\db\mssql\Schema;
 use yiiunit\framework\db\AnyValue;
@@ -23,7 +25,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         'dbo',
     ];
 
-    public function constraintsProvider()
+    public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
         $result['1: check'][2][0]->expression = '([C_check]<>\'\')';
@@ -44,12 +46,12 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    public function testGetStringFieldsSize()
+    public function testGetStringFieldsSize(): void
     {
-        /* @var $db Connection */
+        /** @var Connection $db */
         $db = $this->getConnection();
 
-        /* @var $schema Schema */
+        /** @var Schema $schema */
         $schema = $db->schema;
 
         $columns = $schema->getTableSchema('type', false)->columns;
@@ -69,7 +71,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
                     case 'char_col2':
                         $expectedType = 'string';
                         $expectedSize = 100;
-                        $expectedDbType = "varchar(100)";
+                        $expectedDbType = 'varchar(100)';
                         break;
                     case 'char_col3':
                         $expectedType = 'text';
@@ -89,16 +91,16 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @dataProvider quoteTableNameDataProvider
      * @param $name
      * @param $expectedName
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
-    public function testQuoteTableName($name, $expectedName)
+    public function testQuoteTableName($name, $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $quotedName = $schema->quoteTableName($name);
         $this->assertEquals($expectedName, $quotedName);
     }
 
-    public function quoteTableNameDataProvider()
+    public static function quoteTableNameDataProvider(): array
     {
         return [
             ['test', '[test]'],
@@ -116,16 +118,16 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
      * @dataProvider getTableSchemaDataProvider
      * @param $name
      * @param $expectedName
-     * @throws \yii\base\NotSupportedException
+     * @throws NotSupportedException
      */
-    public function testGetTableSchema($name, $expectedName)
+    public function testGetTableSchema($name, $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $tableSchema = $schema->getTableSchema($name);
         $this->assertEquals($expectedName, $tableSchema->name);
     }
 
-    public function getTableSchemaDataProvider()
+    public static function getTableSchemaDataProvider(): array
     {
         return [
             ['[dbo].[profile]', 'profile'],
@@ -182,7 +184,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
-    public function testGetPrimaryKey()
+    public function testGetPrimaryKey(): void
     {
         $db = $this->getConnection();
 

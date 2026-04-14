@@ -29,7 +29,7 @@ use yii\validators\StringValidator;
  *
  * For example:
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributeTypecastBehavior;
  *
  * class Item extends \yii\db\ActiveRecord
@@ -59,7 +59,7 @@ use yii\validators\StringValidator;
  * automatically based on owner validation rules.
  * Following example will automatically create same [[attributeTypes]] value as it was configured at the above one:
  *
- * ```php
+ * ```
  * use yii\behaviors\AttributeTypecastBehavior;
  *
  * class Item extends \yii\db\ActiveRecord
@@ -100,7 +100,7 @@ use yii\validators\StringValidator;
  *
  * Note: you can manually trigger attribute typecasting anytime invoking [[typecastAttributes()]] method:
  *
- * ```php
+ * ```
  * $model = new Item();
  * $model->price = '38.5';
  * $model->is_active = 1;
@@ -109,16 +109,18 @@ use yii\validators\StringValidator;
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
+ *
+ * @template T of Model|BaseActiveRecord = Model|BaseActiveRecord
+ * @extends Behavior<T>
  */
 class AttributeTypecastBehavior extends Behavior
 {
-    const TYPE_INTEGER = 'integer';
-    const TYPE_FLOAT = 'float';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_STRING = 'string';
-
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
     /**
-     * @var Model|BaseActiveRecord the owner of this behavior.
+     * @var T|null the owner of this behavior.
      */
     public $owner;
     /**
@@ -127,7 +129,7 @@ class AttributeTypecastBehavior extends Behavior
      * typecast result.
      * For example:
      *
-     * ```php
+     * ```
      * [
      *     'amount' => 'integer',
      *     'price' => 'float',
@@ -268,9 +270,16 @@ class AttributeTypecastBehavior extends Behavior
                         return StringHelper::floatToString($value);
                     }
                     return (string) $value;
-                default:
-                    throw new InvalidArgumentException("Unsupported type '{$type}'");
             }
+
+            if (PHP_VERSION_ID >= 80100 && is_subclass_of($type, \BackedEnum::class)) {
+                if ($value instanceof $type) {
+                    return $value;
+                }
+                return $type::from($value);
+            }
+
+            throw new InvalidArgumentException("Unsupported type '{$type}'");
         }
 
         return call_user_func($type, $value);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,7 +9,6 @@
 namespace yiiunit\framework\console;
 
 use yii\console\controllers\HelpController;
-use yii\helpers\Console;
 
 class FakeHelpControllerWithoutOutput extends HelpController
 {
@@ -16,6 +16,7 @@ class FakeHelpControllerWithoutOutput extends HelpController
 
     public function stdout($string)
     {
-        return $this->outputString .= $string;
+        $this->outputString .= $string;
+        return 0;
     }
 }

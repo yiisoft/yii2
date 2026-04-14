@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -22,7 +23,7 @@ class ActiveDataFilterTest extends TestCase
 
     // Tests :
 
-    public function dataProviderBuild()
+    public static function dataProviderBuild(): array
     {
         return [
             [
@@ -166,7 +167,7 @@ class ActiveDataFilterTest extends TestCase
      * @param array $filter
      * @param array $expectedResult
      */
-    public function testBuild($filter, $expectedResult)
+    public function testBuild($filter, $expectedResult): void
     {
         $builder = new ActiveDataFilter();
         $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
@@ -185,7 +186,7 @@ class ActiveDataFilterTest extends TestCase
     /**
      * @depends testBuild
      */
-    public function testBuildCallback()
+    public function testBuildCallback(): void
     {
         $builder = new ActiveDataFilter();
         $searchModel = (new DynamicModel(['name' => null]))

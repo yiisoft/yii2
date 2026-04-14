@@ -441,10 +441,11 @@ class CountryValidator extends Validator
 }
 ```
 
-若你想要验证器支持不使用 model 的数据验证，你还应该重写[[yii\validators\Validator::validate()]] 方法。
-你也可以通过重写[[yii\validators\Validator::validateValue()]] 方法替代
-`validateAttribute()` 和 `validate()`，因为默认状态下，
-后两者的实现是通过调用 `validateValue()` 实现的。
+如果你希望验证器验证不使用Model的数据，你还可以重写[[yii\validators\Validator::validate()]] 方法。
+你也可以重写[[yii\validators\Validator::validateValue()]] 方法而不是
+去重写`validateAttribute()` 和 `validate()`这两个方法，因为默认状态下，
+后两者是通过调用 `validateValue()` 这个方法实现的。
+
 
 下面就是一个怎样把自定义验证器在模型中使用的例子。
 

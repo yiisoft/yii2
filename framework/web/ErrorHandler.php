@@ -106,7 +106,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
         if ($useErrorView && $this->errorAction !== null) {
-            Yii::$app->view->clear();
+            /** @var View $view */
+            $view = Yii::$app->view;
+            $view->clear();
             $result = Yii::$app->runAction($this->errorAction);
             if ($result instanceof Response) {
                 $response = $result;
@@ -181,7 +183,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
     }
 
     /**
@@ -204,7 +206,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null && substr_compare($method, '{closure}', -9) !== 0) {
+        if ($method !== null && strpos($method, '{closure') === false) {
             $reflection = new \ReflectionClass($class);
             if ($reflection->hasMethod($method)) {
                 $reflectionMethod = $reflection->getMethod($method);
@@ -265,6 +267,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             return ob_get_clean();
         }
 
+        /** @var View $view */
         $view = Yii::$app->getView();
         $view->clear();
 

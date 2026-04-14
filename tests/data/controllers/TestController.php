@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace yiiunit\data\controllers;
 
 use yii\web\Controller;
@@ -11,16 +13,16 @@ class TestController extends Controller
 
     private $actionConfig = [];
 
-    public function setActionConfig($config = [])
+    public function setActionConfig($config = []): void
     {
         $this->actionConfig = $config;
     }
 
-    public function actions()
+    public function actions(): array
     {
         return [
             'error' => array_merge([
-                'class' => ErrorAction::className(),
+                'class' => ErrorAction::class,
                 'view' => '@yiiunit/data/views/error.php',
             ], $this->actionConfig),
         ];

@@ -1,14 +1,17 @@
-version: '2'
-
 services:
-
   php:
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
 
   postgres:
     image: ${DOCKER_POSTGRES_IMAGE}
     environment:
-      - POSTGRES_DB=yiitest
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      POSTGRES_DB: yiitest
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 10s
+      timeout: 3s
+      retries: 5

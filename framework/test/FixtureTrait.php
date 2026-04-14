@@ -41,7 +41,7 @@ trait FixtureTrait
      *
      * The return value of this method must be an array of fixture configurations. For example,
      *
-     * ```php
+     * ```
      * [
      *     // anonymous fixture
      *     PostFixture::class,
@@ -89,7 +89,6 @@ trait FixtureTrait
             $fixtures = $this->getFixtures();
         }
 
-        /* @var $fixture Fixture */
         foreach ($fixtures as $fixture) {
             $fixture->beforeLoad();
         }
@@ -113,7 +112,6 @@ trait FixtureTrait
             $fixtures = $this->getFixtures();
         }
 
-        /* @var $fixture Fixture */
         foreach ($fixtures as $fixture) {
             $fixture->beforeUnload();
         }

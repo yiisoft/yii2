@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -25,7 +26,7 @@ class BooleanValidatorTest extends TestCase
         $this->destroyApplication();
     }
 
-    public function testValidateValue()
+    public function testValidateValue(): void
     {
         $val = new BooleanValidator();
         $this->assertTrue($val->validate(true));
@@ -48,7 +49,7 @@ class BooleanValidatorTest extends TestCase
         $this->assertTrue($val->validate(false));
     }
 
-    public function testValidateAttributeAndError()
+    public function testValidateAttributeAndError(): void
     {
         $obj = new FakedValidationModel();
         $obj->attrA = true;
@@ -67,7 +68,7 @@ class BooleanValidatorTest extends TestCase
         $this->assertTrue($obj->hasErrors('attrD'));
     }
 
-    public function testErrorMessage()
+    public function testErrorMessage(): void
     {
         $validator = new BooleanValidator([
             'trueValue' => true,

@@ -21,7 +21,7 @@ use yii\base\InvalidConfigException;
  *
  * @method ActiveRecordInterface|array|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method ActiveRecordInterface[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
- * @property ActiveRecord $modelClass
+ * @property class-string<ActiveRecordInterface> $modelClass
  */
 trait ActiveRelationTrait
 {
@@ -46,7 +46,7 @@ trait ActiveRelationTrait
      */
     public $link;
     /**
-     * @var array|object the query associated with the junction table. Please call [[via()]]
+     * @var array|object|null the query associated with the junction table. Please call [[via()]]
      * to set this property instead of directly setting it.
      * This property is only used in relational context.
      * @see via()
@@ -85,7 +85,7 @@ trait ActiveRelationTrait
      *
      * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
      *
-     * ```php
+     * ```
      * class Order extends ActiveRecord
      * {
      *    public function getOrderItems() {
@@ -125,7 +125,7 @@ trait ActiveRelationTrait
      *
      * Use this method when declaring a relation in the [[ActiveRecord]] class, e.g. in Customer model:
      *
-     * ```php
+     * ```
      * public function getOrders()
      * {
      *     return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
@@ -134,7 +134,7 @@ trait ActiveRelationTrait
      *
      * This also may be used for Order model, but with caution:
      *
-     * ```php
+     * ```
      * public function getCustomer()
      * {
      *     return $this->hasOne(Customer::class, ['id' => 'customer_id'])->inverseOf('orders');
@@ -144,14 +144,14 @@ trait ActiveRelationTrait
      * in this case result will depend on how order(s) was loaded.
      * Let's suppose customer has several orders. If only one order was loaded:
      *
-     * ```php
+     * ```
      * $orders = Order::find()->where(['id' => 1])->all();
      * $customerOrders = $orders[0]->customer->orders;
      * ```
      *
      * variable `$customerOrders` will contain only one order. If orders was loaded like this:
      *
-     * ```php
+     * ```
      * $orders = Order::find()->with('customer')->where(['customer_id' => 1])->all();
      * $customerOrders = $orders[0]->customer->orders;
      * ```
@@ -207,7 +207,7 @@ trait ActiveRelationTrait
                 $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel);
             } else {
                 if (!isset($inverseRelation)) {
-                    /* @var $modelClass ActiveRecordInterface */
+                    /** @var ActiveRecordInterface $modelClass */
                     $modelClass = $this->modelClass;
                     $inverseRelation = $modelClass::instance()->getRelation($this->inverseOf);
                 }
@@ -231,13 +231,13 @@ trait ActiveRelationTrait
 
         if ($this->via instanceof self) {
             // via junction table
-            /* @var $viaQuery ActiveRelationTrait */
+            /** @var self<ActiveRecord|array<string, mixed>> $viaQuery */
             $viaQuery = $this->via;
             $viaModels = $viaQuery->findJunctionRows($primaryModels);
             $this->filterByModels($viaModels);
         } elseif (is_array($this->via)) {
             // via relation
-            /* @var $viaQuery ActiveRelationTrait|ActiveQueryTrait */
+            /** @var self<ActiveRecord|array<string, mixed>>|ActiveQueryTrait $viaQuery */
             list($viaName, $viaQuery) = $this->via;
             if ($viaQuery->asArray === null) {
                 // inherit asArray from primary query
@@ -329,7 +329,7 @@ trait ActiveRelationTrait
     }
 
     /**
-     * @param ActiveRecordInterface[] $primaryModels primary models
+     * @param ActiveRecordInterface[]|array<array-key, array<string, mixed>> $primaryModels primary models
      * @param ActiveRecordInterface[] $models models
      * @param string $primaryName the primary relation name
      * @param string $name the relation name
@@ -340,15 +340,15 @@ trait ActiveRelationTrait
             return;
         }
         $model = reset($models);
-        /* @var $relation ActiveQueryInterface|ActiveQuery */
         if ($model instanceof ActiveRecordInterface) {
             $relation = $model->getRelation($name);
         } else {
-            /* @var $modelClass ActiveRecordInterface */
+            /** @var ActiveRecordInterface $modelClass */
             $modelClass = $this->modelClass;
             $relation = $modelClass::instance()->getRelation($name);
         }
 
+        /** @var ActiveQueryInterface|ActiveQuery $relation */
         if ($relation->multiple) {
             $buckets = $this->buildBuckets($primaryModels, $relation->link, null, null, false);
             if ($model instanceof ActiveRecordInterface) {
@@ -394,7 +394,7 @@ trait ActiveRelationTrait
      * @param array $models
      * @param array $link
      * @param array|null $viaModels
-     * @param self|null $viaQuery
+     * @param self<ActiveRecord|array<string, mixed>>|null $viaQuery
      * @param bool $checkMultiple
      * @return array
      */
@@ -497,7 +497,7 @@ trait ActiveRelationTrait
     {
         if ($this instanceof ActiveQuery && (!empty($this->join) || !empty($this->joinWith))) {
             if (empty($this->from)) {
-                /* @var $modelClass ActiveRecord */
+                /** @var ActiveRecord $modelClass */
                 $modelClass = $this->modelClass;
                 $alias = $modelClass::tableName();
             } else {
@@ -626,7 +626,7 @@ trait ActiveRelationTrait
             return [];
         }
         $this->filterByModels($primaryModels);
-        /* @var $primaryModel ActiveRecord */
+        /** @var ActiveRecord $primaryModel */
         $primaryModel = reset($primaryModels);
         if (!$primaryModel instanceof ActiveRecordInterface) {
             // when primaryModels are array of arrays (asArray case)

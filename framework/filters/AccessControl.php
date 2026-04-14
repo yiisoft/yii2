@@ -9,8 +9,8 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\Component;
 use yii\di\Instance;
 use yii\web\ForbiddenHttpException;
 use yii\web\User;
@@ -27,7 +27,7 @@ use yii\web\User;
  * For example, the following declarations will allow authenticated users to access the "create"
  * and "update" actions and deny all other users from accessing these two actions.
  *
- * ```php
+ * ```
  * public function behaviors()
  * {
  *     return [
@@ -54,6 +54,9 @@ use yii\web\User;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Component = Component
+ * @extends ActionFilter<T>
  */
 class AccessControl extends ActionFilter
 {
@@ -71,7 +74,7 @@ class AccessControl extends ActionFilter
      *
      * The signature of the callback should be as follows:
      *
-     * ```php
+     * ```
      * function ($rule, $action)
      * ```
      *
@@ -110,16 +113,13 @@ class AccessControl extends ActionFilter
     }
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * {@inheritdoc}
      */
     public function beforeAction($action)
     {
         $user = $this->user;
         $request = Yii::$app->getRequest();
-        /* @var $rule AccessRule */
+        /** @var AccessRule $rule */
         foreach ($this->rules as $rule) {
             if ($allow = $rule->allows($action, $user, $request)) {
                 return true;

@@ -19,9 +19,14 @@ use yii\base\InvalidCallException;
  * For more details and usage information on CookieCollection, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
  *
  * @property-read int $count The number of cookies in the collection.
+ * @property-read ArrayIterator<string, Cookie> $iterator An iterator for traversing the cookies in the
+ * collection.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @implements \IteratorAggregate<string, Cookie>
+ * @implements \ArrayAccess<string, Cookie|null>
  */
 class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
@@ -31,7 +36,7 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
     public $readOnly = false;
 
     /**
-     * @var Cookie[] the cookies in this collection (indexed by the cookie names)
+     * @var array<string, Cookie> the cookies in this collection (indexed by the cookie names)
      */
     private $_cookies;
 
@@ -113,19 +118,27 @@ class CookieCollection extends BaseObject implements \IteratorAggregate, \ArrayA
      */
     public function has($name)
     {
-        return isset($this->_cookies[$name]) && $this->_cookies[$name]->value !== ''
-            && ($this->_cookies[$name]->expire === null
-                || $this->_cookies[$name]->expire === 0
-                || (
-                    (is_string($this->_cookies[$name]->expire) && strtotime($this->_cookies[$name]->expire) >= time())
-                    || (
-                        interface_exists('\\DateTimeInterface')
-                        && $this->_cookies[$name]->expire instanceof \DateTimeInterface
-                        && $this->_cookies[$name]->expire->getTimestamp() >= time()
-                    )
-                    || $this->_cookies[$name]->expire >= time()
-                )
-            );
+        if (!isset($this->_cookies[$name]) || $this->_cookies[$name]->value === '') {
+            return false;
+        }
+
+        $expire = $this->_cookies[$name]->expire;
+
+        if ($expire === null || $expire === 0) {
+            return true;
+        }
+
+        $currentTime = time();
+
+        if (is_numeric($expire)) {
+            return (int) $expire >= $currentTime;
+        }
+
+        if (is_string($expire)) {
+            return strtotime($expire) >= $currentTime;
+        }
+
+        return $expire->getTimestamp() >= $currentTime;
     }
 
     /**

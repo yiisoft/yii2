@@ -1,18 +1,23 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit;
+
+use PHPUnit\TextUI\DefaultResultPrinter;
 
 /**
  * Class ResultPrinter overrides \PHPUnit\TextUI\ResultPrinter constructor
  * to change default output to STDOUT and prevent some tests from fail when
  * they can not be executed after headers have been sent.
  */
-class ResultPrinter extends \PHPUnit\TextUI\DefaultResultPrinter
+class ResultPrinter extends DefaultResultPrinter
 {
     private $out = null;
 
@@ -23,7 +28,7 @@ class ResultPrinter extends \PHPUnit\TextUI\DefaultResultPrinter
     public function __construct(
         $out = null,
         $verbose = false,
-        $colors = \PHPUnit\TextUI\DefaultResultPrinter::COLOR_DEFAULT,
+        $colors = DefaultResultPrinter::COLOR_DEFAULT,
         $debug = false,
         $numberOfColumns = 80,
         $reverse = false

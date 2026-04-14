@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="Yii2">
-    <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2">
-        <!-- Yii2 framework supports PHP 5.4, constant visibility was added in PHP 7.1 -->
-        <exclude name="PSR12.Properties.ConstantVisibility.NotFound"/>
+    <rule ref="vendor/yiisoft/yii2-coding-standards/Yii2"></rule>
+
+    <!-- TODO: fix errors -->
+    <rule ref="PSR1.Classes.ClassDeclaration.MultipleClasses">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <!-- TODO: fix errors -->
+    <rule ref="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore">
+        <exclude-pattern>tests/*</exclude-pattern>
+    </rule>
+
+    <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
+        <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <exclude-pattern>tests/framework/web/UserTest.php</exclude-pattern>
+    </rule>
+
+    <rule ref="Internal.NoCodeFound">
+        <exclude-pattern>tests/data/views/simple.php</exclude-pattern>
     </rule>
 
     <!-- display progress -->
@@ -14,5 +30,19 @@
     <!-- generate relative paths -->
     <arg name="basepath" value="."/>
 
+    <!-- directories to check -->
+    <file>build</file>
+    <file>framework</file>
+    <file>tests</file>
+
+    <!-- exclude directories -->
+    <exclude-pattern>framework/caching/migrations/*</exclude-pattern>
+    <exclude-pattern>framework/i18n/migrations/*</exclude-pattern>
+    <exclude-pattern>framework/log/migrations/*</exclude-pattern>
+    <exclude-pattern>framework/rbac/migrations/*</exclude-pattern>
     <exclude-pattern>framework/views/*</exclude-pattern>
+    <exclude-pattern>framework/web/migrations/*</exclude-pattern>
+    <exclude-pattern>tests/data/views/*</exclude-pattern>
+    <exclude-pattern>tests/runtime/*</exclude-pattern>
+    <exclude-pattern>tests/js/*</exclude-pattern>
 </ruleset>

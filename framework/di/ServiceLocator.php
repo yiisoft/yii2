@@ -23,7 +23,7 @@ use yii\base\InvalidConfigException;
  *
  * For example,
  *
- * ```php
+ * ```
  * $locator = new \yii\di\ServiceLocator;
  * $locator->setComponents([
  *     'db' => [
@@ -117,7 +117,7 @@ class ServiceLocator extends Component
      *
      * @param string $id component ID (e.g. `db`).
      * @param bool $throwException whether to throw an exception if `$id` is not registered with the locator before.
-     * @return object|null the component of the specified ID. If `$throwException` is false and `$id`
+     * @return ($throwException is true ? object : object|null) the component of the specified ID. If `$throwException` is false and `$id`
      * is not registered before, null will be returned.
      * @throws InvalidConfigException if `$id` refers to a nonexistent component ID
      * @see has()
@@ -148,7 +148,7 @@ class ServiceLocator extends Component
      *
      * For example,
      *
-     * ```php
+     * ```
      * // a class name
      * $locator->set('cache', 'yii\caching\FileCache');
      *
@@ -245,7 +245,7 @@ class ServiceLocator extends Component
      *
      * The following is an example for registering two component definitions:
      *
-     * ```php
+     * ```
      * [
      *     'db' => [
      *         'class' => 'yii\db\Connection',

@@ -19,7 +19,7 @@ use yii\mail\MailerInterface;
  * You may configure the email to be sent by setting the [[message]] property, through which
  * you can set the target email addresses, subject, etc.:
  *
- * ```php
+ * ```
  * 'components' => [
  *     'log' => [
  *          'targets' => [

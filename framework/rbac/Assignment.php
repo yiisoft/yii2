@@ -8,7 +8,6 @@
 
 namespace yii\rbac;
 
-use Yii;
 use yii\base\BaseObject;
 
 /**

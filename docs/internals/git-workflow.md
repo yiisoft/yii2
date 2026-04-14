@@ -73,6 +73,34 @@ You may limit the tests to a group of tests you are working on e.g. to run only 
 
 You can execute JavaScript unit tests by running `npm test` in the repo root directory.
 
+### Static analysis
+
+We use [PHPStan](https://phpstan.org) for static analysis. It can be launched using the following commands:
+`php vendor/bin/phpstan` or `vendor\bin\phpstan.bat` in case of execution from the Windows OS.
+
+By default, PHPStan will use the configuration from `phpstan.dist.neon`. You can create
+a `phpstan.neon` file with your own configuration, and PHPStan will use it.
+
+#### Note
+
+In PHPDoc annotations, we use PHPStan types. If you need to specify a different type for Psalm
+(which is usually the case with generics), then use Psalm annotations in conjunction with PHPStan
+annotations.
+
+An example of what it should look like:
+
+```php
+/**
+ * @return Action<covariant static>|null
+ * @phpstan-return Action<covariant static>|null
+ * @psalm-return Action<self>|null
+ */
+public function createAction($id)
+{
+...
+}
+```
+
 ### Extensions
 
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\db\Exception;
 use Yii;
 use yii\console\controllers\MigrateController;
 use yii\console\ExitCode;
@@ -24,12 +26,13 @@ use yiiunit\TestCase;
  */
 class MigrateControllerTest extends TestCase
 {
+    /** @use MigrateControllerTestTrait<EchoMigrateController> */
     use MigrateControllerTestTrait;
 
     protected function setUp(): void
     {
-        $this->migrateControllerClass = EchoMigrateController::className();
-        $this->migrationBaseClass = Migration::className();
+        $this->migrateControllerClass = EchoMigrateController::class;
+        $this->migrationBaseClass = Migration::class;
 
         $this->mockApplication([
             'components' => [
@@ -59,7 +62,7 @@ class MigrateControllerTest extends TestCase
         return $query->from('migration')->all();
     }
 
-    public function assertFileContent($expectedFile, $class, $table, $namespace = null)
+    public function assertFileContent($expectedFile, $class, $table, $namespace = null): void
     {
         if ($namespace) {
             $namespace = "namespace {$namespace};\n\n";
@@ -94,7 +97,7 @@ class MigrateControllerTest extends TestCase
         $this->assertFileContent($expectedFile, $class, $table, $namespace);
     }
 
-    public function assertFileContentJunction($expectedFile, $class, $junctionTable, $firstTable, $secondTable, $namespace = null)
+    public function assertFileContentJunction($expectedFile, $class, $junctionTable, $firstTable, $secondTable, $namespace = null): void
     {
         if ($namespace) {
             $namespace = "namespace {$namespace};\n\n";
@@ -157,7 +160,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateMigrationDataProvider()
+    public static function generateMigrationDataProvider(): array
     {
         $params = [
             'create_fields' => [
@@ -340,7 +343,7 @@ class MigrateControllerTest extends TestCase
      * @param array $params
      * @dataProvider generateMigrationDataProvider
      */
-    public function testGenerateMigration($expectedFile, $migrationName, $table, $params)
+    public function testGenerateMigration($expectedFile, $migrationName, $table, $params): void
     {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
 
@@ -357,7 +360,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @return array
      */
-    public function generateJunctionMigrationDataProvider()
+    public static function generateJunctionMigrationDataProvider(): array
     {
         return [
             ['create_junction_post_and_tag_tables', 'post_tag', 'post', 'tag'],
@@ -385,7 +388,7 @@ class MigrateControllerTest extends TestCase
      * @param string $secondTable
      * @dataProvider generateJunctionMigrationDataProvider
      */
-    public function testGenerateJunctionMigration($migrationName, $junctionTable, $firstTable, $secondTable)
+    public function testGenerateJunctionMigration($migrationName, $junctionTable, $firstTable, $secondTable): void
     {
         $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
 
@@ -412,7 +415,7 @@ class MigrateControllerTest extends TestCase
         );
     }
 
-    public function testUpdatingLongNamedMigration()
+    public function testUpdatingLongNamedMigration(): void
     {
         $this->createMigration(str_repeat('a', 180));
 
@@ -423,7 +426,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('is too long. Its not possible to apply this migration.', $result);
     }
 
-    public function testNamedMigrationWithCustomLimit()
+    public function testNamedMigrationWithCustomLimit(): void
     {
         Yii::$app->db->createCommand()->createTable('migration', [
             'version' => 'varchar(255) NOT NULL PRIMARY KEY', // varchar(255) is longer than the default of 180
@@ -439,7 +442,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('Migrated up successfully.', $result);
     }
 
-    public function testCreateLongNamedMigration()
+    public function testCreateLongNamedMigration(): void
     {
         $this->setOutputCallback(function ($output) {
             return null;
@@ -459,9 +462,9 @@ class MigrateControllerTest extends TestCase
      * Test the migrate:fresh command.
      * @dataProvider refreshMigrationDataProvider
      * @param $db
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
-    public function testRefreshMigration($db)
+    public function testRefreshMigration($db): void
     {
         if ($db !== 'default') {
             $this->switchDbConnection($db);
@@ -485,7 +488,7 @@ class MigrateControllerTest extends TestCase
         $this->assertStringContainsString('No new migrations found. Your system is up-to-date.', $result);
     }
 
-    public function refreshMigrationDataProvider()
+    public static function refreshMigrationDataProvider(): array
     {
         return [
             ['default'],
@@ -496,7 +499,7 @@ class MigrateControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12980
      */
-    public function testGetMigrationHistory()
+    public function testGetMigrationHistory(): void
     {
         $controllerConfig = [
             'migrationPath' => null,

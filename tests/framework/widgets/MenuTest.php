@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,19 +8,19 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
+use yiiunit\TestCase;
 use yii\widgets\Menu;
 
 /**
  * @group widgets
  */
-class MenuTest extends \yiiunit\TestCase
+class MenuTest extends TestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
         $this->mockWebApplication([
-            'components'=>[
+            'components' => [
                 'urlManager' => [
                     'enablePrettyUrl' => true,
                     'showScriptName' => false,
@@ -28,7 +29,7 @@ class MenuTest extends \yiiunit\TestCase
         ]);
     }
 
-    public function testEncodeLabel()
+    public function testEncodeLabel(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -82,7 +83,7 @@ HTML;
     /**
      * @see https://github.com/yiisoft/yii2/issues/8064
      */
-    public function testTagOption()
+    public function testTagOption(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -139,7 +140,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testItemTemplate()
+    public function testItemTemplate(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -171,7 +172,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosure()
+    public function testActiveItemClosure(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -208,7 +209,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosureWithLogic()
+    public function testActiveItemClosureWithLogic(): void
     {
         $output = Menu::widget([
             'route' => 'test/logic',
@@ -240,7 +241,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosureWithLogicParent()
+    public function testActiveItemClosureWithLogicParent(): void
     {
         $output = Menu::widget([
             'route' => 'test/logic',
@@ -294,7 +295,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testActiveItemClosureParentAnotherItem()
+    public function testActiveItemClosureParentAnotherItem(): void
     {
         /** @see https://github.com/yiisoft/yii2/issues/19060 */
         $output = Menu::widget([
@@ -320,7 +321,7 @@ HTML;
                         [
                             'label' => 'another item',
                             // use non relative route to avoid error in BaseUrl::normalizeRoute (missing controller)
-                            'url' => ['/test/another'], 
+                            'url' => ['/test/another'],
                             'template' => 'label: {label}; url: {url}',
                         ],
                         [
@@ -331,7 +332,7 @@ HTML;
                                 return $widget->route === 'test/logic';
                             },
                         ],
-                        
+
                     ],
                 ],
             ],
@@ -351,7 +352,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testItemClassAsArray()
+    public function testItemClassAsArray(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -406,7 +407,7 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testItemClassAsString()
+    public function testItemClassAsString(): void
     {
         $output = Menu::widget([
             'route' => 'test/test',
@@ -452,24 +453,24 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testIsItemActive()
+    public function testIsItemActive(): void
     {
         $output = Menu::widget([
             'route' => 'test/item2',
             'params' => [
-                'page'=>'5',
+                'page' => '5',
             ],
             'items' => [
                 [
                     'label' => 'item1',
-                    'url' => ['/test/item1'] 
+                    'url' => ['/test/item1']
                 ],
                 [
                     'label' => 'item2',
                     // use non relative route to avoid error in BaseUrl::normalizeRoute (missing controller)
-                    'url' => ['/test/item2','page'=>'5']
+                    'url' => ['/test/item2','page' => '5']
                 ],
-                
+
             ],
         ]);
 

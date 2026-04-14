@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,12 +16,12 @@ class Fixture1 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture2'];
 
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '1';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '1';
     }
@@ -29,12 +30,13 @@ class Fixture1 extends Fixture
 class Fixture2 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture3'];
-    public function load()
+
+    public function load(): void
     {
         MyTestCase::$load .= '2';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '2';
     }
@@ -42,12 +44,12 @@ class Fixture2 extends Fixture
 
 class Fixture3 extends Fixture
 {
-    public function load()
+    public function load(): void
     {
         MyTestCase::$load .= '3';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '3';
     }
@@ -56,12 +58,13 @@ class Fixture3 extends Fixture
 class Fixture4 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture5'];
-    public function load()
+
+    public function load(): void
     {
         MyTestCase::$load .= '4';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '4';
     }
@@ -70,12 +73,13 @@ class Fixture4 extends Fixture
 class Fixture5 extends Fixture
 {
     public $depends = ['yiiunit\framework\test\Fixture4'];
-    public function load()
+
+    public function load(): void
     {
         MyTestCase::$load .= '5';
     }
 
-    public function unload()
+    public function unload(): void
     {
         MyTestCase::$unload .= '5';
     }
@@ -108,45 +112,57 @@ class MyTestCase
     public function fixtures()
     {
         switch ($this->scenario) {
-            case 0: return [];
-            case 1: return [
-                'fixture1' => Fixture1::className(),
-            ];
-            case 2: return [
-                'fixture2' => Fixture2::className(),
-            ];
-            case 3: return [
-                'fixture3' => Fixture3::className(),
-            ];
-            case 4: return [
-                'fixture1' => Fixture1::className(),
-                'fixture2' => Fixture2::className(),
-            ];
-            case 5: return [
-                'fixture2' => Fixture2::className(),
-                'fixture3' => Fixture3::className(),
-            ];
-            case 6: return [
-                'fixture1' => Fixture1::className(),
-                'fixture3' => Fixture3::className(),
-            ];
-            case 7: return [
-                'fixture1' => Fixture1::className(),
-                'fixture2' => Fixture2::className(),
-                'fixture3' => Fixture3::className(),
-            ];
-            case 8: return [
-                'fixture4' => Fixture4::className(),
-            ];
-            case 9: return [
-                'fixture5' => Fixture5::className(),
-                'fixture4' => Fixture4::className(),
-            ];
-            case 10: return [
-                'fixture3a' => Fixture3::className(), // duplicate fixtures may occur two fixtures depend on the same fixture.
-                'fixture3b' => Fixture3::className(),
-            ];
-            default: return [];
+            case 0:
+                return [];
+            case 1:
+                return [
+                    'fixture1' => Fixture1::class,
+                ];
+            case 2:
+                return [
+                    'fixture2' => Fixture2::class,
+                ];
+            case 3:
+                return [
+                    'fixture3' => Fixture3::class,
+                ];
+            case 4:
+                return [
+                    'fixture1' => Fixture1::class,
+                    'fixture2' => Fixture2::class,
+                ];
+            case 5:
+                return [
+                    'fixture2' => Fixture2::class,
+                    'fixture3' => Fixture3::class,
+                ];
+            case 6:
+                return [
+                    'fixture1' => Fixture1::class,
+                    'fixture3' => Fixture3::class,
+                ];
+            case 7:
+                return [
+                    'fixture1' => Fixture1::class,
+                    'fixture2' => Fixture2::class,
+                    'fixture3' => Fixture3::class,
+                ];
+            case 8:
+                return [
+                    'fixture4' => Fixture4::class,
+                ];
+            case 9:
+                return [
+                    'fixture5' => Fixture5::class,
+                    'fixture4' => Fixture4::class,
+                ];
+            case 10:
+                return [
+                    'fixture3a' => Fixture3::class, // duplicate fixtures may occur two fixtures depend on the same fixture.
+                    'fixture3b' => Fixture3::class,
+                ];
+            default:
+                return [];
         }
     }
 }
@@ -156,7 +172,7 @@ class MyTestCase
  */
 class FixtureTest extends TestCase
 {
-    public function testDependencies()
+    public function testDependencies(): void
     {
         foreach ($this->getDependencyTests() as $scenario => $result) {
             $test = new MyTestCase();
@@ -168,7 +184,7 @@ class FixtureTest extends TestCase
         }
     }
 
-    public function testLoadSequence()
+    public function testLoadSequence(): void
     {
         foreach ($this->getLoadSequenceTests() as $scenario => $result) {
             $test = new MyTestCase();

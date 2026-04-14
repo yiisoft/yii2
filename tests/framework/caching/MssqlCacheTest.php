@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -37,12 +38,11 @@ class MssqlCacheTest extends CacheTestCase
             'expire' => 'INT',
             'data' => 'VARBINARY(MAX)',
         ])->execute();
-
     }
 
     /**
      * @param  bool            $reset whether to clean up the test database
-     * @return \yii\db\Connection
+     * @return Connection
      */
     public function getConnection($reset = true)
     {
@@ -79,7 +79,7 @@ class MssqlCacheTest extends CacheTestCase
         return $this->_cacheInstance;
     }
 
-    public function testExpire()
+    public function testExpire(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -91,7 +91,7 @@ class MssqlCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_test'));
     }
 
-    public function testExpireAdd()
+    public function testExpireAdd(): void
     {
         $cache = $this->getCacheInstance();
 
@@ -103,7 +103,7 @@ class MssqlCacheTest extends CacheTestCase
         $this->assertFalse($cache->get('expire_testa'));
     }
 
-    public function testSynchronousSetWithTheSameKey()
+    public function testSynchronousSetWithTheSameKey(): void
     {
         $KEY = 'sync-test-key';
         $VALUE = 'sync-test-value';

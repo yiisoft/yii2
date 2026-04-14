@@ -14,6 +14,8 @@ use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
+use yii\base\Controller as BaseController;
+use yii\base\Module;
 
 /**
  * Controller is the base class of console command classes.
@@ -29,25 +31,30 @@ use yii\helpers\Inflector;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property-read string $help
- * @property-read string $helpSummary
+ * @property Request $request The request object.
+ * @property Response $response The response object.
+ * @property-read string $help The help information for this controller.
+ * @property-write bool $help Whether to display help information about current command.
+ * @property-read string $helpSummary The one-line short summary describing this controller.
  * @property-read array $passedOptionValues The properties corresponding to the passed options.
  * @property-read array $passedOptions The names of the options passed during execution.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template T of Module = Module
+ * @extends BaseController<T>
  */
-class Controller extends \yii\base\Controller
+class Controller extends BaseController
 {
     /**
      * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
      */
-    const EXIT_CODE_NORMAL = 0;
+    public const EXIT_CODE_NORMAL = 0;
     /**
      * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
      */
-    const EXIT_CODE_ERROR = 1;
-
+    public const EXIT_CODE_ERROR = 1;
     /**
      * @var bool whether to run the command interactively.
      */
@@ -106,7 +113,7 @@ class Controller extends \yii\base\Controller
      * If the action ID is empty, the method will use [[defaultAction]].
      * @param string $id the ID of the action to be executed.
      * @param array $params the parameters (name-value pairs) to be passed to the action.
-     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
+     * @return mixed the result of the action.
      * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
      * @throws Exception if there are unknown options or missing arguments
      * @see createAction
@@ -186,10 +193,13 @@ class Controller extends \yii\base\Controller
      * This method is invoked by [[Action]] when it begins to run with the given parameters.
      * This method will first bind the parameters with the [[options()|options]]
      * available to the action. It then validates the given arguments.
-     * @param Action $action the action to be bound with parameters
-     * @param array $params the parameters to be bound to the action
-     * @return array the valid parameters that the action can run with.
+     * @param Action<static> $action the action to be bound with parameters
+     * @param array<array-key, mixed> $params the parameters to be bound to the action
+     * @return mixed[] the valid parameters that the action can run with.
      * @throws Exception if there are unknown options or missing arguments
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function bindActionParams($action, $params)
     {
@@ -199,6 +209,7 @@ class Controller extends \yii\base\Controller
             $method = new \ReflectionMethod($action, 'run');
         }
 
+        $paramKeys = array_keys($params);
         $args = [];
         $missing = [];
         $actionParams = [];
@@ -213,16 +224,27 @@ class Controller extends \yii\base\Controller
             }
 
             if ($key !== null) {
-                if (PHP_VERSION_ID >= 80000) {
-                    $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+                if ($param->isVariadic()) {
+                    for ($j = array_search($key, $paramKeys); $j < count($paramKeys); $j++) {
+                        $jKey = $paramKeys[$j];
+                        if ($jKey !== $key && !is_int($jKey)) {
+                            break;
+                        }
+                        $args[] = $actionParams[$key][] = $params[$jKey];
+                        unset($params[$jKey]);
+                    }
                 } else {
-                    $isArray = $param->isArray();
+                    if (PHP_VERSION_ID >= 80000) {
+                        $isArray = ($type = $param->getType()) instanceof \ReflectionNamedType && $type->getName() === 'array';
+                    } else {
+                        $isArray = $param->isArray();
+                    }
+                    if ($isArray) {
+                        $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
+                    }
+                    $args[] = $actionParams[$key] = $params[$key];
+                    unset($params[$key]);
                 }
-                if ($isArray) {
-                    $params[$key] = $params[$key] === '' ? [] : preg_split('/\s*,\s*/', $params[$key]);
-                }
-                $args[] = $actionParams[$key] = $params[$key];
-                unset($params[$key]);
             } elseif (
                 PHP_VERSION_ID >= 70100
                 && ($type = $param->getType()) !== null
@@ -347,7 +369,7 @@ class Controller extends \yii\base\Controller
      *
      * An example of how to use the prompt method with a validator function.
      *
-     * ```php
+     * ```
      * $code = $this->prompt('Enter 4-Chars-Pin', ['required' => true, 'validator' => function($input, &$error) {
      *     if (strlen($input) !== 4) {
      *         $error = 'The Pin must be exactly 4 chars!';
@@ -373,7 +395,7 @@ class Controller extends \yii\base\Controller
      *
      * A typical usage looks like the following:
      *
-     * ```php
+     * ```
      * if ($this->confirm("Are you sure?")) {
      *     echo "user typed yes\n";
      * } else {
@@ -500,7 +522,7 @@ class Controller extends \yii\base\Controller
      * You may override this method to return customized summary.
      * The default implementation returns first line from the PHPDoc comment.
      *
-     * @return string
+     * @return string the one-line short summary describing this controller.
      */
     public function getHelpSummary()
     {
@@ -512,7 +534,7 @@ class Controller extends \yii\base\Controller
      *
      * You may override this method to return customized help.
      * The default implementation returns help information retrieved from the PHPDoc comment.
-     * @return string
+     * @return string the help information for this controller.
      */
     public function getHelp()
     {
@@ -521,8 +543,11 @@ class Controller extends \yii\base\Controller
 
     /**
      * Returns a one-line short summary describing the specified action.
-     * @param Action $action action to get summary for
+     * @param Action<static> $action action to get summary for
      * @return string a one-line short summary describing the specified action.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionHelpSummary($action)
     {
@@ -535,8 +560,11 @@ class Controller extends \yii\base\Controller
 
     /**
      * Returns the detailed help information for the specified action.
-     * @param Action $action action to get help for
+     * @param Action<static> $action action to get help for
      * @return string the detailed help information for the specified action.
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionHelp($action)
     {
@@ -557,8 +585,11 @@ class Controller extends \yii\base\Controller
      * The default implementation will return the help information extracted from the Reflection or
      * DocBlock of the parameters corresponding to the action method.
      *
-     * @param Action $action the action instance
+     * @param Action<static> $action the action instance
      * @return array the help information of the action arguments
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionArgsHelp($action)
     {
@@ -630,8 +661,11 @@ class Controller extends \yii\base\Controller
      * The default implementation will return the help information extracted from the doc-comment of
      * the properties corresponding to the action options.
      *
-     * @param Action $action
+     * @param Action<static> $action
      * @return array the help information of the action options
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     public function getActionOptionsHelp($action)
     {
@@ -685,8 +719,11 @@ class Controller extends \yii\base\Controller
     private $_reflections = [];
 
     /**
-     * @param Action $action
+     * @param Action<static> $action
      * @return \ReflectionFunctionAbstract
+     *
+     * @phpstan-param Action<static> $action
+     * @psalm-param Action<self> $action
      */
     protected function getActionMethodReflection($action)
     {
@@ -703,7 +740,7 @@ class Controller extends \yii\base\Controller
 
     /**
      * Parses the comment block into tags.
-     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection the comment block
+     * @param \ReflectionClass<object>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection the comment block
      * @return array the parsed tags
      */
     protected function parseDocCommentTags($reflection)
@@ -731,8 +768,11 @@ class Controller extends \yii\base\Controller
     /**
      * Returns the first line of docblock.
      *
-     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @param \ReflectionClass<static>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
+     *
+     * @phpstan-param \ReflectionClass<static>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentSummary($reflection)
     {
@@ -747,8 +787,11 @@ class Controller extends \yii\base\Controller
     /**
      * Returns full description from the docblock.
      *
-     * @param \ReflectionClass|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @param \ReflectionClass<static>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      * @return string
+     *
+     * @phpstan-param \ReflectionClass<static>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
+     * @psalm-param \ReflectionClass<self>|\ReflectionProperty|\ReflectionFunctionAbstract $reflection
      */
     protected function parseDocCommentDetail($reflection)
     {

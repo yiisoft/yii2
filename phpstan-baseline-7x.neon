@@ -1,0 +1,79 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Call to an undefined static method BackedEnum\:\:from\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/behaviors/AttributeTypecastBehavior.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/db/ColumnSchema.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/db/ColumnSchema.php
+
+		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/db/Command.php
+
+		-
+			message: '#^Parameter &\$constraints by\-ref type of method yii\\db\\QueryBuilder\:\:getTableUniqueColumnNames\(\) expects array\<yii\\db\\Constraint\>, array\<string, yii\\db\\Constraint\>\|false given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: framework/db/QueryBuilder.php
+
+		-
+			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: framework/web/Controller.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\StatusTypeString\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
+
+		-
+			message: '#^Class yiiunit\\framework\\db\\enums\\StatusTypeString not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
+
+		-
+			message: '#^PHPDoc tag @property for property yiiunit\\framework\\behaviors\\ActiveRecordAttributeTypecastWithEnum\:\:\$status contains unknown class yiiunit\\framework\\db\\enums\\StatusTypeString\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php

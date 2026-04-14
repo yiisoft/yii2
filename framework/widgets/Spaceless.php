@@ -16,7 +16,7 @@ use yii\base\Widget;
  *
  * Usage example:
  *
- * ```php
+ * ```
  * <body>
  *     <?php Spaceless::begin(); ?>
  *         <div class="nav-bar">
@@ -31,7 +31,7 @@ use yii\base\Widget;
  *
  * This example will generate the following HTML:
  *
- * ```html
+ * ```
  * <body>
  *     <div class="nav-bar"><!-- tags --></div><div class="content"><!-- tags --></div></body>
  * ```

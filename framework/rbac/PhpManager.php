@@ -113,7 +113,12 @@ class PhpManager extends BaseManager
      */
     public function getAssignments($userId)
     {
-        return isset($this->assignments[$userId]) ? $this->assignments[$userId] : [];
+        // using null as an array offset is deprecated in PHP `8.5`
+        if ($userId !== null && isset($this->assignments[$userId])) {
+            return $this->assignments[$userId];
+        }
+
+        return [];
     }
 
     /**
@@ -135,7 +140,7 @@ class PhpManager extends BaseManager
             return false;
         }
 
-        /* @var $item Item */
+        /** @var Item $item */
         $item = $this->items[$itemName];
         Yii::debug($item instanceof Role ? "Checking role: $itemName" : "Checking permission : $itemName", __METHOD__);
 
@@ -209,7 +214,7 @@ class PhpManager extends BaseManager
             return false;
         }
         foreach ($this->children[$child->name] as $grandchild) {
-            /* @var $grandchild Item */
+            /** @var Item $grandchild */
             if ($this->detectLoop($parent, $grandchild)) {
                 return true;
             }
@@ -321,7 +326,7 @@ class PhpManager extends BaseManager
         $items = [];
 
         foreach ($this->items as $name => $item) {
-            /* @var $item Item */
+            /** @var Role|Permission $item */
             if ($item->type == $type) {
                 $items[$name] = $item;
             }
@@ -397,9 +402,10 @@ class PhpManager extends BaseManager
     {
         $roles = $this->getDefaultRoleInstances();
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $role = $this->items[$assignment->roleName];
-            if ($role->type === Item::TYPE_ROLE) {
-                $roles[$name] = $role;
+            $item = $this->items[$assignment->roleName];
+            if ($item->type === Item::TYPE_ROLE) {
+                /** @var Role $item */
+                $roles[$name] = $item;
             }
         }
 
@@ -486,9 +492,10 @@ class PhpManager extends BaseManager
     {
         $permissions = [];
         foreach ($this->getAssignments($userId) as $name => $assignment) {
-            $permission = $this->items[$assignment->roleName];
-            if ($permission->type === Item::TYPE_PERMISSION) {
-                $permissions[$name] = $permission;
+            $item = $this->items[$assignment->roleName];
+            if ($item->type === Item::TYPE_PERMISSION) {
+                /** @var Permission $item */
+                $permissions[$name] = $item;
             }
         }
 
@@ -823,7 +830,7 @@ class PhpManager extends BaseManager
     {
         $items = [];
         foreach ($this->items as $name => $item) {
-            /* @var $item Item */
+            /** @var Item $item */
             $items[$name] = array_filter(
                 [
                     'type' => $item->type,
@@ -834,7 +841,7 @@ class PhpManager extends BaseManager
             );
             if (isset($this->children[$name])) {
                 foreach ($this->children[$name] as $child) {
-                    /* @var $child Item */
+                    /** @var Item $child */
                     $items[$name]['children'][] = $child->name;
                 }
             }
@@ -850,7 +857,7 @@ class PhpManager extends BaseManager
         $assignmentData = [];
         foreach ($this->assignments as $userId => $assignments) {
             foreach ($assignments as $name => $assignment) {
-                /* @var $assignment Assignment */
+                /** @var Assignment $assignment */
                 $assignmentData[$userId][] = $assignment->roleName;
             }
         }

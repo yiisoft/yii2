@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +8,7 @@
 
 namespace yiiunit\framework\console\controllers;
 
+use yii\base\Module;
 use yii\console\controllers\HelpController;
 use yii\helpers\Console;
 use yiiunit\TestCase;
@@ -32,10 +34,11 @@ class HelpControllerTest extends TestCase
      */
     protected function createController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
-            ->setMethods(['fake'])
+        $module = $this->getMockBuilder(Module::class)
+            ->addMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         return new BufferedHelpController('help', $module);
     }
 
@@ -53,7 +56,7 @@ class HelpControllerTest extends TestCase
         return $controller->flushStdOutBuffer();
     }
 
-    public function testModuleControllersList()
+    public function testModuleControllersList(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -76,7 +79,7 @@ STRING
             , $result);
     }
 
-    public function testActionList()
+    public function testActionList(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -109,10 +112,10 @@ migrate/to
 migrate/up
 
 STRING
-        , $result);
+            , $result);
     }
 
-    public function testActionListActionOptions()
+    public function testActionListActionOptions(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -131,10 +134,10 @@ action: route to action
 --silent-exit-on-exception: if true - script finish with `ExitCode\:\:OK` in case of exception.false - `ExitCode\:\:UNSPECIFIED_ERROR`.Default\: `YII_ENV_TEST`
 
 STRING
-        , $result);
+            , $result);
     }
 
-    public function testActionUsage()
+    public function testActionUsage(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -151,7 +154,7 @@ STRING
             , $result);
     }
 
-    public function testActionIndex()
+    public function testActionIndex(): void
     {
         $result = Console::stripAnsiFormat($this->runControllerAction('index'));
         $this->assertStringContainsString('This is Yii version ', $result);
@@ -160,7 +163,7 @@ STRING
         $this->assertStringContainsString('bootstrap.php help', $result);
     }
 
-    public function testActionIndexWithHelpCommand()
+    public function testActionIndexWithHelpCommand(): void
     {
         $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help/index']));
         $this->assertStringContainsString('Displays available commands or the detailed information', $result);
@@ -172,7 +175,7 @@ STRING
         $this->assertStringContainsString('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
     }
 
-    public function testActionIndexWithServeCommand()
+    public function testActionIndexWithServeCommand(): void
     {
         $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'serve']));
         $this->assertStringContainsString('Runs PHP built-in web server', $result);
@@ -187,7 +190,7 @@ STRING
         $this->assertStringContainsString('--router, -r: string', $result);
     }
 
-    public function testActionListContainsNoEmptyCommands()
+    public function testActionListContainsNoEmptyCommands(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
@@ -199,17 +202,17 @@ STRING
         $this->assertStringContainsString("fake-no-default/index\n", $result);
     }
 
-    public function testActionIndexContainsNoEmptyCommands()
+    public function testActionIndexContainsNoEmptyCommands(): void
     {
         $this->mockApplication([
             'enableCoreCommands' => false,
             'controllerNamespace' => 'yiiunit\data\console\controllers',
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('index'));
-        $this->assertStringNotContainsString("- fake-empty", $result);
-        $this->assertStringContainsString("- fake-no-default", $result);
-        $this->assertStringContainsString("    fake-no-default/index", $result);
-        $this->assertStringNotContainsString("    fake-no-default/index (default)", $result);
+        $this->assertStringNotContainsString('- fake-empty', $result);
+        $this->assertStringContainsString('- fake-no-default', $result);
+        $this->assertStringContainsString('    fake-no-default/index', $result);
+        $this->assertStringNotContainsString('    fake-no-default/index (default)', $result);
     }
 }
 

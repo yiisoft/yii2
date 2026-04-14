@@ -1,9 +1,12 @@
 <?php
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
+
+declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
@@ -21,7 +24,7 @@ class DynamicModelTest extends TestCase
         $this->mockApplication();
     }
 
-    public function testValidateData()
+    public function testValidateData(): void
     {
         $email = 'invalid';
         $name = 'long name';
@@ -37,11 +40,12 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($model->hasErrors('age'));
     }
 
-    public function testValidateDataWithPostData()
+    public function testValidateDataWithPostData(): void
     {
         $post = [
             'name' => 'long name',
         ];
+        /** @var DynamicModel&object{age: int} $model */
         $model = DynamicModel::validateData($post, [
             [['email', 'name'], 'required'],
             ['age', 'default', 'value' => 18],
@@ -51,7 +55,7 @@ class DynamicModelTest extends TestCase
         $this->assertEquals(18, $model->age);
     }
 
-    public function testAddRule()
+    public function testAddRule(): void
     {
         $model = new DynamicModel();
         $this->assertEquals(0, $model->getValidators()->count());
@@ -63,7 +67,7 @@ class DynamicModelTest extends TestCase
         $this->assertEquals(3, $model->getValidators()->count());
     }
 
-    public function testValidateWithAddRule()
+    public function testValidateWithAddRule(): void
     {
         $email = 'invalid';
         $name = 'long name';
@@ -79,10 +83,11 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($model->hasErrors('age'));
     }
 
-    public function testDynamicProperty()
+    public function testDynamicProperty(): void
     {
         $email = 'invalid';
         $name = 'long name';
+        /** @var DynamicModel&object{email: string, name: string} $model */
         $model = new DynamicModel(compact('name', 'email'));
         $this->assertEquals($email, $model->email);
         $this->assertEquals($name, $model->name);
@@ -91,11 +96,14 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($model->canSetProperty('email'));
         $this->assertTrue($model->canSetProperty('name'));
         $this->expectException('yii\base\UnknownPropertyException');
+        // We intentionally access a non-existent property to test that an exception is thrown
+        // @phpstan-ignore property.notFound
         $age = $model->age;
     }
 
-    public function testLoad()
+    public function testLoad(): void
     {
+        /** @var DynamicModel&object{name: string, mobile: string} $dynamic */
         $dynamic = new DynamicModel();
         //define two attributes
         $dynamic->defineAttribute('name');

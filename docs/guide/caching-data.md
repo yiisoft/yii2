@@ -130,11 +130,6 @@ Yii supports a wide range of cache storage. The following is a summary:
   (redis version 2.6.12 or higher is required).
 * [[yii\caching\WinCache]]: uses PHP [WinCache](https://iis.net/downloads/microsoft/wincache-extension)
   ([see also](https://www.php.net/manual/en/book.wincache.php)) extension.
-* [[yii\caching\XCache]] _(deprecated)_: uses PHP [XCache](https://en.wikipedia.org/wiki/List_of_PHP_accelerators#XCache) extension.
-* [[yii\caching\ZendDataCache]] _(deprecated)_: uses
-  [Zend Data Cache](https://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm)
-  as the underlying caching medium.
-
 
 > Tip: You may use different cache storage in the same application. A common strategy is to use memory-based
   cache storage to store data that is small but constantly used (e.g. statistical data), and use file-based

@@ -46,7 +46,7 @@ class TableSchema extends BaseObject
     /**
      * @var array foreign keys of this table. Each array element is of the following structure:
      *
-     * ```php
+     * ```
      * [
      *  'ForeignTableName',
      *  'fk1' => 'pk1',  // pk1 is in foreign table

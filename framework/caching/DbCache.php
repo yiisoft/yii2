@@ -25,7 +25,7 @@ use yii\di\Instance;
  *
  * The following example shows how you can configure the application to use DbCache:
  *
- * ```php
+ * ```
  * 'cache' => [
  *     'class' => 'yii\caching\DbCache',
  *     // 'db' => 'mydb',
@@ -51,7 +51,7 @@ class DbCache extends Cache
      * @var string name of the DB table to store cache content.
      * The table should be pre-created as follows:
      *
-     * ```php
+     * ```
      * CREATE TABLE cache (
      *     id char(128) NOT NULL PRIMARY KEY,
      *     expire int(11),
@@ -60,7 +60,7 @@ class DbCache extends Cache
      * ```
      *
      * For MSSQL:
-     * ```php
+     * ```
      * CREATE TABLE cache (
      *     id VARCHAR(128) NOT NULL PRIMARY KEY,
      *     expire INT(11),

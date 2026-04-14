@@ -9,7 +9,6 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
-use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
 use yii\caching\DbCache;
 use yii\db\Exception;
@@ -149,24 +148,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function dropUnique($name, $table)
     {
         return $this->dropIndex($name, $table);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
-     */
-    public function addCheck($name, $table, $expression)
-    {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws NotSupportedException this is not supported by MySQL.
-     */
-    public function dropCheck($name, $table)
-    {
-        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
     }
 
     /**
@@ -358,6 +339,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return $this->addCommentOnTable($table, '');
     }
 
+    /**
+     * {@inheritdoc}
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT EXISTS(' . $rawSql . ') AS ' . $this->db->quoteColumnName('result');
+    }
 
     /**
      * Gets column definition.

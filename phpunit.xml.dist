@@ -29,6 +29,7 @@
 			<file>framework/web/ResponseFormatterInterface.php</file>
 			<directory suffix=".php">framework/bootstrap</directory>
 			<directory suffix="Exception.php">framework/base</directory>
+            <directory suffix=".php">framework/messages</directory>
             <directory suffix=".php">framework/requirements</directory>
 		</exclude>
 	</coverage>
