@@ -1303,9 +1303,15 @@ parameters:
 			path: tests/base/web/session/BaseDbSession.php
 
 		-
-			message: '#^Access to an undefined property yiiunit\\framework\\base\\NewComponent\:\:\$as f\.$#'
+			message: '#^Access to an undefined property yiiunit\\data\\base\\NewComponent\:\:\$as f\.$#'
 			identifier: property.notFound
 			count: 1
+			path: tests/framework/base/ComponentTest.php
+
+		-
+			message: '#^Access to private property yiiunit\\data\\base\\NewComponent\:\:\$p2\.$#'
+			identifier: property.private
+			count: 3
 			path: tests/framework/base/ComponentTest.php
 
 		-
@@ -1313,6 +1319,18 @@ parameters:
 			identifier: assign.propertyType
 			count: 5
 			path: tests/framework/console/ControllerTest.php
+
+		-
+			message: '#^Parameter \$post of method yiiunit\\framework\\console\\FakePhp71Controller\:\:actionInjection\(\) has invalid type yiiunit\\framework\\base\\Post\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/console/FakePhp71Controller.php
+
+		-
+			message: '#^Parameter \$post of method yiiunit\\framework\\console\\FakePhp71Controller\:\:actionNullableInjection\(\) has invalid type yiiunit\\framework\\base\\Post\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/console/FakePhp71Controller.php
 
 		-
 			message: '#^Return type \(void\) of method yiiunit\\framework\\console\\controllers\\FixtureConsoledController\:\:stdout\(\) should be compatible with return type \(bool\|int\) of method yii\\console\\Controller\<yii\\console\\Application\>\:\:stdout\(\)$#'
