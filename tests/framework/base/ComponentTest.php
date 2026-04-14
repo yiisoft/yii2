@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\base;
 
 use PHPUnit\Framework\Attributes\DataProviderExternal;
-use PHPUnit\Framework\Attributes\Depends;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\Event;
 use yii\base\InvalidCallException;
@@ -372,7 +371,6 @@ final class ComponentTest extends TestCase
         );
     }
 
-    #[Depends('testOn')]
     public function testOff(): void
     {
         self::assertFalse(
@@ -435,7 +433,6 @@ final class ComponentTest extends TestCase
         );
     }
 
-    #[Depends('testOn')]
     public function testTrigger(): void
     {
         $this->component->on(
@@ -505,7 +502,6 @@ final class ComponentTest extends TestCase
         );
     }
 
-    #[Depends('testOn')]
     public function testOnWildcard(): void
     {
         self::assertFalse(
@@ -528,8 +524,6 @@ final class ComponentTest extends TestCase
         );
     }
 
-    #[Depends('testOnWildcard')]
-    #[Depends('testOff')]
     public function testOffWildcard(): void
     {
         self::assertFalse(
@@ -605,7 +599,6 @@ final class ComponentTest extends TestCase
         );
     }
 
-    #[Depends('testTrigger')]
     public function testTriggerWildcard(): void
     {
         $this->component->on(
@@ -786,7 +779,10 @@ final class ComponentTest extends TestCase
         } catch (UnknownMethodException $e) {
             // Expected
         }
+    }
 
+    public function testAsPropertyAssignmentAttachesBehavior(): void
+    {
         $component = new NewComponent();
 
         // @phpstan-ignore property.notFound
@@ -808,6 +804,11 @@ final class ComponentTest extends TestCase
             $component->behaviorCalled,
             "Should be called via 'as' property syntax.",
         );
+    }
+
+    public function testUnderscoreClassPrecedence(): void
+    {
+        $component = new NewComponent();
 
         // @phpstan-ignore property.notFound
         $component->{'as c'} = ['__class' => NewBehavior::class];
@@ -828,25 +829,26 @@ final class ComponentTest extends TestCase
             $component->getBehavior('d'),
             "Should use '__class' over 'class'.",
         );
+    }
 
+    public function testThrowInvalidConfigExceptionWhenBehaviorClassIsInvalid(): void
+    {
         // CVE-2024-4990
-        try {
-            // since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-            // @phpstan-ignore property.notFound
-            $component->{'as e'} = [
-                '__class' => 'NotExistsBehavior',
-                'class' => NewBehavior::class,
-            ];
+        $component = new NewComponent();
 
-            self::fail('Expected exception ' . InvalidConfigException::class . " wasn't thrown");
-        } catch (InvalidConfigException $e) {
-            self::assertSame(
-                'Class is not of type yii\base\Behavior or its subclasses',
-                $e->getMessage(),
-                'Should indicate invalid behavior class.',
-            );
-        }
+        self::expectException(InvalidConfigException::class);
+        self::expectExceptionMessage('Class is not of type yii\base\Behavior or its subclasses');
 
+        // since the property contains a space in its name, the error cannot be resolved using PHPDoc.
+        // @phpstan-ignore property.notFound
+        $component->{'as e'} = [
+            '__class' => 'NotExistsBehavior',
+            'class' => NewBehavior::class,
+        ];
+    }
+
+    public function testClosureFactoryAttachesBehavior(): void
+    {
         $component = new NewComponent();
 
         $component->{'as f'} = static fn() => new NewBehavior();
