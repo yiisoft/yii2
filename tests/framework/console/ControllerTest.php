@@ -8,6 +8,9 @@
 
 namespace yiiunit\framework\console;
 
+use PHPUnit\Framework\Attributes\Group;
+use ReflectionMethod;
+use ReflectionType;
 use yii\data\ArrayDataProvider;
 use RuntimeException;
 use Yii;
@@ -21,9 +24,7 @@ use yii\helpers\Console;
 use yiiunit\framework\console\stubs\DummyService;
 use yiiunit\TestCase;
 
-/**
- * @group console
- */
+#[Group('console')]
 class ControllerTest extends TestCase
 {
     /**
@@ -283,13 +284,157 @@ class ControllerTest extends TestCase
     public function testGetActionArgsHelp(): void
     {
         $controller = new FakeController('fake', Yii::$app);
+
         $help = $controller->getActionArgsHelp($controller->createAction('aksi2'));
 
-        $this->assertArrayHasKey('values', $help);
-        $this->assertEquals('array', $help['values']['type']);
-        $this->assertArrayHasKey('value', $help);
+        self::assertArrayHasKey(
+            'values',
+            $help,
+            "Expected help to expose the 'values' argument.",
+        );
+        self::assertSame(
+            'array',
+            $help['values']['type'],
+            "Declared 'array' type should be reported for the 'values' argument.",
+        );
+        self::assertArrayHasKey(
+            'value',
+            $help,
+            "Expected help to expose the 'value' argument.",
+        );
         // PHPDoc type
-        $this->assertEquals('string', $help['value']['type']);
+        self::assertSame(
+            'string',
+            $help['value']['type'],
+            "PHPDoc 'string' type should be reported for the 'value' argument.",
+        );
+    }
+
+    public function testGetActionArgsHelpWithUnionType(): void
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $help = $controller->getActionArgsHelp($controller->createAction('union-type'));
+
+        self::assertArrayHasKey(
+            'param',
+            $help,
+            "Expected help to expose the 'param' argument for the union-typed action.",
+        );
+        self::assertSame(
+            'string|int',
+            $help['param']['type'],
+            "Union type 'string|int' should be rendered for the 'param' argument.",
+        );
+        self::assertTrue(
+            $help['param']['required'],
+            'Argument without a default value must be reported as required.',
+        );
+    }
+
+    public function testGetActionArgsHelpWithIntersectionType(): void
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $help = $controller->getActionArgsHelp($controller->createAction('intersection-type'));
+
+        self::assertArrayHasKey(
+            'param',
+            $help,
+            "Expected help to expose the 'param' argument for the intersection-typed action.",
+        );
+        self::assertSame(
+            'Countable&Iterator',
+            $help['param']['type'],
+            "Intersection type 'Countable&Iterator' should be rendered for the 'param' argument.",
+        );
+        self::assertTrue(
+            $help['param']['required'],
+            'Argument without a default value must be reported as required.',
+        );
+    }
+
+    public function testGetActionArgsHelpWithDnfType(): void
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $help = $controller->getActionArgsHelp($controller->createAction('dnf-type'));
+
+        self::assertArrayHasKey(
+            'param',
+            $help,
+            "Expected help to expose the 'param' argument for the DNF-typed action.",
+        );
+        self::assertSame(
+            '(Countable&Iterator)|null',
+            $help['param']['type'],
+            "DNF type '(Countable&Iterator)|null' should be rendered with parenthesized intersection.",
+        );
+        self::assertFalse(
+            $help['param']['required'],
+            'Argument with a default value must be reported as optional.',
+        );
+    }
+
+    public function testGetActionArgsHelpWithNullableType(): void
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $help = $controller->getActionArgsHelp($controller->createAction('nullable-type'));
+
+        self::assertArrayHasKey(
+            'param',
+            $help,
+            "Expected help to expose the 'param' argument for the nullable-typed action.",
+        );
+        self::assertSame(
+            'int',
+            $help['param']['type'],
+            "Nullable named type '?int' should render as 'int' (matching 'ReflectionNamedType::getName()').",
+        );
+        self::assertFalse(
+            $help['param']['required'],
+            'Argument with a default value must be reported as optional.',
+        );
+    }
+
+    public function testGetActionArgsHelpWithUnionNullableType(): void
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $help = $controller->getActionArgsHelp($controller->createAction('union-nullable-type'));
+
+        self::assertArrayHasKey(
+            'param',
+            $help,
+            "Expected help to expose the 'param' argument for the union-nullable-typed action.",
+        );
+        self::assertSame(
+            'string|int|null',
+            $help['param']['type'],
+            "Union type with 'null' should render every member including 'null'.",
+        );
+        self::assertFalse(
+            $help['param']['required'],
+            'Argument with a default value must be reported as optional.',
+        );
+    }
+
+    public function testStringifyReflectionTypeWithUnknownSubclass(): void
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $mockType = $this->createMock(ReflectionType::class);
+
+        $mockType->method('__toString')->willReturn('unknown');
+
+        $method = new ReflectionMethod($controller, 'stringifyReflectionType');
+
+        self::assertSame(
+            'unknown',
+            $method->invoke($controller, $mockType),
+            "Unknown 'ReflectionType' subclasses should fall back to string casting.",
+        );
     }
 
     public function testGetActionHelpSummaryOnNull(): void
