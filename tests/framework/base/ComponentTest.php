@@ -209,7 +209,7 @@ final class ComponentTest extends TestCase
         );
 
         // @phpstan-ignore property.notFound
-        $value2 = $this->component->Caption;
+        $this->component->Caption;
     }
 
     public function testSetProperty(): void
