@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 - Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
+- Bug #20159: Fixed chroot resolve null route  (gozoro)
 
 
 2.0.54 January 09, 2026
@@ -222,7 +223,6 @@ Yii Framework 2 Change Log
 - New #20137: Added `yii\caching\CallbackDependency` to allow using a callback to determine if a cache dependency is still valid (laxity7)
 - Enh #20134: Raise minimum `PHP` version to `7.3` (@terabytesoftw)
 - Bug #20141: Update `ezyang/htmlpurifier` dependency to version `4.17` (@terabytesoftw)
-- Bug #20159: Fixed chroot resolve null route  (gozoro)
 
 2.0.49.2 October 12, 2023
 -------------------------
