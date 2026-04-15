@@ -116,11 +116,9 @@ class MaskedInput extends InputWidget
         'onUnMask',
         'onKeyValidation',
         'isComplete',
-        // @deprecated removed in 5.0:
         'preValidation',
         'postValidation',
-        // @deprecated removed in 4.0:
-        'canClearPosition'
+        'canClearPosition',
     ];
 
 

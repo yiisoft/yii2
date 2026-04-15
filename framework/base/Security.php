@@ -82,32 +82,6 @@ class Security extends Component
     public $passwordHashCost = 13;
 
     /**
-     * @var boolean if LibreSSL should be used.
-     * The recent (> 2.1.5) LibreSSL RNGs are faster and likely better than /dev/urandom.
-     */
-    private $_useLibreSSL;
-
-
-    /**
-     * @return bool if LibreSSL should be used
-     * Use version is 2.1.5 or higher.
-     * @since 2.0.36
-     * @deprecated since 2.0.55. This method is not used internally. Will be removed in 2.2.
-     */
-    protected function shouldUseLibreSSL()
-    {
-        if ($this->_useLibreSSL === null) {
-            // Parse OPENSSL_VERSION_TEXT because OPENSSL_VERSION_NUMBER is no use for LibreSSL.
-            // https://bugs.php.net/bug.php?id=71143
-            $this->_useLibreSSL = defined('OPENSSL_VERSION_TEXT')
-                && preg_match('{^LibreSSL (\d\d?)\.(\d\d?)\.(\d\d?)$}', OPENSSL_VERSION_TEXT, $matches)
-                && (10000 * $matches[1]) + (100 * $matches[2]) + $matches[3] >= 20105;
-        }
-
-        return $this->_useLibreSSL;
-    }
-
-    /**
      * Encrypts data using a password.
      * Derives keys for encryption and authentication from the password using PBKDF2 and a random salt,
      * which is deliberately slow to protect against dictionary attacks. Use [[encryptByKey()]] to
@@ -492,37 +466,6 @@ class Security extends Component
         }
 
         return password_verify($password, $hash);
-    }
-
-    /**
-     * Generates a salt that can be used to generate a password hash.
-     *
-     * The PHP [crypt()](https://www.php.net/manual/en/function.crypt.php) built-in function
-     * requires, for the Blowfish hash algorithm, a salt string in a specific format:
-     * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
-     * from the alphabet "./0-9A-Za-z".
-     *
-     * @param int $cost the cost parameter
-     * @return string the random salt value.
-     * @throws InvalidArgumentException if the cost parameter is out of the range of 4 to 31.
-     * @deprecated since 2.0.55. This method is no longer used internally
-     * as [[generatePasswordHash()]] now relies on `password_hash()`. Will be removed in 2.2.
-     */
-    protected function generateSalt($cost = 13)
-    {
-        $cost = (int) $cost;
-        if ($cost < 4 || $cost > 31) {
-            throw new InvalidArgumentException('Cost must be between 4 and 31.');
-        }
-
-        // Get a 20-byte random string
-        $rand = $this->generateRandomKey(20);
-        // Form the prefix that specifies Blowfish (bcrypt) algorithm and cost parameter.
-        $salt = sprintf('$2y$%02d$', $cost);
-        // Append the random salt data in the required base64 format.
-        $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
-
-        return $salt;
     }
 
     /**
