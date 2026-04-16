@@ -86,28 +86,20 @@ class View extends Component implements DynamicContentAwareInterface
      * through this property.
      */
     public $blocks;
-    /**
-     * @var array|DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
-     * This property is used internally to implement the dynamic content caching feature. Do not modify it directly.
-     * @internal
-     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicContents()]],
-     * [[pushDynamicContent()]], [[popDynamicContent()]] instead.
-     */
-    public $cacheStack = [];
-    /**
-     * @var array a list of placeholders for embedding dynamic contents. This property
-     * is used internally to implement the content caching feature. Do not modify it directly.
-     * @internal
-     * @deprecated Since 2.0.14. Do not use this property directly. Use methods [[getDynamicPlaceholders()]],
-     * [[setDynamicPlaceholders()]], [[addDynamicPlaceholder()]] instead.
-     */
-    public $dynamicPlaceholders = [];
 
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
      * rendered at a moment because one view may be rendered within another.
      */
     private $_viewFiles = [];
+    /**
+     * @var DynamicContentAwareInterface[] a list of currently active dynamic content class instances.
+     */
+    private $_dynamicContents = [];
+    /**
+     * @var array a list of placeholders for embedding dynamic contents.
+     */
+    private $_dynamicPlaceholders = [];
 
 
     /**
@@ -380,9 +372,9 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function renderDynamic($statements)
     {
-        if (!empty($this->cacheStack)) {
-            $n = count($this->dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";
+        if (!empty($this->_dynamicContents)) {
+            $placeholderIndex = count($this->_dynamicPlaceholders);
+            $placeholder = "<![CDATA[YII-DYNAMIC-$placeholderIndex]]>";
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
@@ -396,7 +388,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function getDynamicPlaceholders()
     {
-        return $this->dynamicPlaceholders;
+        return $this->_dynamicPlaceholders;
     }
 
     /**
@@ -404,7 +396,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function setDynamicPlaceholders($placeholders)
     {
-        $this->dynamicPlaceholders = $placeholders;
+        $this->_dynamicPlaceholders = $placeholders;
     }
 
     /**
@@ -412,15 +404,10 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function addDynamicPlaceholder($placeholder, $statements)
     {
-        foreach ($this->cacheStack as $cache) {
-            if ($cache instanceof DynamicContentAwareInterface) {
-                $cache->addDynamicPlaceholder($placeholder, $statements);
-            } else {
-                // TODO: Remove in 2.1
-                $cache->dynamicPlaceholders[$placeholder] = $statements;
-            }
+        foreach ($this->_dynamicContents as $cache) {
+            $cache->addDynamicPlaceholder($placeholder, $statements);
         }
-        $this->dynamicPlaceholders[$placeholder] = $statements;
+        $this->_dynamicPlaceholders[$placeholder] = $statements;
     }
 
     /**
@@ -441,7 +428,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function getDynamicContents()
     {
-        return $this->cacheStack;
+        return $this->_dynamicContents;
     }
 
     /**
@@ -452,7 +439,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function pushDynamicContent(DynamicContentAwareInterface $instance)
     {
-        $this->cacheStack[] = $instance;
+        $this->_dynamicContents[] = $instance;
     }
 
     /**
@@ -462,7 +449,7 @@ class View extends Component implements DynamicContentAwareInterface
      */
     public function popDynamicContent()
     {
-        array_pop($this->cacheStack);
+        array_pop($this->_dynamicContents);
     }
 
     /**

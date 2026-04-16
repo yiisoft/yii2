@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug: Moved `declare(strict_types=1)` before the license docblock and standardized PHPDoc headers across framework and test files (terabytesoftw)
 - Chg: Extract jQuery integration to `yiisoft/yii2-jquery` extension, make framework CSS-agnostic, and switch `View` ready/load wrappers to vanilla JS event listeners (terabytesoftw)
 - Bug: Fix `Controller::getActionArgsHelp()` crashing on PHP `8.2+` DNF/intersection types in console `Controller` class (terabytesoftw)
+- Chg: Remove deprecated APIs in `Security`, `View`, and `UniqueValidator`, delete deprecated migration template `createJunctionMigration.php`, and clean related validator tests (terabytesoftw)
 
 
 2.0.55 under development
