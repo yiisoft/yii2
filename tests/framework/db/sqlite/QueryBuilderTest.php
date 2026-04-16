@@ -12,7 +12,6 @@ use Closure;
 use PDO;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
-use yii\db\Query;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;
 use yiiunit\data\base\TraversableObject;
@@ -154,64 +153,6 @@ class QueryBuilderTest extends BaseQueryBuilder
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
         $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function testBuildUnion(): void
-    {
-        $expectedQuerySql = self::replaceQuotes(
-            'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
-        );
-        $query = new Query();
-        $secondQuery = new Query();
-        $secondQuery->select('id')
-            ->from('TotalTotalExample t2')
-            ->where('w > 5');
-        $thirdQuery = new Query();
-        $thirdQuery->select('id')
-            ->from('TotalTotalExample t3')
-            ->where('w = 3');
-        $query->select('id')
-            ->from('TotalExample t1')
-            ->where(['and', 'w > 0', 'x < 2'])
-            ->union($secondQuery)
-            ->union($thirdQuery, true);
-        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals([], $queryParams);
-    }
-
-    public function testBuildWithQuery(): void
-    {
-        $expectedQuerySql = self::replaceQuotes(
-            'WITH a1 AS (SELECT [[id]] FROM [[t1]] WHERE expr = 1), a2 AS (SELECT [[id]] FROM [[t2]] INNER JOIN [[a1]] ON t2.id = a1.id WHERE expr = 2 UNION  SELECT [[id]] FROM [[t3]] WHERE expr = 3) SELECT * FROM [[a2]]'
-        );
-        $with1Query = (new Query())
-            ->select('id')
-            ->from('t1')
-            ->where('expr = 1');
-
-        $with2Query = (new Query())
-            ->select('id')
-            ->from('t2')
-            ->innerJoin('a1', 't2.id = a1.id')
-            ->where('expr = 2');
-
-        $with3Query = (new Query())
-            ->select('id')
-            ->from('t3')
-            ->where('expr = 3');
-
-        $query = (new Query())
-            ->withQuery($with1Query, 'a1')
-            ->withQuery($with2Query->union($with3Query), 'a2')
-            ->from('a2');
-
-        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals([], $queryParams);
     }
 
     public function testResetSequence(): void
