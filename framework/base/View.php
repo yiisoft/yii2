@@ -373,8 +373,8 @@ class View extends Component implements DynamicContentAwareInterface
     public function renderDynamic($statements)
     {
         if (!empty($this->_dynamicContents)) {
-            $n = count($this->_dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";
+            $placeholderIndex = count($this->_dynamicPlaceholders);
+            $placeholder = "<![CDATA[YII-DYNAMIC-$placeholderIndex]]>";
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
