@@ -12,7 +12,7 @@ use yii\data\DataProviderInterface;
 use yiiunit\framework\console\stubs\DummyService;
 use yii\console\Controller;
 use yii\console\Request;
-use yiiunit\framework\base\Post;
+use yiiunit\framework\web\Post;
 
 class FakeInjectionController extends Controller
 {

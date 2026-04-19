@@ -27,10 +27,7 @@ use yiiunit\TestCase;
 #[Group('console')]
 class ControllerTest extends TestCase
 {
-    /**
-     * @var FakeController
-     */
-    private $controller;
+    private FakeController|FakeInjectionController $controller;
 
     protected function setUp(): void
     {
