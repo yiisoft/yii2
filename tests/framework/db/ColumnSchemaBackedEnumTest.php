@@ -8,9 +8,6 @@ use yiiunit\framework\db\stubs\IntBackedStatus;
 use yiiunit\framework\db\stubs\StringBackedStatus;
 use yiiunit\TestCase;
 
-/**
- * @requires PHP >= 8.1
- */
 class ColumnSchemaBackedEnumTest extends TestCase
 {
     protected function setUp(): void

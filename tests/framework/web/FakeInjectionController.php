@@ -6,21 +6,27 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\console;
+namespace yiiunit\framework\web;
 
 use yii\data\DataProviderInterface;
-use yiiunit\framework\console\stubs\DummyService;
-use yii\console\Controller;
-use yii\console\Request;
-use yiiunit\framework\base\Post;
+use yii\web\Controller;
+use yii\web\Request;
+use yiiunit\framework\web\stubs\VendorImage;
+use yiiunit\framework\web\stubs\ModelBindingStub;
 
-class FakePhp71Controller extends Controller
+/**
+ * @author Sam Mousa<sam@mousa.nl>
+ * @since 2.0.36
+ */
+class FakeInjectionController extends Controller
 {
+    public $enableCsrfValidation = false;
+
     public function actionInjection(
         $before,
         Request $request,
         $between,
-        DummyService $dummyService,
+        VendorImage $vendorImage,
         ?Post $post,
         $after
     ) {
@@ -31,6 +37,10 @@ class FakePhp71Controller extends Controller
     }
 
     public function actionModuleServiceInjection(DataProviderInterface $dataProvider): void
+    {
+    }
+
+    public function actionModelBindingInjection(ModelBindingStub $model): void
     {
     }
 }

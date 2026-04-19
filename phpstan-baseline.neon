@@ -1315,24 +1315,6 @@ parameters:
 			path: tests/framework/base/ComponentTest.php
 
 		-
-			message: '#^Property yiiunit\\framework\\console\\ControllerTest\:\:\$controller \(yiiunit\\framework\\console\\FakeController\) does not accept yiiunit\\framework\\console\\FakePhp71Controller\.$#'
-			identifier: assign.propertyType
-			count: 5
-			path: tests/framework/console/ControllerTest.php
-
-		-
-			message: '#^Parameter \$post of method yiiunit\\framework\\console\\FakePhp71Controller\:\:actionInjection\(\) has invalid type yiiunit\\framework\\base\\Post\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/framework/console/FakePhp71Controller.php
-
-		-
-			message: '#^Parameter \$post of method yiiunit\\framework\\console\\FakePhp71Controller\:\:actionNullableInjection\(\) has invalid type yiiunit\\framework\\base\\Post\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/framework/console/FakePhp71Controller.php
-
-		-
 			message: '#^Return type \(void\) of method yiiunit\\framework\\console\\controllers\\FixtureConsoledController\:\:stdout\(\) should be compatible with return type \(bool\|int\) of method yii\\console\\Controller\<yii\\console\\Application\>\:\:stdout\(\)$#'
 			identifier: method.childReturnType
 			count: 1

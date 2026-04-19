@@ -8,7 +8,12 @@
 
 namespace yiiunit\framework\web;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\web\Application;
+use yiiunit\framework\web\FakeController;
+use yiiunit\framework\web\FakeInjectionController;
+use yiiunit\framework\web\FakeTypedParamsController;
+use yiiunit\framework\web\FakeUnionTypesController;
 use yiiunit\framework\web\stubs\ModelBindingStub;
 use yii\base\Module;
 use yii\data\ArrayDataProvider;
@@ -23,28 +28,36 @@ use yiiunit\framework\web\stubs\VendorImage;
 use yiiunit\TestCase;
 
 /**
- * @group web
+ * Unit test for {@see \yii\web\Controller}.
  */
+#[Group('web')]
+#[Group('controller')]
 class ControllerTest extends TestCase
 {
-    private \yiiunit\framework\web\FakeController|\yiiunit\framework\web\FakePhp71Controller|\yiiunit\framework\web\FakePhp7Controller|\yiiunit\framework\web\FakePhp80Controller $controller;
+    private \yii\web\Controller $controller;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->mockWebApplication();
-        $this->controller = new FakeController('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+
+        $this->controller = new FakeController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
 
         Yii::$app->controller = $this->controller;
     }
@@ -66,19 +79,22 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
         $params = [];
@@ -89,25 +105,31 @@ class ControllerTest extends TestCase
 
     public function testModelBindingHttpException(): void
     {
-        $this->controller = new FakePhp71Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'container' => [
-                'definitions' => [
-                    ModelBindingStub::class => [
-                        ModelBindingStub::class,
-                        'build',
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'container' => [
+                        'definitions' => [
+                            ModelBindingStub::class => [
+                                ModelBindingStub::class,
+                                'build',
+                            ],
+                        ],
+                    ],
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
                     ],
                 ],
-            ],
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
-                ],
-            ],
-        ]));
+            ),
+        );
+
         Yii::$container->set(VendorImage::class, VendorImage::class);
         $this->mockWebApplication(['controller' => $this->controller]);
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModelBindingInjection');
@@ -118,19 +140,23 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
+
         $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
@@ -146,18 +172,23 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
+
         $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
@@ -170,18 +201,22 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
         $params = ['between' => 'test', 'after' => 'another', 'before' => 'test'];
@@ -200,22 +235,27 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParamsFromModule(): void
     {
-        $module = new Module('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $module = new Module(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
+
         $module->set('yii\data\DataProviderInterface', [
             'class' => ArrayDataProvider::class,
         ]);
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', $module);
+        $this->controller = new FakeInjectionController('fake', $module);
         $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
@@ -229,18 +269,23 @@ class ControllerTest extends TestCase
      */
     public function testBindTypedActionParams(): void
     {
-        // Use the PHP7 controller for this test
-        $this->controller = new FakePhp7Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeTypedParamsController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
+
         $this->mockWebApplication(['controller' => $this->controller]);
 
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
@@ -326,18 +371,22 @@ class ControllerTest extends TestCase
 
     public function testUnionBindingActionParams(): void
     {
-        // Use the PHP80 controller for this test
-        $this->controller = new FakePhp80Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeUnionTypesController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
 
         $this->mockWebApplication(['controller' => $this->controller]);
 
@@ -358,18 +407,22 @@ class ControllerTest extends TestCase
 
     public function testUnionBindingActionParamsWithArray(): void
     {
-        // Use the PHP80 controller for this test
-        $this->controller = new FakePhp80Controller('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
+        $this->controller = new FakeUnionTypesController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                    'components' => [
+                        'request' => [
+                            'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                            'scriptFile' => __DIR__ . '/index.php',
+                            'scriptUrl' => '/index.php',
+                        ],
+                    ],
                 ],
-            ],
-        ]));
+            ),
+        );
 
         $this->mockWebApplication(['controller' => $this->controller]);
 
