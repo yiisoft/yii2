@@ -27,6 +27,5 @@ class ErrorHandlerRenderEvent extends Event
     /**
      * Rendered HTML output.
      */
-    public string $output = "";
+    public string $output = '';
 }
-

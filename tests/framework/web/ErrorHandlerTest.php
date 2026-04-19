@@ -183,7 +183,8 @@ Exception: yii\web\NotFoundHttpException', $out);
         ob_get_clean();
 
         self::assertSame(
-            $exception, $actualException,
+            $exception,
+            $actualException,
             "Exception passed to the 'afterRender' event should be the same as the one rendered."
         );
         self::assertStringContainsString(
