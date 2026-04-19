@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,13 +11,21 @@
 namespace yiiunit\framework\web;
 
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use yii\BaseYii;
+use yii\base\ErrorException;
 use yii\web\Application;
 use Yii;
+use yii\web\ErrorHandlerRenderEvent;
 use yii\web\NotFoundHttpException;
 use yii\web\View;
 use yiiunit\TestCase;
 
+/**
+ * Unit test for {@see \yii\web\ErrorHandler}.
+ */
+#[Group('web')]
+#[Group('error-handler')]
 class ErrorHandlerTest extends TestCase
 {
     protected function setUp(): void
@@ -116,6 +126,97 @@ Exception: yii\web\NotFoundHttpException', $out);
         ob_get_clean();
         $out = Yii::$app->response->data;
         $this->assertStringNotContainsString('<script', $out);
+    }
+
+    public function testAfterRenderEventCanModifyOutput(): void
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $exception = new Exception('Some Exception');
+
+        $actualException = null;
+
+        $handler->on(
+            ErrorHandler::EVENT_AFTER_RENDER,
+            static function (ErrorHandlerRenderEvent $event) use (&$actualException): void {
+                $actualException = $event->exception;
+                $event->output .= "\n<!--after-render-->";
+            }
+        );
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [$exception]);
+        ob_get_clean();
+
+        self::assertSame(
+            $exception,
+            $actualException,
+            "Exception passed to the 'afterRender' event should be the same as the one rendered.",
+        );
+        self::assertStringContainsString(
+            '<!--after-render-->',
+            Yii::$app->response->data,
+            "Output modified in the 'afterRender' event should be present in the response.",
+        );
+    }
+
+    public function testAfterRenderEventCanModifyOutputInErrorActionView(): void
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $handler->errorAction = 'test/error';
+
+        $exception = new NotFoundHttpException('Resource not found');
+
+        $actualException = null;
+
+        $handler->on(
+            ErrorHandler::EVENT_AFTER_RENDER,
+            static function (ErrorHandlerRenderEvent $event) use (&$actualException): void {
+                $actualException = $event->exception;
+                $event->output .= "\n<!--after-render-error-action-->";
+            }
+        );
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [$exception]);
+        ob_get_clean();
+
+        self::assertSame(
+            $exception, $actualException,
+            "Exception passed to the 'afterRender' event should be the same as the one rendered."
+        );
+        self::assertStringContainsString(
+            '<!--after-render-error-action-->',
+            Yii::$app->response->data,
+            "Output modified in the 'afterRender' event should be present in the response."
+        );
+    }
+
+    public function testAfterRenderEventCanModifyOutputForPhpErrors(): void
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $exception = new ErrorException('PHP Warning', E_WARNING, E_WARNING, __FILE__, __LINE__);
+
+        $handler->exception = $exception;
+
+        $handler->on(
+            ErrorHandler::EVENT_AFTER_RENDER,
+            static function (ErrorHandlerRenderEvent $event): void {
+                $event->output .= "\n<!--php-error-after-render-->";
+            }
+        );
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [$exception]);
+        ob_get_clean();
+
+        self::assertStringContainsString(
+            '<!--php-error-after-render-->',
+            Yii::$app->response->data,
+            "Output modified in the 'afterRender' event should be present in the response."
+        );
     }
 
     public function testRenderCallStackItem(): void
