@@ -27,7 +27,7 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    private \yiiunit\framework\web\FakeController|\yiiunit\framework\web\FakePhp71Controller|\yiiunit\framework\web\FakePhp7Controller|\yiiunit\framework\web\FakePhp80Controller $controller;
+    private \yiiunit\framework\web\FakeController|\yiiunit\framework\web\FakeInjectionController|\yiiunit\framework\web\FakeTypedParamsController|\yiiunit\framework\web\FakeUnionTypesController $controller;
 
     protected function setUp(): void
     {
@@ -66,8 +66,7 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
 
@@ -89,7 +88,7 @@ class ControllerTest extends TestCase
 
     public function testModelBindingHttpException(): void
     {
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'container' => [
@@ -118,8 +117,7 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
 
@@ -146,8 +144,7 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -170,8 +167,7 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -214,8 +210,7 @@ class ControllerTest extends TestCase
         $module->set('yii\data\DataProviderInterface', [
             'class' => ArrayDataProvider::class,
         ]);
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', $module);
+        $this->controller = new FakeInjectionController('fake', $module);
         $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');
@@ -229,8 +224,7 @@ class ControllerTest extends TestCase
      */
     public function testBindTypedActionParams(): void
     {
-        // Use the PHP7 controller for this test
-        $this->controller = new FakePhp7Controller('fake', new Application([
+        $this->controller = new FakeTypedParamsController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -326,8 +320,7 @@ class ControllerTest extends TestCase
 
     public function testUnionBindingActionParams(): void
     {
-        // Use the PHP80 controller for this test
-        $this->controller = new FakePhp80Controller('fake', new Application([
+        $this->controller = new FakeUnionTypesController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [
@@ -358,8 +351,7 @@ class ControllerTest extends TestCase
 
     public function testUnionBindingActionParamsWithArray(): void
     {
-        // Use the PHP80 controller for this test
-        $this->controller = new FakePhp80Controller('fake', new Application([
+        $this->controller = new FakeUnionTypesController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
             'components' => [

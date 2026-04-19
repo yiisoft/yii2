@@ -112,8 +112,7 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
         ]));
@@ -128,8 +127,7 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
         ]));
@@ -148,8 +146,7 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
         ]));
@@ -165,8 +162,7 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams(): void
     {
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', new Application([
+        $this->controller = new FakeInjectionController('fake', new Application([
             'id' => 'app',
             'basePath' => __DIR__,
         ]));
@@ -196,8 +192,7 @@ class ControllerTest extends TestCase
         $module->set('yii\data\DataProviderInterface', [
             'class' => ArrayDataProvider::class,
         ]);
-        // Use the PHP71 controller for this test
-        $this->controller = new FakePhp71Controller('fake', $module);
+        $this->controller = new FakeInjectionController('fake', $module);
         $this->mockWebApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionModuleServiceInjection');

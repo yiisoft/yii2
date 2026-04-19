@@ -14,7 +14,7 @@ use yii\web\Controller;
  * @author Brandon Kelly <branodn@craftcms.com>
  * @since 2.0.31
  */
-class FakePhp7Controller extends Controller
+class FakeTypedParamsController extends Controller
 {
     public $enableCsrfValidation = false;
 

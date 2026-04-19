@@ -10,7 +10,7 @@ namespace yiiunit\framework\web;
 
 use yii\web\Controller;
 
-class FakePhp80Controller extends Controller
+class FakeUnionTypesController extends Controller
 {
     public $enableCsrfValidation = false;
 
