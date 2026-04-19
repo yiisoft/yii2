@@ -207,7 +207,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Triggers [[EVENT_AFTER_RENDER]] and returns final HTML content.
+     * Triggers {@see EVENT_AFTER_RENDER} and returns final HTML content.
      *
      * @param Throwable $exception the exception being rendered.
      * @param string $output the rendered HTML output.

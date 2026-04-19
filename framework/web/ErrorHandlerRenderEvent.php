@@ -14,7 +14,7 @@ use Throwable;
 use yii\base\Event;
 
 /**
- * ErrorHandlerRenderEvent represents events triggered by [[ErrorHandler]].
+ * Represents events triggered by {@see ErrorHandler}.
  *
  * @since 22.0
  */
