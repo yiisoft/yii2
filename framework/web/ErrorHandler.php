@@ -35,8 +35,9 @@ use function is_string;
 class ErrorHandler extends \yii\base\ErrorHandler
 {
     /**
-     * @event ErrorHandlerRenderEvent an event that is triggered after HTML error content is rendered.
-     * Event handlers may modify [[ErrorHandlerRenderEvent::$output]].
+     * {@see ErrorHandlerRenderEvent} an event that is triggered after HTML error content is rendered.
+     *
+     * Event handlers may modify {@see ErrorHandlerRenderEvent::$output}.
      *
      * @since 22.0
      */
