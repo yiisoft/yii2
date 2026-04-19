@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +26,11 @@ use yii\helpers\Console;
 use yiiunit\framework\console\stubs\DummyService;
 use yiiunit\TestCase;
 
+/**
+ * Unit test for {@see \yii\console\Controller}.
+ */
 #[Group('console')]
+#[Group('controller')]
 class ControllerTest extends TestCase
 {
     private FakeController|FakeInjectionController $controller;
@@ -32,7 +38,9 @@ class ControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->mockApplication();
+
         Yii::$app->controllerMap = [
             'fake' => 'yiiunit\framework\console\FakeController',
             'fake_witout_output' => 'yiiunit\framework\console\FakeHelpControllerWithoutOutput',
@@ -109,10 +117,16 @@ class ControllerTest extends TestCase
 
     public function testNullableInjectedActionParams(): void
     {
-        $this->controller = new FakeInjectionController('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-        ]));
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                ],
+            ),
+        );
+
         $this->mockApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionNullableInjection');
@@ -124,10 +138,16 @@ class ControllerTest extends TestCase
 
     public function testInjectionContainerException(): void
     {
-        $this->controller = new FakeInjectionController('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-        ]));
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                ],
+            ),
+        );
+
         $this->mockApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
@@ -143,10 +163,16 @@ class ControllerTest extends TestCase
 
     public function testUnknownInjection(): void
     {
-        $this->controller = new FakeInjectionController('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-        ]));
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                ],
+            ),
+        );
+
         $this->mockApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
@@ -159,10 +185,16 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParams(): void
     {
-        $this->controller = new FakeInjectionController('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-        ]));
+        $this->controller = new FakeInjectionController(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                ],
+            ),
+        );
+
         $this->mockApplication(['controller' => $this->controller]);
 
         $injectionAction = new InlineAction('injection', $this->controller, 'actionInjection');
@@ -182,13 +214,21 @@ class ControllerTest extends TestCase
 
     public function testInjectedActionParamsFromModule(): void
     {
-        $module = new Module('fake', new Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
-        ]));
-        $module->set('yii\data\DataProviderInterface', [
-            'class' => ArrayDataProvider::class,
-        ]);
+        $module = new Module(
+            'fake',
+            new Application(
+                [
+                    'id' => 'app',
+                    'basePath' => __DIR__,
+                ],
+            ),
+        );
+
+        $module->set(
+            'yii\data\DataProviderInterface',
+            ['class' => ArrayDataProvider::class],
+        );
+
         $this->controller = new FakeInjectionController('fake', $module);
         $this->mockWebApplication(['controller' => $this->controller]);
 
