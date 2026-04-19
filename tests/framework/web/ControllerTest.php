@@ -34,7 +34,7 @@ use yiiunit\TestCase;
 #[Group('controller')]
 class ControllerTest extends TestCase
 {
-    private FakeController|FakeInjectionController|FakeTypedParamsController|FakeUnionTypesController $controller;
+    private \yii\web\Controller $controller;
 
     protected function setUp(): void
     {

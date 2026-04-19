@@ -13,6 +13,7 @@ namespace yiiunit\framework\console;
 use PHPUnit\Framework\Attributes\Group;
 use ReflectionMethod;
 use ReflectionType;
+use yii\console\Controller;
 use yii\data\ArrayDataProvider;
 use RuntimeException;
 use Yii;
@@ -33,7 +34,7 @@ use yiiunit\TestCase;
 #[Group('controller')]
 class ControllerTest extends TestCase
 {
-    private FakeController|FakeInjectionController $controller;
+    private Controller $controller;
 
     protected function setUp(): void
     {
