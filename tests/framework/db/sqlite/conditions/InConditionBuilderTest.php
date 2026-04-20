@@ -63,10 +63,10 @@ final class InConditionBuilderTest extends DatabaseTestCase
         $inConditionBuilder = new InConditionBuilder($db->getQueryBuilder());
 
         $inCondition = new InCondition(
-            ['id'],
+            ['id', 'name'],
             'in',
             $query
-                ->select('id')
+                ->select(['id', 'name'])
                 ->from('users')
                 ->where(['active' => 1]),
         );

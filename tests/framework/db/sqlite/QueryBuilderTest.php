@@ -12,6 +12,7 @@ namespace yiiunit\framework\db\sqlite;
 
 use Closure;
 use PDO;
+use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;

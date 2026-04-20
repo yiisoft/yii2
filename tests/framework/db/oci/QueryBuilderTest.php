@@ -12,6 +12,7 @@ namespace yiiunit\framework\db\oci;
 
 use Closure;
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
