@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\base\db\conditions\providers;
 
+use Generator;
 use yii\db\conditions\InCondition;
 use yii\db\Expression;
 use yii\db\Query;
@@ -78,9 +79,58 @@ class InConditionBuilderProvider
             'composite in' => [
                 ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 <<<SQL
-                ([[id]], [[name]]) IN ((:qp0, :qp1))
+                (([[id]] = :qp0 AND [[name]] = :qp1))
                 SQL,
                 [':qp0' => 1, ':qp1' => 'oy'],
+            ],
+            'composite in with multiple rows' => [
+                ['in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]],
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'composite in with expression column' => [
+                ['in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]],
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'composite in with null' => [
+                ['in', ['id', 'name'], [['id' => 1, 'name' => null]]],
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] IS NULL))
+                SQL,
+                [':qp0' => 1],
+            ],
+            'composite not in' => [
+                ['not in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
+                <<<SQL
+                (([[id]] <> :qp0 OR [[name]] <> :qp1))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'oy'],
+            ],
+            'composite not in with multiple rows' => [
+                ['not in', ['id', 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]],
+                <<<SQL
+                (([[id]] <> :qp0 OR [[name]] <> :qp1) AND ([[id]] <> :qp2 OR [[name]] <> :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'composite not in with expression column' => [
+                ['not in', [new Expression('id'), 'name'], [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]],
+                <<<SQL
+                (([[id]] <> :qp0 OR [[name]] <> :qp1) AND ([[id]] <> :qp2 OR [[name]] <> :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'composite not in with null' => [
+                ['not in', ['id', 'name'], [['id' => 1, 'name' => null]]],
+                <<<SQL
+                (([[id]] <> :qp0 OR [[name]] IS NOT NULL))
+                SQL,
+                [':qp0' => 1],
             ],
             'composite in (just one column)' => [
                 ['in', ['id'], [['id' => 1, 'name' => 'Name1'], ['id' => 2, 'name' => 'Name2']]],
@@ -168,9 +218,27 @@ class InConditionBuilderProvider
                     ['id' => 2, 'name' => 'yo'],
                 ])],
                 <<<SQL
-                ([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))
+                (([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))
                 SQL,
                 [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
+            ],
+            'composite in with generator columns' => [
+                new InCondition(
+                    self::generatorFrom(['id', 'name']),
+                    'in',
+                    [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                ),
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'in with generator values' => [
+                new InCondition('id', 'in', self::generatorFrom([1, 2, 3])),
+                <<<SQL
+                [[id]] IN (:qp0, :qp1, :qp2)
+                SQL,
+                [':qp0' => 1, ':qp1' => 2, ':qp2' => 3],
             ],
             'in condition object with scalar' => [
                 new InCondition('id', 'in', 1),
@@ -222,5 +290,10 @@ class InConditionBuilderProvider
                 [':qp0' => 1, ':qp1' => 2],
             ],
         ];
+    }
+
+    private static function generatorFrom(array $items): Generator
+    {
+        yield from $items;
     }
 }

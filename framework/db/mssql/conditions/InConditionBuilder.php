@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,7 +11,8 @@
 namespace yii\db\mssql\conditions;
 
 use yii\base\NotSupportedException;
-use yii\db\Expression;
+use yii\db\ExpressionInterface;
+use yii\db\Query;
 
 /**
  * {@inheritdoc}
@@ -23,8 +26,12 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
      * {@inheritdoc}
      * @throws NotSupportedException if `$columns` is an array
      */
-    protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
-    {
+    protected function buildSubqueryInCondition(
+        string $operator,
+        array|string|ExpressionInterface $columns,
+        Query $values,
+        array &$params
+    ): string {
         if (is_array($columns)) {
             throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
         }
@@ -35,32 +42,8 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
     /**
      * {@inheritdoc}
      */
-    protected function buildCompositeInCondition($operator, $columns, $values, &$params)
+    protected function getNotEqualOperator(): string
     {
-        $quotedColumns = [];
-        foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
-                $column = $column->expression;
-            }
-            $quotedColumns[$i] = strpos($column, '(') === false ? $this->queryBuilder->db->quoteColumnName($column) : $column;
-        }
-        $vss = [];
-        foreach ($values as $value) {
-            $vs = [];
-            foreach ($columns as $i => $column) {
-                if ($column instanceof Expression) {
-                    $column = $column->expression;
-                }
-                if (isset($value[$column])) {
-                    $phName = $this->queryBuilder->bindParam($value[$column], $params);
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : ' != ') . $phName;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
-                }
-            }
-            $vss[] = '(' . implode($operator === 'IN' ? ' AND ' : ' OR ', $vs) . ')';
-        }
-
-        return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
+        return '!=';
     }
 }

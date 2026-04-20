@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\base\db\conditions;
 
+use Generator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use yii\db\ArrayExpression;
@@ -81,5 +82,48 @@ final class InConditionTest extends TestCase
             $values->getDimension(),
             'Unexpected values expression dimension.',
         );
+    }
+
+    public function testGetColumnConvertsGeneratorToArray(): void
+    {
+        $condition = new InCondition(self::generatorFrom(['id', 'name']), 'IN', [1, 2]);
+
+        $column = $condition->getColumn();
+        $columnAgain = $condition->getColumn();
+
+        self::assertSame(
+            ['id', 'name'],
+            $column,
+            'Column traversable should normalize to array.',
+        );
+        self::assertSame(
+            ['id', 'name'],
+            $columnAgain,
+            'Column normalization should be stable across calls.',
+        );
+    }
+
+    public function testGetValuesConvertsGeneratorToArray(): void
+    {
+        $condition = new InCondition('id', 'IN', self::generatorFrom([1, 2, 3]));
+
+        $values = $condition->getValues();
+        $valuesAgain = $condition->getValues();
+
+        self::assertSame(
+            [1, 2, 3],
+            $values,
+            'Values traversable should normalize to array.',
+        );
+        self::assertSame(
+            [1, 2, 3],
+            $valuesAgain,
+            'Values normalization should be stable across calls.',
+        );
+    }
+
+    private static function generatorFrom(array $items): Generator
+    {
+        yield from $items;
     }
 }

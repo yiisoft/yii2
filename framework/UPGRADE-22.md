@@ -1,6 +1,6 @@
 # Upgrading Instructions for Yii Framework 22.x
 
-This file contains the upgrade notes for the Yii Framework `22.x` line. These notes highlight changes that break 
+This file contains the upgrade notes for the Yii Framework `22.x` line. These notes highlight changes that break
 backwards compatibility from the `2.0.x` line and that require action when upgrading an application.
 
 For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
@@ -9,8 +9,8 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 
 ### General upgrade notes
 
-* Raised minimum supported PHP version to `8.3`.
-* All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
+- Raised minimum supported PHP version to `8.3`.
+- All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
   you must update your code before upgrading.
 
 ### ActiveField label, radio, and checkbox enhancements
@@ -72,28 +72,28 @@ not available in PHP >= `8.0`, so the dual-mode `$useApcu` property has been rem
 'cache' => [
     'class' => 'yii\caching\ApcuCache',
 ],
-```  
+```
 
 ### Bootstrap CSS class defaults removed
 
 Bootstrap-specific CSS class defaults have been removed from widget properties. The framework is now CSS-agnostic; no
 CSS framework is required or assumed. The following property defaults have changed:
 
-| Class                      | Property              | Old default                                                    | New default                                           |
-|----------------------------|-----------------------|----------------------------------------------------------------|-------------------------------------------------------|
-| `yii\widgets\ActiveField`  | `$options`            | `['class' => 'form-group']`                                    | `[]`                                                  |
-| `yii\widgets\ActiveField`  | `$inputOptions`       | `['class' => 'form-control']`                                  | `[]`                                                  |
-| `yii\widgets\ActiveField`  | `$errorOptions`       | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
-| `yii\widgets\ActiveField`  | `$labelOptions`       | `['class' => 'control-label']`                                 | `[]`                                                  |
-| `yii\widgets\ActiveForm`   | `$errorCssClass`      | `'has-error'`                                                  | `''`                                                  |
-| `yii\widgets\ActiveForm`   | `$successCssClass`    | `'has-success'`                                                | `''`                                                  |
-| `yii\grid\GridView`        | `$tableOptions`       | `['class' => 'table table-striped table-bordered']`            | `[]`                                                  |
-| `yii\grid\GridView`        | `$filterErrorOptions` | `['class' => 'help-block']`                                    | `['class' => 'field-error']`                          |
-| `yii\grid\DataColumn`      | `$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                    | `['id' => null]`                                      |
-| `yii\widgets\DetailView`   | `$options`            | `['class' => 'table table-striped table-bordered detail-view']`| `['class' => 'detail-view']`                          |
-| `yii\widgets\Breadcrumbs`  | `$options`            | `['class' => 'breadcrumb']`                                    | `[]`                                                  |
-| `yii\widgets\LinkPager`    | `$options`            | `['class' => 'pagination']`                                    | `[]`                                                  |
-| `yii\captcha\Captcha`      | `$options`            | `['class' => 'form-control']`                                  | `[]`                                                  |
+| Class                     | Property              | Old default                                                     | New default                  |
+| ------------------------- | --------------------- | --------------------------------------------------------------- | ---------------------------- |
+| `yii\widgets\ActiveField` | `$options`            | `['class' => 'form-group']`                                     | `[]`                         |
+| `yii\widgets\ActiveField` | `$inputOptions`       | `['class' => 'form-control']`                                   | `[]`                         |
+| `yii\widgets\ActiveField` | `$errorOptions`       | `['class' => 'help-block']`                                     | `['class' => 'field-error']` |
+| `yii\widgets\ActiveField` | `$labelOptions`       | `['class' => 'control-label']`                                  | `[]`                         |
+| `yii\widgets\ActiveForm`  | `$errorCssClass`      | `'has-error'`                                                   | `''`                         |
+| `yii\widgets\ActiveForm`  | `$successCssClass`    | `'has-success'`                                                 | `''`                         |
+| `yii\grid\GridView`       | `$tableOptions`       | `['class' => 'table table-striped table-bordered']`             | `[]`                         |
+| `yii\grid\GridView`       | `$filterErrorOptions` | `['class' => 'help-block']`                                     | `['class' => 'field-error']` |
+| `yii\grid\DataColumn`     | `$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                     | `['id' => null]`             |
+| `yii\widgets\DetailView`  | `$options`            | `['class' => 'table table-striped table-bordered detail-view']` | `['class' => 'detail-view']` |
+| `yii\widgets\Breadcrumbs` | `$options`            | `['class' => 'breadcrumb']`                                     | `[]`                         |
+| `yii\widgets\LinkPager`   | `$options`            | `['class' => 'pagination']`                                     | `[]`                         |
+| `yii\captcha\Captcha`     | `$options`            | `['class' => 'form-control']`                                   | `[]`                         |
 
 `yii\grid\ActionColumn::initDefaultButton()` no longer falls back to `glyphicon glyphicon-$iconName` markup when an
 icon name is not present in `$icons`. It now renders the icon name as plain text.
@@ -103,8 +103,8 @@ For `ActiveField`:
 
 ```php
 $form->field(
-    $model, 
-    'username', 
+    $model,
+    'username',
     [
         'options'      => ['class' => 'form-group'],
         'inputOptions' => ['class' => 'form-control'],
@@ -125,19 +125,47 @@ $form = ActiveForm::begin(
 );
 ```
 
-**Note on `yii.activeForm.js` compatibility.** `ActiveField::$errorOptions` now defaults to `['class' => 'field-error']` 
-instead of `['class' => 'help-block']`. The client-side validation JavaScript in `yiisoft/yii2-jquery` still defaults 
+**Note on `yii.activeForm.js` compatibility.** `ActiveField::$errorOptions` now defaults to `['class' => 'field-error']`
+instead of `['class' => 'help-block']`. The client-side validation JavaScript in `yiisoft/yii2-jquery` still defaults
 its error selector to `.help-block`, but `ActiveFormJqueryClientScript::getClientOptions()` passes the per-field `error`
-selector in the payload that overrides the JS default at runtime, so client-side validation keeps working against 
+selector in the payload that overrides the JS default at runtime, so client-side validation keeps working against
 `.field-error` with no manual configuration.
 
-### CUBRID database support removed
+### Database
+
+#### CUBRID database support removed
 
 Yii `22.x` no longer includes support for the CUBRID database driver. Applications that still depend on CUBRID must
 migrate to a supported database engine before upgrading to Yii `22.x`.
 
 There is no compatibility layer for CUBRID in this release. The framework no longer ships CUBRID-specific database
 classes, configuration entries, fixtures, or test coverage.
+
+### `InCondition` and `InConditionBuilder` typing + composite `NULL` handling
+
+`yii\db\conditions\InCondition` now uses typed constructor parameters and typed return values:
+
+- `__construct(array|string|ExpressionInterface|Traversable $column, string $operator, array|int|string|ExpressionInterface|Traversable $values)`
+- `getOperator(): string`
+- `getColumn(): array|string|ExpressionInterface`
+- `getValues(): array|int|string|ExpressionInterface`
+- `fromArrayDefinition(...): static`
+
+`Traversable` values passed as `$column` or `$values` are normalized to arrays on first access in `getColumn()` /
+`getValues()` and cached for subsequent calls.
+
+`yii\db\conditions\InConditionBuilder` protected methods now declare parameter and return types. If you extend this
+builder (or DB-specific builders that inherit it), update overridden method signatures accordingly.
+
+Composite `IN` / `NOT IN` generation has changed: the builder now decomposes composite comparisons into boolean
+expressions and uses `IS NULL` / `IS NOT NULL` instead of literal `NULL` comparisons.
+
+Example:
+
+- Before: `([[id]], [[name]]) IN ((:p0, NULL))`
+- After: `(([[id]] = :p0 AND [[name]] IS NULL))`
+
+If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
 
 ### HHVM support removed
 
@@ -148,7 +176,7 @@ All HHVM-specific code has been removed from the framework. Yii `22.x` targets P
 - `yii\base\ErrorHandler` no longer registers a HHVM-specific error handler when `HHVM_VERSION` is defined.
 - HHVM-specific test skips and workarounds have been removed.
 
-If your application references `ErrorException::E_HHVM_FATAL_ERROR` or `ErrorHandler::handleHhvmError()`, remove those 
+If your application references `ErrorException::E_HHVM_FATAL_ERROR` or `ErrorHandler::handleHhvmError()`, remove those
 references when upgrading.
 
 ### jQuery client scripts moved to `yiisoft/yii2-jquery`
@@ -258,10 +286,10 @@ The default implementations now delegate to the configured `$clientScript` handl
 `POS_READY` or `POS_LOAD`, and `View::wrapReadyScript()` / `wrapLoadScript()` now emit vanilla JavaScript event
 listeners instead of jQuery wrappers:
 
-| Position    | Old wrapper                                            | New wrapper                                                                            |
-|-------------|--------------------------------------------------------|----------------------------------------------------------------------------------------|
-| `POS_READY` | `jQuery(function ($) { ... });`                        | `document.addEventListener('DOMContentLoaded', function (event) { ... });`             |
-| `POS_LOAD`  | `jQuery(window).on('load', function () { ... });`      | `window.addEventListener('load', function (event) { ... });`                           |
+| Position    | Old wrapper                                       | New wrapper                                                                |
+| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------- |
+| `POS_READY` | `jQuery(function ($) { ... });`                   | `document.addEventListener('DOMContentLoaded', function (event) { ... });` |
+| `POS_LOAD`  | `jQuery(window).on('load', function () { ... });` | `window.addEventListener('load', function (event) { ... });`               |
 
 This is a behaviour change for applications that passed JavaScript fragments relying on `$` being bound inside the
 wrapper, for example:
@@ -274,15 +302,15 @@ In 22.0 that code runs inside a `DOMContentLoaded` listener where `$` is **not**
 
 1. Wrap your own code explicitly, letting the jQuery plugin define `$`:
 
-   ```php
-   $this->registerJs("jQuery(function ($) { $('#foo').click(function () { ... }); });");
-   ```
+    ```php
+    $this->registerJs("jQuery(function ($) { $('#foo').click(function () { ... }); });");
+    ```
 
 2. Replace the jQuery call with vanilla DOM APIs:
 
-   ```php
-   $this->registerJs("document.getElementById('foo').addEventListener('click', function () { ... });");
-   ```
+    ```php
+    $this->registerJs("document.getElementById('foo').addEventListener('click', function () { ... });");
+    ```
 
 Option 1 keeps working transparently as long as `yiisoft/yii2-jquery` is installed and `JqueryAsset` (or any asset
 bundle that depends on it) has been registered somewhere in the request.
@@ -314,7 +342,7 @@ All framework classes are now loaded exclusively by Composer:
 
 #### What you must do
 
-1. Remove any code that writes to `Yii::$classMap` or calls `Yii::autoload()`. Both no longer exist and will produce a 
+1. Remove any code that writes to `Yii::$classMap` or calls `Yii::autoload()`. Both no longer exist and will produce a
    fatal error.
 2. Make sure every class your application uses is reachable through Composer autoload. Declare it under one of:
     - `autoload.psr-4` namespace mapping (preferred for application code).
@@ -323,12 +351,12 @@ All framework classes are now loaded exclusively by Composer:
     - `autoload-dev` development and test-only classes.
 3. Regenerate the autoload files after editing `composer.json`:
 
-   ```bash
-   composer dump-autoload -o
-   ```
+    ```bash
+    composer dump-autoload -o
+    ```
 
-   Use `-o` (or `--classmap-authoritative`) in production for the same performance benefit that
-   `framework/classes.php` used to provide.
+    Use `-o` (or `--classmap-authoritative`) in production for the same performance benefit that
+    `framework/classes.php` used to provide.
 
 #### Migration example: registering a new class
 
@@ -355,7 +383,7 @@ registration is required.
 
 #### Migration example: overriding a framework class
 
-The most common reason for writing to `Yii::$classMap` was to *replace* a framework class with a custom implementation, 
+The most common reason for writing to `Yii::$classMap` was to _replace_ a framework class with a custom implementation,
 for example swapping `yii\web\Request`. The Composer equivalent uses `classmap` together with `exclude-from-classmap`.
 
 Before (runtime override via `$classMap`, no longer supported):
@@ -373,12 +401,8 @@ After (in the application's `composer.json`):
         "psr-4": {
             "app\\": "src/"
         },
-        "classmap": [
-            "src/overrides/Request.php"
-        ],
-        "exclude-from-classmap": [
-            "vendor/yiisoft/yii2/web/Request.php"
-        ]
+        "classmap": ["src/overrides/Request.php"],
+        "exclude-from-classmap": ["vendor/yiisoft/yii2/web/Request.php"]
     }
 }
 ```
@@ -401,13 +425,13 @@ Then run `composer dump-autoload -o`. Composer loads the override from `src/over
 skips the vendor file thanks to `exclude-from-classmap`. The override survives optimized and
 authoritative classmaps because it is resolved at autoload-generation time, not at runtime.
 
-> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN `yii\web\Request` is 
-> now defined exclusively by your override file. You **cannot** write `class Request extends \yii\web\Request` inside 
-> `namespace yii\web;` that would be self-inheritance and PHP will reject it. You must reimplement the full public 
+> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN `yii\web\Request` is
+> now defined exclusively by your override file. You **cannot** write `class Request extends \yii\web\Request` inside
+> `namespace yii\web;` that would be self-inheritance and PHP will reject it. You must reimplement the full public
 > surface of the original class.
 >
-> If you only need to *extend* the framework class, do **not** use `exclude-from-classmap`. Instead, declare a subclass 
-> under a different FQCN (for example `app\components\Request extends \yii\web\Request`) and point the `request` 
+> If you only need to _extend_ the framework class, do **not** use `exclude-from-classmap`. Instead, declare a subclass
+> under a different FQCN (for example `app\components\Request extends \yii\web\Request`) and point the `request`
 > application component at the new class via the application configuration:
 >
 > ```php
@@ -418,15 +442,15 @@ authoritative classmaps because it is resolved at autoload-generation time, not 
 
 #### Installing Yii from an archive file (non-Composer install)
 
-Yii 2 can still be installed from a downloadable archive file as documented in the [installation guide](../docs/guide/start-installation.md). 
-The archive published at `yiiframework.com/download/` ships a prebuilt `vendor/` directory generated with 
+Yii 2 can still be installed from a downloadable archive file as documented in the [installation guide](../docs/guide/start-installation.md).
+The archive published at `yiiframework.com/download/` ships a prebuilt `vendor/` directory generated with
 `composer install`, so it already contains `vendor/autoload.php`. The standard application templates (`basic`, `advanced`)
-require `vendor/autoload.php` from their entry scripts (`web/index.php`, `yii`) before any framework class is referenced, 
+require `vendor/autoload.php` from their entry scripts (`web/index.php`, `yii`) before any framework class is referenced,
 so the archive-install path keeps working unchanged with this release.
 
-What is **no longer supported** is bootstrapping the framework by requiring `framework/Yii.php` (or the legacy 
-`framework/classes.php`) *without* having Composer's autoloader active. There is no runtime fallback anymore: 
-`vendor/autoload.php` MUST be loaded first. If you maintain a custom entry script that historically skipped Composer's 
+What is **no longer supported** is bootstrapping the framework by requiring `framework/Yii.php` (or the legacy
+`framework/classes.php`) _without_ having Composer's autoloader active. There is no runtime fallback anymore:
+`vendor/autoload.php` MUST be loaded first. If you maintain a custom entry script that historically skipped Composer's
 autoloader, add `require __DIR__ . '/vendor/autoload.php';` before any reference to `Yii` or `yii\…` classes.
 
 #### Adding test-only classes

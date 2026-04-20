@@ -58,6 +58,39 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 SQL,
                 [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
             ],
+            'composite not in' => [
+                [
+                    'not in',
+                    ['id', 'name'],
+                    [['id' => 1, 'name' => 'oy']],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] != :qp1))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'oy'],
+            ],
+            'composite not in with expression column' => [
+                [
+                    'not in',
+                    [new Expression('id'), 'name'],
+                    [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] != :qp1) AND ([id] != :qp2 OR [name] != :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'composite not in with null' => [
+                [
+                    'not in',
+                    ['id', 'name'],
+                    [['id' => 1, 'name' => null]],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] IS NOT NULL))
+                SQL,
+                [':qp0' => 1],
+            ],
             'composite in' => [
                 [
                     'in',
