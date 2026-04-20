@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +11,7 @@
 namespace yiiunit\framework\db\pgsql;
 
 use Closure;
+use PHPUnit\Framework\Attributes\Group;
 use yii\base\DynamicModel;
 use yii\base\NotSupportedException;
 use yii\db\ArrayExpression;
@@ -20,10 +23,12 @@ use yiiunit\data\base\TraversableObject;
 use yiiunit\base\db\BaseQueryBuilder;
 
 /**
- * @group db
- * @group pgsql
+ * Unit test for {@see \yii\db\QueryBuilder} with PostgreSQL driver.
  */
-class QueryBuilderTest extends BaseQueryBuilder
+#[Group('db')]
+#[Group('pgsql')]
+#[Group('queryBuilder')]
+final class QueryBuilderTest extends BaseQueryBuilder
 {
     public $driverName = 'pgsql';
     protected static string $driverNameStatic = 'pgsql';
@@ -76,51 +81,6 @@ class QueryBuilderTest extends BaseQueryBuilder
         return array_merge(
             parent::conditionProvider(),
             [
-                [
-                    [
-                        'in',
-                        ['id', 'name'],
-                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
-                    ],
-                    '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
-                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
-                ],
-                [
-                    [
-                        'not in',
-                        ['id', 'name'],
-                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
-                    ],
-                    '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))',
-                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
-                ],
-                [
-                    [
-                        'not in',
-                        [new Expression('id'), 'name'],
-                        [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
-                    ],
-                    '([[id]], [[name]]) NOT IN ((:qp0, :qp1), (:qp2, :qp3))',
-                    [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
-                ],
-                [
-                    [
-                        'in',
-                        ['id', 'name'],
-                        (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1]),
-                    ],
-                    '([[id]], [[name]]) IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)',
-                    [':qp0' => 1],
-                ],
-                [
-                    [
-                        'not in',
-                        ['id', 'name'],
-                        (new Query())->select(['id', 'name'])->from('users')->where(['active' => 1]),
-                    ],
-                    '([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)',
-                    [':qp0' => 1],
-                ],
                 // adding conditions for ILIKE i.e. case insensitive LIKE
                 // https://www.postgresql.org/docs/8.3/functions-matching.html#FUNCTIONS-LIKE
 

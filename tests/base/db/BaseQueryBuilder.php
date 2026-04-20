@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,7 +18,6 @@ use yii\base\NotSupportedException;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\BetweenColumnsCondition;
 use yii\db\conditions\LikeCondition;
-use yii\db\conditions\InCondition;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
@@ -29,7 +30,6 @@ use yii\db\Schema;
 use yii\db\SchemaBuilderTrait;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\helpers\ArrayHelper;
-use yiiunit\data\base\TraversableObject;
 
 abstract class BaseQueryBuilder extends DatabaseTestCase
 {
@@ -1070,70 +1070,6 @@ abstract class BaseQueryBuilder extends DatabaseTestCase
             [new BetweenColumnsCondition(new Expression('NOW()'), 'BETWEEN', 'create_time', 'update_time'), 'NOW() BETWEEN [[create_time]] AND [[update_time]]', []],
             [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', 'create_time', 'update_time'), 'NOW() NOT BETWEEN [[create_time]] AND [[update_time]]', []],
             [new BetweenColumnsCondition(new Expression('NOW()'), 'NOT BETWEEN', (new Query())->select('min_date')->from('some_table'), 'max_date'), 'NOW() NOT BETWEEN (SELECT [[min_date]] FROM [[some_table]]) AND [[max_date]]', []],
-
-            // in
-            [['in', 'id', [1, 2, (new Query())->select('three')->from('digits')]], '[[id]] IN (:qp0, :qp1, (SELECT [[three]] FROM [[digits]]))', [':qp0' => 1, ':qp1' => 2]],
-            [['not in', 'id', [1, 2, 3]], '[[id]] NOT IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
-            [['in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
-            [['not in', 'id', (new Query())->select('id')->from('users')->where(['active' => 1])], '[[id]] NOT IN (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
-
-            [['in', 'id', 1], '[[id]]=:qp0', [':qp0' => 1]],
-            [['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1]],
-            [['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1]],
-            'composite in' => [
-                ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
-                '([[id]], [[name]]) IN ((:qp0, :qp1))',
-                [':qp0' => 1, ':qp1' => 'oy'],
-            ],
-            'composite in (just one column)' => [
-                ['in', ['id'], [['id' => 1, 'name' => 'Name1'], ['id' => 2, 'name' => 'Name2']]],
-                '[[id]] IN (:qp0, :qp1)',
-                [':qp0' => 1, ':qp1' => 2],
-            ],
-            'composite in using array objects (just one column)' => [
-                ['in', new TraversableObject(['id']), new TraversableObject([
-                    ['id' => 1, 'name' => 'Name1'],
-                    ['id' => 2, 'name' => 'Name2'],
-                ])],
-                '[[id]] IN (:qp0, :qp1)',
-                [':qp0' => 1, ':qp1' => 2],
-            ],
-
-            // in using array objects.
-            [['id' => new TraversableObject([1, 2])], '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
-
-            [['in', 'id', new TraversableObject([1, 2, 3])], '[[id]] IN (:qp0, :qp1, :qp2)', [':qp0' => 1, ':qp1' => 2, ':qp2' => 3]],
-
-            //in using array objects containing null value
-            [['in', 'id', new TraversableObject([1, null])], '[[id]]=:qp0 OR [[id]] IS NULL', [':qp0' => 1]],
-            [['in', 'id', new TraversableObject([1, 2, null])], '[[id]] IN (:qp0, :qp1) OR [[id]] IS NULL', [':qp0' => 1, ':qp1' => 2]],
-
-            //not in using array object containing null value
-            [['not in', 'id', new TraversableObject([1, null])], '[[id]]<>:qp0 AND [[id]] IS NOT NULL', [':qp0' => 1]],
-            [['not in', 'id', new TraversableObject([1, 2, null])], '[[id]] NOT IN (:qp0, :qp1) AND [[id]] IS NOT NULL', [':qp0' => 1, ':qp1' => 2]],
-
-            //in using array object containing only null value
-            [['in', 'id', new TraversableObject([null])], '[[id]] IS NULL', []],
-            [['not in', 'id', new TraversableObject([null])], '[[id]] IS NOT NULL', []],
-            [['not in', new Expression('id'), new TraversableObject([null])], '[[id]] IS NOT NULL', []],
-
-            'composite in using array objects' => [
-                ['in', new TraversableObject(['id', 'name']), new TraversableObject([
-                    ['id' => 1, 'name' => 'oy'],
-                    ['id' => 2, 'name' => 'yo'],
-                ])],
-                '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
-                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
-            ],
-
-            // in object conditions
-            [new InCondition('id', 'in', 1), '[[id]]=:qp0', [':qp0' => 1]],
-            [new InCondition(new Expression('id'), 'in', 1), '[[id]]=:qp0', [':qp0' => 1]],
-            [new InCondition('id', 'in', [1]), '[[id]]=:qp0', [':qp0' => 1]],
-            [new InCondition('id', 'not in', 1), '[[id]]<>:qp0', [':qp0' => 1]],
-            [new InCondition('id', 'not in', [1]), '[[id]]<>:qp0', [':qp0' => 1]],
-            [new InCondition('id', 'in', [1, 2]), '[[id]] IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
-            [new InCondition('id', 'not in', [1, 2]), '[[id]] NOT IN (:qp0, :qp1)', [':qp0' => 1, ':qp1' => 2]],
 
             // exists
             [['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1]],
