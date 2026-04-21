@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,79 +10,82 @@
 
 namespace yii\db\conditions;
 
+use Traversable;
 use yii\base\InvalidArgumentException;
 use yii\db\ExpressionInterface;
 
 /**
- * Class InCondition represents `IN` condition.
+ * Represents `IN` condition.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14
- * @phpcs:disable Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore
  */
 class InCondition implements ConditionInterface
 {
     /**
-     * @var string $operator the operator to use (e.g. `IN` or `NOT IN`)
+     * @param array|string|ExpressionInterface|Traversable $column the column name. If it is an array, a composite `IN`
+     * condition will be generated.
+     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`).
+     * @param array|int|string|ExpressionInterface|Traversable $values an array of values that [[column]] value should
+     * be among. If it is an empty array the generated expression will be a `false` value if [[operator]] is `IN` and
+     * empty if operator is `NOT IN`.
      */
-    private $operator;
-    /**
-     * @var string|string[] the column name. If it is an array, a composite `IN` condition
-     * will be generated.
-     */
-    private $column;
-    /**
-     * @var ExpressionInterface[]|string[]|int[] an array of values that [[column]] value should be among.
-     * If it is an empty array the generated expression will be a `false` value if
-     * [[operator]] is `IN` and empty if operator is `NOT IN`.
-     */
-    private $values;
-
-
-    /**
-     * SimpleCondition constructor
-     *
-     * @param string|string[] $column the column name. If it is an array, a composite `IN` condition
-     * will be generated.
-     * @param string $operator the operator to use (e.g. `IN` or `NOT IN`)
-     * @param array $values an array of values that [[column]] value should be among. If it is an empty array the generated
-     * expression will be a `false` value if [[operator]] is `IN` and empty if operator is `NOT IN`.
-     */
-    public function __construct($column, $operator, $values)
-    {
-        $this->column = $column;
-        $this->operator = $operator;
-        $this->values = $values;
+    public function __construct(
+        private array|string|ExpressionInterface|Traversable $column,
+        private string $operator,
+        private array|int|string|ExpressionInterface|Traversable $values
+    ) {
     }
 
     /**
-     * @return string
+     * Returns the comparison operator.
+     *
+     * @return string operator (for example, `IN` or `NOT IN`).
      */
-    public function getOperator()
+    public function getOperator(): string
     {
         return $this->operator;
     }
 
     /**
-     * @return mixed
+     * Returns the column(s) being matched.
+     *
+     * Normalizes `Traversable` input to an array on first access and caches the result for subsequent calls.
+     *
+     * @return array|string|ExpressionInterface column name, list of column names for composite conditions, or an
+     * expression.
      */
-    public function getColumn()
+    public function getColumn(): array|string|ExpressionInterface
     {
+        if ($this->column instanceof Traversable && !$this->column instanceof ExpressionInterface) {
+            $this->column = iterator_to_array($this->column);
+        }
+
         return $this->column;
     }
 
     /**
-     * @return ExpressionInterface[]|string[]|int[]
+     * Returns the value(s) to match against.
+     *
+     * Normalizes `Traversable` input to an array on first access and caches the result for subsequent calls.
+     *
+     * @return array|int|string|ExpressionInterface value list, scalar, or expression used for the comparison.
      */
-    public function getValues()
+    public function getValues(): array|int|string|ExpressionInterface
     {
+        if ($this->values instanceof Traversable && !$this->values instanceof ExpressionInterface) {
+            $this->values = iterator_to_array($this->values);
+        }
+
         return $this->values;
     }
+
     /**
      * {@inheritdoc}
+     *
      * @throws InvalidArgumentException if wrong number of operands have been given.
      */
-    public static function fromArrayDefinition($operator, $operands)
+    public static function fromArrayDefinition($operator, $operands): static
     {
         if (!isset($operands[0], $operands[1])) {
             throw new InvalidArgumentException("Operator '$operator' requires two operands.");

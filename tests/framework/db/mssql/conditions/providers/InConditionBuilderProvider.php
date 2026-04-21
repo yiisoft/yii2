@@ -11,7 +11,10 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mssql\conditions\providers;
 
 use yii\db\Expression;
+use yiiunit\data\base\ArrayAccessObject;
 use yiiunit\data\base\TraversableObject;
+
+use function array_key_exists;
 
 /**
  * Data provider for MSSQL IN/NOT IN condition builder test cases.
@@ -58,6 +61,55 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 SQL,
                 [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
             ],
+            'composite not in' => [
+                [
+                    'not in',
+                    ['id', 'name'],
+                    [['id' => 1, 'name' => 'oy']],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] != :qp1))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'oy'],
+            ],
+            'composite not in with expression column' => [
+                [
+                    'not in',
+                    [new Expression('id'), 'name'],
+                    [['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] != :qp1) AND ([id] != :qp2 OR [name] != :qp3))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
+            ],
+            'composite not in with null' => [
+                [
+                    'not in',
+                    ['id', 'name'],
+                    [['id' => 1, 'name' => null]],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] IS NOT NULL))
+                SQL,
+                [':qp0' => 1],
+            ],
+            'composite not in with array access null value' => [
+                [
+                    'not in',
+                    ['id', 'name'],
+                    [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                        public function offsetExists($offset): bool
+                        {
+                            return array_key_exists($offset, $this->data);
+                        }
+                    }],
+                ],
+                <<<SQL
+                (([id] != :qp0 OR [name] IS NOT NULL))
+                SQL,
+                [':qp0' => 1],
+            ],
             'composite in' => [
                 [
                     'in',
@@ -68,6 +120,22 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 (([id] = :qp0 AND [name] = :qp1))
                 SQL,
                 [':qp0' => 1, ':qp1' => 'oy'],
+            ],
+            'composite in with array access null value' => [
+                [
+                    'in',
+                    ['id', 'name'],
+                    [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                        public function offsetExists($offset): bool
+                        {
+                            return array_key_exists($offset, $this->data);
+                        }
+                    }],
+                ],
+                <<<SQL
+                (([id] = :qp0 AND [name] IS NULL))
+                SQL,
+                [':qp0' => 1],
             ],
             'composite in using array objects' => [
                 [

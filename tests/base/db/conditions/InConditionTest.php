@@ -10,10 +10,12 @@ declare(strict_types=1);
 
 namespace yiiunit\base\db\conditions;
 
+use Generator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use yii\db\ArrayExpression;
 use yii\db\conditions\InCondition;
+use yii\db\JsonExpression;
 
 /**
  * Unit tests for {@see InCondition}.
@@ -81,5 +83,94 @@ final class InConditionTest extends TestCase
             $values->getDimension(),
             'Unexpected values expression dimension.',
         );
+    }
+
+    public function testGetColumnPreservesJsonExpression(): void
+    {
+        $jsonExpression = new JsonExpression(['id' => 1]);
+        $condition = new InCondition($jsonExpression, 'IN', [1]);
+
+        $column = $condition->getColumn();
+
+        self::assertInstanceOf(
+            JsonExpression::class,
+            $column,
+            'Unexpected JSON column expression type.',
+        );
+        self::assertSame(
+            ['id' => 1],
+            $column->getValue(),
+            'Unexpected JSON column expression value.',
+        );
+        self::assertNull(
+            $column->getType(),
+            'Unexpected JSON column expression type name.',
+        );
+    }
+
+    public function testGetValuesPreservesJsonExpression(): void
+    {
+        $jsonExpression = new JsonExpression(['id' => 1]);
+        $condition = new InCondition('id', 'IN', $jsonExpression);
+
+        $values = $condition->getValues();
+
+        self::assertInstanceOf(
+            JsonExpression::class,
+            $values,
+            'Unexpected JSON values expression type.',
+        );
+        self::assertSame(
+            ['id' => 1],
+            $values->getValue(),
+            'Unexpected JSON values expression value.',
+        );
+        self::assertNull(
+            $values->getType(),
+            'Unexpected JSON values expression type name.',
+        );
+    }
+
+    public function testGetColumnConvertsGeneratorToArray(): void
+    {
+        $condition = new InCondition(self::generatorFrom(['id', 'name']), 'IN', [1, 2]);
+
+        $column = $condition->getColumn();
+        $columnAgain = $condition->getColumn();
+
+        self::assertSame(
+            ['id', 'name'],
+            $column,
+            'Column traversable should normalize to array.',
+        );
+        self::assertSame(
+            ['id', 'name'],
+            $columnAgain,
+            'Column normalization should be stable across calls.',
+        );
+    }
+
+    public function testGetValuesConvertsGeneratorToArray(): void
+    {
+        $condition = new InCondition('id', 'IN', self::generatorFrom([1, 2, 3]));
+
+        $values = $condition->getValues();
+        $valuesAgain = $condition->getValues();
+
+        self::assertSame(
+            [1, 2, 3],
+            $values,
+            'Values traversable should normalize to array.',
+        );
+        self::assertSame(
+            [1, 2, 3],
+            $valuesAgain,
+            'Values normalization should be stable across calls.',
+        );
+    }
+
+    private static function generatorFrom(array $items): Generator
+    {
+        yield from $items;
     }
 }

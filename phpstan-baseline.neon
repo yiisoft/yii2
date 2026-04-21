@@ -301,18 +301,6 @@ parameters:
 			path: framework/db/conditions/HashConditionBuilder.php
 
 		-
-			message: '#^Call to an undefined method Traversable\:\:current\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: '#^Call to an undefined method Traversable\:\:rewind\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -333,12 +321,6 @@ parameters:
 		-
 			message: '#^Call to an undefined method yii\\db\\conditions\\ConditionInterface\:\:getColumn\(\)\.$#'
 			identifier: method.notFound
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
-			message: '#^Variable \$rawValues in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.variable
 			count: 1
 			path: framework/db/conditions/InConditionBuilder.php
 
@@ -401,12 +383,6 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: framework/db/mysql/JsonExpressionBuilder.php
-
-		-
-			message: '#^PHPDoc tag @param for parameter \$condition with type yii\\db\\ExpressionInterface is not subtype of native type yii\\db\\conditions\\InCondition\.$#'
-			identifier: parameter.phpDocType
-			count: 1
-			path: framework/db/oci/conditions/InConditionBuilder.php
 
 		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getDimension\(\)\.$#'
