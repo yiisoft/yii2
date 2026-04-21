@@ -241,11 +241,13 @@ class InConditionBuilder implements ExpressionBuilderInterface
     }
 
     /**
-     * Builds is null/is not null condition for column based on operator
+     * Builds `IS NULL` / `IS NOT NULL` condition for a scalar column based on the operator.
      *
-     * @param string $operator
-     * @param string $column
-     * @return string is null or is not null condition
+     * @param string $operator operator in uppercase.
+     * @param string $column column to be matched.
+     *
+     * @return string null condition SQL.
+     *
      * @since 2.0.31
      */
     protected function getNullCondition(string $operator, string $column): string

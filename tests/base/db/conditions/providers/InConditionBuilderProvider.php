@@ -114,6 +114,20 @@ class InConditionBuilderProvider
                 SQL,
                 [':qp0' => 1],
             ],
+            'issue 10073 composite in with all null row values' => [
+                ['in', ['category', 'name'], [['category' => null, 'name' => null]]],
+                <<<SQL
+                (([[category]] IS NULL AND [[name]] IS NULL))
+                SQL,
+                [],
+            ],
+            'issue 10073 composite not in with all null row values' => [
+                ['not in', ['category', 'name'], [['category' => null, 'name' => null]]],
+                <<<SQL
+                (([[category]] IS NOT NULL OR [[name]] IS NOT NULL))
+                SQL,
+                [],
+            ],
             'composite in with array access null value' => [
                 ['in', ['id', 'name'], [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
                     public function offsetExists($offset): bool

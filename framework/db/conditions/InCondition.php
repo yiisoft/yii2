@@ -38,7 +38,9 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return string
+     * Returns the comparison operator.
+     *
+     * @return string operator (for example, `IN` or `NOT IN`).
      */
     public function getOperator(): string
     {
@@ -46,7 +48,12 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return array|string|ExpressionInterface
+     * Returns the column(s) being matched.
+     *
+     * Normalizes `Traversable` input to an array on first access and caches the result for subsequent calls.
+     *
+     * @return array|string|ExpressionInterface column name, list of column names for composite conditions, or an
+     * expression.
      */
     public function getColumn(): array|string|ExpressionInterface
     {
@@ -58,7 +65,11 @@ class InCondition implements ConditionInterface
     }
 
     /**
-     * @return array|int|string|ExpressionInterface
+     * Returns the value(s) to match against.
+     *
+     * Normalizes `Traversable` input to an array on first access and caches the result for subsequent calls.
+     *
+     * @return array|int|string|ExpressionInterface value list, scalar, or expression used for the comparison.
      */
     public function getValues(): array|int|string|ExpressionInterface
     {
