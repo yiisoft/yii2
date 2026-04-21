@@ -679,8 +679,9 @@ END";
             return '';
         }
 
-        foreach ($withs as $i => $_with) {
-            $withs[$i]['recursive'] = false;
+        foreach ($withs as $i => $with) {
+            $with['recursive'] = false;
+            $withs[$i] = $with;
         }
 
         return parent::buildWithQueries($withs, $params);
