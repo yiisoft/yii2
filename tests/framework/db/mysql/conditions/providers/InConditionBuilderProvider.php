@@ -12,6 +12,7 @@ namespace yiiunit\framework\db\mysql\conditions\providers;
 
 use yii\db\conditions\InCondition;
 use yii\db\Expression;
+use yii\db\JsonExpression;
 use yii\db\Query;
 
 /**
@@ -50,6 +51,20 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 ([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)
                 SQL,
                 [':qp0' => 1],
+            ],
+            'composite in with json expression value' => [
+                ['in', ['id', 'name'], [['id' => new JsonExpression(['x' => 1]), 'name' => 'foo']]],
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] = :qp1))
+                SQL,
+                [':qp0' => '{"x":1}', ':qp1' => 'foo'],
+            ],
+            'in condition object with json expression column and scalar' => [
+                new InCondition(new JsonExpression(['a' => 1]), 'in', 1),
+                <<<SQL
+                :qp1=:qp0
+                SQL,
+                [':qp0' => 1, ':qp1' => '{"a":1}'],
             ],
         ];
     }

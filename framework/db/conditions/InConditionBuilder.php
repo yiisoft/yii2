@@ -65,16 +65,13 @@ class InConditionBuilder implements ExpressionBuilderInterface
             $column = reset($column);
         }
 
-        if ($column instanceof Expression) {
-            $column = $column->expression;
-        }
-
         $rawValues = $values;
         $nullCondition = null;
         $nullConditionOperator = null;
 
         if (isset($rawValues) && in_array(null, $rawValues, true)) {
-            $nullCondition = $this->getNullCondition($operator, $column);
+            $nullCondition = $this->buildNullCondition($operator, $column, $params);
+
             $nullConditionOperator = $operator === 'IN' ? 'OR' : 'AND';
         }
 
@@ -88,7 +85,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
             return $nullCondition;
         }
 
-        $column = $this->quoteColumn($column);
+        $column = $this->normalizeColumn($column, $params);
 
         if (count($sqlValues) > 1) {
             $sql = "$column $operator (" . implode(', ', $sqlValues) . ')';
@@ -121,13 +118,11 @@ class InConditionBuilder implements ExpressionBuilderInterface
             $column = reset($column);
         }
 
-        if ($column instanceof Expression) {
-            $column = $column->expression;
-        }
+        $columnKey = $this->resolveColumnKey($column);
 
         foreach ($values as $i => $value) {
             if (is_array($value) || $value instanceof ArrayAccess) {
-                $value = $value[$column] ?? null;
+                $value = $columnKey !== null ? ($value[$columnKey] ?? null) : null;
             }
 
             if ($value === null) {
@@ -162,21 +157,13 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         if (is_array($columns)) {
             foreach ($columns as $i => $column) {
-                if ($column instanceof Expression) {
-                    $column = $column->expression;
-                }
-
-                $columns[$i] = $this->quoteColumn($column);
+                $columns[$i] = $this->normalizeColumn($column, $params);
             }
 
             return '(' . implode(', ', $columns) . ") $operator $sql";
         }
 
-        if ($columns instanceof Expression) {
-            $columns = $columns->expression;
-        }
-
-        return $this->quoteColumn($columns) . " $operator $sql";
+        return $this->normalizeColumn($columns, $params) . " $operator $sql";
     }
 
     /**
@@ -196,13 +183,11 @@ class InConditionBuilder implements ExpressionBuilderInterface
         array &$params
     ): string {
         $quotedColumns = [];
+        $columnKeys = [];
 
         foreach ($columns as $i => $column) {
-            if ($column instanceof Expression) {
-                $column = $column->expression;
-            }
-
-            $quotedColumns[$i] = $this->quoteColumn($column);
+            $quotedColumns[$i] = $this->normalizeColumn($column, $params);
+            $columnKeys[$i] = $this->resolveColumnKey($column);
         }
 
         $vss = [];
@@ -211,13 +196,21 @@ class InConditionBuilder implements ExpressionBuilderInterface
         foreach ($values as $value) {
             $vs = [];
 
-            foreach ($columns as $i => $column) {
-                if ($column instanceof Expression) {
-                    $column = $column->expression;
-                }
+            foreach ($columns as $i => $_) {
+                $columnKey = $columnKeys[$i];
 
-                if (isset($value[$column])) {
-                    $placeholder = $this->queryBuilder->bindParam($value[$column], $params);
+                if (
+                    (is_array($value) || $value instanceof ArrayAccess)
+                    && $columnKey !== null
+                    && isset($value[$columnKey])
+                ) {
+                    $columnValue = $value[$columnKey];
+
+                    if ($columnValue instanceof ExpressionInterface) {
+                        $placeholder = $this->queryBuilder->buildExpression($columnValue, $params);
+                    } else {
+                        $placeholder = $this->queryBuilder->bindParam($columnValue, $params);
+                    }
 
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : " {$notEqualOperator} ") . $placeholder;
                 } else {
@@ -258,6 +251,65 @@ class InConditionBuilder implements ExpressionBuilderInterface
         $column = $this->queryBuilder->db->quoteColumnName($column);
 
         return $column . ($operator === 'IN' ? ' IS NULL' : ' IS NOT NULL');
+    }
+
+    /**
+     * Builds null condition for scalar and expression columns.
+     *
+     * @param string $operator operator in uppercase.
+     * @param string|ExpressionInterface $column column to be matched.
+     * @param array $params the binding parameters.
+     *
+     * @return string null condition SQL.
+     */
+    private function buildNullCondition(string $operator, string|ExpressionInterface $column, array &$params): string
+    {
+        if ($column instanceof ExpressionInterface) {
+            return $this->normalizeColumn($column, $params) . ($operator === 'IN' ? ' IS NULL' : ' IS NOT NULL');
+        }
+
+        return $this->getNullCondition($operator, $column);
+    }
+
+    /**
+     * Resolves array lookup key for column values.
+     *
+     * @param string|ExpressionInterface $column column to be matched.
+     *
+     * @return string|null lookup key for row arrays.
+     */
+    private function resolveColumnKey(string|ExpressionInterface $column): ?string
+    {
+        if (is_string($column)) {
+            return $column;
+        }
+
+        if ($column instanceof Expression) {
+            return $column->expression;
+        }
+
+        return null;
+    }
+
+    /**
+     * Normalizes column to SQL fragment.
+     *
+     * @param string|ExpressionInterface $column column to be matched.
+     * @param array $params the binding parameters.
+     *
+     * @return string SQL fragment for column.
+     */
+    private function normalizeColumn(string|ExpressionInterface $column, array &$params): string
+    {
+        if ($column instanceof Expression) {
+            return $this->quoteColumn($column->expression);
+        }
+
+        if ($column instanceof ExpressionInterface) {
+            return $this->queryBuilder->buildExpression($column, $params);
+        }
+
+        return $this->quoteColumn($column);
     }
 
     /**

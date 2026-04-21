@@ -97,6 +97,13 @@ class InConditionBuilderProvider
                 SQL,
                 [':qp0' => 1, ':qp1' => 'foo', ':qp2' => 2, ':qp3' => 'bar'],
             ],
+            'composite in with expression value' => [
+                ['in', ['id', 'name'], [['id' => new Expression('42'), 'name' => 'foo']]],
+                <<<SQL
+                (([[id]] = 42 AND [[name]] = :qp0))
+                SQL,
+                [':qp0' => 'foo'],
+            ],
             'composite in with null' => [
                 ['in', ['id', 'name'], [['id' => 1, 'name' => null]]],
                 <<<SQL
@@ -251,6 +258,13 @@ class InConditionBuilderProvider
                 new InCondition(new Expression('id'), 'in', 1),
                 <<<SQL
                 [[id]]=:qp0
+                SQL,
+                [':qp0' => 1],
+            ],
+            'in condition object with query column and scalar' => [
+                new InCondition((new Query())->select('id')->from('users'), 'in', 1),
+                <<<SQL
+                (SELECT [[id]] FROM [[users]])=:qp0
                 SQL,
                 [':qp0' => 1],
             ],

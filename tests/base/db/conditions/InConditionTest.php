@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use yii\db\ArrayExpression;
 use yii\db\conditions\InCondition;
+use yii\db\JsonExpression;
 
 /**
  * Unit tests for {@see InCondition}.
@@ -81,6 +82,52 @@ final class InConditionTest extends TestCase
             1,
             $values->getDimension(),
             'Unexpected values expression dimension.',
+        );
+    }
+
+    public function testGetColumnPreservesJsonExpression(): void
+    {
+        $jsonExpression = new JsonExpression(['id' => 1]);
+        $condition = new InCondition($jsonExpression, 'IN', [1]);
+
+        $column = $condition->getColumn();
+
+        self::assertInstanceOf(
+            JsonExpression::class,
+            $column,
+            'Unexpected JSON column expression type.',
+        );
+        self::assertSame(
+            ['id' => 1],
+            $column->getValue(),
+            'Unexpected JSON column expression value.',
+        );
+        self::assertNull(
+            $column->getType(),
+            'Unexpected JSON column expression type name.',
+        );
+    }
+
+    public function testGetValuesPreservesJsonExpression(): void
+    {
+        $jsonExpression = new JsonExpression(['id' => 1]);
+        $condition = new InCondition('id', 'IN', $jsonExpression);
+
+        $values = $condition->getValues();
+
+        self::assertInstanceOf(
+            JsonExpression::class,
+            $values,
+            'Unexpected JSON values expression type.',
+        );
+        self::assertSame(
+            ['id' => 1],
+            $values->getValue(),
+            'Unexpected JSON values expression value.',
+        );
+        self::assertNull(
+            $values->getType(),
+            'Unexpected JSON values expression type name.',
         );
     }
 

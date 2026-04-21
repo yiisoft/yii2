@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\pgsql\conditions\providers;
 
+use yii\db\ArrayExpression;
 use yii\db\conditions\InCondition;
 use yii\db\Expression;
+use yii\db\JsonExpression;
 use yii\db\Query;
 
 /**
@@ -50,6 +52,34 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 ([[id]], [[name]]) NOT IN (SELECT [[id]], [[name]] FROM [[users]] WHERE [[active]]=:qp0)
                 SQL,
                 [':qp0' => 1],
+            ],
+            'composite in with json expression value' => [
+                ['in', ['id', 'name'], [['id' => new JsonExpression(['x' => 1]), 'name' => 'foo']]],
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] = :qp1))
+                SQL,
+                [':qp0' => '{"x":1}', ':qp1' => 'foo'],
+            ],
+            'composite in with array expression value' => [
+                ['in', ['id', 'name'], [['id' => new ArrayExpression([1], 'integer'), 'name' => 'foo']]],
+                <<<SQL
+                (([[id]] = ARRAY[:qp0]::integer[] AND [[name]] = :qp1))
+                SQL,
+                [':qp0' => 1, ':qp1' => 'foo'],
+            ],
+            'in condition object with json expression column and scalar' => [
+                new InCondition(new JsonExpression(['a' => 1]), 'in', 1),
+                <<<SQL
+                :qp1=:qp0
+                SQL,
+                [':qp0' => 1, ':qp1' => '{"a":1}'],
+            ],
+            'in condition object with array expression column and scalar' => [
+                new InCondition(new ArrayExpression([1, 2], 'integer'), 'in', 1),
+                <<<SQL
+                ARRAY[:qp1, :qp2]::integer[]=:qp0
+                SQL,
+                [':qp0' => 1, ':qp1' => 1, ':qp2' => 2],
             ],
         ];
     }

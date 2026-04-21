@@ -51,7 +51,7 @@ class InConditionBuilder extends \yii\db\conditions\InConditionBuilder
      */
     protected function splitCondition(InCondition $condition, array &$params): ?string
     {
-        $operator = $condition->getOperator();
+        $operator = strtoupper($condition->getOperator());
         $values = $condition->getValues();
         $column = $condition->getColumn();
 
