@@ -146,6 +146,20 @@ class InConditionBuilderProvider
                 SQL,
                 [':qp0' => 1, ':qp1' => 2],
             ],
+            'composite in (just one column) with null row value' => [
+                ['in', ['id'], [['id' => null, 'name' => 'Name1']]],
+                <<<SQL
+                [[id]] IS NULL
+                SQL,
+                [],
+            ],
+            'composite not in (just one column) with null row value' => [
+                ['not in', ['id'], [['id' => null, 'name' => 'Name1']]],
+                <<<SQL
+                [[id]] IS NOT NULL
+                SQL,
+                [],
+            ],
             'composite in using array objects (just one column)' => [
                 ['in', new TraversableObject(['id']), new TraversableObject([
                     ['id' => 1, 'name' => 'Name1'],

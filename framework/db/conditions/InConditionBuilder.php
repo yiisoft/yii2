@@ -19,6 +19,7 @@ use yii\db\Query;
 
 use function count;
 use function is_array;
+use function is_string;
 
 /**
  * Builds objects of [[InCondition]].
@@ -65,11 +66,10 @@ class InConditionBuilder implements ExpressionBuilderInterface
             $column = reset($column);
         }
 
-        $rawValues = $values;
         $nullCondition = null;
         $nullConditionOperator = null;
 
-        if (isset($rawValues) && in_array(null, $rawValues, true)) {
+        if ($this->hasNullValue($column, $values)) {
             $nullCondition = $this->buildNullCondition($operator, $column, $params);
 
             $nullConditionOperator = $operator === 'IN' ? 'OR' : 'AND';
@@ -269,6 +269,31 @@ class InConditionBuilder implements ExpressionBuilderInterface
         }
 
         return $this->getNullCondition($operator, $column);
+    }
+
+    /**
+     * Checks whether condition values include null after row extraction.
+     *
+     * @param string|ExpressionInterface $column column to be matched.
+     * @param array $values the values to inspect.
+     *
+     * @return bool whether values include null.
+     */
+    private function hasNullValue(string|ExpressionInterface $column, array $values): bool
+    {
+        $columnKey = $this->resolveColumnKey($column);
+
+        foreach ($values as $value) {
+            if (is_array($value) || $value instanceof ArrayAccess) {
+                $value = $columnKey !== null ? ($value[$columnKey] ?? null) : null;
+            }
+
+            if ($value === null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
