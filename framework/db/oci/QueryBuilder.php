@@ -95,6 +95,25 @@ EOD;
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * Oracle does not support the `RECURSIVE` keyword for CTEs. Recursion is implicit when a CTE references itself.
+     */
+    public function buildWithQueries($withs, &$params)
+    {
+        if ($withs === null || $withs === []) {
+            return '';
+        }
+
+        foreach ($withs as $i => $with) {
+            $with['recursive'] = false;
+            $withs[$i] = $with;
+        }
+
+        return parent::buildWithQueries($withs, $params);
+    }
+
+    /**
      * Builds a SQL statement for renaming a DB table.
      *
      * @param string $table the table to be renamed. The name will be properly quoted by the method.
