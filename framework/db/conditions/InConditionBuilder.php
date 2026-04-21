@@ -198,14 +198,18 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
             foreach ($columns as $i => $_) {
                 $columnKey = $columnKeys[$i];
+                $columnValue = null;
 
                 if (
                     (is_array($value) || $value instanceof ArrayAccess)
                     && $columnKey !== null
-                    && isset($value[$columnKey])
                 ) {
-                    $columnValue = $value[$columnKey];
+                    $columnValue = $value[$columnKey] ?? null;
+                }
 
+                if ($columnValue === null) {
+                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
+                } else {
                     if ($columnValue instanceof ExpressionInterface) {
                         $placeholder = $this->queryBuilder->buildExpression($columnValue, $params);
                     } else {
@@ -213,8 +217,6 @@ class InConditionBuilder implements ExpressionBuilderInterface
                     }
 
                     $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' = ' : " {$notEqualOperator} ") . $placeholder;
-                } else {
-                    $vs[] = $quotedColumns[$i] . ($operator === 'IN' ? ' IS' : ' IS NOT') . ' NULL';
                 }
             }
 
@@ -327,7 +329,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
     private function normalizeColumn(string|ExpressionInterface $column, array &$params): string
     {
         if ($column instanceof Expression) {
-            return $this->quoteColumn($column->expression);
+            return $this->quoteColumn($this->queryBuilder->buildExpression($column, $params));
         }
 
         if ($column instanceof ExpressionInterface) {

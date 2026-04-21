@@ -14,7 +14,10 @@ use Generator;
 use yii\db\conditions\InCondition;
 use yii\db\Expression;
 use yii\db\Query;
+use yiiunit\data\base\ArrayAccessObject;
 use yiiunit\data\base\TraversableObject;
+
+use function array_key_exists;
 
 /**
  * Data provider for IN/NOT IN condition builder test cases.
@@ -111,6 +114,18 @@ class InConditionBuilderProvider
                 SQL,
                 [':qp0' => 1],
             ],
+            'composite in with array access null value' => [
+                ['in', ['id', 'name'], [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                    public function offsetExists($offset): bool
+                    {
+                        return array_key_exists($offset, $this->data);
+                    }
+                }]],
+                <<<SQL
+                (([[id]] = :qp0 AND [[name]] IS NULL))
+                SQL,
+                [':qp0' => 1],
+            ],
             'composite not in' => [
                 ['not in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 <<<SQL
@@ -134,6 +149,18 @@ class InConditionBuilderProvider
             ],
             'composite not in with null' => [
                 ['not in', ['id', 'name'], [['id' => 1, 'name' => null]]],
+                <<<SQL
+                (([[id]] <> :qp0 OR [[name]] IS NOT NULL))
+                SQL,
+                [':qp0' => 1],
+            ],
+            'composite not in with array access null value' => [
+                ['not in', ['id', 'name'], [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                    public function offsetExists($offset): bool
+                    {
+                        return array_key_exists($offset, $this->data);
+                    }
+                }]],
                 <<<SQL
                 (([[id]] <> :qp0 OR [[name]] IS NOT NULL))
                 SQL,
@@ -281,6 +308,17 @@ class InConditionBuilderProvider
                 [[id]]=:qp0
                 SQL,
                 [':qp0' => 1],
+            ],
+            'in condition object with expression column params and scalar' => [
+                new InCondition(
+                    new Expression('COALESCE(id, :fallback)', [':fallback' => 0]),
+                    'in',
+                    1,
+                ),
+                <<<SQL
+                COALESCE(id, :fallback)=:qp0
+                SQL,
+                [':qp0' => 1, ':fallback' => 0],
             ],
             'in condition object with query column and scalar' => [
                 new InCondition((new Query())->select('id')->from('users'), 'in', 1),

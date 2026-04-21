@@ -325,12 +325,6 @@ parameters:
 			path: framework/db/conditions/InConditionBuilder.php
 
 		-
-			message: '#^Variable \$rawValues in isset\(\) always exists and is not nullable\.$#'
-			identifier: isset.variable
-			count: 1
-			path: framework/db/conditions/InConditionBuilder.php
-
-		-
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getColumn\(\)\.$#'
 			identifier: method.notFound
 			count: 1
