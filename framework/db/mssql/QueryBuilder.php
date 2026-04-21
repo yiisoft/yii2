@@ -669,6 +669,24 @@ END";
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * SQL Server does not support the `RECURSIVE` keyword for CTEs. Recursion is implicit when a CTE references itself.
+     */
+    public function buildWithQueries($withs, &$params)
+    {
+        if ($withs === null || $withs === []) {
+            return '';
+        }
+
+        foreach ($withs as $i => $_with) {
+            $withs[$i]['recursive'] = false;
+        }
+
+        return parent::buildWithQueries($withs, $params);
+    }
+
+    /**
      * Drop all constraints before column delete
      * {@inheritdoc}
      */

@@ -44,6 +44,7 @@ Yii Framework 2 Change Log
 - Chg: Remove deprecated APIs in `Security`, `View`, and `UniqueValidator`, delete deprecated migration template `createJunctionMigration.php`, and clean related validator tests (terabytesoftw)
 - Enh: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
 - Bug #10073: Type `InCondition` / `InConditionBuilder` APIs and generate `IS NULL` / `IS NOT NULL` for composite `IN` / `NOT IN` `NULL` comparisons (terabytesoftw)
+- Bug: Fix MSSQL `buildWithQueries()` to omit unsupported `RECURSIVE` keyword in SQL Server CTEs (terabytesoftw)
 
 2.0.55 under development
 ------------------------
