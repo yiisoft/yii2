@@ -254,6 +254,13 @@ class InConditionBuilderProvider
                 SQL,
                 [':qp0' => 1],
             ],
+            'in condition object with expression value' => [
+                new InCondition('id', 'in', new Expression('42')),
+                <<<SQL
+                [[id]]=42
+                SQL,
+                [],
+            ],
             'in condition object with expression column and scalar' => [
                 new InCondition(new Expression('id'), 'in', 1),
                 <<<SQL

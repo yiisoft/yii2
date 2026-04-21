@@ -55,7 +55,7 @@ class InConditionBuilder implements ExpressionBuilderInterface
 
         if (!is_array($values)) {
             // ensure values is an array
-            $values = (array) $values;
+            $values = [$values];
         }
 
         if (is_array($column)) {

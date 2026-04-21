@@ -61,7 +61,11 @@ final class InConditionBuilderTest extends DatabaseTestCase
 
         [$sql, $params] = $db->getQueryBuilder()->build($query);
 
-        $expectedSql = 'SELECT * WHERE ("id" IN (' . implode(', ', self::buildPlaceholders(0, 999)) . ')) OR ("id"=:qp1000)';
+        $placeholders = implode(', ', self::buildPlaceholders(0, 999));
+
+        $expectedSql = <<<SQL
+        SELECT * WHERE ("id" IN ({$placeholders})) OR ("id"=:qp1000)
+        SQL;
 
         self::assertSame(
             $expectedSql,
@@ -83,7 +87,11 @@ final class InConditionBuilderTest extends DatabaseTestCase
 
         [$sql, $params] = $db->getQueryBuilder()->build($query);
 
-        $expectedSql = 'SELECT * WHERE ("id" NOT IN (' . implode(', ', self::buildPlaceholders(0, 999)) . ')) AND ("id"<>:qp1000)';
+        $placeholders = implode(', ', self::buildPlaceholders(0, 999));
+
+        $expectedSql = <<<SQL
+        SELECT * WHERE ("id" NOT IN ({$placeholders})) AND ("id"<>:qp1000)
+        SQL;
 
         self::assertSame(
             $expectedSql,
