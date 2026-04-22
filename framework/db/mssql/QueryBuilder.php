@@ -75,8 +75,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         if ($orderBy === '') {
-            // SQL Server requires ORDER BY when OFFSET/FETCH is used
-            $orderBy = 'ORDER BY (SELECT NULL)';
+            // SQL Server requires ORDER BY with OFFSET/FETCH; ORDER BY '1' references the first select-list item,
+            // which is also valid when SELECT DISTINCT is used (ORDER BY (SELECT NULL) is rejected with DISTINCT)
+            $orderBy = 'ORDER BY 1';
         }
 
         $offset = $this->hasOffset($offset) ? $offset : 0;
@@ -87,6 +88,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * SQL Server's `FETCH NEXT n ROWS ONLY` requires `n >= 1`, so `limit(0)` is treated as "no limit applied" instead
+     * of emitting invalid `FETCH NEXT 0 ROWS ONLY`.
+     */
+    protected function hasLimit($limit)
+    {
+        return parent::hasLimit($limit) && (string) $limit !== '0';
     }
 
     /**

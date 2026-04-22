@@ -171,8 +171,9 @@ If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update exp
 
 `yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause:
 
-- `ORDER BY` is always present for paginated MSSQL queries. If no `orderBy()` is specified, Yii emits
-  `ORDER BY (SELECT NULL)` because SQL Server requires an `ORDER BY` clause with `OFFSET`/`FETCH`.
+- `ORDER BY` is always present for paginated MSSQL queries. If no `orderBy()` is specified, Yii emits `ORDER BY 1`
+  (references the first select-list item) because SQL Server requires an `ORDER BY` clause with `OFFSET`/`FETCH`. The
+  ordinal form is used instead of `ORDER BY (SELECT NULL)` so it remains valid when the query uses `SELECT DISTINCT`.
 - `OFFSET <n> ROWS` is emitted for paginated queries. For `limit()` without explicit `offset()`, Yii emits
   `OFFSET 0 ROWS`.
 - `FETCH NEXT <n> ROWS ONLY` is emitted only when a limit is set.

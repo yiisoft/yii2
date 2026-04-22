@@ -215,6 +215,51 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
+    public function testBuildOrderByAndLimitWithZeroLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(0);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example"
+            SQL,
+            $actualQuerySql,
+            'limit(0) must not emit FETCH NEXT 0 ROWS ONLY (invalid Oracle syntax).',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'limit(0) query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithZeroLimitAndOffset(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(0)
+            ->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" OFFSET 5 ROWS
+            SQL,
+            $actualQuerySql,
+            'limit(0) with offset must emit OFFSET without FETCH (invalid Oracle syntax otherwise).',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'limit(0) with offset query should have no bound parameters.',
+        );
+    }
+
     public function testCommentColumn(): void
     {
         $qb = $this->getQueryBuilder();

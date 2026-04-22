@@ -90,6 +90,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      *
+     * Oracle's `FETCH NEXT n ROWS ONLY` requires `n >= 1`, so `limit(0)` is treated as "no limit applied" instead of
+     * emitting invalid `FETCH NEXT 0 ROWS ONLY`.
+     */
+    protected function hasLimit($limit)
+    {
+        return parent::hasLimit($limit) && (string) $limit !== '0';
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * Oracle does not support the `RECURSIVE` keyword for CTEs. Recursion is implicit when a CTE references itself.
      */
     public function buildWithQueries($withs, &$params)
