@@ -46,6 +46,7 @@ Yii Framework 2 Change Log
 - Bug #10073: Type `InCondition` / `InConditionBuilder` APIs and generate `IS NULL` / `IS NOT NULL` for composite `IN` / `NOT IN` `NULL` comparisons (terabytesoftw)
 - Bug: Fix MSSQL `buildWithQueries()` to omit unsupported `RECURSIVE` keyword in SQL Server CTEs (terabytesoftw)
 - Bug: Fix Oracle `buildWithQueries()` to omit unsupported `RECURSIVE` keyword in Oracle CTEs (terabytesoftw)
+- Chg: Refactor Oracle pagination SQL to use standard `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; Oracle `12.1+` is now required for `yii\db\oci\QueryBuilder` pagination (terabytesoftw)
 
 2.0.55 under development
 ------------------------
