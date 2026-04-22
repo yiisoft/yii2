@@ -44,10 +44,10 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT [id] FROM [example] ORDER BY 1 OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
             SQL,
             $actualQuerySql,
-            'OFFSET and LIMIT should emit ORDER BY 1 with OFFSET and FETCH clauses.',
+            'OFFSET and LIMIT should emit ORDER BY (SELECT NULL) fallback with OFFSET and FETCH clauses.',
         );
         self::assertEmpty(
             $actualQueryParams,
@@ -65,10 +65,10 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT [id] FROM [example] ORDER BY 1 OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY
+            SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY
             SQL,
             $actualQuerySql,
-            'LIMIT without OFFSET should emit ORDER BY 1 with OFFSET 0 ROWS and FETCH clause.',
+            "LIMIT without OFFSET should emit ORDER BY (SELECT NULL) fallback with OFFSET '0' ROWS and FETCH clause.",
         );
         self::assertEmpty(
             $actualQueryParams,
@@ -86,10 +86,10 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT [id] FROM [example] ORDER BY 1 OFFSET 10 ROWS
+            SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 10 ROWS
             SQL,
             $actualQuerySql,
-            'OFFSET without LIMIT should emit ORDER BY 1 with OFFSET clause and no FETCH.',
+            'OFFSET without LIMIT should emit ORDER BY (SELECT NULL) fallback with OFFSET clause and no FETCH.',
         );
         self::assertEmpty(
             $actualQueryParams,
@@ -173,11 +173,11 @@ final class QueryBuilderTest extends BaseQueryBuilder
             SELECT [id] FROM [example]
             SQL,
             $actualQuerySql,
-            'limit(0) must not emit FETCH NEXT 0 ROWS ONLY (invalid SQL Server syntax).',
+            "Limit '0' must not emit FETCH NEXT '0' ROWS ONLY (invalid SQL Server syntax).",
         );
         self::assertEmpty(
             $actualQueryParams,
-            'limit(0) query should have no bound parameters.',
+            "Limit '0' query should have no bound parameters.",
         );
     }
 
@@ -191,14 +191,14 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT [id] FROM [example] ORDER BY 1 OFFSET 5 ROWS
+            SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 5 ROWS
             SQL,
             $actualQuerySql,
-            'limit(0) with offset must emit OFFSET without FETCH (invalid SQL Server syntax otherwise).',
+            "Limit '0' with offset must emit OFFSET without FETCH (invalid SQL Server syntax otherwise).",
         );
         self::assertEmpty(
             $actualQueryParams,
-            'limit(0) with offset query should have no bound parameters.',
+            "Limit '0' with offset query should have no bound parameters.",
         );
     }
 
@@ -215,7 +215,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
             SELECT DISTINCT [id] FROM [example] ORDER BY 1 OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
             SQL,
             $actualQuerySql,
-            'DISTINCT with pagination must use ORDER BY 1 (SQL Server rejects ORDER BY (SELECT NULL) with DISTINCT).',
+            "DISTINCT with pagination must use ORDER BY '1' (SQL Server rejects ORDER BY (SELECT NULL) with DISTINCT).",
         );
         self::assertEmpty(
             $actualQueryParams,
@@ -541,13 +541,13 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS [EXCLUDED] ([email], [address], [status], [profile_id]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN NOT MATCHED THEN INSERT ([email], [address], [status], [profile_id]) VALUES ([EXCLUDED].[email], [EXCLUDED].[address], [EXCLUDED].[status], [EXCLUDED].[profile_id]);',
             ],
             'query' => [
-                3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY 1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [status]=[EXCLUDED].[status] WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);',
+                3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [status]=[EXCLUDED].[status] WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);',
             ],
             'query with update part' => [
-                3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY 1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=:qp1, [status]=:qp2, [orders]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);',
+                3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=:qp1, [status]=:qp2, [orders]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);',
             ],
             'query without update part' => [
-                3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY 1 OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);',
+                3 => 'MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);',
             ],
             'values and expressions' => [
                 3 => 'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [ts] int NULL, [email] varchar(128) , [recovery_email] varchar(128) NULL, [address] text NULL, [status] tinyint , [orders] int , [profile_id] int NULL);' .

@@ -75,9 +75,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         if ($orderBy === '') {
-            // SQL Server requires ORDER BY with OFFSET/FETCH; ORDER BY '1' references the first select-list item,
-            // which is also valid when SELECT DISTINCT is used (ORDER BY (SELECT NULL) is rejected with DISTINCT)
-            $orderBy = 'ORDER BY 1';
+            // SELECT DISTINCT requires ORDER BY items to appear in the select list, so use ordinal `1`;
+            // otherwise `ORDER BY (SELECT NULL)` is preferred because it tolerates unorderable column types
+            // (`text`, `ntext`, `image`, `xml`, `geography`, `geometry`) which `ORDER BY 1` cannot sort.
+            $orderBy = str_starts_with($sql, 'SELECT DISTINCT')
+                ? 'ORDER BY 1'
+                : 'ORDER BY (SELECT NULL)';
         }
 
         $offset = $this->hasOffset($offset) ? $offset : 0;

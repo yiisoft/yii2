@@ -169,29 +169,34 @@ If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update exp
 
 #### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
 
-`yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause:
+`yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL
+Server versions earlier than `2019` are no longer supported (the legacy `ROW_NUMBER()` fallback was removed).
 
-- `ORDER BY` is always present for paginated MSSQL queries. If no `orderBy()` is specified, Yii emits `ORDER BY 1`
-  (references the first select-list item) because SQL Server requires an `ORDER BY` clause with `OFFSET`/`FETCH`. The
-  ordinal form is used instead of `ORDER BY (SELECT NULL)` so it remains valid when the query uses `SELECT DISTINCT`.
-- `OFFSET <n> ROWS` is emitted for paginated queries. For `limit()` without explicit `offset()`, Yii emits
-  `OFFSET 0 ROWS`.
-- `FETCH NEXT <n> ROWS ONLY` is emitted only when a limit is set.
+Generated SQL:
 
-The legacy pre-`OFFSET` pagination fallback for old SQL Server versions has been removed from
-`yii\db\mssql\QueryBuilder`. SQL Server versions earlier than `2019` are no longer supported for Yii-generated
-pagination SQL in the MSSQL QueryBuilder.
+- `ORDER BY` is always present (Yii adds `ORDER BY (SELECT NULL)`, or `ORDER BY 1` for `SELECT DISTINCT`, when no
+  `orderBy()` is set).
+- `OFFSET <n> ROWS` is always emitted for paginated queries (`OFFSET 0 ROWS` when only `limit()` is set).
+- `FETCH NEXT <n> ROWS ONLY` is emitted only when `limit(n)` with `n >= 1`.
 
-If you rely on paginated results without specifying `orderBy()`, note that SQL Server returns rows in an unspecified
-order, so pagination results may vary between executions. Always specify `orderBy()` when you need deterministic
-pagination.
+Behavioral notes:
+
+- `limit(0)`: SQL Server requires `FETCH >= 1`, so Yii treats `limit(0)` as "no limit applied" and returns all rows.
+  Diverges from MySQL/PostgreSQL/SQLite where `LIMIT 0` returns zero rows. Use `where('1=0')` to force an empty
+  result set.
+- `DISTINCT` + unorderable column types: the `ORDER BY 1` fallback cannot sort `text`, `ntext`, `image`, `xml`,
+  `geography`, or `geometry`. Add an explicit `orderBy()` when the first selected column has one of those types and
+  `DISTINCT` is required.
+- Always specify `orderBy()` for deterministic pagination; SQL Server returns rows in an unspecified order otherwise.
 
 #### Oracle pagination now uses `OFFSET ... FETCH` (`12.1+`)
 
 `yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
 
 - `OFFSET <n> ROWS` is emitted only when an offset is set.
-- `FETCH NEXT <n> ROWS ONLY` is emitted only when a limit is set.
+- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`. Oracle accepts
+  `FETCH NEXT 0 ROWS ONLY` as valid syntax that returns zero rows, so `limit(0)` keeps the same semantics as in
+  MySQL/PostgreSQL/SQLite.
 - No synthetic `ORDER BY (SELECT NULL)` is added when the user did not specify an `ORDER BY`.
 
 The previous legacy `ROWNUM`/CTE pagination SQL has been removed. Oracle versions earlier than `12.1` are no longer

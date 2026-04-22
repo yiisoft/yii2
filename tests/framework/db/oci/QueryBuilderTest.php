@@ -226,14 +226,14 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT "id" FROM "example"
+            SELECT "id" FROM "example" FETCH NEXT 0 ROWS ONLY
             SQL,
             $actualQuerySql,
-            'limit(0) must not emit FETCH NEXT 0 ROWS ONLY (invalid Oracle syntax).',
+            "Limit '0' must emit FETCH NEXT '0' ROWS ONLY (valid Oracle syntax that returns zero rows).",
         );
         self::assertEmpty(
             $actualQueryParams,
-            'limit(0) query should have no bound parameters.',
+            "Limit '0' query should have no bound parameters.",
         );
     }
 
@@ -249,14 +249,14 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT "id" FROM "example" OFFSET 5 ROWS
+            SELECT "id" FROM "example" OFFSET 5 ROWS FETCH NEXT 0 ROWS ONLY
             SQL,
             $actualQuerySql,
-            'limit(0) with offset must emit OFFSET without FETCH (invalid Oracle syntax otherwise).',
+            "Limit '0' with offset must emit OFFSET and FETCH NEXT '0' ROWS ONLY (valid Oracle syntax).",
         );
         self::assertEmpty(
             $actualQueryParams,
-            'limit(0) with offset query should have no bound parameters.',
+            "Limit '0' with offset query should have no bound parameters.",
         );
     }
 
