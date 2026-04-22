@@ -10,9 +10,9 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\oci;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\Query;
 use yiiunit\base\db\BaseQuery;
-
 
 /**
  * Unit test for {@see \yii\db\Query} with Oracle driver.
@@ -20,7 +20,6 @@ use yiiunit\base\db\BaseQuery;
 #[Group('db')]
 #[Group('oci')]
 #[Group('query')]
-
 class QueryTest extends BaseQuery
 {
     protected $driverName = 'oci';
