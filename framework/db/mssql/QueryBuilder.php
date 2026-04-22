@@ -68,6 +68,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
+        // Preserve limit(0) → zero rows semantics across drivers; SQL Server rejects FETCH NEXT `0`,
+        // so wrap with WHERE 1=0 (the optimizer constant-folds this into an empty scan).
+        if ((string) $limit === '0') {
+            return "SELECT * FROM ({$sql}) sub WHERE 1=0";
+        }
+
         $orderBy = $this->buildOrderBy($orderBy);
 
         if (!$this->hasOffset($offset) && !$this->hasLimit($limit)) {
@@ -91,17 +97,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * SQL Server's `FETCH NEXT n ROWS ONLY` requires `n >= 1`, so `limit(0)` is treated as "no limit applied" instead
-     * of emitting invalid `FETCH NEXT 0 ROWS ONLY`.
-     */
-    protected function hasLimit($limit)
-    {
-        return parent::hasLimit($limit) && (string) $limit !== '0';
     }
 
     /**

@@ -170,10 +170,10 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT [id] FROM [example]
+            SELECT * FROM (SELECT [id] FROM [example]) sub WHERE 1=0
             SQL,
             $actualQuerySql,
-            "Limit '0' must not emit FETCH NEXT '0' ROWS ONLY (invalid SQL Server syntax).",
+            "Limit '0' must wrap the query with WHERE 1=0 to return zero rows (portable semantics).",
         );
         self::assertEmpty(
             $actualQueryParams,
@@ -191,10 +191,10 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 5 ROWS
+            SELECT * FROM (SELECT [id] FROM [example]) sub WHERE 1=0
             SQL,
             $actualQuerySql,
-            "Limit '0' with offset must emit OFFSET without FETCH (invalid SQL Server syntax otherwise).",
+            "Limit '0' with offset must still return zero rows (offset is irrelevant on empty result).",
         );
         self::assertEmpty(
             $actualQueryParams,
@@ -275,10 +275,10 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         self::assertSame(
             <<<SQL
-            SELECT DISTINCT [id] FROM [example]
+            SELECT * FROM (SELECT DISTINCT [id] FROM [example]) sub WHERE 1=0
             SQL,
             $actualQuerySql,
-            "DISTINCT with LIMIT '0' must take the early-return path (no pagination clauses).",
+            "DISTINCT with LIMIT '0' must wrap with WHERE 1=0 to return zero rows.",
         );
         self::assertEmpty(
             $actualQueryParams,

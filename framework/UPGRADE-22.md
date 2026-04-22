@@ -178,12 +178,11 @@ Generated SQL:
   `orderBy()` is set).
 - `OFFSET <n> ROWS` is always emitted for paginated queries (`OFFSET 0 ROWS` when only `limit()` is set).
 - `FETCH NEXT <n> ROWS ONLY` is emitted only when `limit(n)` with `n >= 1`.
+- `limit(0)` wraps the query as `SELECT * FROM (...) sub WHERE 1=0` (returns zero rows, consistent with
+  MySQL/PostgreSQL/SQLite/Oracle).
 
 Behavioral notes:
 
-- `limit(0)`: SQL Server requires `FETCH >= 1`, so Yii treats `limit(0)` as "no limit applied" and returns all rows.
-  Diverges from MySQL/PostgreSQL/SQLite where `LIMIT 0` returns zero rows. Use `where('1=0')` to force an empty
-  result set.
 - `DISTINCT` + unorderable column types: the `ORDER BY 1` fallback cannot sort `text`, `ntext`, `image`, `xml`,
   `geography`, or `geometry`. Add an explicit `orderBy()` when the first selected column has one of those types and
   `DISTINCT` is required.
