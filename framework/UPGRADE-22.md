@@ -141,7 +141,7 @@ migrate to a supported database engine before upgrading to Yii `22.x`.
 There is no compatibility layer for CUBRID in this release. The framework no longer ships CUBRID-specific database
 classes, configuration entries, fixtures, or test coverage.
 
-### `InCondition` and `InConditionBuilder` typing + composite `NULL` handling
+#### `InCondition` and `InConditionBuilder` typing + composite `NULL` handling
 
 `yii\db\conditions\InCondition` now uses typed constructor parameters and typed return values:
 
@@ -166,6 +166,21 @@ Example:
 - After: `(([[id]] = :p0 AND [[name]] IS NULL))`
 
 If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
+
+#### Oracle pagination now uses `OFFSET ... FETCH` (`12.1+`)
+
+`yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
+
+- `OFFSET <n> ROWS` is emitted only when an offset is set.
+- `FETCH NEXT <n> ROWS ONLY` is emitted only when a limit is set.
+- No synthetic `ORDER BY (SELECT NULL)` is added when the user did not specify an `ORDER BY`.
+
+The previous legacy `ROWNUM`/CTE pagination SQL has been removed. Oracle versions earlier than `12.1` are no longer
+supported for Yii-generated pagination SQL in the OCI QueryBuilder.
+
+If you rely on paginated results without specifying `orderBy()`, note that Oracle returns rows in an unspecified order,
+so `OFFSET`/`FETCH` results may vary between executions. Always specify `orderBy()` when you need deterministic
+pagination.
 
 ### HHVM support removed
 

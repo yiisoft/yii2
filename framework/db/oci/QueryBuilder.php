@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -17,7 +19,7 @@ use yii\helpers\StringHelper;
 use yii\db\ExpressionInterface;
 
 /**
- * QueryBuilder is the query builder for Oracle databases.
+ * QueryBuilder is the query builder for Oracle databases (version 12.1 and above).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -69,29 +71,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
         $orderBy = $this->buildOrderBy($orderBy);
+
         if ($orderBy !== '') {
-            $sql .= $this->separator . $orderBy;
+            $sql .= "{$this->separator}{$orderBy}";
         }
 
-        $filters = [];
         if ($this->hasOffset($offset)) {
-            $filters[] = 'rowNumId > ' . $offset;
-        }
-        if ($this->hasLimit($limit)) {
-            $filters[] = 'rownum <= ' . $limit;
-        }
-        if (empty($filters)) {
-            return $sql;
+            $sql .= "{$this->separator}OFFSET {$offset} ROWS";
         }
 
-        $filter = implode(' AND ', $filters);
-        return <<<EOD
-WITH USER_SQL AS ($sql),
-    PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
-SELECT *
-FROM PAGINATION
-WHERE $filter
-EOD;
+        if ($this->hasLimit($limit)) {
+            $sql .= "{$this->separator}FETCH NEXT {$limit} ROWS ONLY";
+        }
+
+        return $sql;
     }
 
     /**
