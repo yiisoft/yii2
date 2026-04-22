@@ -76,6 +76,78 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
     }
 
+    public function testBuildOrderByAndLimitWithoutOffsetAndLimit(): void
+    {
+        $expectedQueryParams = [];
+
+        $query = new Query();
+
+        $query->select('id')->from('example');
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT [id] FROM [example]
+            SQL,
+            $actualQuerySql,
+            'Query without OFFSET/LIMIT should not contain OFFSET or FETCH clauses.',
+        );
+        self::assertSame(
+            $expectedQueryParams,
+            $actualQueryParams,
+            'Query without OFFSET/LIMIT should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExplicitOrderBy(): void
+    {
+        $expectedQueryParams = [];
+
+        $query = new Query();
+
+        $query->select('id')->from('example')->orderBy('id')->limit(10)->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT [id] FROM [example] ORDER BY [id] OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            'Explicit ORDER BY should be preserved alongside OFFSET/FETCH clauses.',
+        );
+        self::assertSame(
+            $expectedQueryParams,
+            $actualQueryParams,
+            'Query with explicit ORDER BY should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOrderByWithoutPagination(): void
+    {
+        $expectedQueryParams = [];
+
+        $query = new Query();
+
+        $query->select('id')->from('example')->orderBy('id');
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT [id] FROM [example] ORDER BY [id]
+            SQL,
+            $actualQuerySql,
+            'ORDER BY without OFFSET/LIMIT should not contain OFFSET or FETCH clauses.',
+        );
+        self::assertSame(
+            $expectedQueryParams,
+            $actualQueryParams,
+            'ORDER BY without pagination should have no bound parameters.',
+        );
+    }
+
     protected function getCommmentsFromTable($table)
     {
         $db = $this->getConnection(false, false);

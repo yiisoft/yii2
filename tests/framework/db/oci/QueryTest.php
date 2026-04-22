@@ -42,8 +42,8 @@ class QueryTest extends BaseQuery
             "LIMIT '1' OFFSET '1' should return exactly one row.",
         );
         self::assertSame(
-            2,
-            (int) $rows[0]['id'],
+            '2',
+            $rows[0]['id'],
             "OFFSET '1' should skip the first row and start at 'id=2'.",
         );
         self::assertSame(
@@ -65,8 +65,8 @@ class QueryTest extends BaseQuery
             ->column($db);
 
         self::assertSame(
-            [2, 3],
-            array_map('intval', $rows),
+            ['2', '3'],
+            $rows,
             "OFFSET '1' without LIMIT should return remaining rows starting at 'id=2'.",
         );
     }
@@ -83,8 +83,8 @@ class QueryTest extends BaseQuery
             ->column($db);
 
         self::assertSame(
-            [1, 2],
-            array_map('intval', $rows),
+            ['1', '2'],
+            $rows,
             "LIMIT '2' without OFFSET should return the first two rows.",
         );
     }

@@ -167,6 +167,24 @@ Example:
 
 If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
 
+#### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
+
+`yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause:
+
+- `ORDER BY` is always present for paginated MSSQL queries. If no `orderBy()` is specified, Yii emits
+  `ORDER BY (SELECT NULL)` because SQL Server requires an `ORDER BY` clause with `OFFSET`/`FETCH`.
+- `OFFSET <n> ROWS` is emitted for paginated queries. For `limit()` without explicit `offset()`, Yii emits
+  `OFFSET 0 ROWS`.
+- `FETCH NEXT <n> ROWS ONLY` is emitted only when a limit is set.
+
+The legacy pre-`OFFSET` pagination fallback for old SQL Server versions has been removed from
+`yii\db\mssql\QueryBuilder`. SQL Server versions earlier than `2019` are no longer supported for Yii-generated
+pagination SQL in the MSSQL QueryBuilder.
+
+If you rely on paginated results without specifying `orderBy()`, note that SQL Server returns rows in an unspecified
+order, so pagination results may vary between executions. Always specify `orderBy()` when you need deterministic
+pagination.
+
 #### Oracle pagination now uses `OFFSET ... FETCH` (`12.1+`)
 
 `yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
