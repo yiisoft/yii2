@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,7 +17,7 @@ use yii\db\Query;
 use yii\db\TableSchema;
 
 /**
- * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
+ * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -66,73 +68,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
+        // Preserve limit(0) → zero rows semantics across drivers; SQL Server rejects FETCH NEXT `0`,
+        // so wrap with WHERE 1=0 (the optimizer constant-folds this into an empty scan).
+        if ((string) $limit === '0') {
+            return "SELECT * FROM ({$sql}) sub WHERE 1=0";
+        }
+
+        $orderBy = $this->buildOrderBy($orderBy);
+
         if (!$this->hasOffset($offset) && !$this->hasLimit($limit)) {
-            $orderBy = $this->buildOrderBy($orderBy);
-            return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
+            return $orderBy === '' ? $sql : "{$sql}{$this->separator}{$orderBy}";
         }
 
-        if (version_compare($this->db->getSchema()->getServerVersion(), '11', '<')) {
-            return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
-        }
-
-        return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
-    }
-
-    /**
-     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
-     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
-     */
-    protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
-    {
-        $orderBy = $this->buildOrderBy($orderBy);
         if ($orderBy === '') {
-            // ORDER BY clause is required when FETCH and OFFSET are in the SQL
-            $orderBy = 'ORDER BY (SELECT NULL)';
-        }
-        $sql .= $this->separator . $orderBy;
-
-        // https://technet.microsoft.com/en-us/library/gg699618.aspx
-        $offset = $this->hasOffset($offset) ? $offset : '0';
-        $sql .= $this->separator . "OFFSET $offset ROWS";
-        if ($this->hasLimit($limit)) {
-            $sql .= $this->separator . "FETCH NEXT $limit ROWS ONLY";
+            // SELECT DISTINCT requires ORDER BY items to appear in the select list, so use ordinal `1`;
+            // otherwise `ORDER BY (SELECT NULL)` is preferred because it tolerates unorderable column types
+            // (`text`, `ntext`, `image`, `xml`, `geography`, `geometry`) which `ORDER BY 1` cannot sort.
+            $orderBy = str_starts_with($sql, 'SELECT DISTINCT')
+                ? 'ORDER BY 1'
+                : 'ORDER BY (SELECT NULL)';
         }
 
-        return $sql;
-    }
-
-    /**
-     * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
-     * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
-     * @param int|Expression $limit the limit number. See [[\yii\db\Query::limit]] for more details.
-     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
-     * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
-     */
-    protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
-    {
-        $orderBy = $this->buildOrderBy($orderBy);
-        if ($orderBy === '') {
-            // ROW_NUMBER() requires an ORDER BY clause
-            $orderBy = 'ORDER BY (SELECT NULL)';
-        }
-
-        $sql = preg_replace('/^([\s(])*SELECT(\s+DISTINCT)?(?!\s*TOP\s*\()/i', "\\1SELECT\\2 rowNum = ROW_NUMBER() over ($orderBy),", $sql);
+        $offset = $this->hasOffset($offset) ? $offset : 0;
+        $sql .= "{$this->separator}{$orderBy}{$this->separator}OFFSET {$offset} ROWS";
 
         if ($this->hasLimit($limit)) {
-            if ($limit instanceof Expression) {
-                $limit = '(' . (string)$limit . ')';
-            }
-            $sql = "SELECT TOP $limit * FROM ($sql) sub";
-        } else {
-            $sql = "SELECT * FROM ($sql) sub";
-        }
-        if ($this->hasOffset($offset)) {
-            $sql .= $this->separator . "WHERE rowNum > $offset";
+            $sql .= "{$this->separator}FETCH NEXT {$limit} ROWS ONLY";
         }
 
         return $sql;
@@ -557,17 +518,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $on = $this->buildCondition($onCondition, $params);
         list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
 
-        /**
-         * Fix number of select query params for old MSSQL version that does not support offset correctly.
-         * @see QueryBuilder::oldBuildOrderByAndLimit
-         */
-        $insertNamesUsing = $insertNames;
-        if (strstr($values, 'rowNum = ROW_NUMBER()') !== false) {
-            $insertNamesUsing = array_merge(['[rowNum]'], $insertNames);
-        }
-
         $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
-            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNamesUsing) . ') '
+            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
             . "ON ($on)";
         $insertValues = [];
         foreach ($insertNames as $name) {

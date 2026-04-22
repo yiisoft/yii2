@@ -167,12 +167,35 @@ Example:
 
 If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
 
+#### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
+
+`yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL
+Server versions earlier than `2019` are no longer supported (the legacy `ROW_NUMBER()` fallback was removed).
+
+Generated SQL:
+
+- `ORDER BY` is always present (Yii adds `ORDER BY (SELECT NULL)`, or `ORDER BY 1` for `SELECT DISTINCT`, when no
+  `orderBy()` is set).
+- `OFFSET <n> ROWS` is always emitted for paginated queries (`OFFSET 0 ROWS` when only `limit()` is set).
+- `FETCH NEXT <n> ROWS ONLY` is emitted only when `limit(n)` with `n >= 1`.
+- `limit(0)` wraps the query as `SELECT * FROM (...) sub WHERE 1=0` (returns zero rows, consistent with
+  MySQL/PostgreSQL/SQLite/Oracle).
+
+Behavioral notes:
+
+- `DISTINCT` + unorderable column types: the `ORDER BY 1` fallback cannot sort `text`, `ntext`, `image`, `xml`,
+  `geography`, or `geometry`. Add an explicit `orderBy()` when the first selected column has one of those types and
+  `DISTINCT` is required.
+- Always specify `orderBy()` for deterministic pagination; SQL Server returns rows in an unspecified order otherwise.
+
 #### Oracle pagination now uses `OFFSET ... FETCH` (`12.1+`)
 
 `yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
 
 - `OFFSET <n> ROWS` is emitted only when an offset is set.
-- `FETCH NEXT <n> ROWS ONLY` is emitted only when a limit is set.
+- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`. Oracle accepts
+  `FETCH NEXT 0 ROWS ONLY` as valid syntax that returns zero rows, so `limit(0)` keeps the same semantics as in
+  MySQL/PostgreSQL/SQLite.
 - No synthetic `ORDER BY (SELECT NULL)` is added when the user did not specify an `ORDER BY`.
 
 The previous legacy `ROWNUM`/CTE pagination SQL has been removed. Oracle versions earlier than `12.1` are no longer
