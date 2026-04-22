@@ -223,6 +223,69 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
+    public function testBuildOrderByAndLimitWithDistinctLimitOnly(): void
+    {
+        $query = new Query();
+
+        $query->select('id')->distinct()->from('example')->limit(10);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT DISTINCT [id] FROM [example] ORDER BY 1 OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            "DISTINCT with LIMIT only must use ORDER BY '1' and default OFFSET to '0'.",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'DISTINCT with LIMIT only should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithDistinctOffsetOnly(): void
+    {
+        $query = new Query();
+
+        $query->select('id')->distinct()->from('example')->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT DISTINCT [id] FROM [example] ORDER BY 1 OFFSET 5 ROWS
+            SQL,
+            $actualQuerySql,
+            "DISTINCT with OFFSET only must use ORDER BY '1' and omit FETCH.",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'DISTINCT with OFFSET only should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithDistinctZeroLimit(): void
+    {
+        $query = new Query();
+
+        $query->select('id')->distinct()->from('example')->limit(0);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT DISTINCT [id] FROM [example]
+            SQL,
+            $actualQuerySql,
+            "DISTINCT with LIMIT '0' must take the early-return path (no pagination clauses).",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            "DISTINCT with LIMIT '0' should have no bound parameters.",
+        );
+    }
+
     protected function getCommmentsFromTable($table)
     {
         $db = $this->getConnection(false, false);
