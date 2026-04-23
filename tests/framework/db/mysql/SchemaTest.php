@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mysql;
 
 use PDO;
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;

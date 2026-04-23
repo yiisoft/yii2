@@ -223,9 +223,9 @@ If your application or migrations rely on the exact SQL output of `QueryBuilder:
 (for example, in string assertions or snapshot tests), update the expected values.
 
 > [!NOTE]
-> **Lifecycle:** MySQL `5.7` reached end of extended support on October 31, `2023`. MySQL `8.0` is the current LTS
-> release; premier support ended on April 30, `2025`, and extended support ends on April 30, `2026`. MariaDB `10.4`
-> reached community support EOL on June 18, `2024`, and MariaDB `10.5` reached community support EOL on June 24,
+> **Lifecycle:** MySQL `5.7` reached end of extended support on October 31, `2023`. MySQL `8.0` reaches end of extended
+> support on April 30, `2026`; MySQL `8.4` is the current LTS release (premier support through April `2029`). MariaDB
+> `10.4` reached community support EOL on June 18, `2024`, and MariaDB `10.5` reached community support EOL on June 24,
 > `2025`. The version floors catch up to releases that are at or near EOL; the dead code removed in this change
 > targeted MySQL branches already unsupported by the vendor.
 
