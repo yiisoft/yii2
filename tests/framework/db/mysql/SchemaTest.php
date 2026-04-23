@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,19 +17,20 @@ use yii\db\mysql\Schema;
 use yiiunit\framework\db\AnyCaseValue;
 use yiiunit\base\db\BaseSchema;
 
+use function stripos;
+
 /**
- * @group db
- * @group mysql
+ * Unit test for {@see \yii\db\mysql\Schema} class.
  */
-class SchemaTest extends BaseSchema
+#[Group('db')]
+#[Group('mysql')]
+#[Group('schema')]
+final class SchemaTest extends BaseSchema
 {
     public $driverName = 'mysql';
 
     public function testLoadDefaultDatetimeColumn(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6', '>=')) {
-            $this->markTestSkipped('Default datetime columns are supported since MySQL 5.6.');
-        }
         $sql = <<<SQL
 CREATE TABLE  IF NOT EXISTS `datetime_test`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -49,9 +52,6 @@ SQL;
 
     public function testDefaultDatetimeColumnWithMicrosecs(): void
     {
-        if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
-            $this->markTestSkipped('CURRENT_TIMESTAMP with microseconds as default column value is supported since MySQL 5.6.4.');
-        }
         $sql = <<<SQL
 CREATE TABLE  IF NOT EXISTS `current_timestamp_test`  (
   `dt` datetime(2) NOT NULL DEFAULT CURRENT_TIMESTAMP(2),
@@ -85,7 +85,6 @@ SQL;
         $result['1: check'][2][0]->expression = "`C_check` <> ''";
         $result['2: primary key'][2]->name = null;
 
-        // Work aroung bug in MySQL 5.1 - it creates only this table in lowercase. O_o
         $result['3: foreign key'][2][0]->foreignTableName = new AnyCaseValue('T_constraints_2');
 
         return $result;
@@ -260,110 +259,97 @@ SQL;
     {
         $version = $this->getConnection(false)->getServerVersion();
 
-        $columns = array_merge(
-            parent::getExpectedColumns(),
-            [
-                'int_col' => [
+        $columns = [
+            ...parent::getExpectedColumns(),
+            'int_col' => [
                     'type' => 'integer',
-                    'dbType' => 'int(11)',
+                    'dbType' => 'int',
                     'phpType' => 'integer',
                     'allowNull' => false,
                     'autoIncrement' => false,
                     'enumValues' => null,
-                    'size' => 11,
-                    'precision' => 11,
+                    'size' => null,
+                    'precision' => null,
                     'scale' => null,
                     'defaultValue' => null,
                 ],
                 'int_col2' => [
                     'type' => 'integer',
-                    'dbType' => 'int(11)',
+                    'dbType' => 'int',
                     'phpType' => 'integer',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
-                    'size' => 11,
-                    'precision' => 11,
+                    'size' => null,
+                    'precision' => null,
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
                 'int_col3' => [
                     'type' => 'integer',
-                    'dbType' => 'int(11) unsigned',
+                    'dbType' => 'int unsigned',
                     'phpType' => 'integer',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
-                    'size' => 11,
-                    'precision' => 11,
+                    'size' => null,
+                    'precision' => null,
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
                 'tinyint_col' => [
                     'type' => 'tinyint',
-                    'dbType' => 'tinyint(3)',
+                    'dbType' => 'tinyint',
                     'phpType' => 'integer',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
-                    'size' => 3,
-                    'precision' => 3,
+                    'size' => null,
+                    'precision' => null,
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
                 'smallint_col' => [
                     'type' => 'smallint',
-                    'dbType' =>  'smallint(1)',
+                    'dbType' => 'smallint',
                     'phpType' => 'integer',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
-                    'size' => 1,
-                    'precision' => 1,
+                    'size' => null,
+                    'precision' => null,
                     'scale' => null,
                     'defaultValue' => 1,
                 ],
                 'bigint_col' => [
                     'type' => 'bigint',
-                    'dbType' => 'bigint(20) unsigned',
+                    'dbType' => 'bigint unsigned',
                     'phpType' => 'string',
                     'allowNull' => true,
                     'autoIncrement' => false,
                     'enumValues' => null,
-                    'size' => 20,
-                    'precision' => 20,
+                    'size' => null,
+                    'precision' => null,
                     'scale' => null,
                     'defaultValue' => null,
-                ],
-            ]
-        );
+                ]
+        ];
 
-        if (\version_compare($version, '8.0.17', '>') && \stripos($version, 'MariaDb') === false) {
-            $columns['int_col']['dbType'] = 'int';
-            $columns['int_col']['size'] = null;
-            $columns['int_col']['precision'] = null;
-            $columns['int_col2']['dbType'] = 'int';
-            $columns['int_col2']['size'] = null;
-            $columns['int_col2']['precision'] = null;
-            $columns['int_col3']['dbType'] = 'int unsigned';
-            $columns['int_col3']['size'] = null;
-            $columns['int_col3']['precision'] = null;
-            $columns['tinyint_col']['dbType'] = 'tinyint';
-            $columns['tinyint_col']['size'] = null;
-            $columns['tinyint_col']['precision'] = null;
-            $columns['smallint_col']['dbType'] = 'smallint';
-            $columns['smallint_col']['size'] = null;
-            $columns['smallint_col']['precision'] = null;
-            $columns['bigint_col']['dbType'] = 'bigint unsigned';
-            $columns['bigint_col']['size'] = null;
-            $columns['bigint_col']['precision'] = null;
-        }
+        if (stripos($version, 'MariaDb') !== false) {
+            $mariaDbOverrides = [
+                'int_col' => ['int(11)', 11],
+                'int_col2' => ['int(11)', 11],
+                'int_col3' => ['int(11) unsigned', 11],
+                'tinyint_col' => ['tinyint(3)', 3],
+                'smallint_col' => ['smallint(1)', 1],
+                'bigint_col' => ['bigint(20) unsigned', 20],
+            ];
 
-        if (version_compare($version, '5.7', '<') && \stripos($version, 'MariaDb') === false) {
-            $columns['int_col3']['phpType'] = 'string';
-            $columns['json_col']['type'] = 'text';
-            $columns['json_col']['dbType'] = 'longtext';
-            $columns['json_col']['phpType'] = 'string';
+            foreach ($mariaDbOverrides as $col => [$dbType, $size]) {
+                $columns[$col]['dbType'] = $dbType;
+                $columns[$col]['size'] = $size;
+                $columns[$col]['precision'] = $size;
+            }
         }
 
         return $columns;

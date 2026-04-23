@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,8 +11,6 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
-use yii\caching\CacheInterface;
-use yii\caching\DbCache;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
@@ -27,17 +27,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
     public $typeMap = [
-        Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_UPK => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_UBIGPK => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_PK => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UPK => 'int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_BIGPK => 'bigint NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'bigint UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'text',
-        Schema::TYPE_TINYINT => 'tinyint(3)',
-        Schema::TYPE_SMALLINT => 'smallint(6)',
-        Schema::TYPE_INTEGER => 'int(11)',
-        Schema::TYPE_BIGINT => 'bigint(20)',
+        Schema::TYPE_TINYINT => 'tinyint',
+        Schema::TYPE_SMALLINT => 'smallint',
+        Schema::TYPE_INTEGER => 'int',
+        Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
         Schema::TYPE_DOUBLE => 'double',
         Schema::TYPE_DECIMAL => 'decimal(10,0)',
@@ -56,7 +56,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         parent::init();
 
-        $this->typeMap = array_merge($this->typeMap, $this->defaultTimeTypeMap());
+        $this->typeMap = [
+            ...$this->typeMap,
+            Schema::TYPE_DATETIME => 'datetime(0)',
+            Schema::TYPE_TIME => 'time(0)',
+            Schema::TYPE_TIMESTAMP => 'timestamp(0)',
+        ];
     }
 
     /**
@@ -260,7 +265,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * @see https://downloads.mysql.com/docs/refman-5.1-en.pdf
+     * @see https://dev.mysql.com/doc/refman/8.0/en/insert-on-duplicate.html
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
@@ -378,59 +383,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return null;
-    }
-
-    /**
-     * Checks the ability to use fractional seconds.
-     *
-     * @return bool
-     * @see https://dev.mysql.com/doc/refman/5.6/en/fractional-seconds.html
-     */
-    private function supportsFractionalSeconds()
-    {
-        // use cache to prevent opening MySQL connection
-        // https://github.com/yiisoft/yii2/issues/13749#issuecomment-481657224
-        $key = [__METHOD__, $this->db->dsn];
-        $cache = null;
-        $schemaCache = (\Yii::$app && is_string($this->db->schemaCache)) ? \Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-        // If the `$schemaCache` is an instance of `DbCache` we don't use it to avoid a loop
-        if ($this->db->enableSchemaCache && $schemaCache instanceof CacheInterface && !($schemaCache instanceof DbCache)) {
-            $cache = $schemaCache;
-        }
-        $version = $cache ? $cache->get($key) : null;
-        if (!$version) {
-            $version = $this->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
-            if ($cache) {
-                $cache->set($key, $version, $this->db->schemaCacheDuration);
-            }
-        }
-
-        return version_compare($version, '5.6.4', '>=');
-    }
-
-    /**
-     * Returns the map for default time type.
-     * If the version of MySQL is lower than 5.6.4, then the types will be without fractional seconds,
-     * otherwise with fractional seconds.
-     *
-     * @return array
-     */
-    private function defaultTimeTypeMap()
-    {
-        $map = [
-            Schema::TYPE_DATETIME => 'datetime',
-            Schema::TYPE_TIMESTAMP => 'timestamp',
-            Schema::TYPE_TIME => 'time',
-        ];
-
-        if ($this->supportsFractionalSeconds()) {
-            $map = [
-                Schema::TYPE_DATETIME => 'datetime(0)',
-                Schema::TYPE_TIMESTAMP => 'timestamp(0)',
-                Schema::TYPE_TIME => 'time(0)',
-            ];
-        }
-
-        return $map;
     }
 }

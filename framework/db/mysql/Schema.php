@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,13 +11,11 @@
 namespace yii\db\mysql;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
-use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
@@ -24,7 +24,7 @@ use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
 /**
- * Schema is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).
+ * Schema is the class for retrieving metadata from a MySQL database (version 8.0 and later).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -40,11 +40,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      * {@inheritdoc}
      */
     public $columnSchemaClass = 'yii\db\mysql\ColumnSchema';
-    /**
-     * @var bool whether MySQL used is older than 5.1.
-     */
-    private $_oldMysql;
-
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
@@ -525,22 +520,6 @@ SQL;
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return Yii::createObject(ColumnSchemaBuilder::class, [$type, $length, $this->db]);
-    }
-
-    /**
-     * @return bool whether the version of the MySQL being used is older than 5.1.
-     * @throws InvalidConfigException
-     * @throws Exception
-     * @since 2.0.13
-     */
-    protected function isOldMysql()
-    {
-        if ($this->_oldMysql === null) {
-            $version = $this->db->getSlavePdo(true)->getAttribute(\PDO::ATTR_SERVER_VERSION);
-            $this->_oldMysql = version_compare($version, '5.1', '<=');
-        }
-
-        return $this->_oldMysql;
     }
 
     /**

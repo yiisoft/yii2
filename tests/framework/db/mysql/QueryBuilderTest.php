@@ -9,7 +9,6 @@
 namespace yiiunit\framework\db\mysql;
 
 use Closure;
-use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\DynamicModel;
 use yii\base\NotSupportedException;
@@ -40,42 +39,42 @@ final class QueryBuilderTest extends BaseQueryBuilder
             [
                 Schema::TYPE_PK . ' AFTER `col_before`',
                 $this->primaryKey()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`',
+                'int NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`',
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first(),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
+                'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
+                'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . '(8) AFTER `col_before`',
                 $this->primaryKey(8)->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`',
+                'int NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`',
             ],
             [
                 Schema::TYPE_PK . '(8) FIRST',
                 $this->primaryKey(8)->first(),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
+                'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . '(8) FIRST',
                 $this->primaryKey(8)->first()->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
+                'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . " COMMENT 'test' AFTER `col_before`",
                 $this->primaryKey()->comment('test')->after('col_before'),
-                "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
+                "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
             ],
             [
                 Schema::TYPE_PK . " COMMENT 'testing \'quote\'' AFTER `col_before`",
                 $this->primaryKey()->comment('testing \'quote\'')->after('col_before'),
-                "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'testing \'quote\'' AFTER `col_before`",
+                "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'testing \'quote\'' AFTER `col_before`",
             ],
         ];
 
@@ -100,54 +99,34 @@ final class QueryBuilderTest extends BaseQueryBuilder
             [
                 Schema::TYPE_DATETIME . ' NOT NULL',
                 $this->dateTime()->notNull(),
-                'datetime NOT NULL',
+                'datetime(0) NOT NULL',
             ],
             [
                 Schema::TYPE_DATETIME,
                 $this->dateTime(),
-                'datetime',
+                'datetime(0)',
             ],
             [
                 Schema::TYPE_TIME . ' NOT NULL',
                 $this->time()->notNull(),
-                'time NOT NULL',
+                'time(0) NOT NULL',
             ],
             [
                 Schema::TYPE_TIME,
                 $this->time(),
-                'time',
+                'time(0)',
             ],
             [
                 Schema::TYPE_TIMESTAMP . ' NOT NULL',
                 $this->timestamp()->notNull(),
-                'timestamp NOT NULL',
+                'timestamp(0) NOT NULL',
             ],
             [
                 Schema::TYPE_TIMESTAMP . ' NULL DEFAULT NULL',
                 $this->timestamp()->defaultValue(null),
-                'timestamp NULL DEFAULT NULL',
+                'timestamp(0) NULL DEFAULT NULL',
             ],
         ];
-
-        /**
-         * @link https://github.com/yiisoft/yii2/issues/14367
-         */
-        $mysqlVersion = $this->getDb()->getSlavePdo(true)->getAttribute(PDO::ATTR_SERVER_VERSION);
-        $supportsFractionalSeconds = version_compare($mysqlVersion, '5.6.4', '>=');
-        if ($supportsFractionalSeconds) {
-            $expectedValues = [
-                'datetime(0) NOT NULL',
-                'datetime(0)',
-                'time(0) NOT NULL',
-                'time(0)',
-                'timestamp(0) NOT NULL',
-                'timestamp(0) NULL DEFAULT NULL',
-            ];
-
-            foreach ($expectedValues as $index => $expected) {
-                $columns[$index][2] = $expected;
-            }
-        }
 
         /**
          * @link https://github.com/yiisoft/yii2/issues/14834
@@ -163,7 +142,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
             $columns[] = [
                 Schema::TYPE_TIMESTAMP,
                 $this->timestamp(),
-                $supportsFractionalSeconds ? 'timestamp(0)' : 'timestamp',
+                'timestamp(0)',
             ];
         }
 
