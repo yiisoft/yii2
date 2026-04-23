@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Bug: Fix Oracle `buildWithQueries()` to omit unsupported `RECURSIVE` keyword in Oracle CTEs (terabytesoftw)
 - Chg #18639: Refactor Oracle pagination SQL to use standard `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; Oracle `12.1+` is now required for `yii\db\oci\QueryBuilder` pagination (terabytesoftw)
 - Chg #18639: Refactor MSSQL pagination SQL to use standard `ORDER BY ... OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; SQL Server `2019+` is now required for `yii\db\mssql\QueryBuilder` pagination (terabytesoftw)
+- Chg: Remove MySQL `< 8.0` dead code and deprecated integer display width from MySQL type map (`int(11)` → `int`, `bigint(20)` → `bigint`, etc.); `tinyint(1)` for `TYPE_BOOLEAN` is preserved (terabytesoftw)
 
 2.0.55 under development
 ------------------------

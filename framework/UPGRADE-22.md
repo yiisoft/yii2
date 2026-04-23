@@ -188,6 +188,48 @@ Behavioral notes:
   `DISTINCT` is required.
 - Always specify `orderBy()` for deterministic pagination; SQL Server returns rows in an unspecified order otherwise.
 
+> [!NOTE]
+> **Lifecycle:** SQL Server `2019` was released on November 4, `2019`. Mainstream support ended on February 28, `2025`;
+> extended support (security-only) ends on January 8, `2030`. Although `OFFSET ... FETCH NEXT` has been available since
+> SQL Server `2012`, Yii `22.x` raises its supported floor to `2019+` as a policy decision to reduce the legacy test
+> matrix; SQL Server `2017` remains in vendor extended support until October 12, `2027`, but is no longer covered by
+> Yii.
+
+#### MySQL dead code removal and integer display width cleanup
+
+The minimum supported MySQL version is now **8.0+** (**MariaDB 10.5+**). The following dead code has been removed:
+
+- `Schema::isOldMysql()` method and `$_oldMysql` property (checked for MySQL <= `5.1`, never called).
+- `QueryBuilder::supportsFractionalSeconds()` method (always `true` for MySQL `8.0+`).
+- `CacheInterface` / `DbCache` imports from `QueryBuilder` (only used by the removed method).
+- Version checks for MySQL < `5.6` / < `5.6.4` / < `5.7` in tests.
+
+**Integer display width** (`int(11)`, `bigint(20)`, `smallint(6)`, `tinyint(3)`) has been removed from the MySQL type
+map. MySQL `8.0.17+` deprecated display width for integer types and emits deprecation warnings. The new defaults are:
+
+| Before                | After             |
+| --------------------- | ----------------- |
+| `int(11)`             | `int`             |
+| `int(10) UNSIGNED`    | `int UNSIGNED`    |
+| `bigint(20)`          | `bigint`          |
+| `bigint(20) UNSIGNED` | `bigint UNSIGNED` |
+| `smallint(6)`         | `smallint`        |
+| `tinyint(3)`          | `tinyint`         |
+
+`tinyint(1)` for `TYPE_BOOLEAN` is preserved; MySQL uses it as the canonical boolean representation.
+
+Explicit integer sizes (for example, `$this->primaryKey(8)`) are now ignored; display width is no longer emitted.
+
+If your application or migrations rely on the exact SQL output of `QueryBuilder::getColumnType()` for integer types
+(for example, in string assertions or snapshot tests), update the expected values.
+
+> [!NOTE]
+> **Lifecycle:** MySQL `5.7` reached end of extended support on October 31, `2023`. MySQL `8.0` reaches end of extended
+> support on April 30, `2026`; MySQL `8.4` is the current LTS release (premier support through April `2029`). MariaDB
+> `10.4` reached community support EOL on June 18, `2024`, and MariaDB `10.5` reached community support EOL on June 24,
+> `2025`. The version floors catch up to releases that are at or near EOL; the dead code removed in this change
+> targeted MySQL branches already unsupported by the vendor.
+
 #### Oracle pagination now uses `OFFSET ... FETCH` (`12.1+`)
 
 `yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
@@ -204,6 +246,13 @@ supported for Yii-generated pagination SQL in the OCI QueryBuilder.
 If you rely on paginated results without specifying `orderBy()`, note that Oracle returns rows in an unspecified order,
 so `OFFSET`/`FETCH` results may vary between executions. Always specify `orderBy()` when you need deterministic
 pagination.
+
+> [!NOTE]
+> **Lifecycle:** Oracle Database `12.1` introduced the standard `OFFSET ... FETCH NEXT` row-limiting clause. Premier
+> support for `12.1` ended on July 31, `2018`; extended support ended on July 31, `2022`. Oracle Database `19c` remains
+> a supported LTS release (premier support through December 31, `2029`, extended through December 31, `2032`); Oracle
+> AI Database `26ai` (released January `2026` on-premises) is the newest LTS, with premier support through December
+> 31, `2031`. The `12.1+` floor matches the earliest release with native row-limiting syntax.
 
 ### HHVM support removed
 
