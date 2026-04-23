@@ -191,8 +191,9 @@ Behavioral notes:
 > [!NOTE]
 > **Lifecycle:** SQL Server `2019` was released on November 4, `2019`. Mainstream support ended on February 28, `2025`;
 > extended support (security-only) ends on January 8, `2030`. Although `OFFSET ... FETCH NEXT` has been available since
-> SQL Server `2012`, the `2019+` floor aligns with versions that still receive vendor security updates. SQL Server
-> `2017` remains in extended support until October 12, `2027`, but is no longer covered by Yii.
+> SQL Server `2012`, Yii `22.x` raises its supported floor to `2019+` as a policy decision to reduce the legacy test
+> matrix; SQL Server `2017` remains in vendor extended support until October 12, `2027`, but is no longer covered by
+> Yii.
 
 #### MySQL dead code removal and integer display width cleanup
 
@@ -248,9 +249,10 @@ pagination.
 
 > [!NOTE]
 > **Lifecycle:** Oracle Database `12.1` introduced the standard `OFFSET ... FETCH NEXT` row-limiting clause. Premier
-> support for `12.1` ended on July 31, `2018`; extended support ended on July 31, `2022`. Oracle currently recommends
-> `19c` (LTS, premier support through December 31, `2029`, extended support through December 31, `2032`) for all
-> production deployments. The `12.1+` floor matches the earliest release with native row-limiting syntax.
+> support for `12.1` ended on July 31, `2018`; extended support ended on July 31, `2022`. Oracle Database `19c` remains
+> a supported LTS release (premier support through December 31, `2029`, extended through December 31, `2032`); Oracle
+> AI Database `26ai` (released January `2026` on-premises) is the newest LTS, with premier support through December
+> 31, `2031`. The `12.1+` floor matches the earliest release with native row-limiting syntax.
 
 ### HHVM support removed
 
