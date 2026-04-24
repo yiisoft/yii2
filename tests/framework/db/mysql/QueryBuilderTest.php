@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -28,6 +30,245 @@ final class QueryBuilderTest extends BaseQueryBuilder
 {
     protected $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';
+
+    public function testBuildOrderByAndLimitWithOffsetAndLimit(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(10)
+            ->offset(5);
+
+        $expectedQuerySql = $qb->isMariaDb()
+            ? <<<SQL
+            SELECT `id` FROM `example` OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL
+            : <<<SQL
+            SELECT `id` FROM `example` LIMIT 10 OFFSET 5
+            SQL;
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            $expectedQuerySql,
+            $actualQuerySql,
+            'OFFSET and LIMIT should generate the server-specific pagination syntax.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'OFFSET/LIMIT query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithLimitOnly(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(10);
+
+        $expectedQuerySql = $qb->isMariaDb()
+            ? <<<SQL
+            SELECT `id` FROM `example` FETCH NEXT 10 ROWS ONLY
+            SQL
+            : <<<SQL
+            SELECT `id` FROM `example` LIMIT 10
+            SQL;
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            $expectedQuerySql,
+            $actualQuerySql,
+            'LIMIT without OFFSET should generate the server-specific limit syntax.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'LIMIT-only query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOffsetOnly(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->offset(10);
+
+        $expectedQuerySql = $qb->isMariaDb()
+            ? <<<SQL
+            SELECT `id` FROM `example` OFFSET 10 ROWS
+            SQL
+            : <<<SQL
+            SELECT `id` FROM `example` LIMIT 10, 18446744073709551615
+            SQL;
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            $expectedQuerySql,
+            $actualQuerySql,
+            'OFFSET without LIMIT should generate the server-specific offset syntax.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'OFFSET-only query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithoutOffsetAndLimit(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example');
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example`
+            SQL,
+            $actualQuerySql,
+            'Query without OFFSET/LIMIT should not contain pagination clauses.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'Query without OFFSET/LIMIT should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOrderByWithoutPagination(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->orderBy('id');
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` ORDER BY `id`
+            SQL,
+            $actualQuerySql,
+            'ORDER BY without OFFSET/LIMIT should not contain pagination clauses.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'ORDER BY without pagination should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithZeroLimit(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(0);
+
+        $expectedQuerySql = $qb->isMariaDb()
+            ? <<<SQL
+            SELECT `id` FROM `example` FETCH NEXT 0 ROWS ONLY
+            SQL
+            : <<<SQL
+            SELECT `id` FROM `example` LIMIT 0
+            SQL;
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            $expectedQuerySql,
+            $actualQuerySql,
+            "Limit '0' should generate the server-specific zero-limit syntax.",
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            "Limit '0' query should have no bound parameters.",
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExplicitOrderBy(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->orderBy('id')
+            ->limit(10)
+            ->offset(5);
+
+        $expectedQuerySql = $qb->isMariaDb()
+            ? <<<SQL
+            SELECT `id` FROM `example` ORDER BY `id` OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL
+            : <<<SQL
+            SELECT `id` FROM `example` ORDER BY `id` LIMIT 10 OFFSET 5
+            SQL;
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            $expectedQuerySql,
+            $actualQuerySql,
+            'Explicit ORDER BY should be preserved alongside server-specific pagination clauses.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'Query with explicit ORDER BY should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExpressionLimitAndOffset(): void
+    {
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(new Expression('10'))
+            ->offset(new Expression('5'));
+
+        $expectedQuerySql = $qb->isMariaDb()
+            ? <<<SQL
+            SELECT `id` FROM `example` OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL
+            : <<<SQL
+            SELECT `id` FROM `example` LIMIT 10 OFFSET 5
+            SQL;
+
+        [$actualQuerySql, $actualQueryParams] = $qb->build($query);
+
+        self::assertSame(
+            $expectedQuerySql,
+            $actualQuerySql,
+            'Integer Expression values should generate server-specific pagination clauses.',
+        );
+        self::assertSame(
+            [],
+            $actualQueryParams,
+            'Pagination query with integer expressions should have no bound parameters.',
+        );
+    }
 
     /**
      * This is not used as a dataprovider for testGetColumnType to speed up the test
@@ -208,13 +449,22 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
             ],
             'query' => [
-                3 => 'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)',
+                3 => [
+                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)',
+                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)',
+                ],
             ],
             'query with update part' => [
-                3 => 'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1',
+                3 => [
+                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1',
+                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1',
+                ],
             ],
             'query without update part' => [
-                3 => 'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
+                3 => [
+                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
+                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
+                ],
             ],
             'values and expressions' => [
                 3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
