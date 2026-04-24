@@ -183,6 +183,14 @@ If you rely on paginated results without specifying `orderBy()`, note that Maria
 so `OFFSET`/`FETCH` results may vary between executions. Always specify `orderBy()` when you need deterministic
 pagination.
 
+> [!NOTE]
+> **Lifecycle:** MariaDB `10.6` LTS was released on July 6, `2021` and introduced the standard
+> `SELECT ... OFFSET ... FETCH` row-limiting clause. Community support for `10.6` ends on July 6, `2026`. Newer LTS
+> releases are `10.11` (released February 16, `2023`; community support through February 16, `2028`), `11.4` (released
+> May 29, `2024`; community support through May 29, `2029`), and `11.8` (released June 4, `2025`; community support
+> through June 4, `2028`). MariaDB `10.5` LTS reached community support EOL on June 24, `2025` and is no longer covered
+> by Yii. The `10.6+` floor matches the earliest MariaDB release with the standard `OFFSET ... FETCH` syntax.
+
 #### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
 
 `yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL
