@@ -167,6 +167,22 @@ Example:
 
 If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
 
+#### MariaDB pagination now uses `OFFSET ... FETCH` (`10.6+`)
+
+`yii\db\mysql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using MariaDB's standard row-limiting clause when the
+connected server is MariaDB:
+
+- `OFFSET <n> ROWS` is emitted only when an offset is set.
+- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`.
+- No synthetic `ORDER BY` is added when the user did not specify an `ORDER BY`.
+
+MariaDB versions earlier than `10.6` are no longer supported for Yii-generated pagination SQL. MySQL continues to use
+`LIMIT` / `LIMIT ... OFFSET ...` because MySQL's `SELECT` syntax does not support `OFFSET ... FETCH`.
+
+If you rely on paginated results without specifying `orderBy()`, note that MariaDB returns rows in an unspecified order,
+so `OFFSET`/`FETCH` results may vary between executions. Always specify `orderBy()` when you need deterministic
+pagination.
+
 #### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
 
 `yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL
@@ -197,7 +213,7 @@ Behavioral notes:
 
 #### MySQL dead code removal and integer display width cleanup
 
-The minimum supported MySQL version is now **8.0+** (**MariaDB 10.5+**). The following dead code has been removed:
+The minimum supported MySQL version is now **8.0+** (**MariaDB 10.6+**). The following dead code has been removed:
 
 - `Schema::isOldMysql()` method and `$_oldMysql` property (checked for MySQL <= `5.1`, never called).
 - `QueryBuilder::supportsFractionalSeconds()` method (always `true` for MySQL `8.0+`).

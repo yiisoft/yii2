@@ -16,7 +16,7 @@ use yii\db\Expression;
 use yii\db\Query;
 
 /**
- * QueryBuilder is the query builder for MySQL databases.
+ * QueryBuilder is the query builder for MySQL databases (MySQL 8.0+ and MariaDB 10.6+).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -202,20 +202,63 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function buildLimit($limit, $offset)
     {
+        if (!$this->hasLimit($limit) && !$this->hasOffset($offset)) {
+            return '';
+        }
+
+        if ($this->isMariaDb()) {
+            return $this->buildOffsetFetch($limit, $offset);
+        }
+
         $sql = '';
+
         if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
+            $sql = "LIMIT {$limit}";
+
             if ($this->hasOffset($offset)) {
-                $sql .= ' OFFSET ' . $offset;
+                $sql .= " OFFSET {$offset}";
             }
         } elseif ($this->hasOffset($offset)) {
             // limit is not optional in MySQL
             // https://stackoverflow.com/questions/255517/mysql-offset-infinite-rows/271650#271650
             // https://dev.mysql.com/doc/refman/5.7/en/select.html#idm46193796386608
-            $sql = "LIMIT $offset, 18446744073709551615"; // 2^64-1
+            $sql = "LIMIT {$offset}, 18446744073709551615"; // 2^64-1
         }
 
         return $sql;
+    }
+
+    /**
+     * Returns whether the connected server is MariaDB.
+     *
+     * @return bool whether the connected server is MariaDB.
+     */
+    public function isMariaDb()
+    {
+        return stripos($this->db->getServerVersion(), 'MariaDB') !== false;
+    }
+
+    /**
+     * Builds the OFFSET/FETCH clauses for MariaDB 10.6 or newer.
+     *
+     * @param int|Expression $limit The limit number. See [[Query::limit]] for more details.
+     * @param int|Expression $offset The offset number. See [[Query::offset]] for more details.
+     *
+     * @return string SQL statement for OFFSET/FETCH clauses.
+     */
+    protected function buildOffsetFetch($limit, $offset)
+    {
+        $parts = [];
+
+        if ($this->hasOffset($offset)) {
+            $parts[] = "OFFSET {$offset} ROWS";
+        }
+
+        if ($this->hasLimit($limit)) {
+            $parts[] = "FETCH NEXT {$limit} ROWS ONLY";
+        }
+
+        return implode(' ', $parts);
     }
 
     /**
