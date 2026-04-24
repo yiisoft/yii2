@@ -169,8 +169,8 @@ If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update exp
 
 #### MariaDB pagination now uses `OFFSET ... FETCH` (`10.6+`)
 
-`yii\db\mysql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using MariaDB's standard row-limiting clause when the
-connected server is MariaDB:
+`yii\db\mysql\QueryBuilder::buildLimit()` now delegates to `buildOffsetFetch()` and emits SQL using MariaDB's standard
+row-limiting clause when the connected server is MariaDB:
 
 - `OFFSET <n> ROWS` is emitted only when an offset is set.
 - `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`.
