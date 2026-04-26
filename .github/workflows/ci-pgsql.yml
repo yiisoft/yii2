@@ -47,7 +47,7 @@ jobs:
       database-image: postgres
       database-port: "5432"
       database-type: pgsql
-      database-versions: '["13","14","15","16","17","latest"]'
+      database-versions: '["13","14","15","16","17","18","latest"]'
       extensions: curl, intl, pdo, pdo_pgsql
       os: '["ubuntu-22.04"]'
       php-version: '["8.5"]'

@@ -319,10 +319,9 @@ remove those references. The upsert logic now lives directly in `upsert()` using
 
 > [!NOTE]
 > **Lifecycle:** PostgreSQL releases one major version per year, each supported for five years. PostgreSQL `13` was
-> released on September 24, `2020` and reached community EOL on November 13, `2025`. PostgreSQL `14` (released
-> September 30, `2021`; community support through November 12, `2026`), `15` (released October 13, `2022`; community
-> support through November 11, `2027`), `16` (released September 14, `2023`; community support through November 9,
-> `2028`), and `17` (released September 26, `2024`; community support through November 8, `2029`) are all current.
+> released on September 24, `2020` and reached community EOL on November 13, `2025`. Supported majors include
+> PostgreSQL `14` (through November 12, `2026`), `15` (through November 11, `2027`), `16` (through November 9, `2028`),
+> `17` (through November 8, `2029`), and `18` (released September 25, `2025`; through November 14, `2030`).
 > PostgreSQL `12` reached community EOL on November 14, `2024` and is no longer covered by Yii. The `13.0+` floor
 > consolidates the `ON CONFLICT` upsert syntax (PostgreSQL `9.5+`) and `GENERATED AS IDENTITY` columns
 > (PostgreSQL `12+`) under a single code path.
