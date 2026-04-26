@@ -107,7 +107,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the LIMIT and OFFSET clauses for a SELECT query using the PostgreSQL `OFFSET ... FETCH` syntax.
      *
-     * @param int|ExpressionInterface|null $limit the LIMIT value. `null` or a non-positive integer means no limit.
+     * @param int|ExpressionInterface|null $limit the LIMIT value. `null` or a negative value means no limit; `0` is
+     * valid and emits `FETCH NEXT 0 ROWS ONLY`.
      * @param int|ExpressionInterface|null $offset the OFFSET value. `null` or `0` means no offset.
      * @return string the LIMIT and OFFSET clauses built for PostgreSQL `13+`.
      */
