@@ -302,7 +302,7 @@ pagination.
 > AI Database `26ai` (released January `2026` on-premises) is the newest LTS, with premier support through December
 > 31, `2031`. The `12.1+` floor matches the earliest release with native row-limiting syntax.
 
-#### PostgreSQL dead code removal minimum PostgreSQL `13.0`
+#### PostgreSQL dead code removal (minimum `13.0+`)
 
 The minimum supported PostgreSQL version is now **`13.0+`**. Every legacy version branch in the PostgreSQL driver
 collapses under this floor, and the following dead code has been removed:
