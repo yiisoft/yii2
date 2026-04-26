@@ -302,29 +302,47 @@ pagination.
 > AI Database `26ai` (released January `2026` on-premises) is the newest LTS, with premier support through December
 > 31, `2031`. The `12.1+` floor matches the earliest release with native row-limiting syntax.
 
-#### PostgreSQL dead code removal (minimum `13.0+`)
+#### PostgreSQL
 
-The minimum supported PostgreSQL version is now **`13.0+`**. Every legacy version branch in the PostgreSQL driver
+##### Dead code removal (minimum `13+`)
+
+The minimum supported PostgreSQL version is now **`13+`**. Every legacy version branch in the PostgreSQL driver
 collapses under this floor, and the following dead code has been removed:
 
 - `yii\db\pgsql\QueryBuilder::oldUpsert()` — CTE-based upsert workaround for PostgreSQL `< 9.5`. The `ON CONFLICT`
   syntax (available since PostgreSQL `9.5`) is now used unconditionally.
-- `yii\db\pgsql\QueryBuilder::newUpsert()` — inlined directly into `upsert()` since the version branch is gone.
+- `yii\db\pgsql\QueryBuilder::newUpsert()` — removed; its logic is now inlined into `upsert()`.
 - The `version_compare(..., '9.5', '<')` check in `QueryBuilder::upsert()`.
 - The `version_compare(..., '12.0', '>=')` branch in `Schema::findColumns()` for identity column detection
   (`attidentity != ''`). The identity column clause is now always emitted in the catalogue query.
 
-If your application extends `\yii\db\pgsql\QueryBuilder` and overrides or calls `oldUpsert()` or `newUpsert()`,
-remove those references. The upsert logic now lives directly in `upsert()` using the `ON CONFLICT` syntax.
+If your application extends `\yii\db\pgsql\QueryBuilder` and overrides or calls `oldUpsert()` or `newUpsert()`, remove
+those references. The upsert logic now lives directly in `upsert()` using the `ON CONFLICT` syntax.
+
+##### Pagination now uses `OFFSET ... FETCH` (`13+`)
+
+`yii\db\pgsql\QueryBuilder::buildLimit()` now emits SQL using PostgreSQL's standard row-limiting clause:
+
+- `OFFSET <n> ROWS` is emitted only when an offset is set.
+- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`.
+- Raw `Expression` values are wrapped in parentheses, for example `FETCH NEXT (1 + 1) ROWS ONLY`.
+- No synthetic `ORDER BY` is added when the user did not specify an `ORDER BY`.
+
+If your tests assert exact SQL strings for PostgreSQL paginated queries, replace expected `LIMIT` / `OFFSET` clauses
+with `OFFSET ... ROWS` / `FETCH NEXT ... ROWS ONLY`.
+
+If you rely on paginated results without specifying `orderBy()`, note that PostgreSQL returns rows in an unspecified
+order, so `OFFSET` / `FETCH` results may vary between executions. Always specify `orderBy()` when you need
+deterministic pagination.
 
 > [!NOTE]
 > **Lifecycle:** PostgreSQL releases one major version per year, each supported for five years. PostgreSQL `13` was
 > released on September 24, `2020` and reached community EOL on November 13, `2025`. Supported majors include
 > PostgreSQL `14` (through November 12, `2026`), `15` (through November 11, `2027`), `16` (through November 9, `2028`),
 > `17` (through November 8, `2029`), and `18` (released September 25, `2025`; through November 14, `2030`).
-> PostgreSQL `12` reached community EOL on November 14, `2024` and is no longer covered by Yii. The `13.0+` floor
-> consolidates the `ON CONFLICT` upsert syntax (PostgreSQL `9.5+`) and `GENERATED AS IDENTITY` columns
-> (PostgreSQL `12+`) under a single code path.
+> PostgreSQL `12` reached community EOL on November 14, `2024` and is no longer covered by Yii. The `13+` floor lets
+> Yii use `ON CONFLICT` upsert (`9.5+`) and `GENERATED AS IDENTITY` columns (`12+`) unconditionally, without runtime
+> version branching.
 
 ### HHVM support removed
 

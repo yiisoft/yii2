@@ -20,7 +20,7 @@ use yii\helpers\StringHelper;
 use function is_bool;
 
 /**
- * QueryBuilder is the query builder for PostgreSQL databases.
+ * QueryBuilder is the query builder for PostgreSQL databases (version 13 and above).
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
@@ -80,7 +80,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'jsonb',
     ];
 
-
     /**
      * {@inheritdoc}
      */
@@ -103,6 +102,51 @@ class QueryBuilder extends \yii\db\QueryBuilder
             'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
             'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
         ]);
+    }
+
+    /**
+     * Builds the LIMIT and OFFSET clauses for a SELECT query using the PostgreSQL `OFFSET ... FETCH` syntax.
+     *
+     * @param int|ExpressionInterface|null $limit the LIMIT value. `null` or a negative value means no limit; `0` is
+     * valid and emits `FETCH NEXT 0 ROWS ONLY`.
+     * @param int|ExpressionInterface|null $offset the OFFSET value. `null` or `0` means no offset.
+     * @return string the LIMIT and OFFSET clauses built for PostgreSQL `13+`.
+     */
+    public function buildLimit($limit, $offset)
+    {
+        $sql = '';
+
+        if ($this->hasOffset($offset)) {
+            $sql = 'OFFSET ' . $this->buildLimitOffsetValue($offset) . ' ROWS';
+        }
+
+        if ($this->hasLimit($limit)) {
+            $sql .= ($sql !== '' ? ' ' : '') . 'FETCH NEXT ' . $this->buildLimitOffsetValue($limit) . ' ROWS ONLY';
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Builds a PostgreSQL row-limiting value for `OFFSET` / `FETCH` clauses.
+     *
+     * PostgreSQL allows scalar expressions in `OFFSET` and `FETCH`, but arithmetic expressions must be enclosed in
+     * parentheses to avoid syntax ambiguity (for example, `FETCH NEXT (1 + 1) ROWS ONLY`).
+     *
+     * Only `int` and {@see Expression} are supported. Other {@see ExpressionInterface} implementations
+     * ({@see \yii\db\JsonExpression}, {@see \yii\db\ArrayExpression}, {@see PdoValue}) are not valid row-count values
+     * and are not handled here; passing them produces undefined SQL.
+     *
+     * @param int|Expression $value The row-limiting value.
+     * @return string The value SQL.
+     */
+    protected function buildLimitOffsetValue($value)
+    {
+        if ($value instanceof Expression) {
+            return '(' . (string) $value . ')';
+        }
+
+        return (string) $value;
     }
 
     /**
