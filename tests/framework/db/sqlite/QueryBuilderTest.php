@@ -14,6 +14,8 @@ use Closure;
 use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
+use yii\db\Expression;
+use yii\db\Query;
 use yii\db\Schema;
 use yii\db\sqlite\QueryBuilder;
 use yiiunit\base\db\BaseQueryBuilder;
@@ -30,6 +32,208 @@ final class QueryBuilderTest extends BaseQueryBuilder
     protected static string $driverNameStatic = 'sqlite';
 
     protected $likeEscapeCharSql = " ESCAPE '\\'";
+
+    public function testBuildOrderByAndLimitWithOffsetAndLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(10)
+            ->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` LIMIT 10 OFFSET 5
+            SQL,
+            $actualQuerySql,
+            'OFFSET and LIMIT should generate LIMIT x OFFSET y.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'OFFSET/LIMIT query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithLimitOnly(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(10);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` LIMIT 10
+            SQL,
+            $actualQuerySql,
+            'LIMIT without OFFSET should generate LIMIT x.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'LIMIT-only query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOffsetOnly(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->offset(10);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` LIMIT -1 OFFSET 10
+            SQL,
+            $actualQuerySql,
+            "OFFSET without LIMIT should generate SQLite's documented negative LIMIT sentinel.",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'OFFSET-only query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithoutOffsetAndLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example');
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example`
+            SQL,
+            $actualQuerySql,
+            'Query without OFFSET/LIMIT should not contain pagination clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'Query without OFFSET/LIMIT should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOrderByWithoutPagination(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->orderBy('id');
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` ORDER BY `id`
+            SQL,
+            $actualQuerySql,
+            'ORDER BY without OFFSET/LIMIT should not contain pagination clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'ORDER BY without pagination should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithZeroLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(0);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` LIMIT 0
+            SQL,
+            $actualQuerySql,
+            "Limit '0' should generate LIMIT '0' and return zero rows.",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            "Limit '0' query should have no bound parameters.",
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithZeroLimitAndOffset(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(0)
+            ->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` LIMIT 0 OFFSET 5
+            SQL,
+            $actualQuerySql,
+            "Limit '0' with offset should still generate LIMIT '0' and return zero rows.",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            "Limit '0' with offset query should have no bound parameters.",
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExplicitOrderBy(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->orderBy('id')
+            ->limit(10)
+            ->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` ORDER BY `id` LIMIT 10 OFFSET 5
+            SQL,
+            $actualQuerySql,
+            'Explicit ORDER BY should be preserved alongside LIMIT/OFFSET clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'Query with explicit ORDER BY should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExpressionLimitAndOffset(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(new Expression('1 + 1'))
+            ->offset(new Expression('1'));
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT `id` FROM `example` LIMIT 1 + 1 OFFSET 1
+            SQL,
+            $actualQuerySql,
+            'Scalar Expression values should generate LIMIT/OFFSET clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'Pagination query with scalar expressions should have no bound parameters.',
+        );
+    }
 
     public function columnTypes()
     {
