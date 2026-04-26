@@ -191,6 +191,30 @@ pagination.
 > through June 4, `2028`). MariaDB `10.5` LTS reached community support EOL on June 24, `2025` and is no longer covered
 > by Yii. The `10.6+` floor matches the earliest MariaDB release with the standard `OFFSET ... FETCH` syntax.
 
+#### SQLite offset-only pagination now uses `LIMIT -1 OFFSET`
+
+`yii\db\sqlite\QueryBuilder::buildLimit()` continues to emit SQLite's documented `LIMIT` / `OFFSET` syntax. SQLite does
+not support the SQL-standard `OFFSET ... FETCH` row-limiting clause.
+
+Offset-only queries now emit:
+
+```sql
+LIMIT -1 OFFSET <n>
+```
+
+instead of:
+
+```sql
+LIMIT 9223372036854775807 OFFSET <n>
+```
+
+SQLite treats a negative `LIMIT` expression as no upper bound, so the generated SQL remains equivalent while matching
+the documented SQLite behavior. If your tests assert exact SQL strings for SQLite offset-only queries, update the
+expected SQL.
+
+SQLite `LIMIT` and `OFFSET` clauses also accept scalar expressions, so raw `Expression` values such as `1 + 1` remain
+supported in Yii-generated pagination SQL.
+
 #### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
 
 `yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL

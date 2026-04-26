@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Chg #18639: Refactor MSSQL pagination SQL to use standard `ORDER BY ... OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; SQL Server `2019+` is now required for `yii\db\mssql\QueryBuilder` pagination (terabytesoftw)
 - Chg: Remove MySQL `< 8.0` dead code and deprecated integer display width from MySQL type map (`int(11)` → `int`, `bigint(20)` → `bigint`, etc.); `tinyint(1)` for `TYPE_BOOLEAN` is preserved (terabytesoftw)
 - Chg #18639: Refactor MariaDB pagination SQL to use standard `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; MariaDB `10.6+` is now required for `yii\db\mysql\QueryBuilder` MariaDB pagination (terabytesoftw)
+- Chg #18639: Refactor SQLite offset-only pagination SQL to use documented `LIMIT -1 OFFSET ...`; SQLite continues to use `LIMIT` / `OFFSET` because `OFFSET ... FETCH` is unsupported (terabytesoftw)
 
 2.0.55 under development
 ------------------------

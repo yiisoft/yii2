@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -464,15 +466,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function buildLimit($limit, $offset)
     {
         $sql = '';
+
         if ($this->hasLimit($limit)) {
-            $sql = 'LIMIT ' . $limit;
+            $sql = "LIMIT {$limit}";
             if ($this->hasOffset($offset)) {
-                $sql .= ' OFFSET ' . $offset;
+                $sql .= " OFFSET {$offset}";
             }
         } elseif ($this->hasOffset($offset)) {
-            // limit is not optional in SQLite
-            // https://www.sqlite.org/syntaxdiagrams.html#select-stmt
-            $sql = "LIMIT 9223372036854775807 OFFSET $offset"; // 2^63-1
+            // LIMIT is not optional before OFFSET in SQLite, and a negative LIMIT means no upper bound.
+            // https://www.sqlite.org/lang_select.html#limitoffset
+            $sql = "LIMIT -1 OFFSET {$offset}";
         }
 
         return $sql;
