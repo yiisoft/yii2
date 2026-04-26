@@ -33,6 +33,185 @@ final class QueryBuilderTest extends BaseQueryBuilder
     public $driverName = 'pgsql';
     protected static string $driverNameStatic = 'pgsql';
 
+    public function testBuildOrderByAndLimitWithOffsetAndLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(10)
+            ->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            'OFFSET and LIMIT should generate OFFSET x ROWS FETCH NEXT y ROWS ONLY.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'OFFSET/LIMIT query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithLimitOnly(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(10);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" FETCH NEXT 10 ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            'LIMIT without OFFSET should generate FETCH NEXT y ROWS ONLY.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'LIMIT-only query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOffsetOnly(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->offset(10);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" OFFSET 10 ROWS
+            SQL,
+            $actualQuerySql,
+            'OFFSET without LIMIT should generate OFFSET x ROWS without FETCH clause.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'OFFSET-only query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithoutOffsetAndLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example');
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example"
+            SQL,
+            $actualQuerySql,
+            'Query without OFFSET/LIMIT should not contain pagination clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'Query without OFFSET/LIMIT should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithOrderByWithoutPagination(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->orderBy('id');
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" ORDER BY "id"
+            SQL,
+            $actualQuerySql,
+            'ORDER BY without OFFSET/LIMIT should not contain pagination clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'ORDER BY without pagination should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithZeroLimit(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(0);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" FETCH NEXT 0 ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            "Limit '0' must emit FETCH NEXT '0' ROWS ONLY.",
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            "Limit '0' query should have no bound parameters.",
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExplicitOrderBy(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->orderBy('id')
+            ->limit(10)
+            ->offset(5);
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" ORDER BY "id" OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            'Explicit ORDER BY should be preserved alongside OFFSET/FETCH clauses.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'Query with explicit ORDER BY should have no bound parameters.',
+        );
+    }
+
+    public function testBuildOrderByAndLimitWithExpressionLimitAndOffset(): void
+    {
+        $query = (new Query())
+            ->select('id')
+            ->from('example')
+            ->limit(new Expression('1 + 1'))
+            ->offset(new Expression('1'));
+
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            <<<SQL
+            SELECT "id" FROM "example" OFFSET (1) ROWS FETCH NEXT (1 + 1) ROWS ONLY
+            SQL,
+            $actualQuerySql,
+            'Expression LIMIT/OFFSET values should be wrapped in parentheses for PostgreSQL OFFSET/FETCH.',
+        );
+        self::assertEmpty(
+            $actualQueryParams,
+            'Pagination query with expressions should have no bound parameters.',
+        );
+    }
+
     public function columnTypes()
     {
         $columns = [
@@ -335,13 +514,13 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 ],
             ],
             'query' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1 ON CONFLICT ("email") DO UPDATE SET "status"=EXCLUDED."status"',
+                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY ON CONFLICT ("email") DO UPDATE SET "status"=EXCLUDED."status"',
             ],
             'query with update part' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1 ON CONFLICT ("email") DO UPDATE SET "address"=:qp1, "status"=:qp2, "orders"=T_upsert.orders + 1',
+                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY ON CONFLICT ("email") DO UPDATE SET "address"=:qp1, "status"=:qp2, "orders"=T_upsert.orders + 1',
             ],
             'query without update part' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 LIMIT 1 ON CONFLICT DO NOTHING',
+                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY ON CONFLICT DO NOTHING',
             ],
             'values and expressions' => [
                 3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
