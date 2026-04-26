@@ -80,7 +80,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'jsonb',
     ];
 
-
     /**
      * {@inheritdoc}
      */
@@ -108,8 +107,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the LIMIT and OFFSET clauses for a SELECT query using the PostgreSQL `OFFSET ... FETCH` syntax.
      *
-     * @param int|\yii\db\ExpressionInterface|null $limit the LIMIT value. `null` or a non-positive integer means no limit.
-     * @param int|\yii\db\ExpressionInterface|null $offset the OFFSET value. `null` or `0` means no offset.
+     * @param int|ExpressionInterface|null $limit the LIMIT value. `null` or a non-positive integer means no limit.
+     * @param int|ExpressionInterface|null $offset the OFFSET value. `null` or `0` means no offset.
      * @return string the LIMIT and OFFSET clauses built for PostgreSQL `13+`.
      */
     public function buildLimit($limit, $offset)
@@ -128,12 +127,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a PostgreSQL row-limiting value.
+     * Builds a PostgreSQL row-limiting value for `OFFSET` / `FETCH` clauses.
      *
-     * PostgreSQL allows non-standard expressions in `OFFSET` and `FETCH`, but arithmetic expressions must be enclosed
-     * in parentheses to avoid syntax ambiguity.
+     * PostgreSQL allows scalar expressions in `OFFSET` and `FETCH`, but arithmetic expressions must be enclosed in
+     * parentheses to avoid syntax ambiguity (for example, `FETCH NEXT (1 + 1) ROWS ONLY`).
      *
-     * @param int|ExpressionInterface $value The row-limiting value.
+     * Only `int` and {@see Expression} are supported. Other {@see ExpressionInterface} implementations
+     * ({@see \yii\db\JsonExpression}, {@see \yii\db\ArrayExpression}, {@see PdoValue}) are not valid row-count values
+     * and are not handled here; passing them produces undefined SQL.
+     *
+     * @param int|Expression $value The row-limiting value.
      * @return string The value SQL.
      */
     protected function buildLimitOffsetValue($value)
