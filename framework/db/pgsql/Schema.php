@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,7 +26,7 @@ use yii\db\Schema as BaseSchema;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
- * (version 9.x and above).
+ * (version 13.0 and above).
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
@@ -134,7 +136,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      * {@inheritdoc}
      */
     protected $tableQuoteCharacter = '"';
-
 
     /**
      * {@inheritdoc}
@@ -469,11 +470,6 @@ SQL;
         $tableName = $this->db->quoteValue($table->name);
         $schemaName = $this->db->quoteValue($table->schemaName);
 
-        $orIdentity = '';
-        if (version_compare($this->db->serverVersion, '12.0', '>=')) {
-            $orIdentity = 'OR attidentity != \'\'';
-        }
-
         $sql = <<<SQL
 SELECT
     d.nspname AS table_schema,
@@ -487,7 +483,7 @@ SELECT
     a.atttypmod AS modifier,
     a.attnotnull = false AS is_nullable,
     CAST(pg_get_expr(ad.adbin, ad.adrelid) AS varchar) AS column_default,
-    coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) {$orIdentity} AS is_autoinc,
+    coalesce(pg_get_expr(ad.adbin, ad.adrelid) ~ 'nextval',false) OR attidentity != '' AS is_autoinc,
     pg_get_serial_sequence(quote_ident(d.nspname) || '.' || quote_ident(c.relname), a.attname) AS sequence_name,
     CASE WHEN COALESCE(td.typtype, tb.typtype, t.typtype) = 'e'::char
         THEN array_to_string((SELECT array_agg(enumlabel) FROM pg_enum WHERE enumtypid = COALESCE(td.oid, tb.oid, a.atttypid))::varchar[], ',')
