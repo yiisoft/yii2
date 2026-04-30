@@ -518,6 +518,30 @@ return [
 The feature is purely additive: drop a `<X>Action.php` in the right folder (or register it in `actionMap`) and the
 route works. Routes that match neither a controller nor a standalone action throw `InvalidRouteException` as before.
 
+#### HTTP-aware param binding: `yii\web\Action`
+
+For HTTP endpoints, extend `yii\web\Action` (new in 22.0) instead of `yii\base\Action`. `yii\web\Action::resolveStandaloneParams()`
+delegates to `yii\web\Controller::bindActionParamsToCallable()` so the action receives the same scalar coercion, type
+validation, and DI resolution as a controller-bound action: `'7'` is coerced to `int 7`, invalid scalars raise
+`yii\web\BadRequestHttpException`, missing required parameters also raise `BadRequestHttpException`, and typed services
+resolve through module components, module DI, and the global container in that order.
+
+```php
+namespace app\controllers;
+
+use yii\web\Action;
+use yii\web\Response;
+
+final class HealthAction extends Action
+{
+    public function run(int $id, Response $response): Response { ... }
+}
+```
+
+Reserve `yii\base\Action` for non-HTTP standalone contexts (queue jobs, scheduled tasks, console-side dispatch). It
+keeps the simpler `yii\di\Container::resolveCallableDependencies()` resolution which autowires typed services but
+does not coerce or validate scalar parameters.
+
 `yii\filters\AccessRule::matchController()` now accepts `null` for the controller argument. When a rule declares a
 non-empty `controllers` constraint and the action runs as a standalone action, the rule does not match. To keep the
 previous behavior, leave `controllers` empty.

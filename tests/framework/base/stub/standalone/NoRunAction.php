@@ -13,8 +13,8 @@ namespace yiiunit\framework\base\stub\standalone;
 use yii\base\Action;
 
 /**
- * Action used for testing that an action that does not implement {@see \yii\base\Action::run()} can be resolved and
- * executed without error.
+ * Action used for testing that resolving an action without {@see \yii\base\Action::run()} leads to
+ * {@see \yii\base\InvalidConfigException} on execution.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0

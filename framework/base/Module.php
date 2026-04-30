@@ -610,7 +610,7 @@ class Module extends ServiceLocator
     {
         $normalizedRoute = trim((string) $route, '/');
 
-        if ($normalizedRoute !== '' && !empty($this->actionMap)) {
+        if ($normalizedRoute !== '' && $this->actionMap !== []) {
             $separator = strpos($normalizedRoute, '/');
             $actionId = $separator === false ? $normalizedRoute : substr($normalizedRoute, 0, $separator);
 

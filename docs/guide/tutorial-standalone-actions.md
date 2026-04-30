@@ -37,7 +37,7 @@ class.
 
 Default file placement (no configuration required, because `$actionNamespace` defaults to `$controllerNamespace`):
 
-```
+```text
 app/controllers/PostController.php           (existing controller, unchanged)
 app/controllers/post/IndexAction.php         (route post/index)
 app/controllers/post/ViewAction.php          (route post/view)
@@ -47,14 +47,27 @@ app/controllers/admin/posts/CreateAction.php (route admin/posts/create)
 The hyphen-to-CamelCase rule applies to the last route segment (`view-summary` resolves to `ViewSummaryAction`);
 preceding segments form a sub-namespace prefix verbatim.
 
+### Choosing the right base class
+
+Yii ships two action base classes for standalone dispatch:
+
+- **[[yii\web\Action]]** — for HTTP endpoints. Reuses [[yii\web\Controller::bindActionParams()]] semantics: scalar
+  coercion (`'7'` → `int 7`), [[yii\web\BadRequestHttpException]] on type mismatches and missing required
+  parameters, and the same DI resolution as web controllers (module components, module DI, container).
+- **[[yii\base\Action]]** — for non-HTTP contexts (queue jobs, scheduled tasks, console-side dispatch). Resolves
+  typed parameters through [[\yii\di\Container::resolveCallableDependencies()]] without HTTP-specific filtering.
+
+For every example below that handles an HTTP request, the action extends `yii\web\Action`. Reserve `yii\base\Action`
+for actions that should not pay HTTP-specific costs nor surface `BadRequestHttpException` on bad scalars.
+
 A realistic example is a health-check endpoint that verifies database connectivity. With the default configuration, drop
 the file at `app/controllers/HealthAction.php`:
 
 ```php
 namespace app\controllers;
 
-use yii\base\Action;
 use yii\db\Connection;
+use yii\web\Action;
 use yii\web\Response;
 
 final class HealthAction extends Action
@@ -147,7 +160,7 @@ The same example could be built with one `PostController` and six `actionXxx` me
 
 ### Folder layout
 
-```
+```text
 app/
     UseCase/
         post/
@@ -292,8 +305,8 @@ final class PostForm extends Model
 
 ### 4. The actions
 
-Each action is a [[yii\base\Action]] subclass that owns its `run()` method. Dependencies are injected by the DI
-container.
+Each action extends [[yii\web\Action]] (HTTP endpoints) and owns its `run()` method. Typed parameters are coerced and
+validated through the same binder as web controllers.
 
 #### `IndexAction` — list with pagination
 
@@ -303,8 +316,8 @@ container.
 namespace app\UseCase\post;
 
 use app\models\Post;
-use yii\base\Action;
 use yii\data\ActiveDataProvider;
+use yii\web\Action;
 
 final class IndexAction extends Action
 {
@@ -338,7 +351,7 @@ when the action is hosted by a controller). Rendering goes through the module's 
 namespace app\UseCase\post;
 
 use app\models\Post;
-use yii\base\Action;
+use yii\web\Action;
 use yii\web\NotFoundHttpException;
 
 final class ViewAction extends Action
@@ -360,8 +373,9 @@ final class ViewAction extends Action
 }
 ```
 
-The `int $id` parameter is filled from the route. The DI container resolves typed scalars from the
-parameters passed to `runAction()` and typed services from the container.
+The `int $id` parameter is filled from the route and coerced by [[yii\web\Action]]'s binder; passing `?id=abc`
+raises [[yii\web\BadRequestHttpException]] (HTTP 400) instead of a `TypeError`. Typed services are resolved from
+module components and the DI container.
 
 #### `CreateAction` — POST with form validation
 
@@ -372,9 +386,9 @@ namespace app\UseCase\post;
 
 use app\models\Post;
 use Yii;
-use yii\base\Action;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\Action;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
@@ -530,8 +544,9 @@ wherever `actionNamespace` points). Routing is deterministic:
 4. The controller pipeline tries to resolve a `<X>Controller` with a matching `actionXxx` method.
 5. If no controller method matches, the standalone-action pipeline tries `<X>Action` under `actionNamespace`.
 
-Because controllers always win when both could handle the same route, existing applications can adopt the pattern
-feature by feature. Migrate one slice; leave the rest on controllers. There is no global switch.
+Because ambiguous matches now raise `InvalidConfigException`, existing applications can still adopt the pattern
+feature by feature, but overlapping controller/standalone routes must be disambiguated explicitly. There is no global
+switch.
 
 ## Scaling to N slices
 
