@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -11,22 +13,21 @@ namespace yii\base;
 use Yii;
 use yii\di\ServiceLocator;
 
+use function is_array;
+
 /**
  * Module is the base class for module and application classes.
  *
- * A module represents a sub-application which contains MVC elements by itself, such as
- * models, views, controllers, etc.
+ * A module represents a sub-application which contains MVC elements by itself, such as models, views, controllers, etc.
  *
  * A module may consist of [[modules|sub-modules]].
  *
- * [[components|Components]] may be registered with the module so that they are globally
- * accessible within the module.
+ * [[components|Components]] may be registered with the module so that they are globally accessible within the module.
  *
  * For more details and usage information on Module, see the [guide article on modules](guide:structure-modules).
  *
- * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must
- * start with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an
- * example.
+ * @property-write array $aliases List of path aliases to be defined. The array keys are alias names (must start with
+ * `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
  * @property string $basePath The root directory of the module.
  * @property string $controllerPath The directory that contains the controller classes.
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
@@ -89,6 +90,30 @@ class Module extends ServiceLocator
      */
     public $controllerMap = [];
     /**
+     * @var array<string, class-string|array<string, mixed>> mapping from action IDs to standalone {@see Action} class
+     * configurations. Mapped actions are dispatched by {@see runAction()} without requiring a hosting controller, in
+     * parallel to {@see $controllerMap}.
+     *
+     * Each entry maps an ID (the first route segment) to either a fully qualified class name or an array configuration
+     * accepted by {@see \Yii::createObject()}. The class must extend {@see Action}.
+     *
+     * Usage example:
+     *
+     * ```php
+     * [
+     *     'webhooks-stripe' => app\actions\StripeWebhookAction::class,
+     *     'health'          => ['class' => app\actions\HealthCheckAction::class],
+     * ]
+     * ```
+     *
+     * Action IDs in this map take precedence over IDs in {@see $controllerMap} and over module/controller resolution.
+     *
+     * Routes whose first segment is not present here fall through to the legacy controller pipeline unchanged.
+     *
+     * @since 22.0
+     */
+    public array $actionMap = [];
+    /**
      * @var string|null the namespace that controller classes are in.
      * This namespace will be used to load controller classes by prepending it to the controller
      * class name.
@@ -101,6 +126,32 @@ class Module extends ServiceLocator
      * defining namespaces and how classes are loaded.
      */
     public $controllerNamespace;
+    /**
+     * The namespace where standalone {@see Action} subclasses are located for convention-based discovery, parallel to
+     * {@see $controllerNamespace} for controllers.
+     *
+     * If not set, defaults to the value of {@see $controllerNamespace} during {@see init()}, so standalone actions can
+     * live next to controllers under the same root. Set this property to a different namespace to organize standalone
+     * actions in their own folder (for example, vertical slices under `app\UseCase`):
+     *
+     * Usage example:
+     *
+     * ```php
+     * 'actionNamespace' => 'app\\UseCase',
+     * ```
+     *
+     * With the example above, route `posts/index` resolves to `app\UseCase\posts\IndexAction`, route
+     * `posts/view-summary` resolves to `app\UseCase\posts\ViewSummaryAction`, and so on. The same hyphen, slash, and
+     * CamelCase rules apply as for controllers (see {@see createControllerByID()}).
+     *
+     * Resolution order in {@see runAction()}: explicit {@see $controllerMap}/{@see $actionMap} entries are checked
+     * first, then sub-modules, then controllers by namespace, and finally standalone actions by namespace. When a
+     * controller method AND a standalone Action class both match the same route, {@see runAction()} throws
+     * {@see InvalidConfigException} so the developer disambiguates instead of silently shadowing one or the other.
+     *
+     * @since 22.0
+     */
+    public string|null $actionNamespace = null;
     /**
      * @var string the default route of this module. Defaults to `default`.
      * The route may consist of child module ID, controller ID, and/or action ID.
@@ -147,7 +198,6 @@ class Module extends ServiceLocator
      */
     private $_version;
 
-
     /**
      * Constructor.
      * @param string $id the ID of this module.
@@ -190,9 +240,9 @@ class Module extends ServiceLocator
     /**
      * Initializes the module.
      *
-     * This method is called after the module is created and initialized with property values
-     * given in configuration. The default implementation will initialize [[controllerNamespace]]
-     * if it is not set.
+     * This method is called after the module is created and initialized with property values given in configuration.
+     *
+     * The default implementation will initialize [[controllerNamespace]] if it is not set.
      *
      * If you override this method, please make sure you call the parent implementation.
      */
@@ -200,9 +250,14 @@ class Module extends ServiceLocator
     {
         if ($this->controllerNamespace === null) {
             $class = get_class($this);
+
             if (($pos = strrpos($class, '\\')) !== false) {
                 $this->controllerNamespace = substr($class, 0, $pos) . '\\controllers';
             }
+        }
+
+        if ($this->actionNamespace === null) {
+            $this->actionNamespace = $this->controllerNamespace;
         }
     }
 
@@ -530,31 +585,275 @@ class Module extends ServiceLocator
 
     /**
      * Runs a controller action specified by a route.
+     *
      * This method parses the specified route and creates the corresponding child module(s), controller and action
      * instances. It then calls [[Controller::runAction()]] to run the action with the given parameters.
+     *
      * If the route is empty, the method will use [[defaultRoute]].
-     * @param string $route the route that specifies the action.
-     * @param array $params the parameters to be passed to the action
-     * @return mixed the result of the action.
+     *
+     * Since version 22.0, when the first segment of the route matches a key in [[actionMap]], the action is dispatched
+     * as a standalone action via [[runMappedAction()]], without resolving a controller. When no controller resolves the
+     * route either, the method falls back to convention-based standalone action lookup under [[actionNamespace]] via
+     * [[createStandaloneAction()]]. When a controller method AND a standalone Action class both match the same route,
+     * the method throws [[InvalidConfigException]] so the developer disambiguates instead of silently shadowing one or
+     * the other.
+     *
+     * @param string $route The route that specifies the action.
+     * @param array $params The parameters to be passed to the action.
+     *
+     * @throws InvalidConfigException if a controller method and a standalone Action class both match the same route.
      * @throws InvalidRouteException if the requested route cannot be resolved into an action successfully.
+     *
+     * @return mixed The result of the action.
      */
     public function runAction($route, $params = [])
     {
-        $parts = $this->createController($route);
-        if (is_array($parts)) {
-            list($controller, $actionID) = $parts;
-            $oldController = Yii::$app->controller;
-            Yii::$app->controller = $controller;
-            $result = $controller->runAction($actionID, $params);
-            if ($oldController !== null) {
-                Yii::$app->controller = $oldController;
-            }
+        $normalizedRoute = trim((string) $route, '/');
 
-            return $result;
+        if ($normalizedRoute !== '' && !empty($this->actionMap)) {
+            $separator = strpos($normalizedRoute, '/');
+            $actionId = $separator === false ? $normalizedRoute : substr($normalizedRoute, 0, $separator);
+
+            if (isset($this->actionMap[$actionId])) {
+                return $this->runMappedAction($actionId, $params);
+            }
+        }
+
+        $parts = $this->createController($route);
+
+        $controller = null;
+        $actionID = null;
+
+        if (is_array($parts)) {
+            [$controller, $actionID] = $parts;
+            $resolvedActionID = $actionID === '' ? $controller->defaultAction : $actionID;
+
+            if ($controller->createAction($resolvedActionID) !== null) {
+                if ($this->createStandaloneAction($route) !== null) {
+                    $id = $this->getUniqueId();
+
+                    throw new InvalidConfigException(
+                        'Route "'
+                        . ($id === '' ? $route : "{$id}/{$route}")
+                        . '" matches both a controller action and a standalone Action class. '
+                        . 'Remove one to disambiguate.',
+                    );
+                }
+
+                $oldController = Yii::$app->controller;
+                Yii::$app->controller = $controller;
+
+                $result = $controller->runAction($actionID, $params);
+
+                if ($oldController !== null) {
+                    Yii::$app->controller = $oldController;
+                }
+
+                return $result;
+            }
+        }
+
+        $action = $this->createStandaloneAction($route);
+
+        if ($action !== null) {
+            return $this->runStandaloneAction($action, $params);
+        }
+
+        if ($controller !== null) {
+            throw new InvalidRouteException(
+                'Unable to resolve the request: ' . $controller->getUniqueId() . '/' . $actionID
+            );
         }
 
         $id = $this->getUniqueId();
-        throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
+
+        throw new InvalidRouteException(
+            'Unable to resolve the request "' . ($id === '' ? $route : "{$id}/{$route}") . '".',
+        );
+    }
+
+    /**
+     * Runs a standalone action registered in [[actionMap]].
+     *
+     * The action is instantiated via [[\Yii::createObject()]] with `[$id, null]` as positional constructor arguments,
+     * allowing the DI container to autowire any extra typed dependencies declared after `$controller`. The lifecycle is
+     * then delegated to [[runStandaloneAction()]].
+     *
+     * @param string $id The action ID present in [[actionMap]].
+     * @param array $params The parameters to be matched against the action's `run()` signature.
+     *
+     * @return mixed the action result, or `null` if execution was canceled by a before-action listener.
+     *
+     * @since 22.0
+     */
+    protected function runMappedAction(string $id, array $params): mixed
+    {
+        /** @var Action $action */
+        $action = Yii::createObject($this->actionMap[$id], [$id, null]);
+
+        $action->setModule($this);
+
+        return $this->runStandaloneAction($action, $params);
+    }
+
+    /**
+     * Resolves a route to a standalone {@see Action} class through convention-based discovery under
+     * [[actionNamespace]].
+     *
+     * Recurses through registered sub-modules using their first-segment ID, matching the pattern of
+     * {@see createController()}. When the route does not match a sub-module, the last segment is converted to a
+     * CamelCased class name with an `Action` suffix, the preceding segments form a sub-namespace prefix, and the result
+     * is looked up under the owning module's [[actionNamespace]].
+     *
+     * The resolved class must extend [[Action]] and must NOT extend [[Controller]]; otherwise this method returns
+     * `null` and the caller falls through to the controller pipeline (or to `InvalidRouteException`).
+     *
+     * @param string $route The route relative to this module.
+     *
+     * @return Action|null A resolved standalone action ready for dispatch, or `null` when no class matches.
+     *
+     * @since 22.0
+     */
+    protected function createStandaloneAction(string $route): Action|null
+    {
+        if ($route === '') {
+            $route = $this->defaultRoute;
+        }
+
+        $route = trim($route, '/');
+
+        if ($route === '' || strpos($route, '//') !== false) {
+            return null;
+        }
+
+        $firstSlash = strpos($route, '/');
+        $firstSegment = $firstSlash === false ? $route : substr($route, 0, $firstSlash);
+
+        $module = $this->getModule($firstSegment);
+
+        if ($module !== null) {
+            $remainder = $firstSlash === false ? '' : substr($route, $firstSlash + 1);
+
+            return $module->createStandaloneAction($remainder);
+        }
+
+        if ($this->actionNamespace === null || $this->actionNamespace === '') {
+            return null;
+        }
+
+        $lastSlash = strrpos($route, '/');
+
+        if ($lastSlash === false) {
+            $prefix = '';
+            $idPart = $route;
+        } else {
+            $prefix = substr($route, 0, $lastSlash + 1);
+            $idPart = substr($route, $lastSlash + 1);
+        }
+
+        if ($idPart === '' || $this->isIncorrectClassNameOrPrefix($idPart, $prefix)) {
+            return null;
+        }
+
+        $className = preg_replace_callback(
+            '%-([a-z0-9_])%i',
+            fn($matches): string => ucfirst($matches[1]),
+            ucfirst($idPart),
+        ) . 'Action';
+        $className = ltrim(
+            "{$this->actionNamespace}\\" . str_replace('/', '\\', $prefix) . $className,
+            '\\',
+        );
+
+        if (strpos($className, '-') !== false || !class_exists($className)) {
+            return null;
+        }
+
+        if (!is_subclass_of($className, Action::class) || is_subclass_of($className, Controller::class)) {
+            return null;
+        }
+
+        /** @var Action $action */
+        $action = Yii::createObject($className, [$route, null]);
+        $action->setModule($this);
+
+        return $action;
+    }
+
+    /**
+     * Runs a standalone {@see Action} instance through the standard module/action event lifecycle.
+     *
+     * Module ancestors fire [[EVENT_BEFORE_ACTION]] outer-to-inner before execution and [[EVENT_AFTER_ACTION]]
+     * inner-to-outer afterwards, mirroring [[Controller::runAction()]]. The action itself also fires
+     * [[Controller::EVENT_BEFORE_ACTION]] and [[Controller::EVENT_AFTER_ACTION]] so behaviors attached via the action's
+     * [[behaviors()]] (for example [[\yii\filters\AccessControl]] or [[\yii\filters\VerbFilter]]) participate in the
+     * lifecycle.
+     *
+     * Setting [[ActionEvent::isValid]] to `false` in any before-action listener cancels the action and returns `null`.
+     *
+     * @param Action $action The action to run.
+     * @param array $params The parameters to be matched against the action's `run()` signature.
+     *
+     * @return mixed The action result, or `null` if execution was canceled by a before-action listener.
+     *
+     * @since 22.0
+     */
+    protected function runStandaloneAction(Action $action, array $params): mixed
+    {
+        if (Yii::$app->requestedAction === null) {
+            Yii::$app->requestedAction = $action;
+        }
+
+        $modulesOuterToInner = [$this];
+        $ancestor = $this->module;
+
+        while ($ancestor !== null) {
+            array_unshift($modulesOuterToInner, $ancestor);
+
+            $ancestor = $ancestor->module;
+        }
+
+        $modulesInnerToOuter = [];
+        $runAction = true;
+
+        foreach ($modulesOuterToInner as $module) {
+            if ($module->beforeAction($action)) {
+                array_unshift($modulesInnerToOuter, $module);
+            } else {
+                $runAction = false;
+
+                break;
+            }
+        }
+
+        if ($runAction) {
+            $beforeEvent = new ActionEvent($action);
+            $action->trigger(Controller::EVENT_BEFORE_ACTION, $beforeEvent);
+
+            if (!$beforeEvent->isValid) {
+                $runAction = false;
+            }
+        }
+
+        $result = null;
+
+        if ($runAction) {
+            $result = $action->runWithParams($params);
+
+            $afterEvent = new ActionEvent($action);
+
+            $afterEvent->result = $result;
+
+            $action->trigger(Controller::EVENT_AFTER_ACTION, $afterEvent);
+
+            $result = $afterEvent->result;
+
+            foreach ($modulesInnerToOuter as $module) {
+                $result = $module->afterAction($action, $result);
+            }
+        }
+
+        return $result;
     }
 
     /**

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -13,10 +15,13 @@ use Yii;
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
- * The name of the controller method is available via [[actionMethod]] which
- * is set by the [[controller]] who creates this action.
+ * The name of the controller method is available via [[actionMethod]] which is set by the [[controller]] who creates
+ * this action.
  *
  * For more details and usage information on InlineAction, see the [guide article on actions](guide:structure-controllers).
+ *
+ * Not standalone-compatible: by definition InlineAction targets a controller method, so it cannot be registered in
+ * [[\yii\base\Module::$actionMap]] and is always created with a non-`null` controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -27,10 +32,9 @@ use Yii;
 class InlineAction extends Action
 {
     /**
-     * @var string the controller method that this inline action is associated with
+     * @var string The controller method that this inline action is associated with.
      */
-    public $actionMethod;
-
+    public string $actionMethod = '';
 
     /**
      * @param string $id the ID of this action
@@ -41,6 +45,7 @@ class InlineAction extends Action
     public function __construct($id, $controller, $actionMethod, $config = [])
     {
         $this->actionMethod = $actionMethod;
+
         parent::__construct($id, $controller, $config);
     }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -18,8 +20,8 @@ use yii\base\UserException;
  *
  * To use ErrorAction, you need to do the following steps:
  *
- * First, declare an action of ErrorAction type in the `actions()` method of your `SiteController`
- * class (or whatever controller you prefer), like the following:
+ * First, declare an action of ErrorAction type in the `actions()` method of your `SiteController` class (or whatever
+ * controller you prefer), like the following:
  *
  * ```
  * public function actions()
@@ -30,8 +32,8 @@ use yii\base\UserException;
  * }
  * ```
  *
- * Then, create a view file for this action. If the route of your error action is `site/error`, then
- * the view file should be `views/site/error.php`. In this view file, the following variables are available:
+ * Then, create a view file for this action. If the route of your error action is `site/error`, then the view file
+ * should be `views/site/error.php`. In this view file, the following variables are available:
  *
  * - `$name`: the error name
  * - `$message`: the error message
@@ -44,6 +46,10 @@ use yii\base\UserException;
  *     'errorAction' => 'site/error',
  * ]
  * ```
+ *
+ * Not standalone-compatible: this action requires a hosting controller because rendering, layout resolution, and `view`
+ * aliases are performed through the controller. Register it via [[\yii\base\Controller::actions()]] rather than
+ * [[\yii\base\Module::$actionMap]].
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>

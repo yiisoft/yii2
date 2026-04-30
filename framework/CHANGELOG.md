@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Chg #18639: Refactor SQLite offset-only pagination SQL to use documented `LIMIT -1 OFFSET ...`; SQLite continues to use `LIMIT` / `OFFSET` because `OFFSET ... FETCH` is unsupported (terabytesoftw)
 - Chg: Remove PostgreSQL `< 13.0` dead code; drop `oldUpsert()` CTE workaround for `< 9.5` and identity column version branch in `Schema::findColumns()` for `< 12.0`; minimum supported version is now PostgreSQL `13.0` (terabytesoftw)
 - Chg #18639: Refactor PostgreSQL pagination SQL to use standard `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; PostgreSQL `13+` is now required for `yii\db\pgsql\QueryBuilder` pagination (terabytesoftw)
+- Chg: Add `Module::$actionMap` and `Module::$actionNamespace` for standalone action dispatch parallel to controllers (terabytesoftw)
 
 2.0.55 under development
 ------------------------

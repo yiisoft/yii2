@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -161,7 +163,6 @@ class AccessRule extends Component
      */
     public $denyCallback;
 
-
     /**
      * Checks whether the Web user is allowed to perform the specified action.
      * @param Action $action the action to be performed
@@ -195,8 +196,10 @@ class AccessRule extends Component
     }
 
     /**
-     * @param Controller $controller the controller
-     * @return bool whether the rule applies to the controller
+     * @param Controller|null $controller The controller, or `null` when the action runs as a standalone action
+     * dispatched by [[\yii\base\Module::$actionMap]] (since 22.0).
+     *
+     * @return bool Whether the rule applies to the controller.
      */
     protected function matchController($controller)
     {
@@ -204,7 +207,12 @@ class AccessRule extends Component
             return true;
         }
 
+        if ($controller === null) {
+            return false;
+        }
+
         $id = $controller->getUniqueId();
+
         foreach ($this->controllers as $pattern) {
             if (StringHelper::matchWildcard($pattern, $id)) {
                 return true;

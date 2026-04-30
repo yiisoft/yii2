@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -10,16 +12,21 @@ namespace yii\base;
 
 use Yii;
 
+use function call_user_func_array;
+use function get_class;
+
 /**
  * Action is the base class for all controller action classes.
  *
- * Action provides a way to reuse action method code. An action method in an Action
- * class can be used in multiple controllers or in different projects.
+ * Action provides a way to reuse action method code. An action method in an Action class can be used in multiple
+ * controllers or in different projects.
  *
- * Derived classes must implement a method named `run()`. This method
- * will be invoked by the controller when the action is requested.
- * The `run()` method can have parameters which will be filled up
- * with user input values automatically according to their names.
+ * Derived classes must implement a method named `run()`. This method will be invoked by the controller when the action
+ * is requested.
+ *
+ * The `run()` method can have parameters which will be filled up with user input values automatically according to
+ * their names.
+ *
  * For example, if the `run()` method is declared as follows:
  *
  * ```
@@ -27,6 +34,7 @@ use Yii;
  * ```
  *
  * And the parameters provided for the action are: `['id' => 1]`.
+ *
  * Then the `run()` method will be invoked as `run(1)` automatically.
  *
  * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
@@ -45,61 +53,152 @@ class Action extends Component
      */
     public $id;
     /**
-     * @var T the controller that owns this action
+     * @var T|null the controller that owns this action, or `null` when the action runs standalone.
+     * via {@see Module::$actionMap}
      */
     public $controller;
 
+    /**
+     * This action when invoked standalone (without a controller).
+     *
+     * @since 22.0
+     */
+    private Module|null $_module = null;
 
     /**
      * Constructor.
      *
-     * @param string $id the ID of this action
-     * @param T $controller the controller that owns this action
-     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties
+     * @param string $id The ID of this action.
+     * @param T|null $controller The controller that owns this action, or `null` for standalone handlers.
+     * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties.
      */
-    public function __construct($id, $controller, $config = [])
+    public function __construct($id, $controller = null, $config = [])
     {
         $this->id = $id;
         $this->controller = $controller;
+
         parent::__construct($config);
     }
 
     /**
      * Returns the unique ID of this action among the whole application.
      *
-     * @return string the unique ID of this action among the whole application.
+     * When the action is hosted by a controller, the ID is composed of the controller's unique ID and the action ID.
+     *
+     * For standalone handlers (no controller), the ID falls back to the owning module's unique ID, or to the action ID
+     * alone when no module is attached.
+     *
+     * @return string The unique ID of this action among the whole application.
      */
     public function getUniqueId()
     {
-        return $this->controller->getUniqueId() . '/' . $this->id;
+        if ($this->controller !== null) {
+            return $this->controller->getUniqueId() . '/' . $this->id;
+        }
+
+        $module = $this->getModule();
+        $moduleId = $module !== null ? $module->getUniqueId() : '';
+
+        return $moduleId === '' ? $this->id : $moduleId . '/' . $this->id;
+    }
+
+    /**
+     * Returns the module that owns this action when invoked standalone.
+     *
+     * Falls back to the controller's module when a controller hosts the action.
+     *
+     * @return Module|null The owning module, or `null` if neither a module nor a controller is attached.
+     *
+     * @since 22.0
+     */
+    public function getModule(): Module|null
+    {
+        if ($this->_module !== null) {
+            return $this->_module;
+        }
+
+        return $this->controller?->module;
+    }
+
+    /**
+     * Sets the module that owns this action when invoked standalone.
+     *
+     * Used by {@see Module::runAction()} when dispatching a handler registered in {@see Module::$actionMap}.
+     *
+     * @param Module|null $module The owning module, or `null` to detach.
+     *
+     * @since 22.0
+     */
+    public function setModule(Module|null $module): void
+    {
+        $this->_module = $module;
     }
 
     /**
      * Runs this action with the specified parameters.
-     * This method is mainly invoked by the controller.
      *
-     * @param array $params the parameters to be bound to the action's run() method.
-     * @return mixed the result of the action
-     * @throws InvalidConfigException if the action class does not have a run() method
+     * When a controller hosts the action, parameter binding is delegated to {@see Controller::bindActionParams()}.
+     *
+     * For standalone handlers the typed parameters of `run()` are resolved through the DI container via
+     * {@see resolveStandaloneParams()}.
+     *
+     * @param array $params The parameters to be bound to the action's `run()` method.
+     *
+     * @throws InvalidConfigException if the action class does not have a `run()` method.
+     *
+     * @return mixed The result of the action.
      */
-    public function runWithParams($params)
+    public function runWithParams(array $params)
     {
         if (!method_exists($this, 'run')) {
             throw new InvalidConfigException(get_class($this) . ' must define a "run()" method.');
         }
-        $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this) . '::run(), invoked by ' . get_class($this->controller), __METHOD__);
+
+        if ($this->controller !== null) {
+            $args = $this->controller->bindActionParams($this, $params);
+
+            Yii::debug(
+                'Running action: ' . get_class($this) . '::run(), invoked by ' . get_class($this->controller),
+                __METHOD__,
+            );
+        } else {
+            $args = $this->resolveStandaloneParams($params);
+
+            Yii::debug(
+                'Running standalone action: ' . get_class($this) . '::run()',
+                __METHOD__,
+            );
+        }
+
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
+
         if ($this->beforeRun()) {
             $result = call_user_func_array([$this, 'run'], $args);
+
             $this->afterRun();
 
             return $result;
         }
 
         return null;
+    }
+
+    /**
+     * Resolves typed parameters of `run()` when the action is invoked without a hosting controller.
+     *
+     * Delegates to {@see \yii\di\Container::resolveCallableDependencies()} so that route parameters are matched by name
+     * and class-typed parameters are autowired from the DI container.
+     *
+     * @param array $params Route parameters to be matched by name against `run()`'s signature.
+     * @return array<array-key, mixed> The resolved positional argument list for `run()`.
+     *
+     * @since 22.0
+     */
+    protected function resolveStandaloneParams($params): array
+    {
+        return Yii::$container->resolveCallableDependencies([$this, 'run'], $params);
     }
 
     /**

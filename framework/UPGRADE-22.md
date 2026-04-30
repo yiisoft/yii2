@@ -457,6 +457,75 @@ compatibility:
 The default implementations now delegate to the configured `$clientScript` handler. Subclasses that call
 `parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
 
+### Standalone actions (`Module::$actionMap` and `Module::$actionNamespace`)
+
+`yii\base\Action::$controller` is now nullable, and two new `yii\base\Module` properties enable routing directly to a
+standalone `yii\base\Action` subclass without a hosting `Controller`:
+
+- `Module::$actionMap` explicit registration, parallel to `Module::$controllerMap`. Each entry maps an ID (the first
+  route segment) to an `Action` class configuration accepted by `Yii::createObject()`.
+- `Module::$actionNamespace` convention-based lookup, parallel to `Module::$controllerNamespace`. Defaults to the
+  value of `controllerNamespace` during `init()`, so by default standalone actions live next to controllers under the
+  same root.
+
+Standalone actions receive constructor and method-level dependencies through the DI container, and `behaviors()`
+declared on the action participate in its lifecycle (`AccessControl`, `VerbFilter`, and similar filters).
+
+The convention-based file placement mirrors controllers, only the suffix and parent class differ:
+
+```
+app/controllers/PostController.php          (existing controller, unchanged)
+app/controllers/post/IndexAction.php        (standalone action, route post/index)
+app/controllers/post/ViewAction.php         (standalone action, route post/view)
+app/controllers/admin/posts/CreateAction.php (standalone action, route admin/posts/create)
+```
+
+The same hyphen-to-CamelCase rule applies to the last route segment (`view-summary` resolves to `ViewSummaryAction`),
+and preceding segments form a sub-namespace prefix verbatim.
+
+For projects that prefer a separate root (vertical slices, use cases, ports/adapters layout), set `actionNamespace`
+explicitly:
+
+```php
+// config/web.php
+return [
+    // ...
+    'actionNamespace' => 'app\\UseCase',
+];
+```
+
+With the example above, route `posts/index` resolves to `app\UseCase\posts\IndexAction`. Controllers remain at
+`app/controllers/` and continue to be discovered through `controllerNamespace`.
+
+Resolution order in `Module::runAction()`: explicit `actionMap` and `controllerMap` entries are checked first, then
+sub-modules, then controllers by namespace, and finally standalone actions by namespace. **If a controller method and a
+standalone Action class both match the same route, `Module::runAction()` throws `InvalidConfigException`** so the
+developer disambiguates instead of silently shadowing one or the other. Existing applications upgrade with no
+behavioral change because before this release a class file at the convention path was never resolved.
+
+Minimal `actionMap` example for an endpoint that does not follow the convention (custom ID or external class):
+
+```php
+// config/web.php
+return [
+    // ...
+    'actionMap' => [
+        'health' => app\actions\HealthCheckAction::class,
+    ],
+];
+```
+
+The feature is purely additive: drop a `<X>Action.php` in the right folder (or register it in `actionMap`) and the
+route works. Routes that match neither a controller nor a standalone action throw `InvalidRouteException` as before.
+
+`yii\filters\AccessRule::matchController()` now accepts `null` for the controller argument. When a rule declares a
+non-empty `controllers` constraint and the action runs as a standalone action, the rule does not match. To keep the
+previous behavior, leave `controllers` empty.
+
+The following actions are not standalone-compatible because they require controller-level rendering or layout
+resolution: `yii\web\ViewAction`, `yii\web\ErrorAction`, `yii\base\InlineAction`. Continue to register them through
+`Controller::actions()`.
+
 ### `View::registerJs()` no longer assumes jQuery
 
 `yii\web\View::registerJs()` no longer calls `JqueryAsset::register($this)` automatically when the script position is
