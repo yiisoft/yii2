@@ -186,9 +186,9 @@ class Controller extends BaseController
      * @since 22.0
      */
     public static function bindActionParamsToCallable(
-        \ReflectionMethod $method,
+        ReflectionMethod $method,
         array $params,
-        ?Module $module = null
+        Module|null $module = null
     ): array {
         $args = [];
         $missing = [];
