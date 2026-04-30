@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,14 +18,19 @@ use yii\base\ViewNotFoundException;
  * ViewAction represents an action that displays a view according to a user-specified parameter.
  *
  * By default, the view being displayed is specified via the `view` GET parameter.
+ *
  * The name of the GET parameter can be customized via [[viewParam]].
  *
- * Users specify a view in the format of `path/to/view`, which translates to the view name
- * `ViewPrefix/path/to/view` where `ViewPrefix` is given by [[viewPrefix]]. The view will then
- * be rendered by the [[\yii\base\Controller::render()|render()]] method of the currently active controller.
+ * Users specify a view in the format of `path/to/view`, which translates to the view name `ViewPrefix/path/to/view`
+ * where `ViewPrefix` is given by [[viewPrefix]]. The view will then be rendered by the
+ * [[\yii\base\Controller::render()|render()]] method of the currently active controller.
  *
- * Note that the user-specified view name must start with a word character and can only contain
- * word characters, forward slashes, dots and dashes.
+ * Note that the user-specified view name must start with a word character and can only contain word characters, forward
+ * slashes, dots and dashes.
+ *
+ * Not standalone-compatible: this action requires a hosting controller because rendering and layout resolution are
+ * performed through the controller. Register it via [[\yii\base\Controller::actions()]] rather than
+ * [[\yii\base\Module::$actionMap]].
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -60,7 +67,6 @@ class ViewAction extends Action
      * If false, no layout will be applied.
      */
     public $layout;
-
 
     /**
      * Runs the action.

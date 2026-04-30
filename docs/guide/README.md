@@ -176,6 +176,7 @@ Special Topics
 * [Mailing](tutorial-mailing.md)
 * [Performance Tuning](tutorial-performance-tuning.md)
 * [Shared Hosting Environment](tutorial-shared-hosting.md)
+* [Standalone Actions](tutorial-standalone-actions.md)
 * [Template Engines](tutorial-template-engines.md)
 * [Working with Third-Party Code](tutorial-yii-integration.md)
 * [Using Yii as a micro framework](tutorial-yii-as-micro-framework.md)
