@@ -706,6 +706,10 @@ class ModuleTest extends TestCase
 
     public function testThrowInvalidConfigExceptionWhenCreateControllerByIdResolvesNonControllerClassUnderDebug(): void
     {
+        if (!YII_DEBUG) {
+            self::markTestSkipped("Run with the default bootstrap to exercise the 'YII_DEBUG=true' branch.");
+        }
+
         $module = new TestModule('test');
 
         $module->controllerNamespace = 'yiiunit\framework\base\stub\module';

@@ -15,6 +15,10 @@ declare(strict_types=1);
  * tests/bootstrap.php preserves the override. Only tests tagged with the `prod` group are expected to run under this
  * bootstrap.
  */
-define('YII_DEBUG', false);
+if (!defined('YII_DEBUG')) {
+    define('YII_DEBUG', false);
+} elseif (YII_DEBUG !== false) {
+    throw new RuntimeException('tests/bootstrap-prod.php requires YII_DEBUG=false; got ' . var_export(YII_DEBUG, true) . '.');
+}
 
 require __DIR__ . '/bootstrap.php';
