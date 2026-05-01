@@ -17,6 +17,11 @@
       <directory>./tests</directory>
     </testsuite>
   </testsuites>
+  <groups>
+    <exclude>
+      <group>prod</group>
+    </exclude>
+  </groups>
   <source>
     <include>
       <directory suffix=".php">framework</directory>

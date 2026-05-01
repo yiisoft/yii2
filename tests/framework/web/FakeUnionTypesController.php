@@ -21,4 +21,32 @@ class FakeUnionTypesController extends Controller
     public function actionArrayOrInt(array|int $foo)
     {
     }
+
+    public function actionIntOrArray(int|array $foo)
+    {
+    }
+
+    public function actionNullableUnionString(int|string|null $arg)
+    {
+    }
+
+    public function actionNullableUnionWithoutString(int|float|null $arg)
+    {
+    }
+
+    public function actionUnionWithObject(int|\stdClass $arg)
+    {
+    }
+
+    public function actionUnionWithObjectOnly(\stdClass|\Iterator $arg)
+    {
+    }
+
+    public function actionIntOrFloat(int|float $foo)
+    {
+    }
+
+    public function actionNullableObjectStringUnion(\stdClass|string|null $arg)
+    {
+    }
 }

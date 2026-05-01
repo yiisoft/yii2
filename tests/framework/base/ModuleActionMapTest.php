@@ -17,12 +17,14 @@ use yii\base\InvalidRouteException;
 use yii\base\Module;
 use yiiunit\framework\base\stub\actionmap\PingAction;
 use yiiunit\framework\base\stub\actionmap\PingController;
+use yiiunit\framework\base\stub\standalone\LegacyConstructorAction;
+use yiiunit\framework\base\stub\standalone\LegacyConstructorBehaviorAction;
 use yiiunit\TestCase;
 
 /**
- * Unit tests for {@see \yii\base\Module} dispatch of standalone actions via `Module::$actionMap`.
+ * Unit tests for {@see \yii\base\Module} dispatch of standalone actions via {@see Module::$actionMap}.
  *
- * Verifies that registering a standalone {@see \yii\base\Action} subclass under `actionMap` causes
+ * Verifies that registering a standalone {@see \yii\base\Action} subclass under {@see Module::$actionMap} causes
  * {@see \yii\base\Module::runAction()} to invoke it without a hosting controller, that lifecycle events on the module
  * chain still fire in order, and that legacy controller-based dispatch remains unaffected for unmapped IDs.
  *
@@ -86,7 +88,7 @@ final class ModuleActionMapTest extends TestCase
         self::assertSame(
             'legacy:hello',
             $result,
-            'Routes outside `actionMap` must reach the controller pipeline.',
+            "Routes outside 'actionMap' must reach the controller pipeline.",
         );
     }
 
@@ -217,6 +219,94 @@ final class ModuleActionMapTest extends TestCase
             'mymod/ping',
             $requested->getUniqueId(),
             'Requested action must be the mapped action.',
+        );
+    }
+
+    public function testLegacyConstructorActionRunsViaUnifiedDispatchPath(): void
+    {
+        $module = new Module('mymod');
+
+        $module->actionMap = ['legacy' => LegacyConstructorAction::class];
+
+        $result = $module->runAction('legacy');
+
+        self::assertSame(
+            'legacy',
+            $result,
+            'Legacy-shaped action must execute through the same dispatch path as a modern action.',
+        );
+    }
+
+    public function testLegacyConstructorActionReceivesRouteIdInsideTheConstructor(): void
+    {
+        $module = new Module('mymod');
+
+        $module->actionMap = ['legacy' => LegacyConstructorAction::class];
+
+        $module->runAction('legacy');
+
+        $action = Yii::$app->requestedAction;
+
+        self::assertInstanceOf(
+            LegacyConstructorAction::class,
+            $action,
+            'Resolved action must be the legacy stub.',
+        );
+        self::assertSame(
+            'legacy',
+            $action->idSeenInConstructor,
+            'Constructor must observe the route segment ID via positional dispatch.',
+        );
+        self::assertNull(
+            $action->controllerSeenInConstructor,
+            "Constructor must observe 'null' controller for standalone dispatch.",
+        );
+    }
+
+    public function testLegacyConstructorActionInitObservesRouteId(): void
+    {
+        $module = new Module('mymod');
+
+        $module->actionMap = ['legacy' => LegacyConstructorAction::class];
+
+        $module->runAction('legacy');
+
+        $action = Yii::$app->requestedAction;
+
+        self::assertInstanceOf(
+            LegacyConstructorAction::class,
+            $action,
+            'Resolved action must be the legacy stub.',
+        );
+        self::assertSame(
+            'legacy',
+            $action->idSeenInInit,
+            "'init()' of a legacy action must observe the route segment ID set by the parent constructor.",
+        );
+        self::assertSame(
+            'mymod/legacy',
+            $action->getUniqueId(),
+            'Unique ID must combine the module ID and the route segment.',
+        );
+    }
+
+    public function testLegacyConstructorActionBehaviorObservesRealIdDuringEventDispatch(): void
+    {
+        LegacyConstructorBehaviorAction::$events = [];
+
+        $module = new Module('mymod');
+
+        $module->actionMap = ['legacy-behavior' => LegacyConstructorBehaviorAction::class];
+
+        $module->runAction('legacy-behavior');
+
+        self::assertSame(
+            [
+                ['beforeAction', 'legacy-behavior'],
+                ['afterAction', 'legacy-behavior'],
+            ],
+            LegacyConstructorBehaviorAction::$events,
+            "Behavior handlers must observe the dispatcher-assigned ID at event time, not the 'null' from construction.",
         );
     }
 
