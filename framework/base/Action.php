@@ -49,7 +49,8 @@ use function get_class;
 class Action extends Component
 {
     /**
-     * @var string ID of the action
+     * @var string|null ID of the action; `null` between construction and dispatcher post-assignment for standalone
+     * actions resolved through {@see Module::$actionMap} or {@see Module::$actionNamespace}.
      */
     public $id;
     /**
