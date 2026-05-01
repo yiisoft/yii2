@@ -474,9 +474,9 @@ declared on the action participate in its lifecycle (`AccessControl`, `VerbFilte
 The convention-based file placement mirrors controllers, only the suffix and parent class differ:
 
 ```
-app/controllers/PostController.php          (existing controller, unchanged)
-app/controllers/post/IndexAction.php        (standalone action, route post/index)
-app/controllers/post/ViewAction.php         (standalone action, route post/view)
+app/controllers/PostController.php           (existing controller, unchanged)
+app/controllers/post/IndexAction.php         (standalone action, route post/index)
+app/controllers/post/ViewAction.php          (standalone action, route post/view)
 app/controllers/admin/posts/CreateAction.php (standalone action, route admin/posts/create)
 ```
 
@@ -541,6 +541,104 @@ final class HealthAction extends Action
 Reserve `yii\base\Action` for non-HTTP standalone contexts (queue jobs, scheduled tasks, console-side dispatch). It
 keeps the simpler `yii\di\Container::resolveCallableDependencies()` resolution which autowires typed services but
 does not coerce or validate scalar parameters.
+
+#### Standalone action constructor and dependency injection
+
+`yii\base\Action::__construct()` now accepts `null` for both `$id` and `$controller`:
+
+```php
+// Before (2.0.x)
+public function __construct($id, $controller = null, $config = [])
+
+// 22.0
+public function __construct($id = null, $controller = null, $config = [])
+```
+
+This relaxation enables two coexisting DI paths for actions dispatched through `Module::$actionMap` or
+`Module::$actionNamespace`:
+
+1. **Constructor injection** — typed parameters (with or without PHP `8.x` promoted properties) are autowired by the
+   DI container. Use this for long-lived collaborators (database connections, repositories, services).
+2. **`run()` method injection** — typed parameters on `run()` are resolved per-invocation through
+   `Container::resolveCallableDependencies()`. Use this for the request itself (`yii\web\Response`,
+   `yii\web\Request`) and for route-bound scalars (`int $id`, `string $slug`).
+
+Both forms compose:
+
+```php
+namespace app\controllers;
+
+use yii\db\Connection;
+use yii\web\Action;
+use yii\web\Response;
+
+final class HealthAction extends Action
+{
+    public function __construct(private readonly Connection $db)
+    {
+    }
+
+    public function run(Response $response): Response
+    {
+        $response->format = Response::FORMAT_JSON;
+        $response->data = ['db' => $this->db->open() ? 'ok' : 'down'];
+
+        return $response;
+    }
+}
+```
+
+##### Dispatch contract change for standalone actions
+
+`Module::runMappedAction()` and `Module::createStandaloneAction()` now build the action through
+`Yii::createObject($definition)` with **no positional arguments** and assign `Action::$id` afterwards. In 2.0.x the
+dispatcher passed `[$id, null]` positionally, so the constructor (and any code running inside `init()`) saw the route
+segment ID immediately.
+
+**Behavior change**: when a standalone action declares a legacy positional constructor
+(`__construct($id, $controller = null, $config = [])` calling `parent::__construct(...)`), the constructor now
+receives `$id === null`, and `Action::init()` runs with `$this->id === null`. The dispatcher assigns the real ID
+**after** the constructor returns, so `$this->id` is correct by the time the action's lifecycle events
+(`EVENT_BEFORE_ACTION`, `EVENT_AFTER_ACTION`) and `run()` execute.
+
+This affects only standalone actions registered in `actionMap` or discovered through `actionNamespace`. Actions
+registered through `Controller::actions()` keep the historical positional contract `[$id, $this]` unchanged, and
+their `init()` continues to see the ID during construction.
+
+##### Migration
+
+If your standalone action overrides `init()` and reads `$this->id` (for example to register an alias, set a logger
+category, or compute a cache key), move that logic to a `behaviors()` event handler attached to
+`EVENT_BEFORE_ACTION`. Event handlers fire after the dispatcher has assigned the ID:
+
+```php
+// Before
+public function init()
+{
+    parent::init();
+
+    \Yii::setAlias('@action-' . $this->id, '@runtime/' . $this->id);  // sees null in 22.0
+}
+
+// After
+public function behaviors(): array
+{
+    return [
+        'aliases' => [
+            'class' => \yii\base\Behavior::class,
+            'on ' . self::EVENT_BEFORE_ACTION => function () {
+                \Yii::setAlias('@action-' . $this->owner->id, '@runtime/' . $this->owner->id);
+            },
+        ],
+    ];
+}
+```
+
+Modern constructors do not need to call `parent::__construct()` — the parent constructor accepts `null` and is a no-op
+for identity. Call it explicitly only if your action depends on `Action::init()` for behavior attachment or other
+parent-side setup, and in that case understand that `$this->id` will be `null` inside `init()`.
+
+##### Other related changes
 
 `yii\filters\AccessRule::matchController()` now accepts `null` for the controller argument. When a rule declares a
 non-empty `controllers` constraint and the action runs as a standalone action, the rule does not match. To keep the

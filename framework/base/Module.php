@@ -675,9 +675,9 @@ class Module extends ServiceLocator
     /**
      * Runs a standalone action registered in [[actionMap]].
      *
-     * The action is instantiated via [[\Yii::createObject()]] with `[$id, null]` as positional constructor arguments,
-     * allowing the DI container to autowire any extra typed dependencies declared after `$controller`. The lifecycle is
-     * then delegated to [[runStandaloneAction()]].
+     * The action is instantiated via [[\Yii::createObject()]] with no positional constructor arguments, allowing the
+     * DI container to autowire typed dependencies declared on the action's constructor. The dispatcher assigns
+     * [[Action::$id]] after construction and then delegates lifecycle to [[runStandaloneAction()]].
      *
      * @param string $id The action ID present in [[actionMap]].
      * @param array $params The parameters to be matched against the action's `run()` signature.
@@ -689,7 +689,9 @@ class Module extends ServiceLocator
     protected function runMappedAction(string $id, array $params): mixed
     {
         /** @var Action $action */
-        $action = Yii::createObject($this->actionMap[$id], [$id, null]);
+        $action = Yii::createObject($this->actionMap[$id]);
+
+        $action->id = $id;
 
         $action->setModule($this);
 
@@ -774,7 +776,10 @@ class Module extends ServiceLocator
         }
 
         /** @var Action $action */
-        $action = Yii::createObject($className, [$route, null]);
+        $action = Yii::createObject($className);
+
+        $action->id = $route;
+
         $action->setModule($this);
 
         return $action;

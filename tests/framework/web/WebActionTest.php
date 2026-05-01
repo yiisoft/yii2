@@ -85,7 +85,7 @@ final class WebActionTest extends TestCase
         );
     }
 
-    public function testLegacyConstructorWebActionReceivesRouteIdInsideTheConstructor(): void
+    public function testLegacyConstructorWebActionReceivesNullIdFromDispatcher(): void
     {
         $module = new Module('mymod', Yii::$app);
 
@@ -100,14 +100,13 @@ final class WebActionTest extends TestCase
             $action,
             'Resolved action must be the legacy web stub.',
         );
-        self::assertSame(
-            'legacy',
+        self::assertNull(
             $action->idSeenInConstructor,
-            'Route segment ID must arrive positionally.',
+            "ID must be 'null' during construction.",
         );
     }
 
-    public function testLegacyConstructorWebActionInitObservesRouteId(): void
+    public function testLegacyConstructorWebActionObservesNullIdInInit(): void
     {
         $module = new Module('mymod', Yii::$app);
 
@@ -122,10 +121,14 @@ final class WebActionTest extends TestCase
             $action,
             'Resolved action must be the legacy web stub.',
         );
+        self::assertNull(
+            $action->idSeenInInit,
+            "Identity must be 'null' during 'init'.",
+        );
         self::assertSame(
             'legacy',
-            $action->idSeenInInit,
-            'Identity must be set before lifecycle hooks run.',
+            $action->id,
+            'Dispatcher must assign the route ID post-construction.',
         );
         self::assertSame(
             'mymod/legacy',

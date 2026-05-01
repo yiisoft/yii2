@@ -16,6 +16,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
 use yii\base\Module;
 use yiiunit\framework\base\stub\actions\LegacyDiscoverableAction;
+use yiiunit\framework\base\stub\standalone\ActionTestService;
 use yiiunit\TestCase;
 
 /**
@@ -217,7 +218,7 @@ final class ModuleActionNamespaceTest extends TestCase
         $module->runAction('does-not-exist');
     }
 
-    public function testLegacyConstructorActionDiscoveredByNamespaceReceivesRouteIdInsideTheConstructor(): void
+    public function testLegacyConstructorActionDiscoveredByNamespaceReceivesNullIdFromDispatcher(): void
     {
         $module = new Module(
             'mymod',
@@ -239,14 +240,13 @@ final class ModuleActionNamespaceTest extends TestCase
             $action,
             'Resolved action must be the legacy stub.',
         );
-        self::assertSame(
-            'legacy-discoverable',
+        self::assertNull(
             $action->idSeenInConstructor,
-            'Route segment ID must arrive positionally.',
+            "ID must be 'null' during construction.",
         );
     }
 
-    public function testLegacyConstructorActionDiscoveredByNamespaceObservesRouteIdInInit(): void
+    public function testLegacyConstructorActionDiscoveredByNamespaceObservesNullIdInInit(): void
     {
         $module = new Module(
             'mymod',
@@ -262,15 +262,40 @@ final class ModuleActionNamespaceTest extends TestCase
             $action,
             'Resolved action must be the legacy stub.',
         );
+        self::assertNull(
+            $action->idSeenInInit,
+            "Identity must be 'null' during 'init'.",
+        );
         self::assertSame(
             'legacy-discoverable',
-            $action->idSeenInInit,
-            'Identity must be set before lifecycle hooks run.',
+            $action->id,
+            'Dispatcher must assign the route ID post-construction.',
         );
         self::assertSame(
             'mymod/legacy-discoverable',
             $action->getUniqueId(),
             'Unique ID must combine the module ID and the discovered route segment.',
+        );
+    }
+
+    public function testStandaloneActionWithPromotedConstructorResolvedByConvention(): void
+    {
+        Yii::$container->setSingleton(ActionTestService::class, ActionTestService::class);
+
+        $module = new Module(
+            'mymod',
+            null,
+            ['controllerNamespace' => self::FIXTURE_NAMESPACE],
+        );
+
+        $result = $module->runAction('health');
+
+        Yii::$container->clear(ActionTestService::class);
+
+        self::assertSame(
+            'health-svc',
+            $result,
+            'Convention-based action with promoted constructor must receive its dependency through the DI container.',
         );
     }
 }
