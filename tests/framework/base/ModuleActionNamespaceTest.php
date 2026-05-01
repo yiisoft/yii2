@@ -11,9 +11,11 @@ declare(strict_types=1);
 namespace yiiunit\framework\base;
 
 use PHPUnit\Framework\Attributes\Group;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
 use yii\base\Module;
+use yiiunit\framework\base\stub\actions\LegacyDiscoverableAction;
 use yiiunit\TestCase;
 
 /**
@@ -213,5 +215,62 @@ final class ModuleActionNamespaceTest extends TestCase
         );
 
         $module->runAction('does-not-exist');
+    }
+
+    public function testLegacyConstructorActionDiscoveredByNamespaceReceivesRouteIdInsideTheConstructor(): void
+    {
+        $module = new Module(
+            'mymod',
+            Yii::$app,
+            ['controllerNamespace' => self::FIXTURE_NAMESPACE],
+        );
+
+        $result = $module->runAction('legacy-discoverable');
+
+        $action = Yii::$app->requestedAction;
+
+        self::assertSame(
+            'legacy-discoverable',
+            $result,
+            'Legacy-shaped action discovered by namespace must execute through the same dispatch path.',
+        );
+        self::assertInstanceOf(
+            LegacyDiscoverableAction::class,
+            $action,
+            'Resolved action must be the legacy stub.',
+        );
+        self::assertSame(
+            'legacy-discoverable',
+            $action->idSeenInConstructor,
+            'Route segment ID must arrive positionally.',
+        );
+    }
+
+    public function testLegacyConstructorActionDiscoveredByNamespaceObservesRouteIdInInit(): void
+    {
+        $module = new Module(
+            'mymod',
+            Yii::$app,
+            ['controllerNamespace' => self::FIXTURE_NAMESPACE],
+        );
+
+        $module->runAction('legacy-discoverable');
+        $action = Yii::$app->requestedAction;
+
+        self::assertInstanceOf(
+            LegacyDiscoverableAction::class,
+            $action,
+            'Resolved action must be the legacy stub.',
+        );
+        self::assertSame(
+            'legacy-discoverable',
+            $action->idSeenInInit,
+            'Identity must be set before lifecycle hooks run.',
+        );
+        self::assertSame(
+            'mymod/legacy-discoverable',
+            $action->getUniqueId(),
+            'Unique ID must combine the module ID and the discovered route segment.',
+        );
     }
 }

@@ -11,8 +11,11 @@ declare(strict_types=1);
 namespace yiiunit\framework\web;
 
 use PHPUnit\Framework\Attributes\Group;
+use Yii;
+use yii\base\Module;
 use yii\web\BadRequestHttpException;
 use yiiunit\framework\web\stub\standalone\CoerceIntAction;
+use yiiunit\framework\web\stub\standalone\LegacyConstructorWebAction;
 use yiiunit\TestCase;
 
 /**
@@ -65,5 +68,69 @@ final class WebActionTest extends TestCase
         $this->expectExceptionMessage('Missing required parameters: id');
 
         $action->runWithParams([]);
+    }
+
+    public function testLegacyConstructorWebActionRunsViaUnifiedDispatchPath(): void
+    {
+        $module = new Module('mymod', Yii::$app);
+
+        $module->actionMap = ['legacy' => LegacyConstructorWebAction::class];
+
+        $result = $module->runAction('legacy', ['id' => '7']);
+
+        self::assertSame(
+            7,
+            $result,
+            "Legacy-shaped 'web\\Action' must execute and apply HTTP-aware scalar coercion.",
+        );
+    }
+
+    public function testLegacyConstructorWebActionReceivesRouteIdInsideTheConstructor(): void
+    {
+        $module = new Module('mymod', Yii::$app);
+
+        $module->actionMap = ['legacy' => LegacyConstructorWebAction::class];
+
+        $module->runAction('legacy', ['id' => '7']);
+
+        $action = Yii::$app->requestedAction;
+
+        self::assertInstanceOf(
+            LegacyConstructorWebAction::class,
+            $action,
+            'Resolved action must be the legacy web stub.',
+        );
+        self::assertSame(
+            'legacy',
+            $action->idSeenInConstructor,
+            'Route segment ID must arrive positionally.',
+        );
+    }
+
+    public function testLegacyConstructorWebActionInitObservesRouteId(): void
+    {
+        $module = new Module('mymod', Yii::$app);
+
+        $module->actionMap = ['legacy' => LegacyConstructorWebAction::class];
+
+        $module->runAction('legacy', ['id' => '7']);
+
+        $action = Yii::$app->requestedAction;
+
+        self::assertInstanceOf(
+            LegacyConstructorWebAction::class,
+            $action,
+            'Resolved action must be the legacy web stub.',
+        );
+        self::assertSame(
+            'legacy',
+            $action->idSeenInInit,
+            'Identity must be set before lifecycle hooks run.',
+        );
+        self::assertSame(
+            'mymod/legacy',
+            $action->getUniqueId(),
+            'Unique ID must combine the module ID and the route segment.',
+        );
     }
 }

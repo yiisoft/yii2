@@ -255,11 +255,11 @@ final class ModuleActionMapTest extends TestCase
         self::assertSame(
             'legacy',
             $action->idSeenInConstructor,
-            'Constructor must observe the route segment ID via positional dispatch.',
+            'Route segment ID must arrive positionally.',
         );
         self::assertNull(
             $action->controllerSeenInConstructor,
-            "Constructor must observe 'null' controller for standalone dispatch.",
+            "Controller must be 'null' for standalone dispatch.",
         );
     }
 
@@ -281,7 +281,7 @@ final class ModuleActionMapTest extends TestCase
         self::assertSame(
             'legacy',
             $action->idSeenInInit,
-            "'init()' of a legacy action must observe the route segment ID set by the parent constructor.",
+            'Identity must be set before lifecycle hooks run.',
         );
         self::assertSame(
             'mymod/legacy',
@@ -306,7 +306,35 @@ final class ModuleActionMapTest extends TestCase
                 ['afterAction', 'legacy-behavior'],
             ],
             LegacyConstructorBehaviorAction::$events,
-            "Behavior handlers must observe the dispatcher-assigned ID at event time, not the 'null' from construction.",
+            'Event-time ID must equal the route segment.',
+        );
+    }
+
+    public function testLegacyConstructorActionUnderNestedModuleProducesCompositeUniqueId(): void
+    {
+        $parent = new Module('parent', Yii::$app);
+        $child = new Module('child', $parent);
+
+        $child->actionMap = ['legacy' => LegacyConstructorAction::class];
+
+        $child->runAction('legacy');
+
+        $action = Yii::$app->requestedAction;
+
+        self::assertInstanceOf(
+            LegacyConstructorAction::class,
+            $action,
+            'Resolved action must be the legacy stub.',
+        );
+        self::assertSame(
+            'legacy',
+            $action->idSeenInInit,
+            'Identity must survive nested dispatch.',
+        );
+        self::assertSame(
+            'parent/child/legacy',
+            $action->getUniqueId(),
+            'Unique ID must walk the full module ancestry plus the route segment.',
         );
     }
 
