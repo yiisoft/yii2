@@ -1,0 +1,1 @@
+<?php /** @var string $content */ ?>LAYOUT[<?= $content ?>]

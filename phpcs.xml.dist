@@ -25,6 +25,7 @@
 
     <rule ref="PSR1.Files.SideEffects.FoundWithSymbols">
         <exclude-pattern>tests/bootstrap.php</exclude-pattern>
+        <exclude-pattern>tests/bootstrap-prod.php</exclude-pattern>
         <exclude-pattern>tests/framework/web/UserTest.php</exclude-pattern>
     </rule>
 

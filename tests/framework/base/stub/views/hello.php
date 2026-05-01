@@ -1,0 +1,1 @@
+<?php /** @var string $name */ ?>Hello <?= $name ?>

@@ -29,4 +29,16 @@ class FakeTypedParamsController extends Controller
     public function actionMixedParameter(mixed $foo)
     {
     }
+
+    public function actionFloatParam(float $foo)
+    {
+    }
+
+    public function actionIntParam(int $foo)
+    {
+    }
+
+    public function actionArrayParam(array $list)
+    {
+    }
 }
