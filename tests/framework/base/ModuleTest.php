@@ -310,13 +310,11 @@ class ModuleTest extends TestCase
             $module->createControllerByID('module-test'),
             'Hyphen-separated ID must map to CamelCase class.',
         );
-        self::assertNotInstanceOf(
-            ModuleTestController::class,
+        self::assertNull(
             $module->createControllerByID('module-test-'),
             'Trailing hyphen must invalidate the route.',
         );
-        self::assertNotInstanceOf(
-            ModuleTestController::class,
+        self::assertNull(
             $module->createControllerByID('-module-test'),
             'Leading hyphen must invalidate the route.',
         );
@@ -325,18 +323,15 @@ class ModuleTest extends TestCase
             $module->createControllerByID('very-complex-name-test'),
             'Long hyphenated ID must map to CamelCase class.',
         );
-        self::assertNotInstanceOf(
-            VeryComplexNameTestController::class,
+        self::assertNull(
             $module->createControllerByID('very-complex-name-test--'),
             'Trailing double-hyphen must invalidate the route.',
         );
-        self::assertNotInstanceOf(
-            VeryComplexNameTestController::class,
+        self::assertNull(
             $module->createControllerByID('--very-complex-name-test'),
             'Leading double-hyphen must invalidate the route.',
         );
-        self::assertNotInstanceOf(
-            VeryComplexNameTestController::class,
+        self::assertNull(
             $module->createControllerByID('very---complex---name---test'),
             'Multiple consecutive hyphens must invalidate the route.',
         );
