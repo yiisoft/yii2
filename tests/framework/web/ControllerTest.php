@@ -621,7 +621,8 @@ class ControllerTest extends TestCase
         );
         self::assertSame(
             1,
-            $args[1], "Int must bind to 'int|string' union.",
+            $args[1],
+            "Int must bind to 'int|string' union.",
         );
 
         // test that a value PHP parsed to a string but that should be an int becomes one
@@ -629,11 +630,13 @@ class ControllerTest extends TestCase
 
         self::assertSame(
             'test',
-            $args[0], "String must bind to 'int|string' union."
+            $args[0],
+            "String must bind to 'int|string' union."
         );
         self::assertSame(
             1,
-            $args[1], 'Numeric string must coerce to int via the union partial.'
+            $args[1],
+            'Numeric string must coerce to int via the union partial.'
         );
     }
 
