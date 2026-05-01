@@ -17,6 +17,8 @@ use yii\base\InvalidRouteException;
 use yii\base\Module;
 use yiiunit\framework\base\stub\actionmap\PingAction;
 use yiiunit\framework\base\stub\actionmap\PingController;
+use yiiunit\framework\base\stub\actions\HealthAction;
+use yiiunit\framework\base\stub\standalone\ActionTestService;
 use yiiunit\framework\base\stub\standalone\LegacyConstructorAction;
 use yiiunit\framework\base\stub\standalone\LegacyConstructorBehaviorAction;
 use yiiunit\TestCase;
@@ -237,7 +239,7 @@ final class ModuleActionMapTest extends TestCase
         );
     }
 
-    public function testLegacyConstructorActionReceivesRouteIdInsideTheConstructor(): void
+    public function testLegacyConstructorActionReceivesNullIdFromDispatcher(): void
     {
         $module = new Module('mymod');
 
@@ -252,10 +254,9 @@ final class ModuleActionMapTest extends TestCase
             $action,
             'Resolved action must be the legacy stub.',
         );
-        self::assertSame(
-            'legacy',
+        self::assertNull(
             $action->idSeenInConstructor,
-            'Route segment ID must arrive positionally.',
+            "ID must be 'null' during construction.",
         );
         self::assertNull(
             $action->controllerSeenInConstructor,
@@ -263,7 +264,7 @@ final class ModuleActionMapTest extends TestCase
         );
     }
 
-    public function testLegacyConstructorActionInitObservesRouteId(): void
+    public function testLegacyConstructorActionInitObservesNullIdAndDispatcherAssignsAfterwards(): void
     {
         $module = new Module('mymod');
 
@@ -278,10 +279,14 @@ final class ModuleActionMapTest extends TestCase
             $action,
             'Resolved action must be the legacy stub.',
         );
+        self::assertNull(
+            $action->idSeenInInit,
+            "Identity must be 'null' during 'init'.",
+        );
         self::assertSame(
             'legacy',
-            $action->idSeenInInit,
-            'Identity must be set before lifecycle hooks run.',
+            $action->id,
+            'Dispatcher must assign the route ID post-construction.',
         );
         self::assertSame(
             'mymod/legacy',
@@ -326,10 +331,9 @@ final class ModuleActionMapTest extends TestCase
             $action,
             'Resolved action must be the legacy stub.',
         );
-        self::assertSame(
-            'legacy',
+        self::assertNull(
             $action->idSeenInInit,
-            'Identity must survive nested dispatch.',
+            "Identity must be 'null' during 'init' even under nested dispatch.",
         );
         self::assertSame(
             'parent/child/legacy',
@@ -348,5 +352,24 @@ final class ModuleActionMapTest extends TestCase
         );
 
         $module->runAction('missing');
+    }
+
+    public function testActionMapResolvesPromotedConstructorAction(): void
+    {
+        Yii::$container->setSingleton(ActionTestService::class, ActionTestService::class);
+
+        $module = new Module('mymod');
+
+        $module->actionMap = ['promoted' => HealthAction::class];
+
+        $result = $module->runAction('promoted');
+
+        Yii::$container->clear(ActionTestService::class);
+
+        self::assertSame(
+            'health-svc',
+            $result,
+            'Action with promoted constructor must receive its dependency through the DI container.',
+        );
     }
 }

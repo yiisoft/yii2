@@ -68,11 +68,12 @@ class Action extends Component
     /**
      * Constructor.
      *
-     * @param string $id The ID of this action.
+     * @param string|null $id The ID of this action, or `null` when the action is instantiated through the DI container
+     * and the ID is assigned afterwards by the dispatcher.
      * @param T|null $controller The controller that owns this action, or `null` for standalone handlers.
      * @param array<string, mixed> $config name-value pairs that will be used to initialize the object properties.
      */
-    public function __construct($id, $controller = null, $config = [])
+    public function __construct($id = null, $controller = null, $config = [])
     {
         $this->id = $id;
         $this->controller = $controller;

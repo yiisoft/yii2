@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Chg: Remove PostgreSQL `< 13.0` dead code; drop `oldUpsert()` CTE workaround for `< 9.5` and identity column version branch in `Schema::findColumns()` for `< 12.0`; minimum supported version is now PostgreSQL `13.0` (terabytesoftw)
 - Chg #18639: Refactor PostgreSQL pagination SQL to use standard `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; PostgreSQL `13+` is now required for `yii\db\pgsql\QueryBuilder` pagination (terabytesoftw)
 - Chg: Add `Module::$actionMap`, `Module::$actionNamespace`, and `yii\web\Action` for standalone action dispatch with HTTP-aware param binding (terabytesoftw)
+- Chg: Relax `yii\base\Action` constructor to accept `null` id; standalone action dispatch now uses unified DI without positional args (terabytesoftw)
 
 2.0.55 under development
 ------------------------

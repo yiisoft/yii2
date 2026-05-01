@@ -106,6 +106,93 @@ A request whose route resolves to `health` runs `HealthAction::run()` directly. 
 action's `behaviors()` (such as [[yii\filters\AccessControl]] or [[yii\filters\VerbFilter]]) participate in the lifecycle
 the same way they do on a controller.
 
+### Dependency injection in standalone actions
+
+Standalone actions dispatched via `actionMap` or `actionNamespace` support dependency injection in **two places**:
+
+1. **Constructor injection** — typed parameters on `__construct()` are resolved through the DI container before the
+   action runs. Use this for long-lived collaborators (database connections, repositories, services) that the action
+   needs across all invocations.
+2. **`run()` method injection** — typed parameters on `run()` are resolved per-invocation through
+   [[\yii\di\Container::resolveCallableDependencies()]]. Use this for the request itself ([[yii\web\Response]],
+   [[yii\web\Request]]) and for route-bound scalars (`int $id` from the URL, etc.).
+
+Both paths coexist. A common pattern injects services through the constructor and request-scoped values through
+`run()`:
+
+```php
+namespace app\controllers;
+
+use yii\db\Connection;
+use yii\web\Action;
+use yii\web\Response;
+
+final class HealthAction extends Action
+{
+    // Long-lived service: resolved once at construction by the DI container.
+    public function __construct(private readonly Connection $db)
+    {
+    }
+
+    // Per-invocation: $response comes from the application; route scalars (none here) would land alongside it.
+    public function run(Response $response): Response
+    {
+        $response->format = Response::FORMAT_JSON;
+        $response->data = ['db' => $this->db->open() ? 'ok' : 'down'];
+
+        return $response;
+    }
+}
+```
+
+The constructor uses PHP `8.x` promoted properties (`private readonly Connection $db`) to assign the typed parameter
+to a property in one step. Promoted properties are syntactic sugar — a plain assignment is equivalent:
+
+```php
+private readonly Connection $db;
+
+public function __construct(Connection $db)
+{
+    $this->db = $db;
+}
+```
+
+#### Choosing constructor vs `run()` injection
+
+| Inject in the constructor when                                             | Inject in `run()` when                                                                     |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| The dependency is the same on every call (DB, mailer, cache, repository).  | The dependency is the request-scoped artifact ([[yii\web\Request]], [[yii\web\Response]]). |
+| You want it usable from `behaviors()`, `init()`, or other lifecycle hooks. | You want it scoped to the single dispatch.                                                 |
+| You want the type signature to document the action's collaborators.        | The value is a route parameter (`int $id`, `string $slug`).                                |
+
+Route scalars on `run()` (such as `int $id`) get HTTP-aware coercion through [[yii\web\Action::resolveStandaloneParams()]]
+when the action extends [[yii\web\Action]]. Non-HTTP standalone actions (extending [[yii\base\Action]]) get the same
+DI but skip the scalar coercion.
+
+#### Lifecycle and `parent::__construct()`
+
+The dispatcher calls `Yii::createObject()` on the action class with no positional arguments and assigns
+[[yii\base\Action::$id]] afterwards. Modern actions do **not** need to call `parent::__construct()` — the parent
+constructor accepts a `null` id by default.
+
+If your action relies on [[yii\base\Action::init()]] (because you attach behaviors there or run setup that depends on
+the parent's state), call `parent::__construct()` explicitly to trigger it:
+
+```php
+public function __construct(private readonly Connection $db)
+{
+    parent::__construct();
+}
+```
+
+Note: when `init()` runs through `parent::__construct()`, [[yii\base\Action::$id]] is still `null` — the dispatcher
+assigns it after the constructor returns. Logic that depends on the action ID belongs in `behaviors()` event handlers
+(which fire on `EVENT_BEFORE_ACTION` / `EVENT_AFTER_ACTION` after id assignment), not in `init()`.
+
+Controllers and actions registered through [[yii\base\Controller::actions()]] keep the historical positional
+contract `__construct($id, $controller, $config)` — this DI-friendly dispatch path only applies to standalone
+actions resolved through `actionMap` or `actionNamespace`.
+
 For projects that prefer a separate root for standalone actions (vertical slices, use cases, ports/adapters layout), set
 `actionNamespace` to the desired namespace:
 

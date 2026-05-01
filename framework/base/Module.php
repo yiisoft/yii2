@@ -689,7 +689,9 @@ class Module extends ServiceLocator
     protected function runMappedAction(string $id, array $params): mixed
     {
         /** @var Action $action */
-        $action = Yii::createObject($this->actionMap[$id], [$id, null]);
+        $action = Yii::createObject($this->actionMap[$id]);
+
+        $action->id = $id;
 
         $action->setModule($this);
 
@@ -774,7 +776,10 @@ class Module extends ServiceLocator
         }
 
         /** @var Action $action */
-        $action = Yii::createObject($className, [$route, null]);
+        $action = Yii::createObject($className);
+
+        $action->id = $route;
+
         $action->setModule($this);
 
         return $action;
