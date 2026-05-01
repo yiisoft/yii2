@@ -44,7 +44,7 @@ jobs:
       coverage-driver: xdebug
       enable-concurrency: true
       extensions: curl, intl, pdo, pdo_sqlite
-      os: '["ubuntu-22.04","windows-latest"]'
+      os: '["ubuntu-latest","windows-latest"]'
       php-version: '["8.5"]'
       phpunit-group: sqlite
     secrets:
@@ -58,6 +58,6 @@ jobs:
       coverage-driver: none
       enable-concurrency: true
       extensions: curl, intl, pdo, pdo_sqlite
-      os: '["ubuntu-22.04"]'
+      os: '["ubuntu-latest"]'
       php-version: '["8.3","8.4"]'
       phpunit-group: sqlite
