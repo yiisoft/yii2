@@ -387,8 +387,10 @@ class ControllerTest extends TestCase
 
         $file = $controller->findLayoutFile($controller->getView());
 
+        $expected = __DIR__ . DIRECTORY_SEPARATOR . 'stub' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'main.php';
+
         self::assertSame(
-            __DIR__ . '/stub/views/layouts/main.php',
+            $expected,
             $file,
             'Ancestor layout must resolve to a path.',
         );
@@ -428,7 +430,7 @@ class ControllerTest extends TestCase
         $file = $controller->findLayoutFile($controller->getView());
 
         self::assertStringEndsWith(
-            '/views/layouts/main.php',
+            DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'main.php',
             $file,
             'Absolute layout must resolve under the application path.',
         );

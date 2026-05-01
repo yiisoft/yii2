@@ -483,7 +483,7 @@ class ModuleTest extends TestCase
         $module = new TestModule('test');
 
         self::assertSame(
-            __DIR__ . '/stub/module',
+            __DIR__ . DIRECTORY_SEPARATOR . 'stub' . DIRECTORY_SEPARATOR . 'module',
             $module->getBasePath(),
             'Default must be the class file directory.',
         );
