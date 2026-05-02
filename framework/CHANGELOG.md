@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Chg #18639: Refactor PostgreSQL pagination SQL to use standard `OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; PostgreSQL `13+` is now required for `yii\db\pgsql\QueryBuilder` pagination (terabytesoftw)
 - Chg: Add `Module::$actionMap`, `Module::$actionNamespace`, and `yii\web\Action` for standalone action dispatch with HTTP-aware param binding (terabytesoftw)
 - Chg: Relax `yii\base\Action` constructor to accept `null` id; standalone action dispatch now uses unified DI without positional args (terabytesoftw)
+- Enh: Add `#[\SensitiveParameter]` attribute to secret-bearing parameters in `Security`, `User`, and `IdentityInterface` to redact values from stack traces (terabytesoftw)
 
 2.0.55 under development
 ------------------------

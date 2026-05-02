@@ -8,6 +8,7 @@
 
 namespace yii\base;
 
+use SensitiveParameter;
 use yii\helpers\StringHelper;
 
 /**
@@ -97,7 +98,7 @@ class Security extends Component
      * @see decryptByPassword()
      * @see encryptByKey()
      */
-    public function encryptByPassword($data, $password)
+    public function encryptByPassword($data, #[SensitiveParameter] $password)
     {
         return $this->encrypt($data, true, $password, null);
     }
@@ -116,7 +117,7 @@ class Security extends Component
      * @see decryptByKey()
      * @see encryptByPassword()
      */
-    public function encryptByKey($data, $inputKey, $info = null)
+    public function encryptByKey($data, #[\SensitiveParameter] $inputKey, $info = null)
     {
         return $this->encrypt($data, false, $inputKey, $info);
     }
@@ -128,7 +129,7 @@ class Security extends Component
      * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByPassword()
      */
-    public function decryptByPassword($data, $password)
+    public function decryptByPassword($data, #[\SensitiveParameter] $password)
     {
         return $this->decrypt($data, true, $password, null);
     }
@@ -141,7 +142,7 @@ class Security extends Component
      * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByKey()
      */
-    public function decryptByKey($data, $inputKey, $info = null)
+    public function decryptByKey($data, #[\SensitiveParameter] $inputKey, $info = null)
     {
         return $this->decrypt($data, false, $inputKey, $info);
     }
@@ -160,7 +161,7 @@ class Security extends Component
      * @throws Exception on OpenSSL error
      * @see decrypt()
      */
-    protected function encrypt($data, $passwordBased, $secret, $info)
+    protected function encrypt($data, $passwordBased, #[\SensitiveParameter] $secret, $info)
     {
         if (!extension_loaded('openssl')) {
             throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
@@ -210,7 +211,7 @@ class Security extends Component
      * @throws Exception on OpenSSL error
      * @see encrypt()
      */
-    protected function decrypt($data, $passwordBased, $secret, $info)
+    protected function decrypt($data, $passwordBased, #[\SensitiveParameter] $secret, $info)
     {
         if (!extension_loaded('openssl')) {
             throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
@@ -260,7 +261,7 @@ class Security extends Component
      * @throws InvalidArgumentException when HMAC generation fails.
      * @return string the derived key
      */
-    public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
+    public function hkdf($algo, #[\SensitiveParameter] $inputKey, $salt = null, $info = null, $length = 0)
     {
         $outputKey = hash_hkdf((string)$algo, (string)$inputKey, $length, (string)$info, (string)$salt);
         if ($outputKey === false) {
@@ -284,7 +285,7 @@ class Security extends Component
      * @return string the derived key
      * @throws InvalidArgumentException when hash generation fails due to invalid params given.
      */
-    public function pbkdf2($algo, $password, $salt, $iterations, $length = 0)
+    public function pbkdf2($algo, #[\SensitiveParameter] $password, $salt, $iterations, $length = 0)
     {
         $outputKey = hash_pbkdf2($algo, $password, $salt, $iterations, $length, true);
 
@@ -311,7 +312,7 @@ class Security extends Component
      * @see hkdf()
      * @see pbkdf2()
      */
-    public function hashData($data, $key, $rawHash = false)
+    public function hashData($data, #[\SensitiveParameter] $key, $rawHash = false)
     {
         $hash = hash_hmac($this->macHash, $data, $key, $rawHash);
         if (!$hash) {
@@ -336,7 +337,7 @@ class Security extends Component
      * @throws InvalidConfigException when HMAC generation fails.
      * @see hashData()
      */
-    public function validateData($data, $key, $rawHash = false)
+    public function validateData($data, #[\SensitiveParameter] $key, $rawHash = false)
     {
         $test = @hash_hmac($this->macHash, '', '', $rawHash);
         if (!$test) {
@@ -434,7 +435,7 @@ class Security extends Component
      * @throws Exception on bad password parameter or cost parameter.
      * @see validatePassword()
      */
-    public function generatePasswordHash($password, $cost = null)
+    public function generatePasswordHash(#[\SensitiveParameter] $password, $cost = null)
     {
         if ($cost === null) {
             $cost = $this->passwordHashCost;
@@ -451,7 +452,7 @@ class Security extends Component
      * @throws InvalidArgumentException on bad password/hash parameters.
      * @see generatePasswordHash()
      */
-    public function validatePassword($password, $hash)
+    public function validatePassword(#[\SensitiveParameter] $password, $hash)
     {
         if (!is_string($password) || $password === '') {
             throw new InvalidArgumentException('Password must be a string and cannot be empty.');
@@ -496,7 +497,7 @@ class Security extends Component
      * @return string A masked token.
      * @since 2.0.12
      */
-    public function maskToken($token)
+    public function maskToken(#[\SensitiveParameter] $token)
     {
         // The number of bytes in a mask is always equal to the number of bytes in a token.
         $mask = $this->generateRandomKey(StringHelper::byteLength($token));
@@ -509,7 +510,7 @@ class Security extends Component
      * @return string An unmasked token, or an empty string in case of token format is invalid.
      * @since 2.0.12
      */
-    public function unmaskToken($maskedToken)
+    public function unmaskToken(#[\SensitiveParameter] $maskedToken)
     {
         $decoded = StringHelper::base64UrlDecode($maskedToken);
         $length = StringHelper::byteLength($decoded) / 2;

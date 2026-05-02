@@ -8,6 +8,8 @@
 
 namespace yii\web;
 
+use SensitiveParameter;
+
 /**
  * IdentityInterface is the interface that should be implemented by a class providing identity information.
  *
@@ -74,7 +76,7 @@ interface IdentityInterface
      * Null should be returned if such an identity cannot be found
      * or the identity is not in an active state (disabled, deleted, etc.)
      */
-    public static function findIdentityByAccessToken($token, $type = null);
+    public static function findIdentityByAccessToken(#[SensitiveParameter] $token, $type = null);
 
     /**
      * Returns an ID that can uniquely identify a user identity.
