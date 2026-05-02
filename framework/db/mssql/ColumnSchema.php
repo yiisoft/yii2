@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -7,6 +9,11 @@
  */
 
 namespace yii\db\mssql;
+
+use yii\db\Expression;
+
+use function bin2hex;
+use function is_string;
 
 /**
  * Class ColumnSchema for MSSQL database
@@ -21,6 +28,29 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public $isComputed;
 
+    /**
+     * {@inheritdoc}
+     *
+     * Converts string values for `varbinary` columns to explicit `CONVERT(VARBINARY(MAX), 0x...)` expressions to avoid
+     * implicit `varchar` to `varbinary` conversion errors in SQL Server, particularly under `INSERT ... OUTPUT INTO`
+     * and `UPDATE`.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/12599
+     */
+    public function dbTypecast($value)
+    {
+        if ($this->type === Schema::TYPE_BINARY && $this->dbType === 'varbinary') {
+            if (is_string($value)) {
+                return new Expression('CONVERT(VARBINARY(MAX), 0x' . bin2hex($value) . ')');
+            }
+
+            if ($value === null && $this->allowNull) {
+                return new Expression('CAST(NULL AS VARBINARY(MAX))');
+            }
+        }
+
+        return parent::dbTypecast($value);
+    }
 
     /**
      * Prepares default value and converts it according to [[phpType]]
