@@ -12,6 +12,9 @@ namespace yii\base;
 
 use Yii;
 
+use function call_user_func_array;
+use function get_class;
+
 /**
  * InlineAction represents an action that is defined as a controller method.
  *
@@ -51,18 +54,38 @@ class InlineAction extends Action
 
     /**
      * Runs this action with the specified parameters.
+     *
      * This method is mainly invoked by the controller.
-     * @param array $params action parameters
-     * @return mixed the result of the action
+     *
+     * Since version 22.0, the controller method is wrapped in the same {@see Action::beforeRun()} / {@see afterRun()}
+     * guard as standalone {@see Action::runWithParams()}, so subclasses overriding `beforeRun()` to short-circuit the
+     * action also short-circuit inline action methods.
+     *
+     * @param array $params Action parameters.
+     *
+     * @return mixed The result of the action, or `null` if {@see beforeRun()} returned `false`.
      */
-    public function runWithParams($params)
+    public function runWithParams($params): mixed
     {
         $args = $this->controller->bindActionParams($this, $params);
-        Yii::debug('Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()', __METHOD__);
+
+        Yii::debug(
+            'Running action: ' . get_class($this->controller) . '::' . $this->actionMethod . '()',
+            __METHOD__,
+        );
+
         if (Yii::$app->requestedParams === null) {
             Yii::$app->requestedParams = $args;
         }
 
-        return call_user_func_array([$this->controller, $this->actionMethod], $args);
+        if ($this->beforeRun()) {
+            $result = call_user_func_array([$this->controller, $this->actionMethod], $args);
+
+            $this->afterRun();
+
+            return $result;
+        }
+
+        return null;
     }
 }
