@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Chg: Add `Module::$actionMap`, `Module::$actionNamespace`, and `yii\web\Action` for standalone action dispatch with HTTP-aware param binding (terabytesoftw)
 - Chg: Relax `yii\base\Action` constructor to accept `null` id; standalone action dispatch now uses unified DI without positional args (terabytesoftw)
 - Enh: Add `#[\SensitiveParameter]` attribute to secret-bearing parameters in `Security`, `User`, and `IdentityInterface` to redact values from stack traces (terabytesoftw)
+- Enh #18467: Honor `beforeRun()` and `afterRun()` hooks in `yii\base\InlineAction::runWithParams()` so inline actions follow the same lifecycle as standalone actions (terabytesoftw)
 
 2.0.55 under development
 ------------------------
