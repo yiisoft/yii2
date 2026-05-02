@@ -34,6 +34,7 @@ install:
     - 7z x C:\tools\apcu.zip -oC:\tools\php\ext php_apcu.dll -y
     - echo extension=php_apcu.dll >> php.ini
     - echo apc.enable_cli=1 >> php.ini
+    - echo zend.exception_ignore_args=0 >> php.ini
     - IF NOT EXIST C:\tools\composer.phar (cd C:\tools && appveyor DownloadFile https://getcomposer.org/download/2.6.3/composer.phar)
 
 before_test:

@@ -107,13 +107,17 @@ final class SensitiveParameterAttributionTest extends TestCase
         string $method,
         string $sentinel,
     ): void {
+        if ((bool) ini_get('zend.exception_ignore_args')) {
+            self::markTestSkipped(
+                "'zend.exception_ignore_args' must be disabled ('0') for redaction assertions to work.",
+            );
+        }
+
         self::assertStringNotContainsString(
             $sentinel,
             $exception->getTraceAsString(),
             'Sentinel must not appear in the trace string.',
         );
-
-        $wrapped = false;
 
         foreach ($exception->getTrace() as $frame) {
             foreach ($frame['args'] ?? [] as $argument) {
@@ -123,7 +127,11 @@ final class SensitiveParameterAttributionTest extends TestCase
                     'Sentinel must not appear as a raw trace argument.',
                 );
             }
+        }
 
+        $wrapped = false;
+
+        foreach ($exception->getTrace() as $frame) {
             if (($frame['class'] ?? null) !== $class || ($frame['function'] ?? null) !== $method) {
                 continue;
             }
