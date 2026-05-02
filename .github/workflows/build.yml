@@ -42,7 +42,7 @@ concurrency:
 
 env:
   PHP_EXTENSIONS: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
-  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC'
+  PHP_INI_VALUES: apc.enabled=1,apc.shm_size=32M,apc.enable_cli=1, date.timezone='UTC', zend.exception_ignore_args=0
   PHPUNIT_EXCLUDE_GROUP: db wincache prod
 
 jobs:

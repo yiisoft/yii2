@@ -8,6 +8,7 @@
 
 namespace yii\web;
 
+use SensitiveParameter;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -160,7 +161,6 @@ class User extends Component
 
     private $_access = [];
 
-
     /**
      * Initializes the application component.
      */
@@ -300,7 +300,7 @@ class User extends Component
      * @return T|null the identity associated with the given access token. Null is returned if
      * the access token is invalid or [[login()]] is unsuccessful.
      */
-    public function loginByAccessToken($token, $type = null)
+    public function loginByAccessToken(#[SensitiveParameter] $token, $type = null)
     {
         $class = $this->identityClass;
         $identity = $class::findIdentityByAccessToken($token, $type);
