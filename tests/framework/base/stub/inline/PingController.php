@@ -15,16 +15,19 @@ use yii\base\Controller;
 /**
  * Controller used for testing the inline action lifecycle wrapper.
  *
+ * Records each invocation step into a shared {@see $callLog} so test cases can assert the exact ordering of
+ * {@see InlineAction::beforeRun()}, the controller method, and {@see InlineAction::afterRun()}.
+ *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
  */
 final class PingController extends Controller
 {
-    public bool $methodInvoked = false;
+    public static array $callLog = [];
 
     public function actionPing(): string
     {
-        $this->methodInvoked = true;
+        self::$callLog[] = 'actionPing';
 
         return 'pong';
     }

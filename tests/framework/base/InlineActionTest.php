@@ -35,6 +35,8 @@ final class InlineActionTest extends TestCase
         parent::setUp();
 
         $this->mockApplication();
+
+        PingController::$callLog = [];
     }
 
     public function testBeforeRunReturningFalseShortCircuitsControllerMethod(): void
@@ -49,13 +51,10 @@ final class InlineActionTest extends TestCase
             $result,
             "Inline action must return 'null' when 'beforeRun' returns 'false'.",
         );
-        self::assertFalse(
-            $controller->methodInvoked,
-            "Controller method must not be invoked when 'beforeRun' returns 'false'.",
-        );
-        self::assertFalse(
-            $action->afterRunCalled,
-            "afterRun must not be invoked when 'beforeRun' returns 'false'.",
+        self::assertSame(
+            ['beforeRunFalse'],
+            PingController::$callLog,
+            "No hook beyond 'beforeRun' must run when it returns 'false'.",
         );
     }
 
@@ -72,17 +71,14 @@ final class InlineActionTest extends TestCase
             $result,
             "Controller method result must propagate when beforeRun returns 'true'.",
         );
-        self::assertTrue(
-            $controller->methodInvoked,
-            'Controller method must be invoked.',
-        );
-        self::assertTrue(
-            $action->beforeRunCalled,
-            'beforeRun hook must be invoked before the controller method.',
-        );
-        self::assertTrue(
-            $action->afterRunCalled,
-            'afterRun hook must be invoked after the controller method.',
+        self::assertSame(
+            [
+                'beforeRun',
+                'actionPing',
+                'afterRun',
+            ],
+            PingController::$callLog,
+            "Hooks must wrap the controller method in order: 'beforeRun' → 'actionPing' → 'afterRun'.",
         );
     }
 }

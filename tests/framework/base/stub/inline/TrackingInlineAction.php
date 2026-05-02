@@ -13,26 +13,23 @@ namespace yiiunit\framework\base\stub\inline;
 use yii\base\InlineAction;
 
 /**
- * Inline action subclass that records {@see beforeRun()} and {@see afterRun()} invocations to verify the lifecycle
- * wrapper around the controller method call.
+ * Inline action subclass that appends a token into {@see PingController::$callLog} on each lifecycle hook so the test
+ * can assert the exact `beforeRun → controller method → afterRun` sequence.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
  */
 final class TrackingInlineAction extends InlineAction
 {
-    public bool $beforeRunCalled = false;
-    public bool $afterRunCalled = false;
-
     protected function beforeRun(): bool
     {
-        $this->beforeRunCalled = true;
+        PingController::$callLog[] = 'beforeRun';
 
         return true;
     }
 
     protected function afterRun(): void
     {
-        $this->afterRunCalled = true;
+        PingController::$callLog[] = 'afterRun';
     }
 }
