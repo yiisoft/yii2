@@ -585,7 +585,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @throws InvalidConfigException
      * @return Connection
      */
-    protected function getConnection()
+    protected function getConnection(): Connection
     {
         if ($this->db === null) {
             $this->db = static::createConnection();
@@ -638,20 +638,17 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     private function assertSingleQueryToAssignmentsTable(ArrayTarget $logTarget): void
     {
-        $messages = array_filter(
-            $logTarget->messages,
-            static fn($message): bool => str_contains((string) $message[0], 'auth_assignment'),
+        $messages = array_values(
+            array_filter(
+                $logTarget->messages,
+                static fn($message): bool => str_contains((string) $message[0], 'auth_assignment'),
+            ),
         );
 
         self::assertCount(
             1,
             $messages,
             'Exactly one assignments query is expected. Got logs: ' . print_r($logTarget->messages, true),
-        );
-        self::assertStringContainsString(
-            'auth_assignment',
-            $messages[0][0],
-            'Logged query must target the assignments table.',
         );
 
         $logTarget->messages = [];

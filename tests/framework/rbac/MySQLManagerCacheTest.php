@@ -26,9 +26,6 @@ use yii\rbac\DbManager;
 #[Group('mysql')]
 final class MySQLManagerCacheTest extends MySQLManagerTest
 {
-    /**
-     * @return ManagerInterface
-     */
     protected function createManager(): ManagerInterface
     {
         return new DbManager(

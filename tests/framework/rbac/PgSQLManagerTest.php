@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\Group;
 #[Group('db')]
 #[Group('rbac')]
 #[Group('pgsql')]
-final class PgSQLManagerTest extends DbManagerTestCase
+class PgSQLManagerTest extends DbManagerTestCase
 {
     protected static $driverName = 'pgsql';
 }

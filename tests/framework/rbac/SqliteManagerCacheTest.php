@@ -29,9 +29,6 @@ use yii\rbac\ManagerInterface;
 #[Group('sqlite')]
 final class SqliteManagerCacheTest extends SqliteManagerTest
 {
-    /**
-     * @return ManagerInterface
-     */
     protected function createManager(): ManagerInterface
     {
         return new DbManager(
