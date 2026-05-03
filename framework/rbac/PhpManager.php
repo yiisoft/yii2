@@ -177,7 +177,7 @@ class PhpManager extends BaseManager
         }
 
         if ($parent->name === $child->name) {
-            throw new InvalidArgumentException("Cannot add '{$parent->name} ' as a child of itself.");
+            throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
             throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
@@ -806,7 +806,7 @@ class PhpManager extends BaseManager
     }
 
     /**
-     * Invalidates precompiled script cache (such as OPCache or APC) for the given file.
+     * Invalidates precompiled script cache (OPcache) for the given file.
      * @param string $file the file path.
      * @since 2.0.9
      */
@@ -814,9 +814,6 @@ class PhpManager extends BaseManager
     {
         if (function_exists('opcache_invalidate')) {
             opcache_invalidate($file, true);
-        }
-        if (function_exists('apc_delete_file')) {
-            @apc_delete_file($file);
         }
     }
 

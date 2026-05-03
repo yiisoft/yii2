@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\rbac;
+namespace yiiunit\framework\rbac\stub;
 
 use yii\rbac\Item;
 use yii\rbac\Assignment;
@@ -15,8 +17,11 @@ use yii\rbac\PhpManager;
 
 /**
  * Exposes protected properties and methods to inspect from outside.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
  */
-class ExposedPhpManager extends PhpManager
+final class ExposedPhpManager extends PhpManager
 {
     /**
      * @var Item[]

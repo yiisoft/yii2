@@ -60,6 +60,14 @@ final class MockerExtension implements Extension
                 'namespace' => 'yii\caching',
                 'name' => 'extension_loaded',
             ],
+            [
+                'namespace' => 'yii\rbac',
+                'name' => 'filemtime',
+            ],
+            [
+                'namespace' => 'yii\rbac',
+                'name' => 'time',
+            ],
         ];
 
         $mocker = new Mocker();

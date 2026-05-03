@@ -1,45 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yii\rbac;
-
-/**
- * Mock for the filemtime() function for rbac classes. Avoid random test fails.
- * @param string $file
- * @return int
- */
-function filemtime($file)
-{
-    return \yiiunit\framework\rbac\PhpManagerTest::$filemtime ?: \filemtime($file);
-}
-
-/**
- * Mock for the time() function for rbac classes. Avoid random test fails.
- * @return int
- */
-function time()
-{
-    return \yiiunit\framework\rbac\PhpManagerTest::$time ?: \time();
-}
-
 namespace yiiunit\framework\rbac;
 
+use PHPUnit\Framework\Attributes\Group;
+use Xepozz\InternalMocker\MockerState;
 use Yii;
+use yiiunit\framework\rbac\stub\AuthorRule;
+use yiiunit\framework\rbac\stub\ExposedPhpManager;
 
 /**
- * @group rbac
- * @property ExposedPhpManager $auth
+ * Unit test for {@see \yii\rbac\PhpManager}.
  */
-class PhpManagerTest extends ManagerTestCase
+#[Group('rbac')]
+#[Group('rbac-php')]
+final class PhpManagerTest extends ManagerTestCase
 {
-    public static $filemtime;
-    public static $time;
-
     protected function getItemFile()
     {
         return Yii::$app->getRuntimePath() . '/rbac-items.php';
@@ -67,51 +50,72 @@ class PhpManagerTest extends ManagerTestCase
      */
     protected function createManager()
     {
-        return new ExposedPhpManager([
-            'itemFile' => $this->getItemFile(),
-            'assignmentFile' => $this->getAssignmentFile(),
-            'ruleFile' => $this->getRuleFile(),
-            'defaultRoles' => ['myDefaultRole'],
-        ]);
+        return new ExposedPhpManager(
+            [
+                'itemFile' => $this->getItemFile(),
+                'assignmentFile' => $this->getAssignmentFile(),
+                'ruleFile' => $this->getRuleFile(),
+                'defaultRoles' => ['myDefaultRole'],
+            ],
+        );
     }
 
     protected function setUp(): void
     {
-        static::$filemtime = null;
-        static::$time = null;
         parent::setUp();
 
         $this->mockApplication();
         $this->removeDataFiles();
+
         $this->auth = $this->createManager();
     }
 
     protected function tearDown(): void
     {
         $this->removeDataFiles();
-        static::$filemtime = null;
-        static::$time = null;
         parent::tearDown();
     }
 
     public function testSaveLoad(): void
     {
-        static::$time = static::$filemtime = \time();
+        $now = \time();
+
+        MockerState::addCondition('yii\rbac', 'time', [], $now, true);
+        MockerState::addCondition('yii\rbac', 'filemtime', [], $now, true);
 
         $this->prepareData();
+
         $items = $this->auth->items;
         $children = $this->auth->children;
         $assignments = $this->auth->assignments;
         $rules = $this->auth->rules;
+
         $this->auth->save();
 
         $this->auth = $this->createManager();
+
         $this->auth->load();
 
-        $this->assertEquals($items, $this->auth->items);
-        $this->assertEquals($children, $this->auth->children);
-        $this->assertEquals($assignments, $this->auth->assignments);
-        $this->assertEquals($rules, $this->auth->rules);
+        self::assertEquals(
+            $items,
+            $this->auth->items,
+            'Items must round-trip identically.',
+        );
+        self::assertEquals(
+            $children,
+            $this->auth->children,
+            'Children must round-trip identically.',
+        );
+        self::assertEquals(
+            $assignments,
+            $this->auth->assignments,
+            'Assignments must round-trip identically.',
+        );
+        self::assertEquals(
+            $rules,
+            $this->auth->rules,
+            'Rules must round-trip identically.',
+        );
     }
 
     public function testUpdateItemName(): void
@@ -119,18 +123,31 @@ class PhpManagerTest extends ManagerTestCase
         $this->prepareData();
 
         $name = 'readPost';
+
         $permission = $this->auth->getPermission($name);
+
         $permission->name = 'UPDATED-NAME';
-        $this->assertTrue($this->auth->update($name, $permission), 'You should be able to update name.');
+
+        self::assertTrue(
+            $this->auth->update($name, $permission),
+            "Rename must report 'true'.",
+        );
     }
 
     public function testUpdateDescription(): void
     {
         $this->prepareData();
+
         $name = 'readPost';
+
         $permission = $this->auth->getPermission($name);
+
         $permission->description = 'UPDATED-DESCRIPTION';
-        $this->assertTrue($this->auth->update($name, $permission), 'You should be able to save w/o changing name.');
+
+        self::assertTrue(
+            $this->auth->update($name, $permission),
+            "Description-only update must report 'true'.",
+        );
     }
 
     public function testOverwriteName(): void
@@ -138,10 +155,15 @@ class PhpManagerTest extends ManagerTestCase
         $this->prepareData();
 
         $name = 'readPost';
+
         $permission = $this->auth->getPermission($name);
+
         $permission->name = 'createPost';
 
         $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Unable to change the item name. The name 'createPost' is already used by another item.",
+        );
 
         $this->auth->update($name, $permission);
     }
@@ -149,14 +171,110 @@ class PhpManagerTest extends ManagerTestCase
     public function testSaveAssignments(): void
     {
         $this->auth->removeAll();
+
         $role = $this->auth->createRole('Admin');
+
         $this->auth->add($role);
         $this->auth->assign($role, 13);
-        $this->assertStringContainsString('Admin', file_get_contents($this->getAssignmentFile()));
+
+        self::assertStringContainsString(
+            'Admin',
+            file_get_contents($this->getAssignmentFile()),
+            'Initial assignment must persist the role name.',
+        );
+
         $role->name = 'NewAdmin';
+
         $this->auth->update('Admin', $role);
-        $this->assertStringContainsString('NewAdmin', file_get_contents($this->getAssignmentFile()));
+
+        self::assertStringContainsString(
+            'NewAdmin',
+            file_get_contents($this->getAssignmentFile()),
+            'Renamed role must persist with the new name.',
+        );
+
         $this->auth->remove($role);
-        $this->assertStringNotContainsString('NewAdmin', file_get_contents($this->getAssignmentFile()));
+
+        self::assertStringNotContainsString(
+            'NewAdmin',
+            file_get_contents($this->getAssignmentFile()),
+            'Removed role must not appear in the persistence file.',
+        );
+    }
+
+    public function testRemoveItemReturnsFalseForUnknownItem(): void
+    {
+        $orphan = $this->auth->createRole('never-added');
+
+        self::assertFalse(
+            $this->auth->remove($orphan),
+            "Removing an item that was never added must report 'false'.",
+        );
+    }
+
+    public function testRemoveRuleReturnsFalseForUnknownRule(): void
+    {
+        $rule = new AuthorRule(['name' => 'never-saved']);
+
+        self::assertFalse(
+            $this->auth->remove($rule),
+            "Removing a rule that was never added must report 'false'.",
+        );
+    }
+
+    public function testThrowInvalidArgumentExceptionWhenAddChildItemNotInItems(): void
+    {
+        $orphanParent = $this->auth->createRole('orphan-parent');
+        $orphanChild = $this->auth->createPermission('orphan-child');
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Either 'orphan-parent' or 'orphan-child' does not exist.",
+        );
+
+        $this->auth->addChild($orphanParent, $orphanChild);
+    }
+
+    public function testThrowInvalidCallExceptionWhenAddChildAlreadyExists(): void
+    {
+        $role = $this->auth->createRole('manager');
+        $perm = $this->auth->createPermission('act');
+
+        $this->auth->add($role);
+        $this->auth->add($perm);
+        $this->auth->addChild($role, $perm);
+
+        $this->expectException(\yii\base\InvalidCallException::class);
+        $this->expectExceptionMessage(
+            "The item 'manager' already has a child 'act'.",
+        );
+
+        $this->auth->addChild($role, $perm);
+    }
+
+    public function testThrowInvalidArgumentExceptionWhenAssignUnknownRole(): void
+    {
+        $role = $this->auth->createRole('ghost-role');
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Unknown role 'ghost-role'.",
+        );
+
+        $this->auth->assign($role, 'user-1');
+    }
+
+    public function testThrowInvalidArgumentExceptionWhenAssignAlreadyAssigned(): void
+    {
+        $role = $this->auth->createRole('member');
+        $this->auth->add($role);
+        $this->auth->assign($role, 'user-2');
+
+        $this->expectException(\yii\base\InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "Authorization item 'member' has already been assigned to user 'user-2'.",
+        );
+
+        $this->auth->assign($role, 'user-2');
     }
 }

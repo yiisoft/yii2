@@ -21,7 +21,7 @@ use yii\web\Request;
 use yii\web\User;
 use yiiunit\framework\filters\stubs\MockAuthManager;
 use yiiunit\framework\filters\stubs\UserIdentity;
-use yiiunit\framework\rbac\AuthorRule;
+use yiiunit\framework\rbac\stub\AuthorRule;
 
 /**
  * @group filters
