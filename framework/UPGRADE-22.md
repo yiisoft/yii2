@@ -390,7 +390,8 @@ The `m200409_110543_rbac_update_mssql_trigger` migration file has been removed.
 
 **MSSQL applications upgrading from `2.0.x`:** run the following statements once, on a maintenance window, before
 the new framework code starts handling requests. The new cascade code relies on the FK actions and will fail on
-`removeItem` / `removeAllItems` while the old `NO ACTION` FKs are still in place.
+`removeItem`, `removeAllItems`, `updateItem` (rename), and `updateRule` (rename) while the old `NO ACTION` FKs are
+still in place.
 
 ```sql
 -- 1. Drop the legacy INSTEAD OF triggers.
