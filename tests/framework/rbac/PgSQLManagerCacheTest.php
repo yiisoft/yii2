@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\rbac;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\rbac\ManagerInterface;
 use yii\caching\FileCache;
 use yii\rbac\DbManager;
