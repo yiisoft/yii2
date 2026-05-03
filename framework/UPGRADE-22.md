@@ -1,7 +1,7 @@
 # Upgrading Instructions for Yii Framework 22.x
 
-This file contains the upgrade notes for the Yii Framework `22.x` line. These notes highlight changes that break
-backwards compatibility from the `2.0.x` line and that require action when upgrading an application.
+This file lists the **backwards-incompatible** changes between `2.0.x` and `22.x` and the concrete steps required to
+upgrade an existing application. Non-breaking enhancements are documented in [`CHANGELOG.md`](CHANGELOG.md).
 
 For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 
@@ -12,45 +12,6 @@ For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
 - Raised minimum supported PHP version to `8.3`.
 - All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
   you must update your code before upgrading.
-
-### ActiveField label, radio, and checkbox enhancements
-
-`yii\widgets\ActiveField::label()` now supports a `tag` option in `$options` to control the wrapper element:
-
-- `tag => 'label'` (default) generates a standard `<label>` element with `for` attribute.
-- `tag => false` renders label content without any wrapping tag.
-- `tag => 'span'`/`'div'`/etc. uses the specified HTML element as wrapper.
-
-Example usage:
-
-```php
-$field->label('My Label', ['tag' => 'span', 'class' => 'custom-label']);
-```
-
-Additionally, `radio()` and `checkbox()` now support a `tag` sub-option inside `labelOptions` when
-`enclosedByLabel` is `false`. This provides flexible label rendering for radio buttons and checkboxes:
-
-```php
-// Render radio label as a <span> instead of <label>
-$field->radio(
-    [
-        'label' => 'Option A',
-        'labelOptions' => ['tag' => 'span', 'class' => 'custom-label'],
-    ],
-    false,
-);
-
-// Render checkbox label without any wrapping tag
-$field->checkbox(
-    [
-        'label' => '<strong>Accept Terms</strong>',
-        'labelOptions' => ['tag' => false],
-    ],
-    false,
-);
-```
-
-These changes are fully backward compatible. Existing code continues to work without modification.
 
 ### ApcCache renamed to ApcuCache
 
@@ -76,60 +37,9 @@ not available in PHP >= `8.0`, so the dual-mode `$useApcu` property has been rem
 
 ### Bootstrap CSS class defaults removed
 
-Bootstrap-specific CSS class defaults have been removed from widget properties. The framework is now CSS-agnostic; no
-CSS framework is required or assumed. The following property defaults have changed:
-
-| Class                     | Property              | Old default                                                     | New default                  |
-| ------------------------- | --------------------- | --------------------------------------------------------------- | ---------------------------- |
-| `yii\widgets\ActiveField` | `$options`            | `['class' => 'form-group']`                                     | `[]`                         |
-| `yii\widgets\ActiveField` | `$inputOptions`       | `['class' => 'form-control']`                                   | `[]`                         |
-| `yii\widgets\ActiveField` | `$errorOptions`       | `['class' => 'help-block']`                                     | `['class' => 'field-error']` |
-| `yii\widgets\ActiveField` | `$labelOptions`       | `['class' => 'control-label']`                                  | `[]`                         |
-| `yii\widgets\ActiveForm`  | `$errorCssClass`      | `'has-error'`                                                   | `''`                         |
-| `yii\widgets\ActiveForm`  | `$successCssClass`    | `'has-success'`                                                 | `''`                         |
-| `yii\grid\GridView`       | `$tableOptions`       | `['class' => 'table table-striped table-bordered']`             | `[]`                         |
-| `yii\grid\GridView`       | `$filterErrorOptions` | `['class' => 'help-block']`                                     | `['class' => 'field-error']` |
-| `yii\grid\DataColumn`     | `$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                     | `['id' => null]`             |
-| `yii\widgets\DetailView`  | `$options`            | `['class' => 'table table-striped table-bordered detail-view']` | `['class' => 'detail-view']` |
-| `yii\widgets\Breadcrumbs` | `$options`            | `['class' => 'breadcrumb']`                                     | `[]`                         |
-| `yii\widgets\LinkPager`   | `$options`            | `['class' => 'pagination']`                                     | `[]`                         |
-| `yii\captcha\Captcha`     | `$options`            | `['class' => 'form-control']`                                   | `[]`                         |
-
-`yii\grid\ActionColumn::initDefaultButton()` no longer falls back to `glyphicon glyphicon-$iconName` markup when an
-icon name is not present in `$icons`. It now renders the icon name as plain text.
-
-**Migration.** If your application depends on Bootstrap CSS for these widgets, configure the old values explicitly.
-For `ActiveField`:
-
-```php
-$form->field(
-    $model,
-    'username',
-    [
-        'options'      => ['class' => 'form-group'],
-        'inputOptions' => ['class' => 'form-control'],
-        'errorOptions' => ['class' => 'help-block'],
-        'labelOptions' => ['class' => 'control-label'],
-    ],
-);
-```
-
-Or subclass `ActiveField` and override the properties once. For `ActiveForm`:
-
-```php
-$form = ActiveForm::begin(
-    [
-        'errorCssClass'   => 'has-error',
-        'successCssClass' => 'has-success',
-    ],
-);
-```
-
-**Note on `yii.activeForm.js` compatibility.** `ActiveField::$errorOptions` now defaults to `['class' => 'field-error']`
-instead of `['class' => 'help-block']`. The client-side validation JavaScript in `yiisoft/yii2-jquery` still defaults
-its error selector to `.help-block`, but `ActiveFormJqueryClientScript::getClientOptions()` passes the per-field `error`
-selector in the payload that overrides the JS default at runtime, so client-side validation keeps working against
-`.field-error` with no manual configuration.
+Bootstrap-specific CSS class defaults have been removed from framework widget properties (`ActiveField`, `ActiveForm`,
+`GridView`, `DataColumn`, `DetailView`, `Breadcrumbs`, `LinkPager`, `Captcha`, `ActionColumn`). The framework is now
+CSS-agnostic.
 
 ### Database
 
@@ -167,7 +77,9 @@ Example:
 
 If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
 
-#### MariaDB pagination now uses `OFFSET ... FETCH` (`10.6+`)
+#### MariaDB
+
+##### Pagination now uses `OFFSET ... FETCH` (`10.6+`)
 
 `yii\db\mysql\QueryBuilder::buildLimit()` now delegates to `buildOffsetFetch()` and emits SQL using MariaDB's standard
 row-limiting clause when the connected server is MariaDB:
@@ -191,31 +103,9 @@ pagination.
 > through June 4, `2028`). MariaDB `10.5` LTS reached community support EOL on June 24, `2025` and is no longer covered
 > by Yii. The `10.6+` floor matches the earliest MariaDB release with the standard `OFFSET ... FETCH` syntax.
 
-#### SQLite offset-only pagination now uses `LIMIT -1 OFFSET`
+#### MSSQL 
 
-`yii\db\sqlite\QueryBuilder::buildLimit()` continues to emit SQLite's documented `LIMIT` / `OFFSET` syntax. SQLite does
-not support the SQL-standard `OFFSET ... FETCH` row-limiting clause.
-
-Offset-only queries now emit:
-
-```sql
-LIMIT -1 OFFSET <n>
-```
-
-instead of:
-
-```sql
-LIMIT 9223372036854775807 OFFSET <n>
-```
-
-SQLite treats a negative `LIMIT` expression as no upper bound, so the generated SQL remains equivalent while matching
-the documented SQLite behavior. If your tests assert exact SQL strings for SQLite offset-only queries, update the
-expected SQL.
-
-SQLite `LIMIT` and `OFFSET` clauses also accept scalar expressions, so raw `Expression` values such as `1 + 1` remain
-supported in Yii-generated pagination SQL.
-
-#### MSSQL pagination now uses `OFFSET ... FETCH` (`2019+`)
+##### Pagination now uses `OFFSET ... FETCH` (`2019+`)
 
 `yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL
 Server versions earlier than `2019` are no longer supported (the legacy `ROW_NUMBER()` fallback was removed).
@@ -243,7 +133,9 @@ Behavioral notes:
 > matrix; SQL Server `2017` remains in vendor extended support until October 12, `2027`, but is no longer covered by
 > Yii.
 
-#### MySQL dead code removal and integer display width cleanup
+#### MySQL 
+
+##### Dead code removal and integer display width cleanup
 
 The minimum supported MySQL version is now **8.0+** (**MariaDB 10.6+**). The following dead code has been removed:
 
@@ -278,7 +170,9 @@ If your application or migrations rely on the exact SQL output of `QueryBuilder:
 > `2025`. The version floors catch up to releases that are at or near EOL; the dead code removed in this change
 > targeted MySQL branches already unsupported by the vendor.
 
-#### Oracle pagination now uses `OFFSET ... FETCH` (`12.1+`)
+#### Oracle 
+
+##### Pagination now uses `OFFSET ... FETCH` (`12.1+`)
 
 `yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
 
@@ -309,9 +203,9 @@ pagination.
 The minimum supported PostgreSQL version is now **`13+`**. Every legacy version branch in the PostgreSQL driver
 collapses under this floor, and the following dead code has been removed:
 
-- `yii\db\pgsql\QueryBuilder::oldUpsert()` — CTE-based upsert workaround for PostgreSQL `< 9.5`. The `ON CONFLICT`
+- `yii\db\pgsql\QueryBuilder::oldUpsert()` CTE-based upsert workaround for PostgreSQL `< 9.5`. The `ON CONFLICT`
   syntax (available since PostgreSQL `9.5`) is now used unconditionally.
-- `yii\db\pgsql\QueryBuilder::newUpsert()` — removed; its logic is now inlined into `upsert()`.
+- `yii\db\pgsql\QueryBuilder::newUpsert()` removed; its logic is now inlined into `upsert()`.
 - The `version_compare(..., '9.5', '<')` check in `QueryBuilder::upsert()`.
 - The `version_compare(..., '12.0', '>=')` branch in `Schema::findColumns()` for identity column detection
   (`attidentity != ''`). The identity column clause is now always emitted in the catalogue query.
@@ -344,6 +238,32 @@ deterministic pagination.
 > Yii use `ON CONFLICT` upsert (`9.5+`) and `GENERATED AS IDENTITY` columns (`12+`) unconditionally, without runtime
 > version branching.
 
+#### SQLite 
+
+##### Offset-only pagination now uses `LIMIT -1 OFFSET`
+
+`yii\db\sqlite\QueryBuilder::buildLimit()` continues to emit SQLite's documented `LIMIT` / `OFFSET` syntax. SQLite does
+not support the SQL-standard `OFFSET ... FETCH` row-limiting clause.
+
+Offset-only queries now emit:
+
+```sql
+LIMIT -1 OFFSET <n>
+```
+
+instead of:
+
+```sql
+LIMIT 9223372036854775807 OFFSET <n>
+```
+
+SQLite treats a negative `LIMIT` expression as no upper bound, so the generated SQL remains equivalent while matching
+the documented SQLite behavior. If your tests assert exact SQL strings for SQLite offset-only queries, update the
+expected SQL.
+
+SQLite `LIMIT` and `OFFSET` clauses also accept scalar expressions, so raw `Expression` values such as `1 + 1` remain
+supported in Yii-generated pagination SQL.
+
 ### HHVM support removed
 
 All HHVM-specific code has been removed from the framework. Yii `22.x` targets PHP `8.3+` on the Zend engine only.
@@ -374,10 +294,10 @@ Then register the extension's Bootstrap in your application config:
 ```
 
 The Bootstrap registers DI container defaults so that `$clientScript` is automatically populated on every supported
-widget and validator — `ActiveForm`, `GridView`, `CheckboxColumn`, `Captcha`, `CaptchaValidator`, `BooleanValidator`,
+widget and validator; `ActiveForm`, `GridView`, `CheckboxColumn`, `Captcha`, `CaptchaValidator`, `BooleanValidator`,
 `CompareValidator`, `EmailValidator`, `FileValidator`, `FilterValidator`, `ImageValidator`, `IpValidator`,
 `NumberValidator`, `RangeValidator`, `RegularExpressionValidator`, `RequiredValidator`, `StringValidator`,
-`TrimValidator`, `UrlValidator` — without any manual wiring.
+`TrimValidator`, `UrlValidator` without any manual wiring.
 
 Asset bundles (`yii\web\JqueryAsset`, `yii\web\YiiAsset`, `yii\widgets\ActiveFormAsset`,
 `yii\widgets\MaskedInputAsset`, `yii\widgets\PjaxAsset`, `yii\grid\GridViewAsset`, `yii\validators\ValidationAsset`,
@@ -457,198 +377,18 @@ compatibility:
 The default implementations now delegate to the configured `$clientScript` handler. Subclasses that call
 `parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
 
-### Standalone actions (`Module::$actionMap` and `Module::$actionNamespace`)
+### Standalone action dispatch incidental BC
 
-`yii\base\Action::$controller` is now nullable, and two new `yii\base\Module` properties enable routing directly to a
-standalone `yii\base\Action` subclass without a hosting `Controller`:
+Alongside the new standalone-action dispatch (additive feature), two incidental changes can break code that relied on
+prior behavior:
 
-- `Module::$actionMap` explicit registration, parallel to `Module::$controllerMap`. Each entry maps an ID (the first
-  route segment) to an `Action` class configuration accepted by `Yii::createObject()`.
-- `Module::$actionNamespace` convention-based lookup, parallel to `Module::$controllerNamespace`. Defaults to the
-  value of `controllerNamespace` during `init()`, so by default standalone actions live next to controllers under the
-  same root.
+- `yii\base\Action::$controller` is now nullable. Subclass overrides and any code that read `$action->controller`
+  unchecked must add a `null` check.
+- `yii\filters\AccessRule::matchController()` accepts `null` and a rule with a non-empty `controllers` constraint
+  no longer matches when the action runs standalone. To preserve the previous behavior of always matching, leave
+  `controllers` empty on the rule.
 
-Standalone actions receive constructor and method-level dependencies through the DI container, and `behaviors()`
-declared on the action participate in its lifecycle (`AccessControl`, `VerbFilter`, and similar filters).
-
-The convention-based file placement mirrors controllers, only the suffix and parent class differ:
-
-```
-app/controllers/PostController.php           (existing controller, unchanged)
-app/controllers/post/IndexAction.php         (standalone action, route post/index)
-app/controllers/post/ViewAction.php          (standalone action, route post/view)
-app/controllers/admin/posts/CreateAction.php (standalone action, route admin/posts/create)
-```
-
-The same hyphen-to-CamelCase rule applies to the last route segment (`view-summary` resolves to `ViewSummaryAction`),
-and preceding segments form a sub-namespace prefix verbatim.
-
-For projects that prefer a separate root (vertical slices, use cases, ports/adapters layout), set `actionNamespace`
-explicitly:
-
-```php
-// config/web.php
-return [
-    // ...
-    'actionNamespace' => 'app\\UseCase',
-];
-```
-
-With the example above, route `posts/index` resolves to `app\UseCase\posts\IndexAction`. Controllers remain at
-`app/controllers/` and continue to be discovered through `controllerNamespace`.
-
-Resolution order in `Module::runAction()`: explicit `actionMap` and `controllerMap` entries are checked first, then
-sub-modules, then controllers by namespace, and finally standalone actions by namespace. **If a controller method and a
-standalone Action class both match the same route, `Module::runAction()` throws `InvalidConfigException`** so the
-developer disambiguates instead of silently shadowing one or the other. Existing applications upgrade with no
-behavioral change because before this release a class file at the convention path was never resolved.
-
-Minimal `actionMap` example for an endpoint that does not follow the convention (custom ID or external class):
-
-```php
-// config/web.php
-return [
-    // ...
-    'actionMap' => [
-        'health' => app\actions\HealthCheckAction::class,
-    ],
-];
-```
-
-The feature is purely additive: drop a `<X>Action.php` in the right folder (or register it in `actionMap`) and the
-route works. Routes that match neither a controller nor a standalone action throw `InvalidRouteException` as before.
-
-#### HTTP-aware param binding: `yii\web\Action`
-
-For HTTP endpoints, extend `yii\web\Action` (new in 22.0) instead of `yii\base\Action`. `yii\web\Action::resolveStandaloneParams()`
-delegates to `yii\web\Controller::bindActionParamsToCallable()` so the action receives the same scalar coercion, type
-validation, and DI resolution as a controller-bound action: `'7'` is coerced to `int 7`, invalid scalars raise
-`yii\web\BadRequestHttpException`, missing required parameters also raise `BadRequestHttpException`, and typed services
-resolve through module components, module DI, and the global container in that order.
-
-```php
-namespace app\controllers;
-
-use yii\web\Action;
-use yii\web\Response;
-
-final class HealthAction extends Action
-{
-    public function run(int $id, Response $response): Response { ... }
-}
-```
-
-Reserve `yii\base\Action` for non-HTTP standalone contexts (queue jobs, scheduled tasks, console-side dispatch). It
-keeps the simpler `yii\di\Container::resolveCallableDependencies()` resolution which autowires typed services but
-does not coerce or validate scalar parameters.
-
-#### Standalone action constructor and dependency injection
-
-`yii\base\Action::__construct()` now accepts `null` for both `$id` and `$controller`:
-
-```php
-// Before (2.0.x)
-public function __construct($id, $controller = null, $config = [])
-
-// 22.0
-public function __construct($id = null, $controller = null, $config = [])
-```
-
-This relaxation enables two coexisting DI paths for actions dispatched through `Module::$actionMap` or
-`Module::$actionNamespace`:
-
-1. **Constructor injection** — typed parameters (with or without PHP `8.x` promoted properties) are autowired by the
-   DI container. Use this for long-lived collaborators (database connections, repositories, services).
-2. **`run()` method injection** — typed parameters on `run()` are resolved per-invocation through
-   `Container::resolveCallableDependencies()`. Use this for the request itself (`yii\web\Response`,
-   `yii\web\Request`) and for route-bound scalars (`int $id`, `string $slug`).
-
-Both forms compose:
-
-```php
-namespace app\controllers;
-
-use yii\db\Connection;
-use yii\web\Action;
-use yii\web\Response;
-
-final class HealthAction extends Action
-{
-    public function __construct(private readonly Connection $db)
-    {
-    }
-
-    public function run(Response $response): Response
-    {
-        $response->format = Response::FORMAT_JSON;
-        $response->data = ['db' => $this->db->open() ? 'ok' : 'down'];
-
-        return $response;
-    }
-}
-```
-
-##### Dispatch contract change for standalone actions
-
-`Module::runMappedAction()` and `Module::createStandaloneAction()` now build the action through
-`Yii::createObject($definition)` with **no positional arguments** and assign `Action::$id` afterwards. In 2.0.x the
-dispatcher passed `[$id, null]` positionally, so the constructor (and any code running inside `init()`) saw the route
-segment ID immediately.
-
-**Behavior change**: when a standalone action declares a legacy positional constructor
-(`__construct($id, $controller = null, $config = [])` calling `parent::__construct(...)`), the constructor now
-receives `$id === null`, and `Action::init()` runs with `$this->id === null`. The dispatcher assigns the real ID
-**after** the constructor returns, so `$this->id` is correct by the time the action's lifecycle events
-(`EVENT_BEFORE_ACTION`, `EVENT_AFTER_ACTION`) and `run()` execute.
-
-This affects only standalone actions registered in `actionMap` or discovered through `actionNamespace`. Actions
-registered through `Controller::actions()` keep the historical positional contract `[$id, $this]` unchanged, and
-their `init()` continues to see the ID during construction.
-
-##### Migration
-
-If your standalone action overrides `init()` and reads `$this->id` (for example to register an alias, set a logger
-category, or compute a cache key), move that logic to a `behaviors()` event handler attached to
-`EVENT_BEFORE_ACTION`. Event handlers fire after the dispatcher has assigned the ID:
-
-```php
-// Before
-public function init()
-{
-    parent::init();
-
-    \Yii::setAlias('@action-' . $this->id, '@runtime/' . $this->id);  // sees null in 22.0
-}
-
-// After
-public function behaviors(): array
-{
-    return [
-        'aliases' => [
-            'class' => \yii\base\Behavior::class,
-            'on ' . self::EVENT_BEFORE_ACTION => function () {
-                \Yii::setAlias('@action-' . $this->owner->id, '@runtime/' . $this->owner->id);
-            },
-        ],
-    ];
-}
-```
-
-Modern constructors do not need to call `parent::__construct()` — the parent constructor accepts `null` and is a no-op
-for identity. Call it explicitly only if your action depends on `Action::init()` for behavior attachment or other
-parent-side setup, and in that case understand that `$this->id` will be `null` inside `init()`.
-
-##### Other related changes
-
-`yii\filters\AccessRule::matchController()` now accepts `null` for the controller argument. When a rule declares a
-non-empty `controllers` constraint and the action runs as a standalone action, the rule does not match. To keep the
-previous behavior, leave `controllers` empty.
-
-The following actions are not standalone-compatible because they require controller-level rendering or layout
-resolution: `yii\web\ViewAction`, `yii\web\ErrorAction`, `yii\base\InlineAction`. Continue to register them through
-`Controller::actions()`.
-
-### `View::registerJs()` no longer assumes jQuery
+### View no longer assumes jQuery (`View::registerJs()`)
 
 `yii\web\View::registerJs()` no longer calls `JqueryAsset::register($this)` automatically when the script position is
 `POS_READY` or `POS_LOAD`, and `View::wrapReadyScript()` / `wrapLoadScript()` now emit vanilla JavaScript event
