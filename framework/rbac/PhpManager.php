@@ -815,9 +815,6 @@ class PhpManager extends BaseManager
         if (function_exists('opcache_invalidate')) {
             opcache_invalidate($file, true);
         }
-        if (function_exists('apc_delete_file')) {
-            @apc_delete_file($file);
-        }
     }
 
     /**

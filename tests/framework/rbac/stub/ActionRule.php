@@ -1,19 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\rbac;
+namespace yiiunit\framework\rbac\stub;
 
 use yii\rbac\Rule;
 
 /**
  * Description of ActionRule.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
  */
-class ActionRule extends Rule
+final class ActionRule extends Rule
 {
     public $name = 'action_rule';
     public $action = 'read';
