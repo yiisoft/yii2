@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,12 +10,14 @@
 
 namespace yiiunit\framework\rbac;
 
+use PHPUnit\Framework\Attributes\Group;
+
 /**
- * MySQLManagerTest.
- * @group db
- * @group rbac
- * @group mysql
+ * Unit tests for {@see \yii\rbac\DbManager} backed by MySQL.
  */
+#[Group('db')]
+#[Group('rbac')]
+#[Group('mysql')]
 class MySQLManagerTest extends DbManagerTestCase
 {
     protected static $driverName = 'mysql';

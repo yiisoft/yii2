@@ -10,23 +10,25 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\rbac;
 
-use yii\rbac\ManagerInterface;
+use PHPUnit\Framework\Attributes\Group;
 use yii\caching\FileCache;
 use yii\rbac\DbManager;
+use yii\rbac\ManagerInterface;
 
 /**
- * Unit tests for {@see \yii\rbac\DbManager} backed by PostgreSQL with file-based cache enabled.
+ * Unit tests for {@see \yii\rbac\DbManager} backed by SQLite with file-based cache enabled.
  *
  * Exercises the cache-hit branches of `DbManager` (`loadFromCache`, `getRolesByUser`, etc.) without requiring an
  * external database server.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
  */
 #[Group('db')]
 #[Group('rbac')]
-#[Group('pgsql')]
-final class PgSQLManagerCacheTest extends DbManagerTestCase
+#[Group('sqlite')]
+final class SqliteManagerCacheTest extends SqliteManagerTest
 {
-    protected static $driverName = 'pgsql';
-
     /**
      * @return ManagerInterface
      */
