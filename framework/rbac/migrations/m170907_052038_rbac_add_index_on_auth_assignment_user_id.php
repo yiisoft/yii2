@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -24,14 +26,15 @@ class m170907_052038_rbac_add_index_on_auth_assignment_user_id extends Migration
     public $index = 'auth_assignment_user_id_idx';
 
     /**
-     * @throws yii\base\InvalidConfigException
-     * @return DbManager
+     * @throws InvalidConfigException if the "authManager" component is not properly configured to use DbManager.
      */
-    protected function getAuthManager()
+    protected function getAuthManager(): DbManager
     {
         $authManager = Yii::$app->getAuthManager();
         if (!$authManager instanceof DbManager) {
-            throw new InvalidConfigException('You should configure "authManager" component to use database before executing this migration.');
+            throw new InvalidConfigException(
+                'You should configure "authManager" component to use database before executing this migration.',
+            );
         }
 
         return $authManager;

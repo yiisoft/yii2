@@ -751,7 +751,7 @@ abstract class ManagerTestCase extends TestCase
     }
 
     #[DataProvider('RBACItemsProvider')]
-    public function testAssignRule(mixed $RBACItemType): void
+    public function testAssignRule(int $RBACItemType): void
     {
         $auth = $this->auth;
 
@@ -887,7 +887,7 @@ abstract class ManagerTestCase extends TestCase
     }
 
     #[DataProvider('RBACItemsProvider')]
-    public function testRevokeRule(mixed $RBACItemType): void
+    public function testRevokeRule(int $RBACItemType): void
     {
         $userId = 3;
 
@@ -1364,7 +1364,7 @@ abstract class ManagerTestCase extends TestCase
         $reflection = new ReflectionClass($this->auth);
 
         $rulesProperty = $reflection->getProperty('rules');
-        $rules = (array) ($rulesProperty->getValue($this->auth) ?? [$rule->name => $rule]);
+        $rules = $rulesProperty->getValue($this->auth) ?? [];
 
         unset($rules[$rule->name]);
 
@@ -1471,7 +1471,7 @@ abstract class ManagerTestCase extends TestCase
     /**
      * Get Role or Permission RBAC item.
      */
-    private function getRBACItem(int $RBACItemType, string $name): Permission|Role
+    private function getRBACItem(int $RBACItemType, string $name): Permission|Role|null
     {
         if ($RBACItemType === Item::TYPE_ROLE) {
             return $this->auth->getRole($name);
