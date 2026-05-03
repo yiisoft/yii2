@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,27 +10,30 @@
 
 namespace yiiunit\framework\rbac;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\rbac\ManagerInterface;
 use yii\caching\FileCache;
 use yii\rbac\DbManager;
 
 /**
- * MySQLManagerCacheTest.
- * @group rbac
- * @group db
- * @group mysql
+ * Unit tests for {@see \yii\rbac\DbManager} backed by MySQL with file-based cache enabled.
+ *
+ * Exercises the cache-hit branches of `DbManager` (`loadFromCache`, `getRolesByUser`, etc.) against a MySQL
+ * database with a file-based cache layer enabled.
  */
-class MySQLManagerCacheTest extends MySQLManagerTest
+#[Group('db')]
+#[Group('rbac')]
+#[Group('mysql')]
+final class MySQLManagerCacheTest extends MySQLManagerTest
 {
-    /**
-     * @return ManagerInterface
-     */
-    protected function createManager()
+    protected function createManager(): ManagerInterface
     {
-        return new DbManager([
-            'db' => $this->getConnection(),
-            'cache' => new FileCache(['cachePath' => '@yiiunit/runtime/cache']),
-            'defaultRoles' => ['myDefaultRole'],
-        ]);
+        return new DbManager(
+            [
+                'db' => $this->getConnection(),
+                'cache' => new FileCache(['cachePath' => '@yiiunit/runtime/cache']),
+                'defaultRoles' => ['myDefaultRole'],
+            ],
+        );
     }
 }

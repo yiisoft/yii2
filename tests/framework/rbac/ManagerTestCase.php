@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\rbac;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use stdClass;
 use Yii;
@@ -30,7 +31,7 @@ use yiiunit\TestCase;
 use function count;
 
 /**
- * ManagerTestCase.
+ * Base class for testing {@see ManagerInterface}.
  */
 abstract class ManagerTestCase extends TestCase
 {
@@ -749,11 +750,8 @@ abstract class ManagerTestCase extends TestCase
         );
     }
 
-    /**
-     * @dataProvider RBACItemsProvider
-     * @param mixed $RBACItemType
-     */
-    public function testAssignRule($RBACItemType): void
+    #[DataProvider('RBACItemsProvider')]
+    public function testAssignRule(mixed $RBACItemType): void
     {
         $auth = $this->auth;
 
@@ -888,11 +886,8 @@ abstract class ManagerTestCase extends TestCase
         );
     }
 
-    /**
-     * @dataProvider RBACItemsProvider
-     * @param mixed $RBACItemType
-     */
-    public function testRevokeRule($RBACItemType): void
+    #[DataProvider('RBACItemsProvider')]
+    public function testRevokeRule(mixed $RBACItemType): void
     {
         $userId = 3;
 
@@ -1361,13 +1356,13 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->add($rule);
         $this->auth->add($perm);
         $this->auth->assign($perm, 'user-z');
-
         // warm up the in-memory snapshot so subsequent checkAccess() calls do not reload from cache.
         $this->auth->checkAccess('user-z', 'rule-locked', ['authorID' => 'user-z']);
 
         // force the in-memory rule registry to drop the rule while the item keeps its `ruleName`, simulating a corrupt
         // persisted state that bypasses the framework's normal cleanup.
         $reflection = new ReflectionClass($this->auth);
+
         $rulesProperty = $reflection->getProperty('rules');
         $rules = (array) ($rulesProperty->getValue($this->auth) ?? [$rule->name => $rule]);
 
@@ -1458,7 +1453,7 @@ abstract class ManagerTestCase extends TestCase
     /**
      * Create Role or Permission RBAC item.
      */
-    private function createRBACItem(int $RBACItemType, string $name)
+    private function createRBACItem(int $RBACItemType, string $name): Permission|Role
     {
         if ($RBACItemType === Item::TYPE_ROLE) {
             return $this->auth->createRole($name);
@@ -1468,13 +1463,15 @@ abstract class ManagerTestCase extends TestCase
             return $this->auth->createPermission($name);
         }
 
-        throw new InvalidArgumentException();
+        throw new InvalidArgumentException(
+            "Unsupported RBAC item type: '{$RBACItemType}'",
+        );
     }
 
     /**
      * Get Role or Permission RBAC item.
      */
-    private function getRBACItem(int $RBACItemType, string $name)
+    private function getRBACItem(int $RBACItemType, string $name): Permission|Role
     {
         if ($RBACItemType === Item::TYPE_ROLE) {
             return $this->auth->getRole($name);
@@ -1484,6 +1481,8 @@ abstract class ManagerTestCase extends TestCase
             return $this->auth->getPermission($name);
         }
 
-        throw new InvalidArgumentException();
+        throw new InvalidArgumentException(
+            "Unsupported RBAC item type: '{$RBACItemType}'",
+        );
     }
 }
