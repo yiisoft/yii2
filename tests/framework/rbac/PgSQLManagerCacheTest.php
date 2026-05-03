@@ -24,7 +24,7 @@ use yii\rbac\DbManager;
 #[Group('db')]
 #[Group('rbac')]
 #[Group('pgsql')]
-final class PgSQLManagerCacheTest extends PgsqlManagerCacheTest
+final class PgSQLManagerCacheTest extends PgSQLManagerTest
 {
     protected function createManager(): ManagerInterface
     {
