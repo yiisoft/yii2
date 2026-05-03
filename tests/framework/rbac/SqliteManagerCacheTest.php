@@ -18,8 +18,8 @@ use yii\rbac\ManagerInterface;
 /**
  * Unit tests for {@see \yii\rbac\DbManager} backed by SQLite with file-based cache enabled.
  *
- * Exercises the cache-hit branches of `DbManager` (`loadFromCache`, `getRolesByUser`, etc.) without requiring an
- * external database server.
+ * Exercises the cache-hit branches of `DbManager` (`loadFromCache`, `getRolesByUser`, etc.) against a SQLite
+ * database with a file-based cache layer enabled.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0

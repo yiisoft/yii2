@@ -18,8 +18,8 @@ use yii\rbac\DbManager;
 /**
  * Unit tests for {@see \yii\rbac\DbManager} backed by PostgreSQL with file-based cache enabled.
  *
- * Exercises the cache-hit branches of `DbManager` (`loadFromCache`, `getRolesByUser`, etc.) without requiring an
- * external database server.
+ * Exercises the cache-hit branches of `DbManager` (`loadFromCache`, `getRolesByUser`, etc.) against a PostgreSQL
+ * database with a file-based cache layer enabled.
  */
 #[Group('db')]
 #[Group('rbac')]
