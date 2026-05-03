@@ -58,6 +58,7 @@ Yii Framework 2 Change Log
 - Enh: Add `#[\SensitiveParameter]` attribute to secret-bearing parameters in `Security`, `User`, and `IdentityInterface` to redact values from stack traces (terabytesoftw)
 - Enh #18467: Honor `beforeRun()` and `afterRun()` hooks in `yii\base\InlineAction::runWithParams()` so inline actions follow the same lifecycle as standalone actions (terabytesoftw)
 - Bug: Move MSSQL `varbinary` type-casting from `yii\db\mssql\QueryBuilder::normalizeTableRowData()` to `yii\db\mssql\ColumnSchema::dbTypecast()` (terabytesoftw)
+- Bug: Remove `yii\db\mssql\QueryBuilder::normalizeTableRowData()` and the `update()` override (terabytesoftw)
 
 2.0.55 under development
 ------------------------
