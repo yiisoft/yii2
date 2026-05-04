@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -16,6 +18,8 @@ use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\di\Instance;
+
+use function in_array;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -111,7 +115,6 @@ class DbManager extends BaseManager
      * @since `protected` since 2.0.38
      */
     protected $checkAccessAssignments = [];
-
 
     /**
      * Initializes the application component.
@@ -259,13 +262,38 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Returns a value indicating whether the database supports cascading update and delete.
-     * The default implementation will return false for SQLite database and true for all other databases.
-     * @return bool whether the database supports cascading update and delete.
+     * Returns whether the database performs cascade updates and deletes automatically (for example, via FK
+     * `ON UPDATE CASCADE` / `ON DELETE CASCADE`).
+     *
+     * Default returns `false` only for SQLite (no FK enforcement). MySQL, PostgreSQL, and MSSQL return `true` because
+     * their RBAC schemas declare `ON UPDATE CASCADE` / `ON DELETE CASCADE` (with the multi-path exception on
+     * `auth_item_child.child` for MSSQL — see {@see requiresSoftCascade()}). Subclasses can override to register
+     * custom drivers.
+     *
+     * @return bool Whether the database supports cascading update and delete.
      */
     protected function supportsCascadeUpdate()
     {
         return strncmp($this->db->getDriverName(), 'sqlite', 6) !== 0;
+    }
+
+    /**
+     * Returns whether the driver requires a partial PHP-level cleanup of `auth_item_child` rows whose `child` column
+     * references the affected item.
+     *
+     * MSSQL rejects `ON DELETE CASCADE` / `ON UPDATE CASCADE` on the second FK from `auth_item_child` to
+     * `auth_item.name` (multi-path constraint), so the `child` direction is left as `NO ACTION` in the schema and
+     * must be cleaned up explicitly before the parent row is deleted or renamed. The other RBAC FKs cascade natively.
+     *
+     * Default returns `true` for MSSQL drivers. Subclasses can override to register custom drivers with the same
+     * limitation.
+     *
+     * @return bool Whether the `auth_item_child.child` direction must be handled in PHP.
+     * @since 22.0
+     */
+    protected function requiresSoftCascade(): bool
+    {
+        return in_array($this->db->getDriverName(), ['mssql', 'sqlsrv', 'dblib'], true);
     }
 
     /**
@@ -302,17 +330,14 @@ class DbManager extends BaseManager
     protected function removeItem($item)
     {
         if (!$this->supportsCascadeUpdate()) {
+            $this->removeItemManualCascade($item);
+        } elseif ($this->requiresSoftCascade()) {
+            $this->removeItemSoftCascade($item);
+        } else {
             $this->db->createCommand()
-                ->delete($this->itemChildTable, ['or', '[[parent]]=:parent', '[[child]]=:child'], [':parent' => $item->name, ':child' => $item->name])
-                ->execute();
-            $this->db->createCommand()
-                ->delete($this->assignmentTable, ['item_name' => $item->name])
+                ->delete($this->itemTable, ['name' => $item->name])
                 ->execute();
         }
-
-        $this->db->createCommand()
-            ->delete($this->itemTable, ['name' => $item->name])
-            ->execute();
 
         $this->invalidateCache();
 
@@ -320,38 +345,183 @@ class DbManager extends BaseManager
     }
 
     /**
+     * Removes an item without relying on FK enforcement.
+     *
+     * Used by SQLite where foreign keys are not enforced. Deletes referencing rows in `auth_item_child` (both
+     * directions) and `auth_assignment` before deleting the item itself, all inside one transaction so a partial
+     * failure rolls back.
+     *
+     * @param Item $item The item to remove.
+     * @since 22.0
+     */
+    protected function removeItemManualCascade(Item $item): void
+    {
+        $self = $this;
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $item): void {
+                $db->createCommand()
+                    ->delete(
+                        $self->itemChildTable,
+                        ['or', '[[parent]]=:parent', '[[child]]=:child'],
+                        [':parent' => $item->name, ':child' => $item->name],
+                    )
+                    ->execute();
+                $db->createCommand()
+                    ->delete(
+                        $self->assignmentTable,
+                        ['item_name' => $item->name],
+                    )
+                    ->execute();
+                $db->createCommand()
+                    ->delete(
+                        $self->itemTable,
+                        ['name' => $item->name],
+                    )
+                    ->execute();
+            }
+        );
+    }
+
+    /**
+     * Removes an item when FKs cascade for every direction except `auth_item_child.child`.
+     *
+     * Used by MSSQL where the multi-path constraint forces the `auth_item_child.child` FK to `NO ACTION`. That
+     * direction is cleared explicitly; the rest (`auth_item_child.parent`, `auth_assignment`) cascades natively.
+     *
+     * @param Item $item The item to remove.
+     * @since 22.0
+     */
+    protected function removeItemSoftCascade(Item $item): void
+    {
+        $self = $this;
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $item): void {
+                $db->createCommand()
+                    ->delete($self->itemChildTable, ['child' => $item->name])
+                    ->execute();
+                $db->createCommand()
+                    ->delete($self->itemTable, ['name' => $item->name])
+                    ->execute();
+            }
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function updateItem($name, $item)
     {
-        if ($item->name !== $name && !$this->supportsCascadeUpdate()) {
-            $this->db->createCommand()
-                ->update($this->itemChildTable, ['parent' => $item->name], ['parent' => $name])
-                ->execute();
-            $this->db->createCommand()
-                ->update($this->itemChildTable, ['child' => $item->name], ['child' => $name])
-                ->execute();
-            $this->db->createCommand()
-                ->update($this->assignmentTable, ['item_name' => $item->name], ['item_name' => $name])
-                ->execute();
-        }
-
         $item->updatedAt = time();
 
-        $this->db->createCommand()
-            ->update($this->itemTable, [
-                'name' => $item->name,
-                'description' => $item->description,
-                'rule_name' => $item->ruleName,
-                'data' => $item->data === null ? null : serialize($item->data),
-                'updated_at' => $item->updatedAt,
-            ], [
-                'name' => $name,
-            ])->execute();
+        $renamed = $item->name !== $name;
+
+        if (!$renamed || ($this->supportsCascadeUpdate() && !$this->requiresSoftCascade())) {
+            $this->updateItemRow($name, $item);
+        } elseif ($this->requiresSoftCascade()) {
+            $this->updateItemSoftCascade($name, $item);
+        } else {
+            $this->updateItemManualCascade($name, $item);
+        }
 
         $this->invalidateCache();
 
         return true;
+    }
+
+    /**
+     * Updates the auth item row for the given old name. Common building block of every `updateItem` strategy.
+     *
+     * @param string $oldName The current name of the item.
+     * @param Item $item The item carrying the new field values.
+     * @since 22.0
+     */
+    private function updateItemRow(string $oldName, Item $item): void
+    {
+        $this->db->createCommand()
+            ->update(
+                $this->itemTable,
+                [
+                    'name' => $item->name,
+                    'description' => $item->description,
+                    'rule_name' => $item->ruleName,
+                    'data' => $item->data === null ? null : serialize($item->data),
+                    'updated_at' => $item->updatedAt,
+                ],
+                ['name' => $oldName],
+            )
+            ->execute();
+    }
+
+    /**
+     * Renames an item when FKs cascade for every direction except `auth_item_child.child` (MSSQL multi-path).
+     *
+     * Snapshots the affected rows, deletes them, renames the parent (the DB cascades `auth_item_child.parent` and
+     * `auth_assignment.item_name`), and re-inserts the snapshot under the new name.
+     *
+     * @param string $oldName The current name of the item.
+     * @param Item $item The item carrying the new field values.
+     * @since 22.0
+     */
+    protected function updateItemSoftCascade(string $oldName, Item $item): void
+    {
+        $self = $this;
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $oldName, $item): void {
+                $childRows = (new Query())
+                    ->from($self->itemChildTable)
+                    ->where(['child' => $oldName])
+                    ->all($db);
+                $db->createCommand()
+                    ->delete($self->itemChildTable, ['child' => $oldName])
+                    ->execute();
+
+                $self->updateItemRow($oldName, $item);
+
+                if ($childRows !== []) {
+                    $childData = [];
+
+                    foreach ($childRows as $row) {
+                        $childData[] = [$row['parent'], $item->name];
+                    }
+
+                    $db->createCommand()
+                        ->batchInsert($self->itemChildTable, ['parent', 'child'], $childData)
+                        ->execute();
+                }
+            }
+        );
+    }
+
+    /**
+     * Renames an item without relying on FK enforcement.
+     *
+     * Used by SQLite. Directly updates referencing rows in `auth_item_child` (both directions) and `auth_assignment`
+     * before renaming the item itself, all inside one transaction.
+     *
+     * @param string $oldName The current name of the item.
+     * @param Item $item The item carrying the new field values.
+     * @since 22.0
+     */
+    protected function updateItemManualCascade(string $oldName, Item $item): void
+    {
+        $self = $this;
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $oldName, $item): void {
+                $db->createCommand()
+                    ->update($self->itemChildTable, ['parent' => $item->name], ['parent' => $oldName])
+                    ->execute();
+                $db->createCommand()
+                    ->update($self->itemChildTable, ['child' => $item->name], ['child' => $oldName])
+                    ->execute();
+                $db->createCommand()
+                    ->update($self->assignmentTable, ['item_name' => $item->name], ['item_name' => $oldName])
+                    ->execute();
+
+                $self->updateItemRow($oldName, $item);
+            }
+        );
     }
 
     /**
@@ -384,22 +554,13 @@ class DbManager extends BaseManager
      */
     protected function updateRule($name, $rule)
     {
-        if ($rule->name !== $name && !$this->supportsCascadeUpdate()) {
-            $this->db->createCommand()
-                ->update($this->itemTable, ['rule_name' => $rule->name], ['rule_name' => $name])
-                ->execute();
-        }
-
         $rule->updatedAt = time();
 
-        $this->db->createCommand()
-            ->update($this->ruleTable, [
-                'name' => $rule->name,
-                'data' => serialize($rule),
-                'updated_at' => $rule->updatedAt,
-            ], [
-                'name' => $name,
-            ])->execute();
+        if (!$this->supportsCascadeUpdate() && $rule->name !== $name) {
+            $this->updateRuleManualCascade($name, $rule);
+        } else {
+            $this->updateRuleRow($name, $rule);
+        }
 
         $this->invalidateCache();
 
@@ -407,23 +568,92 @@ class DbManager extends BaseManager
     }
 
     /**
+     * Updates the auth rule row for the given old name. Common building block of every `updateRule` strategy.
+     *
+     * @param string $oldName The current name of the rule.
+     * @param Rule $rule The rule carrying the new field values.
+     * @since 22.0
+     */
+    private function updateRuleRow(string $oldName, Rule $rule): void
+    {
+        $this->db->createCommand()
+            ->update(
+                $this->ruleTable,
+                [
+                    'name' => $rule->name,
+                    'data' => serialize($rule),
+                    'updated_at' => $rule->updatedAt,
+                ],
+                ['name' => $oldName],
+            )
+            ->execute();
+    }
+
+    /**
+     * Renames a rule without relying on FK enforcement.
+     *
+     * Used by SQLite. Directly updates `auth_item.rule_name` references before renaming the rule itself.
+     *
+     * @param string $oldName The current name of the rule.
+     * @param Rule $rule The rule carrying the new field values.
+     * @since 22.0
+     */
+    protected function updateRuleManualCascade(string $oldName, Rule $rule): void
+    {
+        $self = $this;
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $oldName, $rule): void {
+                $db->createCommand()
+                    ->update($self->itemTable, ['rule_name' => $rule->name], ['rule_name' => $oldName])
+                    ->execute();
+
+                $self->updateRuleRow($oldName, $rule);
+            }
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function removeRule($rule)
     {
-        if (!$this->supportsCascadeUpdate()) {
+        if ($this->supportsCascadeUpdate()) {
+            // FK ON DELETE SET NULL handles auth_item.rule_name atomically.
             $this->db->createCommand()
-                ->update($this->itemTable, ['rule_name' => null], ['rule_name' => $rule->name])
+                ->delete($this->ruleTable, ['name' => $rule->name])
                 ->execute();
+        } else {
+            $this->removeRuleManualCascade($rule);
         }
-
-        $this->db->createCommand()
-            ->delete($this->ruleTable, ['name' => $rule->name])
-            ->execute();
 
         $this->invalidateCache();
 
         return true;
+    }
+
+    /**
+     * Removes a rule without relying on FK enforcement.
+     *
+     * Used by SQLite. Nulls out `auth_item.rule_name` references before deleting the rule itself.
+     *
+     * @param Rule $rule The rule to remove.
+     * @since 22.0
+     */
+    protected function removeRuleManualCascade(Rule $rule): void
+    {
+        $self = $this;
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $rule): void {
+                $db->createCommand()
+                    ->update($self->itemTable, ['rule_name' => null], ['rule_name' => $rule->name])
+                    ->execute();
+                $db->createCommand()
+                    ->delete($self->ruleTable, ['name' => $rule->name])
+                    ->execute();
+            }
+        );
     }
 
     /**
@@ -967,32 +1197,92 @@ class DbManager extends BaseManager
 
     /**
      * Removes all auth items of the specified type.
-     * @param int $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     *
+     * @param int $type The auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE).
      */
     protected function removeAllItems($type)
     {
         if (!$this->supportsCascadeUpdate()) {
-            $names = (new Query())
-                ->select(['name'])
-                ->from($this->itemTable)
-                ->where(['type' => $type])
-                ->column($this->db);
-            if (empty($names)) {
-                return;
-            }
-            $key = $type == Item::TYPE_PERMISSION ? 'child' : 'parent';
+            $this->removeAllItemsManualCascade($type);
+        } elseif ($this->requiresSoftCascade()) {
+            $this->removeAllItemsSoftCascade($type);
+        } else {
             $this->db->createCommand()
-                ->delete($this->itemChildTable, [$key => $names])
-                ->execute();
-            $this->db->createCommand()
-                ->delete($this->assignmentTable, ['item_name' => $names])
+                ->delete($this->itemTable, ['type' => $type])
                 ->execute();
         }
-        $this->db->createCommand()
-            ->delete($this->itemTable, ['type' => $type])
-            ->execute();
 
         $this->invalidateCache();
+    }
+
+    /**
+     * Returns the names of all auth items of the given type as a `Query` subquery, suitable for use as the value side
+     * of a `WHERE column IN (...)` predicate so the names never round-trip back to PHP.
+     *
+     * @param int $type The auth item type (either {@see Item::TYPE_PERMISSION} or {@see Item::TYPE_ROLE}).
+     * @return Query Subquery selecting `name` from `auth_item` filtered by `type`.
+     * @since 22.0
+     */
+    private function getItemNamesByType(int $type): Query
+    {
+        return (new Query())
+            ->select(['name'])
+            ->from($this->itemTable)
+            ->where(['type' => $type]);
+    }
+
+    /**
+     * Removes all auth items of the given type without relying on FK enforcement.
+     *
+     * Used by SQLite. Clears referencing rows in `auth_item_child` (both directions) and `auth_assignment` via a
+     * correlated subquery, then deletes the items themselves.
+     *
+     * @param int $type The auth item type (either {@see Item::TYPE_PERMISSION} or {@see Item::TYPE_ROLE}).
+     * @since 22.0
+     */
+    protected function removeAllItemsManualCascade(int $type): void
+    {
+        $self = $this;
+        $itemsByType = $this->getItemNamesByType($type);
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $type, $itemsByType): void {
+                $db->createCommand()
+                    ->delete($self->itemChildTable, ['or', ['parent' => $itemsByType], ['child' => $itemsByType]])
+                    ->execute();
+                $db->createCommand()
+                    ->delete($self->assignmentTable, ['item_name' => $itemsByType])
+                    ->execute();
+                $db->createCommand()
+                    ->delete($self->itemTable, ['type' => $type])
+                    ->execute();
+            }
+        );
+    }
+
+    /**
+     * Removes all auth items of the given type when FKs cascade for every direction except `auth_item_child.child`.
+     *
+     * Used by MSSQL. Clears the multi-path direction via a correlated subquery; native cascade handles the rest.
+     *
+     * @param int $type The auth item type (either {@see Item::TYPE_PERMISSION} or {@see Item::TYPE_ROLE}).
+     * @since 22.0
+     */
+    protected function removeAllItemsSoftCascade(int $type): void
+    {
+        $self = $this;
+        $itemsByType = $this->getItemNamesByType($type);
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self, $type, $itemsByType): void {
+                $db->createCommand()
+                    ->delete($self->itemChildTable, ['child' => $itemsByType])
+                    ->execute();
+                $db->createCommand()
+                    ->delete($self->itemTable, ['type' => $type])
+                    ->execute();
+            }
+        );
     }
 
     /**
@@ -1000,15 +1290,35 @@ class DbManager extends BaseManager
      */
     public function removeAllRules()
     {
-        if (!$this->supportsCascadeUpdate()) {
-            $this->db->createCommand()
-                ->update($this->itemTable, ['rule_name' => null])
-                ->execute();
+        if ($this->supportsCascadeUpdate()) {
+            // FK ON DELETE SET NULL handles auth_item.rule_name atomically.
+            $this->db->createCommand()->delete($this->ruleTable)->execute();
+        } else {
+            $this->removeAllRulesManualCascade();
         }
 
-        $this->db->createCommand()->delete($this->ruleTable)->execute();
-
         $this->invalidateCache();
+    }
+
+    /**
+     * Removes every auth rule without relying on FK enforcement.
+     *
+     * Used by SQLite. Nulls out every `auth_item.rule_name` reference before deleting all rule rows.
+     *
+     * @since 22.0
+     */
+    protected function removeAllRulesManualCascade(): void
+    {
+        $self = $this;
+
+        $this->db->transaction(
+            static function (Connection $db) use ($self): void {
+                $db->createCommand()
+                    ->update($self->itemTable, ['rule_name' => null])
+                    ->execute();
+                $db->createCommand()->delete($self->ruleTable)->execute();
+            }
+        );
     }
 
     /**

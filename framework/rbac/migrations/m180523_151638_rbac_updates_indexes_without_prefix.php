@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -21,14 +23,16 @@ use yii\rbac\DbManager;
 class m180523_151638_rbac_updates_indexes_without_prefix extends Migration
 {
     /**
-     * @throws yii\base\InvalidConfigException
-     * @return DbManager
+     * @throws InvalidConfigException if the "authManager" component is not properly configured to use DbManager.
      */
-    protected function getAuthManager()
+    protected function getAuthManager(): DbManager
     {
         $authManager = Yii::$app->getAuthManager();
+
         if (!$authManager instanceof DbManager) {
-            throw new InvalidConfigException('You should configure "authManager" component to use database before executing this migration.');
+            throw new InvalidConfigException(
+                'You should configure "authManager" component to use database before executing this migration.',
+            );
         }
 
         return $authManager;
@@ -40,11 +44,11 @@ class m180523_151638_rbac_updates_indexes_without_prefix extends Migration
     public function up()
     {
         $authManager = $this->getAuthManager();
+
         $this->db = $authManager->db;
 
         $this->dropIndex('auth_assignment_user_id_idx', $authManager->assignmentTable);
         $this->createIndex('{{%idx-auth_assignment-user_id}}', $authManager->assignmentTable, 'user_id');
-
         $this->dropIndex('idx-auth_item-type', $authManager->itemTable);
         $this->createIndex('{{%idx-auth_item-type}}', $authManager->itemTable, 'type');
     }
@@ -55,12 +59,11 @@ class m180523_151638_rbac_updates_indexes_without_prefix extends Migration
     public function down()
     {
         $authManager = $this->getAuthManager();
+
         $this->db = $authManager->db;
 
         $this->dropIndex('{{%idx-auth_assignment-user_id}}', $authManager->assignmentTable);
         $this->createIndex('auth_assignment_user_id_idx', $authManager->assignmentTable, 'user_id');
-
-
         $this->dropIndex('{{%idx-auth_item-type}}', $authManager->itemTable);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
     }

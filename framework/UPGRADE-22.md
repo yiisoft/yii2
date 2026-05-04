@@ -377,6 +377,72 @@ compatibility:
 The default implementations now delegate to the configured `$clientScript` handler. Subclasses that call
 `parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
 
+### RBAC `DbManager` MSSQL cascade
+
+`yii\rbac\DbManager` no longer installs the `INSTEAD OF` triggers for MSSQL. The schema now declares native FK
+`ON DELETE` / `ON UPDATE CASCADE` for every FK except `auth_item_child.child`, which stays at `NO ACTION` because MSSQL
+rejects the second cascading FK on the same target as a multi-path violation. The `child` direction is handled in PHP
+through the new `protected function requiresSoftCascade(): bool` hook.
+
+The `m200409_110543_rbac_update_mssql_trigger` migration file has been removed.
+
+#### What you must do
+
+**MSSQL applications upgrading from `2.0.x`:** run the following statements once, on a maintenance window, before
+the new framework code starts handling requests. The new cascade code relies on the FK actions and will fail on
+`removeItem`, `removeAllItems`, `updateItem` (rename), and `updateRule` (rename) while the old `NO ACTION` FKs are
+still in place.
+
+```sql
+-- 1. Drop the legacy INSTEAD OF triggers.
+IF (OBJECT_ID(N'dbo.trigger_update_auth_item_child') IS NOT NULL)
+    DROP TRIGGER dbo.trigger_update_auth_item_child;
+IF (OBJECT_ID(N'dbo.trigger_delete_auth_item_child') IS NOT NULL)
+    DROP TRIGGER dbo.trigger_delete_auth_item_child;
+IF (OBJECT_ID(N'dbo.trigger_auth_item_child') IS NOT NULL)
+    DROP TRIGGER dbo.trigger_auth_item_child;
+
+-- 2. Replace the FK actions to match the new schema. Substitute the actual constraint names if they differ.
+ALTER TABLE auth_item_child DROP CONSTRAINT FK__auth_item__parent;
+ALTER TABLE auth_item_child
+    ADD CONSTRAINT FK__auth_item__parent FOREIGN KEY (parent) REFERENCES auth_item(name)
+        ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE auth_assignment DROP CONSTRAINT FK__auth_assignment__item_name;
+ALTER TABLE auth_assignment
+    ADD CONSTRAINT FK__auth_assignment__item_name FOREIGN KEY (item_name) REFERENCES auth_item(name)
+        ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE auth_item DROP CONSTRAINT FK__auth_item__rule_name;
+ALTER TABLE auth_item
+    ADD CONSTRAINT FK__auth_item__rule_name FOREIGN KEY (rule_name) REFERENCES auth_rule(name)
+        ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- 3. Re-trust the remaining NO ACTION FK used by the PHP soft-cascade path. The legacy `INSTEAD OF UPDATE` trigger
+-- toggled this constraint with `NOCHECK CONSTRAINT` / `CHECK CONSTRAINT`, leaving it in `is_not_trusted = 1` and
+-- preventing the query optimizer from using it for join elimination. Substitute the actual constraint name if it
+-- differs.
+ALTER TABLE auth_item_child WITH CHECK CHECK CONSTRAINT FK__auth_item__child;
+```
+
+The `auth_item_child.child` FK is intentionally left without actions; do not add `ON DELETE CASCADE` or
+`ON UPDATE CASCADE` to it (MSSQL will reject the constraint with error 1785).
+
+The orphan row in your `migration` table for `m200409_110543_rbac_update_mssql_trigger` is harmless for `migrate/up`, 
+but `migrate/down --all` will fail trying to load the missing class. If you need full rollback, remove the row:
+
+```sql
+DELETE FROM migration WHERE version = 'm200409_110543_rbac_update_mssql_trigger';
+```
+
+**Subclasses of `yii\rbac\DbManager`:** the class now declares `strict_types=1`. Override signatures must match the
+parameter and return types declared by the parent. The new `protected function requiresSoftCascade(): bool` hook
+returns `true` for `mssql` / `sqlsrv` / `dblib`; override only when adding a custom MSSQL-like driver. Per-strategy
+extension points (`removeItemSoftCascade()`, `removeItemManualCascade()`, `updateItemSoftCascade()`,
+`updateItemManualCascade()`, `removeAllItemsSoftCascade()`, `removeAllItemsManualCascade()`,
+`updateRuleManualCascade()`, `removeRuleManualCascade()`, `removeAllRulesManualCascade()`) are available for finer
+overrides.
+
 ### Standalone action dispatch incidental BC
 
 Alongside the new standalone-action dispatch (additive feature), two incidental changes can break code that relied on
