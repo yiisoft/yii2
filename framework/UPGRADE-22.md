@@ -417,6 +417,12 @@ ALTER TABLE auth_item DROP CONSTRAINT FK__auth_item__rule_name;
 ALTER TABLE auth_item
     ADD CONSTRAINT FK__auth_item__rule_name FOREIGN KEY (rule_name) REFERENCES auth_rule(name)
         ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- 3. Re-trust the remaining NO ACTION FK used by the PHP soft-cascade path. The legacy `INSTEAD OF UPDATE` trigger
+-- toggled this constraint with `NOCHECK CONSTRAINT` / `CHECK CONSTRAINT`, leaving it in `is_not_trusted = 1` and
+-- preventing the query optimizer from using it for join elimination. Substitute the actual constraint name if it
+-- differs.
+ALTER TABLE auth_item_child WITH CHECK CHECK CONSTRAINT FK__auth_item__child;
 ```
 
 The `auth_item_child.child` FK is intentionally left without actions; do not add `ON DELETE CASCADE` or
