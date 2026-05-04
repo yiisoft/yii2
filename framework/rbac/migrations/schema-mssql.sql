@@ -40,7 +40,7 @@ create table [auth_item]
    [created_at]           integer,
    [updated_at]           integer,
    primary key ([name]),
-   foreign key ([rule_name]) references [auth_rule] ([name])
+   foreign key ([rule_name]) references [auth_rule] ([name]) on delete set null on update cascade
 );
 
 create index [idx-auth_item-type] on [auth_item] ([type]);
@@ -50,7 +50,7 @@ create table [auth_item_child]
    [parent]               varchar(64) not null,
    [child]                varchar(64) not null,
    primary key ([parent],[child]),
-   foreign key ([parent]) references [auth_item] ([name]),
+   foreign key ([parent]) references [auth_item] ([name]) on delete cascade on update cascade,
    foreign key ([child]) references [auth_item] ([name])
 );
 
