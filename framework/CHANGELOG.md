@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Bug: Remove `yii\db\mssql\QueryBuilder::normalizeTableRowData()` and the `update()` override (terabytesoftw)
 - Chg: Remove legacy `apc_delete_file()` call in `yii\rbac\PhpManager::invalidateScriptCache()` (terabytesoftw)
 - Chg: Replace MSSQL `INSTEAD OF` triggers in `yii\rbac\DbManager` with native FK `ON DELETE` / `ON UPDATE CASCADE` (the `auth_item_child.child` FK stays `NO ACTION` due to MSSQL's multi-path constraint and is handled in PHP via the new `requiresSoftCascade()` hook) (terabytesoftw)
+- Bug: Fix Oracle BLOB string inserts by wrapping BLOB string values in `TO_BLOB(UTL_RAW.CAST_TO_RAW(...))` expressions (terabytesoftw)
 
 2.0.55 under development
 ------------------------

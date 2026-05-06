@@ -12,7 +12,6 @@ use Yii;
 use yii\base\InvalidCallException;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
-use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
@@ -20,6 +19,7 @@ use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
+use yii\db\IntegrityException;
 use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
@@ -41,11 +41,16 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     use ConstraintFinderTrait;
 
     /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = ColumnSchema::class;
+
+    /**
      * @var array map of DB errors and corresponding exceptions
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
+        'ORA-00001: unique constraint' => IntegrityException::class,
     ];
 
     /**
