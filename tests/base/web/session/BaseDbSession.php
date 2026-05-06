@@ -133,7 +133,8 @@ abstract class BaseDbSession extends TestCase
             ->update(
                 'session',
                 ['expire' => time() - 100],
-                '[[id]] = :id', ['id' => 'expire'],
+                '[[id]] = :id',
+                ['id' => 'expire'],
             )
             ->execute();
         $deleted = $session->gcSession(1);
