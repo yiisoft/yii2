@@ -24,7 +24,7 @@ use yii\db\Connection;
 #[Group('caching')]
 class OciCacheTest extends DbCacheTest
 {
-    private ?Connection $_connection = null;
+    private Connection|null $_connection = null;
 
     protected function setUp(): void
     {
