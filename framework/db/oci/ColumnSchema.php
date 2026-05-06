@@ -35,19 +35,35 @@ class ColumnSchema extends \yii\db\ColumnSchema
     {
         if ($this->type === Schema::TYPE_BINARY && $this->dbType === 'BLOB') {
             if ($value instanceof PdoValue) {
+                if ($value->getType() === \PDO::PARAM_LOB && is_string($value->getValue())) {
+                    return $this->createBlobExpression($value->getValue());
+                }
+
                 return parent::dbTypecast($value);
             }
 
             if (is_string($value)) {
-                $placeholder = 'qp' . str_replace('.', '', uniqid('', true));
-
-                return new Expression(
-                    'TO_BLOB(UTL_RAW.CAST_TO_RAW(:' . $placeholder . '))',
-                    [':' . $placeholder => $value]
-                );
+                return $this->createBlobExpression($value);
             }
         }
 
         return parent::dbTypecast($value);
+    }
+
+    /**
+     * Creates an Oracle BLOB expression for a PHP `string` value.
+     *
+     * @param string $value Value to bind.
+     *
+     * @return Expression Oracle BLOB expression.
+     */
+    private function createBlobExpression(string $value): Expression
+    {
+        $placeholder = 'qp' . str_replace('.', '', uniqid('', true));
+
+        return new Expression(
+            "TO_BLOB(UTL_RAW.CAST_TO_RAW(:{$placeholder}))",
+            [":{$placeholder}" => $value],
+        );
     }
 }

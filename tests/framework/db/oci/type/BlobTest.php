@@ -20,15 +20,7 @@ use yii\db\oci\ColumnSchema;
 use yiiunit\framework\db\DatabaseTestCase;
 
 /**
- * Tests Oracle BLOB column type-casting.
- *
- * Test coverage.
- *
- * - String BLOB values are wrapped in Oracle-compatible SQL expressions.
- * - Explicit `PdoValue` LOB bindings are preserved.
- * - String BLOB values round-trip through insert and update commands.
- *
- * @see ColumnSchema
+ * Unit test for {@see \yii\db\oci\ColumnSchema} with Oracle BLOB type.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
@@ -46,46 +38,36 @@ final class BlobTest extends DatabaseTestCase
 
         $result = $this->makeBlobColumn()->dbTypecast($value);
 
-        self::assertInstanceOf(
-            Expression::class,
-            $result,
-            'BLOB strings must be wrapped in an Oracle BLOB expression.',
-        );
-
-        $placeholder = array_key_first($result->params);
-
-        self::assertIsString(
-            $placeholder,
-            'BLOB expression must define a named placeholder.',
-        );
-        self::assertStringStartsWith(
-            ':qp',
-            $placeholder,
-            'BLOB expression placeholder must use the query parameter prefix.',
-        );
-        self::assertSame(
-            'TO_BLOB(UTL_RAW.CAST_TO_RAW(' . $placeholder . '))',
-            (string) $result,
-            'BLOB expression SQL must wrap the generated placeholder.',
-        );
-        self::assertSame(
-            [$placeholder => $value],
-            $result->params,
-            'BLOB expression params must contain the original string value.',
-        );
+        $this->assertBlobExpression($result, $value);
     }
 
-    public function testDbTypecastPreservesPdoValue(): void
+    public function testDbTypecastReturnsExpressionForPdoValueStringLob(): void
     {
-        $pdoValue = new PdoValue('binary content', PDO::PARAM_LOB);
+        $value = 'binary content';
+
+        $result = $this->makeBlobColumn()->dbTypecast(new PdoValue($value, PDO::PARAM_LOB));
+
+        $this->assertBlobExpression($result, $value);
+    }
+
+    public function testDbTypecastPreservesPdoValueResource(): void
+    {
+        $resource = fopen('php://memory', 'rb+');
+
+        fwrite($resource, 'binary content');
+        rewind($resource);
+
+        $pdoValue = new PdoValue($resource, PDO::PARAM_LOB);
 
         $result = $this->makeBlobColumn()->dbTypecast($pdoValue);
 
         self::assertSame(
             $pdoValue,
             $result,
-            'Explicit PdoValue instances must be delegated without unwrapping.',
+            'Explicit PdoValue resource instances must be delegated without unwrapping.',
         );
+
+        fclose($resource);
     }
 
     public function testBlob(): void
@@ -151,5 +133,36 @@ final class BlobTest extends DatabaseTestCase
         $column->allowNull = true;
 
         return $column;
+    }
+
+    private function assertBlobExpression(mixed $result, string $value): void
+    {
+        self::assertInstanceOf(
+            Expression::class,
+            $result,
+            'BLOB strings must be wrapped in an Oracle BLOB expression.',
+        );
+
+        $placeholder = array_key_first($result->params);
+
+        self::assertIsString(
+            $placeholder,
+            'BLOB expression must define a named placeholder.',
+        );
+        self::assertStringStartsWith(
+            ':qp',
+            $placeholder,
+            'BLOB expression placeholder must use the query parameter prefix.',
+        );
+        self::assertSame(
+            'TO_BLOB(UTL_RAW.CAST_TO_RAW(' . $placeholder . '))',
+            (string) $result,
+            'BLOB expression SQL must wrap the generated placeholder.',
+        );
+        self::assertSame(
+            [$placeholder => $value],
+            $result->params,
+            'BLOB expression params must contain the original string value.',
+        );
     }
 }
