@@ -728,7 +728,7 @@ class Connection extends Component
             }
         }
 
-        if ($this->getDriverName() === 'sqlite') {
+        if (in_array($this->getDriverName(), ['sqlite', 'oci'], true)) {
             $this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
         }
 
