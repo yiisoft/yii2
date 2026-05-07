@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yii\db\oci;
 
+use Generator;
 use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\db\Exception;
@@ -329,10 +330,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * Note that the values in each row must match the corresponding column names.
      *
-     * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column names
-     * @param array|\Generator $rows the rows to be batch inserted into the table
-     * @return string the batch INSERT SQL statement
+     * @param string $table The table that new rows will be inserted into.
+     * @param array $columns The column names.
+     * @param array|Generator $rows The rows to be batch inserted into the table.
+     * @param array $params The parameters to be bound to the batch INSERT SQL statement. This parameter is passed by
+     * reference and will be modified by this method.
+     *
+     * @return string The batch INSERT SQL statement.
      */
     public function batchInsert($table, $columns, $rows, &$params = [])
     {
@@ -341,6 +345,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         $schema = $this->db->getSchema();
+
         if (($tableSchema = $schema->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
         } else {
@@ -348,12 +353,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         $values = [];
+
         foreach ($rows as $row) {
+            if ($row === []) {
+                continue;
+            }
+
             $vs = [];
             foreach ($row as $i => $value) {
                 if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
                 }
+
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
                 } elseif (is_float($value)) {
@@ -366,10 +377,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 } elseif ($value instanceof ExpressionInterface) {
                     $value = $this->buildExpression($value, $params);
                 }
+
                 $vs[] = $value;
             }
-            $values[] = '(' . implode(', ', $vs) . ')';
+
+            $values[] = implode(', ', $vs);
         }
+
         if (empty($values)) {
             return '';
         }
@@ -378,10 +392,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        $columnList = $columns === [] ? '' : ' (' . implode(', ', $columns) . ')';
-        $tableAndColumns = ' INTO ' . $schema->quoteTableName($table) . $columnList . ' VALUES ';
+        $tableName = $schema->quoteTableName($table);
 
-        return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
+        $columnList = $columns === [] ? '' : ' (' . implode(', ', $columns) . ')';
+        $sourceRows = implode(' FROM SYS.DUAL UNION ALL SELECT ', $values);
+
+        return <<<SQL
+            INSERT INTO {$tableName}{$columnList} SELECT {$sourceRows} FROM SYS.DUAL
+            SQL;
     }
 
     /**
