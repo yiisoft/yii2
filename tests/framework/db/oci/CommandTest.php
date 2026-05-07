@@ -78,8 +78,6 @@ class CommandTest extends BaseCommand
             'Trigger must populate the PK for every batched row.',
         );
 
-        $command = $db->createCommand();
-
         $command->batchInsert(
             '{{legacy_identity_via_trigger}}',
             ['name'],
@@ -189,7 +187,10 @@ class CommandTest extends BaseCommand
             'Only the non-empty row must persist.',
         );
 
-        $command->delete('legacy_identity_via_trigger', ['name' => 'skip-start-row'])->execute();
+        $command->delete(
+            'legacy_identity_via_trigger',
+            ['name' => 'skip-start-row'],
+        )->execute();
     }
 
     public function testBatchInsertExecutesSkippingInterleavedEmptyRowsForIdentityTable(): void
@@ -229,9 +230,15 @@ class CommandTest extends BaseCommand
             'IDENTITY rows must receive ids 4 and 5 (fixture inserts ids 1-3; counter advances from there).',
         );
 
-        $db->createCommand()
-            ->delete('customer', ['email' => ['skip-edge-1@example.com', 'skip-edge-2@example.com']])
-            ->execute();
+        $command->delete(
+            'customer',
+            [
+                'email' => [
+                    'skip-edge-1@example.com',
+                    'skip-edge-2@example.com',
+                ],
+            ],
+        )->execute();
     }
 
     /**
@@ -266,11 +273,21 @@ class CommandTest extends BaseCommand
             SQL
         )->queryColumn();
 
-        self::assertCount(2, $rows, 'Only the non-empty rows must persist.');
+        self::assertCount(
+            2,
+            $rows,
+            'Only the non-empty rows must persist.',
+        );
 
-        $db->createCommand()
-            ->delete('legacy_identity_via_trigger', ['name' => ['skip-edge-a', 'skip-edge-b']])
-            ->execute();
+        $command->delete(
+            'legacy_identity_via_trigger',
+            [
+                'name' => [
+                    'skip-edge-a',
+                    'skip-edge-b',
+                ],
+            ],
+        )->execute();
     }
 
     public function testBatchInsertExecutesWithEmptyColumnList(): void
@@ -308,7 +325,12 @@ class CommandTest extends BaseCommand
 
         $command->delete(
             'legacy_identity_via_trigger',
-            ['name' => ['empty-cols-row-1', 'empty-cols-row-2']],
+            [
+                'name' => [
+                    'empty-cols-row-1',
+                    'empty-cols-row-2',
+                ],
+            ],
         )->execute();
     }
 
@@ -366,8 +388,11 @@ class CommandTest extends BaseCommand
             'Legacy fallback must surface the trigger-referenced sequence name.',
         );
 
-        $db->createCommand('INSERT INTO {{legacy_identity_via_trigger}} ([[name]]) VALUES (\'legacy-row\')')
-            ->execute();
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO {{legacy_identity_via_trigger}} ([[name]]) VALUES ('legacy-row')
+            SQL
+        )->execute();
 
         self::assertNotEmpty(
             $db->getSchema()->getLastInsertID($sequenceName),
