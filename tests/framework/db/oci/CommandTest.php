@@ -121,15 +121,10 @@ class CommandTest extends BaseCommand
             SQL
         )->queryColumn();
 
-        self::assertCount(
-            3,
-            $ids,
-            'IDENTITY-backed batch insert must persist all rows.',
-        );
         self::assertSame(
-            count($ids),
-            count(array_unique($ids)),
-            'Each IDENTITY row must receive a distinct PK.',
+            ['4', '5', '6'],
+            $ids,
+            'IDENTITY rows must receive ids 4, 5, 6 (fixture inserts ids 1-3; counter advances from there).',
         );
 
         $command->delete(
@@ -142,6 +137,140 @@ class CommandTest extends BaseCommand
                 ],
             ],
         )->execute();
+    }
+
+    public function testBatchInsertExecutesAsNoOpForSingleEmptyRow(): void
+    {
+        $command = $this->getConnection()->createCommand();
+
+        $command->batchInsert(
+            '{{legacy_identity_via_trigger}}',
+            ['name'],
+            [[]],
+        );
+
+        self::assertSame(
+            0,
+            $command->execute(),
+            'A single empty row must execute as a no-op (no SQL emitted).',
+        );
+    }
+
+    public function testBatchInsertExecutesSkippingEmptyRowAtBatchStart(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{legacy_identity_via_trigger}}',
+            ['name'],
+            [
+                [],
+                ['skip-start-row'],
+            ],
+        );
+
+        self::assertSame(
+            1,
+            $command->execute(),
+            'Empty row at batch start must be skipped; the trailing non-empty row must be persisted.',
+        );
+
+        $rows = $db->createCommand(
+            <<<SQL
+            SELECT "name" FROM "legacy_identity_via_trigger" WHERE "name" = 'skip-start-row'
+            SQL
+        )->queryColumn();
+
+        self::assertCount(
+            1,
+            $rows,
+            'Only the non-empty row must persist.',
+        );
+
+        $command->delete('legacy_identity_via_trigger', ['name' => 'skip-start-row'])->execute();
+    }
+
+    public function testBatchInsertExecutesSkippingInterleavedEmptyRowsForIdentityTable(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            [
+                ['skip-edge-1@example.com', 'skip-edge-1', 'addr-1'],
+                [],
+                [],
+                ['skip-edge-2@example.com', 'skip-edge-2', 'addr-2'],
+            ]
+        );
+
+        self::assertSame(
+            2,
+            $command->execute(),
+            'Interleaved empty rows must be skipped on the IDENTITY path.',
+        );
+
+        $ids = $db->createCommand(
+            <<<SQL
+            SELECT "id" FROM "customer"
+            WHERE "email" IN ('skip-edge-1@example.com', 'skip-edge-2@example.com')
+            ORDER BY "id"
+            SQL
+        )->queryColumn();
+
+        self::assertSame(
+            ['4', '5'],
+            $ids,
+            'IDENTITY rows must receive ids 4 and 5 (fixture inserts ids 1-3; counter advances from there).',
+        );
+
+        $db->createCommand()
+            ->delete('customer', ['email' => ['skip-edge-1@example.com', 'skip-edge-2@example.com']])
+            ->execute();
+    }
+
+    /**
+     * Same as the IDENTITY case but exercising the legacy trigger-backed path.
+     */
+    public function testBatchInsertExecutesSkippingInterleavedEmptyRowsForLegacyTriggerBackedTable(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{legacy_identity_via_trigger}}',
+            ['name'],
+            [
+                ['skip-edge-a'],
+                [],
+                [],
+                ['skip-edge-b'],
+            ]
+        );
+
+        self::assertSame(
+            2,
+            $command->execute(),
+            'Interleaved empty rows must be skipped on the legacy trigger-backed path.',
+        );
+
+        $rows = $db->createCommand(
+            <<<SQL
+            SELECT "name" FROM "legacy_identity_via_trigger" WHERE "name" IN ('skip-edge-a', 'skip-edge-b')
+            SQL
+        )->queryColumn();
+
+        self::assertCount(2, $rows, 'Only the non-empty rows must persist.');
+
+        $db->createCommand()
+            ->delete('legacy_identity_via_trigger', ['name' => ['skip-edge-a', 'skip-edge-b']])
+            ->execute();
     }
 
     public function testBatchInsertExecutesWithEmptyColumnList(): void
@@ -483,7 +612,7 @@ class CommandTest extends BaseCommand
                 'IN (1,2,3) ORDER BY [[int_col]]'
             )->queryAll();
 
-            $this->assertEquals(3, \count($data));
+            $this->assertEquals(3, count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
             $this->assertEquals(3, $data[2]['int_col']);

@@ -479,22 +479,60 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public function testBatchInsertSkipsEmptyRows(): void
+    public function testBatchInsertReturnsEmptyStringForSingleEmptyRow(): void
     {
         $qb = $this->getQueryBuilder();
 
         self::assertSame(
             '',
-            $qb->batchInsert('customer', [], [[]]),
+            $qb->batchInsert(
+                'customer',
+                [],
+                [[]],
+            ),
             "A single empty row must yield an empty SQL string, not an invalid 'SELECT  FROM SYS.DUAL'.",
         );
+    }
+
+    public function testBatchInsertSkipsEmptyRowAtBatchStart(): void
+    {
+        $qb = $this->getQueryBuilder();
 
         self::assertSame(
             <<<SQL
             INSERT INTO "customer" SELECT 'x@example.com' FROM SYS.DUAL
             SQL,
-            $qb->batchInsert('customer', [], [[], ['x@example.com']]),
+            $qb->batchInsert(
+                'customer',
+                [],
+                [
+                    [],
+                    ['x@example.com'],
+                ],
+            ),
             'Empty rows must be silently skipped; non-empty rows remain.',
+        );
+    }
+
+    public function testBatchInsertSkipsInterleavedEmptyRows(): void
+    {
+        $qb = $this->getQueryBuilder();
+
+        self::assertSame(
+            <<<SQL
+            INSERT INTO "customer" ("email") SELECT 'a@example.com' FROM SYS.DUAL UNION ALL SELECT 'b@example.com' FROM SYS.DUAL
+            SQL,
+            $qb->batchInsert(
+                'customer',
+                ['email'],
+                [
+                    ['a@example.com'],
+                    [],
+                    [],
+                    ['b@example.com'],
+                ],
+            ),
+            "Empty rows interleaved with non-empty rows must be skipped without breaking the 'UNION ALL' chain.",
         );
     }
 
