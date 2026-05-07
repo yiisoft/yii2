@@ -40,7 +40,9 @@ class CommandTest extends BaseCommand
 
     public function testBatchInsert(): void
     {
-        $command = $this->getConnection()->createCommand();
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
 
         $command->batchInsert(
             '{{legacy_identity_via_trigger}}',
@@ -57,7 +59,24 @@ class CommandTest extends BaseCommand
             'Two rows must be inserted via the trigger-backed batch path.',
         );
 
-        $command = $this->getConnection()->createCommand();
+        $ids = $db->createCommand(
+            <<<SQL
+            SELECT "id" FROM "legacy_identity_via_trigger" WHERE "name" IN ('t1', 't2')
+            SQL
+        )->queryColumn();
+
+        self::assertCount(
+            2,
+            $ids,
+            'Trigger-backed batch insert must produce two rows.',
+        );
+        self::assertNotContains(
+            null,
+            $ids,
+            'Trigger must populate the PK for every batched row.',
+        );
+
+        $command = $db->createCommand();
 
         $command->batchInsert(
             '{{legacy_identity_via_trigger}}',
