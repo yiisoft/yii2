@@ -68,6 +68,7 @@ Yii Framework 2 Change Log
 - Bug: Fix Oracle `batchInsert()` emitting malformed `()` for empty columns (`ORA-03050`) (terabytesoftw)
 - Bug: Refactor Oracle `batchInsert()` to emit `INSERT INTO ... SELECT FROM SYS.DUAL UNION ALL` (terabytesoftw)
 - Chg: Drop SQLite `< 3.7.11` `batchInsert()` fallback; the base `QueryBuilder` is used unconditionally (terabytesoftw)
+- Chg: Refactor MSSQL `QueryBuilder::insert()`: drop dead SQL Server `< 2005` branch; throw on unknown table (terabytesoftw)
 
 2.0.55 under development
 ------------------------

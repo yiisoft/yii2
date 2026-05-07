@@ -14,7 +14,9 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\Query;
-use yii\db\TableSchema;
+
+use function count;
+use function in_array;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -50,7 +52,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
-
 
     /**
      * {@inheritdoc}
@@ -412,52 +413,59 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
-     * Added OUTPUT construction for getting inserted data (for SQL Server 2005 or later)
-     * OUTPUT clause - The OUTPUT clause is new to SQL Server 2005 and has the ability to access
-     * the INSERTED and DELETED tables as is the case with a trigger.
+     *
+     * Wraps the `INSERT` with an `OUTPUT INSERTED.* INTO @temporary_inserted` block so that the inserted row
+     * (including computed columns and `IDENTITY` values) can be retrieved by the caller.
      */
     public function insert($table, $columns, &$params)
     {
-        $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
+        $schema = $this->db->getTableSchema($table);
 
-        list($names, $placeholders, $values, $params) = $this->prepareInsertValues($table, $columns, $params);
+        if ($schema === null) {
+            throw new InvalidArgumentException("Table not found: {$table}");
+        }
+
+        [$names, $placeholders, $values, $params] = $this->prepareInsertValues($table, $columns, $params);
+
         $cols = [];
         $outputColumns = [];
-        if ($version2005orLater) {
-            /** @var TableSchema $schema */
-            $schema = $this->db->getTableSchema($table);
-            foreach ($schema->columns as $column) {
-                if ($column->isComputed) {
-                    continue;
-                }
 
-                $dbType = $column->dbType;
-                if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'])) {
-                    $dbType .= '(MAX)';
-                } elseif (in_array($dbType, ['char',  'nchar'])) {
-                    $dbType .= "($column->size)";
-                }
-
-                if ($column->dbType === Schema::TYPE_TIMESTAMP) {
-                    $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
-                }
-
-                $quoteColumnName = $this->db->quoteColumnName($column->name);
-                $cols[] = $quoteColumnName . ' ' . $dbType . ' ' . ($column->allowNull ? 'NULL' : '');
-                $outputColumns[] = 'INSERTED.' . $quoteColumnName;
+        foreach ($schema->columns as $column) {
+            if ($column->isComputed) {
+                continue;
             }
+
+            $dbType = $column->dbType;
+
+            if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'], true)) {
+                $dbType .= '(MAX)';
+            } elseif (in_array($dbType, ['char',  'nchar'], true)) {
+                $dbType .= "($column->size)";
+            }
+
+            if ($column->dbType === Schema::TYPE_TIMESTAMP) {
+                $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
+            }
+
+            $quoteColumnName = $this->db->quoteColumnName($column->name);
+
+            $cols[] = "{$quoteColumnName} {$dbType} " . ($column->allowNull ? 'NULL' : '');
+            $outputColumns[] = "INSERTED.{$quoteColumnName}";
         }
 
         $countColumns = count($outputColumns);
 
         $sql = 'INSERT INTO ' . $this->db->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (($version2005orLater && $countColumns) ? ' OUTPUT ' . implode(',', $outputColumns) . ' INTO @temporary_inserted' : '')
+            . ($countColumns ? ' OUTPUT ' . implode(',', $outputColumns) . ' INTO @temporary_inserted' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
 
-        if ($version2005orLater && $countColumns) {
-            $sql = 'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE (' . implode(', ', $cols) . ');' . $sql .
-                ';SELECT * FROM @temporary_inserted';
+        if ($countColumns) {
+            $tempTableCols = implode(', ', $cols);
+
+            $sql = <<<SQL
+            SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ({$tempTableCols});{$sql};SELECT * FROM @temporary_inserted
+            SQL;
         }
 
         return $sql;
