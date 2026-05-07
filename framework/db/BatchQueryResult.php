@@ -29,7 +29,8 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @implements \Iterator<int, mixed>
+ * @template TValue of mixed = mixed
+ * @implements \Iterator<int, TValue>
  */
 class BatchQueryResult extends Component implements \Iterator
 {
@@ -210,7 +211,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return mixed the current dataset.
+     * @return TValue the current dataset.
      */
     #[\ReturnTypeWillChange]
     public function current()
