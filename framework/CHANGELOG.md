@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
 - Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
 - Bug #20159: Fix chroot resolve null route (gozoro)
+- Bug #20856: Fix passing generics to `BatchQueryResult` (mspirkov)
 
 
 2.0.54 January 09, 2026
