@@ -91,6 +91,45 @@ class CommandTest extends BaseCommand
         );
     }
 
+    public function testBatchInsertExecutesWithEmptyColumnList(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{legacy_identity_via_trigger}}',
+            [],
+            [
+                [null, 'empty-cols-row-1'],
+                [null, 'empty-cols-row-2'],
+            ]
+        );
+
+        self::assertSame(
+            2,
+            $command->execute(),
+            'batchInsert with empty columns must execute without `ORA-03050`.',
+        );
+
+        $rows = $db->createCommand(
+            <<<SQL
+            SELECT "name" FROM "legacy_identity_via_trigger" WHERE "name" IN ('empty-cols-row-1', 'empty-cols-row-2')
+            SQL
+        )->queryColumn();
+
+        self::assertCount(
+            2,
+            $rows,
+            'Both empty-columns rows must be persisted.',
+        );
+
+        $command->delete(
+            'legacy_identity_via_trigger',
+            ['name' => ['empty-cols-row-1', 'empty-cols-row-2']],
+        )->execute();
+    }
+
     public function testLastInsertId(): void
     {
         $db = $this->getConnection();

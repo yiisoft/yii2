@@ -457,6 +457,24 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $newData;
     }
 
+    public function testBatchInsertOmitsEmptyColumnListParensRegressionForORA03050(): void
+    {
+        $qb = $this->getQueryBuilder();
+
+        $sql = $qb->batchInsert('customer', [], [['no columns passed']]);
+
+        self::assertStringNotContainsString(
+            '" () ',
+            $sql,
+            "Empty columns must not produce empty '()' (Oracle rejects it as 'ORA-03050').",
+        );
+        self::assertStringContainsString(
+            '"customer" VALUES',
+            $sql,
+            'Empty columns must produce \'INTO "<table>" VALUES\' without column-list parens.',
+        );
+    }
+
     public static function batchInsertProvider(): array
     {
         $data = parent::batchInsertProvider();
@@ -467,7 +485,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $data['escape-danger-chars'][3] = 'INSERT ALL  INTO "customer" ("address") ' .
             "VALUES ('SQL-danger chars are escaped: ''); --') SELECT 1 FROM SYS.DUAL";
 
-        $data[2][3] = 'INSERT ALL  INTO "customer" () ' .
+        $data[2][3] = 'INSERT ALL  INTO "customer" ' .
             "VALUES ('no columns passed') SELECT 1 FROM SYS.DUAL";
 
         $data['bool-false, bool2-null'][3] = 'INSERT ALL  INTO "type" ("bool_col", "bool_col2") ' .

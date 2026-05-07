@@ -378,8 +378,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        $tableAndColumns = ' INTO ' . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ';
+        $columnList = $columns === [] ? '' : ' (' . implode(', ', $columns) . ')';
+        $tableAndColumns = ' INTO ' . $schema->quoteTableName($table) . $columnList . ' VALUES ';
 
         return 'INSERT ALL ' . $tableAndColumns . implode($tableAndColumns, $values) . ' SELECT 1 FROM SYS.DUAL';
     }
