@@ -261,7 +261,12 @@ deterministic pagination.
 > Yii use `ON CONFLICT` upsert (`9.5+`) and `GENERATED AS IDENTITY` columns (`12+`) unconditionally, without runtime
 > version branching.
 
-#### SQLite 
+#### SQLite
+
+##### `batchInsert()` requires SQLite `3.7.11+`
+
+`yii\db\sqlite\QueryBuilder::batchInsert()` override removed; the base `QueryBuilder::batchInsert()` is used
+unconditionally. SQLite `3.7.11+` is required.
 
 ##### Offset-only pagination now uses `LIMIT -1 OFFSET`
 
