@@ -76,7 +76,14 @@ class CommandTest extends BaseCommand
     {
         $db = $this->getConnection();
 
-        $sequenceName = $db->getSchema()->getTableSchema('profile')->sequenceName;
+        $table = $db->getSchema()->getTableSchema('profile');
+
+        self::assertNotNull(
+            $table,
+            "IDENTITY-backed 'profile' fixture table must be loadable.",
+        );
+
+        $sequenceName = $table->sequenceName;
 
         self::assertNotNull(
             $sequenceName,
@@ -104,7 +111,14 @@ class CommandTest extends BaseCommand
     {
         $db = $this->getConnection();
 
-        $sequenceName = $db->getSchema()->getTableSchema('legacy_identity_via_trigger')->sequenceName;
+        $table = $db->getSchema()->getTableSchema('legacy_identity_via_trigger');
+
+        self::assertNotNull(
+            $table,
+            "Legacy 'legacy_identity_via_trigger' fixture table must be loadable.",
+        );
+
+        $sequenceName = $table->sequenceName;
 
         self::assertSame(
             'legacy_identity_via_trigger_SEQ',
@@ -397,6 +411,11 @@ class CommandTest extends BaseCommand
             ],
         );
 
+        self::assertIsArray(
+            $inserted,
+            'Insert must return the row data array.',
+        );
+
         $customerId = $inserted['id'];
 
         $customer = $db->createCommand(
@@ -489,6 +508,11 @@ class CommandTest extends BaseCommand
                 'created_at' => $time,
                 'total' => 42,
             ],
+        );
+
+        self::assertIsArray(
+            $inserted,
+            'Insert must return the row data array.',
         );
 
         $orderId = $inserted['id'];
