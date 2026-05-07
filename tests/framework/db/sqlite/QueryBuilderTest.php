@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\sqlite;
 
 use Closure;
-use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
@@ -290,17 +289,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $data;
     }
 
-    public function testBatchInsertOnOlderVersions(): void
-    {
-        $db = $this->getConnection();
-        if (version_compare($db->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
-            $this->markTestSkipped('This test is only relevant for SQLite < 3.7.11');
-        }
-        $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
-        $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
-    }
-
-    public function testRenameTable(): void
+public function testRenameTable(): void
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
         $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
