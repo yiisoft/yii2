@@ -289,7 +289,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $data;
     }
 
-public function testRenameTable(): void
+    public function testRenameTable(): void
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
         $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
