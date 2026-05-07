@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -44,7 +46,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      * {@inheritdoc}
      */
     public $columnSchemaClass = ColumnSchema::class;
-
     /**
      * @var array map of DB errors and corresponding exceptions
      * If left part is found in DB error message exception class from the right part is used.
@@ -57,7 +58,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      * {@inheritdoc}
      */
     protected $tableQuoteCharacter = '"';
-
 
     /**
      * {@inheritdoc}
@@ -306,45 +306,51 @@ SQL;
 
     /**
      * Collects the table column metadata.
-     * @param TableSchema $table the table schema
-     * @return bool whether the table exists
+     *
+     * @param TableSchema $table The table schema.
+     *
+     * @return bool Whether the table exists.
      */
     protected function findColumns($table)
     {
-        $sql = <<<'SQL'
-SELECT
-    A.COLUMN_NAME,
-    A.DATA_TYPE,
-    A.DATA_PRECISION,
-    A.DATA_SCALE,
-    (
-      CASE A.CHAR_USED WHEN 'C' THEN A.CHAR_LENGTH
-        ELSE A.DATA_LENGTH
-      END
-    ) AS DATA_LENGTH,
-    A.NULLABLE,
-    A.DATA_DEFAULT,
-    COM.COMMENTS AS COLUMN_COMMENT
-FROM ALL_TAB_COLUMNS A
-    INNER JOIN ALL_OBJECTS B ON B.OWNER = A.OWNER AND LTRIM(B.OBJECT_NAME) = LTRIM(A.TABLE_NAME)
-    LEFT JOIN ALL_COL_COMMENTS COM ON (A.OWNER = COM.OWNER AND A.TABLE_NAME = COM.TABLE_NAME AND A.COLUMN_NAME = COM.COLUMN_NAME)
-WHERE
-    A.OWNER = :schemaName
-    AND B.OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
-    AND B.OBJECT_NAME = :tableName
-ORDER BY A.COLUMN_ID
-SQL;
+        $sql = <<<SQL
+        SELECT
+            A.COLUMN_NAME,
+            A.DATA_TYPE,
+            A.DATA_PRECISION,
+            A.DATA_SCALE,
+            (
+            CASE A.CHAR_USED WHEN 'C' THEN A.CHAR_LENGTH
+                ELSE A.DATA_LENGTH
+            END
+            ) AS DATA_LENGTH,
+            A.NULLABLE,
+            A.DATA_DEFAULT,
+            A.IDENTITY_COLUMN,
+            COM.COMMENTS AS COLUMN_COMMENT
+        FROM ALL_TAB_COLUMNS A
+            INNER JOIN ALL_OBJECTS B ON B.OWNER = A.OWNER AND LTRIM(B.OBJECT_NAME) = LTRIM(A.TABLE_NAME)
+            LEFT JOIN ALL_COL_COMMENTS COM ON (A.OWNER = COM.OWNER AND A.TABLE_NAME = COM.TABLE_NAME AND A.COLUMN_NAME = COM.COLUMN_NAME)
+        WHERE
+            A.OWNER = :schemaName
+            AND B.OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
+            AND B.OBJECT_NAME = :tableName
+        ORDER BY A.COLUMN_ID
+        SQL;
 
         try {
-            $columns = $this->db->createCommand($sql, [
-                ':tableName' => $table->name,
-                ':schemaName' => $table->schemaName,
-            ])->queryAll();
+            $columns = $this->db->createCommand(
+                $sql,
+                [
+                    ':tableName' => $table->name,
+                    ':schemaName' => $table->schemaName,
+                ],
+            )->queryAll();
         } catch (\Exception $e) {
             return false;
         }
 
-        if (empty($columns)) {
+        if ($columns === []) {
             return false;
         }
 
@@ -352,7 +358,9 @@ SQL;
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $column = array_change_key_case($column, CASE_UPPER);
             }
+
             $c = $this->createColumn($column);
+
             $table->columns[$c->name] = $c;
         }
 
@@ -362,23 +370,45 @@ SQL;
     /**
      * Sequence name of table.
      *
-     * @param string $tableName
-     * @internal param \yii\db\TableSchema $table->name the table schema
-     * @return string|null whether the sequence exists
+     * Resolves the sequence backing the table's primary key, supporting two storage idioms:
+     *
+     * - `IDENTITY` columns (Oracle `12.1+`): returns the system-generated `ISEQ$$_*` sequence from
+     *   `USER_TAB_IDENTITY_COLS`. Surfaced so framework machinery that reads `\yii\db\TableSchema::$sequenceName`
+     *   (notably `\yii\test\ActiveFixture::resetTable()`) continues to work for tables created with `Schema::TYPE_PK`.
+     * - Legacy trigger + sequence pairs (pre-`22.0`): falls back to the `USER_DEPENDENCIES` / `USER_TRIGGERS` join so
+     *   applications that have not yet migrated their tables continue to expose the user-named sequence.
+     *
+     * @param string $tableName Table name.
+     *
+     * @return string|null Whether the sequence exists.
      */
     protected function getTableSequenceName($tableName)
     {
-        $sequenceNameSql = <<<'SQL'
-SELECT
-    UD.REFERENCED_NAME AS SEQUENCE_NAME
-FROM USER_DEPENDENCIES UD
-    JOIN USER_TRIGGERS UT ON (UT.TRIGGER_NAME = UD.NAME)
-WHERE
-    UT.TABLE_NAME = :tableName
-    AND UD.TYPE = 'TRIGGER'
-    AND UD.REFERENCED_TYPE = 'SEQUENCE'
-SQL;
-        $sequenceName = $this->db->createCommand($sequenceNameSql, [':tableName' => $tableName])->queryScalar();
+        $identitySequenceSql = <<<SQL
+        SELECT SEQUENCE_NAME
+        FROM USER_TAB_IDENTITY_COLS
+        WHERE TABLE_NAME = :tableName
+        SQL;
+
+        $sequenceName = $this->db->createCommand($identitySequenceSql, [':tableName' => $tableName])->queryScalar();
+
+        if ($sequenceName !== false && $sequenceName !== null) {
+            return $sequenceName;
+        }
+
+        $legacySequenceSql = <<<SQL
+        SELECT
+            UD.REFERENCED_NAME AS SEQUENCE_NAME
+        FROM USER_DEPENDENCIES UD
+            JOIN USER_TRIGGERS UT ON (UT.TRIGGER_NAME = UD.NAME)
+        WHERE
+            UT.TABLE_NAME = :tableName
+            AND UD.TYPE = 'TRIGGER'
+            AND UD.REFERENCED_TYPE = 'SEQUENCE'
+        SQL;
+
+        $sequenceName = $this->db->createCommand($legacySequenceSql, [':tableName' => $tableName])->queryScalar();
+
         return $sequenceName === false ? null : $sequenceName;
     }
 
@@ -417,6 +447,7 @@ SQL;
         $c->allowNull = $column['NULLABLE'] === 'Y';
         $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
         $c->isPrimaryKey = false;
+        $c->autoIncrement = isset($column['IDENTITY_COLUMN']) && $column['IDENTITY_COLUMN'] === 'YES';
         $this->extractColumnType($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
         $this->extractColumnSize($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
 
