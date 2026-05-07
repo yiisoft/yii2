@@ -201,7 +201,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return TKey the index of the current row.
+     * @return TKey|null the index of the current row.
      */
     #[\ReturnTypeWillChange]
     public function key()
