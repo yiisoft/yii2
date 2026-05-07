@@ -187,6 +187,18 @@ Use sequential `Schema::insert()` calls or include explicit primary-key values p
 
 `TYPE_UPK` and `TYPE_UBIGPK` no longer emit the literal `UNSIGNED`, which Oracle has never supported (`ORA-00907`).
 
+##### `batchInsert()` SQL shape changed to `INSERT INTO ... SELECT FROM SYS.DUAL UNION ALL`
+
+`yii\db\oci\QueryBuilder::batchInsert()` now emits
+`INSERT INTO "<t>" (cols) SELECT v1 FROM SYS.DUAL UNION ALL SELECT v2 FROM SYS.DUAL` instead of the legacy
+`INSERT ALL  INTO "<t>" (cols) VALUES (...) INTO ... SELECT 1 FROM SYS.DUAL`. This fixes two long-standing issues:
+
+- `ORA-00001` on `IDENTITY` backed tables: the legacy shape evaluated `IDENTITY` `DEFAULT` once per source row, so
+  multiple `INTO` branches sharing one `SELECT 1 FROM DUAL` source received the same generated PK.
+- `ORA-03050` for `batchInsert($table, [], $rows)`: the legacy shape emitted a malformed `INTO "<t>" () VALUES`.
+
+Code that string-matched the previous SQL shape must be updated.
+
 ##### Pagination now uses `OFFSET ... FETCH` (`12.1+`)
 
 `yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:

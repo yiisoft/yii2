@@ -19,6 +19,8 @@ use yii\db\Query;
 use yii\db\Schema;
 use yiiunit\base\db\BaseCommand;
 
+use function count;
+
 /**
  * Unit test for {@see \yii\db\Command} with Oracle driver.
  */
@@ -89,6 +91,57 @@ class CommandTest extends BaseCommand
             $command->execute(),
             'Empty batch must execute as a no-op.',
         );
+    }
+
+    public function testBatchInsertExecutesAgainstIdentityTableWithoutCollisionRegressionForORA00001(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            [
+                ['identity-batch-1@example.com', 'identity-batch-1', 'address-1'],
+                ['identity-batch-2@example.com', 'identity-batch-2', 'address-2'],
+                ['identity-batch-3@example.com', 'identity-batch-3', 'address-3'],
+            ]
+        );
+
+        self::assertSame(
+            3,
+            $command->execute(),
+            'batchInsert into IDENTITY table must execute without `ORA-00001`.',
+        );
+
+        $ids = $db->createCommand(
+            <<<SQL
+            SELECT "id" FROM "customer" WHERE "email" LIKE 'identity-batch-%@example.com' ORDER BY "id"
+            SQL
+        )->queryColumn();
+
+        self::assertCount(
+            3,
+            $ids,
+            'IDENTITY-backed batch insert must persist all rows.',
+        );
+        self::assertSame(
+            count($ids),
+            count(array_unique($ids)),
+            'Each IDENTITY row must receive a distinct PK.',
+        );
+
+        $command->delete(
+            'customer',
+            [
+                'email' => [
+                    'identity-batch-1@example.com',
+                    'identity-batch-2@example.com',
+                    'identity-batch-3@example.com',
+                ],
+            ],
+        )->execute();
     }
 
     public function testBatchInsertExecutesWithEmptyColumnList(): void
@@ -196,12 +249,12 @@ class CommandTest extends BaseCommand
     public static function batchInsertSqlProvider(): array
     {
         $data = parent::batchInsertSqlProvider();
-        $data['issue11242']['expected'] = 'INSERT ALL  INTO "type" ("int_col", "float_col", "char_col") ' .
-            "VALUES (NULL, NULL, 'Kyiv {{city}}, Ukraine') SELECT 1 FROM SYS.DUAL";
-        $data['wrongBehavior']['expected'] = 'INSERT ALL  INTO "type" ("type"."int_col", "float_col", "char_col") ' .
-            "VALUES ('', '', 'Kyiv {{city}}, Ukraine') SELECT 1 FROM SYS.DUAL";
-        $data['batchInsert binds params from expression']['expected'] = 'INSERT ALL  INTO "type" ("int_col") ' .
-            'VALUES (:qp1) SELECT 1 FROM SYS.DUAL';
+        $data['issue11242']['expected'] = 'INSERT INTO "type" ("int_col", "float_col", "char_col") ' .
+            "SELECT NULL, NULL, 'Kyiv {{city}}, Ukraine' FROM SYS.DUAL";
+        $data['wrongBehavior']['expected'] = 'INSERT INTO "type" ("type"."int_col", "float_col", "char_col") ' .
+            "SELECT '', '', 'Kyiv {{city}}, Ukraine' FROM SYS.DUAL";
+        $data['batchInsert binds params from expression']['expected'] = 'INSERT INTO "type" ("int_col") ' .
+            'SELECT :qp1 FROM SYS.DUAL';
 
         return $data;
     }

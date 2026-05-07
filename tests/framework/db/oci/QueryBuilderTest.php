@@ -457,21 +457,44 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $newData;
     }
 
+    public function testBatchInsertEmitsUnionAllSourceRowsRegressionForORA00001(): void
+    {
+        $qb = $this->getQueryBuilder();
+
+        $sql = $qb->batchInsert(
+            'customer',
+            ['email', 'name', 'address'],
+            [
+                ['a@example.com', 'a', 'addr-a'],
+                ['b@example.com', 'b', 'addr-b'],
+            ],
+        );
+
+        self::assertSame(
+            <<<SQL
+            INSERT INTO "customer" ("email", "name", "address") SELECT 'a@example.com', 'a', 'addr-a' FROM SYS.DUAL UNION ALL SELECT 'b@example.com', 'b', 'addr-b' FROM SYS.DUAL
+            SQL,
+            $sql,
+            "Each row must be its own source row via '... FROM SYS.DUAL UNION ALL SELECT ...' to avoid 'ORA-00001'.",
+        );
+    }
+
     public function testBatchInsertOmitsEmptyColumnListParensRegressionForORA03050(): void
     {
         $qb = $this->getQueryBuilder();
 
-        $sql = $qb->batchInsert('customer', [], [['no columns passed']]);
-
-        self::assertStringNotContainsString(
-            '" () ',
-            $sql,
-            "Empty columns must not produce empty '()' (Oracle rejects it as 'ORA-03050').",
+        $sql = $qb->batchInsert(
+            'customer',
+            [],
+            [['no columns passed']],
         );
-        self::assertStringContainsString(
-            '"customer" VALUES',
+
+        self::assertSame(
+            <<<SQL
+            INSERT INTO "customer" SELECT 'no columns passed' FROM SYS.DUAL
+            SQL,
             $sql,
-            'Empty columns must produce \'INTO "<table>" VALUES\' without column-list parens.',
+            "Empty column list must omit the column-list parens to avoid 'ORA-03050'.",
         );
     }
 
@@ -479,23 +502,23 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $data = parent::batchInsertProvider();
 
-        $data[0][3] = 'INSERT ALL  INTO "customer" ("email", "name", "address") ' .
-            "VALUES ('test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine') SELECT 1 FROM SYS.DUAL";
+        $data[0][3] = 'INSERT INTO "customer" ("email", "name", "address") ' .
+            "SELECT 'test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine' FROM SYS.DUAL";
 
-        $data['escape-danger-chars'][3] = 'INSERT ALL  INTO "customer" ("address") ' .
-            "VALUES ('SQL-danger chars are escaped: ''); --') SELECT 1 FROM SYS.DUAL";
+        $data['escape-danger-chars'][3] = 'INSERT INTO "customer" ("address") ' .
+            "SELECT 'SQL-danger chars are escaped: ''); --' FROM SYS.DUAL";
 
-        $data[2][3] = 'INSERT ALL  INTO "customer" ' .
-            "VALUES ('no columns passed') SELECT 1 FROM SYS.DUAL";
+        $data[2][3] = 'INSERT INTO "customer" ' .
+            "SELECT 'no columns passed' FROM SYS.DUAL";
 
-        $data['bool-false, bool2-null'][3] = 'INSERT ALL  INTO "type" ("bool_col", "bool_col2") ' .
-            "VALUES ('', NULL) SELECT 1 FROM SYS.DUAL";
+        $data['bool-false, bool2-null'][3] = 'INSERT INTO "type" ("bool_col", "bool_col2") ' .
+            "SELECT '', NULL FROM SYS.DUAL";
 
-        $data[3][3] = 'INSERT ALL  INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) ' .
-            'VALUES (NULL, now()) SELECT 1 FROM SYS.DUAL';
+        $data[3][3] = 'INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) ' .
+            'SELECT NULL, now() FROM SYS.DUAL';
 
-        $data['bool-false, time-now()'][3] = 'INSERT ALL  INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) ' .
-            'VALUES (0, now()) SELECT 1 FROM SYS.DUAL';
+        $data['bool-false, time-now()'][3] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) ' .
+            'SELECT 0, now() FROM SYS.DUAL';
 
         return $data;
     }
