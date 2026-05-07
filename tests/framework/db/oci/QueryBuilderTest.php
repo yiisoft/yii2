@@ -479,6 +479,25 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
+    public function testBatchInsertSkipsEmptyRows(): void
+    {
+        $qb = $this->getQueryBuilder();
+
+        self::assertSame(
+            '',
+            $qb->batchInsert('customer', [], [[]]),
+            "A single empty row must yield an empty SQL string, not an invalid 'SELECT  FROM SYS.DUAL'.",
+        );
+
+        self::assertSame(
+            <<<SQL
+            INSERT INTO "customer" SELECT 'x@example.com' FROM SYS.DUAL
+            SQL,
+            $qb->batchInsert('customer', [], [[], ['x@example.com']]),
+            'Empty rows must be silently skipped; non-empty rows remain.',
+        );
+    }
+
     public function testBatchInsertOmitsEmptyColumnListParensRegressionForORA03050(): void
     {
         $qb = $this->getQueryBuilder();

@@ -355,6 +355,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $values = [];
 
         foreach ($rows as $row) {
+            if ($row === []) {
+                continue;
+            }
+
             $vs = [];
             foreach ($row as $i => $value) {
                 if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
