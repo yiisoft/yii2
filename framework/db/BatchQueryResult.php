@@ -30,7 +30,7 @@ use yii\base\Component;
  * @since 2.0
  *
  * @template TKey of array-key = array-key
- * @template TValue of mixed = mixed
+ * @template TValue = mixed
  * @implements \Iterator<TKey, TValue>
  */
 class BatchQueryResult extends Component implements \Iterator

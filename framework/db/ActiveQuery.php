@@ -72,7 +72,7 @@ use yii\base\InvalidConfigException;
  * @method T|null one($db = null) See [[ActiveQueryInterface::one()]] for more info.
  * @method T[] all($db = null) See [[ActiveQueryInterface::all()]] for more info.
  * @method ($value is true ? (T is array ? static<T> : static<array<string, mixed>>) : static<T>) asArray($value = true) Sets the [[asArray]] property.
- * @method BatchQueryResult<array-key, T[]> batch($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
+ * @method BatchQueryResult<int, T[]> batch($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
  * and can be traversed to retrieve the data in batches.
  * @method BatchQueryResult<array-key, T> each($batchSize = 100, $db = null) the batch query result. It implements the [[\Iterator]] interface
  * and can be traversed to retrieve the data in batches.
