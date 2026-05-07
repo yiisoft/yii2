@@ -289,16 +289,72 @@ final class QueryBuilderTest extends BaseQueryBuilder
     public function testExecuteResetSequence(): void
     {
         $db = $this->getConnection();
-        $qb = $this->getQueryBuilder();
-        $sqlResult = "SELECT last_number FROM user_sequences WHERE sequence_name = 'item_SEQ'";
 
+        $qb = $db->getQueryBuilder();
+
+        // The fixture inserts 5 items (max id = 5). After resetting without an explicit value, the next
+        // IDENTITY-generated row must take the value `MAX(id) + 1`.
         $qb->executeResetSequence('item');
-        $result = $db->createCommand($sqlResult)->queryScalar();
-        $this->assertEquals(6, $result);
+        $db->createCommand()->insert('item', ['name' => 'Reset-default', 'category_id' => 1])->execute();
 
-        $qb->executeResetSequence('item', 4);
-        $result = $db->createCommand($sqlResult)->queryScalar();
-        $this->assertEquals(4, $result);
+        self::assertSame(
+            '6',
+            (string) $db->createCommand(
+                <<<SQL
+                SELECT MAX("id") FROM "item"
+                SQL
+            )->queryScalar(),
+            "Default reset must continue from 'MAX(id) + 1'.",
+        );
+
+        // Explicit reset: the next IDENTITY-generated row must take the requested start value.
+        $qb->executeResetSequence('item', 100);
+        $db->createCommand()->insert('item', ['name' => 'Reset-100', 'category_id' => 1])->execute();
+
+        self::assertSame(
+            '100',
+            (string) $db->createCommand(
+                <<<SQL
+                SELECT MAX("id") FROM "item"
+                SQL
+            )->queryScalar(),
+            'Explicit reset must restart numbering at the requested value.',
+        );
+
+        // Cleanup so subsequent tests see a known max.
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM "item" WHERE "id" IN (6, 100)
+            SQL
+        )->execute();
+    }
+
+    public function testExecuteResetSequenceForLegacyTriggerBackedTable(): void
+    {
+        $db = $this->getConnection();
+
+        $qb = $db->getQueryBuilder();
+
+        $db->createCommand()->insert('legacy_identity_via_trigger', ['name' => 'a'])->execute();
+        $db->createCommand()->insert('legacy_identity_via_trigger', ['name' => 'b'])->execute();
+        $qb->executeResetSequence('legacy_identity_via_trigger', 50);
+        $db->createCommand()->insert('legacy_identity_via_trigger', ['name' => 'after-reset'])->execute();
+
+        self::assertSame(
+            '50',
+            (string) $db->createCommand(
+                <<<SQL
+                SELECT MAX("id") FROM "legacy_identity_via_trigger"
+                SQL
+            )->queryScalar(),
+            'Legacy DROP/CREATE SEQUENCE path must restart numbering at the requested value.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM "legacy_identity_via_trigger"
+            SQL
+        )->execute();
     }
 
     public function conditionProvidertmp()

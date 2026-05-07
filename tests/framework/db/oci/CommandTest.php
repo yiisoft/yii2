@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +11,7 @@
 namespace yiiunit\framework\db\oci;
 
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use Throwable;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
@@ -17,9 +20,11 @@ use yii\db\Schema;
 use yiiunit\base\db\BaseCommand;
 
 /**
- * @group db
- * @group oci
+ * Unit test for {@see \yii\db\Command} with Oracle driver.
  */
+#[Group('db')]
+#[Group('oci')]
+#[Group('command')]
 class CommandTest extends BaseCommand
 {
     protected $driverName = 'oci';
@@ -33,14 +38,120 @@ class CommandTest extends BaseCommand
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
+    public function testBatchInsert(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{legacy_identity_via_trigger}}',
+            ['name'],
+            [
+                ['t1'],
+                ['t2'],
+            ]
+        );
+
+        self::assertSame(
+            2,
+            $command->execute(),
+            'Two rows must be inserted via the trigger-backed batch path.',
+        );
+
+        $ids = $db->createCommand(
+            <<<SQL
+            SELECT "id" FROM "legacy_identity_via_trigger" WHERE "name" IN ('t1', 't2')
+            SQL
+        )->queryColumn();
+
+        self::assertCount(
+            2,
+            $ids,
+            'Trigger-backed batch insert must produce two rows.',
+        );
+        self::assertNotContains(
+            null,
+            $ids,
+            'Trigger must populate the PK for every batched row.',
+        );
+
+        $command = $db->createCommand();
+
+        $command->batchInsert(
+            '{{legacy_identity_via_trigger}}',
+            ['name'],
+            []
+        );
+
+        self::assertSame(
+            0,
+            $command->execute(),
+            'Empty batch must execute as a no-op.',
+        );
+    }
+
     public function testLastInsertId(): void
     {
         $db = $this->getConnection();
 
-        $sql = 'INSERT INTO {{profile}}([[description]]) VALUES (\'non duplicate\')';
-        $command = $db->createCommand($sql);
-        $command->execute();
-        $this->assertSame('3', $db->getSchema()->getLastInsertID('profile_SEQ'));
+        $table = $db->getSchema()->getTableSchema('profile');
+
+        self::assertNotNull(
+            $table,
+            "IDENTITY-backed 'profile' fixture table must be loadable.",
+        );
+
+        $sequenceName = $table->sequenceName;
+
+        self::assertNotNull(
+            $sequenceName,
+            "IDENTITY-backed 'profile' table must surface its system sequence.",
+        );
+        self::assertStringStartsWith(
+            'ISEQ$$_',
+            (string) $sequenceName,
+            'IDENTITY-backed sequence must use the Oracle `ISEQ$$_` system prefix.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO {{profile}} ([[description]]) VALUES ('lastInsertId-row')
+            SQL
+        )->execute();
+
+        self::assertNotEmpty(
+            $db->getSchema()->getLastInsertID($sequenceName),
+            'CURRVAL of the IDENTITY system sequence must reflect the inserted row.',
+        );
+    }
+
+    public function testGetLastInsertIDReturnsValueViaLegacyTriggerBackedSequence(): void
+    {
+        $db = $this->getConnection();
+
+        $table = $db->getSchema()->getTableSchema('legacy_identity_via_trigger');
+
+        self::assertNotNull(
+            $table,
+            "Legacy 'legacy_identity_via_trigger' fixture table must be loadable.",
+        );
+
+        $sequenceName = $table->sequenceName;
+
+        self::assertSame(
+            'legacy_identity_via_trigger_SEQ',
+            $sequenceName,
+            'Legacy fallback must surface the trigger-referenced sequence name.',
+        );
+
+        $db->createCommand('INSERT INTO {{legacy_identity_via_trigger}} ([[name]]) VALUES (\'legacy-row\')')
+            ->execute();
+
+        self::assertNotEmpty(
+            $db->getSchema()->getLastInsertID($sequenceName),
+            'Legacy CURRVAL lookup must return the trigger-populated PK.',
+        );
     }
 
     public static function batchInsertSqlProvider(): array
@@ -250,7 +361,7 @@ class CommandTest extends BaseCommand
      */
     public function testBatchInsertDataTypesLocale(): void
     {
-        $locale = setlocale(LC_NUMERIC, 0);
+        $locale = setlocale(LC_NUMERIC, '0');
         if (false === $locale) {
             $this->markTestSkipped('Your platform does not support locales.');
         }
@@ -310,20 +421,38 @@ class CommandTest extends BaseCommand
     {
         $db = $this->getConnection();
 
-        $db->createCommand()->insert(
+        $inserted = $db->getSchema()->insert(
             '{{customer}}',
             [
                 'name' => 'Some {{weird}} name',
                 'email' => 'test@example.com',
                 'address' => 'Some {{%weird}} address',
-            ]
-        )->execute();
+            ],
+        );
 
-        $customerId = $db->getLastInsertID('customer_SEQ');
+        self::assertIsArray(
+            $inserted,
+            'Insert must return the row data array.',
+        );
 
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE [[id]]=' . $customerId)->queryOne();
-        $this->assertEquals('Some {{weird}} name', $customer['name']);
-        $this->assertEquals('Some {{%weird}} address', $customer['address']);
+        $customerId = $inserted['id'];
+
+        $customer = $db->createCommand(
+            <<<SQL
+            SELECT * FROM {{customer}} WHERE [[id]] = $customerId
+            SQL,
+        )->queryOne();
+
+        self::assertEquals(
+            'Some {{weird}} name',
+            $customer['name'],
+            'Double curly braces must not be replaced in parameter values.',
+        );
+        self::assertEquals(
+            'Some {{%weird}} address',
+            $customer['address'],
+            'Double curly braces must not be replaced in parameter values.',
+        );
 
         $db->createCommand()->update(
             '{{customer}}',
@@ -331,11 +460,25 @@ class CommandTest extends BaseCommand
                 'name' => 'Some {{updated}} name',
                 'address' => 'Some {{%updated}} address',
             ],
-            ['id' => $customerId]
+            ['id' => $customerId],
         )->execute();
-        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE [[id]]=' . $customerId)->queryOne();
-        $this->assertEquals('Some {{updated}} name', $customer['name']);
-        $this->assertEquals('Some {{%updated}} address', $customer['address']);
+
+        $customer = $db->createCommand(
+            <<<SQL
+            SELECT * FROM {{customer}} WHERE [[id]] = $customerId
+            SQL,
+        )->queryOne();
+
+        self::assertEquals(
+            'Some {{updated}} name',
+            $customer['name'],
+            'Double curly braces must not be replaced in parameter values.',
+        );
+        self::assertEquals(
+            'Some {{%updated}} address',
+            $customer['address'],
+            'Double curly braces must not be replaced in parameter values.',
+        );
     }
 
     public function testCreateTable(): void
@@ -367,21 +510,34 @@ class CommandTest extends BaseCommand
 
     public function testsInsertQueryAsColumnValue(): void
     {
+        $db = $this->getConnection();
+
         $time = time();
 
-        $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM {{order_with_null_fk}}
+            SQL,
+        )->execute();
 
-        $command = $db->createCommand();
-        $command->insert('{{order}}', [
-            'customer_id' => 1,
-            'created_at' => $time,
-            'total' => 42,
-        ])->execute();
+        $inserted = $db->getSchema()->insert(
+            '{{order}}',
+            [
+                'customer_id' => 1,
+                'created_at' => $time,
+                'total' => 42,
+            ],
+        );
 
-        $orderId = $db->getLastInsertID('order_SEQ');
+        self::assertIsArray(
+            $inserted,
+            'Insert must return the row data array.',
+        );
+
+        $orderId = $inserted['id'];
 
         $columnValueQuery = new Query();
+
         $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => $orderId]);
 
         $command = $db->createCommand();
@@ -391,15 +547,28 @@ class CommandTest extends BaseCommand
                 'customer_id' => $orderId,
                 'created_at' => $columnValueQuery,
                 'total' => 42,
-            ]
+            ],
         )->execute();
 
-        $this->assertEquals($time, $db->createCommand(
-            'SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = ' . $orderId
-        )->queryScalar());
+        self::assertEquals(
+            $time,
+            $db->createCommand(
+                <<<SQL
+                SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = $orderId
+                SQL,
+            )->queryScalar()
+        );
 
-        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
-        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = ' . $orderId)->execute();
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM {{order_with_null_fk}}
+            SQL,
+        )->execute();
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM {{order}} WHERE [[id]] = $orderId
+            SQL,
+        )->execute();
     }
 
     public function testAlterTable(): void

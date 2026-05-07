@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -15,9 +17,11 @@ use yiiunit\framework\db\AnyValue;
 use yiiunit\base\db\BaseSchema;
 
 /**
- * @group db
- * @group oci
+ * Unit test for {@see yii\db\oci\Schema} with Oracle driver.
  */
+#[Group('db')]
+#[Group('oci')]
+#[Group('schema')]
 class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
@@ -102,14 +106,47 @@ class SchemaTest extends BaseSchema
         return $columns;
     }
 
-    /**
-     * Autoincrement columns detection should be disabled for Oracle
-     * because there is no way of associating a column with a sequence.
-     */
-    public function testAutoincrementDisabled(): void
+    public function testGetTableSequenceNameResolvesIdentityColumnForModernTable(): void
     {
-        $table = $this->getConnection(false)->schema->getTableSchema('order', true);
-        $this->assertFalse($table->columns['id']->autoIncrement);
+        $schema = $this->getConnection(false)->schema;
+
+        $table = $schema->getTableSchema('profile', true);
+
+        self::assertNotNull(
+            $table,
+            'IDENTITY-backed fixture table must be loadable.',
+        );
+        self::assertStringStartsWith(
+            'ISEQ$$_',
+            (string) $table->sequenceName,
+            'IDENTITY-backed sequence name must use the Oracle `ISEQ$$_` prefix.',
+        );
+        self::assertTrue(
+            $table->columns['id']->autoIncrement,
+            "IDENTITY column must be flagged as 'autoIncrement'.",
+        );
+    }
+
+    public function testGetTableSequenceNameResolvesTriggerBackedSequenceForLegacyTable(): void
+    {
+        $schema = $this->getConnection(false)->schema;
+
+        $table = $schema->getTableSchema('legacy_identity_via_trigger', true);
+
+        self::assertNotNull(
+            $table,
+            'Legacy fixture table must be loadable.',
+        );
+        self::assertSame(
+            'legacy_identity_via_trigger_SEQ',
+            $table->sequenceName,
+            'Legacy fallback must surface the trigger-referenced sequence name.',
+        );
+
+        self::assertFalse(
+            $table->columns['id']->autoIncrement,
+            "Trigger-backed PK is not an IDENTITY column 'autoIncrement' must be 'false'.",
+        );
     }
 
     public static function constraintsProvider(): array
