@@ -33,18 +33,12 @@ class ExpressionBuilder implements ExpressionBuilderInterface
             ARRAY_FILTER_USE_BOTH
         );
         foreach (array_keys($duplicateKeys) as $duplicateKey) {
-            $existingKey = array_search($newParams[$duplicateKey], $params, true);
-            if ($existingKey !== false) {
-                // we already have this value in our params, so just re-use it to avoid wasted space
-                $newKey = $existingKey;
-            } else {
-                // use an arbitrary key to avoid clashing
-                $suffix = count($params);
-                do {
-                    $newKey = $duplicateKey . $suffix++;
-                } while (array_key_exists($newKey, $params) || array_key_exists($newKey, $newParams));
-                $newParams[$newKey] = $newParams[$duplicateKey];
-            }
+            // use an arbitrary key to avoid clashing
+            $suffix = count($params);
+            do {
+                $newKey = $duplicateKey . $suffix++;
+            } while (array_key_exists($newKey, $params) || array_key_exists($newKey, $newParams));
+            $newParams[$newKey] = $newParams[$duplicateKey];
             $newSql = preg_replace('/' . preg_quote($duplicateKey, '/') . '\b/', $newKey, $newSql);
             unset($newParams[$duplicateKey]);
         }
