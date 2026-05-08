@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mssql;
 
 use PHPUnit\Framework\Attributes\Group;
+use yii\base\InvalidArgumentException;
 use yii\db\Expression;
 use yii\db\Query;
 use yiiunit\base\db\BaseQueryBuilder;
@@ -1001,6 +1002,18 @@ ALTER TABLE [foo1] DROP COLUMN [bar]";
 
         $schema = $connection->getTableSchema('[foo1]', true);
         $this->assertEquals(null, $schema->getColumn('bar'));
+    }
+
+    public function testThrowInvalidArgumentExceptionWhenInsertTargetsMissingTableSchema(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Table not found: non_existent_table',
+        );
+
+        $params = [];
+
+        $this->getConnection()->getQueryBuilder()->insert('non_existent_table', ['email' => 'x@example.com'], $params);
     }
 
     public static function buildFromDataProvider(): array
