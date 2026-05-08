@@ -380,7 +380,6 @@ SQL;
      */
     protected function loadColumnSchema($info)
     {
-        $isVersion2017orLater = version_compare($this->db->getSchema()->getServerVersion(), '14', '>=');
         $column = $this->createColumnSchema();
 
         $column->name = $info['column_name'];
@@ -401,7 +400,7 @@ SQL;
                 $column->type = $this->typeMap[$type];
             }
 
-            if ($isVersion2017orLater && $type === 'bit') {
+            if ($type === 'bit') {
                 $column->type = 'boolean';
             }
 
@@ -411,18 +410,6 @@ SQL;
 
                 if (isset($values[1])) {
                     $column->scale = (int) $values[1];
-                }
-
-                if ($isVersion2017orLater === false) {
-                    if ($column->size === 1 && ($type === 'tinyint' || $type === 'bit')) {
-                        $column->type = 'boolean';
-                    } elseif ($type === 'bit') {
-                        if ($column->size > 32) {
-                            $column->type = 'bigint';
-                        } elseif ($column->size === 32) {
-                            $column->type = 'integer';
-                        }
-                    }
                 }
             }
         }
