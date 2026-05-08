@@ -1245,12 +1245,12 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             // Two expressions with params with the same name
             [
                 ['and', new Expression('any_expression(:a)', [':a' => 1]), new Expression('any_expression(:a)', [':a' => 2])],
-                'any_expression(:a) AND any_expression(:a1)',
+                '(any_expression(:a)) AND (any_expression(:a1))',
                 [':a' => 1, ':a1' => 2],
             ],
             [
                 ['and', new Expression('any_expression(:a)', [':a' => 1]), ['or', new Expression('any_expression(:a)', [':a' => 2]), '1=2']],
-                'any_expression(:a) AND (any_expression(:a1) OR 1=2)',
+                '(any_expression(:a)) AND ((any_expression(:a1)) OR (1=2))',
                 [':a' => 1, ':a1' => 2],
             ],
         ];
