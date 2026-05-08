@@ -777,8 +777,11 @@ SQL;
     }
 
     /**
-     * Retrieving inserted data from a primary key request of type uniqueidentifier (for SQL Server 2005 or later)
      * {@inheritdoc}
+     *
+     * Retrieves the inserted row via the `OUTPUT INSERTED.*` block emitted by
+     * `\yii\db\mssql\QueryBuilder::insert()` so that `IDENTITY` values, computed columns, and
+     * `uniqueidentifier` defaults are returned to the caller.
      */
     public function insert($table, $columns)
     {
@@ -787,8 +790,7 @@ SQL;
             return false;
         }
 
-        $isVersion2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
-        $inserted = $isVersion2005orLater ? $command->pdoStatement->fetch() : [];
+        $inserted = $command->pdoStatement->fetch();
 
         $tableSchema = $this->getTableSchema($table);
         $result = [];
@@ -796,9 +798,6 @@ SQL;
             // @see https://github.com/yiisoft/yii2/issues/13828 & https://github.com/yiisoft/yii2/issues/17474
             if (isset($inserted[$name])) {
                 $result[$name] = $inserted[$name];
-            } elseif ($tableSchema->columns[$name]->autoIncrement) {
-                // for a version earlier than 2005
-                $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
             } elseif (isset($columns[$name])) {
                 $result[$name] = $columns[$name];
             } else {
