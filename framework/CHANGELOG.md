@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
 - Bug #20159: Fix chroot resolve null route (gozoro)
 - Bug #20856: Fix passing generics to `BatchQueryResult` (mspirkov)
+- Bug #19854: Deduplicate parameter names in `ExpressionBuilder` (chriscpty)
 
 
 2.0.54 January 09, 2026
