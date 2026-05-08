@@ -439,8 +439,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'], true)) {
                 $dbType .= '(MAX)';
-            } elseif (in_array($dbType, ['char',  'nchar'], true)) {
-                $dbType .= "($column->size)";
             }
 
             if ($column->dbType === Schema::TYPE_TIMESTAMP) {
