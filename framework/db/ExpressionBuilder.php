@@ -39,7 +39,10 @@ class ExpressionBuilder implements ExpressionBuilderInterface
                 $newKey = $existingKey;
             } else {
                 // use an arbitrary key to avoid clashing
-                $newKey = $duplicateKey . count($params);
+                $suffix = count($params);
+                do {
+                    $newKey = $duplicateKey . $suffix++;
+                } while (array_key_exists($newKey, $params) || array_key_exists($newKey, $newParams));
                 $newParams[$newKey] = $newParams[$duplicateKey];
             }
             $newSql = preg_replace('/' . preg_quote($duplicateKey, '/') . '\b/', $newKey, $newSql);
