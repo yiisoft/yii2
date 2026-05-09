@@ -10,6 +10,7 @@ namespace yiiunit\framework\web;
 
 use Exception;
 use yii\BaseYii;
+use yii\base\ErrorException;
 use yii\web\Application;
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -178,6 +179,28 @@ Exception: yii\web\NotFoundHttpException', $out);
 
         $this->assertSame($expected, $handler->htmlEncode($text));
     }
+
+    public function testRenderFileDoesNotAllowInternalFileOverride(): void
+    {
+        $viewFile = tempnam(sys_get_temp_dir(), 'yii2-error-view-');
+        $secretFile = tempnam(sys_get_temp_dir(), 'yii2-error-secret-');
+
+        file_put_contents($viewFile, '<?php echo "safe error view";');
+        file_put_contents($secretFile, 'secret data');
+
+        try {
+            /** @var ErrorHandler $handler */
+            $handler = Yii::$app->getErrorHandler();
+
+            $this->assertSame(
+                'safe error view',
+                $handler->renderFileForException($viewFile, ['_file_' => $secretFile], new ErrorException('test'))
+            );
+        } finally {
+            @unlink($viewFile);
+            @unlink($secretFile);
+        }
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler
@@ -188,5 +211,12 @@ class ErrorHandler extends \yii\web\ErrorHandler
     protected function shouldRenderSimpleHtml()
     {
         return false;
+    }
+
+    public function renderFileForException($file, array $params, \Throwable $exception): string
+    {
+        $this->exception = $exception;
+
+        return $this->renderFile($file, $params);
     }
 }
