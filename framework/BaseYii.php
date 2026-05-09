@@ -96,7 +96,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.55';
+        return '2.0.56-dev';
     }
 
     /**
