@@ -71,6 +71,7 @@ class ClassmapController extends Controller
         $map = implode("\n", $map);
         $output = <<<EOD
 <?php
+
 /**
  * Yii core class map.
  *

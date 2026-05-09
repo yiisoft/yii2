@@ -44,16 +44,16 @@ use yii\helpers\Url;
  * @since 2.0
  *
  * @phpstan-type RegisterJsFileOptions array{
- * depends?: class-string[],
- * position?: int,
- * appendTimestamp?: bool,
- * ...
+ *     depends?: class-string[],
+ *     position?: int,
+ *     appendTimestamp?: bool,
+ *     ...
  * }
  *
  * @phpstan-type RegisterCssFileOptions array{
- * depends?: class-string[],
- * appendTimestamp?: bool,
- * ...
+ *     depends?: class-string[],
+ *     appendTimestamp?: bool,
+ *     ...
  * }
  */
 class View extends \yii\base\View
