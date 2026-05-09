@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -41,12 +40,12 @@ use yii\helpers\Url;
  * @since 2.0
  *
  * @phpstan-type PublishOptions array{
- *     only?: string[],
- *     except?: string[],
- *     caseSensitive?: bool,
- *     beforeCopy?: callable,
- *     afterCopy?: callable,
- *     forceCopy?: bool,
+ * only?: string[],
+ * except?: string[],
+ * caseSensitive?: bool,
+ * beforeCopy?: callable,
+ * afterCopy?: callable,
+ * forceCopy?: bool,
  * }
  */
 class AssetManager extends Component

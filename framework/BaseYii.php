@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -97,7 +96,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.55-dev';
+        return '2.0.55';
     }
 
     /**
