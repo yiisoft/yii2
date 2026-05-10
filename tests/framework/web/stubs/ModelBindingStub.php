@@ -9,7 +9,7 @@ class ModelBindingStub extends ActiveRecord
 {
     /**
      * @return self
-     * @throw NotFoundHttpException
+     * @throws NotFoundHttpException
      */
     public static function build()
     {
