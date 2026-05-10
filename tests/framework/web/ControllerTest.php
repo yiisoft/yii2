@@ -16,6 +16,7 @@ use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\BadRequestHttpException;
+use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;
@@ -27,7 +28,7 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-    /** @var FakeController */
+    /** @var Controller */
     private $controller;
 
     protected function setUp(): void

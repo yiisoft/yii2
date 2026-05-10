@@ -49,7 +49,7 @@ Exception: yii\web\NotFoundHttpException', $out);
 
     public function testFormatRaw(): void
     {
-        Yii::$app->response->format = yii\web\Response::FORMAT_RAW;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
 
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
@@ -69,7 +69,7 @@ Exception: yii\web\NotFoundHttpException', $out);
 
     public function testFormatXml(): void
     {
-        Yii::$app->response->format = yii\web\Response::FORMAT_XML;
+        Yii::$app->response->format = \yii\web\Response::FORMAT_XML;
 
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
@@ -95,7 +95,9 @@ Exception: yii\web\NotFoundHttpException', $out);
 
     public function testClearAssetFilesInErrorView(): void
     {
-        Yii::$app->getView()->registerJsFile('somefile.js');
+        $view = Yii::$app->getView();
+        $this->assertInstanceOf(View::class, $view);
+        $view->registerJsFile('somefile.js');
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
         ob_start(); // suppress response output
@@ -108,7 +110,10 @@ Exception: yii\web\NotFoundHttpException', $out);
     public function testClearAssetFilesInErrorActionView(): void
     {
         Yii::$app->getErrorHandler()->errorAction = 'test/error';
-        Yii::$app->getView()->registerJs("alert('hide me')", View::POS_END);
+
+        $view = Yii::$app->getView();
+        $this->assertInstanceOf(View::class, $view);
+        $view->registerJs("alert('hide me')", View::POS_END);
 
         /** @var ErrorHandler $handler */
         $handler = Yii::$app->getErrorHandler();
