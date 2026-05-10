@@ -38,7 +38,7 @@ class ControllerTest extends TestCase
         $this->mockApplication();
         Yii::$app->controllerMap = [
             'fake' => 'yiiunit\framework\console\stubs\FakeController',
-            'fake_witout_output' => 'yiiunit\framework\console\stubs\FakeHelpControllerWithoutOutput',
+            'fake_without_output' => 'yiiunit\framework\console\stubs\FakeHelpControllerWithoutOutput',
             'help' => 'yiiunit\framework\console\stubs\FakeHelpController',
         ];
     }
