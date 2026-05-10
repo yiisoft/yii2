@@ -14,8 +14,11 @@ parameters:
         analyse:
             - tests/data
             - tests/framework/base/stub
+            - tests/framework/console/stubs
             - tests/framework/di/stubs
             - tests/framework/filters/stubs
+            - tests/framework/web/mocks
+            - tests/framework/web/stubs
             # TODO: Analyze these directories
             - tests/framework/db
             - tests/framework/grid
@@ -30,8 +33,6 @@ parameters:
             - tests/framework/rest
             - tests/framework/test
             - tests/framework/validators
-            - tests/framework/web
-            - tests/framework/widgets
 
     bootstrapFiles:
         - framework/BaseYii.php
