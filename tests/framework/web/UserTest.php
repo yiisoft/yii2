@@ -14,7 +14,7 @@ namespace yii\web;
  */
 function time()
 {
-    return \yiiunit\framework\web\UserTest::$time ?: \time();
+    return \yiiunit\framework\web\UserTest::$time ?? \time();
 }
 
 namespace yiiunit\framework\web;

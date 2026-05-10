@@ -309,8 +309,8 @@ class DetailViewTest extends TestCase
         ]);
 
         foreach ($detailView->attributes as $index => $attribute) {
-            $a = $detailView->renderAttribute($attribute, $index);
-            $this->assertEquals($expectedValue, $a);
+            $renderingResult = $detailView->renderAttribute($attribute, $index);
+            $this->assertEquals($expectedValue, $renderingResult);
         }
     }
 
