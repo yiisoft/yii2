@@ -12,14 +12,6 @@ use yii\mail\BaseMessage;
 
 /**
  * Test Message class.
- *
- * @property mixed $charset
- * @property mixed $from
- * @property mixed $replyTo
- * @property mixed $to
- * @property mixed $cc
- * @property mixed $bcc
- * @property mixed $subject
  */
 class TestMessage extends BaseMessage
 {
