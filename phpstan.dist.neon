@@ -30,8 +30,6 @@ parameters:
             - tests/framework/mutex
             - tests/framework/rbac
             - tests/framework/requirements
-            - tests/framework/rest
-            - tests/framework/test
             - tests/framework/validators
 
     bootstrapFiles:
