@@ -72,8 +72,8 @@ class IndexActionTest extends TestCase
     /**
      * @dataProvider dataProviderTestPrepareDataProviderWithPaginationAndSorting
      *
-     * @param array $pagination
-     * @param array $sort
+     * @param Pagination|array|false $pagination
+     * @param Sort|array|false $sort
      * @param int|null $expectedPaginationPageSize
      * @param int|null $expectedPaginationDefaultPageSize
      * @param array $expectedSortOrders
