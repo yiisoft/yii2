@@ -113,4 +113,3 @@ class BaseMessageTest extends TestCase
         $this->assertSame('', $result, 'Result should be an empty string');
     }
 }
-
