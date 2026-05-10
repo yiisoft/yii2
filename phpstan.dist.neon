@@ -14,6 +14,7 @@ parameters:
         analyse:
             - tests/data
             - tests/framework/base/stub
+            - tests/framework/console/stubs
             - tests/framework/di/stubs
             - tests/framework/filters/stubs
             - tests/framework/web/mocks
