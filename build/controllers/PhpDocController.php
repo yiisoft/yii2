@@ -713,13 +713,14 @@ class PhpDocController extends ConsoleController
             }
             if ($propertyPart) {
                 preg_match(
-                    '/@property(?:-read|-write)?\s+([\\\\\w\|\[\]]+)\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/',
+                    '/@property(?:-read|-write)?\s+' . self::TYPE_REG_EXP
+                    . '\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/',
                     $line,
                     $matches
                 );
 
-                if (isset($matches[2])) {
-                    $lastPropertyName = $matches[2];
+                if (isset($matches[1])) {
+                    $lastPropertyName = $matches[1];
                 }
 
                 if (in_array($lastPropertyName, $manuallyAddedProperties)) {

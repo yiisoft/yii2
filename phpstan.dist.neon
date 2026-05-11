@@ -5,6 +5,8 @@ includes:
 parameters:
     level: 3
 
+    reportIgnoresWithoutComments: true
+
     paths:
         - build
         - framework
@@ -17,7 +19,6 @@ parameters:
             - tests/framework/*/mocks/*
             # TODO: Analyze these directories
             - tests/framework/db
-            - tests/framework/validators
 
     bootstrapFiles:
         - framework/BaseYii.php

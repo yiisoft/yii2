@@ -96,8 +96,7 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($model->canSetProperty('email'));
         $this->assertTrue($model->canSetProperty('name'));
         $this->expectException('yii\base\UnknownPropertyException');
-        // We intentionally access a non-existent property to test that an exception is thrown
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (We intentionally access a non-existent property to test that an exception is thrown)
         $age = $model->age;
     }
 
