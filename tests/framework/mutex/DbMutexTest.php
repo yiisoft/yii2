@@ -13,6 +13,7 @@ namespace yiiunit\framework\mutex;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\mutex\DbMutex;
 use yiiunit\TestCase;
 
 /**
@@ -36,26 +37,26 @@ class DbMutexTest extends TestCase
 
     public function testDbPropertyDefaultValue(): void
     {
-        $mutex = $this->getMockForAbstractClass('yii\mutex\DbMutex');
+        $mutex = $this->getMockForAbstractClass(DbMutex::class);
         $this->assertInstanceOf(Connection::class, $mutex->db);
     }
 
     public function testDbPropertyResolvesFromApplicationComponent(): void
     {
-        $mutex = $this->getMockForAbstractClass('yii\mutex\DbMutex');
+        $mutex = $this->getMockForAbstractClass(DbMutex::class);
         $this->assertSame(Yii::$app->db, $mutex->db);
     }
 
     public function testDbPropertyAcceptsConnectionObject(): void
     {
         $connection = new Connection(['dsn' => 'sqlite::memory:']);
-        $mutex = $this->getMockForAbstractClass('yii\mutex\DbMutex', [['db' => $connection]]);
+        $mutex = $this->getMockForAbstractClass(DbMutex::class, [['db' => $connection]]);
         $this->assertSame($connection, $mutex->db);
     }
 
     public function testDbPropertyAcceptsConfigArray(): void
     {
-        $mutex = $this->getMockForAbstractClass('yii\mutex\DbMutex', [[
+        $mutex = $this->getMockForAbstractClass(DbMutex::class, [[
             'db' => [
                 'class' => Connection::class,
                 'dsn' => 'sqlite::memory:',
@@ -67,6 +68,6 @@ class DbMutexTest extends TestCase
     public function testThrowsExceptionForInvalidDb(): void
     {
         $this->expectException(InvalidConfigException::class);
-        $this->getMockForAbstractClass('yii\mutex\DbMutex', [['db' => 'nonExistingComponent']]);
+        $this->getMockForAbstractClass(DbMutex::class, [['db' => 'nonExistingComponent']]);
     }
 }
