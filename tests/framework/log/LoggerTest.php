@@ -9,6 +9,7 @@
 namespace yiiunit\framework\log;
 
 use PHPUnit\Framework\MockObject\MockObject;
+use stdClass;
 use yii\log\Dispatcher;
 use yii\log\Logger;
 use yiiunit\TestCase;
@@ -71,7 +72,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 67,
+            'line' => 68,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->',
@@ -98,10 +99,11 @@ class LoggerTest extends TestCase
      */
     public function testFlushWithoutDispatcher(): void
     {
-        $dispatcher = $this->createMock(Dispatcher::class);
+        $dispatcher = $this->createMock(stdClass::class);
         $dispatcher->expects($this->never())->method($this->anything());
 
         $this->logger->messages = ['anything'];
+        // @phpstan-ignore assign.propertyType (We intentionally use an invalid value here to test its processing)
         $this->logger->dispatcher = $dispatcher;
         $this->logger->flush();
         $this->assertEmpty($this->logger->messages);
