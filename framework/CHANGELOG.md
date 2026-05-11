@@ -5,10 +5,10 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #20783: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
-- Enh #20784: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
-- Bug #20784: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
-- Bug #20784: Fix `@var` annotation for `yii\validators\CompareValidator::$message` (mspirkov)
-- Enh #20784: Add `@param-out` annotation for `$error` in `yii\validators\Validator::validate()` (mspirkov)
+- Enh #20785: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
+- Bug #20785: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
+- Bug #20785: Fix `@var` annotation for `yii\validators\CompareValidator::$message` (mspirkov)
+- Enh #20785: Add `@param-out` annotation for `$error` in `yii\validators\Validator::validate()` (mspirkov)
 
 
 2.0.55 May 09, 2026
