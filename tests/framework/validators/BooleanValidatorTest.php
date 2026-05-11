@@ -9,8 +9,8 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -89,12 +89,5 @@ class BooleanValidatorTest extends TestCase
             'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
             $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
         );
-    }
-}
-
-class ViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }

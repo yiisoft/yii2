@@ -30,6 +30,7 @@ class SafeValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'name');
 
+        $this->assertObjectHasProperty('name', $model);
         $this->assertSame('original', $model->name);
         $this->assertFalse($model->hasErrors('name'));
     }
@@ -41,7 +42,9 @@ class SafeValidatorTest extends TestCase
 
         $validator->validateAttributes($model, ['name', 'email']);
 
+        $this->assertObjectHasProperty('name', $model);
         $this->assertSame('original', $model->name);
+        $this->assertObjectHasProperty('email', $model);
         $this->assertNull($model->email);
         $this->assertFalse($model->hasErrors());
     }
@@ -53,6 +56,7 @@ class SafeValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'field');
 
+        $this->assertObjectHasProperty('field', $model);
         $this->assertNull($model->field);
         $this->assertFalse($model->hasErrors('field'));
     }
@@ -64,7 +68,9 @@ class SafeValidatorTest extends TestCase
 
         $model->load(['username' => 'admin', 'role' => 'superuser'], '');
 
+        $this->assertObjectHasProperty('username', $model);
         $this->assertSame('admin', $model->username);
+        $this->assertObjectHasProperty('role', $model);
         $this->assertNull($model->role);
     }
 
@@ -88,6 +94,7 @@ class SafeValidatorTest extends TestCase
             $validator->validateAttribute($model, 'attr');
 
             $this->assertFalse($model->hasErrors('attr'), 'Failed for value: ' . var_export($value, true));
+            $this->assertObjectHasProperty('attr', $model);
             $this->assertSame($value, $model->attr);
         }
     }

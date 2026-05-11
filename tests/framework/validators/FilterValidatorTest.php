@@ -9,8 +9,8 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\FilterValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -75,7 +75,7 @@ class FilterValidatorTest extends TestCase
     {
         $val = new FilterValidator(['filter' => 'trim']);
         $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
-        $js = $val->clientValidateAttribute($m, 'attr_one', new FilterViewStub());
+        $js = $val->clientValidateAttribute($m, 'attr_one', new ViewStub());
         $this->assertStringContainsString('yii.validation.trim', $js);
     }
 
@@ -83,7 +83,7 @@ class FilterValidatorTest extends TestCase
     {
         $val = new FilterValidator(['filter' => 'strtolower']);
         $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
-        $this->assertNull($val->clientValidateAttribute($m, 'attr_one', new FilterViewStub()));
+        $this->assertNull($val->clientValidateAttribute($m, 'attr_one', new ViewStub()));
     }
 
     public function testGetClientOptionsDefault(): void
@@ -100,12 +100,5 @@ class FilterValidatorTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
         $options = $val->getClientOptions($m, 'attr_one');
         $this->assertSame(1, $options['skipOnEmpty']);
-    }
-}
-
-class FilterViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }
