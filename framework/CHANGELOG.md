@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
-- no changes in this release.
+Bug #20783: Fix PHPDoc annotations for the `yii\log\Target::$enabled` property (mspirkov)
 
 
 2.0.55 May 09, 2026
