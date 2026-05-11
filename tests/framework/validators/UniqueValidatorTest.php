@@ -422,7 +422,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         ]);
         $model = new Order();
         $model->customer_id = 1;
-        $model->total = 800;
+        $model->total = '800';
         $model->save(false);
         $validator->validateAttribute($model, 'id');
         $this->assertFalse($model->hasErrors());

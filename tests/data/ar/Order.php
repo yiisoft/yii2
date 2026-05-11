@@ -16,7 +16,7 @@ use yii\db\ActiveQuery;
  * @property int $id
  * @property int $customer_id
  * @property int $created_at
- * @property int $total
+ * @property string $total
  *
  * @property-read Item[] $expensiveItemsUsingViaWithCallable
  * @property-read Item[] $cheapItemsUsingViaWithCallable
