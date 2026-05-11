@@ -17,6 +17,8 @@ use yii\base\DynamicModel;
 use yii\db\ArrayExpression;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yiiunit\framework\helpers\stubs\HtmlTestModel;
+use yiiunit\framework\helpers\stubs\MyHtml;
 use yiiunit\TestCase;
 
 /**
@@ -1879,7 +1881,7 @@ EOD;
     /**
      * @dataProvider dataProviderActiveRadio
      *
-     * @param string $value
+     * @param bool $value
      * @param array $options
      * @param string $expectedHtml
      */
@@ -1923,7 +1925,7 @@ EOD;
     /**
      * @dataProvider dataProviderActiveCheckbox
      *
-     * @param string $value
+     * @param bool $value
      * @param array $options
      * @param string $expectedHtml
      */
@@ -2292,59 +2294,5 @@ HTML;
                 'dynamicmodel-фубарбаз',
             ],
         ];
-    }
-}
-
-/**
- * Class MyHtml
- * @package yiiunit\framework\helpers
- */
-class MyHtml extends Html
-{
-    /**
-     * @param Model $model
-     * @param string $attribute
-     * @param array $options
-     */
-    protected static function setActivePlaceholder($model, $attribute, &$options = [])
-    {
-        if (isset($options['placeholder']) && $options['placeholder'] === true) {
-            $attribute = static::getAttributeName($attribute);
-            $options['placeholder'] = 'My placeholder: ' . $model->getAttributeLabel($attribute);
-        }
-    }
-}
-
-/**
- * @property string name
- * @property string title
- * @property string alias
- * @property array types
- * @property string description
- */
-class HtmlTestModel extends DynamicModel
-{
-    public function init(): void
-    {
-        foreach (['name', 'title', 'alias', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
-            $this->defineAttribute($attribute);
-        }
-    }
-
-    public function rules()
-    {
-        return [
-            ['name', 'required'],
-            ['name', 'string', 'max' => 100],
-            ['title', 'string', 'length' => 10],
-            ['alias', 'string', 'length' => [0, 20]],
-            ['description', 'string', 'max' => 500],
-            [['radio', 'checkbox'], 'boolean'],
-        ];
-    }
-
-    public function customError()
-    {
-        return 'this is custom error message';
     }
 }

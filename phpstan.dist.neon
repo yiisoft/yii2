@@ -17,9 +17,6 @@ parameters:
             - tests/framework/*/mocks/*
             # TODO: Analyze these directories
             - tests/framework/db
-            - tests/framework/grid
-            - tests/framework/helpers
-            - tests/framework/i18n
             - tests/framework/log
             - tests/framework/validators
 
