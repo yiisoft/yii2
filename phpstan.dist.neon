@@ -17,7 +17,6 @@ parameters:
             - tests/framework/*/mocks/*
             # TODO: Analyze these directories
             - tests/framework/db
-            - tests/framework/log
             - tests/framework/validators
 
     bootstrapFiles:
