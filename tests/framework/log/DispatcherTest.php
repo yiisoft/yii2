@@ -28,6 +28,8 @@ namespace yiiunit\framework\log {
 
     /**
      * @group log
+     *
+     * @method static mixed microtime($get_as_float)
      */
     class DispatcherTest extends TestCase
     {
@@ -324,7 +326,10 @@ namespace yiiunit\framework\log {
             $this->assertSame(1, $this->targetThrowFirstCount);
             $this->assertSame(2, count($this->targetThrowSecondOutputs));
             $this->assertSame($message, array_shift($this->targetThrowSecondOutputs));
-            $this->assertStringStartsWith('Unable to send log via', array_shift($this->targetThrowSecondOutputs)[0]);
+
+            $targetThrowSecondOutputs = array_shift($this->targetThrowSecondOutputs);
+            $this->assertIsArray($targetThrowSecondOutputs);
+            $this->assertStringStartsWith('Unable to send log via', $targetThrowSecondOutputs[0]);
         }
     }
 }

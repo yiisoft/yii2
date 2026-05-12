@@ -72,9 +72,12 @@ class IndexActionTest extends TestCase
     /**
      * @dataProvider dataProviderTestPrepareDataProviderWithPaginationAndSorting
      *
-     * @param string $sql
-     * @param array $params
-     * @param string $expectedRawSql
+     * @param Pagination|array|false $pagination
+     * @param Sort|array|false $sort
+     * @param int|null $expectedPaginationPageSize
+     * @param int|null $expectedPaginationDefaultPageSize
+     * @param array $expectedSortOrders
+     * @param array|null $expectedSortDefaultOrder
      */
     public function testPrepareDataProviderWithPaginationAndSorting(
         Pagination|bool|array $pagination,

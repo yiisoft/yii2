@@ -12,6 +12,9 @@ use yiiunit\TestCase;
 use yii\web\Response;
 use yii\web\ResponseFormatterInterface;
 
+/**
+ * @template TFormatter of ResponseFormatterInterface
+ */
 abstract class BaseFormatter extends TestCase
 {
     /**
@@ -19,7 +22,7 @@ abstract class BaseFormatter extends TestCase
      */
     public $response;
     /**
-     * @var ResponseFormatterInterface
+     * @var TFormatter
      */
     public $formatter;
 
@@ -31,7 +34,7 @@ abstract class BaseFormatter extends TestCase
     }
 
     /**
-     * @return ResponseFormatterInterface
+     * @return TFormatter
      */
     abstract protected function getFormatterInstance();
 

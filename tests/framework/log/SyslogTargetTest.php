@@ -24,7 +24,7 @@ namespace yii\log {
 }
 
 namespace yiiunit\framework\log {
-    use PHPUnit_Framework_MockObject_MockObject;
+    use PHPUnit\Framework\MockObject\MockObject;
     use yii\helpers\VarDumper;
     use yii\log\Logger;
     use yii\log\SyslogTarget;
@@ -34,6 +34,10 @@ namespace yiiunit\framework\log {
      * Class SyslogTargetTest.
      *
      * @group log
+     *
+     * @method static mixed openlog($arguments)
+     * @method static mixed syslog($arguments)
+     * @method static mixed closelog($arguments)
      */
     class SyslogTargetTest extends TestCase
     {
@@ -45,7 +49,7 @@ namespace yiiunit\framework\log {
         public static $functions = [];
 
         /**
-         * @var MockObject
+         * @var SyslogTarget&MockObject
          */
         protected $syslogTarget;
 
@@ -64,7 +68,7 @@ namespace yiiunit\framework\log {
         {
             $identity = 'identity string';
             $options = LOG_ODELAY | LOG_PID;
-            $facility = 'facility string';
+            $facility = LOG_USER;
             $messages = [
                 ['info message', Logger::LEVEL_INFO],
                 ['error message', Logger::LEVEL_ERROR],
@@ -75,7 +79,7 @@ namespace yiiunit\framework\log {
                 ['profile end message', Logger::LEVEL_PROFILE_END],
             ];
 
-            /** @var SyslogTarget $syslogTarget */
+            /** @var SyslogTargetStub&MockObject $syslogTarget */
             $syslogTarget = $this->getMockBuilder(SyslogTargetStub::class)
                 ->onlyMethods(['openlog', 'syslog', 'closelog', 'formatMessage'])
                 ->getMock();
@@ -180,7 +184,7 @@ namespace yiiunit\framework\log {
          */
         public function testFailedExport(): void
         {
-            /** @var SyslogTarget $syslogTarget */
+            /** @var SyslogTargetStub&MockObject $syslogTarget */
             $syslogTarget = $this->getMockBuilder(SyslogTargetStub::class)
                 ->onlyMethods(['openlog', 'syslog', 'closelog', 'formatMessage'])
                 ->getMock();
@@ -189,7 +193,7 @@ namespace yiiunit\framework\log {
 
             $syslogTarget->identity = 'identity string';
             $syslogTarget->options = LOG_ODELAY | LOG_PID;
-            $syslogTarget->facility = 'facility string';
+            $syslogTarget->facility = LOG_USER;
             $syslogTarget->messages = [
                 ['test', Logger::LEVEL_INFO],
             ];

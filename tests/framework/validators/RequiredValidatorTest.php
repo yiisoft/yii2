@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
-use yii\base\Model;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
@@ -157,22 +156,5 @@ class RequiredValidatorTest extends TestCase
         $errors = $m->getErrors('attr_val');
         $this->assertStringContainsString('blank', $errors[0]);
         $this->assertStringNotContainsString('{requiredValue}', $errors[0]);
-    }
-}
-
-class ModelForReqValidator extends Model
-{
-    public $attr;
-
-    public function rules()
-    {
-        return [
-            [['attr'], 'required'],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return ['attr' => '<b>Attr</b>'];
     }
 }

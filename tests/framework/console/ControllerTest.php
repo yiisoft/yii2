@@ -25,6 +25,10 @@ use yii\console\Request;
 use yii\console\Response;
 use yii\helpers\Console;
 use yiiunit\framework\console\stubs\DummyService;
+use yiiunit\framework\console\stubs\FakeController;
+use yiiunit\framework\console\stubs\FakeHelpController;
+use yiiunit\framework\console\stubs\FakeHelpControllerWithoutOutput;
+use yiiunit\framework\console\stubs\FakeInjectionController;
 use yiiunit\TestCase;
 
 /**
@@ -43,9 +47,9 @@ class ControllerTest extends TestCase
         $this->mockApplication();
 
         Yii::$app->controllerMap = [
-            'fake' => 'yiiunit\framework\console\FakeController',
-            'fake_witout_output' => 'yiiunit\framework\console\FakeHelpControllerWithoutOutput',
-            'help' => 'yiiunit\framework\console\FakeHelpController',
+            'fake' => 'yiiunit\framework\console\stubs\FakeController',
+            'fake_without_output' => 'yiiunit\framework\console\stubs\FakeHelpControllerWithoutOutput',
+            'help' => 'yiiunit\framework\console\stubs\FakeHelpController',
         ];
     }
 

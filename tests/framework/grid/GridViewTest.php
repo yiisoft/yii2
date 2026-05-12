@@ -217,15 +217,18 @@ class GridViewTest extends TestCase
             ],
         ]);
 
+        $gridDataProvider = $grid->dataProvider;
+        $this->assertInstanceOf(ActiveDataProvider::class, $gridDataProvider);
+
         // NoAutoLabels::generateAttributeLabel() should not be called.
-        $grid->dataProvider->setSort([
+        $gridDataProvider->setSort([
             'route' => '/',
             'urlManager' => $urlManager,
         ]);
         $grid->renderTableHeader();
 
         // NoAutoLabels::generateAttributeLabel() should not be called.
-        $grid->dataProvider->setSort([
+        $gridDataProvider->setSort([
             'route' => '/',
             'urlManager' => $urlManager,
             'attributes' => ['attr1', 'attr2'],

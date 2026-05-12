@@ -114,6 +114,7 @@ final class ActiveFormTest extends \yiiunit\TestCase
 
         $model->categories = 1;
 
+
         ob_start();
         $form = ActiveForm::begin(
             [

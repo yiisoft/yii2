@@ -8,8 +8,8 @@ use yii\web\NotFoundHttpException;
 class ModelBindingStub extends ActiveRecord
 {
     /**
-     * @return self;
-     * @throw NotFoundHttpException
+     * @return self
+     * @throws NotFoundHttpException
      */
     public static function build(): never
     {

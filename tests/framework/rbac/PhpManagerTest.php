@@ -18,6 +18,8 @@ use yiiunit\framework\rbac\stub\ExposedPhpManager;
 
 /**
  * Unit test for {@see \yii\rbac\PhpManager}.
+ *
+ * @extends ManagerTestCase<ExposedPhpManager>
  */
 #[Group('rbac')]
 #[Group('rbac-php')]

@@ -6,10 +6,9 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\console;
+namespace yiiunit\framework\console\stubs;
 
 use yii\data\DataProviderInterface;
-use yiiunit\framework\console\stubs\DummyService;
 use yii\console\Controller;
 use yii\console\Request;
 use yiiunit\framework\web\Post;

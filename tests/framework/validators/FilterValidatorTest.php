@@ -10,8 +10,8 @@ namespace yiiunit\framework\validators;
 
 use yii\validators\FilterValidator;
 use yii\validators\Validator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -87,7 +87,10 @@ class FilterValidatorTest extends TestCase
     {
         $val = new FilterValidator(['filter' => 'trim']);
         $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
-        $this->assertNull($val->clientValidateAttribute($m, 'attr_one', new FilterViewStub()));
+        $this->assertNull(
+            $val->clientValidateAttribute($m, 'attr_one', new ViewStub()),
+            'No `ClientValidatorScriptInterface` binding must yield `null`.',
+        );
     }
 
     public function testGetClientOptionsDefault(): void
@@ -104,12 +107,5 @@ class FilterValidatorTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_one' => 'test']);
         $options = $val->getClientOptions($m, 'attr_one');
         $this->assertSame(1, $options['skipOnEmpty']);
-    }
-}
-
-class FilterViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }

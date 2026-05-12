@@ -9,8 +9,6 @@
 namespace yiiunit\base\log;
 
 use yii\console\Application;
-use yii\console\Controller;
-use yii\base\InvalidParamException;
 use yii\db\Exception;
 use yii\base\InvalidConfigException;
 use Yii;
@@ -18,6 +16,7 @@ use yii\base\InvalidArgumentException;
 use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\log\DbTarget;
 use yii\log\Logger;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
@@ -171,7 +170,10 @@ abstract class BaseDbTarget extends TestCase
         // current db connection should still have a transaction
         $this->assertNotNull($db->transaction);
         // log db connection should not have transaction
-        $this->assertNull(Yii::$app->log->targets['db']->db->transaction);
+
+        $dbTarget = Yii::$app->log->targets['db'];
+        $this->assertInstanceOf(DbTarget::class, $dbTarget);
+        $this->assertNull($dbTarget->db->transaction);
 
         $tx->rollBack();
 
