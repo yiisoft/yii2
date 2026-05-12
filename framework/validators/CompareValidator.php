@@ -93,7 +93,7 @@ class CompareValidator extends Validator
      */
     public $operator = '==';
     /**
-     * @var string the user-defined error message. It may contain the following placeholders which
+     * @var string|null the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
      *
      * - `{attribute}`: the label of the attribute being validated

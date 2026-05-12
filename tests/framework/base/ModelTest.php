@@ -1395,7 +1395,7 @@ final class ModelTest extends TestCase
 
     public function testFormNameWithAnonymousClass(): void
     {
-        $model = require __DIR__ . '/stub/AnonymousModelClass.php';
+        $model = require __DIR__ . '/stubs/AnonymousModelClass.php';
 
         self::expectException(
             InvalidConfigException::class,

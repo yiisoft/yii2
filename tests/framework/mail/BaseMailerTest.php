@@ -11,8 +11,8 @@ namespace yiiunit\framework\mail;
 use Yii;
 use yii\base\View;
 use yii\helpers\FileHelper;
-use yii\mail\BaseMailer;
-use yii\mail\BaseMessage;
+use yiiunit\framework\mail\stubs\TestMailer;
+use yiiunit\framework\mail\stubs\TestMessage;
 use yiiunit\TestCase;
 
 /**
@@ -50,18 +50,18 @@ class BaseMailerTest extends TestCase
     }
 
     /**
-     * @return Mailer test email component instance.
+     * @return TestMailer test email component instance.
      */
     protected function createTestMailComponent()
     {
-        $component = new Mailer();
+        $component = new TestMailer();
         $component->viewPath = $this->getTestFilePath();
 
         return $component;
     }
 
     /**
-     * @return Mailer mailer instance
+     * @return TestMailer mailer instance
      */
     protected function getTestMailComponent()
     {
@@ -72,7 +72,7 @@ class BaseMailerTest extends TestCase
 
     public function testSetupView(): void
     {
-        $mailer = new Mailer();
+        $mailer = new TestMailer();
 
         $view = new View();
         $mailer->setView($view);
@@ -95,14 +95,14 @@ class BaseMailerTest extends TestCase
      */
     public function testGetDefaultView(): void
     {
-        $mailer = new Mailer();
+        $mailer = new TestMailer();
         $view = $mailer->getView();
         $this->assertIsObject($view, 'Unable to get default view!');
     }
 
     public function testCreateMessage(): void
     {
-        $mailer = new Mailer();
+        $mailer = new TestMailer();
         $message = $mailer->compose();
         $this->assertIsObject($message, 'Unable to create message instance!');
         $this->assertEquals($mailer->messageClass, $message::class, 'Invalid message class!');
@@ -113,7 +113,7 @@ class BaseMailerTest extends TestCase
      */
     public function testDefaultMessageConfig(): void
     {
-        $mailer = new Mailer();
+        $mailer = new TestMailer();
 
         $notPropertyConfig = [
             'charset' => 'utf-16',
@@ -132,6 +132,7 @@ class BaseMailerTest extends TestCase
         $messageConfig = [...$notPropertyConfig, ...$propertyConfig];
         $mailer->messageConfig = $messageConfig;
 
+        /** @var TestMessage $message */
         $message = $mailer->compose();
 
         foreach ($notPropertyConfig as $name => $value) {
@@ -204,6 +205,7 @@ class BaseMailerTest extends TestCase
         $textViewFileContent = 'Plain text view file content';
         file_put_contents($textViewFileName, $textViewFileContent);
 
+        /** @var TestMessage $message */
         $message = $mailer->compose([
             'html' => $htmlViewName,
             'text' => $textViewName,
@@ -211,6 +213,7 @@ class BaseMailerTest extends TestCase
         $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
         $this->assertEquals($textViewFileContent, $message->_textBody, 'Unable to render text!');
 
+        /** @var TestMessage $message */
         $message = $mailer->compose($htmlViewName);
         $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
         $this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
@@ -265,6 +268,7 @@ TEXT
         $htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
         file_put_contents($htmlViewFileName, $htmlViewFileContent);
 
+        /** @var TestMessage $message */
         $message = $mailer->compose([
             'html' => $htmlViewName,
         ]);
@@ -274,7 +278,7 @@ TEXT
 
     public function testUseFileTransport(): void
     {
-        $mailer = new Mailer();
+        $mailer = new TestMailer();
         $this->assertFalse($mailer->useFileTransport);
         $this->assertEquals('@runtime/mail', $mailer->fileTransportPath);
 
@@ -294,11 +298,9 @@ TEXT
 
     public function testBeforeSendEvent(): void
     {
-        $message = new Message();
-
-        /** @var Mailer $mailerMock */
+        $message = new TestMessage();
         $mailerMock = $this->createPartialMock(
-            Mailer::class,
+            TestMailer::class,
             [
                 'afterSend',
                 'beforeSend',
@@ -309,162 +311,5 @@ TEXT
         $mailerMock->expects($this->once())->method('afterSend')->with($message, true);
 
         $mailerMock->send($message);
-    }
-}
-
-/**
- * Test Mailer class.
- */
-class Mailer extends BaseMailer
-{
-    public $messageClass = 'yiiunit\framework\mail\Message';
-    public $sentMessages = [];
-
-    protected function sendMessage($message)
-    {
-        $this->sentMessages[] = $message;
-
-        return true;
-    }
-}
-
-/**
- * Test Message class.
- */
-class Message extends BaseMessage
-{
-    public $id;
-    public $encoding;
-    public $_charset;
-    public $_from;
-    public $_replyTo;
-    public $_to;
-    public $_cc;
-    public $_bcc;
-    public $_subject;
-    public $_textBody;
-    public $_htmlBody;
-
-    public function getCharset()
-    {
-        return $this->_charset;
-    }
-
-    public function setCharset($charset)
-    {
-        $this->_charset = $charset;
-
-        return $this;
-    }
-
-    public function getFrom()
-    {
-        return $this->_from;
-    }
-
-    public function setFrom($from)
-    {
-        $this->_from = $from;
-
-        return $this;
-    }
-
-    public function getTo()
-    {
-        return $this->_to;
-    }
-
-    public function setTo($to)
-    {
-        $this->_to = $to;
-
-        return $this;
-    }
-
-    public function getCc()
-    {
-        return $this->_cc;
-    }
-
-    public function setCc($cc)
-    {
-        $this->_cc = $cc;
-
-        return $this;
-    }
-
-    public function getBcc()
-    {
-        return $this->_bcc;
-    }
-
-    public function setBcc($bcc)
-    {
-        $this->_bcc = $bcc;
-
-        return $this;
-    }
-
-    public function getSubject()
-    {
-        return $this->_subject;
-    }
-
-    public function setSubject($subject)
-    {
-        $this->_subject = $subject;
-
-        return $this;
-    }
-
-    public function getReplyTo()
-    {
-        return $this->_replyTo;
-    }
-
-    public function setReplyTo($replyTo)
-    {
-        $this->_replyTo = $replyTo;
-
-        return $this;
-    }
-
-    public function setTextBody($text)
-    {
-        $this->_textBody = $text;
-
-        return $this;
-    }
-
-    public function setHtmlBody($html)
-    {
-        $this->_htmlBody = $html;
-
-        return $this;
-    }
-
-    public function attachContent($content, array $options = []): void
-    {
-    }
-
-    public function attach($fileName, array $options = []): void
-    {
-    }
-
-    public function embed($fileName, array $options = []): void
-    {
-    }
-
-    public function embedContent($content, array $options = []): void
-    {
-    }
-
-    public function toString()
-    {
-        $mailer = $this->mailer;
-        $this->mailer = null;
-        $s = var_export($this, true);
-        $this->mailer = $mailer;
-        return $s;
     }
 }

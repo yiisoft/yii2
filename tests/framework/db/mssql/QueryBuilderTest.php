@@ -1028,4 +1028,98 @@ ALTER TABLE [foo1] DROP COLUMN [bar]";
 
         return $data;
     }
+
+    public function testRenameTable(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $sql = $qb->renameTable('old_table', 'new_table');
+        $this->assertSame('sp_rename [old_table], [new_table]', $sql);
+    }
+
+    public function testRenameColumn(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $sql = $qb->renameColumn('test_table', 'old_col', 'new_col');
+        $this->assertSame("sp_rename '[test_table].[old_col]', [new_col], 'COLUMN'", $sql);
+    }
+
+    public function testSelectExists(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $sql = $qb->selectExists('SELECT 1 FROM [customer]');
+        $this->assertSame('SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer]) THEN 1 ELSE 0 END', $sql);
+    }
+
+    public function testCheckIntegrityEnableForTable(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $sql = $qb->checkIntegrity(true, '', 'customer');
+        $this->assertSame('ALTER TABLE [dbo].[customer] CHECK CONSTRAINT ALL; ', $sql);
+    }
+
+    public function testCheckIntegrityDisableForTable(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $sql = $qb->checkIntegrity(false, '', 'customer');
+        $this->assertSame('ALTER TABLE [dbo].[customer] NOCHECK CONSTRAINT ALL; ', $sql);
+    }
+
+    public function testCheckIntegrityFiltersOutViews(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $sql = $qb->checkIntegrity(true);
+        $this->assertStringContainsString('CHECK CONSTRAINT ALL', $sql);
+        $this->assertStringContainsString('[dbo].[customer]', $sql);
+        $this->assertStringNotContainsString('animal_view', $sql);
+    }
+
+    public function testResetSequenceThrowsExceptionForNonExistentTable(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+        $qb->resetSequence('non_existent_table');
+    }
+
+    public function testResetSequenceThrowsExceptionForTableWithoutSequence(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage("There is not sequence associated with table 'order_item'.");
+        $qb->resetSequence('order_item');
+    }
+
+    public function testUpdateWithVarbinaryData(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $params = [];
+        $sql = $qb->update('T_upsert_varbinary', ['blob_col' => 'test data'], ['id' => 1], $params);
+        $this->assertStringContainsString('CONVERT(VARBINARY(MAX), 0x' . bin2hex('test data') . ')', $sql);
+        $this->assertSame([':qp0' => 1], $params);
+    }
+
+    public function testCompositeInWithSubqueryThrowsException(): void
+    {
+        $qb = $this->getQueryBuilder();
+        $params = [];
+        $condition = ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')];
+        $this->expectException('yii\base\NotSupportedException');
+        $qb->buildCondition($condition, $params);
+    }
+
+    public function testAddCommentOnNonExistentTableThrowsException(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+        $qb->addCommentOnColumn('non_existent_table', 'col', 'comment');
+    }
+
+    public function testDropCommentFromNonExistentTableThrowsException(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+        $qb->dropCommentFromColumn('non_existent_table', 'col');
+    }
 }

@@ -31,6 +31,8 @@ use yiiunit\framework\log\ArrayTarget;
 
 /**
  * Base class for testing {@see DbManager}.
+ *
+ * @extends ManagerTestCase<DbManager>
  */
 abstract class DbManagerTestCase extends ManagerTestCase
 {
@@ -38,7 +40,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected static $driverName;
 
     /**
-     * @var Connection
+     * @var Connection|null
      */
     protected $db;
 

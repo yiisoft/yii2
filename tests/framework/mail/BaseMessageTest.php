@@ -10,8 +10,9 @@ namespace yiiunit\framework\mail;
 
 use Exception;
 use Yii;
-use yii\mail\BaseMailer;
-use yii\mail\BaseMessage;
+use yiiunit\framework\mail\stubs\TestMailer;
+use yiiunit\framework\mail\stubs\TestMessage;
+use yiiunit\framework\mail\stubs\TestMessageWithException;
 use yiiunit\TestCase;
 
 /**
@@ -29,7 +30,7 @@ class BaseMessageTest extends TestCase
     }
 
     /**
-     * @return Mailer test email component instance.
+     * @return TestMailer test email component instance.
      */
     protected function createTestEmailComponent()
     {
@@ -59,6 +60,7 @@ class BaseMessageTest extends TestCase
     public function testToString(): void
     {
         $mailer = $this->getMailer();
+        /** @var TestMessage $message */
         $message = $mailer->compose();
         $this->assertEquals($message->toString(), '' . $message);
     }
@@ -71,130 +73,5 @@ class BaseMessageTest extends TestCase
         $this->expectExceptionMessage('Test exception in toString.');
 
         (string) $message;
-    }
-}
-
-/**
- * Test Mailer class.
- */
-class TestMailer extends BaseMailer
-{
-    public $messageClass = 'yiiunit\framework\mail\TestMessage';
-    public $sentMessages = [];
-
-    protected function sendMessage($message)
-    {
-        $this->sentMessages[] = $message;
-    }
-}
-
-/**
- * Test Message class.
- */
-class TestMessage extends BaseMessage
-{
-    public $text;
-    public $html;
-
-    public function getCharset()
-    {
-        return '';
-    }
-
-    public function setCharset($charset): void
-    {
-    }
-
-    public function getFrom()
-    {
-        return '';
-    }
-
-    public function setFrom($from): void
-    {
-    }
-
-    public function getReplyTo()
-    {
-        return '';
-    }
-
-    public function setReplyTo($replyTo): void
-    {
-    }
-
-    public function getTo()
-    {
-        return '';
-    }
-
-    public function setTo($to): void
-    {
-    }
-
-    public function getCc()
-    {
-        return '';
-    }
-
-    public function setCc($cc): void
-    {
-    }
-
-    public function getBcc()
-    {
-        return '';
-    }
-
-    public function setBcc($bcc): void
-    {
-    }
-
-    public function getSubject()
-    {
-        return '';
-    }
-
-    public function setSubject($subject): void
-    {
-    }
-
-    public function setTextBody($text): void
-    {
-        $this->text = $text;
-    }
-
-    public function setHtmlBody($html): void
-    {
-        $this->html = $html;
-    }
-
-    public function attachContent($content, array $options = []): void
-    {
-    }
-
-    public function attach($fileName, array $options = []): void
-    {
-    }
-
-    public function embed($fileName, array $options = []): void
-    {
-    }
-
-    public function embedContent($content, array $options = []): void
-    {
-    }
-
-    public function toString()
-    {
-        return static::class;
-    }
-}
-
-class TestMessageWithException extends TestMessage
-{
-    public function toString()
-    {
-        throw new Exception('Test exception in toString.');
     }
 }

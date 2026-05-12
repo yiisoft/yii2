@@ -444,9 +444,9 @@ class ConsoleTest extends TestCase
 }
 
 /**
- * @property string name
- * @property array types
- * @property string description
+ * @property string $name
+ * @property array $types
+ * @property string $description
  */
 class TestConsoleModel extends DynamicModel
 {

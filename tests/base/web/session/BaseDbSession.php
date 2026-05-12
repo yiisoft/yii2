@@ -15,6 +15,7 @@ use Yii;
 use yii\db\Connection;
 use yii\db\Migration;
 use yii\db\Query;
+use yii\web\Application;
 use yii\web\DbSession;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\framework\web\session\SessionTestTrait;
@@ -260,11 +261,14 @@ abstract class BaseDbSession extends TestCase
             'db' => 'sessionDb',
         ]);
 
-        $this->assertSame(Yii::$app->sessionDb, $session->db);
+        /** @var Application&object{sessionDb: Connection} */
+        $app = Yii::$app;
+
+        $this->assertSame($app->sessionDb, $session->db);
         $this->assertSame(300, $session->timeout);
         $session->close();
 
-        Yii::$app->set('db', Yii::$app->sessionDb);
+        Yii::$app->set('db', $app->sessionDb);
         Yii::$app->set('sessionDb', null);
         ini_set('session.gc_maxlifetime', $oldTimeout);
     }

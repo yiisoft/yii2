@@ -257,6 +257,8 @@ class ValidatorTest extends TestCase
 
         $model = new FakedValidationModel();
         $val = Validator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $this->assertInstanceOf(InlineValidator::class, $val);
+
         $val->clientValidate = 'clientInlineVal';
         $args = $val->clientValidateAttribute($model, 'val_attr_a', $view);
 

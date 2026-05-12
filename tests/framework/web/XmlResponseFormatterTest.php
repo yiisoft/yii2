@@ -18,12 +18,13 @@ use yiiunit\base\web\BaseFormatter;
  * @since 2.0
  *
  * @group web
+ *
+ * @extends BaseFormatter<XmlResponseFormatter>
  */
 class XmlResponseFormatterTest extends BaseFormatter
 {
     /**
      * @param array $options
-     * @return XmlResponseFormatter
      */
     protected function getFormatterInstance($options = [])
     {

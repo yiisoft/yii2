@@ -1069,7 +1069,7 @@ final class ComponentTest extends TestCase
      */
     public function testEventClosureDetachesItself(): void
     {
-        $obj = require __DIR__ . '/stub/AnonymousComponentClass.php';
+        $obj = require __DIR__ . '/stubs/AnonymousComponentClass.php';
 
         $obj->trigger('barEventOnce');
 

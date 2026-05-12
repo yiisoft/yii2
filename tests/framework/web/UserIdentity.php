@@ -18,11 +18,13 @@ class UserIdentity extends Component implements IdentityInterface
 
     public static function findIdentity($id)
     {
-        if (in_array($id, static::$ids)) {
+        if (in_array($id, self::$ids)) {
             $identitiy = new static();
             $identitiy->_id = $id;
             return $identitiy;
         }
+
+        return null;
     }
 
     public static function findIdentityByAccessToken($token, $type = null): never

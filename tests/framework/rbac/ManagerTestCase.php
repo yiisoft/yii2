@@ -32,16 +32,18 @@ use function count;
 
 /**
  * Base class for testing {@see ManagerInterface}.
+ *
+ * @template TManager of BaseManager
  */
 abstract class ManagerTestCase extends TestCase
 {
     /**
-     * @var ManagerInterface|BaseManager
+     * @var TManager
      */
     protected $auth;
 
     /**
-     * @return ManagerInterface
+     * @return TManager
      */
     abstract protected function createManager();
 
@@ -176,6 +178,11 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule($ruleName);
 
+        self::assertInstanceOf(
+            AuthorRule::class,
+            $rule,
+            'Rule must round-trip as the original subclass.',
+        );
         self::assertSame(
             $ruleName,
             $rule->name,
@@ -193,6 +200,12 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('isAuthor');
 
+        self::assertInstanceOf(
+            AuthorRule::class,
+            $rule,
+            'Existing rule must load as the original subclass.',
+        );
+
         $rule->name = 'newName';
         $rule->reallyReally = false;
 
@@ -207,6 +220,11 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('newName');
 
+        self::assertInstanceOf(
+            AuthorRule::class,
+            $rule,
+            'Renamed rule must remain the original subclass.',
+        );
         self::assertSame(
             'newName',
             $rule->name,
@@ -223,6 +241,11 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('newName');
 
+        self::assertInstanceOf(
+            AuthorRule::class,
+            $rule,
+            'Subsequent reload must keep the subclass.',
+        );
         self::assertTrue(
             $rule->reallyReally,
             'Subsequent property update must persist.',

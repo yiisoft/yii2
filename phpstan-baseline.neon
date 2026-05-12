@@ -1225,60 +1225,6 @@ parameters:
 			path: tests/base/db/BaseSchema.php
 
 		-
-			message: '#^Access to an undefined property yii\\log\\Target\:\:\$db\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/base/log/BaseDbTarget.php
-
-		-
-			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestRefModel\:\:\$a_field\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/base/validators/BaseExistValidator.php
-
-		-
-			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestMainModel\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/base/validators/BaseUniqueValidator.php
-
-		-
-			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestRefModel\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 2
-			path: tests/base/validators/BaseUniqueValidator.php
-
-		-
-			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\ValidatorTestRefModel\:\:\$ref\.$#'
-			identifier: property.notFound
-			count: 2
-			path: tests/base/validators/BaseUniqueValidator.php
-
-		-
-			message: '#^Property yiiunit\\data\\ar\\Customer\:\:\$email \(string\) does not accept array\<int, string\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: tests/base/validators/BaseUniqueValidator.php
-
-		-
-			message: '#^Property yiiunit\\data\\ar\\Customer\:\:\$name \(string\) does not accept array\<int, string\>\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: tests/base/validators/BaseUniqueValidator.php
-
-		-
-			message: '#^Property yiiunit\\data\\ar\\Order\:\:\$total \(string\) does not accept int\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: tests/base/validators/BaseUniqueValidator.php
-
-		-
-			message: '#^Access to an undefined property yii\\console\\Application\|yii\\web\\Application\<yii\\web\\IdentityInterface\>\:\:\$sessionDb\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/base/web/session/BaseDbSession.php
-
-		-
 			message: '#^Access to an undefined property yiiunit\\data\\base\\NewComponent\:\:\$as f\.$#'
 			identifier: property.notFound
 			count: 1
@@ -1291,6 +1237,24 @@ parameters:
 			path: tests/framework/base/ComponentTest.php
 
 		-
+			message: '#^Parameter &\$args by\-ref type of method yiiunit\\framework\\base\\stub\\controller\\InjectingController\:\:bindInjectedFor\(\) expects array\<int, mixed\>, array given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: tests/framework/base/stub/controller/InjectingController.php
+
+		-
+			message: '#^Parameter &\$requestedParams by\-ref type of method yiiunit\\framework\\base\\stub\\controller\\InjectingController\:\:bindInjectedFor\(\) expects array\<string, string\>, array given\.$#'
+			identifier: parameterByRef.type
+			count: 1
+			path: tests/framework/base/stub/controller/InjectingController.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\BaseObject\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/captcha/CaptchaTest.php
+
+		-
 			message: '#^Return type \(void\) of method yiiunit\\framework\\console\\controllers\\FixtureConsoledController\:\:stdout\(\) should be compatible with return type \(bool\|int\) of method yii\\console\\Controller\<yii\\console\\Application\>\:\:stdout\(\)$#'
 			identifier: method.childReturnType
 			count: 1
@@ -1301,3 +1265,339 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: tests/framework/filters/AccessRuleTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\BaseObject\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/grid/CheckboxColumnTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\BaseObject\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/grid/GridViewTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$extension with type array is incompatible with native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/helpers/FileHelperTest.php
+
+		-
+			message: '#^PHPDoc tag @throws with type yii\\base\\InvalidConfigException\|yii\\base\\InvalidParamException\|yii\\db\\Exception is not subtype of Throwable$#'
+			identifier: throws.notThrowable
+			count: 1
+			path: tests/framework/i18n/DbMessageSourceTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$expected with type mixed is not subtype of native type bool\|string\.$#'
+			identifier: parameter.phpDocType
+			count: 2
+			path: tests/framework/i18n/FormatterDateTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$expectedException with type mixed is not subtype of native type string\|null\.$#'
+			identifier: parameter.phpDocType
+			count: 2
+			path: tests/framework/i18n/FormatterDateTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$value with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 2
+			path: tests/framework/i18n/FormatterDateTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$_length with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$_shortLength with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$_shortWeight with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$_weight with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$arguments with type mixed is not subtype of native type array\.$#'
+			identifier: parameter.phpDocType
+			count: 4
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$expected with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 4
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$expectedException with type mixed is not subtype of native type array\.$#'
+			identifier: parameter.phpDocType
+			count: 4
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$message with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 4
+			path: tests/framework/i18n/FormatterTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:attach\(\) should return \$this\(yiiunit\\framework\\log\\TestMessage\) but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:attachContent\(\) should return \$this\(yiiunit\\framework\\log\\TestMessage\) but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:embed\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:embedContent\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getBcc\(\) should return array\|string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getCc\(\) should return array\|string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getCharset\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getFrom\(\) should return array\|string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getReplyTo\(\) should return array\|string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getSubject\(\) should return string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^Method yiiunit\\framework\\log\\TestMessage\:\:getTo\(\) should return array\|string but return statement is missing\.$#'
+			identifier: return.missing
+			count: 1
+			path: tests/framework/log/EmailTargetTest.php
+
+		-
+			message: '#^PHPDoc tag @var with type yii\\log\\Target is not subtype of native type PHPUnit\\Framework\\MockObject\\MockObject\.$#'
+			identifier: varTag.nativeType
+			count: 2
+			path: tests/framework/log/TargetTest.php
+
+		-
+			message: '#^Property yii\\rbac\\BaseManager\:\:\$defaultRoles \(array\<string\>\) does not accept Closure\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: tests/framework/rbac/ManagerTestCase.php
+
+		-
+			message: '#^Property yii\\rbac\\BaseManager\:\:\$defaultRoles \(array\<string\>\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/framework/rbac/ManagerTestCase.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$dataProvider with type yii\\data\\DataProviderInterface is not subtype of native type yii\\data\\ArrayDataProvider\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/rest/SerializerTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/BooleanValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/CompareValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attr_compare\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/framework/validators/CompareValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/EmailValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/FileValidatorTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$_ with type mixed is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/validators/FileValidatorTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$allowedExtensions with type array\|string is not subtype of native type string\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/validators/FileValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/FilterValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/IpValidatorTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$badIp with type mixed is not subtype of native type array\|bool\|int\|string\.$#'
+			identifier: parameter.phpDocType
+			count: 2
+			path: tests/framework/validators/IpValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/NumberValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/RangeValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/RegularExpressionValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/RequiredValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/StringValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/TrimValidatorTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/validators/UrlValidatorTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$appendTimestamp with type bool\|string is not subtype of native type bool\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/web/AssetBundleTest.php
+
+		-
+			message: '#^PHPDoc tag @param for parameter \$data with type mixed is not subtype of native type array\.$#'
+			identifier: parameter.phpDocType
+			count: 1
+			path: tests/framework/web/JsonResponseFormatterTest.php
+
+		-
+			message: '#^PHPDoc tag @var for property yiiunit\\framework\\widgets\\ActiveFieldTest\:\:\$helperModel with type yii\\base\\DynamicModel is not subtype of native type yiiunit\\framework\\widgets\\ActiveFieldTestModel\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: tests/framework/widgets/ActiveFieldTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\BaseObject\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 4
+			path: tests/framework/widgets/ActiveFormTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\DynamicModel\:\:\$categories\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/framework/widgets/ActiveFormTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\DynamicModel\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/widgets/ActiveFormTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\base\\DynamicModel\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/widgets/ActiveFormTest.php
+
+		-
+			message: '#^Property yii\\widgets\\Breadcrumbs\:\:\$homeLink \(array\|null\) does not accept false\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/framework/widgets/BreadcrumbsTest.php
+
+		-
+			message: '#^Property yii\\widgets\\Breadcrumbs\:\:\$tag \(string\) does not accept false\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: tests/framework/widgets/BreadcrumbsTest.php

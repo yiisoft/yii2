@@ -72,35 +72,46 @@ Yii Framework 2 Change Log
 - Chg: Drop dead SQL Server `< 2017` branches from MSSQL `Schema::loadColumnSchema()` (terabytesoftw)
 - Chg: Drop dead SQL Server `< 2005` branches from MSSQL `Schema::insert()` (terabytesoftw)
 
-2.0.55 under development
+2.0.56 under development
 ------------------------
 
+- Bug #20783: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
+- Enh #20785: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
+- Bug #20785: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
+- Bug #20785: Fix `@var` annotation for `yii\validators\CompareValidator::$message` (mspirkov)
+- Enh #20785: Add `@param-out` annotation for `$error` in `yii\validators\Validator::validate()` (mspirkov)
+
+
+2.0.55 May 09, 2026
+-------------------
+
+- Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
+- Bug #20159: Fix chroot resolve null route (gozoro)
+- Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 - Bug #20705: Replace `$this` with `self` in generics in Psalm annotations (mspirkov)
 - Bug #20715: Adjust `JSON` helper error message assertions for `PHP 8.6` compatibility in `JsonTest` class (terabytesoftw)
+- Bug #20733: Replace `$this` with `static` and `covariant static` in generics in PHPStan and PHPDoc annotations (mspirkov)
+- Bug #20735: Fix `@param` annotations for `$name` in `Request::get()` and `Request::post()` (mspirkov)
+- Bug #20738: Fix `@var` annotations for `Application::$requestedParams`, `AssetBundle::$basePath`, `AssetBundle::$baseUrl`, `MultiFieldSession::$writeCallback` (mspirkov)
+- Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
+- Bug #20738: Fix `@param` annotation for `$value` parameter in `AssetManager::setConverter()` (mspirkov)
+- Bug #20739: Fix `@var` annotation for `BaseYii::$app` (mspirkov)
+- Bug #20746: Fix `@var` annotations for `DbDependency::$db` and `DbDependency::$sql` (mspirkov)
+- Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
+- Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
+- Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
+- Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
+- Bug #20856: Fix passing generics to `BatchQueryResult` (mspirkov)
+- Bug: CVE-2026-39850, Isolate internal variables in `View::renderPhpFile()` and `ErrorHandler::renderFile()` to prevent parameter collisions from overriding included file paths (samdark)
 - Enh #20714: Allow overriding the `yii\grid\GridView`'s default `filterSelector`, allow using `Closure`s for `filterSelector` (chriscpty)
 - Enh #20717: Use PHPStan/Psalm types in PHPDoc annotations (mspirkov)
 - Enh #20718: When set_time_limit() is not available, throw a warning only for big files (@marc-farre)
 - Enh #20729: Add default types in `@template` annotations (mspirkov)
 - Enh #20730: Make the configuration type for `Application` wider (mspirkov)
-- Bug #20733: Replace `$this` with `static` and `covariant static` in generics in PHPStan and PHPDoc annotations (mspirkov)
-- Bug #20735: Fix `@param` annotations for `$name` in `Request::get()` and `Request::post()` (mspirkov)
 - Enh #20735: Add conditional types in `@return` annotations in `Request::get()` and `Request::post()` (mspirkov)
-- Bug #20738: Fix `@var` annotations for `Application::$requestedParams`, `AssetBundle::$basePath`, `AssetBundle::$baseUrl`, `MultiFieldSession::$writeCallback` (mspirkov)
-- Bug #20738: Fix `@return` annotations for `User::getAuthManager()` and `User::getAccessChecker()` (mspirkov)
-- Bug #20738: Fix `@param` annotation for `$value` parameter in `AssetManager::setConverter()` (mspirkov)
-- Bug #20739: Fix `@var` annotation for `BaseYii::$app` (mspirkov)
 - Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
-- Bug #20746: Fix `@var` annotations for `DbDependency::$db` and `DbDependency::$sql` (mspirkov)
-- Bug #20750: Fix `@return` annotation for `yii\console\Controller::runAction()` (mspirkov)
-- Bug #20750: Add the missing `@property-write` annotation to `yii\console\Controller` (mspirkov)
-- Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
-- Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
-- Bug #20697: `loadTableIndexes()` includes LOB indexes with `NULL` column names, causing `strpos()` deprecation on PHP `8.1+` (terabytesoftw)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
-- Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
-- Bug #20159: Fix chroot resolve null route (gozoro)
-- Bug #20856: Fix passing generics to `BatchQueryResult` (mspirkov)
 
 
 2.0.54 January 09, 2026

@@ -192,6 +192,7 @@ class MultipartFormDataParserTest extends TestCase
         $_POST = [
             'existingName' => 'value',
         ];
+        /** @var array<string, mixed> $_FILES */
         $_FILES = [
             'existingFile' => [
                 'name' => 'file.txt',

@@ -305,10 +305,13 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         $_params_['handler'] = $this;
         if ($this->exception instanceof ErrorException || !Yii::$app->has('view')) {
+            $_renderer_ = function () {
+                extract(func_get_arg(1), EXTR_OVERWRITE);
+                require Yii::getAlias(func_get_arg(0));
+            };
             ob_start();
             ob_implicit_flush(false);
-            extract($_params_, EXTR_OVERWRITE);
-            require Yii::getAlias($_file_);
+            call_user_func_array($_renderer_, [$_file_, $_params_]);
 
             return ob_get_clean();
         }

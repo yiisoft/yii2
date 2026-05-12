@@ -19,12 +19,11 @@ use yiiunit\base\web\BaseFormatter;
  * @since 2.0.3
  *
  * @group web
+ *
+ * @extends BaseFormatter<JsonResponseFormatter>
  */
 class JsonResponseFormatterTest extends BaseFormatter
 {
-    /**
-     * @return JsonResponseFormatter
-     */
     protected function getFormatterInstance($configuration = [])
     {
         return new JsonResponseFormatter($configuration);

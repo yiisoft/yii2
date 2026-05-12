@@ -101,6 +101,7 @@ class UploadedFileTest extends TestCase
 
     public function testSaveFileFromMultipartFormDataParser(): void
     {
+        /** @var array<string, mixed> $_FILES */
         $_FILES = [];
         UploadedFile::reset();
         $model = new ModelStub();
