@@ -82,6 +82,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         /** @var Customer $customerModel */
         $customerModel = Customer::findOne(1);
+        // @phpstan-ignore assign.propertyType (We intentionally use incorrect data here to test its processing)
         $customerModel->name = ['test array data'];
         $validator->validateAttribute($customerModel, 'name');
         $this->assertEquals($messageError, $customerModel->getFirstError('name'));
@@ -89,6 +90,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $customerModel->clearErrors();
 
         $customerModel->name = 'test data';
+        // @phpstan-ignore assign.propertyType (We intentionally use incorrect data here to test its processing)
         $customerModel->email = ['email@mail.com', 'email2@mail.com'];
         $validator->targetAttribute = ['email', 'name'];
         $validator->validateAttribute($customerModel, 'name');
@@ -420,7 +422,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         ]);
         $model = new Order();
         $model->customer_id = 1;
-        $model->total = 800;
+        $model->total = '800';
         $model->save(false);
         $validator->validateAttribute($model, 'id');
         $this->assertFalse($model->hasErrors());

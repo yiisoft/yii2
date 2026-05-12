@@ -22,7 +22,7 @@ use yiiunit\TestCase;
 class FormatterDateTest extends TestCase
 {
     /**
-     * @var Formatter
+     * @var Formatter|null
      */
     protected $formatter;
 
@@ -379,18 +379,18 @@ class FormatterDateTest extends TestCase
         $this->assertSame('a month ago', $this->formatter->asRelativeTime($dateThen, $dateNow));
 
         // Invert all the DateIntervals
-        $interval_1_second->invert = true;
-        $interval_244_seconds->invert = true;
-        $interval_1_minute->invert = true;
-        $interval_33_minutes->invert = true;
-        $interval_1_hour->invert = true;
-        $interval_6_hours->invert = true;
-        $interval_1_day->invert = true;
-        $interval_89_days->invert = true;
-        $interval_1_month->invert = true;
-        $interval_5_months->invert = true;
-        $interval_1_year->invert = true;
-        $interval_12_years->invert = true;
+        $interval_1_second->invert = 1;
+        $interval_244_seconds->invert = 1;
+        $interval_1_minute->invert = 1;
+        $interval_33_minutes->invert = 1;
+        $interval_1_hour->invert = 1;
+        $interval_6_hours->invert = 1;
+        $interval_1_day->invert = 1;
+        $interval_89_days->invert = 1;
+        $interval_1_month->invert = 1;
+        $interval_5_months->invert = 1;
+        $interval_1_year->invert = 1;
+        $interval_12_years->invert = 1;
 
         // Pass a inverted DateInterval
         $this->assertSame('in a second', $this->formatter->asRelativeTime($interval_1_second));
@@ -435,7 +435,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('just now', $this->formatter->asRelativeTime($t = time(), $t));
         $this->assertSame('just now', $this->formatter->asRelativeTime(0, 0));
         $interval_0_seconds = new DateInterval('PT0S');
-        $interval_0_seconds->invert = true;
+        $interval_0_seconds->invert = 1;
         $this->assertSame('just now', $this->formatter->asRelativeTime($interval_0_seconds));
 
         // empty input
@@ -507,19 +507,19 @@ class FormatterDateTest extends TestCase
         $this->assertSame('-94 months', $this->formatter->asDuration('P-94M'));
 
         // Invert all the DateIntervals
-        $interval_0_seconds->invert = true;
-        $interval_1_second->invert = true;
-        $interval_244_seconds->invert = true;
-        $interval_1_minute->invert = true;
-        $interval_33_minutes->invert = true;
-        $interval_1_hour->invert = true;
-        $interval_6_hours->invert = true;
-        $interval_1_day->invert = true;
-        $interval_89_days->invert = true;
-        $interval_1_month->invert = true;
-        $interval_5_months->invert = true;
-        $interval_1_year->invert = true;
-        $interval_12_years->invert = true;
+        $interval_0_seconds->invert = 1;
+        $interval_1_second->invert = 1;
+        $interval_244_seconds->invert = 1;
+        $interval_1_minute->invert = 1;
+        $interval_33_minutes->invert = 1;
+        $interval_1_hour->invert = 1;
+        $interval_6_hours->invert = 1;
+        $interval_1_day->invert = 1;
+        $interval_89_days->invert = 1;
+        $interval_1_month->invert = 1;
+        $interval_5_months->invert = 1;
+        $interval_1_year->invert = 1;
+        $interval_12_years->invert = 1;
 
         // Pass a inverted DateInterval
         $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));
@@ -760,7 +760,7 @@ class FormatterDateTest extends TestCase
 
     public function testIntlTimeOnlyValues()
     {
-        return $this->testTimeOnlyValues();
+        $this->testTimeOnlyValues();
     }
 
     /**
