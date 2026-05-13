@@ -36,9 +36,9 @@ class UserFixture extends ActiveFixture
 }
 ```
 
-> Note: These examples use the `app\tests\fixtures` namespace because the fixture classes are referenced directly
-> by application tests. The `yii fixture` command has its own default namespace, `tests\unit\fixtures`.
-> If your fixture classes use another namespace, configure the command or pass the `--namespace` option.
+These examples use the `app\tests\fixtures` namespace because the fixture classes are referenced directly
+by application tests. The `yii fixture` command has its own default namespace, `tests\unit\fixtures`.
+If your fixture classes use another namespace, configure the command or pass the `--namespace` option.
 
 > Tip: Each `ActiveFixture` is about preparing a DB table for testing purpose. You may specify the table
 > by setting either the [[yii\test\ActiveFixture::tableName]] property or the [[yii\test\ActiveFixture::modelClass]]
