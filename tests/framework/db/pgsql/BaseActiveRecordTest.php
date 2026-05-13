@@ -38,8 +38,8 @@ class BaseActiveRecordTest extends \yiiunit\framework\db\BaseActiveRecordTest
 
 /**
  * {@inheritdoc}
- * @property array id
- * @property array json_col
+ * @property array $id
+ * @property array $json_col
  */
 class ArrayAndJsonType extends ActiveRecord
 {

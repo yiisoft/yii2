@@ -11,6 +11,7 @@ namespace yiiunit\data\ar;
 /**
  * Model representing type table.
  *
+ * @property string $bigint_col
  * @property int $int_col
  * @property int $int_col2 DEFAULT 1
  * @property int $smallint_col DEFAULT 1
@@ -22,8 +23,8 @@ namespace yiiunit\data\ar;
  * @property string $blob_col
  * @property float $numeric_col DEFAULT '33.22'
  * @property string $time DEFAULT '2002-01-01 00:00:00'
- * @property bool $bool_col
- * @property bool $bool_col2 DEFAULT 1
+ * @property 1|0|'1'|'0'|bool $bool_col
+ * @property 1|0|'1'|'0'|bool $bool_col2 DEFAULT 1
  */
 class Type extends ActiveRecord
 {

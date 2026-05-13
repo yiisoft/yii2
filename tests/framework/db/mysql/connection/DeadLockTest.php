@@ -284,6 +284,8 @@ class DeadLockTest extends ConnectionTest
      * In case of error in child process its execution bubbles up to phpunit to continue
      * all the rest tests. So, all the rest tests in this case will run both in the child
      * and parent processes. Such mess must be prevented with child's own error handler.
+     *
+     * @phpstan-impure
      */
     private function setErrorHandler(): void
     {
