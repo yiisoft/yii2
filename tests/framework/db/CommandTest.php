@@ -670,6 +670,7 @@ SQL;
                 break;
             case 'oci':
                 $expression = 'EXTRACT(YEAR FROM sysdate)';
+                break;
             default:
                 $this->fail("Unexpected driver name: {$this->driverName}");
         }
