@@ -18,7 +18,7 @@ namespace yiiunit\data\ar;
  * @property string $char_col
  * @property string $char_col2 DEFAULT 'something'
  * @property string $char_col3
- * @property float $float_col
+ * @property float|numeric-string $float_col
  * @property float $float_col2 DEFAULT '1.23'
  * @property string $blob_col
  * @property float $numeric_col DEFAULT '33.22'
