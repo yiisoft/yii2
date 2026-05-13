@@ -8,11 +8,14 @@
 
 namespace yii\web;
 
+use Throwable;
 use Yii;
 use yii\base\ErrorException;
 use yii\base\Exception;
 use yii\base\UserException;
 use yii\helpers\VarDumper;
+
+use function is_string;
 
 /**
  * ErrorHandler handles uncaught PHP errors and exceptions.
@@ -31,6 +34,15 @@ use yii\helpers\VarDumper;
  */
 class ErrorHandler extends \yii\base\ErrorHandler
 {
+    /**
+     * @event ErrorHandlerRenderEvent an event that is triggered after HTML error content is rendered.
+     *
+     * Event handlers may modify [[ErrorHandlerRenderEvent::$output]].
+     *
+     * @since 2.0.56
+     */
+    public const EVENT_AFTER_RENDER = 'afterRender';
+
     /**
      * @var int maximum number of source code lines to be displayed. Defaults to 19.
      */
@@ -136,6 +148,14 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response->data = $this->convertExceptionToArray($exception);
         }
 
+        if ($response->format === Response::FORMAT_HTML) {
+            if (is_string($response->data)) {
+                $response->data = $this->triggerAfterRender($exception, $response->data);
+            } elseif (is_string($response->content)) {
+                $response->content = $this->triggerAfterRender($exception, $response->content);
+            }
+        }
+
         $response->send();
     }
 
@@ -184,6 +204,25 @@ class ErrorHandler extends \yii\base\ErrorHandler
     public function htmlEncode($text)
     {
         return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+    }
+
+    /**
+     * Triggers [[EVENT_AFTER_RENDER]] and returns the final HTML content.
+     *
+     * @since 2.0.56
+     */
+    protected function triggerAfterRender(Throwable $exception, string $output): string
+    {
+        if ($this->hasEventHandlers(self::EVENT_AFTER_RENDER)) {
+            $event = new ErrorHandlerRenderEvent();
+            $event->exception = $exception;
+            $event->output = $output;
+            $this->trigger(self::EVENT_AFTER_RENDER, $event);
+
+            return $event->output;
+        }
+
+        return $output;
     }
 
     /**
