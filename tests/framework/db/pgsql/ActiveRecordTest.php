@@ -307,8 +307,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 /**
  * @property int $id
  * @property bool|null $bool_col
- * @property bool $default_true
- * @property bool $default_false
+ * @property bool|null $default_true
+ * @property bool|null $default_false
  */
 class BoolAR extends ActiveRecord
 {
@@ -351,7 +351,7 @@ class UserAR extends ActiveRecord
 
 /**
  * {@inheritdoc}
- * @property array $id
+ * @property int $id
  * @property array $intarray_col
  * @property array $textarray2_col
  * @property array $json_col

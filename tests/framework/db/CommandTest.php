@@ -295,7 +295,7 @@ SQL;
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';
         $command = $db->createCommand($sql);
-        $result = $command->queryOne([]);
+        $result = $command->queryOne(PDO::FETCH_NUM);
         $this->assertTrue(\is_array($result) && isset($result[0]));
     }
 

@@ -34,7 +34,7 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property-read Order[] $ordersWithNullFK
  * @property-read Order[] $orders2
  * @property-read Item[] $orderItems
- * @property-read Item[] $orderItems2
+ * @property-read OrderItem[] $orderItems2
  * @property-read Item[] $items
  */
 class Customer extends ActiveRecord
