@@ -10,6 +10,33 @@ namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
 
+/**
+ * @property mixed $attr
+ * @property mixed $attr_url
+ * @property mixed $attr_string
+ * @property mixed $attr_reg1
+ * @property mixed $attr_number
+ * @property mixed $attr_ip
+ * @property mixed $attr_array
+ * @property mixed $attr_array_skipped
+ * @property mixed $attr_files
+ * @property mixed $attr_one
+ * @property mixed $attr_two
+ * @property mixed $attr_empty1
+ * @property mixed $attr_empty2
+ * @property mixed $attr_email
+ * @property mixed $attr_date
+ * @property mixed $attr_timestamp
+ * @property mixed $attr_test
+ * @property mixed $attr_test_val
+ * @property mixed $attr_test_repeat
+ * @property mixed $attrA
+ * @property mixed $attrB
+ * @property mixed $attrC
+ * @property mixed $attrD
+ * @property mixed $attr_image
+ * @property mixed $attr_images
+ */
 class FakedValidationModel extends Model
 {
     public $val_attr_a;

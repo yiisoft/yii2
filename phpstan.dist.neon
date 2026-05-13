@@ -5,6 +5,8 @@ includes:
 parameters:
     level: 3
 
+    reportIgnoresWithoutComments: true
+
     paths:
         - build
         - framework
@@ -13,25 +15,10 @@ parameters:
     excludePaths:
         analyse:
             - tests/data
-            - tests/framework/base/stub
-            - tests/framework/di/stubs
-            - tests/framework/filters/stubs
+            - tests/framework/*/stubs/*
+            - tests/framework/*/mocks/*
             # TODO: Analyze these directories
             - tests/framework/db
-            - tests/framework/grid
-            - tests/framework/helpers
-            - tests/framework/i18n
-            - tests/framework/log
-            - tests/framework/mail
-            - tests/framework/models
-            - tests/framework/mutex
-            - tests/framework/rbac
-            - tests/framework/requirements
-            - tests/framework/rest
-            - tests/framework/test
-            - tests/framework/validators
-            - tests/framework/web
-            - tests/framework/widgets
 
     bootstrapFiles:
         - framework/BaseYii.php
