@@ -499,12 +499,6 @@ parameters:
 			path: tests/framework/console/controllers/FixtureControllerTest.php
 
 		-
-			message: '#^Call to an undefined method yii\\db\\QueryBuilder\:\:isMariaDb\(\)\.$#'
-			identifier: method.notFound
-			count: 6
-			path: tests/framework/db/mysql/QueryBuilderTest.php
-
-		-
 			message: '#^Access to an undefined property PHPUnit\\Framework\\MockObject\\MockObject&yii\\web\\User\:\:\$identityCLass\.$#'
 			identifier: property.notFound
 			count: 1

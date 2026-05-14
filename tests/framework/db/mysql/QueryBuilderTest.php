@@ -18,6 +18,7 @@ use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\Schema;
+use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseQueryBuilder;
 
 /**
@@ -33,6 +34,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithOffsetAndLimit(): void
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getConnection(false)->getQueryBuilder();
 
         $query = (new Query())
@@ -65,6 +67,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithLimitOnly(): void
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getConnection(false)->getQueryBuilder();
 
         $query = (new Query())
@@ -96,6 +99,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithOffsetOnly(): void
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getConnection(false)->getQueryBuilder();
 
         $query = (new Query())
@@ -176,6 +180,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithZeroLimit(): void
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getConnection(false)->getQueryBuilder();
 
         $query = (new Query())
@@ -207,6 +212,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithExplicitOrderBy(): void
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getConnection(false)->getQueryBuilder();
 
         $query = (new Query())
@@ -240,6 +246,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithExpressionLimitAndOffset(): void
     {
+        /** @var QueryBuilder $qb */
         $qb = $this->getConnection(false)->getQueryBuilder();
 
         $query = (new Query())
