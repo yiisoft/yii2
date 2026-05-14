@@ -25,7 +25,24 @@ class ExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $params = array_merge($params, $expression->params);
-        return $expression->__toString();
+        $newParams = $expression->params;
+        $newSql = $expression->__toString();
+        $duplicateKeys = array_filter(
+            $newParams,
+            static fn($value, $key) => array_key_exists($key, $params) && $value !== $params[$key],
+            ARRAY_FILTER_USE_BOTH
+        );
+        foreach (array_keys($duplicateKeys) as $duplicateKey) {
+            // use an arbitrary key to avoid clashing
+            $suffix = count($params);
+            do {
+                $newKey = $duplicateKey . $suffix++;
+            } while (array_key_exists($newKey, $params) || array_key_exists($newKey, $newParams));
+            $newParams[$newKey] = $newParams[$duplicateKey];
+            $newSql = preg_replace('/' . preg_quote($duplicateKey, '/') . '\b/', $newKey, $newSql);
+            unset($newParams[$duplicateKey]);
+        }
+        $params = array_merge($params, $newParams);
+        return $newSql;
     }
 }
