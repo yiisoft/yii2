@@ -499,24 +499,6 @@ parameters:
 			path: tests/framework/console/controllers/FixtureControllerTest.php
 
 		-
-			message: '#^Call to method getTableChecks\(\) on an unknown class yiiunit\\framework\\db\\mysql\\ConstraintFinderInterface\.$#'
-			identifier: class.notFound
-			count: 3
-			path: tests/framework/db/mysql/CommandTest.php
-
-		-
-			message: '#^Call to method getTableSchema\(\) on an unknown class yiiunit\\framework\\db\\mysql\\ConstraintFinderInterface\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/framework/db/mysql/CommandTest.php
-
-		-
-			message: '#^Class yiiunit\\framework\\db\\mysql\\ConstraintFinderInterface not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: tests/framework/db/mysql/CommandTest.php
-
-		-
 			message: '#^Call to an undefined method yii\\db\\QueryBuilder\:\:isMariaDb\(\)\.$#'
 			identifier: method.notFound
 			count: 6
