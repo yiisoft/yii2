@@ -9,8 +9,8 @@
 namespace yiiunit\framework\db\mssql;
 
 use yii\base\NotSupportedException;
-use yii\db\Connection;
 use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\DefaultValueConstraint;
 use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
@@ -52,10 +52,7 @@ class SchemaTest extends BaseSchema
 
     public function testGetStringFieldsSize(): void
     {
-        /** @var Connection $db */
         $db = $this->getConnection();
-
-        /** @var Schema $schema */
         $schema = $db->schema;
 
         $columns = $schema->getTableSchema('type', false)->columns;
@@ -82,6 +79,8 @@ class SchemaTest extends BaseSchema
                         $expectedSize = null;
                         $expectedDbType = 'text';
                         break;
+                    default:
+                        $this->fail("Unexpected column name: {$name}");
                 }
 
                 $this->assertEquals($expectedType, $type);
@@ -328,6 +327,8 @@ class SchemaTest extends BaseSchema
     public function testGetSchemaPrimaryKeysWithExplicitSchema(): void
     {
         $schema = $this->getConnection(true, true)->getSchema();
+        $this->assertInstanceOf(ConstraintFinderInterface::class, $schema);
+
         $primaryKeys = $schema->getSchemaPrimaryKeys('dbo');
         $this->assertNotEmpty($primaryKeys);
         $this->assertContainsOnlyInstancesOf(Constraint::class, $primaryKeys);
@@ -359,6 +360,8 @@ class SchemaTest extends BaseSchema
     public function testGetViewNamesWithDefaultSchema(): void
     {
         $schema = $this->getConnection(true, true)->getSchema();
+        $this->assertInstanceOf(Schema::class, $schema);
+
         $viewNames = $schema->getViewNames();
         $this->assertContains('animal_view', $viewNames);
     }

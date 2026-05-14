@@ -17,11 +17,11 @@ use yii\caching\ArrayCache;
 use yii\caching\FileCache;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
-use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
+use yii\db\pgsql\ColumnSchema as PgsqlColumnSchema;
 use yii\db\Schema;
 use yii\db\TableSchema;
 
@@ -125,10 +125,7 @@ abstract class BaseSchema extends DatabaseTestCase
 
     public function testSchemaCache(): void
     {
-        /** @var Connection $db */
         $db = $this->getConnection();
-
-        /** @var Schema $schema */
         $schema = $db->schema;
 
         $schema->db->enableSchemaCache = true;
@@ -546,6 +543,7 @@ abstract class BaseSchema extends DatabaseTestCase
                 $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
             if (isset($expected['dimension'])) { // PgSQL only
+                $this->assertInstanceOf(PgsqlColumnSchema::class, $column);
                 $this->assertSame($expected['dimension'], $column->dimension, "dimension of column $name does not match");
             }
         }

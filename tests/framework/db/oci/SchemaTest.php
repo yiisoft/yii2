@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\oci;
 
 use Exception;
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\CheckConstraint;
-use yii\db\oci\Schema;
+use yii\db\ConstraintFinderInterface;
 use yiiunit\framework\db\AnyValue;
 use yiiunit\base\db\BaseSchema;
 
@@ -235,7 +236,6 @@ class SchemaTest extends BaseSchema
             'someCol3' => 'string',
         ])->execute();
 
-        /** @var Schema $schema */
         $schema = $db->schema;
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
@@ -279,8 +279,10 @@ class SchemaTest extends BaseSchema
     public function testLobIndexesExcluded(): void
     {
         $db = $this->getConnection();
+        $dbSchema = $db->getSchema();
+        $this->assertInstanceOf(ConstraintFinderInterface::class, $dbSchema);
 
-        if ($db->getSchema()->getTableSchema('lob_test') !== null) {
+        if ($dbSchema->getTableSchema('lob_test') !== null) {
             $db->createCommand()->dropTable('lob_test')->execute();
         }
 
@@ -288,7 +290,7 @@ class SchemaTest extends BaseSchema
             'CREATE TABLE "lob_test" ("id" NUMBER(10) NOT NULL, "content" CLOB, "data" BLOB, PRIMARY KEY ("id"))'
         )->execute();
 
-        $indexes = $db->getSchema()->getTableIndexes('lob_test', true);
+        $indexes = $dbSchema->getTableIndexes('lob_test', true);
 
         $this->assertCount(1, $indexes);
 

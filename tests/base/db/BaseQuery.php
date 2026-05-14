@@ -721,7 +721,7 @@ abstract class BaseQuery extends DatabaseTestCase
         $this->assertEquals('user11', $query->where(['id' => 1])->scalar($db), 'When both Connection and Query have cache enabled, we get cached value');
         $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db), 'When Query has disabled cache, we get actual data');
 
-        $db->cache(function (Connection $db) use ($query, $update): void {
+        $db->cache(function (Connection $db) use ($query): void {
             $this->assertEquals('user1', $query->noCache()->where(['id' => 1])->scalar($db));
             $this->assertEquals('user11', $query->cache()->where(['id' => 1])->scalar($db));
         }, 10);

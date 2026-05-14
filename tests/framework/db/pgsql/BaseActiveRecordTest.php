@@ -39,8 +39,8 @@ class BaseActiveRecordTest extends BaseActiveRecordTemplate
 
 /**
  * {@inheritdoc}
- * @property array id
- * @property array json_col
+ * @property int $id
+ * @property array $json_col
  */
 class ArrayAndJsonType extends ActiveRecord
 {
