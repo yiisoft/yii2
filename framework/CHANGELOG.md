@@ -75,11 +75,13 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
-- Bug #20783: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
-- Enh #20785: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
-- Bug #20785: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
-- Bug #20785: Fix `@var` annotation for `yii\validators\CompareValidator::$message` (mspirkov)
-- Enh #20785: Add `@param-out` annotation for `$error` in `yii\validators\Validator::validate()` (mspirkov)
+- Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
+- Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
+- Bug #20875: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
+- Bug #20875: Fix `@var` annotation for `yii\validators\CompareValidator::$message` (mspirkov)
+- Enh #20875: Add `@param-out` annotation for `$error` in `yii\validators\Validator::validate()` (mspirkov)
+- Enh #20878: Add `@param-out` annotation for `$models` in `yii\db\BaseActiveRecord::loadRelationsFor()` (mspirkov)
+- Bug #20878: Fix `@var` annotation for `yii\db\Query::$from` (mspirkov)
 - Enh #7616: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
 
 

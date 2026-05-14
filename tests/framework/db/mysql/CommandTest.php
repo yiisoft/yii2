@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yii\db\ConstraintFinderInterface;
 use yiiunit\base\db\BaseCommand;
 
 /**
@@ -30,6 +31,7 @@ class CommandTest extends BaseCommand
 
         $tableName = 'test_ck_several';
         $schema = $db->getSchema();
+        $this->assertInstanceOf(ConstraintFinderInterface::class, $schema);
 
         if ($schema->getTableSchema($tableName) !== null) {
             $db->createCommand()->dropTable($tableName)->execute();

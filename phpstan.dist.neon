@@ -15,8 +15,6 @@ parameters:
             - tests/data
             - tests/framework/*/stubs/*
             - tests/framework/*/mocks/*
-            # TODO: Analyze these directories
-            - tests/framework/db
 
     bootstrapFiles:
         - framework/BaseYii.php

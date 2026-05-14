@@ -21,8 +21,21 @@ use yiiunit\base\db\BaseActiveRecord;
  * @property string $email
  * @property string $address
  * @property int $status
+ * @property 1|0|'1'|'0'|bool $bool_status
  *
  * @method static CustomerQuery findBySql($sql, $params = [])
+ *
+ * @property-read Profile $profile
+ * @property-read Order[] $ordersPlain
+ * @property-read Order[] $orders
+ * @property-read Order[] $expensiveOrders
+ * @property-read Order[] $ordersWithItems
+ * @property-read Order[] $expensiveOrdersWithNullFK
+ * @property-read Order[] $ordersWithNullFK
+ * @property-read Order[] $orders2
+ * @property-read Item[] $orderItems
+ * @property-read OrderItem[] $orderItems2
+ * @property-read Item[] $items
  */
 class Customer extends ActiveRecord
 {
@@ -113,7 +126,7 @@ class Customer extends ActiveRecord
 
     /**
      * {@inheritdoc}
-     * @return CustomerQuery
+     * @return CustomerQuery<static>
      */
     public static function find()
     {

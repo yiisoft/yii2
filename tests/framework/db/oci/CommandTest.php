@@ -508,7 +508,7 @@ class CommandTest extends BaseCommand
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
 
-        $db->cache(function (Connection $db) use ($update): void {
+        $db->cache(function (Connection $db): void {
             $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
             $this->assertEquals('user11', $command->bindValue(':id', 1)->queryScalar());
