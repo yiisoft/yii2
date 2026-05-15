@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\rbac;
 
 use yii\base\InvalidParamException;
@@ -120,8 +122,14 @@ abstract class DbManagerTestCase extends ManagerTestCase
     {
         parent::tearDown();
         $this->auth->removeAll();
+        ResourceCommand::$resourceRuleNames = [];
+        ResourceCommand::$emptyRuleNames = [];
+        ResourceCommand::$anonymousRuleData = null;
         if ($this->db && static::$driverName !== 'sqlite') {
             $this->db->close();
+        }
+        if ($this->db) {
+            $this->db->commandClass = 'yii\db\Command';
         }
         $this->db = null;
     }
@@ -260,6 +268,131 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $this->assertArrayHasKey('myDefaultRole', $managerUserRoles);
         $this->assertArrayHasKey('Manager', $managerUserRoles);
         $this->assertEquals($manager->name, $managerUserRoles['Manager']->name);
+    }
+
+    public function testInitEnsuresConfiguredCacheComponent(): void
+    {
+        $manager = new DbManager([
+            'db' => $this->getConnection(),
+            'cache' => ['class' => ArrayCache::class],
+        ]);
+
+        $this->assertInstanceOf(ArrayCache::class, $manager->cache);
+    }
+
+    public function testCheckAccessReturnsFalseWithoutAssignmentsAndDefaultRoles(): void
+    {
+        $manager = new DbManager([
+            'db' => $this->getConnection(),
+            'defaultRoles' => [],
+        ]);
+
+        $this->assertFalse($manager->checkAccess('guest', 'missing'));
+    }
+
+    public function testCheckAccessFromCacheReturnsFalseForUnknownItem(): void
+    {
+        $this->auth->cache = new ArrayCache();
+        $this->prepareData();
+
+        $this->assertFalse($this->auth->checkAccess('reader A', 'missing'));
+    }
+
+    public function testCheckAccessFromCacheReturnsFalseWhenRuleFails(): void
+    {
+        $this->auth->cache = new ArrayCache();
+        $this->prepareData();
+
+        $this->assertFalse($this->auth->checkAccess('author B', 'updatePost', ['authorID' => 'reader A']));
+    }
+
+    public function testGetRolesByUserReturnsCachedData(): void
+    {
+        $this->auth->cache = new ArrayCache();
+        $this->prepareData();
+
+        $roles = $this->auth->getRolesByUser('author B');
+        $this->db->createCommand()->delete($this->auth->assignmentTable, ['user_id' => 'author B'])->execute();
+
+        $this->assertEquals($roles, $this->auth->getRolesByUser('author B'));
+    }
+
+    public function testGetRuleAndGetRulesUseLoadedCache(): void
+    {
+        $this->auth->cache = new ArrayCache();
+        $this->prepareData();
+        $this->auth->loadFromCache();
+
+        $this->assertInstanceOf(\yii\rbac\Rule::class, $this->auth->getRule('isAuthor'));
+        $this->assertArrayHasKey('isAuthor', $this->auth->getRules());
+    }
+
+    public function testLoadFromCacheUsesCachedData(): void
+    {
+        $this->auth->cache = new ArrayCache();
+        $this->auth->invalidateCache();
+        $cachedPermission = new Permission(['name' => 'cachedPermission']);
+        $cachedRule = new AuthorRule(['name' => 'cachedRule']);
+        $this->auth->cache->set($this->auth->cacheKey, [
+            ['cachedPermission' => $cachedPermission],
+            ['cachedRule' => $cachedRule],
+            ['cachedPermission' => ['cachedRole']],
+        ]);
+
+        $this->auth->loadFromCache();
+
+        $this->assertEquals($cachedRule, $this->auth->getRule('cachedRule'));
+        $this->assertFalse($this->auth->checkAccess('guest', 'missing', []));
+    }
+
+    public function testGetUserIdsByRoleReturnsEmptyArrayForEmptyRoleName(): void
+    {
+        $this->assertSame([], $this->auth->getUserIdsByRole(''));
+    }
+
+    public function testGetRuleReturnsNullForEmptyResourceData(): void
+    {
+        $this->db->commandClass = ResourceCommand::class;
+        ResourceCommand::$anonymousRuleData = '';
+        $this->db->createCommand()->insert($this->auth->ruleTable, [
+            'name' => 'emptyRule',
+            'data' => '',
+        ])->execute();
+
+        $this->assertNull($this->auth->getRule('emptyRule'));
+    }
+
+    public function testGetRuleReadsResourceData(): void
+    {
+        $this->db->commandClass = ResourceCommand::class;
+        ResourceCommand::$anonymousRuleData = serialize(new ActionRule());
+        $this->db->createCommand()->insert($this->auth->ruleTable, [
+            'name' => 'action_rule',
+            'data' => serialize(new ActionRule()),
+        ])->execute();
+        $manager = new DbManager(['db' => $this->getConnection()]);
+
+        $rule = $manager->getRule('action_rule');
+
+        $this->assertInstanceOf(\yii\rbac\Rule::class, $rule);
+        $this->assertSame('action_rule', $rule->name);
+    }
+
+    public function testGetRulesAndLoadFromCacheReadRuleResources(): void
+    {
+        $this->db->commandClass = ResourceCommand::class;
+        ResourceCommand::$resourceRuleNames = ['action_rule'];
+        $this->auth->add(new ActionRule());
+        $this->auth->cache = new ArrayCache();
+        $this->auth->invalidateCache();
+
+        $rules = $this->auth->getRules();
+        $this->assertArrayHasKey('action_rule', $rules);
+
+        $this->auth->invalidateCache();
+        $this->auth->loadFromCache();
+
+        $this->assertArrayHasKey('action_rule', $this->auth->getRules());
     }
 
     /**
