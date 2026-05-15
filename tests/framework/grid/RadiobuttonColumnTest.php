@@ -78,6 +78,19 @@ class RadiobuttonColumnTest extends TestCase
         $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }
 
+    public function testDefaultValueFromKey(): void
+    {
+        $column = new RadioButtonColumn();
+        $result = $column->renderDataCell([], 'my-key', 0);
+        $this->assertSame('<td><input type="radio" name="radioButtonSelection" value="my-key"></td>', $result);
+
+        $result = $column->renderDataCell([], ['a' => 1, 'b' => 2], 0);
+        $this->assertStringContainsString('value="{&quot;a&quot;:1,&quot;b&quot;:2}"', $result);
+
+        $result = $column->renderDataCell([], ['path' => 'a/b'], 0);
+        $this->assertStringContainsString('a/b', $result);
+    }
+
     public function testMultipleInGrid(): void
     {
         $this->mockApplication();
