@@ -414,10 +414,13 @@ class Sort extends BaseObject
      * This method will consider the current sorting status given by [[attributeOrders]].
      * For example, if the current page already sorts the data by the specified attribute in ascending order,
      * then the URL created will lead to a page that sorts the data by the specified attribute in descending order.
+     *
+     * The target route is determined by [[resolveRoute()]] when [[route]] is not configured.
+     *
      * @param string $attribute the attribute name
      * @param bool $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the URL for sorting. False if the attribute is invalid.
-     * @throws InvalidConfigException if the attribute is unknown
+     * @throws InvalidConfigException if the attribute is unknown, or if [[resolveRoute()]] cannot determine a route.
      * @see attributeOrders
      * @see params
      */
@@ -428,13 +431,44 @@ class Sort extends BaseObject
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
         $params[$this->sortParam] = $this->createSortParam($attribute);
-        $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
+
+        $params[0] = $this->resolveRoute();
+
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
         }
 
         return $urlManager->createUrl($params);
+    }
+
+    /**
+     * Resolves the target route from [[route]], the active controller, or [[\yii\base\Application::$requestedRoute]].
+     *
+     * The `requestedRoute` fallback supports standalone actions where no controller is hosting the request.
+     *
+     * @return string The resolved route.
+     * @throws InvalidConfigException if no route can be resolved.
+     */
+    protected function resolveRoute(): string
+    {
+        if ($this->route !== null) {
+            return $this->route;
+        }
+
+        if (Yii::$app->controller !== null) {
+            return Yii::$app->controller->getRoute();
+        }
+
+        $requestedRoute = Yii::$app->requestedRoute;
+
+        if ($requestedRoute !== null && $requestedRoute !== '') {
+            return $requestedRoute;
+        }
+
+        throw new InvalidConfigException(
+            'Unable to determine the route. Configure "Sort::$route" explicitly.',
+        );
     }
 
     /**

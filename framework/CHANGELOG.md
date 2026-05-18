@@ -71,6 +71,7 @@ Yii Framework 2 Change Log
 - Chg: Refactor MSSQL `QueryBuilder::insert()`: drop dead SQL Server `< 2005` branch; throw on unknown table (terabytesoftw)
 - Chg: Drop dead SQL Server `< 2017` branches from MSSQL `Schema::loadColumnSchema()` (terabytesoftw)
 - Chg: Drop dead SQL Server `< 2005` branches from MSSQL `Schema::insert()` (terabytesoftw)
+- Bug: Fix `Sort::createUrl()` and `Pagination::createUrl()` to fall back when no controller is active, supporting standalone actions discovered through `Module::$actionNamespace` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

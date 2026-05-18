@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,16 +10,22 @@
 
 namespace yiiunit\framework\data;
 
+use PHPUnit\Framework\Attributes\Group;
+use Yii;
+use yii\base\Action;
+use yii\base\InvalidConfigException;
 use yii\data\Sort;
+use yii\web\Controller;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
 
 /**
+ * Unit test for {@see \yii\data\Sort} class.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @group data
  */
+#[Group('data')]
 class SortTest extends TestCase
 {
     protected function setUp(): void
@@ -389,6 +397,140 @@ class SortTest extends TestCase
         $orders = $sort->getOrders(true);
         $this->assertEquals(1, count($orders));
         $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
+    }
+
+    public function testCreateUrlUsesActiveControllerRouteWhenSortRouteIsNull(): void
+    {
+        $this->mockWebApplication(
+            [
+                'components' => [
+                    'urlManager' => [
+                        'scriptUrl' => '/index.php',
+                    ],
+                ],
+            ],
+        );
+
+        $controller = new Controller('post', Yii::$app);
+
+        $controller->action = new Action('view', $controller);
+
+        Yii::$app->controller = $controller;
+
+        $sort = new Sort(
+            [
+                'attributes' => ['age'],
+                'params' => [],
+                'enableMultiSort' => true,
+            ],
+        );
+
+        self::assertSame(
+            '/index.php?r=post%2Fview&sort=age',
+            $sort->createUrl('age'),
+            "Active controller's `getRoute()` must be used as the route segment.",
+        );
+    }
+
+    public function testCreateUrlFallsBackToRequestedRouteWhenControllerIsNull(): void
+    {
+        $this->mockWebApplication(
+            [
+                'components' => [
+                    'urlManager' => [
+                        'scriptUrl' => '/index.php',
+                    ],
+                ],
+            ],
+        );
+
+        self::assertNull(
+            Yii::$app->controller,
+            'Mock must start with no active controller.',
+        );
+
+        Yii::$app->requestedRoute = 'user/index';
+
+        $sort = new Sort(
+            [
+                'attributes' => ['age'],
+                'params' => [],
+                'enableMultiSort' => true,
+            ],
+        );
+
+        self::assertSame(
+            '/index.php?r=user%2Findex&sort=age',
+            $sort->createUrl('age'),
+            '`requestedRoute` must be used as the route segment.',
+        );
+    }
+
+    public function testCreateUrlPrefersExplicitRouteOverRequestedRoute(): void
+    {
+        $this->mockWebApplication(
+            [
+                'components' => [
+                    'urlManager' => [
+                        'scriptUrl' => '/index.php',
+                    ],
+                ],
+            ],
+        );
+
+        Yii::$app->requestedRoute = 'user/index';
+
+        $sort = new Sort(
+            [
+                'attributes' => ['age'],
+                'params' => [],
+                'enableMultiSort' => true,
+                'route' => 'admin/users',
+            ],
+        );
+
+        self::assertSame(
+            '/index.php?r=admin%2Fusers&sort=age',
+            $sort->createUrl('age'),
+            'Explicit `$route` must win over `requestedRoute`.',
+        );
+    }
+
+    public function testThrowInvalidConfigExceptionWhenNoRouteIsAvailable(): void
+    {
+        $this->mockWebApplication(
+            [
+                'components' => [
+                    'urlManager' => [
+                        'scriptUrl' => '/index.php',
+                    ],
+                ],
+            ],
+        );
+
+        self::assertNull(
+            Yii::$app->controller,
+            'Mock must start with no active controller.',
+        );
+        self::assertEmpty(
+            Yii::$app->requestedRoute,
+            '`requestedRoute` must be empty for this scenario.',
+        );
+
+        $sort = new Sort(
+            [
+                'attributes' => ['age'],
+                'params' => [],
+                'enableMultiSort' => true,
+            ],
+        );
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage(
+            'Unable to determine the route. Configure "Sort::$route" explicitly.',
+        );
+
+        $sort->createUrl('age');
     }
 }
 
