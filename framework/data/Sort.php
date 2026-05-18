@@ -450,7 +450,7 @@ class Sort extends BaseObject
      * @return string The resolved route.
      * @throws InvalidConfigException if no route can be resolved.
      */
-    protected function resolveRoute()
+    protected function resolveRoute(): string
     {
         if ($this->route !== null) {
             return $this->route;
