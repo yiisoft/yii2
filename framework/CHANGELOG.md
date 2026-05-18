@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #20785: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
 - Bug #20785: Fix `@var` annotation for `yii\validators\CompareValidator::$message` (mspirkov)
 - Enh #20785: Add `@param-out` annotation for `$error` in `yii\validators\Validator::validate()` (mspirkov)
+- Bug #19854: Deduplicate parameter names in `ExpressionBuilder` (chriscpty)
 
 
 2.0.55 May 09, 2026
@@ -31,7 +32,6 @@ Yii Framework 2 Change Log
 - Bug #20751: Fix `@param` annotation for `$param` parameter in `Sort::parseSortParam()` (mspirkov)
 - Bug #20764: Fix `@return` annotation for `Model::rules()` (mspirkov)
 - Bug #20856: Fix passing generics to `BatchQueryResult` (mspirkov)
-- Bug #19854: Deduplicate parameter names in `ExpressionBuilder` (chriscpty)
 - Bug: CVE-2026-39850, Isolate internal variables in `View::renderPhpFile()` and `ErrorHandler::renderFile()` to prevent parameter collisions from overriding included file paths (samdark)
 - Enh #20714: Allow overriding the `yii\grid\GridView`'s default `filterSelector`, allow using `Closure`s for `filterSelector` (chriscpty)
 - Enh #20717: Use PHPStan/Psalm types in PHPDoc annotations (mspirkov)
