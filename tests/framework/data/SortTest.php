@@ -12,8 +12,10 @@ namespace yiiunit\framework\data;
 
 use PHPUnit\Framework\Attributes\Group;
 use Yii;
+use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\data\Sort;
+use yii\web\Controller;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
 
@@ -397,6 +399,39 @@ class SortTest extends TestCase
         $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
     }
 
+    public function testCreateUrlUsesActiveControllerRouteWhenSortRouteIsNull(): void
+    {
+        $this->mockWebApplication(
+            [
+                'components' => [
+                    'urlManager' => [
+                        'scriptUrl' => '/index.php',
+                    ],
+                ],
+            ],
+        );
+
+        $controller = new Controller('post', Yii::$app);
+
+        $controller->action = new Action('view', $controller);
+
+        Yii::$app->controller = $controller;
+
+        $sort = new Sort(
+            [
+                'attributes' => ['age'],
+                'params' => [],
+                'enableMultiSort' => true,
+            ],
+        );
+
+        self::assertSame(
+            '/index.php?r=post%2Fview&sort=age',
+            $sort->createUrl('age'),
+            "Active controller's `getRoute()` must be used as the route segment.",
+        );
+    }
+
     public function testCreateUrlFallsBackToRequestedRouteWhenControllerIsNull(): void
     {
         $this->mockWebApplication(
@@ -424,7 +459,7 @@ class SortTest extends TestCase
             ],
         );
 
-        $this->assertEquals(
+        self::assertSame(
             '/index.php?r=user%2Findex&sort=age',
             $sort->createUrl('age'),
             '`requestedRoute` must be used as the route segment.',
@@ -454,7 +489,7 @@ class SortTest extends TestCase
             ],
         );
 
-        self::assertEquals(
+        self::assertSame(
             '/index.php?r=admin%2Fusers&sort=age',
             $sort->createUrl('age'),
             'Explicit `$route` must win over `requestedRoute`.',

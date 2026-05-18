@@ -12,8 +12,10 @@ namespace yiiunit\framework\data;
 
 use PHPUnit\Framework\Attributes\Group;
 use Yii;
+use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\data\Pagination;
+use yii\web\Controller;
 use yii\web\Link;
 use yiiunit\TestCase;
 
@@ -440,6 +442,23 @@ class PaginationTest extends TestCase
         }
     }
 
+    public function testCreateUrlUsesActiveControllerRouteWhenPaginationRouteIsNull(): void
+    {
+        $controller = new Controller('post', Yii::$app);
+
+        $controller->action = new Action('view', $controller);
+
+        Yii::$app->controller = $controller;
+
+        $pagination = new Pagination();
+
+        self::assertSame(
+            '/index.php?r=post%2Fview&page=3',
+            $pagination->createUrl(2),
+            "Active controller's `getRoute()` must be used as the route segment.",
+        );
+    }
+
     public function testCreateUrlFallsBackToRequestedRouteWhenControllerIsNull(): void
     {
         self::assertNull(
@@ -451,7 +470,7 @@ class PaginationTest extends TestCase
 
         $pagination = new Pagination();
 
-        self::assertEquals(
+        self::assertSame(
             '/index.php?r=user%2Findex&page=3',
             $pagination->createUrl(2),
             '`requestedRoute` must be used as the route segment.',
@@ -466,7 +485,7 @@ class PaginationTest extends TestCase
 
         $pagination->route = 'admin/users';
 
-        self::assertEquals(
+        self::assertSame(
             '/index.php?r=admin%2Fusers&page=3',
             $pagination->createUrl(2),
             'Explicit `$route` must win over `requestedRoute`.',
