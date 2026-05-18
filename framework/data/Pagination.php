@@ -10,6 +10,7 @@ namespace yii\data;
 
 use Yii;
 use yii\base\BaseObject;
+use yii\base\InvalidConfigException;
 use yii\web\Link;
 use yii\web\Linkable;
 use yii\web\Request;
@@ -249,10 +250,14 @@ class Pagination extends BaseObject implements Linkable
     /**
      * Creates the URL suitable for pagination with the specified page number.
      * This method is mainly called by pagers when creating URLs used to perform pagination.
+     *
+     * The target route is determined by [[resolveRoute()]] when [[route]] is not configured.
+     *
      * @param int $page the zero-based page number that the URL should point to.
      * @param int|null $pageSize the number of items on each page. If not set, the value of [[pageSize]] will be used.
      * @param bool $absolute whether to create an absolute URL. Defaults to `false`.
      * @return string the created URL
+     * @throws InvalidConfigException if [[resolveRoute()]] cannot determine a route.
      * @see params
      * @see forcePageParam
      */
@@ -277,13 +282,44 @@ class Pagination extends BaseObject implements Linkable
         } else {
             unset($params[$this->pageSizeParam]);
         }
-        $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
+
+        $params[0] = $this->resolveRoute();
+
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
         }
 
         return $urlManager->createUrl($params);
+    }
+
+    /**
+     * Resolves the target route from [[route]], the active controller, or [[\yii\base\Application::$requestedRoute]].
+     *
+     * The `requestedRoute` fallback supports standalone actions where no controller is hosting the request.
+     *
+     * @return string The resolved route.
+     * @throws InvalidConfigException if no route can be resolved.
+     */
+    protected function resolveRoute(): string
+    {
+        if ($this->route !== null) {
+            return $this->route;
+        }
+
+        if (Yii::$app->controller !== null) {
+            return Yii::$app->controller->getRoute();
+        }
+
+        $requestedRoute = Yii::$app->requestedRoute;
+
+        if ($requestedRoute !== null && $requestedRoute !== '') {
+            return $requestedRoute;
+        }
+
+        throw new InvalidConfigException(
+            'Unable to determine the route. Configure "Pagination::$route" explicitly.',
+        );
     }
 
     /**

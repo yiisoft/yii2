@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,13 +10,17 @@
 
 namespace yiiunit\framework\data;
 
+use PHPUnit\Framework\Attributes\Group;
+use Yii;
+use yii\base\InvalidConfigException;
 use yii\data\Pagination;
 use yii\web\Link;
 use yiiunit\TestCase;
 
 /**
- * @group data
+ * Unit test for {@see \yii\data\Pagination} class.
  */
+#[Group('data')]
 class PaginationTest extends TestCase
 {
     protected function setUp(): void
@@ -432,5 +438,59 @@ class PaginationTest extends TestCase
         } else {
             $this->assertArrayNotHasKey(Pagination::LINK_NEXT, $links);
         }
+    }
+
+    public function testCreateUrlFallsBackToRequestedRouteWhenControllerIsNull(): void
+    {
+        self::assertNull(
+            Yii::$app->controller,
+            'Mock must start with no active controller.',
+        );
+
+        Yii::$app->requestedRoute = 'user/index';
+
+        $pagination = new Pagination();
+
+        self::assertEquals(
+            '/index.php?r=user%2Findex&page=3',
+            $pagination->createUrl(2),
+            '`requestedRoute` must be used as the route segment.',
+        );
+    }
+
+    public function testCreateUrlPrefersExplicitRouteOverRequestedRoute(): void
+    {
+        Yii::$app->requestedRoute = 'user/index';
+
+        $pagination = new Pagination();
+
+        $pagination->route = 'admin/users';
+
+        self::assertEquals(
+            '/index.php?r=admin%2Fusers&page=3',
+            $pagination->createUrl(2),
+            'Explicit `$route` must win over `requestedRoute`.',
+        );
+    }
+
+    public function testThrowInvalidConfigExceptionWhenNoRouteIsAvailable(): void
+    {
+        self::assertNull(
+            Yii::$app->controller,
+            'Mock must start with no active controller.',
+        );
+        $this->assertEmpty(
+            Yii::$app->requestedRoute,
+            '`requestedRoute` must be empty for this scenario.',
+        );
+
+        $pagination = new Pagination();
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage(
+            'Unable to determine the route. Configure "Pagination::$route" explicitly.',
+        );
+
+        $pagination->createUrl(2);
     }
 }
