@@ -633,50 +633,7 @@ wherever `actionNamespace` points). Routing is deterministic:
 
 Because ambiguous matches now raise `InvalidConfigException`, existing applications can still adopt the pattern
 feature by feature, but overlapping controller/standalone routes must be disambiguated explicitly. There is no global
-switch.
-
-## Scaling to N slices
-
-The convention scales linearly because the resolver is route-driven, not slice-driven. Ten slices look like ten folders
-under `actionNamespace`:
-
-```text
-app/usecase/
-    post/
-        IndexAction.php
-        ViewAction.php
-        CreateAction.php
-    user/
-        IndexAction.php
-        ProfileAction.php
-        UpdateAction.php
-    order/
-        IndexAction.php
-        ViewAction.php
-        FulfillAction.php
-    product/
-        ...
-    invoice/
-        ...
-    cart/
-        ...
-    checkout/
-        ...
-    notification/
-        ...
-    audit/
-        ...
-    integration/
-        StripeWebhookAction.php
-```
-
-The configuration stays a single line: `'actionNamespace' => 'app\\usecase'`. Each request performs a single class
-lookup. Route `post/index` only tries `app\usecase\post\IndexAction`; the resolver does not iterate over the other
-slices, and adding the eleventh slice is dropping a folder. Performance is the same as a controller lookup of equivalent
-depth.
-
-If two slices need entirely different roots (rare), register one of them through a sub-module that has its own
-`actionNamespace`. Sub-modules are an existing Yii2 mechanism; nothing about standalone actions changes how they work.
+switch.s
 
 ## URL generation inside standalone actions
 
