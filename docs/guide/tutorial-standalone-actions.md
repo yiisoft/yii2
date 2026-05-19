@@ -200,12 +200,12 @@ For projects that prefer a separate root for standalone actions (vertical slices
 // config/web.php
 return [
     // ...
-    'actionNamespace' => 'app\\UseCase',
+    'actionNamespace' => 'app\\usecase',
 ];
 ```
 
 With the line above, controllers continue to live at `app/controllers/PostController.php` (untouched), and standalone
-actions live at `app/UseCase/post/IndexAction.php`, `app/UseCase/admin/posts/CreateAction.php`, etc. Routes resolve
+actions live at `app/usecase/post/IndexAction.php`, `app/usecase/admin/posts/CreateAction.php`, etc. Routes resolve
 under `actionNamespace` instead of `controllerNamespace`.
 
 When a route does not follow the convention (custom ID, third-party class, two slices that need disambiguation), use
@@ -242,14 +242,14 @@ disambiguates instead of silently shadowing one or the other.
 
 ## A complete CRUD example
 
-The rest of this tutorial builds a `posts` resource with six endpoints organized as a vertical slice under `app/UseCase`.
+The rest of this tutorial builds a `posts` resource with six endpoints organized as a vertical slice under `app/usecase`.
 The same example could be built with one `PostController` and six `actionXxx` methods; the patterns coexist.
 
 ### Folder layout
 
 ```text
 app/
-    UseCase/
+    usecase/
         post/
             IndexAction.php
             ViewAction.php
@@ -355,11 +355,11 @@ final class Post extends ActiveRecord
 
 ### 3. Form model (input validation)
 
-`app/UseCase/post/PostForm.php` is a form-only model used by Create and Update. Keeping it separate from the
+`app/usecase/post/PostForm.php` is a form-only model used by Create and Update. Keeping it separate from the
 ActiveRecord lets you change the table without touching the input contract:
 
 ```php
-namespace app\UseCase\post;
+namespace app\usecase\post;
 
 use yii\base\Model;
 
@@ -397,10 +397,10 @@ validated through the same binder as web controllers.
 
 #### `IndexAction` — list with pagination
 
-`app/UseCase/post/IndexAction.php`:
+`app/usecase/post/IndexAction.php`:
 
 ```php
-namespace app\UseCase\post;
+namespace app\usecase\post;
 
 use app\models\Post;
 use yii\data\ActiveDataProvider;
@@ -418,7 +418,7 @@ final class IndexAction extends Action
         );
 
         return $this->getModule()->view->render(
-            '@app/UseCase/post/views/index',
+            '@app/usecase/post/views/index',
             ['provider' => $provider],
             $this,
         );
@@ -432,10 +432,10 @@ when the action is hosted by a controller). Rendering goes through the module's 
 
 #### `ViewAction` — show one record
 
-`app/UseCase/post/ViewAction.php`:
+`app/usecase/post/ViewAction.php`:
 
 ```php
-namespace app\UseCase\post;
+namespace app\usecase\post;
 
 use app\models\Post;
 use yii\web\Action;
@@ -452,7 +452,7 @@ final class ViewAction extends Action
         }
 
         return $this->getModule()->view->render(
-            '@app/UseCase/post/views/view',
+            '@app/usecase/post/views/view',
             ['post' => $post],
             $this,
         );
@@ -466,10 +466,10 @@ module components and the DI container.
 
 #### `CreateAction` — POST with form validation
 
-`app/UseCase/post/CreateAction.php`:
+`app/usecase/post/CreateAction.php`:
 
 ```php
-namespace app\UseCase\post;
+namespace app\usecase\post;
 
 use app\models\Post;
 use Yii;
@@ -502,7 +502,7 @@ final class CreateAction extends Action
             $response->statusCode = 422;
 
             return $this->getModule()->view->render(
-                '@app/UseCase/post/views/form',
+                '@app/usecase/post/views/form',
                 ['form' => $form],
                 $this,
             );
@@ -560,7 +560,7 @@ public function run(int $id, Request $request, Response $response, PostForm $for
     }
 
     return $this->getModule()->view->render(
-        '@app/UseCase/post/views/form',
+        '@app/usecase/post/views/form',
         ['form' => $form],
         $this,
     );
@@ -592,7 +592,7 @@ Verb-prefixed rules give you proper REST routing:
 
 The right-hand side of each rule is a route string. Yii resolves the route by following the standard order: `actionMap`,
 `controllerMap`, sub-modules, controllers by namespace, then standalone actions by namespace. With the layout above,
-`post/index` resolves to `app\UseCase\post\IndexAction` because `actionNamespace` is set to `app\UseCase`. Placeholders
+`post/index` resolves to `app\usecase\post\IndexAction` because `actionNamespace` is set to `app\usecase`. Placeholders
 like `<id:\d+>` are captured and passed to `run()` as named parameters.
 
 ### 6. The configuration
@@ -602,7 +602,7 @@ The whole vertical slice needs only one configuration line for routing to work �
 ```php
 return [
     // ...
-    'actionNamespace' => 'app\\UseCase',
+    'actionNamespace' => 'app\\usecase',
     'urlManager' => [/* rules above */],
 ];
 ```
@@ -622,7 +622,7 @@ If a single action needs a custom ID or different namespace from the rest, regis
 
 ### 7. Coexistence with controllers
 
-The same application can declare controllers (in `app/controllers/`) and standalone actions (in `app/UseCase/` or
+The same application can declare controllers (in `app/controllers/`) and standalone actions (in `app/usecase/` or
 wherever `actionNamespace` points). Routing is deterministic:
 
 1. `actionMap` is checked first.
@@ -635,48 +635,54 @@ Because ambiguous matches now raise `InvalidConfigException`, existing applicati
 feature by feature, but overlapping controller/standalone routes must be disambiguated explicitly. There is no global
 switch.
 
-## Scaling to N slices
+## URL generation inside standalone actions
 
-The convention scales linearly because the resolver is route-driven, not slice-driven. Ten slices look like ten folders
-under `actionNamespace`:
+### `Sort` and `Pagination` resolve the route automatically
 
-```text
-app/UseCase/
-    post/
-        IndexAction.php
-        ViewAction.php
-        CreateAction.php
-    user/
-        IndexAction.php
-        ProfileAction.php
-        UpdateAction.php
-    order/
-        IndexAction.php
-        ViewAction.php
-        FulfillAction.php
-    product/
-        ...
-    invoice/
-        ...
-    cart/
-        ...
-    checkout/
-        ...
-    notification/
-        ...
-    audit/
-        ...
-    integration/
-        StripeWebhookAction.php
+[[yii\data\Sort::createUrl()]] and [[yii\data\Pagination::createUrl()]] resolve the target route from `$route`, then the
+active controller's `getRoute()`, then [[\yii\base\Application::$requestedRoute]] (added in 22.0). The third step is what
+makes [[yii\widgets\GridView]] and [[yii\widgets\ListView]] work transparently inside a standalone action — no `route`
+override needed on the provider:
+
+```php
+$provider = new ActiveDataProvider(
+    [
+        'query' => Post::find(),
+        'pagination' => ['pageSize' => 20],
+        'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+    ],
+);
 ```
 
-The configuration stays a single line: `'actionNamespace' => 'app\\UseCase'`. Each request performs a single class
-lookup. Route `post/index` only tries `app\UseCase\post\IndexAction`; the resolver does not iterate over the other
-slices, and adding the eleventh slice is dropping a folder. Performance is the same as a controller lookup of equivalent
-depth.
+When all three are unavailable — typically code calling `createUrl()` outside a request lifecycle — the call throws
+`InvalidConfigException`. Unit tests that bypass the dispatcher can simulate `requestedRoute`:
 
-If two slices need entirely different roots (rare), register one of them through a sub-module that has its own
-`actionNamespace`. Sub-modules are an existing Yii2 mechanism; nothing about standalone actions changes how they work.
+```php
+Yii::$app->requestedRoute = 'post/index';
+$action = new IndexAction();
+$action->id = 'index';
+$result = $action->run();
+```
+
+### Use absolute routes with `Url::to()` and `Html::beginForm()`
+
+[[yii\helpers\Url::to()]] (via [[yii\helpers\BaseUrl::normalizeRoute()]]) supports two route forms:
+
+- **Absolute** — leading `/`, for example `['/post/index']`. Resolved without consulting any controller. Works uniformly
+  inside or outside a standalone action.
+- **Relative** — no leading slash, for example `['post/index']` or `['view']`. Resolved relative to the current
+  controller's module; throws `InvalidArgumentException` when no controller is active.
+
+In standalone-action views, prefer the absolute form:
+
+```php
+<a href="<?= Url::to(['/post/view', 'id' => $post->id]) ?>">View</a>
+
+<?= Html::beginForm(['/post/delete', 'id' => $post->id], 'post') ?>
+```
+
+The throw is intentional: "relative" has no meaningful definition without a controller. The leading slash makes the
+resolution explicit (from the application root).
 
 ## Frequently asked questions
 
