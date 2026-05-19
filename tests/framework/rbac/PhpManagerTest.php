@@ -25,7 +25,7 @@ namespace yii\rbac {
      */
     function filemtime($file)
     {
-        return \yiiunit\framework\rbac\PhpManagerTest::$filemtime ?: \filemtime($file);
+        return \yiiunit\framework\rbac\PhpManagerTest::$filemtime ?? \filemtime($file);
     }
 
     /**
@@ -34,7 +34,7 @@ namespace yii\rbac {
      */
     function time()
     {
-        return \yiiunit\framework\rbac\PhpManagerTest::$time ?: \time();
+        return \yiiunit\framework\rbac\PhpManagerTest::$time ?? \time();
     }
 }
 

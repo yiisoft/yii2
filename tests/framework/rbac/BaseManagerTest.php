@@ -31,6 +31,9 @@ class BaseManagerTest extends TestCase
         $this->mockApplication();
 
         $runtimePath = \Yii::$app->getRuntimePath();
+        @unlink($runtimePath . '/rbac-test-items.php');
+        @unlink($runtimePath . '/rbac-test-assignments.php');
+        @unlink($runtimePath . '/rbac-test-rules.php');
         $this->manager = new ExposedPhpManager([
             'itemFile' => $runtimePath . '/rbac-test-items.php',
             'assignmentFile' => $runtimePath . '/rbac-test-assignments.php',
