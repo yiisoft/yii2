@@ -13,6 +13,7 @@ use yii\BaseYii;
 use yii\base\ErrorException;
 use yii\web\Application;
 use Yii;
+use yii\web\ErrorHandlerRenderEvent;
 use yii\web\NotFoundHttpException;
 use yii\web\View;
 use yiiunit\TestCase;
@@ -122,6 +123,80 @@ Exception: yii\web\NotFoundHttpException', $out);
         ob_get_clean();
         $out = Yii::$app->response->data;
         $this->assertStringNotContainsString('<script', $out);
+    }
+
+    public function testAfterRenderEventCanModifyOutput(): void
+    {
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+
+        $exception = new Exception('Some Exception');
+
+        $actualException = null;
+
+        $handler->on(
+            ErrorHandler::EVENT_AFTER_RENDER,
+            static function (ErrorHandlerRenderEvent $event) use (&$actualException): void {
+                $actualException = $event->exception;
+                $event->output .= "\n<!--after-render-->";
+            }
+        );
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [$exception]);
+        ob_get_clean();
+
+        $this->assertSame($exception, $actualException);
+        $this->assertStringContainsString('<!--after-render-->', Yii::$app->response->data);
+    }
+
+    public function testAfterRenderEventCanModifyOutputInErrorActionView(): void
+    {
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+        $handler->errorAction = 'test/error';
+
+        $exception = new NotFoundHttpException('Resource not found');
+
+        $actualException = null;
+
+        $handler->on(
+            ErrorHandler::EVENT_AFTER_RENDER,
+            static function (ErrorHandlerRenderEvent $event) use (&$actualException): void {
+                $actualException = $event->exception;
+                $event->output .= "\n<!--after-render-error-action-->";
+            }
+        );
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [$exception]);
+        ob_get_clean();
+
+        $this->assertSame($exception, $actualException);
+        $this->assertStringContainsString('<!--after-render-error-action-->', Yii::$app->response->data);
+    }
+
+    public function testAfterRenderEventCanModifyOutputForPhpErrors(): void
+    {
+        /** @var ErrorHandler $handler */
+        $handler = Yii::$app->getErrorHandler();
+
+        $exception = new ErrorException('PHP Warning', E_WARNING, E_WARNING, __FILE__, __LINE__);
+
+        $handler->exception = $exception;
+
+        $handler->on(
+            ErrorHandler::EVENT_AFTER_RENDER,
+            static function (ErrorHandlerRenderEvent $event): void {
+                $event->output .= "\n<!--php-error-after-render-->";
+            }
+        );
+
+        ob_start(); // suppress response output
+        $this->invokeMethod($handler, 'renderException', [$exception]);
+        ob_get_clean();
+
+        $this->assertStringContainsString('<!--php-error-after-render-->', Yii::$app->response->data);
     }
 
     public function testRenderCallStackItem(): void

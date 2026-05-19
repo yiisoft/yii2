@@ -15,10 +15,9 @@ parameters:
     excludePaths:
         analyse:
             - tests/data
+            - tests/framework/db/enums
             - tests/framework/*/stubs/*
             - tests/framework/*/mocks/*
-            # TODO: Analyze these directories
-            - tests/framework/db
 
     bootstrapFiles:
         - framework/BaseYii.php
