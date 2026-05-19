@@ -18,6 +18,8 @@ use yii\web\AssetBundle;
 use yii\web\AssetConverter;
 use yii\web\AssetConverterInterface;
 use yii\web\AssetManager;
+use yiiunit\data\web\AssetManagerTestSimpleBundle;
+use yiiunit\data\web\AssetManagerTestSourceBundle;
 use yiiunit\TestCase;
 
 /**
@@ -964,24 +966,4 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame('http://example.com/app.js', $result);
     }
-}
-
-class AssetManagerTestSimpleBundle extends AssetBundle
-{
-    public $basePath = '@webroot/js';
-    public $baseUrl = '@web/js';
-    public $js = [
-        'jquery.js',
-    ];
-}
-
-class AssetManagerTestSourceBundle extends AssetBundle
-{
-    public $sourcePath = '@testSourcePath';
-    public $js = [
-        'js/jquery.js',
-    ];
-    public $css = [
-        'css/stub.css',
-    ];
 }
