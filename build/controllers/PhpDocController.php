@@ -345,6 +345,7 @@ class PhpDocController extends ConsoleController
             }
             $lines = array_merge([
                 '<?php',
+                '',
                 '/**',
                 ' * @link https://www.yiiframework.com/',
                 ' * @copyright Copyright (c) 2008 Yii Software LLC',
@@ -367,6 +368,7 @@ class PhpDocController extends ConsoleController
         $codeBlock = false;
         $listIndent = '';
         $tag = false;
+        $phpstanType = false;
         $indent = '';
         foreach ($lines as $i => $line) {
             if (preg_match('~^(\s*)/\*\*$~', $line, $matches)) {
@@ -380,6 +382,7 @@ class PhpDocController extends ConsoleController
                 $codeBlock = false;
                 $listIndent = '';
                 $tag = false;
+                $phpstanType = false;
             } elseif ($docBlock) {
                 $line = ltrim($line);
                 if (strpos($line, '*') === 0) {
@@ -389,12 +392,23 @@ class PhpDocController extends ConsoleController
                     $line = substr($line, 1);
                 }
                 $docLine = str_replace("\t", '    ', rtrim($line));
+                if ($phpstanType && $docLine !== '' && strpos($docLine, '@') !== 0) {
+                    $lines[$i] = rtrim($indent . ' * ' . $docLine);
+                    continue;
+                }
+                $phpstanType = false;
                 if (empty($docLine)) {
                     $listIndent = '';
                 } elseif (strpos($docLine, '@') === 0) {
                     $listIndent = '';
                     $codeBlock = false;
                     $tag = true;
+                    if (preg_match('/^@phpstan-type(?:\s|$)/', $docLine)) {
+                        $tag = false;
+                        $phpstanType = true;
+                        $lines[$i] = rtrim($indent . ' * ' . $docLine);
+                        continue;
+                    }
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
                     $docLine = $this->fixParamTypes($docLine);
                 } elseif (preg_match('/^(~~~|```)/', $docLine)) {
@@ -699,13 +713,14 @@ class PhpDocController extends ConsoleController
             }
             if ($propertyPart) {
                 preg_match(
-                    '/@property(?:-read|-write)?\s+([\\\\\w\|\[\]]+)\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/',
+                    '/@property(?:-read|-write)?\s+' . self::TYPE_REG_EXP
+                    . '\s+\$([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/',
                     $line,
                     $matches
                 );
 
-                if (isset($matches[2])) {
-                    $lastPropertyName = $matches[2];
+                if (isset($matches[1])) {
+                    $lastPropertyName = $matches[1];
                 }
 
                 if (in_array($lastPropertyName, $manuallyAddedProperties)) {

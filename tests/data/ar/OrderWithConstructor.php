@@ -20,7 +20,7 @@ use ReflectionClass;
  * @property int $created_at
  * @property string $total
  *
- * @property OrderItemWithConstructor $orderItems
+ * @property OrderItemWithConstructor[] $orderItems
  * @property CustomerWithConstructor $customer
  * @property CustomerWithConstructor $customerJoinedWithProfile
  */

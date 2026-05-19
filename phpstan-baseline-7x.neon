@@ -77,3 +77,39 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/behaviors/AttributeTypecastBehaviorTest.php
+
+		-
+			message: '#^Access to constant Off on an unknown class yiiunit\\framework\\db\\stubs\\IntBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/ColumnSchemaBackedEnumTest.php
+
+		-
+			message: '#^Access to constant On on an unknown class yiiunit\\framework\\db\\stubs\\IntBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/ColumnSchemaBackedEnumTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\stubs\\StringBackedStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/ColumnSchemaBackedEnumTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\Status\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/CommandTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\StatusTypeInt\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/CommandTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\StatusTypeString\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/db/CommandTest.php

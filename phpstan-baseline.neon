@@ -487,12 +487,6 @@ parameters:
 			path: framework/helpers/BaseFileHelper.php
 
 		-
-			message: '#^Variable \$newID in empty\(\) always exists and is not falsy\.$#'
-			identifier: empty.variable
-			count: 1
-			path: framework/web/DbSession.php
-
-		-
 			message: '#^Access to an undefined property yiiunit\\framework\\base\\NewComponent\:\:\$as f\.$#'
 			identifier: property.notFound
 			count: 1

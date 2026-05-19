@@ -49,7 +49,7 @@ namespace yiiunit\framework\rbac {
 
 /**
  * @group rbac
- * @property ExposedPhpManager $auth
+ * @extends ManagerTestCase<ExposedPhpManager>
  */
     class PhpManagerTest extends ManagerTestCase
     {
