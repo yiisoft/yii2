@@ -779,6 +779,8 @@ class ActiveFieldTestModel extends DynamicModel
 
 /**
  * Helper Classes.
+ *
+ * @property ActiveFieldTestModel $model
  */
 class ActiveFieldExtend extends ActiveField
 {

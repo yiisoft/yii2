@@ -54,13 +54,13 @@ class RangeValidator extends Validator
      * @var string|null the enum class name. If set, [[range]] will be automatically
      * populated with enum values or names depending on [[target]].
      * Requires PHP 8.1 or higher.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     public $enum;
     /**
      * @var string whether to use enum case 'value' or 'name' when populating [[range]]
      * from [[enum]]. Defaults to 'value' for backed enums. For unit enums only 'name' is supported.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     public $target = 'value';
 
