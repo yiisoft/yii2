@@ -126,6 +126,7 @@
     },
     "scripts": {
         "cs": "./vendor/bin/phpcs",
-        "cs-fix": "./vendor/bin/phpcbf"
+        "cs-fix": "./vendor/bin/phpcbf",
+        "static": "./vendor/bin/phpstan --memory-limit=-1"
     }
 }

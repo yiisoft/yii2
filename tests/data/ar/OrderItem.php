@@ -17,6 +17,12 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $item_id
  * @property int $quantity
  * @property string $subtotal
+ *
+ * @property Order $order
+ * @property Item $item
+ * @property self $orderItemCompositeWithJoin
+ * @property self $orderItemCompositeNoJoin
+ * @property Order $custom
  */
 class OrderItem extends ActiveRecord
 {
