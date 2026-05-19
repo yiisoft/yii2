@@ -356,8 +356,10 @@ class GridViewTest extends TestCase
         $grid->run();
         ob_end_clean();
 
-        $js = implode("\n", Yii::$app->getView()->js[View::POS_READY] ?? []);
-        $this->assertArrayHasKey('yii\grid\GridViewAsset', Yii::$app->getView()->assetBundles);
+        /** @var View $view */
+        $view = Yii::$app->getView();
+        $js = implode("\n", $view->js[View::POS_READY] ?? []);
+        $this->assertArrayHasKey('yii\grid\GridViewAsset', $view->assetBundles);
         $this->assertStringContainsString(
             'jQuery(\'#grid-run\').yiiGridView({"filterUrl":"\/abc","filterSelector":"#grid-run-filters input, #grid-run-filters select","filterOnFocusOut":false});',
             $js
