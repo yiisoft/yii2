@@ -633,7 +633,7 @@ wherever `actionNamespace` points). Routing is deterministic:
 
 Because ambiguous matches now raise `InvalidConfigException`, existing applications can still adopt the pattern
 feature by feature, but overlapping controller/standalone routes must be disambiguated explicitly. There is no global
-switch.s
+switch.
 
 ## URL generation inside standalone actions
 
