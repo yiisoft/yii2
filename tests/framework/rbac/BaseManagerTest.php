@@ -31,9 +31,15 @@ class BaseManagerTest extends TestCase
         $this->mockApplication();
 
         $runtimePath = \Yii::$app->getRuntimePath();
-        @unlink($runtimePath . '/rbac-test-items.php');
-        @unlink($runtimePath . '/rbac-test-assignments.php');
-        @unlink($runtimePath . '/rbac-test-rules.php');
+        if (is_file($runtimePath . '/rbac-test-items.php')) {
+            unlink($runtimePath . '/rbac-test-items.php');
+        }
+        if (is_file($runtimePath . '/rbac-test-assignments.php')) {
+            unlink($runtimePath . '/rbac-test-assignments.php');
+        }
+        if (is_file($runtimePath . '/rbac-test-rules.php')) {
+            unlink($runtimePath . '/rbac-test-rules.php');
+        }
         $this->manager = new ExposedPhpManager([
             'itemFile' => $runtimePath . '/rbac-test-items.php',
             'assignmentFile' => $runtimePath . '/rbac-test-assignments.php',
@@ -44,9 +50,15 @@ class BaseManagerTest extends TestCase
     protected function tearDown(): void
     {
         $runtimePath = \Yii::$app->getRuntimePath();
-        @unlink($runtimePath . '/rbac-test-items.php');
-        @unlink($runtimePath . '/rbac-test-assignments.php');
-        @unlink($runtimePath . '/rbac-test-rules.php');
+        if (is_file($runtimePath . '/rbac-test-items.php')) {
+            unlink($runtimePath . '/rbac-test-items.php');
+        }
+        if (is_file($runtimePath . '/rbac-test-assignments.php')) {
+            unlink($runtimePath . '/rbac-test-assignments.php');
+        }
+        if (is_file($runtimePath . '/rbac-test-rules.php')) {
+            unlink($runtimePath . '/rbac-test-rules.php');
+        }
         parent::tearDown();
     }
 

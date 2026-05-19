@@ -73,9 +73,15 @@ namespace yiiunit\framework\rbac {
 
         protected function removeDataFiles()
         {
-            @unlink($this->getItemFile());
-            @unlink($this->getAssignmentFile());
-            @unlink($this->getRuleFile());
+            if (is_file($this->getItemFile())) {
+                unlink($this->getItemFile());
+            }
+            if (is_file($this->getAssignmentFile())) {
+                unlink($this->getAssignmentFile());
+            }
+            if (is_file($this->getRuleFile())) {
+                unlink($this->getRuleFile());
+            }
         }
 
         /**
