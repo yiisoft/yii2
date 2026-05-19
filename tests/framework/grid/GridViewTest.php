@@ -198,15 +198,18 @@ class GridViewTest extends TestCase
             ],
         ]);
 
+        $gridDataProvider = $grid->dataProvider;
+        $this->assertInstanceOf(ActiveDataProvider::class, $gridDataProvider);
+
         // NoAutoLabels::generateAttributeLabel() should not be called.
-        $grid->dataProvider->setSort([
+        $gridDataProvider->setSort([
             'route' => '/',
             'urlManager' => $urlManager,
         ]);
         $grid->renderTableHeader();
 
         // NoAutoLabels::generateAttributeLabel() should not be called.
-        $grid->dataProvider->setSort([
+        $gridDataProvider->setSort([
             'route' => '/',
             'urlManager' => $urlManager,
             'attributes' => ['attr1', 'attr2'],
@@ -671,6 +674,8 @@ HTML, $grid->renderTableBody());
         );
 
         $view = Yii::$app->getView();
+        $this->assertInstanceOf(View::class, $view);
+
         // use renderAjax so the javascript gets baked into the HTML
         $html = $view->renderAjax(
             '@yiiunit/data/views/widgets/GridView/gridview.php',

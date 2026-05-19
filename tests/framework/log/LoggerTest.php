@@ -8,6 +8,8 @@
 
 namespace yiiunit\framework\log;
 
+use PHPUnit\Framework\MockObject\MockObject;
+use stdClass;
 use yii\log\Dispatcher;
 use yii\log\Logger;
 use yiiunit\TestCase;
@@ -23,7 +25,7 @@ class LoggerTest extends TestCase
     protected $logger;
 
     /**
-     * @var Dispatcher|\PHPUnit_Framework_MockObject_MockObject
+     * @var Dispatcher&MockObject
      */
     protected $dispatcher;
 
@@ -70,7 +72,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 66,
+            'line' => 68,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->',
@@ -84,7 +86,6 @@ class LoggerTest extends TestCase
      */
     public function testLogWithFlush(): void
     {
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['flush']);
 
         $logger->flushInterval = 1;
@@ -98,10 +99,11 @@ class LoggerTest extends TestCase
      */
     public function testFlushWithoutDispatcher(): void
     {
-        $dispatcher = $this->getMockBuilder('\stdClass')->getMock();
+        $dispatcher = $this->createMock(stdClass::class);
         $dispatcher->expects($this->never())->method($this->anything());
 
         $this->logger->messages = ['anything'];
+        // @phpstan-ignore assign.propertyType (We intentionally use an invalid value here to test its processing)
         $this->logger->dispatcher = $dispatcher;
         $this->logger->flush();
         $this->assertEmpty($this->logger->messages);
@@ -148,7 +150,6 @@ class LoggerTest extends TestCase
             ['duration' => 30],
         ];
 
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['getProfiling']);
         $logger->method('getProfiling')->willReturn($timings);
         $logger->expects($this->once())
@@ -346,7 +347,6 @@ class LoggerTest extends TestCase
         $messages = ['anyData'];
         $returnValue = 'return value';
 
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
@@ -372,7 +372,6 @@ class LoggerTest extends TestCase
                 'duration' => 5,
             ],
         ];
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
@@ -411,7 +410,6 @@ class LoggerTest extends TestCase
         /*
          * Matched by category name
          */
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
@@ -423,7 +421,6 @@ class LoggerTest extends TestCase
         /*
          * Matched by prefix
          */
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
@@ -471,7 +468,6 @@ class LoggerTest extends TestCase
         /*
          * Exclude by category name
          */
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
@@ -483,7 +479,6 @@ class LoggerTest extends TestCase
         /*
          * Exclude by category prefix
          */
-        /** @var Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
