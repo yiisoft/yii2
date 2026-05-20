@@ -71,8 +71,7 @@ class BaseObjectTest extends TestCase
     {
         $this->assertSame('default', $this->object->Text);
         $this->expectException('yii\base\UnknownPropertyException');
-        // We intentionally access a non-existent property to test that an exception is thrown
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (We intentionally access a non-existent property to test that an exception is thrown)
         $value2 = $this->object->Caption;
     }
 
@@ -82,8 +81,7 @@ class BaseObjectTest extends TestCase
         $this->object->Text = $value;
         $this->assertEquals($value, $this->object->Text);
         $this->expectException('yii\base\UnknownPropertyException');
-        // We intentionally access a non-existent property to test that an exception is thrown
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (We intentionally access a non-existent property to test that an exception is thrown)
         $this->object->NewMember = $value;
     }
 
@@ -127,8 +125,7 @@ class BaseObjectTest extends TestCase
     public function testCallUnknownMethod(): void
     {
         $this->expectException('yii\base\UnknownMethodException');
-        // We intentionally call a non-existent method to test that an exception is thrown
-        // @phpstan-ignore method.notFound
+        // @phpstan-ignore method.notFound (We intentionally call a non-existent method to test that an exception is thrown)
         $this->object->unknownMethod();
     }
 
