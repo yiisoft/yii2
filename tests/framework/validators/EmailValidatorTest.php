@@ -10,6 +10,7 @@ namespace yiiunit\framework\validators;
 
 use yii\validators\EmailValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\MockEmailValidator;
 use yiiunit\TestCase;
 
 /**
@@ -127,15 +128,21 @@ class EmailValidatorTest extends TestCase
      */
     public function testValidateValueMxAllowName($email): void
     {
-        $validator = new EmailValidator(['checkDNS' => true, 'allowName' => true]);
+        $validator = $this->getMockBuilder(EmailValidator::class)
+            ->onlyMethods(['isDNSValid'])
+            ->getMock();
+        $validator->checkDNS = true;
+        $validator->allowName = true;
+        $validator->method('isDNSValid')->willReturn(true);
+
         $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
     }
 
     public static function emailsProvider(): array
     {
         return [
-            ['ipetrov@gmail.com'],
-            ['Ivan Petrov <ipetrov@gmail.com>'],
+            ['ipetrov@example.com'],
+            ['Ivan Petrov <ipetrov@example.com>'],
         ];
     }
 
@@ -348,13 +355,5 @@ class EmailValidatorTest extends TestCase
         $mock->checkDNS = true;
         $mock->method('isDNSValid')->willReturn(false);
         $this->assertFalse($mock->validate('test@invalid-domain.com'));
-    }
-}
-
-class MockEmailValidator extends EmailValidator
-{
-    protected function idnToAscii($idn)
-    {
-        return strlen($idn) > 64 ? false : $idn;
     }
 }

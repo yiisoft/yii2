@@ -9,6 +9,7 @@
 namespace yiiunit\framework\validators;
 
 use Exception;
+use ReflectionMethod;
 use Yii;
 use yii\validators\UniqueValidator;
 use yiiunit\data\ar\ActiveRecord;
@@ -552,7 +553,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testApplyTableAliasWithQuotedColumn(): void
     {
         $val = new UniqueValidator();
-        $method = new \ReflectionMethod($val, 'applyTableAlias');
+        $method = new ReflectionMethod($val, 'applyTableAlias');
         $method->setAccessible(true);
         $query = Customer::find();
         $conditions = ['[[name]]' => 'test'];

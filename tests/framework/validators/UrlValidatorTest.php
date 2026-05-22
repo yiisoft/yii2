@@ -10,6 +10,7 @@ namespace yiiunit\framework\validators;
 
 use yii\validators\UrlValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -132,14 +133,13 @@ class UrlValidatorTest extends TestCase
         $validator = new UrlValidator();
         $model = new FakedValidationModel();
         $model->attr_url = 'http://google.de';
-        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+        $view = new ViewStub();
 
         $result = $validator->clientValidateAttribute($model, 'attr_url', $view);
         $this->assertStringContainsString('yii.validation.url', $result);
 
         $validator->enableIDN = true;
         if (function_exists('idn_to_ascii')) {
-            $view->assetBundles['yii\validators\PunycodeAsset'] = true;
             $result = $validator->clientValidateAttribute($model, 'attr_url', $view);
             $this->assertStringContainsString('yii.validation.url', $result);
         }

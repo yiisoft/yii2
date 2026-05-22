@@ -856,7 +856,17 @@ class FileValidatorTest extends TestCase
         $val = new FileValidator(['extensions' => ['jpg']]);
 
         $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.jpg']);
-        $this->assertFalse(@$this->invokeMethod($val, 'validateExtension', [$file]));
+
+        set_error_handler(static function () {
+            return true;
+        }, E_WARNING | E_NOTICE);
+        try {
+            $result = $this->invokeMethod($val, 'validateExtension', [$file]);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertFalse($result);
     }
 
     public function testValidateMimeTypeNull(): void
@@ -864,7 +874,16 @@ class FileValidatorTest extends TestCase
         $val = new FileValidator(['mimeTypes' => ['image/png']]);
         $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.png']);
 
-        $this->assertFalse(@$this->invokeMethod($val, 'validateMimeType', [$file]));
+        set_error_handler(static function () {
+            return true;
+        }, E_WARNING | E_NOTICE);
+        try {
+            $result = $this->invokeMethod($val, 'validateMimeType', [$file]);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertFalse($result);
     }
 
     public function testValidateExtensionMismatchMimeType(): void

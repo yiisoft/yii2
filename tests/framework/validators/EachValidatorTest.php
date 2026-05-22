@@ -288,7 +288,7 @@ class EachValidatorTest extends TestCase
         $val = new EachValidator(['rule' => ['trim']]);
         $m = new DynamicModel(['attr' => ['  a  ']]);
         $val->validateAttribute($m, 'attr');
-        $this->assertEquals(['a'], $m->attr);
+        $this->assertEquals(['a'], $m['attr']);
     }
 
     public function testRuleAsValidatorInstance(): void

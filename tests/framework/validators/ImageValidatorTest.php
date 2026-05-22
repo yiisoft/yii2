@@ -13,8 +13,8 @@ namespace yiiunit\framework\validators;
 use Yii;
 use yii\validators\ImageValidator;
 use yii\web\UploadedFile;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -50,7 +50,17 @@ class ImageValidatorTest extends TestCase
 
         $notImage = $this->createTestFile('test.txt');
         $error = '';
-        $this->assertFalse(@$val->validate($notImage, $error));
+
+        set_error_handler(static function () {
+            return true;
+        }, E_WARNING | E_NOTICE);
+        try {
+            $result = $val->validate($notImage, $error);
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertFalse($result);
         $this->assertStringContainsString('is not an image', $error);
     }
 
@@ -91,7 +101,7 @@ class ImageValidatorTest extends TestCase
             'maxHeight' => 100,
         ]);
         $model = new FakedValidationModel();
-        $view = new ImageValidatorViewStub();
+        $view = new ViewStub();
 
         $js = $val->clientValidateAttribute($model, 'attr', $view);
         $this->assertStringContainsString('yii.validation.image', $js);
@@ -144,12 +154,5 @@ class ImageValidatorTest extends TestCase
             'size' => filesize($filePath),
             'error' => UPLOAD_ERR_OK,
         ]);
-    }
-}
-
-class ImageValidatorViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }

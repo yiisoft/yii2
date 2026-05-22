@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\validators;
 
+use ReflectionMethod;
 use yii\base\Exception;
 use yii\validators\ExistValidator;
 use yiiunit\data\ar\ActiveRecord;
@@ -307,11 +308,11 @@ abstract class ExistValidatorTest extends DatabaseTestCase
             return;
         }
         $val->validateAttribute($m, 'id');
-        $this->assertFalse($m->hasErrors());
+        $this->assertFalse($m->hasErrors('id'));
 
         $val = new ExistValidator(['targetRelation' => 'references', 'filter' => ['a_field' => 'non-existing']]);
         $val->validateAttribute($m, 'id');
-        $this->assertTrue($m->hasErrors());
+        $this->assertTrue($m->hasErrors('id'));
     }
 
     public function testPrepareConditionsWithAllowArrayAndArrayTargetAttribute(): void
@@ -320,7 +321,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $m = new ValidatorTestMainModel();
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('The "targetAttribute" property must be configured as a string.');
-        $method = new \ReflectionMethod($val, 'prepareConditions');
+        $method = new ReflectionMethod($val, 'prepareConditions');
         $method->setAccessible(true);
         $method->invoke($val, ['id', 'name'], $m, 'id');
     }
@@ -330,7 +331,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val = new ExistValidator(['targetClass' => 'yiiunit\data\validators\models\FakedValidationModel']);
         $m = new ValidatorTestMainModel();
         $m->id = 7;
-        $method = new \ReflectionMethod($val, 'prepareConditions');
+        $method = new ReflectionMethod($val, 'prepareConditions');
         $method->setAccessible(true);
         $conditions = $method->invoke($val, 'id', $m, 'id');
         $this->assertEquals(['id' => $m->id], $conditions);
@@ -339,7 +340,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     public function testValueExistsWithoutMaster(): void
     {
         $val = new ExistValidator(['forceMasterDb' => false, 'targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'id']);
-        $method = new \ReflectionMethod($val, 'valueExists');
+        $method = new ReflectionMethod($val, 'valueExists');
         $method->setAccessible(true);
         $this->assertTrue($method->invoke($val, ValidatorTestRefModel::class, ValidatorTestRefModel::find()->andWhere(['id' => 2]), 2));
     }
@@ -349,14 +350,14 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val = new ExistValidator(['targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'id', 'filter' => function ($query) {
             $query->andWhere(['a_field' => 'ref_to_2']);
         }]);
-        $method = new \ReflectionMethod($val, 'createQuery');
+        $method = new ReflectionMethod($val, 'createQuery');
         $method->setAccessible(true);
         /** @var \yii\db\ActiveQuery $query */
         $query = $method->invoke($val, ValidatorTestRefModel::class, ['id' => 2]);
-        $this->assertNotEmpty($query->where);
+        $this->assertEquals(['and', ['id' => 2], ['a_field' => 'ref_to_2']], $query->where);
 
         $val->filter = ['a_field' => 'ref_to_2'];
         $query = $method->invoke($val, ValidatorTestRefModel::class, ['id' => 2]);
-        $this->assertNotEmpty($query->where);
+        $this->assertEquals(['and', ['id' => 2], ['a_field' => 'ref_to_2']], $query->where);
     }
 }

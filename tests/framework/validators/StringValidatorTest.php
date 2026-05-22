@@ -9,10 +9,10 @@
 namespace yiiunit\framework\validators;
 
 use stdClass;
-use yii\base\Model;
 use yii\validators\StringValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ModelForStringValidator;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -250,27 +250,10 @@ class StringValidatorTest extends TestCase
         $this->mockWebApplication();
         $val = new StringValidator(['min' => 5]);
         $model = new ModelForStringValidator();
-        $view = new StringViewStub();
+        $view = new ViewStub();
 
         $js = $val->clientValidateAttribute($model, 'attr', $view);
         $this->assertStringContainsString('yii.validation.string', $js);
         $this->assertStringContainsString('"min":5', $js);
-    }
-}
-
-class ModelForStringValidator extends Model
-{
-    public $attr;
-
-    public function attributeLabels()
-    {
-        return ['attr' => 'Test Attribute'];
-    }
-}
-
-class StringViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }
