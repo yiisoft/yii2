@@ -305,7 +305,6 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $m = ValidatorTestMainModel::findOne(2);
         if ($m === null) {
             $this->markTestSkipped('ValidatorTestMainModel with id 2 not found');
-            return;
         }
         $val->validateAttribute($m, 'id');
         $this->assertFalse($m->hasErrors('id'));
