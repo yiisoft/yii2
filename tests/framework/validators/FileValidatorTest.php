@@ -13,6 +13,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yii\validators\FileValidator;
 use yii\web\UploadedFile;
+use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\FakedValidationTypedModel;
 use yiiunit\TestCase;
@@ -825,7 +826,6 @@ class FileValidatorTest extends TestCase
 
     public function testClientValidateAttribute(): void
     {
-        $this->mockApplication();
         $validator = new FileValidator([
             'extensions' => ['jpg', 'png'],
             'minSize' => 1024,
@@ -834,10 +834,11 @@ class FileValidatorTest extends TestCase
             'mimeTypes' => ['image/jpeg', 'image/png'],
         ]);
         $model = new FakedValidationModel();
-        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+        $view = new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
 
         $result = $validator->clientValidateAttribute($model, 'attr_files', $view);
-        $this->assertStringContainsString('mimeTypes', $result);
+        $this->assertStringContainsString('image\/jpeg', $result);
+        $this->assertStringContainsString('image\/png', $result);
     }
 
     public function testValidateValueEdgeCases(): void
@@ -857,8 +858,9 @@ class FileValidatorTest extends TestCase
 
         $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.jpg']);
 
-        set_error_handler(static function () {
-            return true;
+        set_error_handler(static function ($errno, $errstr) {
+            return strpos($errstr, 'finfo_file') !== false
+                && strpos($errstr, 'Failed to open stream') !== false;
         }, E_WARNING | E_NOTICE);
         try {
             $result = $this->invokeMethod($val, 'validateExtension', [$file]);
@@ -874,8 +876,9 @@ class FileValidatorTest extends TestCase
         $val = new FileValidator(['mimeTypes' => ['image/png']]);
         $file = new UploadedFile(['tempName' => '/non/existent', 'name' => 'test.png']);
 
-        set_error_handler(static function () {
-            return true;
+        set_error_handler(static function ($errno, $errstr) {
+            return strpos($errstr, 'finfo_file') !== false
+                && strpos($errstr, 'Failed to open stream') !== false;
         }, E_WARNING | E_NOTICE);
         try {
             $result = $this->invokeMethod($val, 'validateMimeType', [$file]);

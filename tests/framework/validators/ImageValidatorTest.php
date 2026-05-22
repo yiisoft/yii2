@@ -51,8 +51,9 @@ class ImageValidatorTest extends TestCase
         $notImage = $this->createTestFile('test.txt');
         $error = '';
 
-        set_error_handler(static function () {
-            return true;
+        set_error_handler(static function ($errno, $errstr) {
+            return strpos($errstr, 'getimagesize') !== false
+                && strpos($errstr, 'Error reading from') !== false;
         }, E_WARNING | E_NOTICE);
         try {
             $result = $val->validate($notImage, $error);

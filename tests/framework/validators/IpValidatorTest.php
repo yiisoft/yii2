@@ -9,6 +9,7 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
+use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -431,7 +432,7 @@ class IpValidatorTest extends TestCase
         $validator = new IpValidator(['skipOnEmpty' => true]);
         $model = new FakedValidationModel();
         $model->attr_ip = '127.0.0.1';
-        $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
+        $view = new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
 
         $result = $validator->clientValidateAttribute($model, 'attr_ip', $view);
         $this->assertStringContainsString('yii.validation.ip', $result);

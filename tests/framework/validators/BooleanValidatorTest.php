@@ -82,6 +82,7 @@ class BooleanValidatorTest extends TestCase
             'falseValue' => false,
             'strict' => true,
         ]);
+        $errorMessage = '';
         $validator->validate('someIncorrectValue', $errorMessage);
 
         $this->assertStringContainsString('must be either "true" or "false"', $errorMessage);

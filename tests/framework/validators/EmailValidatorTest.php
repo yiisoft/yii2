@@ -10,7 +10,6 @@ namespace yiiunit\framework\validators;
 
 use yii\validators\EmailValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
-use yiiunit\framework\validators\stubs\MockEmailValidator;
 use yiiunit\TestCase;
 
 /**
@@ -340,9 +339,9 @@ class EmailValidatorTest extends TestCase
         $this->assertArrayNotHasKey('skipOnEmpty', $options);
     }
 
-    public function testIdnToAsciiWithFallback(): void
+    public function testValidateWithIdnAndLocalIdnEnabled(): void
     {
-        $val = new MockEmailValidator(['enableIDN' => true, 'enableLocalIDN' => true]);
+        $val = new EmailValidator(['enableIDN' => true, 'enableLocalIDN' => true]);
         $this->assertTrue($val->validate('test@example.com'));
         $this->assertFalse($val->validate('test@' . str_repeat('a', 70) . '.com'));
     }
