@@ -113,8 +113,15 @@ class EmailValidatorTest extends TestCase
 
     public function testValidateValueMx(): void
     {
-        $validator = new EmailValidator(['checkDNS' => true]);
-        $this->assertTrue($validator->validate('5011@gmail.com'));
+        $validator = $this->getMockBuilder(EmailValidator::class)
+            ->onlyMethods(['isDNSValid'])
+            ->getMock();
+        $validator->method('isDNSValid')->willReturnCallback(function ($domain) {
+            return $domain === 'example.com';
+        });
+
+        $validator->checkDNS = true;
+        $this->assertTrue($validator->validate('test@example.com'));
 
         $validator->checkDNS = false;
         $this->assertTrue($validator->validate('test@nonexistingsubdomain.example.com'));
@@ -341,6 +348,10 @@ class EmailValidatorTest extends TestCase
 
     public function testValidateWithIdnAndLocalIdnEnabled(): void
     {
+        if (!function_exists('idn_to_ascii')) {
+            $this->markTestSkipped('Intl extension required');
+        }
+
         $val = new EmailValidator(['enableIDN' => true, 'enableLocalIDN' => true]);
         $this->assertTrue($val->validate('test@example.com'));
         $this->assertFalse($val->validate('test@' . str_repeat('a', 70) . '.com'));
