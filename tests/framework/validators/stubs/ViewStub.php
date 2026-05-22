@@ -8,11 +8,13 @@
 
 namespace yiiunit\framework\validators\stubs;
 
+use yii\web\AssetBundle;
 use yii\web\View;
 
 class ViewStub extends View
 {
     public function registerAssetBundle($name, $position = null)
     {
+        return new AssetBundle();
     }
 }

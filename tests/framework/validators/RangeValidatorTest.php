@@ -158,7 +158,7 @@ class RangeValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr');
         $this->assertFalse($m->hasErrors());
 
-        $m['attr'] = 3;
+        $m->defineAttribute('attr', 3);
         $val->validateAttribute($m, 'attr');
         $this->assertTrue($m->hasErrors());
     }
@@ -175,8 +175,7 @@ class RangeValidatorTest extends TestCase
     {
         $this->mockApplication();
         $validator = new RangeValidator(['range' => [1, 2], 'allowArray' => true, 'not' => true]);
-        $model = new FakedValidationModel();
-        $model->attr_range = 1;
+        $model = FakedValidationModel::createWithAttributes(['attr_range' => 1]);
         $view = new \yii\web\View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]);
 
         $result = $validator->clientValidateAttribute($model, 'attr_range', $view);
