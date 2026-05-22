@@ -1342,7 +1342,9 @@ class FileHelperTest extends TestCase
             ['application/json', false, 'json'],
             ['image/jpeg', true, 'jpg'],
             ['image/jpeg', false, 'jpeg'],
+            ['application/x-rar-compressed', true, 'rar'],
             ['application/x-rar-compressed', false, 'rar'],
+            ['application/x-rar', true, 'rar'],
             ['application/x-rar', false, 'rar'],
         ];
     }
