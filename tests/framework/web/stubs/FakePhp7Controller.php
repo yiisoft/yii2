@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web;
+namespace yiiunit\framework\web\stubs;
 
 use yii\web\Controller;
 

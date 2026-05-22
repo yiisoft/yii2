@@ -8,10 +8,10 @@
 
 namespace yiiunit\framework\validators;
 
-use yii\base\Model;
 use yii\validators\BooleanValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ModelForBooleanValidator;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -110,26 +110,9 @@ class BooleanValidatorTest extends TestCase
     {
         $val = new BooleanValidator();
         $model = new ModelForBooleanValidator();
-        $view = new BooleanViewStub();
+        $view = new ViewStub();
 
         $js = $val->clientValidateAttribute($model, 'attr', $view);
         $this->assertStringContainsString('yii.validation.boolean', $js);
-    }
-}
-
-class ModelForBooleanValidator extends Model
-{
-    public $attr;
-
-    public function attributeLabels()
-    {
-        return ['attr' => 'attr'];
-    }
-}
-
-class BooleanViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }
