@@ -255,7 +255,7 @@ class ActiveForm extends Widget
         $errorSummaryClasses = preg_split('/\s+/', (string) $this->errorSummaryCssClass, -1, PREG_SPLIT_NO_EMPTY);
         $options = [
             'encodeErrorSummary' => $this->encodeErrorSummary,
-            'errorSummary' => empty($errorSummaryClasses) ? '' : '.' . implode('.', $errorSummaryClasses),
+            'errorSummary' => $errorSummaryClasses === [] ? '' : '.' . implode('.', $errorSummaryClasses),
             'validateOnSubmit' => $this->validateOnSubmit,
             'errorCssClass' => $this->errorCssClass,
             'successCssClass' => $this->successCssClass,

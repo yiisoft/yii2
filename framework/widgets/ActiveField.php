@@ -859,7 +859,7 @@ class ActiveField extends Component
             $options['error'] = $this->selectors['error'];
         } elseif (isset($this->errorOptions['class'])) {
             $errorClasses = preg_split('/\s+/', (string) $this->errorOptions['class'], -1, PREG_SPLIT_NO_EMPTY);
-            $options['error'] = empty($errorClasses) ? '' : '.' . implode('.', $errorClasses);
+            $options['error'] = $errorClasses === [] ? '' : '.' . implode('.', $errorClasses);
         } else {
             $options['error'] = isset($this->errorOptions['tag']) ? $this->errorOptions['tag'] : 'span';
         }

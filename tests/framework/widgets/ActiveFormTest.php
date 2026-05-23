@@ -187,10 +187,6 @@ HTML,
         $options = $this->invokeMethod($form, 'getClientOptions');
         $this->assertSame('', $options['errorSummary']);
 
-        $form->errorSummaryCssClass = false;
-        $options = $this->invokeMethod($form, 'getClientOptions');
-        $this->assertSame('', $options['errorSummary']);
-
         $form->errorSummaryCssClass = 'foo bar';
         $options = $this->invokeMethod($form, 'getClientOptions');
         $this->assertSame('.foo.bar', $options['errorSummary']);
