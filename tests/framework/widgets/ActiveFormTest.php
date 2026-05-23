@@ -170,6 +170,37 @@ HTML,
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/18423
+     */
+    public function testGetClientOptionsErrorSummary(): void
+    {
+        ob_start();
+        $form = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        ActiveForm::end();
+        ob_end_clean();
+
+        $form->errorSummaryCssClass = '';
+        $options = $this->invokeMethod($form, 'getClientOptions');
+        $this->assertSame('', $options['errorSummary']);
+
+        $form->errorSummaryCssClass = '   ';
+        $options = $this->invokeMethod($form, 'getClientOptions');
+        $this->assertSame('', $options['errorSummary']);
+
+        $form->errorSummaryCssClass = false;
+        $options = $this->invokeMethod($form, 'getClientOptions');
+        $this->assertSame('', $options['errorSummary']);
+
+        $form->errorSummaryCssClass = 'foo bar';
+        $options = $this->invokeMethod($form, 'getClientOptions');
+        $this->assertSame('.foo.bar', $options['errorSummary']);
+
+        $form->errorSummaryCssClass = 'error-summary';
+        $options = $this->invokeMethod($form, 'getClientOptions');
+        $this->assertArrayNotHasKey('errorSummary', $options);
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/15476
      * @see https://github.com/yiisoft/yii2/issues/16892
      */

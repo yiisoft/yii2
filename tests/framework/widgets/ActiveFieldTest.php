@@ -428,6 +428,27 @@ EOD;
         $this->assertSame($expectedEnableAjaxValidation, $actualValue['enableAjaxValidation']);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/18423
+     */
+    public function testGetClientOptionsErrorSelector(): void
+    {
+        $this->activeField->setClientOptionsEmpty(false);
+        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+
+        $this->activeField->errorOptions = ['class' => ''];
+        $options = $this->activeField->getClientOptions();
+        $this->assertSame('', $options['error']);
+
+        $this->activeField->errorOptions = ['class' => '   '];
+        $options = $this->activeField->getClientOptions();
+        $this->assertSame('', $options['error']);
+
+        $this->activeField->errorOptions = ['class' => 'foo bar'];
+        $options = $this->activeField->getClientOptions();
+        $this->assertSame('.foo.bar', $options['error']);
+    }
+
     public function testGetClientOptionsValidatorWhenClientSet(): void
     {
         $this->activeField->setClientOptionsEmpty(false);
