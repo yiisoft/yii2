@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #20878: Add `@param-out` annotation for `$models` in `yii\db\BaseActiveRecord::loadRelationsFor()` (mspirkov)
 - Bug #20878: Fix `@var` annotation for `yii\db\Query::$from` (mspirkov)
 - Enh #7616: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
+- Enh #20887: Add `yii\web\Cookie::$sendRaw` to send cookie values without URL encoding via `setrawcookie()` (WarLikeLaux)
 
 
 2.0.55 May 09, 2026

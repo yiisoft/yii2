@@ -413,8 +413,9 @@ class Response extends \yii\base\Response
             if ($expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
+            $setCookie = $cookie->sendRaw ? 'setrawcookie' : 'setcookie';
             if (PHP_VERSION_ID >= 70300) {
-                setcookie($cookie->name, $value, [
+                $setCookie($cookie->name, $value, [
                     'expires' => $expire,
                     'path' => $cookie->path,
                     'domain' => $cookie->domain,
@@ -429,7 +430,7 @@ class Response extends \yii\base\Response
                 if (!is_null($cookie->sameSite)) {
                     $cookiePath .= '; samesite=' . $cookie->sameSite;
                 }
-                setcookie($cookie->name, $value, $expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+                $setCookie($cookie->name, $value, $expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
         }
     }
