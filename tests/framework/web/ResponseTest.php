@@ -503,12 +503,12 @@ class ResponseTest extends TestCase
             $this->markTestSkipped('Xdebug is required to inspect raw Set-Cookie headers.');
         }
 
-        $this->assertTrue(Yii::$app->request->enableCookieValidation);
+        Yii::$app->request->enableCookieValidation = true;
         $rawValue = 'untouched-by-hash';
 
         $response = new Response();
         $response->cookies->add(new Cookie([
-            'name' => 'rawCookie',
+            'name' => 'rawValidatedCookie',
             'value' => $rawValue,
             'sendRaw' => true,
         ]));
@@ -519,13 +519,13 @@ class ResponseTest extends TestCase
 
         $rawHeader = null;
         foreach (xdebug_get_headers() as $header) {
-            if (strpos($header, 'Set-Cookie: rawCookie=') === 0) {
+            if (strpos($header, 'Set-Cookie: rawValidatedCookie=') === 0) {
                 $rawHeader = $header;
                 break;
             }
         }
 
-        $this->assertStringContainsString('rawCookie=' . $rawValue . ';', $rawHeader);
+        $this->assertStringContainsString('rawValidatedCookie=' . $rawValue . ';', $rawHeader);
     }
 
     /**
