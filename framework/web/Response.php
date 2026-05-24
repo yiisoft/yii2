@@ -430,7 +430,7 @@ class Response extends \yii\base\Response
                 if (!is_null($cookie->sameSite)) {
                     $cookiePath .= '; samesite=' . $cookie->sameSite;
                 }
-                $setCookie($cookie->name, $value, $expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
+                setcookie($cookie->name, $value, $expire, $cookiePath, $cookie->domain, $cookie->secure, $cookie->httpOnly);
             }
         }
     }
