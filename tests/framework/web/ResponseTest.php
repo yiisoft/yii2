@@ -460,6 +460,7 @@ class ResponseTest extends TestCase
             $this->markTestSkipped('Xdebug is required to inspect raw Set-Cookie headers.');
         }
 
+        Yii::$app->request->enableCookieValidation = false;
         $rawValue = 'plus+slash/equals=';
 
         $response = new Response();
