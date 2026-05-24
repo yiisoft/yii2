@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #20878: Add `@param-out` annotation for `$models` in `yii\db\BaseActiveRecord::loadRelationsFor()` (mspirkov)
 - Bug #20878: Fix `@var` annotation for `yii\db\Query::$from` (mspirkov)
 - Enh #7616: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
+- Enh #20884: Add `application/x-rar` as an alias of `application/x-rar-compressed` in MIME aliases (WarLikeLaux)
 - Bug #20794: Fix PHP enum support in `BaseHtml::getAttributeValue()` and `RangeValidator::getClientOptions()` (WarLikeLaux)
 - Enh #20794: Add `enum` and `target` properties to `RangeValidator` for enum-based validation (WarLikeLaux)
 
