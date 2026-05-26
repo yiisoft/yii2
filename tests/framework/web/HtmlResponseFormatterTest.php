@@ -31,12 +31,6 @@ class HtmlResponseFormatterTest extends TestCase
         $this->response->charset = 'UTF-8';
     }
 
-    protected function tearDown(): void
-    {
-        $this->destroyApplication();
-        parent::tearDown();
-    }
-
     public function testDefaultContentType(): void
     {
         $formatter = new HtmlResponseFormatter();
