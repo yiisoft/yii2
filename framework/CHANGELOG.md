@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #20878: Fix `@var` annotation for `yii\db\Query::$from` (mspirkov)
 - Enh #7616: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
 - Bug #19854: Deduplicate parameter names in `ExpressionBuilder` (chriscpty)
+- Enh #20884: Add `application/x-rar` as an alias of `application/x-rar-compressed` in MIME aliases (WarLikeLaux)
 
 
 2.0.55 May 09, 2026
