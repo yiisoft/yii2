@@ -41,8 +41,7 @@ use yii\validators\IpValidator;
  * @property-read string|null $authUser The username sent via HTTP authentication, `null` if the username is
  * not given.
  * @property string $baseUrl The relative URL for the application.
- * @property array|object $bodyParams The request parameters given in the request body. Note that the type of
- * this property differs in getter and setter. See [[getBodyParams()]] and [[setBodyParams()]] for details.
+ * @property mixed $bodyParams The request parameters given in the request body.
  * @property-read string $contentType Request content-type. Empty string is returned if this information is
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
