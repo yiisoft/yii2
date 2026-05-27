@@ -31,7 +31,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
             $newParams,
             static function ($value, $key) use ($params) {
                 $keyWithoutColon = ltrim((string)$key, ':');
-                $keyWithColon = ':' . $key;
+                $keyWithColon = ':' . $keyWithoutColon;
                 // the key could already exist with or without the leading colon, so look for both
                 return (array_key_exists($keyWithoutColon, $params) && $value !== $params[$keyWithoutColon])
                     || (array_key_exists($keyWithColon, $params) && $value !== $params[$keyWithColon]);
