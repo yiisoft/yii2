@@ -583,7 +583,7 @@ class Request extends \yii\base\Request
         $this->_rawBody = $rawBody;
     }
 
-    /** @var array|object */
+    /** @var mixed */
     private $_bodyParams;
 
     /**
@@ -642,7 +642,7 @@ class Request extends \yii\base\Request
     /**
      * Sets the request body parameters.
      *
-     * @param array|object $values the request body parameters (name-value pairs)
+     * @param mixed $values the request body parameters (name-value pairs)
      * @see getBodyParams()
      */
     public function setBodyParams($values)
@@ -682,7 +682,7 @@ class Request extends \yii\base\Request
      *
      * @param string|null $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
-     * @return ($name is null ? array|object : mixed)
+     * @return mixed
      */
     public function post($name = null, $defaultValue = null)
     {
