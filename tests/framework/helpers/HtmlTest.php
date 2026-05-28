@@ -1540,6 +1540,14 @@ EOD;
         $this->assertSame($expectedHtml, Html::$method($model, 'name'));
     }
 
+    public function testInputRendersEmptyForArrayValue(): void
+    {
+        $this->assertSame(
+            '<input type="text" name="n" value="">',
+            Html::input('text', 'n', ['tampered@example.com'])
+        );
+    }
+
     /**
      * Data provider for [[testActiveTextInputMaxLength]].
      * @return array test data
