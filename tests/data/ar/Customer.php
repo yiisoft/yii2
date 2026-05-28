@@ -58,13 +58,12 @@ class Customer extends ActiveRecord
     }
 
     /**
-     * Links a nullable column (`profile_id`) to a non-primary-key column (`status`).
-     * Used to reproduce a null foreign key matching a zero link value.
+     * Customers sharing the same `status`.
      * @see https://github.com/yiisoft/yii2/issues/20117
      */
     public function getStatusMates()
     {
-        return $this->hasMany(Customer::class, ['status' => 'profile_id']);
+        return $this->hasMany(Customer::class, ['status' => 'status']);
     }
 
     public function getOrdersPlain()
