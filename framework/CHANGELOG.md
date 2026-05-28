@@ -13,6 +13,9 @@ Yii Framework 2 Change Log
 - Bug #20878: Fix `@var` annotation for `yii\db\Query::$from` (mspirkov)
 - Enh #7616: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
 - Enh #20884: Add `application/x-rar` as an alias of `application/x-rar-compressed` in MIME aliases (WarLikeLaux)
+- Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
+- Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
+- Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
 - Enh #20888: Preserve the modification time of a log file when it is rotated by copy in `yii\log\FileTarget` (WarLikeLaux)
 
 
