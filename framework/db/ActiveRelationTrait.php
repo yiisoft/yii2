@@ -313,7 +313,7 @@ trait ActiveRelationTrait
                 }
             } else {
                 $key = $this->getModelKey($primaryModel, $link);
-                $value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
+                $value = $key !== false && isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
             }
             if ($primaryModel instanceof ActiveRecordInterface) {
                 $primaryModel->populateRelation($name, $value);

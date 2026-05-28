@@ -1787,6 +1787,23 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('Some {{%updated}} address', $customer->address);
     }
 
+    public function testEagerLoadingWithNullForeignKeyDoesNotMatchZeroPrimaryKey(): void
+    {
+        ActiveRecord::$db->createCommand()->insert('profile', ['id' => 0, 'description' => 'profile zero'])->execute();
+
+        $zeroProfile = Profile::findOne(0);
+        if ($zeroProfile === null || (int) $zeroProfile->id !== 0) {
+            $this->markTestSkipped('Database does not store a zero primary key value.');
+        }
+
+        Customer::updateAll(['profile_id' => 0], ['id' => 1]);
+
+        $customers = Customer::find()->with('profile')->indexBy('id')->all();
+
+        $this->assertSame(0, (int) $customers[1]->profile->id);
+        $this->assertNull($customers[2]->profile);
+    }
+
     /**
      * Ensure no ambiguous column error occurs if ActiveQuery adds a JOIN.
      *
