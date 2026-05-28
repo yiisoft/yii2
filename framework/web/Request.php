@@ -41,7 +41,7 @@ use yii\validators\IpValidator;
  * @property-read string|null $authUser The username sent via HTTP authentication, `null` if the username is
  * not given.
  * @property string $baseUrl The relative URL for the application.
- * @property array|object $bodyParams The request parameters given in the request body.
+ * @property mixed $bodyParams The request parameters given in the request body.
  * @property-read string $contentType Request content-type. Empty string is returned if this information is
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
@@ -583,7 +583,7 @@ class Request extends \yii\base\Request
         $this->_rawBody = $rawBody;
     }
 
-    /** @var array|object */
+    /** @var mixed */
     private $_bodyParams;
 
     /**
@@ -592,7 +592,7 @@ class Request extends \yii\base\Request
      * Request parameters are determined using the parsers configured in [[parsers]] property.
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
-     * @return array|object the request parameters given in the request body.
+     * @return mixed the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @see getMethod()
      * @see getBodyParam()
@@ -642,7 +642,7 @@ class Request extends \yii\base\Request
     /**
      * Sets the request body parameters.
      *
-     * @param array|object $values the request body parameters (name-value pairs)
+     * @param mixed $values the request body parameters (name-value pairs)
      * @see getBodyParams()
      */
     public function setBodyParams($values)
@@ -682,7 +682,7 @@ class Request extends \yii\base\Request
      *
      * @param string|null $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
-     * @return ($name is null ? array|object : mixed)
+     * @return mixed
      */
     public function post($name = null, $defaultValue = null)
     {
