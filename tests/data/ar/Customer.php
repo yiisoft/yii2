@@ -36,6 +36,7 @@ use yiiunit\framework\db\ActiveRecordTest;
  * @property-read Item[] $orderItems
  * @property-read OrderItem[] $orderItems2
  * @property-read Item[] $items
+ * @property-read Customer[] $statusMates
  */
 class Customer extends ActiveRecord
 {
@@ -54,6 +55,16 @@ class Customer extends ActiveRecord
     public function getProfile()
     {
         return $this->hasOne(Profile::class, ['id' => 'profile_id']);
+    }
+
+    /**
+     * Links a nullable column (`profile_id`) to a non-primary-key column (`status`).
+     * Used to reproduce a null foreign key matching a zero link value.
+     * @see https://github.com/yiisoft/yii2/issues/20117
+     */
+    public function getStatusMates()
+    {
+        return $this->hasMany(Customer::class, ['status' => 'profile_id']);
     }
 
     public function getOrdersPlain()

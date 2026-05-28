@@ -1787,21 +1787,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('Some {{%updated}} address', $customer->address);
     }
 
-    public function testEagerLoadingWithNullForeignKeyDoesNotMatchZeroPrimaryKey(): void
+    public function testEagerLoadingWithNullForeignKeyDoesNotMatchZeroLinkValue(): void
     {
-        ActiveRecord::$db->createCommand()->insert('profile', ['id' => 0, 'description' => 'profile zero'])->execute();
+        Customer::updateAll(['status' => 0], ['id' => 1]);
+        Customer::updateAll(['profile_id' => 0], ['id' => 3]);
 
-        $zeroProfile = Profile::findOne(0);
-        if ($zeroProfile === null || (int) $zeroProfile->id !== 0) {
-            $this->markTestSkipped('Database does not store a zero primary key value.');
-        }
+        $customers = Customer::find()->with('statusMates')->indexBy('id')->all();
 
-        Customer::updateAll(['profile_id' => 0], ['id' => 1]);
-
-        $customers = Customer::find()->with('profile')->indexBy('id')->all();
-
-        $this->assertSame(0, (int) $customers[1]->profile->id);
-        $this->assertNull($customers[2]->profile);
+        $this->assertCount(1, $customers[3]->statusMates);
+        $this->assertSame(1, (int) $customers[3]->statusMates[0]->id);
+        $this->assertSame([], $customers[2]->statusMates);
     }
 
     /**
