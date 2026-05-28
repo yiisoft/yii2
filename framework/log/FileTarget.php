@@ -195,10 +195,11 @@ class FileTarget extends Target
     private function rotateByCopy($rotateFile, $newFile)
     {
         $mtime = @filemtime($rotateFile);
-        @copy($rotateFile, $newFile);
-        if ($mtime !== false) {
+
+        if (@copy($rotateFile, $newFile) && $mtime !== false) {
             @touch($newFile, $mtime);
         }
+
         if ($this->fileMode !== null) {
             @chmod($newFile, $this->fileMode);
         }
