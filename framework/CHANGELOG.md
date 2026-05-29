@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
 - Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20900: Split `SELECT` columns on top-level commas in `Query::normalizeSelect()` so commas inside expressions like `COALESCE()` keep the column intact (WarLikeLaux)
 
 
 2.0.55 May 09, 2026

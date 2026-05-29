@@ -685,7 +685,7 @@ PATTERN;
         if ($columns instanceof ExpressionInterface) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
-            $columns = preg_split('/\s*,\s*/', trim((string)$columns), -1, PREG_SPLIT_NO_EMPTY);
+            $columns = $this->splitColumnsIntoParts((string)$columns);
         }
         $select = [];
         foreach ($columns as $columnAlias => $columnDefinition) {
@@ -714,6 +714,46 @@ PATTERN;
             $select[] = $columnDefinition;
         }
         return $select;
+    }
+
+    /**
+     * Splits a comma-separated list of columns into individual definitions.
+     *
+     * Commas enclosed in parentheses are ignored, so DB expressions such as `COALESCE(a, b)` are kept
+     * intact instead of being split on their inner commas. Nested parentheses are handled as well.
+     *
+     * @param string $columns the comma-separated columns.
+     * @return string[] the column definitions with surrounding whitespace trimmed and empty parts removed.
+     * @since 2.0.56
+     */
+    private function splitColumnsIntoParts($columns)
+    {
+        $parts = [];
+        $part = '';
+        $depth = 0;
+        $length = strlen($columns);
+        for ($i = 0; $i < $length; $i++) {
+            $char = $columns[$i];
+            if ($char === '(') {
+                $depth++;
+            } elseif ($char === ')') {
+                if ($depth > 0) {
+                    $depth--;
+                }
+            } elseif ($char === ',' && $depth === 0) {
+                if (trim($part) !== '') {
+                    $parts[] = trim($part);
+                }
+                $part = '';
+                continue;
+            }
+            $part .= $char;
+        }
+        if (trim($part) !== '') {
+            $parts[] = trim($part);
+        }
+
+        return $parts;
     }
 
     /**
