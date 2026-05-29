@@ -501,6 +501,33 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     /**
+     * @dataProvider dataProviderAndFilterCompareRange
+     */
+    public function testAndFilterCompareRange($value, array $expected): void
+    {
+        $query = new Query();
+        $query->andFilterCompare('price', $value);
+        $this->assertSame($expected, $query->where);
+    }
+
+    public static function dataProviderAndFilterCompareRange(): array
+    {
+        return [
+            ['2-4', ['between', 'price', '2', '4']],
+            ['1.5-3.5', ['between', 'price', '1.5', '3.5']],
+            ['1.123 - 1.456', ['between', 'price', '1.123', '1.456']],
+            ['10 - 20', ['between', 'price', '10', '20']],
+            ['John-Doe', ['=', 'price', 'John-Doe']],
+            ['2023-03-03', ['=', 'price', '2023-03-03']],
+            ['5-', ['=', 'price', '5-']],
+            ['-5', ['=', 'price', '-5']],
+            [' 2-4 ', ['=', 'price', ' 2-4 ']],
+            ['<5-10', ['<', 'price', '5-10']],
+            ['5 - a', ['=', 'price', '5 - a']],
+        ];
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/8068
      *
      * @depends testCount

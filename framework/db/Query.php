@@ -911,6 +911,9 @@ PATTERN;
      * - `>=`: the column must be greater than or equal to the given value.
      * - `<>`: the column must not be the same as the given value.
      * - `=`: the column must be equal to the given value.
+     * - A range `min-max` where both bounds are non-negative numbers, e.g. `2-4` or `1.5-3.5`: the column
+     *   must be between the two values, added as a `BETWEEN` condition. Spaces around the dash are allowed.
+     *   Available since version 2.0.56.
      * - If none of the above operators is detected, the `$defaultOperator` will be used.
      *
      * @param string $name the column name.
@@ -925,6 +928,9 @@ PATTERN;
         if (preg_match('/^(<>|>=|>|<=|<|=)/', (string)$value, $matches)) {
             $operator = $matches[1];
             $value = substr($value, strlen($operator));
+        } elseif (preg_match('/^(\d+(?:\.\d+)?)\s*-\s*(\d+(?:\.\d+)?)$/', (string)$value, $matches)) {
+            // https://github.com/yiisoft/yii2/issues/19782
+            return $this->andFilterWhere(['between', $name, $matches[1], $matches[2]]);
         } else {
             $operator = $defaultOperator;
         }

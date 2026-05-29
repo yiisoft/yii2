@@ -51,6 +51,15 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.55
+-----------------------
+
+* `yii\db\Query::andFilterCompare()` now reads a value of the form `min-max`, where both bounds are
+  non-negative numbers (e.g. `2-4` or `1.5-3.5`, spaces around the dash allowed), as a `BETWEEN` condition
+  instead of an exact match. Strings that are not two such numbers, including dashed text like `John-Doe`
+  and dates like `2023-03-03`, keep the previous behavior. If you relied on an exact match for a numeric
+  `min-max` string, switch that call to `andFilterWhere(['=', $column, $value])`.
+
 Upgrade from Yii 2.0.53
 -----------------------
 
