@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\data;
 
+use Yii;
 use yii\data\Sort;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
@@ -379,6 +380,50 @@ class SortTest extends TestCase
         $orders = $sort->getOrders(true);
         $this->assertEquals(1, count($orders));
         $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
+    }
+
+    public static function dataProviderIsValid(): array
+    {
+        return [
+            [false, ['sort' => 'age'], true],
+            [false, ['sort' => '-name'], true],
+            [true, ['sort' => 'age,-name'], true],
+            [false, ['sort' => 'age,-name'], false],
+            [false, ['sort' => 'unknown'], false],
+            [true, ['sort' => 'age,unknown'], false],
+            [false, [], true],
+            [false, ['sort' => ''], true],
+            [false, ['sort' => 'age,age'], false],
+            [true, ['sort' => ','], true],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderIsValid
+     *
+     * @param bool $enableMultiSort
+     * @param array $params
+     * @param bool $expected
+     */
+    public function testIsValid($enableMultiSort, $params, $expected): void
+    {
+        $sort = new Sort([
+            'attributes' => ['age', 'name'],
+            'enableMultiSort' => $enableMultiSort,
+            'params' => $params,
+        ]);
+
+        $this->assertSame($expected, $sort->isValid());
+    }
+
+    public function testIsValidReadsRequestWhenParamsNotSet(): void
+    {
+        $this->mockWebApplication();
+        Yii::$app->getRequest()->setQueryParams(['sort' => 'unknown']);
+
+        $sort = new Sort(['attributes' => ['age', 'name']]);
+
+        $this->assertFalse($sort->isValid());
     }
 }
 

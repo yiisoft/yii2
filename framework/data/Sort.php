@@ -296,6 +296,49 @@ class Sort extends BaseObject
     }
 
     /**
+     * Returns whether the currently requested sort order is valid.
+     *
+     * The sort order is read from [[sortParam]] in [[params]] the same way as [[getAttributeOrders()]].
+     * The request is considered invalid when it references an attribute that is not listed in [[attributes]],
+     * or when more than one attribute is requested while [[enableMultiSort]] is `false`. When no sort is
+     * requested the order is considered valid, so that the [[defaultOrder]] can take over.
+     *
+     * Use this to detect a tampered or stale sort parameter and react explicitly, for example by responding
+     * with a 404 instead of silently dropping the unknown attributes.
+     *
+     * @return bool whether the requested sort order is valid.
+     * @since 2.0.56
+     */
+    public function isValid()
+    {
+        if (($params = $this->params) === null) {
+            $request = Yii::$app->getRequest();
+            $params = $request instanceof Request ? $request->getQueryParams() : [];
+        }
+        if (!isset($params[$this->sortParam])) {
+            return true;
+        }
+        $attributes = [];
+        foreach ($this->parseSortParam($params[$this->sortParam]) as $attribute) {
+            if (strncmp($attribute, '-', 1) === 0) {
+                $attribute = substr($attribute, 1);
+            }
+            if ($attribute === '') {
+                continue;
+            }
+            if (!isset($this->attributes[$attribute])) {
+                return false;
+            }
+            $attributes[] = $attribute;
+            if (!$this->enableMultiSort && count($attributes) > 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Parses the value of [[sortParam]] into an array of sort attributes.
      *
      * The format must be the attribute name only for ascending
