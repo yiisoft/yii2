@@ -490,7 +490,7 @@ Two incidental changes can break code that relied on prior behavior:
 
 `yii\base\Module::$actionMap` is consulted only by the module whose `runAction()` handles the route (typically the
 application). Unlike `Module::$controllerMap`, it is not resolved recursively across sub-modules during nested-route
-dispatch: `parent.runAction('child/ping')` does not match `child.actionMap['ping']`. To expose a standalone action
+dispatch: `$parent->runAction('child/ping')` does not match `child.actionMap['ping']`. To expose a standalone action
 under a sub-module, use convention-based discovery through `yii\base\Module::$actionNamespace` (which is resolved
 recursively), or register the action in the dispatching module's `actionMap`.
 
