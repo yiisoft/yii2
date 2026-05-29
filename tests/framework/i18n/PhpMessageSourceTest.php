@@ -72,8 +72,8 @@ final class PhpMessageSourceTest extends TestCase
     /**
      * Provides categories outside the traversal threat model that must remain accepted.
      *
-     * Leading `.`/`-`, non-ASCII names, and spaces resolve under `basePath` and predate the hardening; rejecting
-     * them would be a backward-compatibility break wider than the documented threat model.
+     * Leading `.`/`-`, a `letter:` prefix, non-ASCII names, and spaces resolve under `basePath` and predate the
+     * hardening; rejecting them would be a backward-compatibility break wider than the documented threat model.
      *
      * @return array<string, array{string, string}> input category and resolved relative path.
      */
@@ -82,6 +82,7 @@ final class PhpMessageSourceTest extends TestCase
         return [
             'leading dot' => ['.messages', '.messages'],
             'leading hyphen' => ['-foo', '-foo'],
+            'letter colon prefix' => ['a:foo', 'a:foo'],
             'non-ascii accented' => ['café', 'café'],
             'non-ascii cyrillic' => ['модуль', 'модуль'],
             'whitespace in name' => ['My Category', 'My Category'],
