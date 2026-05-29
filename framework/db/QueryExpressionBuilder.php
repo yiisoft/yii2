@@ -30,6 +30,7 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
+        // https://github.com/yiisoft/yii2/issues/19771
         if ($expression instanceof ActiveQuery && $expression->sql !== null) {
             $params = array_merge($params, $expression->params ?? []);
             return '(' . $expression->sql . ')';
