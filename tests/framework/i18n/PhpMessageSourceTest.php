@@ -39,12 +39,8 @@ final class PhpMessageSourceTest extends TestCase
     {
         return [
             'absolute unix path' => ['/etc/passwd'],
-            'bare current-dir segment' => ['.'],
             'bare parent segment' => ['..'],
-            'double slash' => ['app//error'],
-            'embedded current-dir segment' => ['app/./db'],
             'embedded traversal segment' => ['app/../../config/db'],
-            'leading current-dir segment' => ['./config'],
             'leading traversal segment' => ['../secret'],
             'parent traversal' => ['../../etc/passwd'],
             'phar stream wrapper' => ['phar://archive.phar/config'],
@@ -86,6 +82,23 @@ final class PhpMessageSourceTest extends TestCase
             'non-ascii accented' => ['café', 'café'],
             'non-ascii cyrillic' => ['модуль', 'модуль'],
             'whitespace in name' => ['My Category', 'My Category'],
+        ];
+    }
+
+    /**
+     * Provides non-canonical but in-bounds categories that must remain accepted.
+     *
+     * Current-directory (`.`) segments and duplicate separators (`//`) still resolve under `basePath`; the documented
+     * threat model only covers `..`, absolute paths, and stream wrappers, so rejecting them would break compatibility.
+     *
+     * @return array<string, array{string, string}> input category and resolved relative path.
+     */
+    public function inBoundsNonCanonicalCategoryProvider(): array
+    {
+        return [
+            'double slash' => ['app//error', 'app//error'],
+            'embedded current-dir segment' => ['app/./db', 'app/./db'],
+            'leading current-dir segment' => ['./config', './config'],
         ];
     }
 
@@ -139,6 +152,26 @@ final class PhpMessageSourceTest extends TestCase
             $expected,
             $source->exposeMessageFilePath($category, 'en'),
             'Non-traversal category must resolve under basePath.',
+        );
+    }
+
+    /**
+     * @dataProvider inBoundsNonCanonicalCategoryProvider
+     */
+    public function testReturnExpectedPathForInBoundsNonCanonicalCategory(string $category, string $expectedRelative): void
+    {
+        $source = new ExposedPhpMessageSource(
+            [
+                'basePath' => '@yiiunit/data/i18n/messages',
+            ],
+        );
+
+        $expected = Yii::getAlias('@yiiunit/data/i18n/messages') . '/en/' . $expectedRelative . '.php';
+
+        $this->assertSame(
+            $expected,
+            $source->exposeMessageFilePath($category, 'en'),
+            'Non-canonical in-bounds category must be accepted.',
         );
     }
 
