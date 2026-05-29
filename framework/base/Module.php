@@ -110,6 +110,11 @@ class Module extends ServiceLocator
      *
      * Routes whose first segment is not present here fall through to the legacy controller pipeline unchanged.
      *
+     * Resolution scope: this map is consulted only by the module whose {@see runAction()} handles the route (typically
+     * the application). Unlike {@see $controllerMap}, it is NOT resolved recursively across sub-modules during
+     * nested-route dispatch. To expose a standalone action under a sub-module, rely on {@see $actionNamespace} (which
+     * IS resolved recursively), or register the action in the dispatching module's {@see $actionMap}.
+     *
      * @since 22.0
      */
     public array $actionMap = [];
