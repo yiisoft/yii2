@@ -38,14 +38,19 @@ final class PhpMessageSourceTest extends TestCase
     public function unsafeCategoryProvider(): array
     {
         return [
-            'parent traversal' => ['../../etc/passwd'],
-            'leading traversal segment' => ['../secret'],
-            'embedded traversal segment' => ['app/../../config/db'],
-            'current-dir segment' => ['app/./db'],
             'absolute unix path' => ['/etc/passwd'],
-            'windows absolute path' => ['C:\\Windows\\system32'],
-            'php stream wrapper' => ['php://filter/resource=config/db'],
+            'bare current-dir segment' => ['.'],
+            'bare parent segment' => ['..'],
+            'double slash' => ['app//error'],
+            'embedded current-dir segment' => ['app/./db'],
+            'embedded traversal segment' => ['app/../../config/db'],
+            'leading current-dir segment' => ['./config'],
+            'leading traversal segment' => ['../secret'],
+            'parent traversal' => ['../../etc/passwd'],
             'phar stream wrapper' => ['phar://archive.phar/config'],
+            'php stream wrapper' => ['php://filter/resource=config/db'],
+            'trailing traversal segment' => ['app/..'],
+            'windows absolute path' => ['C:\\Windows\\system32'],
         ];
     }
 
@@ -57,10 +62,29 @@ final class PhpMessageSourceTest extends TestCase
     public function safeCategoryProvider(): array
     {
         return [
-            'simple' => ['app', 'app'],
-            'slash namespace' => ['app/error', 'app/error'],
             'backslash namespace' => ['modules\\users\\validation', 'modules/users/validation'],
             'dashes and dots' => ['app-name/sub.module', 'app-name/sub.module'],
+            'simple' => ['app', 'app'],
+            'slash namespace' => ['app/error', 'app/error'],
+        ];
+    }
+
+    /**
+     * Provides categories outside the traversal threat model that must remain accepted.
+     *
+     * Leading `.`/`-`, non-ASCII names, and spaces resolve under `basePath` and predate the hardening; rejecting
+     * them would be a backward-compatibility break wider than the documented threat model.
+     *
+     * @return array<string, array{string, string}> input category and resolved relative path.
+     */
+    public function benignCategoryProvider(): array
+    {
+        return [
+            'leading dot' => ['.messages', '.messages'],
+            'leading hyphen' => ['-foo', '-foo'],
+            'non-ascii accented' => ['café', 'café'],
+            'non-ascii cyrillic' => ['модуль', 'модуль'],
+            'whitespace in name' => ['My Category', 'My Category'],
         ];
     }
 
@@ -94,6 +118,26 @@ final class PhpMessageSourceTest extends TestCase
             $expected,
             $source->exposeMessageFilePath($category, 'en'),
             'Namespace separators must be preserved under basePath.',
+        );
+    }
+
+    /**
+     * @dataProvider benignCategoryProvider
+     */
+    public function testReturnExpectedPathForBenignCategory(string $category, string $expectedRelative): void
+    {
+        $source = new ExposedPhpMessageSource(
+            [
+                'basePath' => '@yiiunit/data/i18n/messages',
+            ],
+        );
+
+        $expected = Yii::getAlias('@yiiunit/data/i18n/messages') . '/en/' . $expectedRelative . '.php';
+
+        $this->assertSame(
+            $expected,
+            $source->exposeMessageFilePath($category, 'en'),
+            'Non-traversal category must resolve under basePath.',
         );
     }
 

@@ -152,7 +152,7 @@ class PhpMessageSource extends MessageSource
         } else {
             $normalizedCategory = str_replace('\\', '/', (string) $category);
 
-            if (!preg_match('~^\w(?:(?!\/\.{0,2}\/)[\w\/\-\.])*$~', $normalizedCategory)) {
+            if (preg_match('~^[A-Za-z]:|(?:^|/)\.{0,2}(?:/|$)~', $normalizedCategory)) {
                 throw new InvalidArgumentException(
                     sprintf('Invalid message category: "%s".', (string) $category),
                 );
