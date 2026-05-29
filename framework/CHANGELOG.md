@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
 - Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20901: Stop treating an array as empty in `yii\validators\StringValidator` so an array assigned to a string attribute is reported as invalid instead of being saved as `"Array"` (WarLikeLaux)
 
 
 2.0.55 May 09, 2026

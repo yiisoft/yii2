@@ -111,6 +111,46 @@ class StringValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_str'));
     }
 
+    public static function dataProviderIsEmpty(): array
+    {
+        return [
+            [null, true],
+            ['', true],
+            ['0', false],
+            [[], false],
+            [['abc'], false],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderIsEmpty
+     *
+     * @param mixed $value
+     * @param bool $expected
+     */
+    public function testIsEmpty($value, $expected): void
+    {
+        $this->assertSame($expected, (new StringValidator())->isEmpty($value));
+    }
+
+    public function testEmptyArrayIsValidatedInsteadOfSkipped(): void
+    {
+        $val = new StringValidator(['attributes' => ['attr_string']]);
+        $model = new FakedValidationModel();
+        $model->attr_string = [];
+        $val->validateAttributes($model);
+        $this->assertTrue($model->hasErrors('attr_string'));
+    }
+
+    public function testIsEmptyUsesCustomCallback(): void
+    {
+        $val = new StringValidator(['isEmpty' => static function ($value) {
+            return $value === 'skip';
+        }]);
+        $this->assertTrue($val->isEmpty('skip'));
+        $this->assertFalse($val->isEmpty(''));
+    }
+
     public function testEnsureMessagesOnInit(): void
     {
         $val = new StringValidator(['min' => 1, 'max' => 2]);

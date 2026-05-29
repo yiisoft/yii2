@@ -51,6 +51,15 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.55
+-----------------------
+
+* `yii\validators\StringValidator` no longer treats an array as an empty value. Previously, assigning an array to a
+  string attribute while `skipOnEmpty` was enabled skipped validation, and the array could reach the database as the
+  literal string `"Array"`. Such a value is now reported as invalid (`{attribute} must be a string.`). If you relied on
+  the old behavior, pass a custom `isEmpty` callback to the validator.
+
+
 Upgrade from Yii 2.0.53
 -----------------------
 
