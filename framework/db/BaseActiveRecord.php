@@ -1088,7 +1088,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return false;
         }
         foreach ($this->attributes() as $name) {
-            $value = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
+            $value = array_key_exists($name, $record->_attributes) ? $record->_attributes[$name] : null;
             // https://github.com/yiisoft/yii2/issues/19785
             if (
                 !empty($this->_relationsDependencies[$name])
