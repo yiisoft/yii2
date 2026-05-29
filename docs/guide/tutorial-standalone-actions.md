@@ -366,8 +366,8 @@ final class CsrfFilter extends \yii\base\ActionFilter
 {
     public function beforeAction($action): bool
     {
-        if (!Yii::$app->request->validateCsrfToken()) {
-            throw new BadRequestHttpException('Unable to verify your data submission.');
+        if (!\Yii::$app->request->validateCsrfToken()) {
+            throw new \yii\web\BadRequestHttpException('Unable to verify your data submission.');
         }
 
         return true;
@@ -458,10 +458,11 @@ methods share filters, layout, and helper state, a controller stays the simpler,
 ([[yii\rest\IndexAction]], …) keep working through `Controller::actions()` exactly as before; they are controller-based
 by design because they share filters and serializer state. Standalone actions are complementary, not a replacement.
 
-**How do I test a standalone action?** Instantiate it with `new YourAction('id', null)`, call `runWithParams([...])`
-with the route parameters, and assert on the result. Register stubs in `Yii::$container` for typed parameters. See
-`tests/framework/base/StandaloneActionTest.php` and `tests/framework/base/ModuleActionNamespaceTest.php` for working
-examples.
+**How do I test a standalone action?** Build it the way the dispatcher does, then call `runWithParams([...])` and assert
+on the result. A plain action needs only `new YourAction('id', null)`; a **constructor-injected** one must be created
+through DI — register stubs in `Yii::$container`, build it with `Yii::createObject(YourAction::class)` (no positional
+args), then assign `$action->id`. See `tests/framework/base/StandaloneActionTest.php` and
+`tests/framework/base/ModuleActionNamespaceTest.php` for working examples.
 
 ## Things to keep in mind
 
