@@ -2,68 +2,25 @@
 
 > Available since version 22.0.
 
-This tutorial introduces the standalone-action support added in Yii 22.0. A standalone action is a [[yii\base\Action]]
-subclass that handles a route directly, without a hosting controller. There are two mechanisms both optional, both
-additive and they mirror the two mechanisms Yii has always offered for controllers:
+A standalone action is a [[yii\base\Action]] subclass that handles a route directly, without a hosting controller. The
+feature is **purely additive**: existing controllers, `actions()`, `controllerMap`, filters, and components keep working
+unchanged. You opt in only where you want it.
+
+Two optional mechanisms dispatch standalone actions, mirroring the two Yii has always offered for controllers:
 
 - [[yii\base\Module::$actionNamespace]] — convention-based discovery, parallel to
-  [[yii\base\Module::$controllerNamespace]]. Defaults to the value of `$controllerNamespace`, so by default
-  standalone actions live under the same root as controllers.
-- [[yii\base\Module::$actionMap]] — explicit registration, parallel to [[yii\base\Module::$controllerMap]]. Use it for
-  endpoints that do not follow the convention.
+  [[yii\base\Module::$controllerNamespace]]. Defaults to `$controllerNamespace`, so by default actions live under the
+  same root as controllers. **This is the mechanism you will use most.**
+- [[yii\base\Module::$actionMap]] — explicit registration, parallel to [[yii\base\Module::$controllerMap]]. For
+  endpoints that do not follow the convention (custom IDs, third-party classes).
 
-The tutorial walks through both, plus a complete CRUD example backed by ActiveRecord.
+## Quick start
 
-## The traditional controller approach is unchanged
-
-Everything you already know keeps working in 22.0:
-
-- `app\controllers\PostController` extending [[yii\web\Controller]] with `actionIndex()`, `actionCreate()`,
-  `actionUpdate()`, `actionDelete()` methods.
-- `Controller::actions()` registering reusable [[yii\base\Action]] subclasses such as [[yii\rest\IndexAction]],
-  [[yii\web\ErrorAction]], or your own.
-- `Module::$controllerMap` and namespace-based controller discovery.
-- All filters, behaviors, and CSRF/auth components attached at the controller level.
-
-The new feature is purely additive. Existing applications upgrade without code changes; you only opt in where you want
-the new pattern.
-
-## What 22.0 adds
-
-The headline mechanism is **convention**. Drop a class named `<X>Action` (extending [[yii\base\Action]], not
-[[yii\base\Controller]]) in the right folder, and a route resolves to it. Route segments map to sub-namespaces just as
-they do for controllers; the only differences are the class suffix (`Action` instead of `Controller`) and the parent
-class.
-
-Default file placement (no configuration required, because `$actionNamespace` defaults to `$controllerNamespace`):
-
-```text
-app/controllers/PostController.php           (existing controller, unchanged)
-app/controllers/post/IndexAction.php         (route post/index)
-app/controllers/post/ViewAction.php          (route post/view)
-app/controllers/admin/posts/CreateAction.php (route admin/posts/create)
-```
-
-The hyphen-to-CamelCase rule applies to the last route segment (`view-summary` resolves to `ViewSummaryAction`);
-preceding segments form a sub-namespace prefix verbatim.
-
-### Choosing the right base class
-
-Yii ships two action base classes for standalone dispatch:
-
-- **[[yii\web\Action]]** — for HTTP endpoints. Reuses [[yii\web\Controller::bindActionParams()]] semantics: scalar
-  coercion (`'7'` → `int 7`), [[yii\web\BadRequestHttpException]] on type mismatches and missing required
-  parameters, and the same DI resolution as web controllers (module components, module DI, container).
-- **[[yii\base\Action]]** — for non-HTTP contexts (queue jobs, scheduled tasks, console-side dispatch). Resolves
-  typed parameters through [[\yii\di\Container::resolveCallableDependencies()]] without HTTP-specific filtering.
-
-For every example below that handles an HTTP request, the action extends `yii\web\Action`. Reserve `yii\base\Action`
-for actions that should not pay HTTP-specific costs nor surface `BadRequestHttpException` on bad scalars.
-
-A realistic example is a health-check endpoint that verifies database connectivity. With the default configuration, drop
-the file at `app/controllers/HealthAction.php`:
+Drop a class named `<X>Action` (extending [[yii\web\Action]] for HTTP, not [[yii\base\Controller]]) in the right folder
+and a route resolves to it. With the default configuration the folder is `app/controllers/`:
 
 ```php
+// app/controllers/HealthAction.php  ->  route: health
 namespace app\controllers;
 
 use yii\db\Connection;
@@ -74,67 +31,83 @@ final class HealthAction extends Action
 {
     public function run(Connection $db, Response $response): Response
     {
-        $checks = ['database' => 'unknown'];
-        $statusCode = 200;
+        $ok = true;
 
         try {
             $db->createCommand('SELECT 1')->queryScalar();
-
-            $checks['database'] = 'ok';
-        } catch (\Throwable $e) {
-            $checks['database'] = 'failed';
-            $statusCode = 503;
+        } catch (\Throwable) {
+            $ok = false;
         }
 
         $response->format = Response::FORMAT_JSON;
-
-        $response->statusCode = $statusCode;
-
-        $response->data = [
-            'status' => $statusCode === 200 ? 'ok' : 'degraded',
-            'checks' => $checks,
-        ];
+        $response->statusCode = $ok ? 200 : 503;
+        $response->data = ['status' => $ok ? 'ok' : 'degraded'];
 
         return $response;
     }
 }
 ```
 
-A request whose route resolves to `health` runs `HealthAction::run()` directly. No controller class is instantiated, no
-`actionXxx` method is called, and `Yii::$app->controller` is not set. The action's dependencies (`Connection $db`,
-`Response $response`) are resolved by the DI container based on the typed parameters of `run()`. Filters declared in the
-action's `behaviors()` (such as [[yii\filters\AccessControl]] or [[yii\filters\VerbFilter]]) participate in the lifecycle
-the same way they do on a controller.
+A request whose route resolves to `health` runs `HealthAction::run()` directly. No controller is instantiated, no
+`actionXxx` method is called, and `Yii::$app->controller` stays `null`. The typed parameters of `run()`
+(`Connection $db`, `Response $response`) are resolved by the DI container. Filters in the action's `behaviors()`
+(such as [[yii\filters\AccessControl]] or [[yii\filters\VerbFilter]]) participate in the lifecycle exactly as on a
+controller.
 
-### Dependency injection in standalone actions
+## How routes resolve to classes
 
-Standalone actions dispatched via `actionMap` or `actionNamespace` support dependency injection in **two places**:
+The convention is the same as for controllers, with two differences: the class suffix is `Action` (not `Controller`)
+and the parent is [[yii\base\Action]] / [[yii\web\Action]].
 
-1. **Constructor injection** — typed parameters on `__construct()` are resolved through the DI container before the
-   action runs. Use this for long-lived collaborators (database connections, repositories, services) that the action
-   needs across all invocations.
-2. **`run()` method injection** — typed parameters on `run()` are resolved per-invocation through
-   [[\yii\di\Container::resolveCallableDependencies()]]. Use this for the request itself ([[yii\web\Response]],
-   [[yii\web\Request]]) and for route-bound scalars (`int $id` from the URL, etc.).
+**Rule:** the **last** route segment becomes the class name (`<Camel>Action`); every **preceding** segment becomes a
+sub-namespace (folder), appended verbatim to `$actionNamespace`.
 
-Both paths coexist. A common pattern injects services through the constructor and request-scoped values through
-`run()`:
+With `actionNamespace` set to `app\usecase`:
+
+| Route               | Resolves to                          | File                                 |
+| ------------------- | ------------------------------------ | ------------------------------------ |
+| `health`            | `app\usecase\HealthAction`           | `usecase/HealthAction.php`           |
+| `post/index`        | `app\usecase\post\IndexAction`       | `usecase/post/IndexAction.php`       |
+| `post/view-summary` | `app\usecase\post\ViewSummaryAction` | `usecase/post/ViewSummaryAction.php` |
+| `admin/posts/view`  | `app\usecase\admin\posts\ViewAction` | `usecase/admin/posts/ViewAction.php` |
+
+### Limits to keep in mind
+
+- **Hyphens only in the last segment.** `view-summary` → `ViewSummaryAction`, but a hyphen in a preceding (folder)
+  segment is rejected: `user-admin/login` does not resolve.
+- **The last segment must start with a lowercase letter** (`[a-z]`). Folder segments are matched verbatim, so keep them
+  lowercase to match conventional routes.
+- **The first segment must not collide with a registered sub-module id.** If a sub-module with that id exists,
+  resolution recurses into it (using _its_ `actionNamespace`) instead of looking under the current one.
+- **The class must extend [[yii\base\Action]] (or [[yii\web\Action]]) and must not extend [[yii\base\Controller]].** A
+  `<X>Action` class that extends `Controller` is skipped.
+- Empty segments (`//`) never resolve.
+
+## Choosing the base class
+
+| Base class          | Use for                  | Parameter handling                                                                                           |
+| ------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| [[yii\web\Action]]  | HTTP endpoints           | Scalar coercion (`'7'` → `int 7`), [[yii\web\BadRequestHttpException]] on bad/missing params, HTTP-aware DI. |
+| [[yii\base\Action]] | Non-HTTP (jobs, console) | DI via [[\yii\di\Container::resolveCallableDependencies()]], no scalar coercion.                             |
+
+Every HTTP example below extends `yii\web\Action`. Reserve `yii\base\Action` for actions that should not pay
+HTTP-specific costs nor surface `BadRequestHttpException` on bad scalars. This tutorial is web-focused; console
+standalone dispatch also runs through `Module::runAction()`, but is out of scope here.
+
+## Dependency injection
+
+Standalone actions support DI in **two places**, and both coexist:
+
+- **Constructor** — typed parameters on `__construct()` are resolved once, before the action runs. Use for long-lived
+  collaborators (DB, mailer, repositories) and anything you need from `behaviors()` or `init()`.
+- **`run()`** — typed parameters are resolved per invocation. Use for request-scoped artifacts ([[yii\web\Request]],
+  [[yii\web\Response]], [[yii\web\User]]) and route scalars (`int $id`, `string $slug`).
 
 ```php
-namespace app\controllers;
-
-use yii\db\Connection;
-use yii\web\Action;
-use yii\web\Response;
-
 final class HealthAction extends Action
 {
-    // Long-lived service: resolved once at construction by the DI container.
-    public function __construct(private readonly Connection $db)
-    {
-    }
+    public function __construct(private readonly Connection $db) {}
 
-    // Per-invocation: $response comes from the application; route scalars (none here) would land alongside it.
     public function run(Response $response): Response
     {
         $response->format = Response::FORMAT_JSON;
@@ -145,137 +118,70 @@ final class HealthAction extends Action
 }
 ```
 
-The constructor uses PHP `8.x` promoted properties (`private readonly Connection $db`) to assign the typed parameter
-to a property in one step. Promoted properties are syntactic sugar — a plain assignment is equivalent:
+For a `run()` parameter, the binder resolves typed non-builtin parameters in this order: a **module component** named
+like the parameter, then a **module DI definition** by type, then the **global container** by type, then `null` if the
+parameter is nullable, otherwise [[yii\web\ServerErrorHttpException]]. Route scalars on a [[yii\web\Action]] are coerced
+and validated (`?id=abc` for `int $id` raises [[yii\web\BadRequestHttpException]], not a `TypeError`).
 
-```php
-private readonly Connection $db;
+> **Advanced — `init()` and the action id.** The dispatcher calls `Yii::createObject()` with no positional arguments and
+> assigns [[yii\base\Action::$id]] _after_ construction. Modern actions need not call `parent::__construct()`. Call it
+> explicitly only if you rely on [[yii\base\Action::init()]] (for example, attaching behaviors there) — but note that
+> during `init()` the id is still `null`. Logic that depends on the id belongs in `behaviors()` event handlers, which
+> fire on `EVENT_BEFORE_ACTION` after the id is assigned. Controllers and `actions()`-registered actions keep the
+> historical `__construct($id, $controller, $config)` contract; the DI-friendly path applies only to standalone actions.
 
-public function __construct(Connection $db)
-{
-    $this->db = $db;
-}
-```
+## Organizing actions
 
-#### Choosing constructor vs `run()` injection
-
-| Inject in the constructor when                                             | Inject in `run()` when                                                                     |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| The dependency is the same on every call (DB, mailer, cache, repository).  | The dependency is the request-scoped artifact ([[yii\web\Request]], [[yii\web\Response]]). |
-| You want it usable from `behaviors()`, `init()`, or other lifecycle hooks. | You want it scoped to the single dispatch.                                                 |
-| You want the type signature to document the action's collaborators.        | The value is a route parameter (`int $id`, `string $slug`).                                |
-
-Route scalars on `run()` (such as `int $id`) get HTTP-aware coercion through [[yii\web\Action::resolveStandaloneParams()]]
-when the action extends [[yii\web\Action]]. Non-HTTP standalone actions (extending [[yii\base\Action]]) get the same
-DI but skip the scalar coercion.
-
-#### Lifecycle and `parent::__construct()`
-
-The dispatcher calls `Yii::createObject()` on the action class with no positional arguments and assigns
-[[yii\base\Action::$id]] afterwards. Modern actions do **not** need to call `parent::__construct()` — the parent
-constructor accepts a `null` id by default.
-
-If your action relies on [[yii\base\Action::init()]] (because you attach behaviors there or run setup that depends on
-the parent's state), call `parent::__construct()` explicitly to trigger it:
-
-```php
-public function __construct(private readonly Connection $db)
-{
-    parent::__construct();
-}
-```
-
-Note: when `init()` runs through `parent::__construct()`, [[yii\base\Action::$id]] is still `null` — the dispatcher
-assigns it after the constructor returns. Logic that depends on the action ID belongs in `behaviors()` event handlers
-(which fire on `EVENT_BEFORE_ACTION` / `EVENT_AFTER_ACTION` after id assignment), not in `init()`.
-
-Controllers and actions registered through [[yii\base\Controller::actions()]] keep the historical positional
-contract `__construct($id, $controller, $config)` — this DI-friendly dispatch path only applies to standalone
-actions resolved through `actionMap` or `actionNamespace`.
-
-For projects that prefer a separate root for standalone actions (vertical slices, use cases, ports/adapters layout), set
-`actionNamespace` to the desired namespace:
+By default `actionNamespace` equals `controllerNamespace`, so actions sit next to controllers. For a separate root
+(vertical slices, use cases, ports/adapters), point `actionNamespace` elsewhere:
 
 ```php
 // config/web.php
-return [
-    // ...
-    'actionNamespace' => 'app\\usecase',
-];
+'actionNamespace' => 'app\\usecase',
 ```
 
-With the line above, controllers continue to live at `app/controllers/PostController.php` (untouched), and standalone
-actions live at `app/usecase/post/IndexAction.php`, `app/usecase/admin/posts/CreateAction.php`, etc. Routes resolve
-under `actionNamespace` instead of `controllerNamespace`.
+Controllers stay at `app/controllers/`; actions resolve under `app/usecase/`. The idiomatic layout groups actions by
+feature, with the action class **directly** in the feature folder:
 
-When a route does not follow the convention (custom ID, third-party class, two slices that need disambiguation), use
-[[yii\base\Module::$actionMap]] for explicit registration:
-
-```php
-'actionMap' => [
-    'health' => app\actions\HealthCheckAction::class,
-],
+```text
+usecase/post/IndexAction.php    ->  route: post/index
+usecase/post/CreateAction.php   ->  route: post/create
 ```
 
-`actionMap` is parallel to `controllerMap` and takes precedence over both `controllerMap` and the convention. It is
-rarely needed in practice; the convention covers most cases.
+### A directory per action without a redundant route
 
-## When to use which
+If you prefer one folder per action (`usecase/user/login/LoginAction.php`), the convention route becomes
+`user/login/login` — the folder `login/` and the class `LoginAction` both encode "login". The convention cannot avoid
+this, but three configuration-only approaches give a clean route without writing code:
 
-Use the **traditional controller approach** when:
+- **`actionMap`** — map a flat id to the class wherever it lives:
+  `'actionMap' => ['login' => app\usecase\user\login\LoginAction::class]` → route `login`.
+- **`urlManager` rules** — keep the internal route, expose a clean public URL:
+  `'user/login' => 'user/login/login'`.
+- **Sub-modules + a uniform class name** — register `user` and `login` as plain [[yii\base\Module]] instances with
+  `actionNamespace`, and name each slice's action `DefaultAction` (the module default route). Then `user/login`
+  resolves natively to `usecase/user/login/DefaultAction.php`, no alias.
 
-- Several actions naturally share state, filters, or layout (typical CRUD on a single resource where the controller's
-  `behaviors()` cover all actions).
-- You rely on `view` rendering helpers from [[yii\web\Controller::render()]].
-- You are extending an existing controller-based code base and consistency matters more than slicing.
-
-Use **standalone actions** (convention or `actionMap`) when:
-
-- Each endpoint has its own dependencies, behaviors, or filters and you want them owned by the action.
-- You organize an application as vertical slices or use cases, with each slice in its own folder.
-- The endpoint is single-purpose: webhooks, health checks, integrations, one-shot operations.
-
-Both styles can coexist. A controller can have most of its `actionXxx` methods, and a standalone `<X>Action.php` file
-can fill in a specific action that the controller does **not** implement. If both a controller method and a standalone
-Action class match the same route, `Module::runAction()` throws `InvalidConfigException` so the developer
-disambiguates instead of silently shadowing one or the other.
+> **Note:** `actionMap` is consulted only by the module whose `runAction()` handles the route (typically the
+> application). Unlike `controllerMap`, it is not resolved recursively across sub-modules. `actionNamespace` discovery
+> _is_ recursive, so for sub-module standalone actions prefer the convention.
 
 ## A complete CRUD example
 
-The rest of this tutorial builds a `posts` resource with six endpoints organized as a vertical slice under `app/usecase`.
-The same example could be built with one `PostController` and six `actionXxx` methods; the patterns coexist.
-
-### Folder layout
+A `posts` resource organized as a vertical slice under `app/usecase`. The same resource could be one `PostController`
+with six `actionXxx` methods; the patterns coexist.
 
 ```text
-app/
-    usecase/
-        post/
-            IndexAction.php
-            ViewAction.php
-            CreateAction.php
-            UpdateAction.php
-            DeleteAction.php
-            SearchAction.php
-            PostForm.php
-            views/
-                index.php
-                view.php
-                form.php
-    models/
-        Post.php
-    migrations/
-        m250101_000000_create_post_table.php
-config/
-    web.php
+app/usecase/post/
+    IndexAction.php  ViewAction.php  CreateAction.php
+    UpdateAction.php DeleteAction.php SearchAction.php
+    PostForm.php
+    views/index.php  views/view.php  views/form.php
+app/models/Post.php
+config/web.php
 ```
 
-The folder name `post` (lowercase) is the route segment. Each `*Action.php` file is one HTTP endpoint.
-The form model and views live next to the actions because they are part of the same slice.
-
-### 1. Migration
-
-Migrations are unchanged. Use `safeUp()` and `safeDown()` per Yii conventions:
+### Migration
 
 ```php
 use yii\db\Migration;
@@ -297,7 +203,6 @@ final class m250101_000000_create_post_table extends Migration
             ],
         );
         $this->createIndex('idx-post-status', '{{%post}}', 'status');
-        $this->createIndex('idx-post-author_id', '{{%post}}', 'author_id');
     }
 
     public function safeDown(): void
@@ -307,56 +212,11 @@ final class m250101_000000_create_post_table extends Migration
 }
 ```
 
-### 2. ActiveRecord model
+### Model and form
 
-`app/models/Post.php` follows standard Yii conventions:
-
-```php
-namespace app\models;
-
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
-
-final class Post extends ActiveRecord
-{
-    public static function tableName(): string
-    {
-        return '{{%post}}';
-    }
-
-    public function rules(): array
-    {
-        return [
-            [['title', 'body', 'author_id'], 'required'],
-            [['title'], 'string', 'max' => 180],
-            [['body'], 'string'],
-            [['status'], 'in', 'range' => ['draft', 'published', 'archived']],
-            [['author_id'], 'integer'],
-        ];
-    }
-
-    public function attributeLabels(): array
-    {
-        return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'body' => 'Body',
-            'status' => 'Status',
-            'author_id' => 'Author',
-        ];
-    }
-
-    public function behaviors(): array
-    {
-        return [TimestampBehavior::class];
-    }
-}
-```
-
-### 3. Form model (input validation)
-
-`app/usecase/post/PostForm.php` is a form-only model used by Create and Update. Keeping it separate from the
-ActiveRecord lets you change the table without touching the input contract:
+`app/models/Post.php` is a standard ActiveRecord (`tableName()`, `rules()`, `attributeLabels()`, `TimestampBehavior`).
+`app/usecase/post/PostForm.php` is a form-only [[yii\base\Model]] used by Create and Update, keeping the input contract
+independent of the table schema:
 
 ```php
 namespace app\usecase\post;
@@ -374,30 +234,16 @@ final class PostForm extends Model
         return [
             [['title', 'body'], 'required'],
             [['title'], 'string', 'max' => 180],
-            [['body'], 'string'],
             [['status'], 'in', 'range' => ['draft', 'published', 'archived']],
-        ];
-    }
-
-    public function attributeLabels(): array
-    {
-        return [
-            'title' => 'Title',
-            'body' => 'Body',
-            'status' => 'Status',
         ];
     }
 }
 ```
 
-### 4. The actions
+### The actions
 
-Each action extends [[yii\web\Action]] (HTTP endpoints) and owns its `run()` method. Typed parameters are coerced and
-validated through the same binder as web controllers.
-
-#### `IndexAction` — list with pagination
-
-`app/usecase/post/IndexAction.php`:
+`IndexAction` — list with pagination. `$this->getModule()` returns the owning module when the action runs standalone
+(it falls back to the controller's module when hosted by a controller):
 
 ```php
 namespace app\usecase\post;
@@ -417,22 +263,18 @@ final class IndexAction extends Action
             ],
         );
 
-        return $this->getModule()->view->render(
-            '@app/usecase/post/views/index',
-            ['provider' => $provider],
-            $this,
-        );
+        return $this->getModule()->view->render('@app/usecase/post/views/index', ['provider' => $provider], $this);
     }
 }
 ```
 
-`$this->getModule()` returns the owning module when the action runs standalone (it falls back to the controller's module
-when the action is hosted by a controller). Rendering goes through the module's view component; you can equally inject
-[[yii\web\Response]] and return JSON without touching views.
+There is no `Controller::render()` here, so `$module->view->render()` returns the **bare view, without a layout**. Apply
+one explicitly (render the content, then `renderFile()` the layout with `['content' => $content]`) or hide it behind a
+small injected renderer service. Use absolute view paths (`@app/...`): an action is not a
+[[yii\base\ViewContextInterface]], so relative names will not resolve.
 
-#### `ViewAction` — show one record
-
-`app/usecase/post/ViewAction.php`:
+`ViewAction` — the `int $id` is filled from the route and coerced; `?id=abc` raises
+[[yii\web\BadRequestHttpException]]:
 
 ```php
 namespace app\usecase\post;
@@ -445,28 +287,14 @@ final class ViewAction extends Action
 {
     public function run(int $id): string
     {
-        $post = Post::findOne($id);
+        $post = Post::findOne($id) ?? throw new NotFoundHttpException('Post not found.');
 
-        if ($post === null) {
-            throw new NotFoundHttpException('Post not found.');
-        }
-
-        return $this->getModule()->view->render(
-            '@app/usecase/post/views/view',
-            ['post' => $post],
-            $this,
-        );
+        return $this->getModule()->view->render('@app/usecase/post/views/view', ['post' => $post], $this);
     }
 }
 ```
 
-The `int $id` parameter is filled from the route and coerced by [[yii\web\Action]]'s binder; passing `?id=abc`
-raises [[yii\web\BadRequestHttpException]] (HTTP 400) instead of a `TypeError`. Typed services are resolved from
-module components and the DI container.
-
-#### `CreateAction` — POST with form validation
-
-`app/usecase/post/CreateAction.php`:
+`CreateAction` — POST with form validation. Filters are declared on the action itself:
 
 ```php
 namespace app\usecase\post;
@@ -501,179 +329,109 @@ final class CreateAction extends Action
         if (!$form->load($request->post()) || !$form->validate()) {
             $response->statusCode = 422;
 
-            return $this->getModule()->view->render(
-                '@app/usecase/post/views/form',
-                ['form' => $form],
-                $this,
-            );
+            return $this->getModule()->view->render('@app/usecase/post/views/form', ['form' => $form], $this);
         }
 
         $post = new Post();
 
         $post->setAttributes($form->getAttributes());
         $post->author_id = (int) $user->getId();
-
-        if (!$post->save()) {
-            throw new \RuntimeException('Failed to persist post: ' . print_r($post->errors, true));
-        }
+        $post->save();
 
         Yii::$app->session->setFlash('success', 'Post created.');
 
-        return $response->redirect(['post/view', 'id' => $post->id]);
+        return $response->redirect(['/post/view', 'id' => $post->id]);
     }
 }
 ```
 
-Three things to notice:
+`AccessControl` and `VerbFilter` attach to the action's `EVENT_BEFORE_ACTION` and run before `run()`. `Request`,
+`Response`, and `User` are application components (resolved by name); `PostForm` is autowired by class. Validation runs
+on the form, not the ActiveRecord. Because no controller runs, add a CSRF filter to `behaviors()` for this POST route
+(see [CSRF protection](#csrf-protection)).
 
-1. `behaviors()` is declared on the action itself. `AccessControl` and `VerbFilter` attach to the action's
-   `EVENT_BEFORE_ACTION` and run before `run()`.
-2. `Request`, `Response`, `User`, and `PostForm` are typed parameters; the DI container resolves each of them.
-   `Request`, `Response`, and `User` are application components (resolved by name), while `PostForm` is autowired by
-   class.
-3. The form is _separate_ from the ActiveRecord. Validation runs on `PostForm`, then attributes are copied to a `Post`
-   instance. This keeps input validation independent of the persistence schema.
+**`UpdateAction`, `DeleteAction`, `SearchAction`** follow the same pattern. Update is Create with a leading lookup
+(`Post::findOne($id) ?? throw …`) guarded by `$request->isPut || $request->isPatch`. Delete only needs a `VerbFilter`
+(`['delete' => ['DELETE']]`) plus an `AccessControl` rule. Search is read-only and accepts `string $q` plus pagination
+parameters.
 
-#### `UpdateAction`, `DeleteAction`, `SearchAction`
+### CSRF protection
 
-These follow the same pattern. Update is a copy of Create with a leading lookup:
+A standalone action bypasses [[yii\web\Controller::beforeAction()]], where Yii validates the CSRF token, so **CSRF is
+not checked automatically**. APIs and webhooks benefit (no token to manage); state-changing form routes
+(`POST`/`PUT`/`DELETE`) restore it with a small filter attached through `behaviors()`:
 
 ```php
-public function run(int $id, Request $request, Response $response, PostForm $form): Response|string
+final class CsrfFilter extends \yii\base\ActionFilter
 {
-    $post = Post::findOne($id) ?? throw new NotFoundHttpException('Post not found.');
-
-    $form->setAttributes($post->getAttributes());
-
-    if ($request->isPut || $request->isPatch) {
-        if ($form->load($request->post()) && $form->validate()) {
-            $post->setAttributes($form->getAttributes());
-            $post->save(false);
-
-            return $response->redirect(
-                [
-                    'post/view',
-                    'id' => $post->id,
-                ],
-            );
+    public function beforeAction($action): bool
+    {
+        if (!Yii::$app->request->validateCsrfToken()) {
+            throw new BadRequestHttpException('Unable to verify your data submission.');
         }
-    }
 
-    return $this->getModule()->view->render(
-        '@app/usecase/post/views/form',
-        ['form' => $form],
-        $this,
-    );
+        return true;
+    }
 }
 ```
 
-Delete is even smaller and only needs `VerbFilter` plus an `AccessControl` rule for the destroyer role.
-Search is read-only and accepts `string $q` plus pagination parameters.
+`validateCsrfToken()` is a no-op for `GET`/`HEAD`/`OPTIONS`, so the filter only enforces on unsafe methods. Add
+`'csrf' => CsrfFilter::class` to the action's `behaviors()` — a trait is handy when several slices share the same guard.
 
-### 5. URL configuration
+### URL configuration
 
-Yii's [[yii\web\UrlManager]] is unchanged; you just point clean URLs at the conventional route strings.
-Verb-prefixed rules give you proper REST routing:
-
-```php
-'urlManager' => [
-    'enablePrettyUrl' => true,
-    'showScriptName' => false,
-    'rules' => [
-        'GET,HEAD posts'           => 'post/index',
-        'GET posts/search'         => 'post/search',
-        'POST posts'               => 'post/create',
-        'GET posts/<id:\d+>'       => 'post/view',
-        'PUT,PATCH posts/<id:\d+>' => 'post/update',
-        'DELETE posts/<id:\d+>'    => 'post/delete',
-    ],
-],
-```
-
-The right-hand side of each rule is a route string. Yii resolves the route by following the standard order: `actionMap`,
-`controllerMap`, sub-modules, controllers by namespace, then standalone actions by namespace. With the layout above,
-`post/index` resolves to `app\usecase\post\IndexAction` because `actionNamespace` is set to `app\usecase`. Placeholders
-like `<id:\d+>` are captured and passed to `run()` as named parameters.
-
-### 6. The configuration
-
-The whole vertical slice needs only one configuration line for routing to work — the namespace pointer:
+[[yii\web\UrlManager]] is unchanged; point clean URLs at the route strings. The whole slice needs only the namespace
+pointer plus the rules:
 
 ```php
 return [
     // ...
     'actionNamespace' => 'app\\usecase',
-    'urlManager' => [/* rules above */],
+    'urlManager' => [
+        'enablePrettyUrl' => true,
+        'showScriptName' => false,
+        'rules' => [
+            'GET,HEAD posts'           => 'post/index',
+            'GET posts/search'         => 'post/search',
+            'POST posts'               => 'post/create',
+            'GET posts/<id:\d+>'       => 'post/view',
+            'PUT,PATCH posts/<id:\d+>' => 'post/update',
+            'DELETE posts/<id:\d+>'    => 'post/delete',
+        ],
+    ],
 ];
 ```
 
-There is no per-action registration. Adding a new action is dropping the file at the right path; the next request finds
-it.
+There is no per-action registration: adding an action is dropping a file at the right path. For a one-off custom id or
+namespace, add an `actionMap` entry (`'webhooks-stripe' => app\Integrations\Stripe\WebhookHandler::class`); explicit
+entries take precedence over the convention.
 
-If a single action needs a custom ID or different namespace from the rest, register it explicitly through `actionMap`:
+## Coexistence and routing order
 
-```php
-'actionMap' => [
-    'webhooks-stripe' => app\Integrations\Stripe\WebhookHandler::class,
-],
-```
+The same application can mix controllers (in `app/controllers/`) and standalone actions (wherever `actionNamespace`
+points). `Module::runAction()` resolves a route deterministically:
 
-`actionMap` and `actionNamespace` coexist with no conflict; explicit entries take precedence.
+1. **`actionMap`** (matched on the first segment, at the dispatching module).
+2. **`controllerMap`**.
+3. **Sub-modules** (matched on the first segment, recursively).
+4. **Controller by namespace** — `<X>Controller` with a matching `actionXxx` method.
+5. **Standalone action by namespace** — `<X>Action` under `actionNamespace`.
 
-### 7. Coexistence with controllers
-
-The same application can declare controllers (in `app/controllers/`) and standalone actions (in `app/usecase/` or
-wherever `actionNamespace` points). Routing is deterministic:
-
-1. `actionMap` is checked first.
-2. `controllerMap` is checked next.
-3. Sub-modules are matched on the first segment.
-4. The controller pipeline tries to resolve a `<X>Controller` with a matching `actionXxx` method.
-5. If no controller method matches, the standalone-action pipeline tries `<X>Action` under `actionNamespace`.
-
-Because ambiguous matches now raise `InvalidConfigException`, existing applications can still adopt the pattern
-feature by feature, but overlapping controller/standalone routes must be disambiguated explicitly. There is no global
-switch.
+If a controller method **and** a standalone Action class both match the same route, `runAction()` throws
+`InvalidConfigException` so you disambiguate explicitly. Existing applications upgrade with no behavioral change,
+because before 22.0 a class file at the convention path was never resolved. You can adopt the pattern feature by
+feature; there is no global switch.
 
 ## URL generation inside standalone actions
 
-### `Sort` and `Pagination` resolve the route automatically
-
 [[yii\data\Sort::createUrl()]] and [[yii\data\Pagination::createUrl()]] resolve the target route from `$route`, then the
-active controller's `getRoute()`, then [[\yii\base\Application::$requestedRoute]] (added in 22.0). The third step is what
-makes [[yii\widgets\GridView]] and [[yii\widgets\ListView]] work transparently inside a standalone action — no `route`
-override needed on the provider:
+active controller's `getRoute()`, then [[yii\base\Application::$requestedRoute]] (the 22.0 fallback). The third step is
+what makes [[yii\widgets\GridView]] and [[yii\widgets\ListView]] work transparently inside a standalone action — no
+`route` override needed. [[yii\helpers\Url::current()]] and [[yii\helpers\Url::canonical()]] use the same fallback. When
+none of the three is available (calling outside a request lifecycle) the call throws `InvalidConfigException`.
 
-```php
-$provider = new ActiveDataProvider(
-    [
-        'query' => Post::find(),
-        'pagination' => ['pageSize' => 20],
-        'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
-    ],
-);
-```
-
-When all three are unavailable — typically code calling `createUrl()` outside a request lifecycle — the call throws
-`InvalidConfigException`. Unit tests that bypass the dispatcher can simulate `requestedRoute`:
-
-```php
-Yii::$app->requestedRoute = 'post/index';
-$action = new IndexAction();
-$action->id = 'index';
-$result = $action->run();
-```
-
-### Use absolute routes with `Url::to()` and `Html::beginForm()`
-
-[[yii\helpers\Url::to()]] (via [[yii\helpers\BaseUrl::normalizeRoute()]]) supports two route forms:
-
-- **Absolute** — leading `/`, for example `['/post/index']`. Resolved without consulting any controller. Works uniformly
-  inside or outside a standalone action.
-- **Relative** — no leading slash, for example `['post/index']` or `['view']`. Resolved relative to the current
-  controller's module; throws `InvalidArgumentException` when no controller is active.
-
-In standalone-action views, prefer the absolute form:
+For links and forms, prefer **absolute** routes (leading `/`), which resolve from the application root without
+consulting any controller:
 
 ```php
 <a href="<?= Url::to(['/post/view', 'id' => $post->id]) ?>">View</a>
@@ -681,62 +439,38 @@ In standalone-action views, prefer the absolute form:
 <?= Html::beginForm(['/post/delete', 'id' => $post->id], 'post') ?>
 ```
 
-The throw is intentional: "relative" has no meaningful definition without a controller. The leading slash makes the
-resolution explicit (from the application root).
+A **relative** route (no leading slash, e.g. `['view']`) resolves against the current controller's module and throws
+[[yii\base\InvalidArgumentException]] when no controller is active — "relative" has no meaning without a controller.
 
 ## Frequently asked questions
 
-**"Is the request really running without any controller?"**
+**Where do shared concerns live without a controller?** In three places, all pre-existing: _application-wide_
+components (`db`, `session`, `mailer`, `urlManager`, …) read via typed `run()` parameters or `Yii::$app`; _per route_
+in the action's own `behaviors()` (`AccessControl`, `VerbFilter`, `ContentNegotiator`, …); and _per module_ via
+`EVENT_BEFORE_ACTION` / `EVENT_AFTER_ACTION`, which still fire on every ancestor module (auditing, feature flags,
+request logging).
 
-Yes, by design. `Module::runAction()` dispatches the action directly: it builds the [[yii\base\Action]] instance (either
-from `actionMap`, the `actionNamespace` convention, or a user-provided class), fires module before-action events, fires
-the action's own `EVENT_BEFORE_ACTION` (so behaviors like `AccessControl` and `VerbFilter` attach), invokes `run()`
-with arguments resolved through the DI container, then fires the after-action events. No `Controller` subclass is
-instantiated, no `actionXxx` method is called, and `Yii::$app->controller` is not mutated.
+**Should I migrate every controller?** No. Standalone actions pay off for endpoints with their own dependencies and
+behaviors — webhooks, health checks, integrations, single-purpose use cases, vertical slices. For CRUD where several
+methods share filters, layout, and helper state, a controller stays the simpler, standard choice.
 
-**"Where do shared concerns live without a controller?"**
+**What about REST resources and existing `Action` subclasses?** [[yii\rest\ActiveController]] and the REST action set
+([[yii\rest\IndexAction]], …) keep working through `Controller::actions()` exactly as before; they are controller-based
+by design because they share filters and serializer state. Standalone actions are complementary, not a replacement.
 
-In three places, all of which were already there:
-
-- _Application-wide._ `Yii::$app->components` (session, db, mailer, log, urlManager, …) and bootstrap components are
-  unchanged. They are read by typed parameters in the action's `run()` or pulled directly from `Yii::$app`.
-- _Per route._ The action's own `behaviors()` declares filters (`AccessControl`, `VerbFilter`, `ContentNegotiator`, rate
-  limiting, …). They attach to the action's `EVENT_BEFORE_ACTION` and run before `run()`.
-- _Per module._ `EVENT_BEFORE_ACTION` and `EVENT_AFTER_ACTION` still fire on every ancestor module. Use these for
-  cross-cutting policies like auditing, feature flags, or request logging.
-
-**"Should we migrate every controller to standalone actions?"**
-
-No. Standalone actions pay off when an endpoint has its own dependencies and behaviors that do not need to be shared
-with siblings — webhooks, health checks, integrations, single-purpose use cases, vertical slices. For traditional CRUD
-where four to six methods naturally share filters, layouts, and helper state, a controller remains the simpler choice
-and the standard Yii pattern. Adopt the new pattern feature by feature where it pays off; leave the rest on controllers.
-
-**"What about REST resources and existing `Action` subclasses?"**
-
-[[yii\rest\ActiveController]] and the REST action set ([[yii\rest\IndexAction]], [[yii\rest\ViewAction]], …) keep
-working through `Controller::actions()` exactly as before. They are controller-based by design because they share
-filters and serializer state. Standalone actions are complementary, not a replacement.
-
-**"How do I test a standalone action?"**
-
-The same way you would test any class. Instantiate it with `new YourAction('id', null)`, call `runWithParams([...])`
-with the route parameters, and assert against the result. The DI container resolves typed parameters; for unit tests,
-register stubs in `Yii::$container` before invoking. See `tests/framework/base/StandaloneActionTest.php` and
-`tests/framework/base/ModuleActionNamespaceTest.php` in the framework for working examples.
+**How do I test a standalone action?** Instantiate it with `new YourAction('id', null)`, call `runWithParams([...])`
+with the route parameters, and assert on the result. Register stubs in `Yii::$container` for typed parameters. See
+`tests/framework/base/StandaloneActionTest.php` and `tests/framework/base/ModuleActionNamespaceTest.php` for working
+examples.
 
 ## Things to keep in mind
 
-- `yii\base\Action::$controller` is `null` for standalone actions. Action classes that read `$this->controller` directly
-  are not standalone-compatible. The framework documents this on [[yii\web\ViewAction]], [[yii\web\ErrorAction]], and
-  [[yii\base\InlineAction]].
+- `yii\base\Action::$controller` is `null` for standalone actions. Classes that read `$this->controller` directly are
+  not standalone-compatible (documented on [[yii\web\ViewAction]], [[yii\web\ErrorAction]], [[yii\base\InlineAction]]).
+- `Yii::$app->controller` is **not** mutated when a standalone action runs; code reading it mid-request sees whatever
+  was set previously (typically `null`).
 - `yii\filters\AccessRule::matchController()` accepts `null`. A rule with a non-empty `controllers` constraint does not
-  match a standalone action. Leave `controllers` empty (or omit the constraint) when the rule should apply to standalone
-  actions.
-- `Yii::$app->controller` is **not** mutated when a standalone action runs. Code that reads `Yii::$app->controller`
-  mid-request still sees whatever value was set previously (typically `null`).
-- CSRF, session, and authentication components are application-level. They keep working unchanged; nothing about
-  standalone actions disables them.
-- When a controller method AND a standalone Action class both match the same route, `Module::runAction()` throws
-  `InvalidConfigException` so the developer disambiguates explicitly. Existing applications upgrade with no behavioral
-  change because before this release a class file at the convention path was never resolved.
+  match a standalone action — leave `controllers` empty when the rule should apply to standalone actions.
+- **CSRF is not validated automatically** — it lives in [[yii\web\Controller::beforeAction()]], which standalone
+  actions skip. Attach a CSRF filter for state-changing routes (see [CSRF protection](#csrf-protection)). Session and
+  authentication are application-level and unaffected.
