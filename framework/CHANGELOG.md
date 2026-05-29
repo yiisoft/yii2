@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
 - Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20908: Use `bigint` for `apply_time` in the migration history table to avoid the year 2038 overflow (WarLikeLaux)
 
 
 2.0.55 May 09, 2026
