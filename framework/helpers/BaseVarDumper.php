@@ -251,21 +251,28 @@ class BaseVarDumper
         $closureTokens = [];
         $pendingParenthesisCount = 0;
         foreach ($tokens as $token) {
-            if (isset($token[0]) && $token[0] === T_FUNCTION) {
+            if (isset($token[0]) && in_array($token[0], [T_FUNCTION, T_FN], true)) {
                 $closureTokens[] = $token[1];
                 continue;
             }
-            if ($closureTokens !== []) {
-                $closureTokens[] = isset($token[1]) ? $token[1] : $token;
-                if ($token === '}') {
-                    $pendingParenthesisCount--;
+            if ($closureTokens === []) {
+                continue;
+            }
+            if (is_string($token)) {
+                if ($token === '{' || $token === '[' || $token === '(') {
+                    $pendingParenthesisCount++;
+                } elseif ($token === '}' || $token === ']' || $token === ')') {
                     if ($pendingParenthesisCount === 0) {
                         break;
                     }
-                } elseif ($token === '{') {
-                    $pendingParenthesisCount++;
+                    $pendingParenthesisCount--;
+                } elseif ($token === ',' || $token === ';') {
+                    if ($pendingParenthesisCount === 0) {
+                        break;
+                    }
                 }
             }
+            $closureTokens[] = isset($token[1]) ? $token[1] : $token;
         }
 
         return implode('', $closureTokens);
