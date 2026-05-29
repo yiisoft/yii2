@@ -471,16 +471,28 @@ extension points (`removeItemSoftCascade()`, `removeItemManualCascade()`, `updat
 `updateRuleManualCascade()`, `removeRuleManualCascade()`, `removeAllRulesManualCascade()`) are available for finer
 overrides.
 
-### Standalone action dispatch incidental BC
+### Standalone actions
 
-Alongside the new standalone-action dispatch (additive feature), two incidental changes can break code that relied on
-prior behavior:
+Standalone-action dispatch (`Module::$actionMap`, `Module::$actionNamespace`, and `yii\web\Action`) is an additive
+feature. The notes below cover the incidental BC it introduces and a resolution-scope caveat to be aware of.
+
+#### Incidental BC
+
+Two incidental changes can break code that relied on prior behavior:
 
 - `yii\base\Action::$controller` is now nullable. Subclass overrides and any code that read `$action->controller`
   unchecked must add a `null` check.
 - `yii\filters\AccessRule::matchController()` accepts `null` and a rule with a non-empty `controllers` constraint
   no longer matches when the action runs standalone. To preserve the previous behavior of always matching, leave
   `controllers` empty on the rule.
+
+#### `actionMap` resolution scope
+
+`yii\base\Module::$actionMap` is consulted only by the module whose `runAction()` handles the route (typically the
+application). Unlike `Module::$controllerMap`, it is not resolved recursively across sub-modules during nested-route
+dispatch: `$parent->runAction('child/ping')` does not match `child.actionMap['ping']`. To expose a standalone action
+under a sub-module, use convention-based discovery through `yii\base\Module::$actionNamespace` (which is resolved
+recursively), or register the action in the dispatching module's `actionMap`.
 
 ### View no longer assumes jQuery (`View::registerJs()`)
 

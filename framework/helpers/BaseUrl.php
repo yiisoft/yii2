@@ -10,6 +10,7 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 
 /**
  * BaseUrl provides concrete implementation for [[Url]].
@@ -337,12 +338,19 @@ class BaseUrl
      * $this->registerLinkTag(['rel' => 'canonical', 'href' => Url::canonical()]);
      * ```
      *
+     * When no controller is active (for example, a standalone action dispatched through
+     * [[\yii\base\Module::$actionMap]] or [[\yii\base\Module::$actionNamespace]]), the route falls back to
+     * [[\yii\base\Application::$requestedRoute]] and no action parameters are appended.
+     *
      * @return string the canonical URL of the currently requested page
      */
     public static function canonical()
     {
-        $params = Yii::$app->controller->actionParams;
-        $params[0] = Yii::$app->controller->getRoute();
+        $controller = Yii::$app->controller;
+
+        $params = $controller !== null ? $controller->actionParams : [];
+
+        $params[0] = static::resolveCurrentRoute();
 
         return static::getUrlManager()->createAbsoluteUrl($params);
     }
@@ -429,9 +437,40 @@ class BaseUrl
     public static function current(array $params = [], $scheme = false)
     {
         $currentParams = Yii::$app->getRequest()->getQueryParams();
-        $currentParams[0] = '/' . Yii::$app->controller->getRoute();
+        $currentParams[0] = '/' . static::resolveCurrentRoute();
         $route = array_replace_recursive($currentParams, $params);
         return static::toRoute($route, $scheme);
+    }
+
+    /**
+     * Resolves the route of the currently requested page.
+     *
+     * Returns the active controller's [[\yii\web\Controller::getRoute()|route]] when a controller is handling the
+     * request. For standalone actions dispatched without a hosting controller (through [[\yii\base\Module::$actionMap]]
+     * or [[\yii\base\Module::$actionNamespace]]), falls back to [[\yii\base\Application::$requestedRoute]].
+     *
+     * @throws InvalidConfigException if no controller is active and [[\yii\base\Application::$requestedRoute]] is
+     * empty.
+     *
+     * @return string Route of the currently requested page, without a leading slash.
+     *
+     * @since 22.0
+     */
+    protected static function resolveCurrentRoute(): string
+    {
+        if (Yii::$app->controller !== null) {
+            return Yii::$app->controller->getRoute();
+        }
+
+        $requestedRoute = Yii::$app->requestedRoute;
+
+        if ($requestedRoute !== null && $requestedRoute !== '') {
+            return $requestedRoute;
+        }
+
+        throw new InvalidConfigException(
+            'Unable to determine the current route: no active controller and "Application::$requestedRoute" is empty.',
+        );
     }
 
     /**
