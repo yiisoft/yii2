@@ -265,10 +265,7 @@ class Sort extends BaseObject
     {
         if ($this->_attributeOrders === null || $recalculate) {
             $this->_attributeOrders = [];
-            if (($params = $this->params) === null) {
-                $request = Yii::$app->getRequest();
-                $params = $request instanceof Request ? $request->getQueryParams() : [];
-            }
+            $params = $this->resolveParams();
             if (isset($params[$this->sortParam])) {
                 foreach ($this->parseSortParam($params[$this->sortParam]) as $attribute) {
                     $descending = false;
@@ -296,6 +293,20 @@ class Sort extends BaseObject
     }
 
     /**
+     * Resolves the request parameters that carry the current sort information.
+     * @return array the parameters from [[params]], or the current request query parameters when [[params]] is not set.
+     */
+    private function resolveParams()
+    {
+        if ($this->params !== null) {
+            return $this->params;
+        }
+        $request = Yii::$app->getRequest();
+
+        return $request instanceof Request ? $request->getQueryParams() : [];
+    }
+
+    /**
      * Returns whether the currently requested sort order is valid.
      *
      * The sort order is read from [[sortParam]] in [[params]] the same way as [[getAttributeOrders()]].
@@ -311,10 +322,7 @@ class Sort extends BaseObject
      */
     public function isValid()
     {
-        if (($params = $this->params) === null) {
-            $request = Yii::$app->getRequest();
-            $params = $request instanceof Request ? $request->getQueryParams() : [];
-        }
+        $params = $this->resolveParams();
         if (!isset($params[$this->sortParam])) {
             return true;
         }
@@ -466,10 +474,7 @@ class Sort extends BaseObject
      */
     public function createUrl($attribute, $absolute = false)
     {
-        if (($params = $this->params) === null) {
-            $request = Yii::$app->getRequest();
-            $params = $request instanceof Request ? $request->getQueryParams() : [];
-        }
+        $params = $this->resolveParams();
         $params[$this->sortParam] = $this->createSortParam($attribute);
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
