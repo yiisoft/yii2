@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,8 +10,10 @@
 
 namespace yiiunit\framework\helpers;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\base\Action;
+use yii\base\InvalidConfigException;
 use yii\base\Module;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -18,9 +22,9 @@ use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**
- * UrlTest.
- * @group helpers
+ * Unit tests for {@see \yii\helpers\Url}.
  */
+#[Group('helpers')]
 class UrlTest extends TestCase
 {
     protected function setUp(): void
@@ -294,6 +298,48 @@ class UrlTest extends TestCase
         $this->mockAction('page', 'view', null, ['id' => 10]);
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fview&id=10', Url::canonical());
         $this->removeMockedAction();
+    }
+
+    public function testCurrentFallsBackToRequestedRouteWhenControllerIsNull(): void
+    {
+        $this->removeMockedAction();
+
+        Yii::$app->requestedRoute = 'page/view';
+
+        Yii::$app->request->setQueryParams(['id' => 10]);
+
+        self::assertSame(
+            '/base/index.php?r=page%2Fview&id=10',
+            Url::current(),
+            '`requestedRoute` must supply the route when no controller is active.',
+        );
+    }
+
+    public function testCanonicalFallsBackToRequestedRouteWhenControllerIsNull(): void
+    {
+        $this->removeMockedAction();
+
+        Yii::$app->requestedRoute = 'page/view';
+
+        self::assertSame(
+            'http://example.com/base/index.php?r=page%2Fview',
+            Url::canonical(),
+            '`requestedRoute` must supply the canonical route when no controller is active.',
+        );
+    }
+
+    public function testThrowInvalidConfigExceptionWhenCurrentRouteCannotBeResolved(): void
+    {
+        $this->removeMockedAction();
+
+        Yii::$app->requestedRoute = null;
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage(
+            'Unable to determine the current route: no active controller and "Application::$requestedRoute" is empty.',
+        );
+
+        Url::current();
     }
 
     public function testIsRelative(): void

@@ -14,8 +14,15 @@ use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\base\Module;
 use yii\web\BadRequestHttpException;
+use yii\web\MethodNotAllowedHttpException;
+use yii\web\ServerErrorHttpException;
+use yiiunit\framework\base\stub\standalone\ActionTestService;
 use yiiunit\framework\web\stub\standalone\CoerceIntAction;
+use yiiunit\framework\web\stub\standalone\GuardedAction;
 use yiiunit\framework\web\stub\standalone\LegacyConstructorWebAction;
+use yiiunit\framework\web\stub\standalone\ModuleServiceAction;
+use yiiunit\framework\web\stub\standalone\NullableServiceAction;
+use yiiunit\framework\web\stub\standalone\RequiredServiceAction;
 use yiiunit\TestCase;
 
 /**
@@ -135,5 +142,123 @@ final class WebActionTest extends TestCase
             $action->getUniqueId(),
             'Unique ID must combine the module ID and the route segment.',
         );
+    }
+
+    public function testWebActionInjectsNullForUnresolvableNullableService(): void
+    {
+        $action = new NullableServiceAction('optional', null);
+
+        $result = $action->runWithParams([]);
+
+        self::assertSame(
+            'null',
+            $result,
+            "Unresolvable nullable service must inject 'null'.",
+        );
+    }
+
+    public function testThrowServerErrorHttpExceptionWhenStandaloneDependencyIsUnresolvable(): void
+    {
+        $action = new RequiredServiceAction('required', null);
+
+        $this->expectException(ServerErrorHttpException::class);
+        $this->expectExceptionMessage(
+            'Could not load required service: dependency',
+        );
+
+        $action->runWithParams([]);
+    }
+
+    public function testWebActionResolvesServiceViaModuleComponent(): void
+    {
+        $module = new Module('mymod', Yii::$app);
+
+        $module->actionMap = ['svc' => ModuleServiceAction::class];
+
+        $module->set('service', ActionTestService::class);
+
+        $result = $module->runAction('svc');
+
+        self::assertSame(
+            'svc',
+            $result,
+            'Module component must satisfy the typed parameter.',
+        );
+        self::assertStringStartsWith(
+            'Component:',
+            Yii::$app->requestedParams['service'],
+            'Resolution path must be tagged Component.',
+        );
+    }
+
+    public function testWebActionResolvesServiceViaModuleDiDefinition(): void
+    {
+        $module = new Module('mymod', Yii::$app);
+
+        $module->actionMap = ['svc' => ModuleServiceAction::class];
+
+        $module->set(ActionTestService::class, ActionTestService::class);
+
+        $result = $module->runAction('svc');
+
+        self::assertSame(
+            'svc',
+            $result,
+            'Module DI definition must satisfy the typed parameter.',
+        );
+        self::assertStringContainsString(
+            'DI:',
+            Yii::$app->requestedParams['service'],
+            'Resolution path must be tagged as module DI.',
+        );
+    }
+
+    public function testStandaloneActionRunsWhenVerbFilterAllowsMethod(): void
+    {
+        $originalMethod = $_SERVER['REQUEST_METHOD'] ?? null;
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+
+        try {
+            $module = new Module('mymod', Yii::$app);
+
+            $module->actionMap = ['guarded' => GuardedAction::class];
+
+            self::assertSame(
+                'ok',
+                $module->runAction('guarded'),
+                'Allowed verb must let the standalone action run.',
+            );
+        } finally {
+            $this->restoreRequestMethod($originalMethod);
+        }
+    }
+
+    public function testThrowMethodNotAllowedHttpExceptionWhenVerbFilterRejectsMethod(): void
+    {
+        $originalMethod = $_SERVER['REQUEST_METHOD'] ?? null;
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+
+        $module = new Module('mymod', Yii::$app);
+
+        $module->actionMap = ['guarded' => GuardedAction::class];
+
+        try {
+            $this->expectException(MethodNotAllowedHttpException::class);
+
+            $module->runAction('guarded');
+        } finally {
+            $this->restoreRequestMethod($originalMethod);
+        }
+    }
+
+    private function restoreRequestMethod(string|null $method): void
+    {
+        if ($method === null) {
+            unset($_SERVER['REQUEST_METHOD']);
+
+            return;
+        }
+
+        $_SERVER['REQUEST_METHOD'] = $method;
     }
 }

@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\base;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\base\ActionEvent;
 use yii\base\Controller;
@@ -20,6 +21,7 @@ use yiiunit\framework\base\stub\standalone\BehaviorAction;
 use yiiunit\framework\base\stub\standalone\CancelingAction;
 use yiiunit\framework\base\stub\standalone\GreetAction;
 use yiiunit\framework\base\stub\standalone\InjectingAction;
+use yiiunit\framework\base\stub\standalone\LifecycleRecordingAction;
 use yiiunit\framework\base\stub\standalone\MethodInjectingAction;
 use yiiunit\framework\base\stub\standalone\NoRunAction;
 use yiiunit\framework\base\stub\standalone\StubController;
@@ -29,15 +31,14 @@ use yiiunit\TestCase;
 /**
  * Unit tests for {@see \yii\base\Action} when invoked standalone (without a hosting controller).
  *
- * Covers the nullable `$controller` contract, module-aware {@see \yii\base\Action::getUniqueId()} fallback,
- * DI-based parameter resolution on `run()` via {@see \yii\di\Container::resolveCallableDependencies()}, the
- * `beforeRun()` cancellation hook, and behavior attachment via the action's own event triggers.
+ * Covers the nullable `$controller` contract, module-aware {@see \yii\base\Action::getUniqueId()} fallback, DI-based
+ * parameter resolution on `run()` via {@see \yii\di\Container::resolveCallableDependencies()}, the  `beforeRun()`
+ * cancellation hook, and behavior attachment via the action's own event triggers.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
- *
- * @group base
  */
+#[Group('base')]
 final class StandaloneActionTest extends TestCase
 {
     protected function setUp(): void
@@ -184,6 +185,24 @@ final class StandaloneActionTest extends TestCase
             'svc-42',
             $result,
             'Method level DI must combine container service and route params.',
+        );
+    }
+
+    public function testAfterRunFiresAfterStandaloneRun(): void
+    {
+        $action = new LifecycleRecordingAction('lifecycle', null);
+
+        $result = $action->runWithParams([]);
+
+        self::assertSame(
+            'done',
+            $result,
+            'Result must propagate from run.',
+        );
+        self::assertSame(
+            ['before', 'run', 'after'],
+            $action->calls,
+            'Order: beforeRun, run, afterRun.',
         );
     }
 
