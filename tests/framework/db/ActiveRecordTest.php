@@ -1165,6 +1165,18 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(2, $customer->profile->id);
     }
 
+    public function testRefreshResetsEagerlyLoadedRelation(): void
+    {
+        $customer = Customer::find()->where(['id' => 1])->with('profile')->one();
+        $this->assertTrue($customer->isRelationPopulated('profile'));
+
+        Customer::updateAll(['profile_id' => 2], ['id' => 1]);
+        $this->assertTrue($customer->refresh());
+
+        $this->assertFalse($customer->isRelationPopulated('profile'));
+        $this->assertEquals(2, $customer->profile->id);
+    }
+
     public function testOutdatedCompositeKeyRelationsAreReset(): void
     {
         $dossier = Dossier::findOne([

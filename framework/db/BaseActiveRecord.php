@@ -1098,6 +1098,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
             $this->_attributes[$name] = $value;
         }
+        $trackedRelations = [];
+        foreach ($this->_relationsDependencies as $relationNames) {
+            foreach ($relationNames as $relationName) {
+                $trackedRelations[$relationName] = true;
+            }
+        }
+        foreach (array_keys($this->_related) as $name) {
+            if (!isset($trackedRelations[$name])) {
+                unset($this->_related[$name]);
+            }
+        }
         $this->_oldAttributes = $record->_oldAttributes;
         $this->afterRefresh();
 
