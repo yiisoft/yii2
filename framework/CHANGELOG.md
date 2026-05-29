@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
 - Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20902: Honor raw SQL of a `findBySql()` query used as a subquery in a condition (WarLikeLaux)
 
 
 2.0.55 May 09, 2026

@@ -30,6 +30,11 @@ class QueryExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
+        if ($expression instanceof ActiveQuery && $expression->sql !== null) {
+            $params = array_merge($params, $expression->params ?? []);
+            return '(' . $expression->sql . ')';
+        }
+
         list($sql, $params) = $this->queryBuilder->build($expression, $params);
 
         return "($sql)";
