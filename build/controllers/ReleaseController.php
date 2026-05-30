@@ -913,6 +913,7 @@ class ReleaseController extends Controller
         // cleanup whitespace
         foreach ($changelog as $i => $line) {
             $changelog[$i] = rtrim($line);
+            $changelog[$i] = preg_replace('/^- Fix(?= #\d+(, #\d+)*: )/', '- Bug', $changelog[$i]);
         }
         $changelog = array_filter($changelog);
 
