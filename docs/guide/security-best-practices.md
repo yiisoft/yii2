@@ -280,8 +280,8 @@ Yii relies on PHP's native `serialize()`/`unserialize()` for data it writes into
 [cache](caching-overview.md) backend uses native serialization by default, configurable through
 [[yii\caching\Cache::$serializer]] (a custom serializer pair, or `false` to disable it, as in [[yii\caching\ArrayCache]]);
 the same applies to cache [dependencies](caching-data.md#cache-dependencies). RBAC storage always uses native
-`serialize()`/`unserialize()`; [[yii\rbac\DbManager]] in the `auth_item.data`/`auth_rule.data` columns and
-[[yii\rbac\PhpManager]] in its rule files. These reads are safe only while those stores stay trusted. Make sure your
+`serialize()`/`unserialize()`: [[yii\rbac\DbManager]] persists to the `auth_item.data` and `auth_rule.data` columns,
+while [[yii\rbac\PhpManager]] writes to its rule files. These reads are safe only while those stores stay trusted. Make sure your
 cache backend (Redis, Memcached, files, database) and your RBAC tables and files are writable only by the application; 
 an attacker who can write into them can stage a deserialization gadget. Cookies received over HTTP are not trusted: Yii
 verifies their integrity with an HMAC ([[yii\web\Request::$cookieValidationKey|cookieValidationKey]]) and deserializes
