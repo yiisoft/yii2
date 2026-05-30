@@ -252,6 +252,12 @@ Read more about working with migrations from different namespaces in
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
+> Warning: Both managers persist rule data with PHP's native `serialize()` and read it back with `unserialize()` —
+  [[yii\rbac\DbManager]] in the `auth_rule.data` (and `auth_item.data`) columns, and [[yii\rbac\PhpManager]] in its
+  rules file. Keep these stores trusted: the database and the `@app/rbac` files must be writable only by the
+  application, since an attacker who can write rule data can stage a deserialization gadget. See
+  [Avoiding unsafe deserialization](security-best-practices.md#avoiding-unsafe-deserialization).
+
 
 ### Building Authorization Data <span id="generating-rbac-data"></span>
 

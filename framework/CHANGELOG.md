@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
 - Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20889: Remove unreachable PHP < 7 cookie deserialization fallback in `yii\web\Request::loadCookies()` (terabytesoftw)
 
 
 2.0.55 May 09, 2026
