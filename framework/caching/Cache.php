@@ -74,6 +74,28 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $serializer;
     /**
+     * @var array|bool $allowedClasses Passed as the `allowed_classes` option to `unserialize()` when
+     * the default PHP serializer is used (i.e. [[serializer]] is `null`). Set to `false` to disallow
+     * all PHP object deserialization (safest option for caches that only store scalar/array values),
+     * or to an array of fully-qualified class names to restrict which objects may be instantiated.
+     * Defaults to `true` (allow all classes) for backwards compatibility.
+     *
+     * Applications that cache objects should restrict this to the exact set of classes they cache,
+     * including [[Dependency]] subclasses when cache dependencies are used.
+     *
+     * Example:
+     * ```php
+     * 'cache' => [
+     *     'class' => 'yii\caching\FileCache',
+     *     'allowedClasses' => [
+     *         \yii\caching\FileDependency::class,
+     *     ],
+     * ],
+     * ```
+     * @since 2.0.50
+     */
+    public $allowedClasses = true;
+    /**
      * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
@@ -136,7 +158,9 @@ abstract class Cache extends Component implements CacheInterface
         if ($value === false || $this->serializer === false) {
             return $value;
         } elseif ($this->serializer === null) {
-            $value = unserialize((string)$value);
+            $value = $this->allowedClasses !== true
+                ? unserialize((string)$value, ['allowed_classes' => $this->allowedClasses])
+                : unserialize((string)$value);
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
@@ -209,7 +233,10 @@ abstract class Cache extends Component implements CacheInterface
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
-                    $value = $this->serializer === null ? unserialize($values[$newKey])
+                    $value = $this->serializer === null
+                        ? ($this->allowedClasses !== true
+                            ? unserialize($values[$newKey], ['allowed_classes' => $this->allowedClasses])
+                            : unserialize($values[$newKey]))
                         : call_user_func($this->serializer[1], $values[$newKey]);
 
                     if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
