@@ -10,6 +10,7 @@ namespace yii\caching;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
 
 /**
@@ -115,6 +116,9 @@ abstract class Cache extends Component implements CacheInterface
     {
         parent::init();
         $this->_igbinaryAvailable = \extension_loaded('igbinary');
+        if (!is_array($this->allowedClasses) && !is_bool($this->allowedClasses)) {
+            throw new InvalidConfigException('Cache::$allowedClasses must be a bool or an array of class names.');
+        }
     }
 
     /**
@@ -235,8 +239,8 @@ abstract class Cache extends Component implements CacheInterface
                 } else {
                     $value = $this->serializer === null
                         ? ($this->allowedClasses !== true
-                            ? unserialize($values[$newKey], ['allowed_classes' => $this->allowedClasses])
-                            : unserialize($values[$newKey]))
+                            ? unserialize((string)$values[$newKey], ['allowed_classes' => $this->allowedClasses])
+                            : unserialize((string)$values[$newKey]))
                         : call_user_func($this->serializer[1], $values[$newKey]);
 
                     if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
