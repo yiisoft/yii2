@@ -35,7 +35,7 @@ final class PhpMessageSourceTest extends TestCase
      *
      * @return array<string, array{string}> traversal, absolute, and stream-wrapper category inputs.
      */
-    public function unsafeCategoryProvider(): array
+    public static function unsafeCategoryProvider(): array
     {
         return [
             'absolute unix path' => ['/etc/passwd'],
@@ -55,7 +55,7 @@ final class PhpMessageSourceTest extends TestCase
      *
      * @return array<string, array{string, string}> input category and resolved relative path.
      */
-    public function safeCategoryProvider(): array
+    public static function safeCategoryProvider(): array
     {
         return [
             'backslash namespace' => ['modules\\users\\validation', 'modules/users/validation'],
@@ -73,7 +73,7 @@ final class PhpMessageSourceTest extends TestCase
      *
      * @return array<string, array{string, string}> input category and resolved relative path.
      */
-    public function benignCategoryProvider(): array
+    public static function benignCategoryProvider(): array
     {
         return [
             'leading dot' => ['.messages', '.messages'],
@@ -93,7 +93,7 @@ final class PhpMessageSourceTest extends TestCase
      *
      * @return array<string, array{string, string}> input category and resolved relative path.
      */
-    public function inBoundsNonCanonicalCategoryProvider(): array
+    public static function inBoundsNonCanonicalCategoryProvider(): array
     {
         return [
             'double slash' => ['app//error', 'app//error'],
@@ -158,8 +158,10 @@ final class PhpMessageSourceTest extends TestCase
     /**
      * @dataProvider inBoundsNonCanonicalCategoryProvider
      */
-    public function testReturnExpectedPathForInBoundsNonCanonicalCategory(string $category, string $expectedRelative): void
-    {
+    public function testReturnExpectedPathForInBoundsNonCanonicalCategory(
+        string $category,
+        string $expectedRelative
+    ): void {
         $source = new ExposedPhpMessageSource(
             [
                 'basePath' => '@yiiunit/data/i18n/messages',
