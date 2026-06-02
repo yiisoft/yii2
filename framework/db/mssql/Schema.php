@@ -416,12 +416,8 @@ SQL;
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if ($info['column_default'] === '(NULL)') {
-            $info['column_default'] = null;
-        }
-        if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
-            $column->defaultValue = $column->defaultPhpTypecast($info['column_default']);
-        }
+        // store raw default for deferred resolution in `findColumns()`, where isPrimaryKey is known.
+        $column->defaultValue = $info['column_default'];
 
         return $column;
     }
@@ -493,6 +489,9 @@ SQL;
             if ($column->isPrimaryKey && $column->autoIncrement) {
                 $table->sequenceName = '';
             }
+            $column->defaultValue = $column->isPrimaryKey
+                ? null
+                : $column->defaultPhpTypecast($column->defaultValue);
             $table->columns[$column->name] = $column;
         }
 

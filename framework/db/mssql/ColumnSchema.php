@@ -13,10 +13,17 @@ namespace yii\db\mssql;
 use yii\db\Expression;
 
 use function bin2hex;
+use function in_array;
 use function is_string;
+use function preg_match;
+use function str_replace;
 
 /**
- * Class ColumnSchema for MSSQL database
+ * Represents the metadata of a column in a Microsoft SQL Server database table.
+ *
+ * Extends {@see \yii\db\ColumnSchema} with MSSQL-specific type handling: converts `varbinary` values to explicit
+ * `CONVERT()` expressions, normalizes column default values, and builds OUTPUT-clause type declarations for
+ * `INSERT ... OUTPUT INTO` temp tables.
  *
  * @since 2.0.23
  */
@@ -53,18 +60,69 @@ class ColumnSchema extends \yii\db\ColumnSchema
     }
 
     /**
-     * Prepares default value and converts it according to [[phpType]]
-     * @param mixed $value default value
-     * @return mixed converted value
+     * Converts a MSSQL column default value to its PHP representation.
+     *
+     * Handles MSSQL-specific default formats:
+     * - `null` or `(NULL)` to `null`.
+     * - `CURRENT_TIMESTAMP` on `timestamp` columns to `null` (server-managed value).
+     * - `('value')` / `(N'value')` string wrappers to the unwrapped literal with escaped quotes resolved.
+     * - `((number))` numeric wrapper to the unwrapped numeric string.
+     * - expression defaults such as `(getdate())` or `(newid())` to `null` (server-computed, not a literal).
+     *
+     * @param mixed $value Default value in MSSQL `column_default` format.
+     *
+     * @return mixed Converted value.
+     *
      * @since 2.0.24
      */
     public function defaultPhpTypecast($value)
     {
-        if ($value !== null) {
-            // convert from MSSQL column_default format, e.g. ('1') -> 1, ('string') -> string
-            $value = substr(substr($value, 2), 0, -2);
+        if ($value === null || $value === '(NULL)') {
+            return null;
+        }
+
+        if ($this->type === Schema::TYPE_TIMESTAMP && $value === 'CURRENT_TIMESTAMP') {
+            return null;
+        }
+
+        if (is_string($value)) {
+            // string defaults: ('value') or unicode (N'value') — unwrap and resolve escaped single quotes.
+            if (preg_match("/^\(N?'(.*)'\)$/s", $value, $matches) === 1) {
+                $value = str_replace("''", "'", $matches[1]);
+            } elseif (preg_match('/^\(\((.+)\)\)$/s', $value, $matches) === 1) {
+                // numeric defaults: ((0)), ((42)), ((3.14)).
+                $value = $matches[1];
+            } else {
+                // expression defaults: (getdate()), (newid()) — not representable as a PHP literal.
+                return null;
+            }
         }
 
         return parent::phpTypecast($value);
+    }
+
+    /**
+     * Returns the SQL type declaration for this column inside an OUTPUT clause temp table.
+     *
+     * Appends `(MAX)` to variable-length types (`varchar`, `nvarchar`, `varbinary`), preserves the declared size for
+     * fixed-length types (`char`, `nchar`, `binary`), and maps `timestamp` to `varbinary(8)` or `binary(8)`.
+     *
+     * @return string SQL type declaration.
+     */
+    public function getOutputColumnDeclaration(): string
+    {
+        if ($this->dbType === Schema::TYPE_TIMESTAMP) {
+            return $this->allowNull ? 'varbinary(8)' : 'binary(8)';
+        }
+
+        $dbType = $this->dbType;
+
+        if (in_array($dbType, ['varchar', 'nvarchar', 'varbinary'], true)) {
+            $dbType .= '(MAX)';
+        } elseif (in_array($dbType, ['char', 'nchar', 'binary'], true)) {
+            $dbType .= "($this->size)";
+        }
+
+        return $dbType;
     }
 }
