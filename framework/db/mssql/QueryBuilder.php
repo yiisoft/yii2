@@ -16,7 +16,6 @@ use yii\db\Expression;
 use yii\db\Query;
 
 use function count;
-use function in_array;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -431,23 +430,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $outputColumns = [];
 
         foreach ($schema->columns as $column) {
-            if ($column->isComputed) {
+            if (!$column instanceof ColumnSchema || $column->isComputed) {
                 continue;
-            }
-
-            $dbType = $column->dbType;
-
-            if (in_array($dbType, ['varchar', 'nvarchar', 'binary', 'varbinary'], true)) {
-                $dbType .= '(MAX)';
-            }
-
-            if ($column->dbType === Schema::TYPE_TIMESTAMP) {
-                $dbType = $column->allowNull ? 'varbinary(8)' : 'binary(8)';
             }
 
             $quoteColumnName = $this->db->quoteColumnName($column->name);
 
-            $cols[] = "{$quoteColumnName} {$dbType} " . ($column->allowNull ? 'NULL' : '');
+            $cols[] = "{$quoteColumnName} {$column->getOutputColumnDeclaration()} " . ($column->allowNull ? 'NULL' : '');
             $outputColumns[] = "INSERTED.{$quoteColumnName}";
         }
 
