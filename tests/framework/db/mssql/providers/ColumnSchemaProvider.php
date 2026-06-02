@@ -123,6 +123,11 @@ final class ColumnSchemaProvider
                 "(N'unicode')",
                 'unicode',
             ],
+            'unicode string with escaped single quotes' => [
+                Schema::TYPE_STRING,
+                "(N'it''s')",
+                "it's",
+            ],
         ];
     }
 
@@ -144,8 +149,20 @@ final class ColumnSchemaProvider
                 16,
                 'binary(16)',
             ],
+            'binary with embedded size stays as-is' => [
+                'binary(16)',
+                false,
+                16,
+                'binary(16)',
+            ],
             'char appends size' => [
                 'char',
+                false,
+                10,
+                'char(10)',
+            ],
+            'char with embedded size stays as-is' => [
+                'char(10)',
                 false,
                 10,
                 'char(10)',
@@ -162,11 +179,23 @@ final class ColumnSchemaProvider
                 20,
                 'nchar(20)',
             ],
+            'nchar with embedded size stays as-is' => [
+                'nchar(20)',
+                false,
+                20,
+                'nchar(20)',
+            ],
             'nvarchar appends MAX' => [
                 'nvarchar',
                 false,
                 null,
                 'nvarchar(MAX)',
+            ],
+            'nvarchar with embedded size stays as-is' => [
+                'nvarchar(100)',
+                false,
+                100,
+                'nvarchar(100)',
             ],
             'timestamp not nullable' => [
                 Schema::TYPE_TIMESTAMP,
@@ -186,11 +215,23 @@ final class ColumnSchemaProvider
                 null,
                 'varbinary(MAX)',
             ],
+            'varbinary with embedded size stays as-is' => [
+                'varbinary(50)',
+                false,
+                50,
+                'varbinary(50)',
+            ],
             'varchar appends MAX' => [
                 'varchar',
                 false,
                 null,
                 'varchar(MAX)',
+            ],
+            'varchar with embedded size stays as-is' => [
+                'varchar(128)',
+                false,
+                128,
+                'varchar(128)',
             ],
         ];
     }
