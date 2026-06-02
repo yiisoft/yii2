@@ -93,6 +93,11 @@ final class ColumnSchemaProvider
                 '(newid())',
                 null,
             ],
+            'expression default sysdatetime returns null' => [
+                Schema::TYPE_STRING,
+                '(sysdatetime())',
+                null,
+            ],
             'integer default value unwrapped' => [
                 Schema::TYPE_INTEGER,
                 '((0))',

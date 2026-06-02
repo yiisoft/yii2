@@ -342,6 +342,60 @@ class SchemaTest extends BaseSchema
         $this->assertNull($table->getColumn('stringcol')->defaultValue);
     }
 
+    public function testExpressionAndLiteralColumnDefaultValues(): void
+    {
+        $db = $this->getConnection();
+
+        if ($db->getSchema()->getTableSchema('column_default') !== null) {
+            $db->createCommand()->dropTable('column_default')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'column_default',
+            [
+                'id' => 'int',
+                'created_getdate' => 'datetime DEFAULT GETDATE()',
+                'created_cts' => 'datetime DEFAULT CURRENT_TIMESTAMP',
+                'uuid' => 'uniqueidentifier DEFAULT NEWID()',
+                'status' => 'int DEFAULT 5',
+                'label' => "varchar(32) DEFAULT 'pending'",
+                'note' => "nvarchar(32) DEFAULT N'it''s'",
+            ],
+        )->execute();
+
+        $table = $db->getSchema()->getTableSchema('column_default', true);
+
+        self::assertNull(
+            $table->getColumn('created_getdate')->defaultValue,
+            "Default must resolve to 'null'.",
+        );
+        self::assertNull(
+            $table->getColumn('created_cts')->defaultValue,
+            "Default must resolve to 'null'.",
+        );
+        self::assertNull(
+            $table->getColumn('uuid')->defaultValue,
+            "Default must resolve to 'null'.",
+        );
+        self::assertSame(
+            5,
+            $table->getColumn('status')->defaultValue,
+            "Numeric default must unwrap to 'int'.",
+        );
+        self::assertSame(
+            'pending',
+            $table->getColumn('label')->defaultValue,
+            'String default must unwrap.',
+        );
+        self::assertSame(
+            "it's",
+            $table->getColumn('note')->defaultValue,
+            'Escaped unicode default must unwrap.',
+        );
+
+        $db->createCommand()->dropTable('column_default')->execute();
+    }
+
     public function testInsertWithCompositePrimaryKey(): void
     {
         $db = $this->getConnection(true, true);
