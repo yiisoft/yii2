@@ -16,7 +16,6 @@ use yii\db\CheckConstraint;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
-use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
@@ -549,36 +548,8 @@ SQL;
                     $table->sequenceName = $column->sequenceName;
                 }
                 $column->defaultValue = null;
-            } elseif ($column->defaultValue) {
-                if (
-                    in_array($column->type, [self::TYPE_TIMESTAMP, self::TYPE_DATE, self::TYPE_TIME], true) &&
-                    (
-                        in_array(
-                            strtoupper($column->defaultValue),
-                            ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'],
-                            true
-                        ) ||
-                        (false !== strpos($column->defaultValue, '('))
-                    )
-                ) {
-                    $column->defaultValue = new Expression($column->defaultValue);
-                } elseif ($column->type === 'boolean') {
-                    $column->defaultValue = ($column->defaultValue === 'true');
-                } elseif (preg_match("/^B'(.*?)'::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = bindec($matches[1]);
-                } elseif (preg_match("/^'(\d+)'::\"bit\"$/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = bindec($matches[1]);
-                } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $column->phpTypecast($matches[1]);
-                } elseif (preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
-                    if ($matches[2] === 'NULL') {
-                        $column->defaultValue = null;
-                    } else {
-                        $column->defaultValue = $column->phpTypecast($matches[2]);
-                    }
-                } else {
-                    $column->defaultValue = $column->phpTypecast($column->defaultValue);
-                }
+            } elseif ($column->defaultValue !== null && !$column->autoIncrement) {
+                $column->defaultValue = $column->defaultPhpTypecast($column->defaultValue);
             }
         }
 

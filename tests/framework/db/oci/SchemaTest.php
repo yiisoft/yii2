@@ -18,12 +18,12 @@ use yiiunit\framework\db\AnyValue;
 use yiiunit\base\db\BaseSchema;
 
 /**
- * Unit test for {@see yii\db\oci\Schema} with Oracle driver.
+ * Unit test for {@see yii\db\oci\Schema} schema reflection and metadata retrieval for the Oracle driver.
  */
 #[Group('db')]
 #[Group('oci')]
 #[Group('schema')]
-class SchemaTest extends BaseSchema
+final class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
 

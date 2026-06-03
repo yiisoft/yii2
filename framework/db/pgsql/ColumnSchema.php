@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,13 +11,30 @@
 namespace yii\db\pgsql;
 
 use yii\db\ArrayExpression;
+use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
+use function bindec;
+use function in_array;
+use function is_array;
+use function is_bool;
+use function json_decode;
+use function preg_match;
+use function strpos;
+use function strtolower;
+use function strtoupper;
+
 /**
- * Class ColumnSchema for PostgreSQL database.
+ * Represents the metadata of a column in a PostgreSQL database table.
+ *
+ * Extends {@see \yii\db\ColumnSchema} with PostgreSQL-specific handling: converts `array` values to {@see ArrayExpression}
+ * and `json`/`jsonb` values to {@see JsonExpression} for binding, parses array literals back to PHP on retrieval, and
+ * normalizes column default metadata (temporal expressions, bit literals, `boolean`, and cast notation) into PHP
+ * values.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
+ * @since 2.0
  */
 class ColumnSchema extends \yii\db\ColumnSchema
 {
@@ -28,7 +47,6 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * @since 2.0.29
      */
     public $sequenceName;
-
 
     /**
      * {@inheritdoc}
@@ -90,6 +108,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
 
         switch ($this->type) {
             case Schema::TYPE_BOOLEAN:
+                if (is_bool($value)) {
+                    return $value;
+                }
+
                 switch (strtolower($value)) {
                     case 't':
                     case 'true':
@@ -104,6 +126,68 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         return parent::phpTypecast($value);
+    }
+
+    /**
+     * Converts a PostgreSQL column default value to its PHP representation.
+     *
+     * Handles PostgreSQL-specific default value formats:
+     * - `null` to `null`.
+     * - Temporal columns (`timestamp`, `date`, `time`) defaulting to `NOW()`, `CURRENT_TIMESTAMP`, `CURRENT_DATE`,
+     *   `CURRENT_TIME`, or any function-call expression (containing `(`) to an {@see Expression}.
+     * - Binary bit literals (`B'...'::`) to their integer value via `bindec()`.
+     * - Quoted bit literals (`'...'::"bit"`) to their integer value via `bindec()`.
+     * - Cast notation (`'value'::type`) to the unwrapped literal, delegated to {@see phpTypecast()}.
+     * - `boolean` columns: `'true'` to `true`, anything else to `false`.
+     * - Parenthesized values (`(value)::type`) to the unwrapped literal, with `NULL` detection, delegated to
+     *   {@see phpTypecast()}.
+     *
+     * @param mixed $value Raw default value in PostgreSQL schema metadata format.
+     *
+     * @return mixed Converted PHP value.
+     *
+     * @since 22.0
+     */
+    public function defaultPhpTypecast($value)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (
+            in_array($this->type, [Schema::TYPE_TIMESTAMP, Schema::TYPE_DATE, Schema::TYPE_TIME], true)
+            && (
+                in_array(strtoupper($value), ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'], true)
+                || strpos($value, '(') !== false
+            )
+        ) {
+            return new Expression($value);
+        }
+
+        if (preg_match("/^B'(.*?)'::/", $value, $matches)) {
+            return bindec($matches[1]);
+        }
+
+        if (preg_match("/^'(\d+)'::\"bit\"$/", $value, $matches)) {
+            return bindec($matches[1]);
+        }
+
+        if (preg_match("/^'(.*?)'::/", $value, $matches)) {
+            return $this->phpTypecast($matches[1]);
+        }
+
+        if ($this->type === Schema::TYPE_BOOLEAN) {
+            return $value === 'true';
+        }
+
+        // matches bare values, parenthesized values, and cast notation.
+        preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $value, $matches);
+
+        if ($matches[2] === 'NULL') {
+            return null;
+        }
+
+        return $this->phpTypecast($matches[2]);
     }
 
     /**
