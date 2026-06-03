@@ -22,7 +22,7 @@ use yiiunit\base\db\BaseSchema;
 use function stripos;
 
 /**
- * Unit test for {@see \yii\db\mysql\Schema} class.
+ * Unit test for {@see \yii\db\mysql\Schema} schema reflection and metadata retrieval for the MySQL driver.
  */
 #[Group('db')]
 #[Group('mysql')]

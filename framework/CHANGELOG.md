@@ -76,6 +76,7 @@ Yii Framework 2 Change Log
 - Enh: Consolidate MSSQL data-type conversion into `ColumnSchema`: harden `defaultPhpTypecast()` for unicode (`N'...'`), escaped quotes, and expression defaults; add `getOutputColumnDeclaration()` used by `QueryBuilder::insert()` (terabytesoftw)
 - Enh: Consolidate MySQL data-type conversion into `ColumnSchema::defaultPhpTypecast()` and preserve explicit `CURRENT_TIMESTAMP(0)` default precision (terabytesoftw)
 - Enh: Consolidate Oracle data-type conversion into `ColumnSchema::defaultPhpTypecast()` and fix `CURRENT_TIMESTAMP` defaults returned as `null` (terabytesoftw)
+- Enh: Consolidate PostgreSQL data-type conversion into `ColumnSchema::defaultPhpTypecast()` and fix `phpTypecastValue()` for native boolean value (terabytesoftw)
 
 2.0.56 under development
 ------------------------

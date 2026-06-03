@@ -8,6 +8,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
@@ -18,10 +19,12 @@ use yiiunit\framework\db\AnyValue;
 use yiiunit\base\db\BaseSchema;
 
 /**
- * @group db
- * @group mssql
+ * Unit test for {@see yii\db\mssql\Schema} schema reflection and metadata retrieval for the MSSQL driver.
  */
-class SchemaTest extends BaseSchema
+#[Group('db')]
+#[Group('mssql')]
+#[Group('schema')]
+final class SchemaTest extends BaseSchema
 {
     public $driverName = 'sqlsrv';
 

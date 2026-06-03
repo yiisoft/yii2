@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -9,6 +11,7 @@
 namespace yiiunit\framework\db\pgsql;
 
 use PDO;
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
@@ -16,10 +19,15 @@ use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseSchema;
 
 /**
- * @group db
- * @group pgsql
+ * Unit tests for {@see \yii\db\pgsql\Schema} schema reflection and metadata retrieval for the PostgreSQL driver.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
  */
-class SchemaTest extends BaseSchema
+#[Group('db')]
+#[Group('pgsql')]
+#[Group('schema')]
+final class SchemaTest extends BaseSchema
 {
     public $driverName = 'pgsql';
 
@@ -399,6 +407,113 @@ class SchemaTest extends BaseSchema
         $db->schema->refreshTableSchema('test_timestamp_utc_string_default');
         $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_string_default');
         $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
+    }
+
+    public function testCurrentDateDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+
+        if ($db->schema->getTableSchema('test_default_current_date') !== null) {
+            $db->createCommand()->dropTable('test_default_current_date')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'test_default_current_date',
+            [
+                'id' => 'pk',
+                'date_col' => 'date DEFAULT CURRENT_DATE NOT NULL',
+            ],
+        )->execute();
+
+        $db->schema->refreshTableSchema('test_default_current_date');
+
+        $tableSchema = $db->schema->getTableSchema('test_default_current_date');
+
+        self::assertEquals(
+            new Expression('CURRENT_DATE'),
+            $tableSchema->getColumn('date_col')->defaultValue,
+            "Default must be a 'CURRENT_DATE' expression.",
+        );
+    }
+
+    public function testCurrentTimeDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+
+        if ($db->schema->getTableSchema('test_default_current_time') !== null) {
+            $db->createCommand()->dropTable('test_default_current_time')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'test_default_current_time',
+            [
+                'id' => 'pk',
+                'time_col' => 'time DEFAULT CURRENT_TIME NOT NULL',
+            ],
+        )->execute();
+
+        $db->schema->refreshTableSchema('test_default_current_time');
+
+        $tableSchema = $db->schema->getTableSchema('test_default_current_time');
+
+        self::assertEquals(
+            new Expression('CURRENT_TIME'),
+            $tableSchema->getColumn('time_col')->defaultValue,
+            "Default must be a 'CURRENT_TIME' expression.",
+        );
+    }
+
+    public function testBitDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+
+        if ($db->schema->getTableSchema('test_default_bit') !== null) {
+            $db->createCommand()->dropTable('test_default_bit')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'test_default_bit',
+            [
+                'id' => 'pk',
+                'bit_col' => 'bit(5) DEFAULT B\'10101\' NOT NULL',
+            ],
+        )->execute();
+
+        $db->schema->refreshTableSchema('test_default_bit');
+        $tableSchema = $db->schema->getTableSchema('test_default_bit');
+
+        self::assertSame(
+            21,
+            $tableSchema->getColumn('bit_col')->defaultValue,
+            "Bit literal must decode to its 'integer' value.",
+        );
+    }
+
+    public function testVarbitDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+
+        if ($db->schema->getTableSchema('test_default_varbit') !== null) {
+            $db->createCommand()->dropTable('test_default_varbit')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'test_default_varbit',
+            [
+                'id' => 'pk',
+                'varbit_col' => 'bit varying(8) DEFAULT B\'101\' NOT NULL',
+            ],
+        )->execute();
+
+        $db->schema->refreshTableSchema('test_default_varbit');
+
+        $tableSchema = $db->schema->getTableSchema('test_default_varbit');
+
+        self::assertSame(
+            5,
+            $tableSchema->getColumn('varbit_col')->defaultValue,
+            "Bit-varying literal must decode to its 'integer' value.",
+        );
     }
 
     public static function constraintsProvider(): array
