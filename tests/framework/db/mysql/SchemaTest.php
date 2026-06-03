@@ -14,6 +14,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
+use yii\db\mysql\QueryBuilder;
 use yii\db\mysql\Schema;
 use yiiunit\framework\db\AnyCaseValue;
 use yiiunit\base\db\BaseSchema;
@@ -71,6 +72,37 @@ SQL;
         $ts = $schema->columns['ts'];
         $this->assertInstanceOf(Expression::class, $ts->defaultValue);
         $this->assertEquals('CURRENT_TIMESTAMP(3)', (string)$ts->defaultValue);
+    }
+
+    public function testLoadBitDefaultColumn(): void
+    {
+        $sql = <<<SQL
+        CREATE TABLE IF NOT EXISTS `bit_default_test` (
+            `bit1` bit(1) NOT NULL DEFAULT b'1',
+            `bit5` bit(5) NOT NULL DEFAULT b'10101',
+            `bit8` bit(8) NOT NULL DEFAULT b'10000010'
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        SQL;
+
+        $this->getConnection()->createCommand($sql)->execute();
+
+        $schema = $this->getConnection()->getTableSchema('bit_default_test');
+
+        self::assertSame(
+            1,
+            $schema->columns['bit1']->defaultValue,
+            "bit(1) `b\'1\'` must decode to '1'.",
+        );
+        self::assertSame(
+            21,
+            $schema->columns['bit5']->defaultValue,
+            "bit(5) `b\'10101\'` must decode to '21'.",
+        );
+        self::assertSame(
+            130,
+            $schema->columns['bit8']->defaultValue,
+            "bit(8) `b\'10000010\'` must decode to '130'.",
+        );
     }
 
     public function testGetSchemaNames(): void
@@ -214,21 +246,42 @@ SQL;
          * returns in response to the query `SHOW FULL COLUMNS FROM ...`
          */
         $schema = new Schema();
-        $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
-            'field' => 'emulated_MariaDB_field',
-            'type' => 'timestamp',
-            'collation' => null,
-            'null' => 'NO',
-            'key' => '',
-            'default' => 'current_timestamp()',
-            'extra' => '',
-            'privileges' => 'select,insert,update,references',
-            'comment' => '',
-        ]]);
 
-        $this->assertInstanceOf(ColumnSchema::class, $column);
-        $this->assertInstanceOf(Expression::class, $column->defaultValue);
-        $this->assertEquals('CURRENT_TIMESTAMP', $column->defaultValue);
+        $column = $this->invokeMethod(
+            $schema,
+            'loadColumnSchema',
+            [
+                [
+                    'field' => 'emulated_MariaDB_field',
+                    'type' => 'timestamp',
+                    'collation' => null,
+                    'null' => 'NO',
+                    'key' => '',
+                    'default' => 'current_timestamp()',
+                    'extra' => '',
+                    'privileges' => 'select,insert,update,references',
+                    'comment' => '',
+                ],
+            ],
+        );
+
+        $column->defaultValue = $column->defaultPhpTypecast($column->defaultValue);
+
+        self::assertInstanceOf(
+            ColumnSchema::class,
+            $column,
+            'Loaded column must be a MariaDB/MySQL ColumnSchema.',
+        );
+        self::assertInstanceOf(
+            Expression::class,
+            $column->defaultValue,
+            'MariaDB `current_timestamp()` must yield an Expression.',
+        );
+        self::assertSame(
+            'CURRENT_TIMESTAMP',
+            (string) $column->defaultValue,
+            'Expression must normalize to CURRENT_TIMESTAMP.',
+        );
     }
 
     /**
@@ -240,20 +293,75 @@ SQL;
     public function testAlternativeDisplayOfDefaultCurrentTimestampAsNullInMariaDB(): void
     {
         $schema = new Schema();
-        $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
-            'field' => 'emulated_MariaDB_field',
-            'type' => 'timestamp',
-            'collation' => null,
-            'null' => 'NO',
-            'key' => '',
-            'default' => null,
-            'extra' => '',
-            'privileges' => 'select,insert,update,references',
-            'comment' => '',
-        ]]);
 
-        $this->assertInstanceOf(ColumnSchema::class, $column);
-        $this->assertEquals(null, $column->defaultValue);
+        $column = $this->invokeMethod(
+            $schema,
+            'loadColumnSchema',
+            [
+                [
+                    'field' => 'emulated_MariaDB_field',
+                    'type' => 'timestamp',
+                    'collation' => null,
+                    'null' => 'NO',
+                    'key' => '',
+                    'default' => null,
+                    'extra' => '',
+                    'privileges' => 'select,insert,update,references',
+                    'comment' => '',
+                ],
+            ],
+        );
+
+        $column->defaultValue = $column->defaultPhpTypecast($column->defaultValue);
+
+        self::assertInstanceOf(
+            ColumnSchema::class,
+            $column,
+            'Loaded column must be a MariaDB/MySQL ColumnSchema.',
+        );
+        self::assertSame(
+            null,
+            $column->defaultValue,
+            "Default must remain 'null'.",
+        );
+    }
+
+    /**
+     * Real counterpart to {@see testAlternativeDisplayOfDefaultCurrentTimestampInMariaDB}: on MariaDB >= 10.2.3,
+     * `SHOW FULL COLUMNS` reports a `CURRENT_TIMESTAMP` default as the lowercase `current_timestamp()` form, which must
+     * still normalize to an {@see Expression}. Skipped on MySQL, which never emits that form.
+     *
+     * @see https://mariadb.com/kb/en/now/#description
+     */
+    public function testLoadDefaultCurrentTimestampOnMariaDB(): void
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        if ($qb->isMariaDb() === false) {
+            $this->markTestSkipped('Test requires MariaDB.');
+        }
+
+        $sql = <<<SQL
+        CREATE TABLE IF NOT EXISTS `mariadb_current_timestamp_test` (
+            `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8
+        SQL;
+
+        $this->getConnection()->createCommand($sql)->execute();
+
+        $column = $this->getConnection()->getTableSchema('mariadb_current_timestamp_test')->columns['dt'];
+
+        self::assertInstanceOf(
+            Expression::class,
+            $column->defaultValue,
+            'Lowercase form must yield an Expression.',
+        );
+        self::assertSame(
+            'CURRENT_TIMESTAMP',
+            (string) $column->defaultValue,
+            'Expression must normalize to CURRENT_TIMESTAMP.',
+        );
     }
 
     public function getExpectedColumns()

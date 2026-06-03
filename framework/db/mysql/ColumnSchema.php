@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,11 +10,19 @@
 
 namespace yii\db\mysql;
 
+use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
+use function in_array;
+use function is_string;
+
 /**
- * Class ColumnSchema for MySQL database
+ * Represents the metadata of a column in a MySQL database table.
+ *
+ * Extends {@see \yii\db\ColumnSchema} with MySQL-specific type handling: converts `json` values to {@see JsonExpression}
+ * for binding, normalizes `CURRENT_TIMESTAMP` defaults on temporal columns to {@see Expression} instances, and converts
+ * bit defaults (`b'...'`) to their integer representation.
  *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14.1
@@ -53,5 +63,44 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         return parent::phpTypecast($value);
+    }
+
+    /**
+     * Converts a MySQL column default value to its PHP representation.
+     *
+     * Handles MySQL-specific default value formats:
+     * - `null` to `null`.
+     * - `CURRENT_TIMESTAMP` / `current_timestamp()` on temporal columns (`timestamp`, `datetime`, `date`, `time`) to an
+     *   {@see Expression}, preserving any declared fractional-seconds precision such as `CURRENT_TIMESTAMP(3)`.
+     * - bit defaults (`b'...'`) when `$dbType` starts with `bit` to their integer value via `bindec()`.
+     * - everything else delegates to {@see phpTypecast()}.
+     *
+     * @param mixed $value default value in the format reported by `SHOW FULL COLUMNS`.
+     *
+     * @return mixed converted value.
+     *
+     * @since 22.0
+     */
+    public function defaultPhpTypecast($value)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if (
+            is_string($value)
+            && in_array($this->type, ['timestamp', 'datetime', 'date', 'time'], true)
+            && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $value, $matches)
+        ) {
+            $precision = $matches[1] ?? '';
+
+            return new Expression('CURRENT_TIMESTAMP' . ($precision !== '' ? "({$precision})" : ''));
+        }
+
+        if (is_string($value) && strncasecmp($this->dbType, 'bit', 3) === 0) {
+            return bindec(trim($value, "b'"));
+        }
+
+        return $this->phpTypecast($value);
     }
 }
