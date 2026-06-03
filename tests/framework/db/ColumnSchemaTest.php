@@ -102,7 +102,7 @@ class ColumnSchemaTest extends TestCase
         self::assertSame(
             'hello',
             $column->defaultPhpTypecast('hello'),
-            "String default must pass through.",
+            'String default must pass through.',
         );
     }
 
