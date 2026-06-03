@@ -16,7 +16,6 @@ use yii\db\CheckConstraint;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
-use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
@@ -330,25 +329,8 @@ SQL;
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if (!$column->isPrimaryKey) {
-            /**
-             * When displayed in the INFORMATION_SCHEMA.COLUMNS table, a default CURRENT TIMESTAMP is displayed
-             * as CURRENT_TIMESTAMP up until MariaDB 10.2.2, and as current_timestamp() from MariaDB 10.2.3.
-             *
-             * See details here: https://mariadb.com/kb/en/library/now/#description
-             */
-            if (
-                in_array($column->type, ['timestamp', 'datetime', 'date', 'time'])
-                && isset($info['default'])
-                && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)
-            ) {
-                $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
-            } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
-            } else {
-                $column->defaultValue = $column->phpTypecast($info['default']);
-            }
-        }
+        // store the raw default for deferred resolution in `findColumns()`, where `isPrimaryKey` is known.
+        $column->defaultValue = $info['default'] ?? null;
 
         return $column;
     }
@@ -387,13 +369,16 @@ SQL;
             }
 
             $column = $this->loadColumnSchema($info);
-            $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {
                 $table->primaryKey[] = $column->name;
                 if ($column->autoIncrement) {
                     $table->sequenceName = '';
                 }
             }
+            $column->defaultValue = $column->isPrimaryKey
+                ? null
+                : $column->defaultPhpTypecast($column->defaultValue);
+            $table->columns[$column->name] = $column;
         }
 
         return true;
