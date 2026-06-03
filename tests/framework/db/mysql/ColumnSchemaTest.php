@@ -27,7 +27,7 @@ use yiiunit\framework\db\mysql\providers\ColumnSchemaProvider;
  */
 #[Group('db')]
 #[Group('mysql')]
-#[Group('column')]
+#[Group('column-schema')]
 final class ColumnSchemaTest extends DatabaseTestCase
 {
     protected $driverName = 'mysql';

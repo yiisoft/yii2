@@ -93,6 +93,24 @@ class ColumnSchema extends BaseObject
     }
 
     /**
+     * Converts a raw column default value from the database metadata to its PHP representation.
+     *
+     * The base implementation delegates to {@see phpTypecast()}. Driver-specific subclasses (MySQL, MSSQL, Oracle)
+     * override this method to normalize vendor-specific default formats such as `CURRENT_TIMESTAMP`, bit literals, or
+     * quote-wrapped expressions before delegating to `phpTypecast()`.
+     *
+     * @param mixed $value Raw default value from the database schema metadata.
+     *
+     * @return mixed Converted PHP value.
+     *
+     * @since 22.0
+     */
+    public function defaultPhpTypecast($value)
+    {
+        return $this->phpTypecast($value);
+    }
+
+    /**
      * Converts the input value according to [[type]] and [[dbType]] for use in a db query.
      * If the value is null or an [[Expression]], it will not be converted.
      * @param mixed $value input value

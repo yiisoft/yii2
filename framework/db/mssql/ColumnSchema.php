@@ -98,7 +98,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
             }
         }
 
-        return parent::phpTypecast($value);
+        return parent::defaultPhpTypecast($value);
     }
 
     /**
