@@ -516,6 +516,33 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testIntegerZeroDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+
+        if ($db->schema->getTableSchema('test_default_int_zero') !== null) {
+            $db->createCommand()->dropTable('test_default_int_zero')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'test_default_int_zero',
+            [
+                'id' => 'pk',
+                'int_col' => 'integer DEFAULT 0 NOT NULL',
+            ],
+        )->execute();
+
+        $db->schema->refreshTableSchema('test_default_int_zero');
+
+        $tableSchema = $db->schema->getTableSchema('test_default_int_zero');
+
+        self::assertSame(
+            0,
+            $tableSchema->getColumn('int_col')->defaultValue,
+            "Zero default must be typed as 'integer', not a raw string.",
+        );
+    }
+
     public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();

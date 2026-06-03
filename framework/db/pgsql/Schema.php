@@ -548,7 +548,7 @@ SQL;
                     $table->sequenceName = $column->sequenceName;
                 }
                 $column->defaultValue = null;
-            } elseif ($column->defaultValue) {
+            } elseif ($column->defaultValue !== null) {
                 $column->defaultValue = $column->defaultPhpTypecast($column->defaultValue);
             }
         }

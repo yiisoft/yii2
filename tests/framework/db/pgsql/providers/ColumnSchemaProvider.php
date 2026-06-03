@@ -33,6 +33,13 @@ final class ColumnSchemaProvider
                 '42',
                 42,
             ],
+            'bare zero integer cast to int' => [
+                'integer',
+                'int4',
+                'integer',
+                '0',
+                0,
+            ],
             'bare string kept verbatim' => [
                 'string',
                 'varchar',
