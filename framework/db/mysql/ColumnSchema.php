@@ -20,10 +20,6 @@ use function is_string;
 /**
  * Represents the metadata of a column in a MySQL database table.
  *
- * Extends {@see \yii\db\ColumnSchema} with MySQL-specific type handling: converts `json` values to {@see JsonExpression}
- * for binding, normalizes `CURRENT_TIMESTAMP` defaults on temporal columns to {@see Expression} instances, and converts
- * bit defaults (`b'...'`) to their integer representation.
- *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.14.1
  */
