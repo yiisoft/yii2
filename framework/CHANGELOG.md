@@ -77,6 +77,7 @@ Yii Framework 2 Change Log
 - Enh #20919: Consolidate MySQL data-type conversion into `ColumnSchema::defaultPhpTypecast()` and preserve explicit `CURRENT_TIMESTAMP(0)` default precision (terabytesoftw)
 - Enh #20920: Consolidate Oracle data-type conversion into `ColumnSchema::defaultPhpTypecast()` and fix `CURRENT_TIMESTAMP` defaults returned as `null` (terabytesoftw)
 - Enh #20921: Consolidate PostgreSQL data-type conversion into `ColumnSchema::defaultPhpTypecast()` and fix `phpTypecastValue()` for native boolean value (terabytesoftw)
+- Enh #20922: Consolidate SQLite data-type conversion into `ColumnSchema::defaultPhpTypecast()` and fix `DEFAULT NULL` and escaped-quote defaults (terabytesoftw)
 
 2.0.56 under development
 ------------------------

@@ -11,11 +11,9 @@ namespace yii\db\sqlite;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
-use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
-use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\SqlToken;
@@ -39,6 +37,11 @@ use yii\db\Schema as BaseSchema;
 class Schema extends BaseSchema implements ConstraintFinderInterface
 {
     use ConstraintFinderTrait;
+
+    /**
+     * {@inheritdoc}
+     */
+    public $columnSchemaClass = ColumnSchema::class;
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
@@ -348,16 +351,9 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         }
         $column->phpType = $this->getColumnPhpType($column);
 
-        if (!$column->isPrimaryKey) {
-            if ($info['dflt_value'] === 'null' || $info['dflt_value'] === '' || $info['dflt_value'] === null) {
-                $column->defaultValue = null;
-            } elseif ($column->type === 'timestamp' && $info['dflt_value'] === 'CURRENT_TIMESTAMP') {
-                $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
-            } else {
-                $value = trim($info['dflt_value'], "'\"");
-                $column->defaultValue = $column->phpTypecast($value);
-            }
-        }
+        $column->defaultValue = $column->isPrimaryKey
+            ? null
+            : $column->defaultPhpTypecast($info['dflt_value']);
 
         return $column;
     }
