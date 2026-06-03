@@ -459,7 +459,7 @@ SQL;
 
         $c->phpType = $this->getColumnPhpType($c);
 
-        // Store the raw default for deferred resolution in loadTableSchema(), where isPrimaryKey is known.
+        // store the raw default for deferred resolution in loadTableSchema(), where isPrimaryKey is known.
         $c->defaultValue = $column['DATA_DEFAULT'] ?? null;
 
         return $c;

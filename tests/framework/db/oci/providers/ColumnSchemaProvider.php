@@ -179,6 +179,27 @@ final class ColumnSchemaProvider
                 'NULL',
                 null,
             ],
+            'lowercase null literal returns null' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                'null',
+                null,
+            ],
+            'mixed-case Null literal returns null' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                'Null',
+                null,
+            ],
+            'quoted null string literal is preserved' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                "'null'",
+                'null',
+            ],
             'numeric char default kept as string' => [
                 'string',
                 'CHAR',

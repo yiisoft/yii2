@@ -16,6 +16,7 @@ use yii\db\PdoValue;
 use function is_string;
 use function preg_match;
 use function str_replace;
+use function strcasecmp;
 use function stripos;
 use function strlen;
 use function substr;
@@ -63,7 +64,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Converts an Oracle column default value to its PHP representation.
      *
      * Handles Oracle-specific default formats:
-     * - `null`, empty/whitespace string, or `'NULL'` to `null`.
+     * - `null`, empty/whitespace string, or the `NULL` literal (any case) to `null`.
      * - `CURRENT_TIMESTAMP[(precision)]` on `timestamp` columns to {@see Expression}, preserving precision.
      * - server-managed timestamp defaults (`SYSTIMESTAMP`, `LOCALTIMESTAMP`, `TIMESTAMP 'literal'`,
      *   `to_timestamp(...)`) on `timestamp` columns to `null`.
@@ -85,7 +86,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
 
         $value = trim((string) $value);
 
-        if ($value === '' || $value === 'NULL') {
+        if ($value === '' || strcasecmp($value, 'NULL') === 0) {
             return null;
         }
 
