@@ -12,6 +12,7 @@ namespace yii\db\sqlite;
 
 use yii\db\Expression;
 
+use function is_string;
 use function str_replace;
 use function strcasecmp;
 use function strlen;
@@ -32,9 +33,9 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Handles SQLite-specific default formats reported by `PRAGMA table_info`:
      * - `null`, empty string, or the `NULL` literal (any case) to `null`.
      * - `CURRENT_TIMESTAMP` (any case) on `timestamp` columns to {@see Expression}.
-     * - single/double-quote-wrapped string defaults (`'value'`, `"value"`) to the unwrapped literal, resolving
-     *   doubled quotes (`''` to `'`, `""` to `"`).
-     * - everything else delegates to {@see \yii\db\ColumnSchema::defaultPhpTypecast()}.
+     * - single/double-quote-wrapped string defaults (`'value'`, `"value"`) to the unwrapped literal, resolving doubled
+     *   quotes (`''` to `'`, `""` to `"`).
+     * - non-string values and everything else delegate to {@see \yii\db\ColumnSchema::defaultPhpTypecast()}.
      *
      * @link https://www.sqlite.org/lang_createtable.html#the_default_clause
      *
@@ -46,25 +47,23 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function defaultPhpTypecast($value)
     {
-        if ($value === null) {
-            return null;
-        }
+        if (is_string($value)) {
+            $value = trim($value);
 
-        $value = trim((string) $value);
+            if ($value === '' || strcasecmp($value, 'NULL') === 0) {
+                return null;
+            }
 
-        if ($value === '' || strcasecmp($value, 'NULL') === 0) {
-            return null;
-        }
+            // `CURRENT_TIMESTAMP` is a case-independent keyword (consistency with all driver).
+            if ($this->type === Schema::TYPE_TIMESTAMP && strcasecmp($value, 'CURRENT_TIMESTAMP') === 0) {
+                return new Expression('CURRENT_TIMESTAMP');
+            }
 
-        // `CURRENT_TIMESTAMP` is a case-independent keyword (consistency with MySQL driver).
-        if ($this->type === Schema::TYPE_TIMESTAMP && strcasecmp($value, 'CURRENT_TIMESTAMP') === 0) {
-            return new Expression('CURRENT_TIMESTAMP');
-        }
-
-        // quote-wrapped string defaults: 'value' / "value" -> unwrapped, resolving doubled quotes ('' -> ', "" -> ").
-        if (strlen($value) > 1 && ($value[0] === "'" || $value[0] === '"') && $value[-1] === $value[0]) {
-            $quote = $value[0];
-            $value = str_replace($quote . $quote, $quote, substr($value, 1, -1));
+            // quote-wrapped defaults: 'value' / "value" -> unwrapped, resolving doubled quotes ('' -> ', "" -> ").
+            if (strlen($value) > 1 && ($value[0] === "'" || $value[0] === '"') && $value[-1] === $value[0]) {
+                $quote = $value[0];
+                $value = str_replace($quote . $quote, $quote, substr($value, 1, -1));
+            }
         }
 
         return parent::defaultPhpTypecast($value);

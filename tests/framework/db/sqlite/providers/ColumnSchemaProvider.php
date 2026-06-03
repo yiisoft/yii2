@@ -26,6 +26,27 @@ final class ColumnSchemaProvider
     public static function defaultPhpTypecast(): array
     {
         return [
+            'already typed boolean passes through' => [
+                'boolean',
+                'tinyint(1)',
+                'boolean',
+                true,
+                true,
+            ],
+            'already typed double passes through' => [
+                'double',
+                'double',
+                'double',
+                1.5,
+                1.5,
+            ],
+            'already typed integer passes through' => [
+                'integer',
+                'integer',
+                'integer',
+                42,
+                42,
+            ],
             'blob literal passes through raw' => [
                 'binary',
                 'blob',
@@ -151,6 +172,13 @@ final class ColumnSchemaProvider
                 'string',
                 '',
                 null,
+            ],
+            'Expression object passes through without string coercion' => [
+                'integer',
+                'integer',
+                'integer',
+                new Expression('1 + 2'),
+                new Expression('1 + 2'),
             ],
             'expression default passes through as string' => [
                 'text',
