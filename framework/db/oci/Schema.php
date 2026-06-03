@@ -164,7 +164,7 @@ SQL;
             $this->findConstraints($table);
 
             foreach ($table->columns as $column) {
-                $column->defaultValue = $column->isPrimaryKey
+                $column->defaultValue = $column->autoIncrement
                     ? null
                     : $column->defaultPhpTypecast($column->defaultValue);
             }
