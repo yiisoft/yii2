@@ -543,6 +543,37 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testNonPrimaryKeySequenceDefaultIsPreserved(): void
+    {
+        $db = $this->getConnection(false);
+
+        if ($db->schema->getTableSchema('test_default_nextval') !== null) {
+            $db->createCommand()->dropTable('test_default_nextval')->execute();
+        }
+
+        $sql = <<<SQL
+        CREATE TABLE {{test_default_nextval}} (id serial PRIMARY KEY, counter_col serial)
+        SQL;
+
+        $db->createCommand($sql)->execute();
+        $db->schema->refreshTableSchema('test_default_nextval');
+        $column = $db->schema->getTableSchema('test_default_nextval')->getColumn('counter_col');
+
+        self::assertTrue(
+            $column->autoIncrement,
+            'Sequence-backed column must be flagged auto-increment.',
+        );
+        self::assertIsString(
+            $column->defaultValue,
+            "Sequence default must be preserved, not typecast to '0'.",
+        );
+        self::assertStringContainsString(
+            'nextval',
+            $column->defaultValue,
+            'Sequence expression must be preserved.',
+        );
+    }
+
     public static function constraintsProvider(): array
     {
         $result = parent::constraintsProvider();
