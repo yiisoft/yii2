@@ -75,6 +75,7 @@ Yii Framework 2 Change Log
 - Bug: Fix `yii\helpers\Url::current()` and `yii\helpers\Url::canonical()` to fall back to `Application::$requestedRoute` when no controller is active, supporting standalone actions (terabytesoftw)
 - Enh: Consolidate MSSQL data-type conversion into `ColumnSchema`: harden `defaultPhpTypecast()` for unicode (`N'...'`), escaped quotes, and expression defaults; add `getOutputColumnDeclaration()` used by `QueryBuilder::insert()` (terabytesoftw)
 - Enh: Consolidate MySQL data-type conversion into `ColumnSchema::defaultPhpTypecast()` and preserve explicit `CURRENT_TIMESTAMP(0)` default precision (terabytesoftw)
+- Enh: Consolidate Oracle data-type conversion into `ColumnSchema::defaultPhpTypecast()` and fix `CURRENT_TIMESTAMP` defaults returned as `null` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

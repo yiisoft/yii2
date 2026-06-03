@@ -27,7 +27,7 @@ use yiiunit\framework\db\mssql\providers\ColumnSchemaProvider;
  */
 #[Group('db')]
 #[Group('mssql')]
-#[Group('column')]
+#[Group('column-schema')]
 final class ColumnSchemaTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';

@@ -97,7 +97,6 @@ class SchemaTest extends BaseSchema
         $columns['ts_default']['dbType'] = 'TIMESTAMP(6)';
         $columns['ts_default']['scale'] = 6;
         $columns['ts_default']['size'] = 11;
-        $columns['ts_default']['defaultValue'] = null;
         $columns['bit_col']['type'] = 'string';
         $columns['bit_col']['phpType'] = 'string';
         $columns['bit_col']['dbType'] = 'CHAR';

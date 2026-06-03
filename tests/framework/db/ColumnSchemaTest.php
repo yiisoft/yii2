@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\db;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\PdoValue;
@@ -10,6 +13,11 @@ use yii\db\Schema;
 use yiiunit\TestCase;
 use PDO;
 
+/**
+ * Unit tests for {@see \yii\db\ColumnSchema} type-casting and value handling.
+ */
+#[Group('db')]
+#[Group('column-schema')]
 class ColumnSchemaTest extends TestCase
 {
     private function createColumn(array $config = []): ColumnSchema
@@ -63,6 +71,49 @@ class ColumnSchemaTest extends TestCase
     {
         $column = $this->createIntegerColumn();
         $this->assertSame(42, $column->dbTypecast('42'));
+    }
+
+    public function testDefaultPhpTypecastDelegatesToPhpTypecastForInteger(): void
+    {
+        $column = $this->createIntegerColumn();
+
+        self::assertSame(
+            42,
+            $column->defaultPhpTypecast('42'),
+            "Integer default must cast to 'int'.",
+        );
+    }
+
+    public function testDefaultPhpTypecastDelegatesToPhpTypecastForDouble(): void
+    {
+        $column = $this->createDoubleColumn();
+
+        self::assertSame(
+            3.14,
+            $column->defaultPhpTypecast('3.14'),
+            "Double default must cast to 'float'.",
+        );
+    }
+
+    public function testDefaultPhpTypecastDelegatesToPhpTypecastForString(): void
+    {
+        $column = $this->createStringColumn();
+
+        self::assertSame(
+            'hello',
+            $column->defaultPhpTypecast('hello'),
+            "String default must pass through.",
+        );
+    }
+
+    public function testDefaultPhpTypecastReturnsNullForNull(): void
+    {
+        $column = $this->createIntegerColumn();
+
+        self::assertNull(
+            $column->defaultPhpTypecast(null),
+            "Null default must stay 'null'.",
+        );
     }
 
     public function testNullPassthrough(): void

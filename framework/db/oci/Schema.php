@@ -18,7 +18,6 @@ use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\ConstraintFinderTrait;
-use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\IntegrityException;
@@ -163,6 +162,13 @@ SQL;
         $this->resolveTableNames($table, $name);
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
+
+            foreach ($table->columns as $column) {
+                $column->defaultValue = $column->isPrimaryKey
+                    ? null
+                    : $column->defaultPhpTypecast($column->defaultValue);
+            }
+
             return $table;
         }
 
@@ -453,29 +459,8 @@ SQL;
 
         $c->phpType = $this->getColumnPhpType($c);
 
-        if (!$c->isPrimaryKey) {
-            if (stripos((string) $column['DATA_DEFAULT'], 'timestamp') !== false) {
-                $c->defaultValue = null;
-            } else {
-                $defaultValue = (string) $column['DATA_DEFAULT'];
-                if ($c->type === 'timestamp' && $defaultValue === 'CURRENT_TIMESTAMP') {
-                    $c->defaultValue = new Expression('CURRENT_TIMESTAMP');
-                } else {
-                    if ($defaultValue !== null) {
-                        if (
-                            strlen($defaultValue) > 2
-                            && strncmp($defaultValue, "'", 1) === 0
-                            && substr($defaultValue, -1) === "'"
-                        ) {
-                            $defaultValue = substr($defaultValue, 1, -1);
-                        } else {
-                            $defaultValue = trim($defaultValue);
-                        }
-                    }
-                    $c->defaultValue = $c->phpTypecast($defaultValue);
-                }
-            }
-        }
+        // Store the raw default for deferred resolution in loadTableSchema(), where isPrimaryKey is known.
+        $c->defaultValue = $column['DATA_DEFAULT'] ?? null;
 
         return $c;
     }
