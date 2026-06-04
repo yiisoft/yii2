@@ -26,10 +26,6 @@ use function uniqid;
 /**
  * Represents the metadata of a column in an Oracle database table.
  *
- * Extends {@see \yii\db\ColumnSchema} with Oracle-specific handling: wraps `string` values for `BLOB` columns in
- * `TO_BLOB(UTL_RAW.CAST_TO_RAW())` expressions, and normalizes `DATA_DEFAULT` metadata (`CURRENT_TIMESTAMP`,
- * server-managed timestamps, quote-wrapped literals) into PHP values.
- *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
  */

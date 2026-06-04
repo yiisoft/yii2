@@ -21,10 +21,6 @@ use function str_replace;
 /**
  * Represents the metadata of a column in a Microsoft SQL Server database table.
  *
- * Extends {@see \yii\db\ColumnSchema} with MSSQL-specific type handling: converts `varbinary` values to explicit
- * `CONVERT()` expressions, normalizes column default values, and builds OUTPUT-clause type declarations for
- * `INSERT ... OUTPUT INTO` temp tables.
- *
  * @since 2.0.23
  */
 class ColumnSchema extends \yii\db\ColumnSchema
@@ -33,7 +29,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * @var bool whether this column is a computed column
      * @since 2.0.39
      */
-    public $isComputed;
+    public $isComputed = false;
 
     /**
      * {@inheritdoc}

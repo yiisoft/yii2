@@ -28,11 +28,6 @@ use function strtoupper;
 /**
  * Represents the metadata of a column in a PostgreSQL database table.
  *
- * Extends {@see \yii\db\ColumnSchema} with PostgreSQL-specific handling: converts `array` values to {@see ArrayExpression}
- * and `json`/`jsonb` values to {@see JsonExpression} for binding, parses array literals back to PHP on retrieval, and
- * normalizes column default metadata (temporal expressions, bit literals, `boolean`, and cast notation) into PHP
- * values.
- *
  * @author Dmytro Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0
  */
@@ -43,10 +38,10 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public $dimension = 0;
     /**
-     * @var string name of associated sequence if column is auto-incremental
+     * @var string|null name of associated sequence if column is auto-incremental. `null` if no sequence.
      * @since 2.0.29
      */
-    public $sequenceName;
+    public $sequenceName = null;
 
     /**
      * {@inheritdoc}

@@ -22,50 +22,50 @@ class ColumnSchema extends BaseObject
     /**
      * @var string name of this column (without quotes).
      */
-    public $name;
+    public $name = '';
     /**
      * @var bool whether this column can be null.
      */
-    public $allowNull;
+    public $allowNull = false;
     /**
      * @var string abstract type of this column. Possible abstract types include:
      * char, string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
      * timestamp, time, date, binary, and money.
      */
-    public $type;
+    public $type = '';
     /**
      * @var string the PHP type of this column. Possible PHP types include:
      * `string`, `boolean`, `integer`, `double`, `array`.
      */
-    public $phpType;
+    public $phpType = '';
     /**
      * @var string the DB type of this column. Possible DB types vary according to the type of DBMS.
      */
-    public $dbType;
+    public $dbType = '';
     /**
      * @var mixed default value of this column
      */
-    public $defaultValue;
+    public $defaultValue = null;
     /**
-     * @var array enumerable values. This is set only if the column is declared to be an enumerable type.
+     * @var array|null enumerable values. This is set only if the column is declared to be an enumerable type.
      */
-    public $enumValues;
+    public $enumValues = null;
     /**
-     * @var int display size of the column.
+     * @var int|null display size of the column.
      */
-    public $size;
+    public $size = null;
     /**
-     * @var int precision of the column data, if it is numeric.
+     * @var int|null precision of the column data, if it is numeric.
      */
-    public $precision;
+    public $precision = null;
     /**
-     * @var int scale of the column data, if it is numeric.
+     * @var int|null scale of the column data, if it is numeric.
      */
-    public $scale;
+    public $scale = null;
     /**
      * @var bool|null whether this column is a primary key
      */
-    public $isPrimaryKey;
+    public $isPrimaryKey = null;
     /**
      * @var bool whether this column is auto-incremental
      */
@@ -74,12 +74,11 @@ class ColumnSchema extends BaseObject
      * @var bool whether this column is unsigned. This is only meaningful
      * when [[type]] is `smallint`, `integer` or `bigint`.
      */
-    public $unsigned;
+    public $unsigned = false;
     /**
-     * @var string comment of this column. Not all DBMS support this.
+     * @var string|null comment of this column. Not all DBMS support this.
      */
-    public $comment;
-
+    public $comment = null;
 
     /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
