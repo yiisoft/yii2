@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\base;
 
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\base\Security;
 use yiiunit\TestCase;
 
@@ -1127,6 +1128,300 @@ TEXT;
             ['SimpleToken'],
             ['Token with special characters: %d1    5"'],
             ['Token with UTF8 character: †'],
+        ];
+    }
+
+    public function testEncryptByPasswordInvalidCipher(): void
+    {
+        $this->security->cipher = 'INVALID-CIPHER';
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('is not an allowed cipher');
+
+        $this->security->encryptByPassword('data', 'password');
+    }
+
+    public function testDecryptByKeyInvalidCipher(): void
+    {
+        $this->security->cipher = 'INVALID-CIPHER';
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('is not an allowed cipher');
+
+        $this->security->decryptByKey('data', 'key');
+    }
+
+    public function testDecryptByPasswordReturnsFalseOnTamperedData(): void
+    {
+        $data = 'sensitive data';
+        $password = 'secretpassword';
+        $encrypted = $this->security->encryptByPassword($data, $password);
+        $tampered = substr($encrypted, 0, -1);
+        $this->assertFalse($this->security->decryptByPassword($tampered, $password));
+    }
+
+    public function testDecryptByKeyReturnsFalseOnWrongKey(): void
+    {
+        $data = 'sensitive data';
+        $key = $this->security->generateRandomKey(32);
+        $wrongKey = $this->security->generateRandomKey(32);
+        $encrypted = $this->security->encryptByKey($data, $key);
+        $this->assertFalse($this->security->decryptByKey($encrypted, $wrongKey));
+    }
+
+    public function testGenerateRandomStringInvalidLength(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->security->generateRandomString(0);
+    }
+
+    public function testGenerateRandomStringInvalidType(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->security->generateRandomString('abc');
+    }
+
+    public function testGeneratePasswordHashUsesDefaultCost(): void
+    {
+        $this->security->passwordHashCost = 4;
+        $hash = $this->security->generatePasswordHash('test');
+        $this->assertStringStartsWith('$2y$04$', $hash);
+    }
+
+    public function testGeneratePasswordHashCustomCost(): void
+    {
+        $hash = $this->security->generatePasswordHash('test', 5);
+        $this->assertStringStartsWith('$2y$05$', $hash);
+    }
+
+    public function testValidatePasswordEmptyString(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Password must be a string and cannot be empty.');
+        $this->security->validatePassword('', 'hash');
+    }
+
+    public function testValidatePasswordInvalidHash(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Hash is invalid.');
+        $this->security->validatePassword('password', 'not-a-valid-hash');
+    }
+
+    public function testValidatePasswordHashCostTooLow(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Hash is invalid.');
+        $this->security->validatePassword('password', '$2y$03$' . str_repeat('.', 53));
+    }
+
+    public function testValidatePasswordHashCostTooHigh(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Hash is invalid.');
+        $this->security->validatePassword('password', '$2y$31$' . str_repeat('.', 53));
+    }
+
+    public function testHashDataRawHash(): void
+    {
+        $data = 'test data';
+        $key = 'secret key';
+        $hashed = $this->security->hashData($data, $key, true);
+        $this->assertNotSame($data, $hashed);
+        $this->assertSame($data, $this->security->validateData($hashed, $key, true));
+    }
+
+    public function testValidateDataReturnsFalseForTamperedData(): void
+    {
+        $data = 'test data';
+        $key = 'secret key';
+        $hashed = $this->security->hashData($data, $key);
+        $tampered = $hashed . 'x';
+        $this->assertFalse($this->security->validateData($tampered, $key));
+    }
+
+    public function testValidateDataReturnsFalseForTooShortData(): void
+    {
+        $this->assertFalse($this->security->validateData('short', 'key'));
+    }
+
+    public function testValidateDataReturnsFalseForWrongKey(): void
+    {
+        $data = 'test data';
+        $hashed = $this->security->hashData($data, 'key1');
+        $this->assertFalse($this->security->validateData($hashed, 'key2'));
+    }
+
+    public function testEncryptDecryptEmptyString(): void
+    {
+        $key = $this->security->generateRandomKey(32);
+        $encrypted = $this->security->encryptByKey('', $key);
+        $this->assertSame('', $this->security->decryptByKey($encrypted, $key));
+    }
+
+    public function testEncryptDecryptBinaryData(): void
+    {
+        $data = random_bytes(256);
+        $key = $this->security->generateRandomKey(32);
+        $encrypted = $this->security->encryptByKey($data, $key);
+        $this->assertSame($data, $this->security->decryptByKey($encrypted, $key));
+    }
+
+    public function testEncryptByKeyWithInfo(): void
+    {
+        $data = 'context-sensitive data';
+        $key = $this->security->generateRandomKey(32);
+        $info = 'user-123';
+
+        $encrypted = $this->security->encryptByKey($data, $key, $info);
+        $this->assertSame($data, $this->security->decryptByKey($encrypted, $key, $info));
+        $this->assertFalse($this->security->decryptByKey($encrypted, $key, 'wrong-info'));
+    }
+
+    /**
+     * @dataProvider cipherProvider
+     */
+    public function testEncryptDecryptWithDifferentCiphers(string $cipher): void
+    {
+        $this->security->cipher = $cipher;
+        $data = 'test data for cipher';
+        $key = $this->security->generateRandomKey(32);
+
+        $encrypted = $this->security->encryptByKey($data, $key);
+        $this->assertSame($data, $this->security->decryptByKey($encrypted, $key));
+    }
+
+    public static function cipherProvider(): array
+    {
+        return [
+            'AES-128-CBC' => ['AES-128-CBC'],
+            'AES-192-CBC' => ['AES-192-CBC'],
+            'AES-256-CBC' => ['AES-256-CBC'],
+        ];
+    }
+
+    public function testCompareStringsWithNonStringExpected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected expected value to be a string, integer given');
+        $this->security->compareString(123, 'test');
+    }
+
+    public function testCompareStringsWithNonStringActual(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Expected actual value to be a string, integer given');
+        $this->security->compareString('test', 123);
+    }
+
+    public function testUnmaskTokenOddLengthReturnsEmpty(): void
+    {
+        $oddBytes = \yii\helpers\StringHelper::base64UrlEncode('abc');
+        $this->assertSame('', $this->security->unmaskToken($oddBytes));
+    }
+
+    public function testGenerateRandomKeyDefaultLength(): void
+    {
+        $key = $this->security->generateRandomKey();
+        $this->assertSame(32, strlen($key));
+    }
+
+    public function testGenerateRandomStringDefaultLength(): void
+    {
+        $key = $this->security->generateRandomString();
+        $this->assertSame(32, strlen($key));
+    }
+
+    public function testGenerateRandomKeyNegativeLength(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('First parameter ($length) must be greater than 0');
+        $this->security->generateRandomKey(-1);
+    }
+
+    public function testGenerateRandomStringNegativeLength(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('First parameter ($length) must be greater than 0');
+        $this->security->generateRandomString(-1);
+    }
+
+    public function testHkdfWithSpecificLength(): void
+    {
+        $key = $this->security->hkdf('sha256', 'inputkey', 'salt', 'info', 16);
+        $this->assertSame(16, strlen($key));
+    }
+
+    public function testHkdfWithZeroLength(): void
+    {
+        $key = $this->security->hkdf('sha256', 'inputkey', 'salt', 'info', 0);
+        $this->assertSame(32, strlen($key));
+    }
+
+    public function testPbkdf2WithSpecificLength(): void
+    {
+        $key = $this->security->pbkdf2('sha256', 'password', 'salt', 1000, 16);
+        $this->assertSame(16, strlen($key));
+    }
+
+    public function testPbkdf2WithZeroLength(): void
+    {
+        $key = $this->security->pbkdf2('sha256', 'password', 'salt', 1000, 0);
+        $this->assertSame(32, strlen($key));
+    }
+
+    public function testValidatePasswordWithCorrectAndWrongPassword(): void
+    {
+        $this->security->passwordHashCost = 4;
+        $hash = $this->security->generatePasswordHash('test');
+        $this->assertTrue($this->security->validatePassword('test', $hash));
+        $this->assertFalse($this->security->validatePassword('wrong', $hash));
+    }
+
+    public function testValidatePasswordRejectsNonBlowfishHash(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->security->validatePassword('password', '$1$salt$hash');
+    }
+
+    public function testValidatePasswordCostBoundary04(): void
+    {
+        $this->security->passwordHashCost = 4;
+        $hash = $this->security->generatePasswordHash('test');
+        $this->assertStringStartsWith('$2y$04$', $hash);
+        $this->assertTrue($this->security->validatePassword('test', $hash));
+    }
+
+    public function testHashDataValidateDataRoundtripHex(): void
+    {
+        $data = 'important data';
+        $key = 'hmac-key';
+        $hashed = $this->security->hashData($data, $key, false);
+        $this->assertSame($data, $this->security->validateData($hashed, $key, false));
+    }
+
+    public function testGenerateRandomStringCharacterSet(): void
+    {
+        $str = $this->security->generateRandomString(64);
+        $this->assertSame(64, strlen($str));
+        $this->assertMatchesRegularExpression('/^[A-Za-z0-9_-]+$/', $str);
+    }
+
+    /**
+     * @dataProvider randomStringLengthProvider
+     */
+    public function testGenerateRandomStringLengthVariations(int $length): void
+    {
+        $str = $this->security->generateRandomString($length);
+        $this->assertSame($length, strlen($str));
+    }
+
+    public static function randomStringLengthProvider(): array
+    {
+        return [
+            '1 char' => [1],
+            '5 chars' => [5],
+            '10 chars' => [10],
+            '32 chars' => [32],
+            '100 chars' => [100],
         ];
     }
 }

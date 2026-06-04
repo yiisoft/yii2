@@ -118,8 +118,5 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
         $this->getController([
             'layout' => 'non-existing',
         ])->runAction('error');
-
-        $ds = preg_quote(DIRECTORY_SEPARATOR, '\\');
-        $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'layouts' . $ds . 'non-existing.php#');
     }
 }
