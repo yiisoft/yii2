@@ -16,6 +16,8 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
 - Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20889: Remove unreachable PHP < 7 cookie deserialization fallback in `yii\web\Request::loadCookies()` (terabytesoftw)
+- Enh #20890: Harden `yii\i18n\PhpMessageSource` category path handling to reject `..` segments, absolute paths, and stream-wrapper categories (terabytesoftw)
 - Bug #20894: Render an empty value instead of throwing when an array is passed as an input value in `yii\helpers\BaseHtml::input()` (WarLikeLaux)
 
 
