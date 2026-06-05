@@ -18,12 +18,11 @@ use yiiunit\framework\web\stubs\ModelStub;
  * @since 2.0.3
  *
  * @group web
+ *
+ * @extends FormatterTest<JsonResponseFormatter>
  */
 class JsonResponseFormatterTest extends FormatterTest
 {
-    /**
-     * @return JsonResponseFormatter
-     */
     protected function getFormatterInstance($configuration = [])
     {
         return new JsonResponseFormatter($configuration);

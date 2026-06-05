@@ -503,6 +503,86 @@ abstract class BaseMessageControllerTest extends TestCase
     }
 
     /**
+     * Do not crash on this string, but ignore it.
+     */
+    public function testCreateTranslationFromConcatenatedStringWithParentheses(): void
+    {
+        $category = 'test.category1';
+        $sourceFileContent = <<<EOF
+        <?= Yii::t('test.category1', '{n} ' . (\$item['quantityUnit'] !== null ? \$item['quantityUnit'] : ''), ['n' => \$item['quantity']], \$language); ?>
+        asd
+        <?= Yii::t('test.category1', 'reach this part, don\'t crash') ?>
+        EOF;
+
+        $this->createSourceFile($sourceFileContent);
+        $this->saveConfigFile($this->getConfig());
+
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey(
+            'reach this part, don\'t crash',
+            $messages,
+            "message is missing in translation file. Command output:\n\n{$out}",
+        );
+        $this->assertArrayNotHasKey(
+            '{n} ',
+            $messages,
+            "dynamic concatenation should have been skipped. Command output:\n\n{$out}",
+        );
+    }
+
+    /**
+     * Do not crash on variable concatenation, but ignore it.
+     */
+    public function testCreateTranslationFromConcatenatedStringWithVariable(): void
+    {
+        $category = 'test.category1';
+        $sourceFileContent = <<<EOF
+        <?= Yii::t('test.category1', 'prefix ' . \$dynamicVar) ?>
+        asd
+        <?= Yii::t('test.category1', 'static message after variable concat') ?>
+        EOF;
+
+        $this->createSourceFile($sourceFileContent);
+        $this->saveConfigFile($this->getConfig());
+
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey(
+            'static message after variable concat',
+            $messages,
+            "message is missing in translation file. Command output:\n\n{$out}",
+        );
+        $this->assertArrayNotHasKey(
+            'prefix ',
+            $messages,
+            "dynamic concatenation should have been skipped. Command output:\n\n{$out}",
+        );
+    }
+
+    /**
+     * Ensure empty-string messages are still extracted with the null-sentinel guard.
+     */
+    public function testCreateTranslationWithEmptyStringMessage(): void
+    {
+        $category = 'test.empty.category';
+        $sourceFileContent = "Yii::t('{$category}', '');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+        $messages = $this->loadMessages($category);
+
+        $this->assertArrayHasKey(
+            '',
+            $messages,
+            "empty message key is missing in translation file. Command output:\n\n{$out}",
+        );
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/14016
      */
     public function testShouldNotMarkUnused(): void
