@@ -43,7 +43,7 @@ class JsonParser implements RequestParserInterface
      * Parses a HTTP request body.
      * @param string $rawBody the raw HTTP request body.
      * @param string $contentType the content type specified for the request body.
-     * @return array|\stdClass parameters parsed from the request body
+     * @return mixed parameters parsed from the request body
      * @throws BadRequestHttpException if the body contains invalid json and [[throwException]] is `true`.
      */
     public function parse($rawBody, $contentType)

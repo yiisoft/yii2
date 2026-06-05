@@ -12,6 +12,12 @@ Yii Framework 2 Change Log
 - Enh #20878: Add `@param-out` annotation for `$models` in `yii\db\BaseActiveRecord::loadRelationsFor()` (mspirkov)
 - Bug #20878: Fix `@var` annotation for `yii\db\Query::$from` (mspirkov)
 - Enh #7616: Add `yii\web\ErrorHandler::EVENT_AFTER_RENDER` and `yii\web\ErrorHandlerRenderEvent` to post-process rendered HTML error output (terabytesoftw)
+- Enh #20884: Add `application/x-rar` as an alias of `application/x-rar-compressed` in MIME aliases (WarLikeLaux)
+- Bug #20891: Fix `@return` annotation for `RequestParserInterface::parse()`, `JsonParser::parse()`, `Request::getBodyParams()`, and `Request::post()` (mspirkov)
+- Bug #20891: Fix `@param` annotation for `$values` in `Request::setBodyParams()` (mspirkov)
+- Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
+- Bug #20889: Remove unreachable PHP < 7 cookie deserialization fallback in `yii\web\Request::loadCookies()` (terabytesoftw)
+- Enh #20890: Harden `yii\i18n\PhpMessageSource` category path handling to reject `..` segments, absolute paths, and stream-wrapper categories (terabytesoftw)
 
 
 2.0.55 May 09, 2026
