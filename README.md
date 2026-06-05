@@ -1,9 +1,9 @@
 <p align="center">
     <a href="https://www.yiiframework.com/" target="_blank">
         <picture>
-            <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/yii_logo_dark.svg">
-            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/yii_logo_light.svg">
-            <img src="https://www.yiiframework.com/image/yii_logo_light.svg" alt="Yii Framework" width="400">
+            <source media="(prefers-color-scheme: dark)" srcset="https://www.yiiframework.com/image/design/logo/yii3_full_for_dark.svg">
+            <source media="(prefers-color-scheme: light)" srcset="https://www.yiiframework.com/image/design/logo/yii3_full_for_light.svg">
+            <img src="https://www.yiiframework.com/image/design/logo/yii3_full_for_light.svg" alt="Yii Framework" height="100">
         </picture>
     </a>
 </p>

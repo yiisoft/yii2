@@ -114,12 +114,16 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
             'int1' => 'integer',
         ])->execute();
 
-        $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+        $this->assertEmpty($defaultValues);
+
         $db->createCommand()->addDefaultValue($name, $tableName, 'int1', 41)->execute();
-        $this->assertMatchesRegularExpression('/^.*41.*$/', $schema->getTableDefaultValues($tableName, true)[0]->value);
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+        $this->assertMatchesRegularExpression('/^.*41.*$/', $defaultValues[0]->value);
 
         $db->createCommand()->dropDefaultValue($name, $tableName)->execute();
-        $this->assertEmpty($schema->getTableDefaultValues($tableName, true));
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+        $this->assertEmpty($defaultValues);
     }
 
     public static function batchInsertSqlProvider(): array
