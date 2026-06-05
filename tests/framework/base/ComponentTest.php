@@ -114,8 +114,7 @@ class ComponentTest extends TestCase
     {
         $this->assertSame('default', $this->component->Text);
         $this->expectException('yii\base\UnknownPropertyException');
-        // We intentionally access a non-existent property to test that an exception is thrown
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (We intentionally access a non-existent property to test that an exception is thrown)
         $value2 = $this->component->Caption;
     }
 
@@ -125,8 +124,7 @@ class ComponentTest extends TestCase
         $this->component->Text = $value;
         $this->assertEquals($value, $this->component->Text);
         $this->expectException('yii\base\UnknownPropertyException');
-        // We intentionally access a non-existent property to test that an exception is thrown
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (We intentionally access a non-existent property to test that an exception is thrown)
         $this->component->NewMember = $value;
     }
 
@@ -153,8 +151,7 @@ class ComponentTest extends TestCase
     public function testCallUnknownMethod(): void
     {
         $this->expectException('yii\base\UnknownMethodException');
-        // We intentionally call a non-existent method to test that an exception is thrown
-        // @phpstan-ignore method.notFound
+        // @phpstan-ignore method.notFound (We intentionally call a non-existent method to test that an exception is thrown)
         $this->component->unknownMethod();
     }
 
@@ -187,8 +184,7 @@ class ComponentTest extends TestCase
 
         $this->assertFalse($this->component->hasEventHandlers('click2'));
         $p = 'on click2';
-        // Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
         $this->component->$p = 'foo2';
         $this->assertTrue($this->component->hasEventHandlers('click2'));
     }
@@ -354,21 +350,18 @@ class ComponentTest extends TestCase
         }
 
         $component = new NewComponent();
-        // Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
         $component->{'as b'} = ['class' => NewBehavior::class];
         $this->assertInstanceOf(NewBehavior::class, $component->getBehavior('b'));
         $this->assertTrue($component->hasProperty('p'));
         $component->test();
         $this->assertTrue($component->behaviorCalled);
 
-        // Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
         $component->{'as c'} = ['__class' => NewBehavior::class];
         $this->assertNotNull($component->getBehavior('c'));
 
-        // Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
         $component->{'as d'} = [
             '__class' => NewBehavior2::class,
             'class' => NewBehavior::class,
@@ -377,8 +370,7 @@ class ComponentTest extends TestCase
 
         // CVE-2024-4990
         try {
-            // Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-            // @phpstan-ignore property.notFound
+            // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
             $component->{'as e'} = [
                 '__class' => 'NotExistsBehavior',
                 'class' => NewBehavior::class,
@@ -469,8 +461,7 @@ class ComponentTest extends TestCase
         $behaviorName = 'foo';
         $this->assertNull($this->component->getBehavior($behaviorName));
         $p = 'as ' . $behaviorName;
-        // Since the property contains a space in its name, the error cannot be resolved using PHPDoc.
-        // @phpstan-ignore property.notFound
+        // @phpstan-ignore property.notFound (Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
         $this->component->$p = __NAMESPACE__ . '\NewBehavior';
         $this->assertSame(__NAMESPACE__ . '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
     }
@@ -507,12 +498,92 @@ class ComponentTest extends TestCase
      */
     public function testEventClosureDetachesItself(): void
     {
-        $obj = require __DIR__ . '/stub/AnonymousComponentClass.php';
+        $obj = require __DIR__ . '/stubs/AnonymousComponentClass.php';
 
         $obj->trigger('barEventOnce');
         $this->assertEquals(1, $obj->foo);
         $obj->trigger('barEventOnce');
         $this->assertEquals(1, $obj->foo);
+    }
+
+    public function testGetPropertyViaBehavior(): void
+    {
+        $this->component->attachBehavior('a', new NewBehavior());
+        $this->component->p = 'behavior value';
+        $this->assertSame('behavior value', $this->component->p);
+    }
+
+    public function testHasMethodViaBehavior(): void
+    {
+        $this->assertFalse($this->component->hasMethod('test'));
+        $this->component->attachBehavior('a', new NewBehavior());
+        $this->assertTrue($this->component->hasMethod('test'));
+    }
+
+    public function testHasMethodWithoutBehaviors(): void
+    {
+        $this->assertFalse($this->component->hasMethod('test', false));
+        $this->assertTrue($this->component->hasMethod('raiseEvent', false));
+    }
+
+    public function testOnPrependPlainHandler(): void
+    {
+        $order = [];
+        $this->component->on('click', function () use (&$order) {
+            $order[] = 'first';
+        });
+        $this->component->on('click', function () use (&$order) {
+            $order[] = 'prepended';
+        }, null, false);
+
+        $this->component->trigger('click');
+        $this->assertSame(['prepended', 'first'], $order);
+    }
+
+    public function testOnPrependWildcardHandler(): void
+    {
+        $order = [];
+        $this->component->on('click.*', function () use (&$order) {
+            $order[] = 'first';
+        });
+        $this->component->on('click.*', function () use (&$order) {
+            $order[] = 'prepended';
+        }, null, false);
+
+        $this->component->trigger('click.test');
+        $this->assertSame(['prepended', 'first'], $order);
+    }
+
+    public function testSetBehaviorInstanceViaProperty(): void
+    {
+        $component = new NewComponent();
+        $behavior = new NewBehavior();
+        $p = 'as myBehavior';
+        // @phpstan-ignore property.notFound (/ Since the property contains a space in its name, the error cannot be resolved using PHPDoc.)
+        $component->$p = $behavior;
+        $this->assertSame($behavior, $component->getBehavior('myBehavior'));
+    }
+
+    public function testBehaviorsDeclaredInMethod(): void
+    {
+        $component = new ComponentWithBehaviors();
+        $component->ensureBehaviors();
+        $behaviors = $component->getBehaviors();
+        $this->assertCount(2, $behaviors);
+        $this->assertInstanceOf(NewBehavior::class, $behaviors['named']);
+        $this->assertInstanceOf(NewBehavior2::class, $behaviors[0]);
+    }
+
+    public function testAttachBehaviorReplacesExisting(): void
+    {
+        $behavior1 = new NewBehavior();
+        $behavior2 = new NewBehavior();
+
+        $this->component->attachBehavior('a', $behavior1);
+        $this->assertSame($behavior1, $this->component->getBehavior('a'));
+
+        $this->component->attachBehavior('a', $behavior2);
+        $this->assertSame($behavior2, $this->component->getBehavior('a'));
     }
 }
 
@@ -626,5 +697,16 @@ class NewComponent2 extends Component
     {
         $this->b = $b;
         $this->c = $c;
+    }
+}
+
+class ComponentWithBehaviors extends Component
+{
+    public function behaviors()
+    {
+        return [
+            'named' => NewBehavior::class,
+            NewBehavior2::class,
+        ];
     }
 }
