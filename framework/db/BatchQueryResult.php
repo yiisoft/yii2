@@ -29,7 +29,9 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  *
- * @implements \Iterator<int, mixed>
+ * @template TKey of array-key = array-key
+ * @template TValue = mixed
+ * @implements \Iterator<TKey, TValue>
  */
 class BatchQueryResult extends Component implements \Iterator
 {
@@ -82,7 +84,7 @@ class BatchQueryResult extends Component implements \Iterator
      */
     private $_value;
     /**
-     * @var string|int|null the key for the current iteration
+     * @var TKey|null the key for the current iteration
      */
     private $_key;
 
@@ -199,7 +201,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the index of the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return int the index of the current row.
+     * @return TKey|null the index of the current row.
      */
     #[\ReturnTypeWillChange]
     public function key()
@@ -210,7 +212,7 @@ class BatchQueryResult extends Component implements \Iterator
     /**
      * Returns the current dataset.
      * This method is required by the interface [[\Iterator]].
-     * @return mixed the current dataset.
+     * @return TValue the current dataset.
      */
     #[\ReturnTypeWillChange]
     public function current()

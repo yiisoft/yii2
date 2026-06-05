@@ -18,9 +18,34 @@ use yii\db\ActiveQuery;
  * @property int $created_at
  * @property string $total
  *
+ * @property-read Customer $customer
+ * @property-read Customer $customer2
+ * @property-read Customer $virtualCustomer
+ * @property-read Customer $customerJoinedWithProfile
+ * @property-read Customer $customerJoinedWithProfileIndexOrdered
+ * @property-read Item[] $books
+ * @property-read Item[] $books2
+ * @property-read Item[] $booksExplicit
+ * @property-read Item[] $booksExplicitA
+ * @property-read Item[] $bookItems
+ * @property-read Item[] $booksViaTable
+ * @property-read Item[] $booksWithNullFK
+ * @property-read Item[] $booksWithNullFKViaTable
  * @property-read Item[] $expensiveItemsUsingViaWithCallable
  * @property-read Item[] $cheapItemsUsingViaWithCallable
+ * @property-read Item[] $items
  * @property-read Item[] $itemsFor8
+ * @property-read Item[] $itemsIndexed
+ * @property-read Item[] $itemsInOrder1
+ * @property-read Item[] $itemsInOrder2
+ * @property-read Item[] $itemsWithNullFK
+ * @property-read Item[] $limitedItems
+ * @property-read Item[] $movieItems
+ * @property-read OrderItem[] $orderItems
+ * @property-read OrderItem[] $orderItems2
+ * @property-read OrderItem[] $orderItems3
+ * @property-read OrderItem[] $orderItemsWithNullFK
+ * @property-read OrderItem[] $quantityOrderItems
  */
 class Order extends ActiveRecord
 {
