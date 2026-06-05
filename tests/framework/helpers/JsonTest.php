@@ -15,8 +15,8 @@ use DateTime;
 use DateTimeZone;
 use yii\helpers\Json;
 use yii\web\JsExpression;
+use yiiunit\framework\helpers\stubs\JsonModel;
 use yiiunit\framework\web\Post;
-use yiiunit\framework\models\JsonModel;
 use yiiunit\TestCase;
 
 /**

@@ -75,6 +75,7 @@ trait GetTablesAliasTestTrait
     public function testGetTableNamesIsFromObjectGenerateException(): void
     {
         $query = $this->createQuery();
+        // @phpstan-ignore assign.propertyType (We intentionally use an invalid value here to test its processing)
         $query->from = new stdClass();
 
         $this->expectException('\yii\base\InvalidConfigException');
