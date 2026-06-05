@@ -137,6 +137,7 @@ class LikeConditionTest extends TestCase
     public function testFromArrayDefinitionThrowsOnEmptyOperands(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Operator 'LIKE' requires two operands.");
 
         LikeCondition::fromArrayDefinition('LIKE', []);
     }
@@ -204,6 +205,7 @@ class LikeConditionTest extends TestCase
     public function testFromArrayDefinitionThrowsWhenFirstOperandIsNull(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Operator 'LIKE' requires two operands.");
 
         LikeCondition::fromArrayDefinition('LIKE', [null, 'value']);
     }
@@ -211,6 +213,7 @@ class LikeConditionTest extends TestCase
     public function testFromArrayDefinitionThrowsWhenSecondOperandIsNull(): void
     {
         $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("Operator 'LIKE' requires two operands.");
 
         LikeCondition::fromArrayDefinition('LIKE', ['col', null]);
     }
