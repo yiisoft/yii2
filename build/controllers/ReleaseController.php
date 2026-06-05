@@ -854,10 +854,27 @@ class ReleaseController extends Controller
     protected function resortChangelogs($what, $version)
     {
         foreach ($this->getChangelogs($what) as $file) {
+            $this->updateChangelogDevelopmentVersion($file, $version);
             // split the file into relevant parts
             list($start, $changelog, $end) = $this->splitChangelog($file, $version);
             $changelog = $this->resortChangelog($changelog);
             file_put_contents($file, implode("\n", array_merge($start, $changelog, $end)));
+        }
+    }
+
+    protected function updateChangelogDevelopmentVersion($file, $version)
+    {
+        $contents = file_get_contents($file);
+        $headline = $version . ' under development';
+        $updatedContents = preg_replace(
+            '/^([^\s]+) under development\R-+\R/m',
+            $headline . "\n" . str_repeat('-', \strlen($headline)) . "\n",
+            $contents,
+            1
+        );
+
+        if ($updatedContents !== $contents) {
+            file_put_contents($file, $updatedContents);
         }
     }
 
@@ -877,13 +894,15 @@ class ReleaseController extends Controller
         $end = [];
 
         $state = 'start';
+        $found = false;
         foreach ($lines as $l => $line) {
             // starting from the changelogs headline
             if (
-                isset($lines[$l - 2]) && strpos($lines[$l - 2], $version) !== false &&
+                isset($lines[$l - 2]) && $this->matchesChangelogVersion($lines[$l - 2], $version) &&
                 isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0
             ) {
                 $state = 'changelog';
+                $found = true;
             }
             if ($state === 'changelog' && isset($lines[$l + 1]) && strncmp($lines[$l + 1], '---', 3) === 0) {
                 $state = 'end';
@@ -900,7 +919,17 @@ class ReleaseController extends Controller
             }
         }
 
+        if (!$found) {
+            throw new Exception("Changelog section for version $version was not found in $file.");
+        }
+
         return [$start, $changelog, $end];
+    }
+
+    protected function matchesChangelogVersion($line, $version)
+    {
+        $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
+        return preg_match('/^' . $v . '(?:\s|$)/', $line) === 1;
     }
 
     /**
@@ -913,6 +942,7 @@ class ReleaseController extends Controller
         // cleanup whitespace
         foreach ($changelog as $i => $line) {
             $changelog[$i] = rtrim($line);
+            $changelog[$i] = preg_replace('/^- Fix(?= #\d+(, #\d+)*: )/', '- Bug', $changelog[$i]);
         }
         $changelog = array_filter($changelog);
 
