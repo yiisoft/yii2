@@ -430,6 +430,12 @@ parameters:
 			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
 			identifier: method.notFound
 			count: 1
+			path: framework/db/JsonExpressionBuilder.php
+
+		-
+			message: '#^Call to an undefined method yii\\db\\ExpressionInterface\:\:getValue\(\)\.$#'
+			identifier: method.notFound
+			count: 1
 			path: framework/db/mysql/JsonExpressionBuilder.php
 
 		-

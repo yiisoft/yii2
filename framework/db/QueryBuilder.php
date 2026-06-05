@@ -182,6 +182,7 @@ class QueryBuilder extends \yii\base\BaseObject
             'yii\db\conditions\SimpleCondition' => 'yii\db\conditions\SimpleConditionBuilder',
             'yii\db\conditions\HashCondition' => 'yii\db\conditions\HashConditionBuilder',
             'yii\db\conditions\BetweenColumnsCondition' => 'yii\db\conditions\BetweenColumnsConditionBuilder',
+            'yii\db\JsonExpression' => 'yii\db\JsonExpressionBuilder',
         ];
     }
 
@@ -484,6 +485,8 @@ class QueryBuilder extends \yii\base\BaseObject
                     $value = 'NULL';
                 } elseif ($value instanceof ExpressionInterface) {
                     $value = $this->buildExpression($value, $params);
+                } elseif (is_array($value)) {
+                    $value = $this->buildExpression(new JsonExpression($value), $params);
                 }
                 $vs[] = $value;
             }

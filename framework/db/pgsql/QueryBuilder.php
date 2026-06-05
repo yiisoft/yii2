@@ -11,6 +11,7 @@ namespace yii\db\pgsql;
 use yii\base\InvalidArgumentException;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
+use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\PdoValue;
 use yii\helpers\StringHelper;
@@ -521,6 +522,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
                     $value = 'NULL';
                 } elseif ($value instanceof ExpressionInterface) {
                     $value = $this->buildExpression($value, $params);
+                } elseif (is_array($value)) {
+                    $value = $this->buildExpression(new JsonExpression($value), $params);
                 }
                 $vs[] = $value;
             }
