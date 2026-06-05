@@ -452,6 +452,83 @@ class ResponseTest extends TestCase
     }
 
     /**
+     * @see https://github.com/yiisoft/yii2/issues/18661
+     */
+    public function testSendRawCookie(): void
+    {
+        if (!function_exists('xdebug_get_headers')) {
+            $this->markTestSkipped('Xdebug is required to inspect raw Set-Cookie headers.');
+        }
+
+        Yii::$app->request->enableCookieValidation = false;
+        $rawValue = 'plus+slash/equals=';
+
+        $response = new Response();
+        $response->cookies->add(new Cookie([
+            'name' => 'rawCookie',
+            'value' => $rawValue,
+            'sendRaw' => true,
+        ]));
+        $response->cookies->add(new Cookie([
+            'name' => 'encodedCookie',
+            'value' => $rawValue,
+        ]));
+
+        ob_start();
+        $response->send();
+        ob_end_clean();
+
+        $rawHeader = null;
+        $encodedHeader = null;
+        foreach (xdebug_get_headers() as $header) {
+            if (strpos($header, 'Set-Cookie: rawCookie=') === 0) {
+                $rawHeader = $header;
+            } elseif (strpos($header, 'Set-Cookie: encodedCookie=') === 0) {
+                $encodedHeader = $header;
+            }
+        }
+
+        $this->assertStringContainsString('rawCookie=' . $rawValue . ';', $rawHeader);
+        $this->assertStringContainsString('encodedCookie=plus%2Bslash%2Fequals%3D;', $encodedHeader);
+    }
+
+    /**
+     * Raw cookies must bypass the validation hash even when cookie validation is enabled,
+     * otherwise the hashed payload's semicolons make setrawcookie() reject the value.
+     * @see https://github.com/yiisoft/yii2/issues/18661
+     */
+    public function testSendRawCookieBypassesValidationHash(): void
+    {
+        if (!function_exists('xdebug_get_headers')) {
+            $this->markTestSkipped('Xdebug is required to inspect raw Set-Cookie headers.');
+        }
+
+        Yii::$app->request->enableCookieValidation = true;
+        $rawValue = 'untouched-by-hash';
+
+        $response = new Response();
+        $response->cookies->add(new Cookie([
+            'name' => 'rawValidatedCookie',
+            'value' => $rawValue,
+            'sendRaw' => true,
+        ]));
+
+        ob_start();
+        $response->send();
+        ob_end_clean();
+
+        $rawHeader = null;
+        foreach (xdebug_get_headers() as $header) {
+            if (strpos($header, 'Set-Cookie: rawValidatedCookie=') === 0) {
+                $rawHeader = $header;
+                break;
+            }
+        }
+
+        $this->assertStringContainsString('rawValidatedCookie=' . $rawValue . ';', $rawHeader);
+    }
+
+    /**
      * Tries to parse cookies set in the response headers.
      * When running PHP on the CLI headers are not available (the `headers_list()` function always returns an
      * empty array). If possible use xDebug: http://xdebug.org/docs/all_functions#xdebug_get_headers

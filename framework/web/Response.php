@@ -410,11 +410,12 @@ class Response extends \yii\base\Response
             if ($expire === null || $expire === false) {
                 $expire = 0;
             }
-            if ($expire != 1 && isset($validationKey)) {
+            if ($expire != 1 && isset($validationKey) && !$cookie->sendRaw) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
+            $setCookie = $cookie->sendRaw ? 'setrawcookie' : 'setcookie';
             if (PHP_VERSION_ID >= 70300) {
-                setcookie($cookie->name, $value, [
+                $setCookie($cookie->name, $value, [
                     'expires' => $expire,
                     'path' => $cookie->path,
                     'domain' => $cookie->domain,

@@ -83,6 +83,22 @@ class Cookie extends \yii\base\BaseObject
      * @since 2.0.21
      */
     public $sameSite = self::SAME_SITE_LAX;
+    /**
+     * @var bool whether the cookie value should be sent without URL-encoding by using
+     * [[setrawcookie()]] instead of [[setcookie()]].
+     *
+     * Set this to `true` when the value is already encoded the way the application expects and you
+     * want to avoid an extra URL-encoding pass. Values must not contain characters disallowed in a
+     * `Set-Cookie` header (spaces, commas, semicolons, tabs and line breaks).
+     *
+     * Raw cookies bypass [[yii\web\Request::$enableCookieValidation]]: the value is written as-is
+     * without the hash prefix, and the framework will not validate it on the next request. Read
+     * such cookies via `$_COOKIE` directly instead of `Yii::$app->request->cookies`.
+     *
+     * @see https://www.php.net/manual/en/function.setrawcookie.php
+     * @since 2.0.56
+     */
+    public $sendRaw = false;
 
 
     /**
