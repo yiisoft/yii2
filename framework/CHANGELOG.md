@@ -50,7 +50,6 @@ Yii Framework 2 Change Log
 - Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
-- Bug #17254: Fix `MessageController` crash on dynamic input in `Yii::t()` call (CeBe)
 
 
 2.0.54 January 09, 2026
