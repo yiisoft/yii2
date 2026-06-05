@@ -108,6 +108,24 @@ class StringValidator extends Validator
 
     /**
      * {@inheritdoc}
+     *
+     * Unlike the base implementation, an array is not treated as empty. This way an array assigned to a
+     * string attribute is reported as invalid instead of being skipped when [[skipOnEmpty]] is enabled and
+     * later cast to the literal string `"Array"`.
+     *
+     * @since 2.0.56
+     */
+    public function isEmpty($value)
+    {
+        if ($this->isEmpty !== null) {
+            return call_user_func($this->isEmpty, $value);
+        }
+
+        return $value === null || $value === '';
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function validateAttribute($model, $attribute)
     {
