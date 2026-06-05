@@ -33,10 +33,7 @@ class VerbFilterTest extends TestCase
         $this->mockWebApplication();
     }
 
-    /**
-     * @return ActionEvent
-     */
-    private function mockActionEvent(string $actionId = 'index')
+    private function mockActionEvent(string $actionId = 'index'): ActionEvent
     {
         $controller = new Controller('test', Yii::$app);
         $action = new Action($actionId, $controller);
