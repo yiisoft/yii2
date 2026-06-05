@@ -33,7 +33,7 @@ class Cat extends Animal
 
     /**
      * This is to test if __isset catches the exception.
-     * @throw DivisionByZeroError
+     * @throws DivisionByZeroError
      * @return float|int
      */
     public function getException()
@@ -43,7 +43,7 @@ class Cat extends Animal
 
     /**
      * This is to test if __isset catches the error.
-     * @throw DivisionByZeroError
+     * @throws DivisionByZeroError
      * @return float|int
      */
     public function getThrowable()

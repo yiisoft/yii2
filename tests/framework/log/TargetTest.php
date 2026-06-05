@@ -149,7 +149,7 @@ class TargetTest extends TestCase
      */
     public function testSetupLevelsThroughArray(): void
     {
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         $target->setLevels(['info', 'error']);
         $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_ERROR, $target->getLevels());
@@ -168,7 +168,7 @@ class TargetTest extends TestCase
      */
     public function testSetupLevelsThroughBitmap(): void
     {
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         $target->setLevels(Logger::LEVEL_INFO | Logger::LEVEL_WARNING);
         $this->assertEquals(Logger::LEVEL_INFO | Logger::LEVEL_WARNING, $target->getLevels());
@@ -183,8 +183,7 @@ class TargetTest extends TestCase
 
     public function testGetEnabled(): void
     {
-        /** @var Target $target */
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         $target->enabled = true;
         $this->assertTrue($target->enabled);
@@ -200,8 +199,7 @@ class TargetTest extends TestCase
 
     public function testFormatMessage(): void
     {
-        /** @var Target $target */
-        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+        $target = $this->getMockForAbstractClass(Target::class);
 
         date_default_timezone_set('UTC');
 

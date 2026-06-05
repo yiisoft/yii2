@@ -38,7 +38,7 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property-read array $errors Errors for all attributes. This is a two-dimensional
+ * @property-read array<string, string[]> $errors Errors for all attributes. This is a two-dimensional
  * array of errors for all attributes, similar to the following:
  *
  * ```
@@ -579,8 +579,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @return array<string, string[]> errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+     * @return ($attribute is null ? array<string, string[]> : string[]) errors for all attributes or
+     * the specified attribute. Empty array is returned if no error. Note that when returning errors for
+     * all attributes, the result is a two-dimensional array, like the following:
      *
      * ```
      * [
