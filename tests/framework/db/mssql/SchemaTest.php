@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,15 +10,18 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
-use yii\db\DefaultValueConstraint;
+use yii\db\mssql\ColumnSchemaBuilder;
 use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
-use yiiunit\framework\db\AnyValue;
 use yiiunit\base\db\BaseSchema;
+use yiiunit\framework\db\mssql\providers\SchemaProvider;
+
+use function str_starts_with;
 
 /**
  * Unit test for {@see yii\db\mssql\Schema} schema reflection and metadata retrieval for the MSSQL driver.
@@ -28,36 +33,48 @@ final class SchemaTest extends BaseSchema
 {
     public $driverName = 'sqlsrv';
 
-    protected $expectedSchemas = [
+    /**
+     * @var list<string> List of expected schemas in the database.
+     */
+    protected array $expectedSchemas = [
         'dbo',
     ];
 
-    public static function constraintsProvider(): array
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraints(
+        string $tableName,
+        string $type,
+        Constraint|bool|array|null $expected,
+    ): void {
+        parent::testTableSchemaConstraints($tableName, $type, $expected);
+    }
+
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
     {
-        $result = parent::constraintsProvider();
-        $result['1: check'][2][0]->expression = '([C_check]<>\'\')';
-        $result['1: default'][2] = [];
-        $result['1: default'][2][] = new DefaultValueConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_default'],
-            'value' => '((0))',
-        ]);
+        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
+    }
 
-        $result['2: default'][2] = [];
-
-        $result['3: foreign key'][2][0]->foreignSchemaName = 'dbo';
-        $result['3: index'][2] = [];
-        $result['3: default'][2] = [];
-
-        $result['4: default'][2] = [];
-        return $result;
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
+    {
+        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
     }
 
     public function testGetStringFieldsSize(): void
     {
         $db = $this->getConnection();
-        $schema = $db->schema;
 
+        $schema = $db->getSchema();
         $columns = $schema->getTableSchema('type', false)->columns;
 
         foreach ($columns as $name => $column) {
@@ -71,127 +88,84 @@ final class SchemaTest extends BaseSchema
                         $expectedType = 'char';
                         $expectedSize = 100;
                         $expectedDbType = 'char(100)';
+
                         break;
                     case 'char_col2':
                         $expectedType = 'string';
                         $expectedSize = 100;
                         $expectedDbType = 'varchar(100)';
+
                         break;
                     case 'char_col3':
                         $expectedType = 'text';
                         $expectedSize = null;
                         $expectedDbType = 'text';
+
                         break;
                     default:
-                        $this->fail("Unexpected column name: {$name}");
+                        self::fail(
+                            "Unexpected column name: {$name}.",
+                        );
                 }
 
-                $this->assertEquals($expectedType, $type);
-                $this->assertEquals($expectedSize, $size);
-                $this->assertEquals($expectedDbType, $dbType);
+                self::assertSame(
+                    $expectedType,
+                    $type,
+                    "Column type for '{$name}' should be '{$expectedType}'.",
+                );
+                self::assertSame(
+                    $expectedSize,
+                    $size,
+                    "Column size for '{$name}' should be '{$expectedSize}'.",
+                );
+                self::assertSame(
+                    $expectedDbType,
+                    $dbType,
+                    "Column DB type for '{$name}' should be '{$expectedDbType}'.",
+                );
             }
         }
     }
 
     /**
-     * @dataProvider quoteTableNameDataProvider
-     *
-     * @param string $name Table name.
-     * @param string $expectedName Expected result.
-     *
      * @throws NotSupportedException
      */
+    #[DataProviderExternal(SchemaProvider::class, 'quoteTableName')]
     public function testQuoteTableName(string $name, string $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
-        $quotedName = $schema->quoteTableName($name);
-        $this->assertEquals($expectedName, $quotedName);
-    }
 
-    public static function quoteTableNameDataProvider(): array
-    {
-        return [
-            ['test', '[test]'],
-            ['test.test', '[test].[test]'],
-            ['test.test.test', '[test].[test].[test]'],
-            ['[test]', '[test]'],
-            ['[test].[test]', '[test].[test]'],
-            ['test.[test.test]', '[test].[test.test]'],
-            ['test.test.[test.test]', '[test].[test].[test.test]'],
-            ['[test].[test.test]', '[test].[test.test]'],
-        ];
+        self::assertSame(
+            $expectedName,
+            $schema->quoteTableName($name),
+            "Quoted table name for '{$name}' should be '{$expectedName}'.",
+        );
     }
 
     /**
-     * @dataProvider getTableSchemaDataProvider
-     *
-     * @param string $name Table name.
-     * @param string $expectedName Expected result.
-     *
-     * @throws NotSupportedException
+     * @throws NotSupportedException if the table does not exist or schema retrieval is not supported.
      */
+    #[DataProviderExternal(SchemaProvider::class, 'getTableSchema')]
     public function testGetTableSchema(string $name, string $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
+
         $tableSchema = $schema->getTableSchema($name);
-        $this->assertEquals($expectedName, $tableSchema->name);
+
+        self::assertSame(
+            $expectedName,
+            $tableSchema->name,
+            "Table schema name for '{$name}' should be '{$expectedName}'.",
+        );
     }
 
-    public static function getTableSchemaDataProvider(): array
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
     {
-        return [
-            ['[dbo].[profile]', 'profile'],
-            ['dbo.profile', 'profile'],
-            ['profile', 'profile'],
-            ['dbo.[table.with.special.characters]', 'table.with.special.characters'],
-        ];
-    }
-
-    public function getExpectedColumns()
-    {
-        $columns = parent::getExpectedColumns();
-        unset($columns['enum_col']);
-        unset($columns['ts_default']);
-        unset($columns['bit_col']);
-        unset($columns['json_col']);
-
-        $columns['int_col']['dbType'] = 'int';
-        $columns['int_col2']['dbType'] = 'int';
-        $columns['tinyint_col']['dbType'] = 'tinyint';
-        $columns['smallint_col']['dbType'] = 'smallint';
-        $columns['float_col']['dbType'] = 'decimal';
-        $columns['float_col']['phpType'] = 'string';
-        $columns['float_col']['type'] = 'decimal';
-        $columns['float_col']['scale'] = null;
-        $columns['float_col2']['dbType'] = 'float';
-        $columns['float_col2']['phpType'] = 'double';
-        $columns['float_col2']['type'] = 'float';
-        $columns['float_col2']['scale'] = null;
-        $columns['blob_col']['dbType'] = 'varbinary';
-        $columns['numeric_col']['dbType'] = 'decimal';
-        $columns['numeric_col']['scale'] = null;
-        $columns['time']['dbType'] = 'datetime';
-        $columns['time']['type'] = 'datetime';
-        $columns['bool_col']['dbType'] = 'tinyint';
-        $columns['bool_col2']['dbType'] = 'tinyint';
-
-        array_walk($columns, static function (&$item): void {
-            $item['enumValues'] = [];
-        });
-
-        array_walk($columns, static function (&$item, $name): void {
-            if (!in_array($name, ['char_col', 'char_col2', 'char_col3'])) {
-                $item['size'] = null;
-            }
-        });
-
-        array_walk($columns, static function (&$item, $name): void {
-            if (!in_array($name, ['char_col', 'char_col2', 'char_col3'])) {
-                $item['precision'] = null;
-            }
-        });
-
-        return $columns;
+        parent::testColumnSchema($columns);
     }
 
     public function testGetPrimaryKey(): void
@@ -204,145 +178,226 @@ final class SchemaTest extends BaseSchema
 
         $db->createCommand()->createTable(
             'testPKTable',
-            ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER]
+            [
+                'id' => Schema::TYPE_PK,
+                'bar' => Schema::TYPE_INTEGER,
+            ]
         )->execute();
 
         $insertResult = $db->getSchema()->insert('testPKTable', ['bar' => 1]);
-        $selectResult = $db->createCommand('select [id] from [testPKTable] where [bar]=1')->queryOne();
+        $selectResult = $db->createCommand(
+            <<<SQL
+            SELECT [id] FROM [testPKTable] WHERE [bar]=1
+            SQL
+        )->queryOne();
 
-        $this->assertEquals($selectResult['id'], $insertResult['id']);
+        self::assertSame(
+            $selectResult['id'],
+            $insertResult['id'],
+            'Inserted ID should match selected ID.',
+        );
     }
 
     public function testQuoteColumnNameWithBrackets(): void
     {
         $schema = $this->getConnection()->getSchema();
-        $this->assertSame('[already_quoted]', $schema->quoteColumnName('[already_quoted]'));
+
+        self::assertSame(
+            '[already_quoted]',
+            $schema->quoteColumnName('[already_quoted]'),
+            "Column name '[already_quoted]' should not be double-quoted.",
+        );
     }
 
-    /**
-     * @dataProvider resolveTableNameProvider
-     */
+    #[DataProviderExternal(SchemaProvider::class, 'resolveTableName')]
     public function testResolveTableName(
         string $name,
-        ?string $expectedCatalog,
+        string|null $expectedCatalog,
         string $expectedSchema,
         string $expectedTable,
         string $expectedFullName
     ): void {
         $schema = $this->getConnection()->getSchema();
-        $method = new \ReflectionMethod($schema, 'resolveTableName');
-        $result = $method->invoke($schema, $name);
-        $this->assertSame($expectedCatalog, $result->catalogName);
-        $this->assertSame($expectedSchema, $result->schemaName);
-        $this->assertSame($expectedTable, $result->name);
-        $this->assertSame($expectedFullName, $result->fullName);
-    }
 
-    public static function resolveTableNameProvider(): array
-    {
-        return [
-            'single part' => [
-                'customer',
-                null,
-                'dbo',
-                'customer',
-                'customer',
-            ],
-            'two parts' => [
-                'sales.customer',
-                null,
-                'sales',
-                'customer',
-                'sales.customer',
-            ],
-            'two parts default schema' => [
-                'dbo.customer',
-                null,
-                'dbo',
-                'customer',
-                'customer',
-            ],
-            'three parts' => [
-                'catalog1.sales.customer',
-                'catalog1',
-                'sales',
-                'customer',
-                'catalog1.sales.customer',
-            ],
-            'four parts' => [
-                '[server1].catalog1.sales.customer',
-                'catalog1',
-                'sales',
-                'customer',
-                'catalog1.sales.customer',
-            ],
-        ];
+        $result = $this->invokeMethod(
+            $schema,
+            'resolveTableName',
+            [$name],
+        );
+
+        self::assertSame(
+            $expectedCatalog,
+            $result->catalogName,
+            'Resolved catalog name should match expected value.',
+        );
+        self::assertSame(
+            $expectedSchema,
+            $result->schemaName,
+            'Resolved schema name should match expected value.',
+        );
+        self::assertSame(
+            $expectedTable,
+            $result->name,
+            'Resolved table name should match expected value.',
+        );
+        self::assertSame(
+            $expectedFullName,
+            $result->fullName,
+            'Resolved full name should match expected value.',
+        );
     }
 
     public function testSavepointOperations(): void
     {
-        $db = $this->getConnection(true, true);
+        $db = $this->getConnection();
+
         $db->beginTransaction();
-        $db->createCommand("INSERT INTO [profile] ([description]) VALUES ('sp_test')")->execute();
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [profile] ([description]) VALUES ('sp_test')
+            SQL,
+        )->execute();
+
         $db->getSchema()->createSavepoint('sp1');
-        $db->createCommand("INSERT INTO [profile] ([description]) VALUES ('sp_test_after')")->execute();
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [profile] ([description]) VALUES ('sp_test_after')
+            SQL,
+        )->execute();
+
         $db->getSchema()->rollBackSavepoint('sp1');
+
         $db->transaction->commit();
 
-        $afterCount = (int)$db->createCommand("SELECT COUNT(*) FROM [profile] WHERE [description] = 'sp_test_after'")->queryScalar();
-        $this->assertSame(0, $afterCount);
-        $beforeCount = (int)$db->createCommand("SELECT COUNT(*) FROM [profile] WHERE [description] = 'sp_test'")->queryScalar();
-        $this->assertSame(1, $beforeCount);
+        $afterCount = (int) $db->createCommand(
+            <<<SQL
+            SELECT COUNT(*) FROM [profile] WHERE [description] = 'sp_test_after'
+            SQL,
+        )->queryScalar();
 
-        $db->createCommand("DELETE FROM [profile] WHERE [description] = 'sp_test'")->execute();
+        self::assertSame(
+            0,
+            $afterCount,
+            'After rolling back to savepoint, the second insert should not be present in the database.',
+        );
+
+        $beforeCount = (int) $db->createCommand(
+            <<<SQL
+            SELECT COUNT(*) FROM [profile] WHERE [description] = 'sp_test'
+            SQL,
+        )->queryScalar();
+
+        self::assertSame(
+            1,
+            $beforeCount,
+            'Before rolling back to savepoint, the first insert should be present in the database.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM [profile] WHERE [description] = 'sp_test'
+            SQL,
+        )->execute();
     }
 
     public function testReleaseSavepointIsNoOp(): void
     {
-        $db = $this->getConnection(true, true);
+        $db = $this->getConnection();
+
         $db->beginTransaction();
+
         $db->getSchema()->createSavepoint('sp1');
         $db->getSchema()->releaseSavepoint('sp1');
-        $this->assertTrue($db->transaction->getIsActive());
+
+        self::assertTrue(
+            $db->transaction->getIsActive(),
+            'Transaction should still be active after releasing savepoint.',
+        );
+
         $db->transaction->rollBack();
     }
 
-    /**
-     * @dataProvider resolveTableNameProvider
-     */
+    #[DataProviderExternal(SchemaProvider::class, 'resolveTableName')]
     public function testResolveTableNames(
         string $name,
-        ?string $expectedCatalog,
+        string|null $expectedCatalog,
         string $expectedSchema,
         string $expectedTable,
         string $expectedFullName
     ): void {
         $schema = $this->getConnection()->getSchema();
         $table = new TableSchema();
-        $method = new \ReflectionMethod($schema, 'resolveTableNames');
-        $method->invoke($schema, $table, $name);
-        $this->assertSame($expectedCatalog, $table->catalogName);
-        $this->assertSame($expectedSchema, $table->schemaName);
-        $this->assertSame($expectedTable, $table->name);
-        $this->assertSame($expectedFullName, $table->fullName);
+
+        $this->invokeMethod(
+            $schema,
+            'resolveTableNames',
+            [
+                $table,
+                $name,
+            ],
+        );
+
+        self::assertSame(
+            $expectedCatalog,
+            $table->catalogName,
+            'Resolved catalog name should match expected value.',
+        );
+        self::assertSame(
+            $expectedSchema,
+            $table->schemaName,
+            'Resolved schema name should match expected value.',
+        );
+        self::assertSame(
+            $expectedTable,
+            $table->name,
+            'Resolved table name should match expected value.',
+        );
+        self::assertSame(
+            $expectedFullName,
+            $table->fullName,
+            'Resolved full name should match expected value.',
+        );
     }
 
     public function testGetSchemaPrimaryKeysWithExplicitSchema(): void
     {
         $schema = $this->getConnection(true, true)->getSchema();
-        $this->assertInstanceOf(ConstraintFinderInterface::class, $schema);
+
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $schema,
+            'Schema should implement ' . ConstraintFinderInterface::class . ' for primary key retrieval.',
+        );
 
         $primaryKeys = $schema->getSchemaPrimaryKeys('dbo');
-        $this->assertNotEmpty($primaryKeys);
-        $this->assertContainsOnlyInstancesOf(Constraint::class, $primaryKeys);
+
+        self::assertNotEmpty(
+            $primaryKeys,
+            "Primary keys should be retrieved for schema 'dbo'.",
+        );
+        self::assertContainsOnlyInstancesOf(
+            Constraint::class,
+            $primaryKeys,
+            'Primary keys should be instances of ' . Constraint::class . '.',
+        );
     }
 
     public function testNullDefaultValueColumn(): void
     {
         $schema = $this->getConnection(true, true)->getSchema();
+
         $table = $schema->getTableSchema('null_values');
-        $this->assertNull($table->getColumn('var3')->defaultValue);
-        $this->assertNull($table->getColumn('stringcol')->defaultValue);
+
+        self::assertNull(
+            $table->getColumn('var3')->defaultValue,
+            "Default value for 'var3' should be 'null'.",
+        );
+        self::assertNull(
+            $table->getColumn('stringcol')->defaultValue,
+            "Default value for 'stringcol' should be 'null'.",
+        );
     }
 
     public function testExpressionAndLiteralColumnDefaultValues(): void
@@ -401,40 +456,89 @@ final class SchemaTest extends BaseSchema
 
     public function testInsertWithCompositePrimaryKey(): void
     {
-        $db = $this->getConnection(true, true);
-        $result = $db->getSchema()->insert('employee', [
-            'id' => 100,
-            'department_id' => 1,
-            'first_name' => 'Test',
-            'last_name' => 'User',
-        ]);
-        $this->assertSame('100', $result['id']);
-        $this->assertSame('1', $result['department_id']);
+        $db = $this->getConnection();
 
-        $db->createCommand('DELETE FROM [employee] WHERE [id] = 100 AND [department_id] = 1')->execute();
+        $result = $db->getSchema()->insert(
+            'employee',
+            [
+                'id' => 100,
+                'department_id' => 1,
+                'first_name' => 'Test',
+                'last_name' => 'User',
+            ],
+        );
+
+        self::assertSame(
+            '100',
+            $result['id'],
+            'Inserted ID should match expected value.',
+        );
+        self::assertSame(
+            '1',
+            $result['department_id'],
+            'Inserted department ID should match expected value.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            DELETE FROM [employee] WHERE [id] = 100 AND [department_id] = 1
+            SQL
+        )->execute();
     }
 
     public function testGetViewNamesWithDefaultSchema(): void
     {
-        $schema = $this->getConnection(true, true)->getSchema();
-        $this->assertInstanceOf(Schema::class, $schema);
+        $schema = $this->getConnection()->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema should be an instance of ' . Schema::class . '.',
+        );
 
         $viewNames = $schema->getViewNames();
-        $this->assertContains('animal_view', $viewNames);
+
+        self::assertContains(
+            'animal_view',
+            $viewNames,
+            "View 'animal_view' should be present in the list of view names.",
+        );
     }
 
     public function testFindUniqueIndexes(): void
     {
-        $db = $this->getConnection(true, true);
+        $db = $this->getConnection();
+
         $table = $db->getSchema()->getTableSchema('T_upsert');
         $indexes = $db->getSchema()->findUniqueIndexes($table);
-        $this->assertNotEmpty($indexes);
+
+        self::assertCount(
+            2,
+            $indexes,
+            "Should return the unique constraints defined on 'T_upsert'.",
+        );
+        self::assertContains(
+            ['email'],
+            array_values($indexes),
+            "Single-column unique constraint on 'email' is missing.",
+        );
+        self::assertContains(
+            ['email', 'recovery_email'],
+            array_values($indexes),
+            "Composite unique constraint on 'email, recovery_email' is missing.",
+        );
     }
 
     public function testCreateColumnSchemaBuilder(): void
     {
         $schema = $this->getConnection()->getSchema();
+
         $builder = $schema->createColumnSchemaBuilder('string', 255);
-        $this->assertInstanceOf('yii\db\mssql\ColumnSchemaBuilder', $builder);
+
+        self::assertInstanceOf(
+            ColumnSchemaBuilder::class,
+            $builder,
+            'Column schema builder should be an instance of ' . ColumnSchemaBuilder::class . '.',
+        );
     }
 }

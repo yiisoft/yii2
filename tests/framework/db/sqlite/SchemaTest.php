@@ -10,12 +10,14 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\sqlite;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\Expression;
-use yiiunit\framework\db\AnyValue;
+use yii\db\sqlite\Schema;
 use yiiunit\base\db\BaseSchema;
+use yiiunit\framework\db\sqlite\providers\SchemaProvider;
 
 /**
  * Unit tests for {@see \yii\db\sqlite\Schema} schema reflection and metadata retrieval for the SQLite driver.
@@ -29,40 +31,53 @@ final class SchemaTest extends BaseSchema
 
     public function testGetSchemaNames(): void
     {
-        $this->markTestSkipped('Schemas are not supported in SQLite.');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            Schema::class . ' does not support fetching all schema names.',
+        );
+
+        $this->getConnection()->getSchema()->getSchemaNames();
     }
 
-    public function getExpectedColumns()
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
     {
-        $columns = parent::getExpectedColumns();
-        unset($columns['enum_col']);
-        unset($columns['bit_col']);
-        unset($columns['json_col']);
-        $columns['int_col']['dbType'] = 'integer';
-        $columns['int_col']['size'] = null;
-        $columns['int_col']['precision'] = null;
-        $columns['int_col2']['dbType'] = 'integer';
-        $columns['int_col2']['size'] = null;
-        $columns['int_col2']['precision'] = null;
-        $columns['bool_col']['type'] = 'boolean';
-        $columns['bool_col']['phpType'] = 'boolean';
-        $columns['bool_col2']['type'] = 'boolean';
-        $columns['bool_col2']['phpType'] = 'boolean';
-        $columns['bool_col2']['defaultValue'] = true;
-        return $columns;
+        parent::testColumnSchema($columns);
     }
 
     public function testCompositeFk(): void
     {
-        $schema = $this->getConnection()->schema;
+        $schema = $this->getConnection()->getSchema();
 
         $table = $schema->getTableSchema('composite_fk');
 
-        $this->assertCount(1, $table->foreignKeys);
-        $this->assertTrue(isset($table->foreignKeys[0]));
-        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
-        $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
+        self::assertCount(
+            1,
+            $table->foreignKeys,
+            'There must be exactly one foreign key defined for the table.',
+        );
+        self::assertTrue(
+            isset($table->foreignKeys[0]),
+            'Foreign key must be defined.',
+        );
+        self::assertEquals(
+            'order_item',
+            $table->foreignKeys[0][0],
+            'Referenced table name does not match.',
+        );
+        self::assertEquals(
+            'order_id',
+            $table->foreignKeys[0]['order_id'],
+            'Referenced column name does not match.',
+        );
+        self::assertEquals(
+            'item_id',
+            $table->foreignKeys[0]['item_id'],
+            'Referenced column name does not match.',
+        );
     }
 
     public function testCurrentTimestampLowercaseDefaultValue(): void
@@ -264,57 +279,44 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    public static function constraintsProvider(): array
-    {
-        $result = parent::constraintsProvider();
-        $result['1: primary key'][2]->name = null;
-        $result['1: check'][2][0]->columnNames = null;
-        $result['1: check'][2][0]->expression = '"C_check" <> \'\'';
-        $result['1: unique'][2][0]->name = AnyValue::getInstance();
-        $result['1: index'][2][1]->name = AnyValue::getInstance();
-
-        $result['2: primary key'][2]->name = null;
-        $result['2: unique'][2][0]->name = AnyValue::getInstance();
-        $result['2: index'][2][2]->name = AnyValue::getInstance();
-
-        $result['3: foreign key'][2][0]->name = null;
-        $result['3: index'][2] = [];
-
-        $result['4: primary key'][2]->name = null;
-        $result['4: unique'][2][0]->name = AnyValue::getInstance();
-
-        $result['5: primary key'] = ['T_upsert', 'primaryKey', new Constraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['id'],
-        ])];
-
-        return $result;
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraints(
+        string $tableName,
+        string $type,
+        Constraint|bool|array|null $expected,
+    ): void {
+        parent::testTableSchemaConstraints($tableName, $type, $expected);
     }
 
     /**
-     * @dataProvider quoteTableNameDataProvider
-     *
-     * @param string $name Table name.
-     * @param string $expectedName Expected quoted table name.
-     *
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    {
+        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
+    }
+
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
+    {
+        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
+    }
+
+    /**
      * @throws NotSupportedException
      */
+    #[DataProviderExternal(SchemaProvider::class, 'quoteTableName')]
     public function testQuoteTableName(string $name, string $expectedName): void
     {
         $schema = $this->getConnection()->getSchema();
         $quotedName = $schema->quoteTableName($name);
         $this->assertEquals($expectedName, $quotedName);
-    }
-
-    public static function quoteTableNameDataProvider(): array
-    {
-        return [
-            ['test', '`test`'],
-            ['test.test', '`test`.`test`'],
-            ['test.test.test', '`test`.`test`.`test`'],
-            ['`test`', '`test`'],
-            ['`test`.`test`', '`test`.`test`'],
-            ['test.`test`.test', '`test`.`test`.`test`'],
-        ];
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,135 +10,211 @@
 
 namespace yiiunit\base\db;
 
-use yiiunit\framework\db\AnyCaseValue;
-use yiiunit\framework\db\AnyValue;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Depends;
+use yii\base\NotSupportedException;
 use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\base\db\providers\SchemaProvider;
+use yiiunit\support\Assert;
 use Exception;
 use PDO;
 use yii\caching\ArrayCache;
 use yii\caching\FileCache;
-use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Constraint;
-use yii\db\Expression;
-use yii\db\ForeignKeyConstraint;
-use yii\db\IndexConstraint;
-use yii\db\pgsql\ColumnSchema as PgsqlColumnSchema;
 use yii\db\Schema;
 use yii\db\TableSchema;
+
+use function array_keys;
+use function array_map;
+use function count;
+use function fopen;
+use function is_object;
+use function print_r;
+use function sort;
+use function trim;
 
 abstract class BaseSchema extends DatabaseTestCase
 {
     /**
-     * @var string[]
+     * @var list<string> List of expected schemas in the database.
      */
-    protected $expectedSchemas;
-
-    public static function pdoAttributesProvider(): array
-    {
-        return [
-            [[PDO::ATTR_EMULATE_PREPARES => true]],
-            [[PDO::ATTR_EMULATE_PREPARES => false]],
-        ];
-    }
+    protected array $expectedSchemas = [];
 
     public function testGetSchemaNames(): void
     {
-        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $schemas = $schema->getSchemaNames();
-        $this->assertNotEmpty($schemas);
+
+        self::assertNotEmpty(
+            $schemas,
+            'The list of schema names is empty.',
+        );
+
         foreach ($this->expectedSchemas as $schema) {
-            $this->assertContains($schema, $schemas);
+            self::assertContains(
+                $schema,
+                $schemas,
+                "Schema '{$schema}' is missing in the list of schemas.",
+            );
         }
     }
 
     /**
-     * @dataProvider pdoAttributesProvider
-     *
-     * @param array $pdoAttributes PDO attributes to be applied to the connection.
+     * @param array<int, bool> $pdoAttributes PDO attributes to be applied to the connection.
      */
+    #[DataProviderExternal(SchemaProvider::class, 'pdoAttributes')]
     public function testGetTableNames(array $pdoAttributes): void
     {
-        $connection = $this->getConnection();
+        $db = $this->getConnection();
+
         foreach ($pdoAttributes as $name => $value) {
-            if ($name === PDO::ATTR_EMULATE_PREPARES && $connection->driverName === 'sqlsrv') {
+            if ($name === PDO::ATTR_EMULATE_PREPARES && $db->driverName === 'sqlsrv') {
                 continue;
             }
-            $connection->pdo->setAttribute($name, $value);
+
+            $db->pdo->setAttribute($name, $value);
         }
 
-        /** @var Schema $schema */
-        $schema = $connection->schema;
-
+        $schema = $db->getSchema();
         $tables = $schema->getTableNames();
+
         if ($this->driverName === 'sqlsrv') {
-            $tables = array_map(static fn($item) => trim((string) $item, '[]'), $tables);
+            $tables = array_map(static fn($item): string => trim((string) $item, '[]'), $tables);
         }
-        $this->assertContains('customer', $tables);
-        $this->assertContains('category', $tables);
-        $this->assertContains('item', $tables);
-        $this->assertContains('order', $tables);
-        $this->assertContains('order_item', $tables);
-        $this->assertContains('type', $tables);
-        $this->assertContains('animal', $tables);
-        $this->assertContains('animal_view', $tables);
+
+        self::assertContains(
+            'customer',
+            $tables,
+            "'customer' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'category',
+            $tables,
+            "'category' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'item',
+            $tables,
+            "'item' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'order',
+            $tables,
+            "'order' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'order_item',
+            $tables,
+            "'order_item' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'type',
+            $tables,
+            "'type' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'animal',
+            $tables,
+            "'animal' table is missing in the list of tables.",
+        );
+        self::assertContains(
+            'animal_view',
+            $tables,
+            "'animal_view' table is missing in the list of tables.",
+        );
     }
 
     /**
-     * @dataProvider pdoAttributesProvider
-     *
-     * @param array $pdoAttributes PDO attributes to be applied to the connection.
+     * @param array<int, bool> $pdoAttributes PDO attributes to be applied to the connection.
      */
+    #[DataProviderExternal(SchemaProvider::class, 'pdoAttributes')]
     public function testGetTableSchemas(array $pdoAttributes): void
     {
-        $connection = $this->getConnection();
+        $db = $this->getConnection();
+
         foreach ($pdoAttributes as $name => $value) {
-            if ($name === PDO::ATTR_EMULATE_PREPARES && $connection->driverName === 'sqlsrv') {
+            if ($name === PDO::ATTR_EMULATE_PREPARES && $db->driverName === 'sqlsrv') {
                 continue;
             }
-            $connection->pdo->setAttribute($name, $value);
-        }
-        /** @var Schema $schema */
-        $schema = $connection->schema;
 
+            $db->pdo->setAttribute($name, $value);
+        }
+
+        $schema = $db->getSchema();
         $tables = $schema->getTableSchemas();
-        $this->assertEquals(\count($schema->getTableNames()), \count($tables));
+
+        self::assertSame(
+            count($schema->getTableNames()),
+            count($tables),
+            'Number of table schemas does not match the number of table names.',
+        );
+
         foreach ($tables as $table) {
-            $this->assertInstanceOf('yii\db\TableSchema', $table);
+            self::assertInstanceOf(
+                TableSchema::class,
+                $table,
+                'Table schema is not an instance of ' . TableSchema::class . '.',
+            );
         }
     }
 
     public function testGetTableSchemasWithAttrCase(): void
     {
         $db = $this->getConnection(false);
+
         $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-        $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
+
+        self::assertSame(
+            count($db->schema->getTableNames()),
+            count($db->schema->getTableSchemas()),
+            "Number of table does not match the number of table names with 'PDO::ATTR_CASE' set to 'PDO::CASE_LOWER'.",
+        );
 
         $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
-        $this->assertEquals(\count($db->schema->getTableNames()), \count($db->schema->getTableSchemas()));
+
+        self::assertSame(
+            count($db->schema->getTableNames()),
+            count($db->schema->getTableSchemas()),
+            "Number of table does not match the number of table names with 'PDO::ATTR_CASE' set to 'PDO::CASE_UPPER'.",
+        );
     }
 
     public function testGetNonExistingTableSchema(): void
     {
-        $this->assertNull($this->getConnection()->schema->getTableSchema('nonexisting_table'));
+        self::assertNull(
+            $this->getConnection()->schema->getTableSchema('nonexisting_table'),
+            "Getting schema for non-existing table should return 'null'.",
+        );
     }
 
     public function testSchemaCache(): void
     {
         $db = $this->getConnection();
-        $schema = $db->schema;
+
+        $schema = $db->getSchema();
 
         $schema->db->enableSchemaCache = true;
         $schema->db->schemaCache = new FileCache();
+
         $noCacheTable = $schema->getTableSchema('type', true);
         $cachedTable = $schema->getTableSchema('type', false);
-        $this->assertEquals($noCacheTable, $cachedTable);
+
+        self::assertSame(
+            $noCacheTable,
+            $cachedTable,
+            'Getting table with cache should return the same instance.',
+        );
 
         $db->createCommand()->renameTable('type', 'type_test');
         $noCacheTable = $schema->getTableSchema('type', true);
-        $this->assertNotSame($noCacheTable, $cachedTable);
+
+        self::assertNotSame(
+            $noCacheTable,
+            $cachedTable,
+            'Getting table with cache should return a different instance.',
+        );
 
         $db->createCommand()->renameTable('type_test', 'type');
     }
@@ -146,112 +224,127 @@ abstract class BaseSchema extends DatabaseTestCase
      */
     public function testRefreshTableSchema(): void
     {
-        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $schema->db->enableSchemaCache = true;
         $schema->db->schemaCache = new FileCache();
+
         $noCacheTable = $schema->getTableSchema('type', true);
 
         $schema->refreshTableSchema('type');
+
         $refreshedTable = $schema->getTableSchema('type', false);
-        $this->assertNotSame($noCacheTable, $refreshedTable);
+
+        self::assertNotSame(
+            $noCacheTable,
+            $refreshedTable,
+            'Refreshing table should return a different instance.',
+        );
     }
 
-    public static function tableSchemaCachePrefixesProvider(): array
-    {
-        $configs = [
-            [
-                'prefix' => '',
-                'name' => 'type',
-            ],
-            [
-                'prefix' => '',
-                'name' => '{{%type}}',
-            ],
-            [
-                'prefix' => 'ty',
-                'name' => '{{%pe}}',
-            ],
-        ];
-        $data = [];
-        foreach ($configs as $config) {
-            foreach ($configs as $testConfig) {
-                if ($config === $testConfig) {
-                    continue;
-                }
+    #[DataProviderExternal(SchemaProvider::class, 'tableSchemaCachePrefixes')]
+    #[Depends('testSchemaCache')]
+    public function testTableSchemaCacheWithTablePrefixes(
+        string $tablePrefix,
+        string $tableName,
+        string $testTablePrefix,
+        string $testTableName,
+    ): void {
+        $schema = $this->getConnection()->getSchema();
 
-                $description = sprintf(
-                    "%s (with '%s' prefix) against %s (with '%s' prefix)",
-                    $config['name'],
-                    $config['prefix'],
-                    $testConfig['name'],
-                    $testConfig['prefix']
-                );
-                $data[$description] = [
-                    $config['prefix'],
-                    $config['name'],
-                    $testConfig['prefix'],
-                    $testConfig['name'],
-                ];
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * @dataProvider tableSchemaCachePrefixesProvider
-     *
-     * @depends testSchemaCache
-     *
-     * @param string $tablePrefix Table prefix.
-     * @param string $tableName Table name.
-     * @param string $testTablePrefix Test table prefix.
-     * @param string $testTableName Test table name.
-     */
-    public function testTableSchemaCacheWithTablePrefixes($tablePrefix, $tableName, $testTablePrefix, $testTableName): void
-    {
-        /** @var Schema $schema */
-        $schema = $this->getConnection()->schema;
         $schema->db->enableSchemaCache = true;
-
         $schema->db->tablePrefix = $tablePrefix;
         $schema->db->schemaCache = new ArrayCache();
+
         $noCacheTable = $schema->getTableSchema($tableName, true);
-        $this->assertInstanceOf(TableSchema::class, $noCacheTable);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $noCacheTable,
+            'Getting table with cache should return an instance of ' . TableSchema::class . '.',
+        );
 
         // Compare
         $schema->db->tablePrefix = $testTablePrefix;
+
         $testNoCacheTable = $schema->getTableSchema($testTableName);
-        $this->assertSame($noCacheTable, $testNoCacheTable);
+
+        self::assertSame(
+            $noCacheTable,
+            $testNoCacheTable,
+            'Getting table with cache should return the same instance.',
+        );
 
         $schema->db->tablePrefix = $tablePrefix;
+
         $schema->refreshTableSchema($tableName);
         $refreshedTable = $schema->getTableSchema($tableName, false);
-        $this->assertInstanceOf(TableSchema::class, $refreshedTable);
-        $this->assertNotSame($noCacheTable, $refreshedTable);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $refreshedTable,
+            'Refreshing table should return an instance of ' . TableSchema::class . '.',
+        );
+        self::assertNotSame(
+            $noCacheTable,
+            $refreshedTable,
+            'Refreshing table should return a different instance.',
+        );
 
         // Compare
         $schema->db->tablePrefix = $testTablePrefix;
+
         $schema->refreshTableSchema($testTablePrefix);
+
         $testRefreshedTable = $schema->getTableSchema($testTableName, false);
-        $this->assertInstanceOf(TableSchema::class, $testRefreshedTable);
-        $this->assertEquals($refreshedTable, $testRefreshedTable);
-        $this->assertNotSame($testNoCacheTable, $testRefreshedTable);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $testRefreshedTable,
+            'Refreshing table should return an instance of ' . TableSchema::class . '.',
+        );
+        self::assertSame(
+            $refreshedTable,
+            $testRefreshedTable,
+            'Refreshing table should return the same instance.',
+        );
+        self::assertNotSame(
+            $testNoCacheTable,
+            $testRefreshedTable,
+            'Refreshing table should return a different instance.',
+        );
     }
 
     public function testCompositeFk(): void
     {
-        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('composite_fk');
 
-        $this->assertCount(1, $table->foreignKeys);
-        $this->assertTrue(isset($table->foreignKeys['FK_composite_fk_order_item']));
-        $this->assertEquals('order_item', $table->foreignKeys['FK_composite_fk_order_item'][0]);
-        $this->assertEquals('order_id', $table->foreignKeys['FK_composite_fk_order_item']['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
+        self::assertCount(
+            1,
+            $table->foreignKeys,
+            'Number of foreign keys does not match the expected count.',
+        );
+        self::assertTrue(
+            isset($table->foreignKeys['FK_composite_fk_order_item']),
+            "Foreign key 'FK_composite_fk_order_item' is missing in the table schema.",
+        );
+        self::assertSame(
+            'order_item',
+            $table->foreignKeys['FK_composite_fk_order_item'][0],
+            "Referenced table name for foreign key 'FK_composite_fk_order_item' does not match the expected value.",
+        );
+        self::assertSame(
+            'order_id',
+            $table->foreignKeys['FK_composite_fk_order_item']['order_id'],
+            "Referenced column name for foreign key 'FK_composite_fk_order_item' does not match the expected value.",
+        );
+        self::assertSame(
+            'item_id',
+            $table->foreignKeys['FK_composite_fk_order_item']['item_id'],
+            "Referenced column name for foreign key 'FK_composite_fk_order_item' does not match the expected value.",
+        );
     }
 
     public function testGetPDOType(): void
@@ -268,283 +361,154 @@ abstract class BaseSchema extends DatabaseTestCase
             [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
         ];
 
-        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
-            $this->assertEquals($value[1], $schema->getPdoType($value[0]), 'type for value ' . print_r($value[0], true) . ' does not match.');
+            self::assertSame(
+                $value[1],
+                $schema->getPdoType($value[0]),
+                'type for value ' . print_r($value[0], true) . ' does not match.',
+            );
         }
+
         fclose($fp);
     }
 
-    public function getExpectedColumns()
-    {
-        return [
-            'int_col' => [
-                'type' => 'integer',
-                'dbType' => 'int(11)',
-                'phpType' => 'integer',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 11,
-                'precision' => 11,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-            'int_col2' => [
-                'type' => 'integer',
-                'dbType' => 'int(11)',
-                'phpType' => 'integer',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 11,
-                'precision' => 11,
-                'scale' => null,
-                'defaultValue' => 1,
-            ],
-            'tinyint_col' => [
-                'type' => 'tinyint',
-                'dbType' => 'tinyint(3)',
-                'phpType' => 'integer',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 3,
-                'precision' => 3,
-                'scale' => null,
-                'defaultValue' => 1,
-            ],
-            'smallint_col' => [
-                'type' => 'smallint',
-                'dbType' => 'smallint(1)',
-                'phpType' => 'integer',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 1,
-                'precision' => 1,
-                'scale' => null,
-                'defaultValue' => 1,
-            ],
-            'char_col' => [
-                'type' => 'char',
-                'dbType' => 'char(100)',
-                'phpType' => 'string',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 100,
-                'precision' => 100,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-            'char_col2' => [
-                'type' => 'string',
-                'dbType' => 'varchar(100)',
-                'phpType' => 'string',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 100,
-                'precision' => 100,
-                'scale' => null,
-                'defaultValue' => 'something',
-            ],
-            'char_col3' => [
-                'type' => 'text',
-                'dbType' => 'text',
-                'phpType' => 'string',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-            'enum_col' => [
-                'type' => 'string',
-                'dbType' => "enum('a','B','c,D')",
-                'phpType' => 'string',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => ['a', 'B', 'c,D'],
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-            'float_col' => [
-                'type' => 'double',
-                'dbType' => 'double(4,3)',
-                'phpType' => 'double',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 4,
-                'precision' => 4,
-                'scale' => 3,
-                'defaultValue' => null,
-            ],
-            'float_col2' => [
-                'type' => 'double',
-                'dbType' => 'double',
-                'phpType' => 'double',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => 1.23,
-            ],
-            'blob_col' => [
-                'type' => 'binary',
-                'dbType' => 'blob',
-                'phpType' => 'resource',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-            'numeric_col' => [
-                'type' => 'decimal',
-                'dbType' => 'decimal(5,2)',
-                'phpType' => 'string',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 5,
-                'precision' => 5,
-                'scale' => 2,
-                'defaultValue' => '33.22',
-            ],
-            'time' => [
-                'type' => 'timestamp',
-                'dbType' => 'timestamp',
-                'phpType' => 'string',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => '2002-01-01 00:00:00',
-            ],
-            'bool_col' => [
-                'type' => 'tinyint',
-                'dbType' => 'tinyint(1)',
-                'phpType' => 'integer',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 1,
-                'precision' => 1,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-            'bool_col2' => [
-                'type' => 'tinyint',
-                'dbType' => 'tinyint(1)',
-                'phpType' => 'integer',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 1,
-                'precision' => 1,
-                'scale' => null,
-                'defaultValue' => 1,
-            ],
-            'ts_default' => [
-                'type' => 'timestamp',
-                'dbType' => 'timestamp',
-                'phpType' => 'string',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => new Expression('CURRENT_TIMESTAMP'),
-            ],
-            'bit_col' => [
-                'type' => 'integer',
-                'dbType' => 'bit(8)',
-                'phpType' => 'integer',
-                'allowNull' => false,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => 8,
-                'precision' => 8,
-                'scale' => null,
-                'defaultValue' => 130, // b'10000010'
-            ],
-            'json_col' => [
-                'type' => 'json',
-                'dbType' => 'json',
-                'phpType' => 'array',
-                'allowNull' => true,
-                'autoIncrement' => false,
-                'enumValues' => null,
-                'size' => null,
-                'precision' => null,
-                'scale' => null,
-                'defaultValue' => null,
-            ],
-        ];
-    }
 
     public function testNegativeDefaultValues(): void
     {
-        /** @var Schema $schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('negative_default_values');
-        $this->assertEquals(-123, $table->getColumn('tinyint_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
-        $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);
-        $this->assertEquals(-12345.6789, $table->getColumn('float_col')->defaultValue);
-        $this->assertEquals(-33.22, $table->getColumn('numeric_col')->defaultValue);
+
+        self::assertSame(
+            -123,
+            $table->getColumn('tinyint_col')->defaultValue,
+            "'defaultValue' of column 'tinyint_col' does not match.",
+        );
+        self::assertSame(
+            -123,
+            $table->getColumn('smallint_col')->defaultValue,
+            "'defaultValue' of column 'smallint_col' does not match.",
+        );
+        self::assertSame(
+            -123,
+            $table->getColumn('int_col')->defaultValue,
+            "'defaultValue' of column 'int_col' does not match.",
+        );
+        self::assertSame(
+            -123,
+            $table->getColumn('bigint_col')->defaultValue,
+            "'defaultValue' of column 'bigint_col' does not match.",
+        );
+        self::assertSame(
+            -12345.6789,
+            $table->getColumn('float_col')->defaultValue,
+            "'defaultValue' of column 'float_col' does not match.",
+        );
+        self::assertEquals(
+            -33.22,
+            $table->getColumn('numeric_col')->defaultValue,
+            "'defaultValue' of column 'numeric_col' does not match.",
+        );
     }
 
-    public function testColumnSchema(): void
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
     {
-        $columns = $this->getExpectedColumns();
-
         $table = $this->getConnection(false)->schema->getTableSchema('type', true);
 
         $expectedColNames = array_keys($columns);
+
         sort($expectedColNames);
+
         $colNames = $table->columnNames;
+
         sort($colNames);
-        $this->assertEquals($expectedColNames, $colNames);
+
+        self::assertSame($expectedColNames, $colNames);
 
         foreach ($table->columns as $name => $column) {
             $expected = $columns[$name];
-            $this->assertSame($expected['dbType'], $column->dbType, "dbType of column $name does not match. type is $column->type, dbType is $column->dbType.");
-            $this->assertSame($expected['phpType'], $column->phpType, "phpType of column $name does not match. type is $column->type, dbType is $column->dbType.");
-            $this->assertSame($expected['type'], $column->type, "type of column $name does not match.");
-            $this->assertSame($expected['allowNull'], $column->allowNull, "allowNull of column $name does not match.");
-            $this->assertSame($expected['autoIncrement'], $column->autoIncrement, "autoIncrement of column $name does not match.");
-            $this->assertSame($expected['enumValues'], $column->enumValues, "enumValues of column $name does not match.");
-            $this->assertSame($expected['size'], $column->size, "size of column $name does not match.");
-            $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
-            $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
-            if (\is_object($expected['defaultValue'])) {
-                $this->assertIsObject($column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
-                $this->assertEquals((string)$expected['defaultValue'], (string)$column->defaultValue, "defaultValue of column $name does not match.");
+
+            self::assertSame(
+                $expected['dbType'],
+                $column->dbType,
+                "'dbType' of column {$name} does not match. type is {$column->type}, dbType is {$column->dbType}.",
+            );
+            self::assertSame(
+                $expected['phpType'],
+                $column->phpType,
+                "'phpType' of column {$name} does not match. type is {$column->type}, dbType is {$column->dbType}.",
+            );
+            self::assertSame(
+                $expected['type'],
+                $column->type,
+                "'type' of column {$name} does not match.",
+            );
+            self::assertSame(
+                $expected['allowNull'],
+                $column->allowNull,
+                "'allowNull' of column {$name} does not match.",
+            );
+            self::assertSame(
+                $expected['autoIncrement'],
+                $column->autoIncrement,
+                "'autoIncrement' of column {$name} does not match.",
+            );
+            self::assertSame(
+                $expected['enumValues'],
+                $column->enumValues,
+                "'enumValues' of column {$name} does not match.",
+            );
+            self::assertSame(
+                $expected['size'],
+                $column->size,
+                "'size' of column {$name} does not match.",
+            );
+            self::assertSame(
+                $expected['precision'],
+                $column->precision,
+                "'precision' of column {$name} does not match.",
+            );
+            self::assertSame(
+                $expected['scale'],
+                $column->scale,
+                "'scale' of column {$name} does not match.",
+            );
+
+            if (is_object($expected['defaultValue'])) {
+                self::assertIsObject(
+                    $column->defaultValue,
+                    "'defaultValue' of column {$name} is expected to be an object but it is not.",
+                );
+                self::assertSame(
+                    (string) $expected['defaultValue'],
+                    (string) $column->defaultValue,
+                    "'defaultValue' of column {$name} does not match.",
+                );
             } else {
-                $this->assertEquals($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
+                self::assertSame(
+                    $expected['defaultValue'],
+                    $column->defaultValue,
+                    "'defaultValue' of column {$name} does not match.",
+                );
             }
-            if (isset($expected['dimension'])) { // PgSQL only
-                $this->assertInstanceOf(PgsqlColumnSchema::class, $column);
-                $this->assertSame($expected['dimension'], $column->dimension, "dimension of column $name does not match");
+
+            if (isset($expected['dimension'])) {
+                self::assertInstanceOf(
+                    \yii\db\pgsql\ColumnSchema::class,
+                    $column,
+                    "Column {$name} is expected to be an instance of " . \yii\db\pgsql\ColumnSchema::class . '.',
+                );
+                self::assertSame(
+                    $expected['dimension'],
+                    $column->dimension,
+                    "'dimension' of column {$name} does not match.",
+                );
             }
         }
     }
@@ -552,91 +516,90 @@ abstract class BaseSchema extends DatabaseTestCase
     public function testColumnSchemaDbTypecastWithEmptyCharType(): void
     {
         $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
-        $this->assertSame('', $columnSchema->dbTypecast(''));
+
+        self::assertSame(
+            '',
+            $columnSchema->dbTypecast(''),
+            "'dbTypecast' did not return the expected empty string for char type.",
+        );
     }
 
-    /**
-     * @dataProvider columnSchemaDbTypecastBooleanPhpTypeProvider
-     * @param mixed $value
-     * @param bool $expected
-     */
-    public function testColumnSchemaDbTypecastBooleanPhpType($value, $expected): void
+    #[DataProviderExternal(SchemaProvider::class, 'columnSchemaDbTypecastBooleanPhpType')]
+    public function testColumnSchemaDbTypecastBooleanPhpType(mixed $value, bool $expected): void
     {
         $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
-        $this->assertSame($expected, $columnSchema->dbTypecast($value));
-    }
 
-    public static function columnSchemaDbTypecastBooleanPhpTypeProvider(): array
-    {
-        return [
-            [1, true],
-            [0, false],
-            ['1', true],
-            ['0', false],
-
-            // https://github.com/yiisoft/yii2/issues/9006
-            ["\1", true],
-            ["\0", false],
-
-            // https://github.com/yiisoft/yii2/pull/20122
-            ['TRUE', true],
-            ['FALSE', false],
-            ['true', true],
-            ['false', false],
-            ['True', true],
-            ['False', false],
-        ];
+        self::assertSame(
+            $expected,
+            $columnSchema->dbTypecast($value),
+            "'dbTypecast' did not return the expected boolean.",
+        );
     }
 
     public function testFindUniqueIndexes(): void
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
-        }
-
         $db = $this->getConnection();
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
         } catch (Exception) {
         }
-        $db->createCommand()->createTable('uniqueIndex', [
-            'somecol' => 'string',
-            'someCol2' => 'string',
-        ])->execute();
+        $db->createCommand()->createTable(
+            'uniqueIndex',
+            [
+                'somecol' => 'string',
+                'someCol2' => 'string',
+            ],
+        )->execute();
 
-        /** @var Schema $schema */
-        $schema = $db->schema;
-
+        $schema = $db->getSchema();
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([], $uniqueIndexes);
+
+        self::assertSame(
+            [],
+            $uniqueIndexes,
+            'There should be no unique indexes in the table.',
+        );
 
         $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
-            'somecolUnique' => ['somecol'],
-        ], $uniqueIndexes);
+
+        self::assertEquals(
+            ['somecolUnique' => ['somecol']],
+            $uniqueIndexes,
+            'Unique indexes do not match after creating unique index on "somecol".',
+        );
 
         // create another column with upper case letter that fails postgres
         // see https://github.com/yiisoft/yii2/issues/10613
         $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
-            'somecolUnique' => ['somecol'],
-            'someCol2Unique' => ['someCol2'],
-        ], $uniqueIndexes);
+
+        self::assertEquals(
+            [
+                'somecolUnique' => ['somecol'],
+                'someCol2Unique' => ['someCol2'],
+            ],
+            $uniqueIndexes,
+            "Unique indexes do not match after creating unique index on 'someCol2'.",
+        );
 
         // see https://github.com/yiisoft/yii2/issues/13814
         $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
 
         $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
-            'somecolUnique' => ['somecol'],
-            'someCol2Unique' => ['someCol2'],
-            'another unique index' => ['someCol2'],
-        ], $uniqueIndexes);
+
+        self::assertEquals(
+            [
+                'somecolUnique' => ['somecol'],
+                'someCol2Unique' => ['someCol2'],
+                'another unique index' => ['someCol2'],
+            ],
+            $uniqueIndexes,
+            "Unique indexes do not match after creating unique index on 'someCol2'.",
+        );
     }
 
     public function testContraintTablesExistance(): void
@@ -647,265 +610,80 @@ abstract class BaseSchema extends DatabaseTestCase
             'T_constraints_3',
             'T_constraints_4',
         ];
+
         $schema = $this->getConnection()->getSchema();
+
         foreach ($tableNames as $tableName) {
             $tableSchema = $schema->getTableSchema($tableName);
-            $this->assertInstanceOf('yii\db\TableSchema', $tableSchema, $tableName);
+
+            $this->assertInstanceOf(
+                TableSchema::class,
+                $tableSchema,
+                "Table schema for '{$tableName}' should be an instance of " . TableSchema::class . '.',
+            );
         }
     }
 
-    public static function constraintsProvider(): array
-    {
-        return [
-            '1: primary key' => ['T_constraints_1', 'primaryKey', new Constraint([
-                'name' => AnyValue::getInstance(),
-                'columnNames' => ['C_id'],
-            ])],
-            '1: check' => ['T_constraints_1', 'checks', [
-                new CheckConstraint([
-                    'name' => AnyValue::getInstance(),
-                    'columnNames' => ['C_check'],
-                    'expression' => "C_check <> ''",
-                ]),
-            ]],
-            '1: unique' => ['T_constraints_1', 'uniques', [
-                new Constraint([
-                    'name' => 'CN_unique',
-                    'columnNames' => ['C_unique'],
-                ]),
-            ]],
-            '1: index' => ['T_constraints_1', 'indexes', [
-                new IndexConstraint([
-                    'name' => AnyValue::getInstance(),
-                    'columnNames' => ['C_id'],
-                    'isUnique' => true,
-                    'isPrimary' => true,
-                ]),
-                new IndexConstraint([
-                    'name' => 'CN_unique',
-                    'columnNames' => ['C_unique'],
-                    'isPrimary' => false,
-                    'isUnique' => true,
-                ]),
-            ]],
-            '1: default' => ['T_constraints_1', 'defaultValues', false],
-
-            '2: primary key' => ['T_constraints_2', 'primaryKey', new Constraint([
-                'name' => 'CN_pk',
-                'columnNames' => ['C_id_1', 'C_id_2'],
-            ])],
-            '2: unique' => ['T_constraints_2', 'uniques', [
-                new Constraint([
-                    'name' => 'CN_constraints_2_multi',
-                    'columnNames' => ['C_index_2_1', 'C_index_2_2'],
-                ]),
-            ]],
-            '2: index' => ['T_constraints_2', 'indexes', [
-                new IndexConstraint([
-                    'name' => AnyValue::getInstance(),
-                    'columnNames' => ['C_id_1', 'C_id_2'],
-                    'isUnique' => true,
-                    'isPrimary' => true,
-                ]),
-                new IndexConstraint([
-                    'name' => 'CN_constraints_2_single',
-                    'columnNames' => ['C_index_1'],
-                    'isPrimary' => false,
-                    'isUnique' => false,
-                ]),
-                new IndexConstraint([
-                    'name' => 'CN_constraints_2_multi',
-                    'columnNames' => ['C_index_2_1', 'C_index_2_2'],
-                    'isPrimary' => false,
-                    'isUnique' => true,
-                ]),
-            ]],
-            '2: check' => ['T_constraints_2', 'checks', []],
-            '2: default' => ['T_constraints_2', 'defaultValues', false],
-
-            '3: primary key' => ['T_constraints_3', 'primaryKey', null],
-            '3: foreign key' => ['T_constraints_3', 'foreignKeys', [
-                new ForeignKeyConstraint([
-                    'name' => 'CN_constraints_3',
-                    'columnNames' => ['C_fk_id_1', 'C_fk_id_2'],
-                    'foreignTableName' => 'T_constraints_2',
-                    'foreignColumnNames' => ['C_id_1', 'C_id_2'],
-                    'onDelete' => 'CASCADE',
-                    'onUpdate' => 'CASCADE',
-                ]),
-            ]],
-            '3: unique' => ['T_constraints_3', 'uniques', []],
-            '3: index' => ['T_constraints_3', 'indexes', [
-                new IndexConstraint([
-                    'name' => 'CN_constraints_3',
-                    'columnNames' => ['C_fk_id_1', 'C_fk_id_2'],
-                    'isUnique' => false,
-                    'isPrimary' => false,
-                ]),
-            ]],
-            '3: check' => ['T_constraints_3', 'checks', []],
-            '3: default' => ['T_constraints_3', 'defaultValues', false],
-
-            '4: primary key' => ['T_constraints_4', 'primaryKey', new Constraint([
-                'name' => AnyValue::getInstance(),
-                'columnNames' => ['C_id'],
-            ])],
-            '4: unique' => ['T_constraints_4', 'uniques', [
-                new Constraint([
-                    'name' => 'CN_constraints_4',
-                    'columnNames' => ['C_col_1', 'C_col_2'],
-                ]),
-            ]],
-            '4: check' => ['T_constraints_4', 'checks', []],
-            '4: default' => ['T_constraints_4', 'defaultValues', false],
-        ];
-    }
-
-    public static function lowercaseConstraintsProvider(): array
-    {
-        return static::constraintsProvider();
-    }
-
-    public static function uppercaseConstraintsProvider(): array
-    {
-        return static::constraintsProvider();
-    }
-
     /**
-     * @dataProvider constraintsProvider
-     *
-     * @param string $tableName The table name.
-     * @param string $type The constraint type.
-     * @param mixed $expected The expected constraint.
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
      */
-    public function testTableSchemaConstraints(string $tableName, string $type, Constraint|bool|array|null $expected): void
-    {
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraints(
+        string $tableName,
+        string $type,
+        Constraint|bool|array|null $expected,
+    ): void {
         if ($expected === false) {
-            $this->expectException(\yii\base\NotSupportedException::class);
+            $this->expectException(NotSupportedException::class);
         }
 
         $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
-        $this->assertMetadataEquals($expected, $constraints);
+
+        Assert::metadataEquals(
+            $expected,
+            $constraints,
+        );
     }
 
     /**
-     * @dataProvider uppercaseConstraintsProvider
-     *
-     * @param string $tableName The table name.
-     * @param string $type The constraint type.
-     * @param mixed $expected The expected constraint.
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
      */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
     public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
     {
         if ($expected === false) {
-            $this->expectException('yii\base\NotSupportedException');
+            $this->expectException(NotSupportedException::class);
         }
 
-        $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
-        $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
-        $this->assertMetadataEquals($expected, $constraints);
+        $db = $this->getConnection(false);
+
+        $db->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $constraints = $db->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
+
+        Assert::metadataEquals(
+            $expected,
+            $constraints,
+        );
     }
 
     /**
-     * @dataProvider lowercaseConstraintsProvider
-     *
-     * @param string $tableName The table name.
-     * @param string $type The constraint type.
-     * @param mixed $expected The expected constraint.
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
      */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
     public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
     {
         if ($expected === false) {
-            $this->expectException('yii\base\NotSupportedException');
+            $this->expectException(NotSupportedException::class);
         }
 
-        $connection = $this->getConnection(false);
-        $connection->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-        $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
-        $this->assertMetadataEquals($expected, $constraints);
-    }
+        $db = $this->getConnection(false);
 
-    protected function assertMetadataEquals($expected, $actual): void
-    {
-        switch (\strtolower(\gettype($expected))) {
-            case 'object':
-                $this->assertIsObject($actual);
-                break;
-            case 'array':
-                $this->assertIsArray($actual);
-                break;
-            case 'null':
-                $this->assertNull($actual);
-                break;
-        }
+        $db->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $constraints = $db->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
 
-        if (\is_array($expected)) {
-            $this->normalizeArrayKeys($expected, false);
-            $this->normalizeArrayKeys($actual, false);
-        }
-
-        $this->normalizeConstraints($expected, $actual);
-
-        if (\is_array($expected)) {
-            $this->normalizeArrayKeys($expected, true);
-            $this->normalizeArrayKeys($actual, true);
-        }
-
-        $this->assertEquals($expected, $actual);
-    }
-
-    private function normalizeArrayKeys(array &$array, bool $caseSensitive): void
-    {
-        $newArray = [];
-        foreach ($array as $value) {
-            if ($value instanceof Constraint) {
-                $key = (array)$value;
-                unset($key['name'], $key['foreignSchemaName']);
-                foreach ($key as $keyName => $keyValue) {
-                    if ($keyValue instanceof AnyCaseValue) {
-                        $key[$keyName] = $keyValue->value;
-                    } elseif ($keyValue instanceof AnyValue) {
-                        $key[$keyName] = '[AnyValue]';
-                    }
-                }
-                ksort($key, SORT_STRING);
-                $newArray[$caseSensitive ? json_encode($key, JSON_THROW_ON_ERROR) : strtolower(json_encode($key, JSON_THROW_ON_ERROR))] = $value;
-            } else {
-                $newArray[] = $value;
-            }
-        }
-        ksort($newArray, SORT_STRING);
-        $array = $newArray;
-    }
-
-    private function normalizeConstraints(&$expected, &$actual): void
-    {
-        if (\is_array($expected)) {
-            foreach ($expected as $key => $value) {
-                if (!$value instanceof Constraint || !isset($actual[$key]) || !$actual[$key] instanceof Constraint) {
-                    continue;
-                }
-
-                $this->normalizeConstraintPair($value, $actual[$key]);
-            }
-        } elseif ($expected instanceof Constraint && $actual instanceof Constraint) {
-            $this->normalizeConstraintPair($expected, $actual);
-        }
-    }
-
-    private function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint): void
-    {
-        if ($expectedConstraint::class !== $actualConstraint::class) {
-            return;
-        }
-
-        foreach (array_keys((array)$expectedConstraint) as $name) {
-            if ($expectedConstraint->$name instanceof AnyValue) {
-                $actualConstraint->$name = $expectedConstraint->$name;
-            } elseif ($expectedConstraint->$name instanceof AnyCaseValue) {
-                $actualConstraint->$name = new AnyCaseValue($actualConstraint->$name);
-            }
-        }
+        Assert::metadataEquals(
+            $expected,
+            $constraints,
+        );
     }
 }

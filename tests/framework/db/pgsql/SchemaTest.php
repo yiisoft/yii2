@@ -11,12 +11,15 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\pgsql;
 
 use PDO;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
+use yii\db\Constraint;
 use yii\db\Expression;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseSchema;
+use yiiunit\framework\db\pgsql\providers\SchemaProvider;
 
 /**
  * Unit tests for {@see \yii\db\pgsql\Schema} schema reflection and metadata retrieval for the PostgreSQL driver.
@@ -31,143 +34,20 @@ final class SchemaTest extends BaseSchema
 {
     public $driverName = 'pgsql';
 
-    protected $expectedSchemas = [
+    /**
+     * @var list<string> List of expected schemas in the database.
+     */
+    protected array $expectedSchemas = [
         'public',
     ];
 
-    public function getExpectedColumns()
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
     {
-        $columns = parent::getExpectedColumns();
-        unset($columns['enum_col']);
-        $columns['int_col']['dbType'] = 'int4';
-        $columns['int_col']['size'] = null;
-        $columns['int_col']['precision'] = 32;
-        $columns['int_col']['scale'] = 0;
-        $columns['int_col2']['dbType'] = 'int4';
-        $columns['int_col2']['size'] = null;
-        $columns['int_col2']['precision'] = 32;
-        $columns['int_col2']['scale'] = 0;
-        $columns['tinyint_col']['type'] = 'smallint';
-        $columns['tinyint_col']['dbType'] = 'int2';
-        $columns['tinyint_col']['size'] = null;
-        $columns['tinyint_col']['precision'] = 16;
-        $columns['tinyint_col']['scale'] = 0;
-        $columns['smallint_col']['dbType'] = 'int2';
-        $columns['smallint_col']['size'] = null;
-        $columns['smallint_col']['precision'] = 16;
-        $columns['smallint_col']['scale'] = 0;
-        $columns['char_col']['dbType'] = 'bpchar';
-        $columns['char_col']['precision'] = null;
-        $columns['char_col2']['dbType'] = 'varchar';
-        $columns['char_col2']['precision'] = null;
-        $columns['float_col']['dbType'] = 'float8';
-        $columns['float_col']['precision'] = 53;
-        $columns['float_col']['scale'] = null;
-        $columns['float_col']['size'] = null;
-        $columns['float_col2']['dbType'] = 'float8';
-        $columns['float_col2']['precision'] = 53;
-        $columns['float_col2']['scale'] = null;
-        $columns['float_col2']['size'] = null;
-        $columns['blob_col']['dbType'] = 'bytea';
-        $columns['blob_col']['phpType'] = 'resource';
-        $columns['blob_col']['type'] = 'binary';
-        $columns['numeric_col']['dbType'] = 'numeric';
-        $columns['numeric_col']['size'] = null;
-        $columns['bool_col']['type'] = 'boolean';
-        $columns['bool_col']['phpType'] = 'boolean';
-        $columns['bool_col']['dbType'] = 'bool';
-        $columns['bool_col']['size'] = null;
-        $columns['bool_col']['precision'] = null;
-        $columns['bool_col']['scale'] = null;
-        $columns['bool_col2']['type'] = 'boolean';
-        $columns['bool_col2']['phpType'] = 'boolean';
-        $columns['bool_col2']['dbType'] = 'bool';
-        $columns['bool_col2']['size'] = null;
-        $columns['bool_col2']['precision'] = null;
-        $columns['bool_col2']['scale'] = null;
-        $columns['bool_col2']['defaultValue'] = true;
-        $columns['bit_col']['dbType'] = 'bit';
-        $columns['bit_col']['size'] = 8;
-        $columns['bit_col']['precision'] = null;
-        $columns['bigint_col'] = [
-            'type' => 'bigint',
-            'dbType' => 'int8',
-            'phpType' => 'integer',
-            'allowNull' => true,
-            'autoIncrement' => false,
-            'enumValues' => null,
-            'size' => null,
-            'precision' => 64,
-            'scale' => 0,
-            'defaultValue' => null,
-        ];
-        $columns['intarray_col'] = [
-            'type' => 'integer',
-            'dbType' => 'int4',
-            'phpType' => 'integer',
-            'allowNull' => true,
-            'autoIncrement' => false,
-            'enumValues' => null,
-            'size' => null,
-            'precision' => null,
-            'scale' => null,
-            'defaultValue' => null,
-            'dimension' => 1
-        ];
-        $columns['textarray2_col'] = [
-            'type' => 'text',
-            'dbType' => 'text',
-            'phpType' => 'string',
-            'allowNull' => true,
-            'autoIncrement' => false,
-            'enumValues' => null,
-            'size' => null,
-            'precision' => null,
-            'scale' => null,
-            'defaultValue' => null,
-            'dimension' => 2
-        ];
-        $columns['json_col'] = [
-            'type' => 'json',
-            'dbType' => 'json',
-            'phpType' => 'array',
-            'allowNull' => true,
-            'autoIncrement' => false,
-            'enumValues' => null,
-            'size' => null,
-            'precision' => null,
-            'scale' => null,
-            'defaultValue' => ['a' => 1],
-            'dimension' => 0
-        ];
-        $columns['jsonb_col'] = [
-            'type' => 'json',
-            'dbType' => 'jsonb',
-            'phpType' => 'array',
-            'allowNull' => true,
-            'autoIncrement' => false,
-            'enumValues' => null,
-            'size' => null,
-            'precision' => null,
-            'scale' => null,
-            'defaultValue' => null,
-            'dimension' => 0
-        ];
-        $columns['jsonarray_col'] = [
-            'type' => 'json',
-            'dbType' => 'json',
-            'phpType' => 'array',
-            'allowNull' => true,
-            'autoIncrement' => false,
-            'enumValues' => null,
-            'size' => null,
-            'precision' => null,
-            'scale' => null,
-            'defaultValue' => null,
-            'dimension' => 1
-        ];
-
-        return $columns;
+        parent::testColumnSchema($columns);
     }
 
     public function testCompositeFk(): void
@@ -574,14 +454,34 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    public static function constraintsProvider(): array
-    {
-        $result = parent::constraintsProvider();
-        $result['1: check'][2][0]->expression = 'CHECK ((("C_check")::text <> \'\'::text))';
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraints(
+        string $tableName,
+        string $type,
+        Constraint|bool|array|null $expected,
+    ): void {
+        parent::testTableSchemaConstraints($tableName, $type, $expected);
+    }
 
-        $result['3: foreign key'][2][0]->foreignSchemaName = 'public';
-        $result['3: index'][2] = [];
-        return $result;
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    {
+        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
+    }
+
+    /**
+     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
+    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
+    {
+        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
     }
 
     public function testCustomTypeInNonDefaultSchema(): void
