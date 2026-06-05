@@ -70,7 +70,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $distinct = false;
     /**
-     * @var array|null the table(s) to be selected from. For example, `['user', 'post']`.
+     * @var array|string|null the table(s) to be selected from. For example, `['user', 'post']`.
      * This is used to construct the FROM clause in a SQL statement.
      * @see from()
      */

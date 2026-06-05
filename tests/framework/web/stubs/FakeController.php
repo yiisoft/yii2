@@ -6,19 +6,19 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\web;
+namespace yiiunit\framework\web\stubs;
 
 use yii\web\Controller;
 
-class FakePhp80Controller extends Controller
+/**
+ * @author Misbahul D Munir <misbahuldmunir@gmail.com>
+ * @since 2.0
+ */
+class FakeController extends Controller
 {
     public $enableCsrfValidation = false;
 
-    public function actionInjection(int|string $arg, int|string $second)
-    {
-    }
-
-    public function actionArrayOrInt(array|int $foo)
+    public function actionAksi1($fromGet, $other = 'default')
     {
     }
 }
