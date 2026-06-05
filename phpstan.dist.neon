@@ -16,6 +16,7 @@ parameters:
         analyse:
             - tests/data
             - tests/framework/db/enums
+            - tests/framework/helpers/enums
             - tests/framework/*/stubs/*
             - tests/framework/*/mocks/*
 
