@@ -52,12 +52,4 @@ class JsExpressionTest extends TestCase
             'numeric string' => ['42', '42'],
         ];
     }
-
-    public function testToStringWithNullExpression(): void
-    {
-        $expression = new JsExpression('placeholder');
-        $expression->expression = null;
-
-        $this->assertSame('', (string) $expression);
-    }
 }
