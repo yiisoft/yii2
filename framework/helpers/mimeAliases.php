@@ -23,4 +23,5 @@ return [
     'application/bmp' => 'image/bmp',
     'application/x-bmp' => 'image/bmp',
     'application/x-win-bitmap' => 'image/bmp',
+    'application/x-rar' => 'application/x-rar-compressed',
 ];
