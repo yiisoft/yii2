@@ -107,6 +107,27 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['DISTINCT ON(tour_dates.date_from) tour_dates.date_from', 'tour_dates.id' => 'tour_dates.id'], $query->select);
     }
 
+    public static function dataProviderSelectExpressionWithCommaInParentheses(): array
+    {
+        return [
+            ['p.id, COALESCE(p.id, 0)', ['p.id' => 'p.id', 'COALESCE(p.id, 0)']],
+            ['a, COALESCE(IF(1, 2, 3), IF(4, 5, 6))', ['a' => 'a', 'COALESCE(IF(1, 2, 3), IF(4, 5, 6))']],
+            ['name, SUM(votes) AS total', ['name' => 'name', 'total' => 'SUM(votes)']],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderSelectExpressionWithCommaInParentheses
+     * @see https://github.com/yiisoft/yii2/issues/19468
+     *
+     * @param string $columns
+     * @param array $expected
+     */
+    public function testSelectExpressionWithCommaInParentheses($columns, $expected): void
+    {
+        $this->assertSame($expected, (new Query())->select($columns)->select);
+    }
+
     public function testFrom(): void
     {
         $query = new Query();
