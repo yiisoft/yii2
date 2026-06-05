@@ -85,3 +85,19 @@ You can also run tests manually. To do this, you need to start the container and
 docker compose up -d
 docker compose exec php vendor/bin/phpunit -v
 ```
+
+### Oracle tests
+
+> [!IMPORTANT]
+> Oracle tests require `oci8` and `pdo_oci` PHP extensions installed locally. The `docker-compose.oracle.yml` only starts the Oracle database container; PHPUnit runs on the host.
+
+Start the Oracle container and run the tests manually:
+
+```bash
+cd tests
+COMPOSE_FILE=docker-compose.oracle.yml docker compose up -d --wait
+cd ..
+vendor/bin/phpunit -v --group oci
+cd tests
+COMPOSE_FILE=docker-compose.oracle.yml docker compose down -v
+```
