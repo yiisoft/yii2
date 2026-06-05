@@ -6,7 +6,7 @@
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\models;
+namespace yiiunit\framework\helpers\stubs;
 
 use JsonSerializable;
 use ReturnTypeWillChange;
@@ -16,11 +16,13 @@ use yii\base\DynamicModel;
  * JSON serializable model for tests.
  *
  * {@inheritdoc}
+ *
+ * @property mixed $name
  */
 class JsonModel extends DynamicModel implements JsonSerializable
 {
     /**
-     * @var array
+     * @var array|object
      */
     public $data = ['json' => 'serializable'];
 
