@@ -1787,6 +1787,18 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('Some {{%updated}} address', $customer->address);
     }
 
+    public function testEagerLoadingWithNullForeignKeyDoesNotMatchZeroLinkValue(): void
+    {
+        Customer::updateAll(['status' => 0], ['id' => 1]);
+        Customer::updateAll(['status' => null], ['id' => 2]);
+
+        $customers = Customer::find()->with('statusMates')->indexBy('id')->all();
+
+        $this->assertCount(1, $customers[1]->statusMates);
+        $this->assertSame(1, (int) $customers[1]->statusMates[0]->id);
+        $this->assertSame([], $customers[2]->statusMates);
+    }
+
     /**
      * Ensure no ambiguous column error occurs if ActiveQuery adds a JOIN.
      *
