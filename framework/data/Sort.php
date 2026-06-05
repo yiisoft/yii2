@@ -265,10 +265,7 @@ class Sort extends BaseObject
     {
         if ($this->_attributeOrders === null || $recalculate) {
             $this->_attributeOrders = [];
-            if (($params = $this->params) === null) {
-                $request = Yii::$app->getRequest();
-                $params = $request instanceof Request ? $request->getQueryParams() : [];
-            }
+            $params = $this->resolveParams();
             if (isset($params[$this->sortParam])) {
                 foreach ($this->parseSortParam($params[$this->sortParam]) as $attribute) {
                     $descending = false;
@@ -293,6 +290,60 @@ class Sort extends BaseObject
         }
 
         return $this->_attributeOrders;
+    }
+
+    /**
+     * Resolves the request parameters that carry the current sort information.
+     * @return array the parameters from [[params]], or the current request query parameters when [[params]] is not set.
+     */
+    private function resolveParams()
+    {
+        if ($this->params !== null) {
+            return $this->params;
+        }
+        $request = Yii::$app->getRequest();
+
+        return $request instanceof Request ? $request->getQueryParams() : [];
+    }
+
+    /**
+     * Returns whether the currently requested sort order is valid.
+     *
+     * The sort order is read from [[sortParam]] in [[params]] the same way as [[getAttributeOrders()]].
+     * The request is considered invalid when it references an attribute that is not listed in [[attributes]],
+     * or when more than one attribute is requested while [[enableMultiSort]] is `false`. When no sort is
+     * requested the order is considered valid, so that the [[defaultOrder]] can take over.
+     *
+     * Use this to detect a tampered or stale sort parameter and react explicitly, for example by responding
+     * with a 404 instead of silently dropping the unknown attributes.
+     *
+     * @return bool whether the requested sort order is valid.
+     * @since 2.0.56
+     */
+    public function isValid()
+    {
+        $params = $this->resolveParams();
+        if (!isset($params[$this->sortParam])) {
+            return true;
+        }
+        $attributes = [];
+        foreach ($this->parseSortParam($params[$this->sortParam]) as $attribute) {
+            if (strncmp($attribute, '-', 1) === 0) {
+                $attribute = substr($attribute, 1);
+            }
+            if ($attribute === '') {
+                continue;
+            }
+            if (!isset($this->attributes[$attribute])) {
+                return false;
+            }
+            $attributes[] = $attribute;
+            if (!$this->enableMultiSort && count($attributes) > 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -423,10 +474,7 @@ class Sort extends BaseObject
      */
     public function createUrl($attribute, $absolute = false)
     {
-        if (($params = $this->params) === null) {
-            $request = Yii::$app->getRequest();
-            $params = $request instanceof Request ? $request->getQueryParams() : [];
-        }
+        $params = $this->resolveParams();
         $params[$this->sortParam] = $this->createSortParam($attribute);
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;

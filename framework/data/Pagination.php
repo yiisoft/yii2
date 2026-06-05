@@ -203,6 +203,37 @@ class Pagination extends BaseObject implements Linkable
     }
 
     /**
+     * Returns whether the currently requested page is within the valid range.
+     *
+     * The page number is read from [[pageParam]] in [[params]] the same way as [[getPage()]], but it is
+     * not clamped to the available range. Use this to detect an out-of-range page and react explicitly,
+     * for example by responding with a 404 instead of silently falling back to the first or last page.
+     *
+     * The valid range is derived from [[pageCount]], so [[totalCount]] must be set correctly. When there
+     * are no items the first page is still considered valid. If [[validatePage]] is `false` the page is
+     * not range-checked and this method always returns `true`.
+     *
+     * @return bool whether the requested page is within the valid range.
+     * @since 2.0.56
+     */
+    public function isValid()
+    {
+        if (!$this->validatePage) {
+            return true;
+        }
+        $page = (int) $this->getQueryParam($this->pageParam, 1) - 1;
+        if ($page < 0) {
+            return false;
+        }
+        $pageCount = $this->getPageCount();
+        if ($pageCount === 0) {
+            return $page === 0;
+        }
+
+        return $page < $pageCount;
+    }
+
+    /**
      * Returns the number of items per page.
      * By default, this method will try to determine the page size by [[pageSizeParam]] in [[params]].
      * If the page size cannot be determined this way, [[defaultPageSize]] will be returned.

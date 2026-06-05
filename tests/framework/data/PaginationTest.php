@@ -116,6 +116,42 @@ class PaginationTest extends TestCase
         $this->assertEquals(999, $pagination->getPage());
     }
 
+    public static function dataProviderIsValid(): array
+    {
+        return [
+            [['page' => '1'], 100, 10, true, true],
+            [['page' => '10'], 100, 10, true, true],
+            [['page' => '11'], 100, 10, true, false],
+            [['page' => '0'], 100, 10, true, false],
+            [['page' => '-5'], 100, 10, true, false],
+            [[], 100, 10, true, true],
+            [['page' => '1'], 0, 10, true, true],
+            [['page' => '2'], 0, 10, true, false],
+            [['page' => '999'], 100, 10, false, true],
+            [['page' => 'abc'], 100, 10, true, false],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderIsValid
+     *
+     * @param array $params
+     * @param int $totalCount
+     * @param int $pageSize
+     * @param bool $validatePage
+     * @param bool $expected
+     */
+    public function testIsValid($params, $totalCount, $pageSize, $validatePage, $expected): void
+    {
+        $pagination = new Pagination();
+        $pagination->validatePage = $validatePage;
+        $pagination->pageSize = $pageSize;
+        $pagination->totalCount = $totalCount;
+        $pagination->params = $params;
+
+        $this->assertSame($expected, $pagination->isValid());
+    }
+
     public static function dataProviderPageCount(): array
     {
         return [
