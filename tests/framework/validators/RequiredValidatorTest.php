@@ -8,10 +8,10 @@
 
 namespace yiiunit\framework\validators;
 
-use yii\base\Model;
 use yii\validators\RequiredValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ModelForReqValidator;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -78,7 +78,7 @@ class RequiredValidatorTest extends TestCase
 
         $this->assertEquals(
             'yii.validation.required(value, messages, {"message":"\u003Cstrong\u003Eerror\u003C\/strong\u003E for \u003Cb\u003EAttr\u003C\/b\u003E"});',
-            $validator->clientValidateAttribute($obj, 'attr', new RequiredViewStub())
+            $validator->clientValidateAttribute($obj, 'attr', new ViewStub())
         );
     }
 
@@ -194,29 +194,5 @@ class RequiredValidatorTest extends TestCase
         $val = new RequiredValidator(['requiredValue' => 'confirm']);
         $options = $val->getClientOptions($model, 'attr');
         $this->assertStringContainsString('confirm', $options['message']);
-    }
-}
-
-class ModelForReqValidator extends Model
-{
-    public $attr;
-
-    public function rules()
-    {
-        return [
-            [['attr'], 'required'],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return ['attr' => '<b>Attr</b>'];
-    }
-}
-
-class RequiredViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }
