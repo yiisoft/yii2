@@ -34,6 +34,12 @@ class TagDependency extends Dependency
      */
     public $tags = [];
 
+    /**
+     * @var array tag timestamps cached within the current request for reusable dependencies, indexed by cache key.
+     * @see $reusable
+     */
+    private static $_reusableTimestamps = [];
+
 
     /**
      * Generates the data needed to determine if dependency has been changed.
@@ -95,6 +101,11 @@ class TagDependency extends Dependency
             $items[$key] = $time;
         }
         $cache->multiSet($items);
+        foreach ($items as $key => $value) {
+            if (array_key_exists($key, self::$_reusableTimestamps)) {
+                self::$_reusableTimestamps[$key] = $value;
+            }
+        }
         return $items;
     }
 
@@ -115,6 +126,31 @@ class TagDependency extends Dependency
             $keys[] = $cache->buildKey([__CLASS__, $tag]);
         }
 
-        return $cache->multiGet($keys);
+        if (!$this->reusable) {
+            return $cache->multiGet($keys);
+        }
+
+        $missingKeys = array_diff($keys, array_keys(self::$_reusableTimestamps));
+        if (!empty($missingKeys)) {
+            foreach ($cache->multiGet($missingKeys) as $key => $value) {
+                self::$_reusableTimestamps[$key] = $value;
+            }
+        }
+
+        $timestamps = [];
+        foreach ($keys as $key) {
+            $timestamps[$key] = self::$_reusableTimestamps[$key];
+        }
+
+        return $timestamps;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function resetReusableData()
+    {
+        self::$_reusableTimestamps = [];
+        parent::resetReusableData();
     }
 }
