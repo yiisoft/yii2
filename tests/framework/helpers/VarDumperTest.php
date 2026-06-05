@@ -159,6 +159,15 @@ RESULT;
         }';
         $data[] = [$var, $expectedResult];
 
+        $var = fn () => 2;
+        $data[] = [$var, 'fn () => 2'];
+
+        $var = fn ($x) => $x + 10;
+        $data[] = [$var, 'fn ($x) => $x + 10'];
+
+        $var = fn ($a, $b) => ($a + $b) * 2;
+        $data[] = [$var, 'fn ($a, $b) => ($a + $b) * 2'];
+
         return $data;
     }
 
