@@ -61,6 +61,132 @@ parameters:
 			path: framework/web/Controller.php
 
 		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseHtml.php
+
+		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Call to an undefined static method BackedEnum&UnitEnum\:\:cases\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Call to an undefined static method UnitEnum\:\:cases\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: framework/validators/RangeValidator.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\validators\\stubs\\StringStatus\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/helpers/HtmlEnumTest.php
+
+		-
+			message: '#^Access to constant Inactive on an unknown class yiiunit\\framework\\validators\\stubs\\StringStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/HtmlEnumTest.php
+
+		-
+			message: '#^Access to constant On on an unknown class yiiunit\\framework\\validators\\stubs\\IntStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/HtmlEnumTest.php
+
+		-
+			message: '#^Access to constant Hearts on an unknown class yiiunit\\framework\\validators\\stubs\\Suit\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/helpers/HtmlEnumTest.php
+
+		-
+			message: '#^Access to constant Spades on an unknown class yiiunit\\framework\\validators\\stubs\\Suit\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/HtmlEnumTest.php
+
+		-
+			message: '#^Class yiiunit\\framework\\validators\\stubs\\StringStatus not found\.$#'
+			identifier: class.notFound
+			count: 6
+			path: tests/framework/validators/RangeValidatorEnumTest.php
+
+		-
+			message: '#^Class yiiunit\\framework\\validators\\stubs\\IntStatus not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/validators/RangeValidatorEnumTest.php
+
+		-
+			message: '#^Class yiiunit\\framework\\validators\\stubs\\Suit not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/validators/RangeValidatorEnumTest.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\framework\\validators\\stubs\\StringStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorEnumTest.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\framework\\validators\\stubs\\IntStatus\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorEnumTest.php
+
+		-
+			message: '#^Call to static method cases\(\) on an unknown class yiiunit\\framework\\validators\\stubs\\Suit\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/validators/RangeValidatorEnumTest.php
+
+		-
 			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\db\\enums\\StatusTypeString\.$#'
 			identifier: class.notFound
 			count: 3

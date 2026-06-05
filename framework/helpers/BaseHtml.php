@@ -2311,12 +2311,20 @@ class BaseHtml
                 if ($v instanceof ActiveRecordInterface) {
                     $v = $v->getPrimaryKey(false);
                     $value[$i] = is_array($v) ? json_encode($v) : $v;
+                } elseif (PHP_VERSION_ID >= 80100 && $v instanceof \BackedEnum) {
+                    $value[$i] = $v->value;
+                } elseif (PHP_VERSION_ID >= 80100 && $v instanceof \UnitEnum) {
+                    $value[$i] = $v->name;
                 }
             }
         } elseif ($value instanceof ActiveRecordInterface) {
             $value = $value->getPrimaryKey(false);
 
             return is_array($value) ? json_encode($value) : $value;
+        } elseif (PHP_VERSION_ID >= 80100 && $value instanceof \BackedEnum) {
+            return $value->value;
+        } elseif (PHP_VERSION_ID >= 80100 && $value instanceof \UnitEnum) {
+            return $value->name;
         }
 
         return $value;
