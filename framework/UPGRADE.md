@@ -51,6 +51,14 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.55
+-----------------------
+
+* `yii\db\BaseActiveRecord::refresh()` now keeps already loaded relations whose foreign keys did not
+  change instead of resetting all of them. If your code relied on `refresh()` reloading related
+  records, unset the relation explicitly (e.g. `unset($model->relationName)`) to force a reload.
+
+
 Upgrade from Yii 2.0.53
 -----------------------
 

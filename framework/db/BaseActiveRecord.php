@@ -1088,11 +1088,28 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return false;
         }
         foreach ($this->attributes() as $name) {
-            $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
+            $value = array_key_exists($name, $record->_attributes) ? $record->_attributes[$name] : null;
+            // https://github.com/yiisoft/yii2/issues/19785
+            if (
+                !empty($this->_relationsDependencies[$name])
+                && (!array_key_exists($name, $this->_attributes) || $this->_attributes[$name] !== $value)
+            ) {
+                $this->resetDependentRelations($name);
+            }
+            $this->_attributes[$name] = $value;
+        }
+        $trackedRelations = [];
+        foreach ($this->_relationsDependencies as $relationNames) {
+            foreach ($relationNames as $relationName) {
+                $trackedRelations[$relationName] = true;
+            }
+        }
+        foreach (array_keys($this->_related) as $name) {
+            if (!isset($trackedRelations[$name])) {
+                unset($this->_related[$name]);
+            }
         }
         $this->_oldAttributes = $record->_oldAttributes;
-        $this->_related = [];
-        $this->_relationsDependencies = [];
         $this->afterRefresh();
 
         return true;
