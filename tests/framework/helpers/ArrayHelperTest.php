@@ -153,10 +153,12 @@ class ArrayHelperTest extends TestCase
             $this->markTestSkipped('Using floats as array key is deprecated.');
         }
 
+        // @phpstan-ignore array.invalidKey (we intentionally test this for older versions of PHP)
         $array = ['name' => 'b', 'age' => 3, 1.1 => null];
 
         $name = ArrayHelper::remove($array, 'name');
         $this->assertEquals($name, 'b');
+        // @phpstan-ignore array.invalidKey (we intentionally test this for older versions of PHP)
         $this->assertEquals($array, ['age' => 3, 1.1 => null]);
 
         $floatVal = ArrayHelper::remove($array, 1.1);
@@ -545,7 +547,9 @@ class ArrayHelperTest extends TestCase
         }
 
         $array = [];
+        // @phpstan-ignore offsetAccess.invalidOffset (we intentionally test this for older versions of PHP)
         $array[1.1] = 'some value';
+        // @phpstan-ignore offsetAccess.invalidOffset (we intentionally test this for older versions of PHP)
         $array[2.1] = null;
 
         $result = ArrayHelper::getValue($array, 1.2);
@@ -824,7 +828,9 @@ class ArrayHelperTest extends TestCase
 
         $array = [
             1 => 3,
+            // @phpstan-ignore array.invalidKey (we intentionally test this for older versions of PHP)
             2.2 => 4, // Note: Floats are cast to ints, which means that the fractional part will be truncated.
+            // @phpstan-ignore array.invalidKey (we intentionally test this for older versions of PHP)
             3.3 => null,
         ];
 

@@ -174,8 +174,7 @@ class BehaviorTest extends TestCase
         $bar->attachBehavior('bar', $behavior);
 
         $this->expectException('yii\base\UnknownMethodException');
-        // We intentionally call a non-existent method to test that an exception is thrown
-        // @phpstan-ignore method.notFound
+        // @phpstan-ignore method.notFound (We intentionally call a non-existent method to test that an exception is thrown)
         $bar->nomagicBehaviorMethod();
     }
 }
