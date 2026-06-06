@@ -218,10 +218,12 @@ class BaseFileHelper
     /**
      * Determines the extensions by given MIME type.
      * This method will use a local map between extension names and MIME types.
+     * An extension is matched when the MIME type equals its mapped value or is one of the values when the
+     * extension is mapped to a list of MIME types.
      * @param string $mimeType file MIME type.
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return array the extensions corresponding to the specified MIME type
+     * @return string[] the extensions corresponding to the specified MIME type
      */
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {

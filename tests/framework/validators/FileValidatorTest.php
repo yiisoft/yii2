@@ -615,11 +615,32 @@ class FileValidatorTest extends TestCase
 
     public function testValidateExtensionAcceptsSecondaryMimeType(): void
     {
-        $validator = new FileValidator(['extensions' => ['eml']]);
+        $validator = new FileValidator(['extensions' => ['eml'], 'checkExtensionByMimeType' => true]);
         $file = $this->getRealTestFile('test.eml');
 
         $this->assertSame('text/plain', FileHelper::getMimeType($file->tempName, null, false), 'Unexpected MIME detected for the test.eml fixture.');
         $this->assertTrue($validator->validate($file));
+    }
+
+    public function testValidateExtensionRejectsUnregisteredMimeType(): void
+    {
+        $validator = new FileValidator(['extensions' => ['eml'], 'checkExtensionByMimeType' => true]);
+        $file = $this->getRealTestFile('png-as.eml');
+
+        $this->assertSame('image/png', FileHelper::getMimeType($file->tempName, null, false), 'Unexpected MIME detected for the png-as.eml fixture.');
+        $this->assertFalse($validator->validate($file));
+    }
+
+    public function testValidateStrictMimeTypesRejectsSecondaryMimeType(): void
+    {
+        $validator = new FileValidator([
+            'extensions' => ['eml'],
+            'checkExtensionByMimeType' => true,
+            'mimeTypes' => ['message/rfc822'],
+        ]);
+        $file = $this->getRealTestFile('test.eml');
+
+        $this->assertFalse($validator->validate($file));
     }
 
     protected function createModelForAttributeTest()

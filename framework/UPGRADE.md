@@ -54,9 +54,17 @@ for both A and B.
 Upgrade from Yii 2.0.55
 -----------------------
 
-* `yii\validators\FileValidator` with `checkExtensionByMimeType` enabled may now accept files whose detected
-  MIME type is a secondary type registered for the extension (e.g. a `.eml` file detected as `text/plain`).
-  If you relied on the previous stricter matching, review your `extensions` configuration.
+* `framework/helpers/mimeTypes.php` may now map an extension to either a single MIME type (`string`) or a list
+  (`string[]`). Code that requires this file directly must handle both forms. `FileHelper::getMimeTypeByExtension()`
+  still returns a single `string|null`.
+
+* `yii\validators\FileValidator` with `checkExtensionByMimeType` enabled may now accept files whose detected MIME
+  type is a secondary type registered for the extension. For `.eml` this means a plain-text file detected as
+  `text/plain` passes `extensions => ['eml']`. To keep strict matching, set `mimeTypes` explicitly:
+
+  ```php
+  new FileValidator(['extensions' => ['eml'], 'mimeTypes' => ['message/rfc822']]);
+  ```
 
 
 Upgrade from Yii 2.0.53
