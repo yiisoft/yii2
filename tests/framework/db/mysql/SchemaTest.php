@@ -74,7 +74,7 @@ SQL;
     public function testLoadDefaultExpressionColumn(): void
     {
         $version = $this->getConnection()->getServerVersion();
-        if (stripos($version, 'mariadb') !== false) {
+        if (\stripos($version, 'mariadb') !== false) {
             $this->markTestSkipped('MariaDB does not expose DEFAULT_GENERATED; detection is tracked separately in #19747.');
         }
         if (version_compare($version, '8.0.13', '<')) {
@@ -89,6 +89,7 @@ SQL;
         $sql = <<<SQL
 CREATE TABLE `default_expression_test` (
   `expr_col` date DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR),
+  `paren_literal_col` text DEFAULT ('abc'),
   `literal_col` date DEFAULT '2011-11-11'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
@@ -99,10 +100,13 @@ SQL;
 
             $exprDefault = $table->getColumn('expr_col')->defaultValue;
             $this->assertInstanceOf(Expression::class, $exprDefault);
-            $this->assertStringContainsString('INTERVAL', strtoupper((string) $exprDefault));
+            $this->assertStringContainsString('INTERVAL 2 YEAR', strtoupper((string) $exprDefault));
+
+            $this->assertInstanceOf(Expression::class, $table->getColumn('paren_literal_col')->defaultValue);
+
             $this->assertSame('2011-11-11', $table->getColumn('literal_col')->defaultValue);
         } finally {
-            $db->createCommand()->dropTable('default_expression_test')->execute();
+            $db->createCommand('DROP TABLE IF EXISTS `default_expression_test`')->execute();
         }
     }
 
