@@ -342,6 +342,23 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
     }
 
+    public function testNullableBitColumnHasNullDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('bit_default_test') !== null) {
+            $db->createCommand()->dropTable('bit_default_test')->execute();
+        }
+
+        $db->createCommand()->createTable('bit_default_test', [
+            'nullable_bit' => 'bit(1) DEFAULT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('bit_default_test');
+        $table = $db->schema->getTableSchema('bit_default_test');
+
+        $this->assertNull($table->getColumn('nullable_bit')->defaultValue);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/20329
      */
