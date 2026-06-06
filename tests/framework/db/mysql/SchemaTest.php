@@ -71,6 +71,66 @@ SQL;
         $this->assertEquals('CURRENT_TIMESTAMP(3)', (string)$ts->defaultValue);
     }
 
+    public function testLoadDefaultExpressionColumn(): void
+    {
+        $version = $this->getConnection()->getServerVersion();
+        if (\stripos($version, 'mariadb') !== false) {
+            $this->markTestSkipped('MariaDB does not expose DEFAULT_GENERATED; detection is tracked separately in #19747.');
+        }
+        if (version_compare($version, '8.0.13', '<')) {
+            $this->markTestSkipped('Expression-based column defaults are supported since MySQL 8.0.13.');
+        }
+
+        $db = $this->getConnection();
+        if ($db->getTableSchema('default_expression_test') !== null) {
+            $db->createCommand()->dropTable('default_expression_test')->execute();
+        }
+
+        $sql = <<<SQL
+CREATE TABLE `default_expression_test` (
+  `expr_col` date DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR),
+  `paren_literal_col` text DEFAULT ('abc'),
+  `literal_col` date DEFAULT '2011-11-11'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+        try {
+            $db->createCommand($sql)->execute();
+
+            $table = $db->getTableSchema('default_expression_test', true);
+
+            $exprDefault = $table->getColumn('expr_col')->defaultValue;
+            $this->assertInstanceOf(Expression::class, $exprDefault);
+            $this->assertStringContainsString('INTERVAL 2 YEAR', strtoupper((string) $exprDefault));
+
+            $this->assertInstanceOf(Expression::class, $table->getColumn('paren_literal_col')->defaultValue);
+
+            $this->assertSame('2011-11-11', $table->getColumn('literal_col')->defaultValue);
+        } finally {
+            $db->createCommand('DROP TABLE IF EXISTS `default_expression_test`')->execute();
+        }
+    }
+
+    public function testLoadDefaultGeneratedColumnSchema(): void
+    {
+        $schema = new Schema();
+
+        $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
+            'field' => 'expr_col',
+            'type' => 'date',
+            'collation' => null,
+            'null' => 'YES',
+            'key' => '',
+            'default' => '(CURRENT_DATE + INTERVAL 2 YEAR)',
+            'extra' => 'DEFAULT_GENERATED',
+            'privileges' => 'select,insert,update,references',
+            'comment' => '',
+        ]]);
+
+        $this->assertInstanceOf(ColumnSchema::class, $column);
+        $this->assertInstanceOf(Expression::class, $column->defaultValue);
+        $this->assertSame('(CURRENT_DATE + INTERVAL 2 YEAR)', (string) $column->defaultValue);
+    }
+
     public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in MySQL.');
