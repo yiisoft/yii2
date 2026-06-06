@@ -92,12 +92,39 @@ CREATE TABLE `default_expression_test` (
   `literal_col` date DEFAULT '2011-11-11'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 SQL;
-        $db->createCommand($sql)->execute();
+        try {
+            $db->createCommand($sql)->execute();
 
-        $table = $db->getTableSchema('default_expression_test', true);
+            $table = $db->getTableSchema('default_expression_test', true);
 
-        $this->assertInstanceOf(Expression::class, $table->getColumn('expr_col')->defaultValue);
-        $this->assertSame('2011-11-11', $table->getColumn('literal_col')->defaultValue);
+            $exprDefault = $table->getColumn('expr_col')->defaultValue;
+            $this->assertInstanceOf(Expression::class, $exprDefault);
+            $this->assertStringContainsString('INTERVAL', strtoupper((string) $exprDefault));
+            $this->assertSame('2011-11-11', $table->getColumn('literal_col')->defaultValue);
+        } finally {
+            $db->createCommand()->dropTable('default_expression_test')->execute();
+        }
+    }
+
+    public function testLoadDefaultGeneratedColumnSchema(): void
+    {
+        $schema = new Schema();
+
+        $column = $this->invokeMethod($schema, 'loadColumnSchema', [[
+            'field' => 'expr_col',
+            'type' => 'date',
+            'collation' => null,
+            'null' => 'YES',
+            'key' => '',
+            'default' => '(CURRENT_DATE + INTERVAL 2 YEAR)',
+            'extra' => 'DEFAULT_GENERATED',
+            'privileges' => 'select,insert,update,references',
+            'comment' => '',
+        ]]);
+
+        $this->assertInstanceOf(ColumnSchema::class, $column);
+        $this->assertInstanceOf(Expression::class, $column->defaultValue);
+        $this->assertSame('(CURRENT_DATE + INTERVAL 2 YEAR)', (string) $column->defaultValue);
     }
 
     public function testGetSchemaNames(): void

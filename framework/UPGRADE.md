@@ -54,7 +54,7 @@ for both A and B.
 Upgrade from Yii 2.0.55
 -----------------------
 
-* `yii\db\mysql\Schema` now reports expression-based column defaults (MySQL 8+, flagged by `DEFAULT_GENERATED` in the
+* `yii\db\mysql\Schema` now reports expression-based column defaults (MySQL 8.0.13+, flagged by `DEFAULT_GENERATED` in the
   `Extra` field, e.g. `date DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR)`) as `yii\db\Expression` objects instead of the raw
   default string. Code reading `yii\db\ColumnSchema::$defaultValue` for such columns and expecting a string should handle
   `Expression` (cast with `(string)` when the literal text is needed).
