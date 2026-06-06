@@ -16,6 +16,7 @@ use Yii;
 use yii\web\ErrorHandlerRenderEvent;
 use yii\web\NotFoundHttpException;
 use yii\web\View;
+use yiiunit\framework\web\stubs\FallbackMessageErrorHandler;
 use yiiunit\TestCase;
 
 class ErrorHandlerTest extends TestCase
@@ -433,13 +434,5 @@ class ErrorHandler extends \yii\web\ErrorHandler
         $this->exception = $exception;
 
         return $this->renderFile($file, $params);
-    }
-}
-
-class FallbackMessageErrorHandler extends \yii\web\ErrorHandler
-{
-    public function callRenderFallbackExceptionMessage($exception, $previousException, &$log = '')
-    {
-        return $this->renderFallbackExceptionMessage($exception, $previousException, $log);
     }
 }
