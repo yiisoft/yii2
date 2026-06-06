@@ -55,6 +55,30 @@ parameters:
 			path: framework/db/QueryBuilder.php
 
 		-
+			message: '#^Class BackedEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Access to property \$value on an unknown class BackedEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Class UnitEnum not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
+			message: '#^Access to property \$name on an unknown class UnitEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: framework/helpers/BaseArrayHelper.php
+
+		-
 			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
 			identifier: method.notFound
 			count: 2
@@ -113,3 +137,33 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: tests/framework/db/CommandTest.php
+
+		-
+			message: '#^Access to constant Active on an unknown class yiiunit\\framework\\helpers\\enums\\IntBackedEnum\.$#'
+			identifier: class.notFound
+			count: 2
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Blue on an unknown class yiiunit\\framework\\helpers\\enums\\PureEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Diamonds on an unknown class yiiunit\\framework\\helpers\\enums\\StringBackedEnum\.$#'
+			identifier: class.notFound
+			count: 1
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Hearts on an unknown class yiiunit\\framework\\helpers\\enums\\StringBackedEnum\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/helpers/ArrayHelperTest.php
+
+		-
+			message: '#^Access to constant Red on an unknown class yiiunit\\framework\\helpers\\enums\\PureEnum\.$#'
+			identifier: class.notFound
+			count: 3
+			path: tests/framework/helpers/ArrayHelperTest.php
