@@ -9,6 +9,8 @@
  * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
+ * A value is a MIME type, or a list of MIME types when an extension maps to several.
+ *
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
@@ -219,7 +221,7 @@ $mimeTypes = [
     'ei6' => 'application/vnd.pg.osasli',
     'elc' => 'application/octet-stream',
     'emf' => 'application/x-msmetafile',
-    'eml' => 'message/rfc822',
+    'eml' => ['message/rfc822', 'text/plain'],
     'emma' => 'application/emma+xml',
     'emz' => 'application/x-msmetafile',
     'eol' => 'audio/vnd.digital-winds',
@@ -508,6 +510,7 @@ $mimeTypes = [
     'mseed' => 'application/vnd.fdsn.mseed',
     'mseq' => 'application/vnd.mseq',
     'msf' => 'application/vnd.epson.msf',
+    'msg' => ['application/vnd.ms-outlook', 'application/vnd.ms-office'],
     'msh' => 'model/mesh',
     'msi' => 'application/x-msdownload',
     'msl' => 'application/vnd.mobius.msl',

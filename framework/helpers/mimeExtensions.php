@@ -447,7 +447,9 @@ return [
     'application/vnd.ms-htmlhelp' => 'chm',
     'application/vnd.ms-ims' => 'ims',
     'application/vnd.ms-lrm' => 'lrm',
+    'application/vnd.ms-office' => 'msg',
     'application/vnd.ms-officetheme' => 'thmx',
+    'application/vnd.ms-outlook' => 'msg',
     'application/vnd.ms-pki.seccat' => 'cat',
     'application/vnd.ms-pki.stl' => 'stl',
     'application/vnd.ms-powerpoint' => [
@@ -1097,6 +1099,7 @@ return [
         'list',
         'log',
         'in',
+        'eml',
     ],
     'text/prs.lines.tag' => 'dsc',
     'text/richtext' => 'rtx',

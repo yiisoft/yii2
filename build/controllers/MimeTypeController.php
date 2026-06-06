@@ -51,13 +51,16 @@ class MimeTypeController extends Controller
     ];
 
     /**
-     * @var array MIME types to add to the ones parsed from Apache files
+     * @var array<string, string|string[]> MIME types to add to the ones parsed from Apache files.
+     * A value may be a single MIME type or a list of MIME types for one extension.
      */
     private $_additionalMimeTypes = [
         'apng' => 'image/apng',
         'avif' => 'image/avif',
+        'eml' => ['message/rfc822', 'text/plain'],
         'jfif' => 'image/jpeg',
         'mjs' => 'text/javascript',
+        'msg' => ['application/vnd.ms-outlook', 'application/vnd.ms-office'],
         'pjp' => 'image/jpeg',
         'pjpeg' => 'image/jpeg',
     ];
@@ -127,6 +130,8 @@ class MimeTypeController extends Controller
  * Its content is generated from the apache http mime.types file.
  * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
+ *
+ * A value is a MIME type, or a list of MIME types when an extension maps to several.
  *
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
@@ -199,10 +204,14 @@ EOD;
         }
 
         foreach ($this->_additionalMimeTypes as $ext => $mime) {
-            if (!array_key_exists($mime, $extensionMap)) {
-                $extensionMap[$mime] = [];
+            foreach ((array) $mime as $singleMime) {
+                if (!array_key_exists($singleMime, $extensionMap)) {
+                    $extensionMap[$singleMime] = [];
+                }
+                if (!in_array($ext, $extensionMap[$singleMime], true)) {
+                    $extensionMap[$singleMime][] = $ext;
+                }
             }
-            $extensionMap[$mime][] = $ext;
         }
 
         foreach ($extensionMap as $mime => $extensions) {

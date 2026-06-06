@@ -32,6 +32,8 @@ class BaseFileHelper
     public const PATTERN_CASE_INSENSITIVE = 32;
     /**
      * @var string the path (or alias) of a PHP file containing MIME type information.
+     * The file must return an `array<string, string|string[]>` mapping a file extension to one
+     * lowercase MIME type or a list of them.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
     /**
@@ -192,6 +194,7 @@ class BaseFileHelper
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return string|null the MIME type. Null is returned if the MIME type cannot be determined.
+     * When the extension is mapped to a list of MIME types, the first one is returned.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
     {
@@ -200,7 +203,12 @@ class BaseFileHelper
         if (($ext = pathinfo($file, PATHINFO_EXTENSION)) !== '') {
             $ext = strtolower($ext);
             if (isset($mimeTypes[$ext])) {
-                return $mimeTypes[$ext];
+                $mimeType = $mimeTypes[$ext];
+                if (is_array($mimeType)) {
+                    $mimeType = reset($mimeType);
+                    return $mimeType === false ? null : $mimeType;
+                }
+                return $mimeType;
             }
         }
 
@@ -210,10 +218,12 @@ class BaseFileHelper
     /**
      * Determines the extensions by given MIME type.
      * This method will use a local map between extension names and MIME types.
+     * An extension is matched when the MIME type equals its mapped value or is one of the values when the
+     * extension is mapped to a list of MIME types.
      * @param string $mimeType file MIME type.
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return array the extensions corresponding to the specified MIME type
+     * @return string[] the extensions corresponding to the specified MIME type
      */
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {
@@ -222,9 +232,19 @@ class BaseFileHelper
             $mimeType = $aliases[$mimeType];
         }
 
+        $mimeType = mb_strtolower($mimeType, 'UTF-8');
+
         // Note: For backwards compatibility the "MimeTypes" file is used.
         $mimeTypes = static::loadMimeTypes($magicFile);
-        return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
+
+        $extensions = [];
+        foreach ($mimeTypes as $extension => $type) {
+            if ($type === $mimeType || (is_array($type) && in_array($mimeType, $type, true))) {
+                $extensions[] = $extension;
+            }
+        }
+
+        return $extensions;
     }
 
     /**
@@ -271,7 +291,7 @@ class BaseFileHelper
      * Loads MIME types from the specified file.
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return array the mapping from file extensions to MIME types
+     * @return array<string, string|string[]> the mapping from a file extension to one lowercase MIME type or a list of them
      */
     protected static function loadMimeTypes($magicFile)
     {

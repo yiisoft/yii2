@@ -718,6 +718,64 @@ class FileHelperTest extends TestCase
         }
     }
 
+    public function testGetMimeTypeByExtensionReturnsFirstForMultipleMimeTypes(): void
+    {
+        $magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_multi.php';
+        $mimeTypeMap = [
+            'txm' => ['type/first', 'type/second'],
+        ];
+        file_put_contents($magicFile, '<?php return ' . var_export($mimeTypeMap, true) . ';');
+
+        $this->assertSame('type/first', FileHelper::getMimeTypeByExtension('test.txm', $magicFile));
+    }
+
+    public function testGetMimeTypeByExtensionReturnsNullForEmptyMimeTypeList(): void
+    {
+        $magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_empty.php';
+        file_put_contents($magicFile, '<?php return ' . var_export(['empty' => []], true) . ';');
+
+        $this->assertNull(FileHelper::getMimeTypeByExtension('test.empty', $magicFile));
+    }
+
+    public function testGetExtensionsByMimeTypeMatchesMultipleMimeTypes(): void
+    {
+        $magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_multi.php';
+        $mimeTypeMap = [
+            'txm' => ['type/first', 'type/second'],
+            'txn' => 'type/second',
+        ];
+        file_put_contents($magicFile, '<?php return ' . var_export($mimeTypeMap, true) . ';');
+
+        $this->assertSame(['txm'], FileHelper::getExtensionsByMimeType('type/first', $magicFile));
+        $this->assertSame(['txm', 'txn'], FileHelper::getExtensionsByMimeType('type/second', $magicFile));
+    }
+
+    public function testGetMimeTypeByExtensionReturnsPrimaryForShippedMultiTypeExtensions(): void
+    {
+        $this->assertSame('message/rfc822', FileHelper::getMimeTypeByExtension('mail.eml'));
+        $this->assertSame('application/vnd.ms-outlook', FileHelper::getMimeTypeByExtension('mail.msg'));
+    }
+
+    public function testGetExtensionsByMimeTypeIncludesSecondaryMapping(): void
+    {
+        $this->assertContains('eml', FileHelper::getExtensionsByMimeType('text/plain'));
+    }
+
+    public function testGetExtensionByMimeTypeForSecondaryMimeType(): void
+    {
+        $this->assertSame('msg', FileHelper::getExtensionByMimeType('application/vnd.ms-office'));
+    }
+
+    public function testGetExtensionByMimeTypeKeepsPrimaryForSharedMimeType(): void
+    {
+        $this->assertSame('txt', FileHelper::getExtensionByMimeType('text/plain'));
+    }
+
+    public function testGetExtensionsByMimeTypeIsCaseInsensitive(): void
+    {
+        $this->assertContains('eml', FileHelper::getExtensionsByMimeType('TEXT/PLAIN'));
+    }
+
     public function testGetMimeType(): void
     {
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';
@@ -1318,6 +1376,25 @@ class FileHelperTest extends TestCase
                 'application/x-rar',
                 [
                     'rar',
+                ],
+            ],
+            [
+                'application/vnd.ms-outlook',
+                [
+                    'msg',
+                ],
+            ],
+            [
+                'application/vnd.ms-office',
+                [
+                    'msg',
+                ],
+            ],
+            [
+                'message/rfc822',
+                [
+                    'eml',
+                    'mime',
                 ],
             ],
         ];

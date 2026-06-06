@@ -51,6 +51,27 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.55
+-----------------------
+
+* `framework/helpers/mimeTypes.php` may now map an extension to either a single MIME type (`string`) or a list
+  (`string[]`). Code that requires this file directly must handle both forms. `FileHelper::getMimeTypeByExtension()`
+  still returns a single `string|null`.
+
+* `yii\validators\FileValidator` with `checkExtensionByMimeType` enabled may now accept files whose detected MIME
+  type is a secondary type registered for the extension. For `.eml` a plain-text file detected as `text/plain`
+  passes `extensions => ['eml']`; for `.msg` a file detected as `application/vnd.ms-office` passes
+  `extensions => ['msg']`. To keep strict matching, set `mimeTypes` explicitly:
+
+  ```php
+  new FileValidator([
+      'extensions' => ['eml'],
+      'checkExtensionByMimeType' => true,
+      'mimeTypes' => ['message/rfc822'],
+  ]);
+  ```
+
+
 Upgrade from Yii 2.0.53
 -----------------------
 
