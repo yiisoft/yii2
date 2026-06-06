@@ -16,6 +16,7 @@ use Yii;
 use yii\web\ErrorHandlerRenderEvent;
 use yii\web\NotFoundHttpException;
 use yii\web\View;
+use yiiunit\framework\web\stubs\FallbackMessageErrorHandler;
 use yiiunit\TestCase;
 
 class ErrorHandlerTest extends TestCase
@@ -258,6 +259,141 @@ Exception: yii\web\NotFoundHttpException', $out);
         $expected = "a \t=&lt;&gt;&amp;&quot;&apos;�₽`\n\u{000c}\u{0000}";
 
         $this->assertSame($expected, $handler->htmlEncode($text));
+    }
+
+    public function testFallbackExceptionMessageDefault(): void
+    {
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame('An internal server error occurred.', $handler->fallbackExceptionMessage);
+    }
+
+    public function testFallbackExceptionMessageCustom(): void
+    {
+        $this->destroyApplication();
+        $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
+            'components' => [
+                'errorHandler' => [
+                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    'errorView' => '@yiiunit/data/views/errorHandler.php',
+                    'exceptionView' => '@yiiunit/data/views/errorHandlerForAssetFiles.php',
+                    'fallbackExceptionMessage' => 'Service temporarily unavailable.',
+                ],
+            ],
+        ]);
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertSame('Service temporarily unavailable.', $handler->fallbackExceptionMessage);
+    }
+
+    public function testFallbackExceptionMessageCallable(): void
+    {
+        $this->destroyApplication();
+        $this->mockWebApplication([
+            'controllerNamespace' => 'yiiunit\\data\\controllers',
+            'components' => [
+                'errorHandler' => [
+                    'class' => 'yiiunit\framework\web\ErrorHandler',
+                    'errorView' => '@yiiunit/data/views/errorHandler.php',
+                    'exceptionView' => '@yiiunit/data/views/errorHandlerForAssetFiles.php',
+                    'fallbackExceptionMessage' => function ($exception, $previousException) {
+                        return 'Error: ' . $exception->getMessage();
+                    },
+                ],
+            ],
+        ]);
+
+        $handler = Yii::$app->getErrorHandler();
+
+        $this->assertIsCallable($handler->fallbackExceptionMessage);
+        $result = call_user_func($handler->fallbackExceptionMessage, new \RuntimeException('test'), new \RuntimeException('prev'));
+        $this->assertSame('Error: test', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageReturnsString(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = 'Service temporarily unavailable.';
+
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev')
+        );
+
+        $this->assertSame('Service temporarily unavailable.', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageInvokesCallable(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            return 'Error: ' . $exception->getMessage();
+        };
+
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev')
+        );
+
+        $this->assertSame('Error: boom', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageFallsBackWhenCallableThrows(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            throw new \RuntimeException('callback failed');
+        };
+
+        $log = '';
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev'),
+            $log
+        );
+
+        $this->assertSame('An internal server error occurred.', $result);
+        $this->assertStringContainsString('callback failed', $log);
+    }
+
+    public function testRenderFallbackExceptionMessageCastsStringableResult(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            return new class {
+                public function __toString(): string
+                {
+                    return 'Stringable fallback';
+                }
+            };
+        };
+
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev')
+        );
+
+        $this->assertSame('Stringable fallback', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageFallsBackOnNonStringResult(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            return ['not', 'a', 'string'];
+        };
+
+        $log = '';
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev'),
+            $log
+        );
+
+        $this->assertSame('An internal server error occurred.', $result);
+        $this->assertStringContainsString('non-string value of type array', $log);
     }
 
     public function testRenderFileDoesNotAllowInternalFileOverride(): void
