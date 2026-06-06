@@ -9,6 +9,7 @@
 namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\Query;
@@ -461,12 +462,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
-     * @param string $table the table that data will be saved into.
-     * @param array $columns the column data (name => value) to be saved into the table.
-     * @return array normalized columns
+     * {@inheritdoc}
      */
-    private function normalizeTableRowData($table, $columns, &$params)
+    protected function normalizeTableRowData($table, $columns)
     {
         if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
             $columnSchemas = $tableSchema->columns;
@@ -490,7 +488,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function insert($table, $columns, &$params)
     {
-        $columns = $this->normalizeTableRowData($table, $columns, $params);
+        $columns = $this->normalizeTableRowData($table, $columns);
 
         $version2005orLater = version_compare($this->db->getSchema()->getServerVersion(), '9', '>=');
 
@@ -544,7 +542,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        $insertColumns = $this->normalizeTableRowData($table, $insertColumns, $params);
+        $insertColumns = $this->normalizeTableRowData($table, $insertColumns);
 
         list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
         if (empty($uniqueNames)) {
@@ -604,7 +602,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $updateColumns[$name] = new Expression($quotedName);
             }
         }
-        $updateColumns = $this->normalizeTableRowData($table, $updateColumns, $params);
+        $updateColumns = $this->normalizeTableRowData($table, $updateColumns);
 
         list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
@@ -616,7 +614,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function update($table, $columns, $condition, &$params)
     {
-        return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
+        return parent::update($table, $this->normalizeTableRowData($table, $columns), $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
+    {
+        $keys = $this->resolveKeys($table, $keys);
+        $rows = $this->prepareRows($rows);
+        $rows = $this->resolveColumnNames($rows, $columns);
+
+        return parent::batchUpdate($table, $this->normalizeBatchUpdateRows($table, $rows, $keys), [], $keys, $condition, $params);
     }
 
     /**

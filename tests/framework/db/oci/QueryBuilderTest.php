@@ -313,6 +313,251 @@ WHERE rownum <= 1) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NO
         return $data;
     }
 
+    public static function batchUpdateProvider(): array
+    {
+        return [
+            'sparse rows with expression' => [
+                'customer',
+                [
+                    [
+                        'id' => 1,
+                        'status' => 1,
+                        'name' => 'Tom',
+                    ],
+                    [
+                        'id' => 2,
+                        'status' => 0,
+                    ],
+                    [
+                        'id' => 3,
+                        'name' => new Expression('UPPER(name)'),
+                    ],
+                ],
+                [],
+                ['id'],
+                '',
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS NUMBER) AS [[_v0]], 1 AS [[_s0]], CAST(:qp2 AS VARCHAR2(128)) AS [[_v1]], 1 AS [[_s1]] FROM DUAL UNION ALL SELECT CAST(:qp3 AS NUMBER) AS [[_bk0]], CAST(:qp4 AS NUMBER) AS [[_v0]], 1 AS [[_s0]], CAST(NULL AS VARCHAR2(128)) AS [[_v1]], 0 AS [[_s1]] FROM DUAL UNION ALL SELECT CAST(:qp5 AS NUMBER) AS [[_bk0]], CAST(NULL AS NUMBER) AS [[_v0]], 0 AS [[_s0]], UPPER(name) AS [[_v1]], 1 AS [[_s1]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[status]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[status]] END, T.[[name]]=CASE WHEN S.[[_s1]]=1 THEN S.[[_v1]] ELSE T.[[name]] END',
+                [
+                    ':qp0' => 1,
+                    ':qp1' => 1,
+                    ':qp2' => 'Tom',
+                    ':qp3' => 2,
+                    ':qp4' => 0,
+                    ':qp5' => 3,
+                ],
+            ],
+            'null key value' => [
+                'customer',
+                [
+                    [
+                        'id' => null,
+                        'status' => 1,
+                    ],
+                    [
+                        'id' => 2,
+                        'status' => 0,
+                    ],
+                ],
+                [],
+                ['id'],
+                '',
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS NUMBER) AS [[_v0]], 1 AS [[_s0]] FROM DUAL UNION ALL SELECT CAST(:qp2 AS NUMBER) AS [[_bk0]], CAST(:qp3 AS NUMBER) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[status]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[status]] END',
+                [
+                    ':qp0' => null,
+                    ':qp1' => 1,
+                    ':qp2' => 2,
+                    ':qp3' => 0,
+                ],
+            ],
+        ];
+    }
+
+    public function testBatchUpdateWithTraversableRow(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            new \ArrayObject([
+                'id' => 1,
+                'status' => 1,
+            ]),
+        ], [], ['id'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS NUMBER) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[status]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[status]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateOnlyNullKeyValues(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            [
+                'id' => null,
+                'status' => 1,
+            ],
+        ], [], ['id'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS NUMBER) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[status]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[status]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => null,
+            ':qp1' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithoutTableSchema(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('unknown_table', [
+            [
+                'id' => 'k1',
+                'status' => 1,
+            ],
+        ], [], ['id'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[unknown_table]] T USING (SELECT :qp0 AS [[_bk0]], :qp1 AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[status]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[status]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 'k1',
+            ':qp1' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithTableSchema(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder(true, true)->batchUpdate('type', [
+            [
+                'int_col' => '1',
+                'float_col' => '2.5',
+            ],
+        ], [], ['int_col'], '', $actualParams);
+
+        $this->assertStringStartsWith('MERGE INTO "type" T USING (SELECT CAST(:qp0 AS ', $actualSQL);
+        $this->assertStringContainsString(') AS "_bk0", CAST(:qp1 AS ', $actualSQL);
+        $this->assertStringContainsString(') AS "_v0", 1 AS "_s0" FROM DUAL) S ON ((T."int_col"=S."_bk0" OR (T."int_col" IS NULL AND S."_bk0" IS NULL))) WHEN MATCHED THEN UPDATE SET T."float_col"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."float_col" END', $actualSQL);
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 2.5,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateCompositeKey(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 10, 'name' => 'Tom'],
+            ['id' => 2, 'status' => 20, 'name' => 'Jerry'],
+        ], [], ['id', 'status'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS NUMBER) AS [[_bk1]], CAST(:qp2 AS VARCHAR2(128)) AS [[_v0]], 1 AS [[_s0]] FROM DUAL UNION ALL SELECT CAST(:qp3 AS NUMBER) AS [[_bk0]], CAST(:qp4 AS NUMBER) AS [[_bk1]], CAST(:qp5 AS VARCHAR2(128)) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL)) AND (T.[[status]]=S.[[_bk1]] OR (T.[[status]] IS NULL AND S.[[_bk1]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[name]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[name]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 10,
+            ':qp2' => 'Tom',
+            ':qp3' => 2,
+            ':qp4' => 20,
+            ':qp5' => 'Jerry',
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithColumnsParameter(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            [1, 'active'],
+            [2, 'inactive'],
+        ], ['id', 'name'], ['id'], '', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS VARCHAR2(128)) AS [[_v0]], 1 AS [[_s0]] FROM DUAL UNION ALL SELECT CAST(:qp2 AS NUMBER) AS [[_bk0]], CAST(:qp3 AS VARCHAR2(128)) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL))) WHEN MATCHED THEN UPDATE SET T.[[name]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[name]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'active',
+            ':qp2' => 2,
+            ':qp3' => 'inactive',
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithCondition(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 1],
+        ], [], ['id'], 'active=1', $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS NUMBER) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL)) AND (active=1)) WHEN MATCHED THEN UPDATE SET T.[[status]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[status]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateWithConditionArray(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'name' => 'Tom'],
+        ], [], ['id'], ['status' => 1], $actualParams);
+
+        $this->assertSame(
+            $this->replaceQuotes(
+                'MERGE INTO [[customer]] T USING (SELECT CAST(:qp0 AS NUMBER) AS [[_bk0]], CAST(:qp1 AS VARCHAR2(128)) AS [[_v0]], 1 AS [[_s0]] FROM DUAL) S ON ((T.[[id]]=S.[[_bk0]] OR (T.[[id]] IS NULL AND S.[[_bk0]] IS NULL)) AND ([[status]]=:qp2)) WHEN MATCHED THEN UPDATE SET T.[[name]]=CASE WHEN S.[[_s0]]=1 THEN S.[[_v0]] ELSE T.[[name]] END',
+            ),
+            $actualSQL,
+        );
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'Tom',
+            ':qp2' => 1,
+        ], $actualParams);
+    }
+
+    public function testBatchUpdateAutoDetectPrimaryKey(): void
+    {
+        $actualParams = [];
+        $actualSQL = $this->getQueryBuilder(true, true)->batchUpdate('animal', [
+            ['id' => 1, 'type' => 'cat'],
+        ], [], [], '', $actualParams);
+
+        $this->assertStringStartsWith('MERGE INTO "animal" T USING (SELECT CAST(:qp0 AS ', $actualSQL);
+        $this->assertStringContainsString(') AS "_bk0", CAST(:qp1 AS ', $actualSQL);
+        $this->assertStringContainsString(') AS "_v0", 1 AS "_s0" FROM DUAL) S ON ((T."id"=S."_bk0" OR (T."id" IS NULL AND S."_bk0" IS NULL))) WHEN MATCHED THEN UPDATE SET T."type"=CASE WHEN S."_s0"=1 THEN S."_v0" ELSE T."type" END', $actualSQL);
+        $this->assertSame([
+            ':qp0' => 1,
+            ':qp1' => 'cat',
+        ], $actualParams);
+    }
+
     /**
      * Dummy test to speed up QB's tests which rely on DB schema
      */
