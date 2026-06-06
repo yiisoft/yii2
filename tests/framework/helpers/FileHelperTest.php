@@ -742,6 +742,22 @@ class FileHelperTest extends TestCase
         $this->assertSame(['txm', 'txn'], FileHelper::getExtensionsByMimeType('type/second', $magicFile));
     }
 
+    public function testGetMimeTypeByExtensionReturnsPrimaryForShippedMultiTypeExtensions(): void
+    {
+        $this->assertSame('message/rfc822', FileHelper::getMimeTypeByExtension('mail.eml'));
+        $this->assertSame('application/vnd.ms-outlook', FileHelper::getMimeTypeByExtension('mail.msg'));
+    }
+
+    public function testGetExtensionsByMimeTypeIncludesSecondaryMapping(): void
+    {
+        $this->assertContains('eml', FileHelper::getExtensionsByMimeType('text/plain'));
+    }
+
+    public function testGetExtensionByMimeTypeForSecondaryMimeType(): void
+    {
+        $this->assertSame('msg', FileHelper::getExtensionByMimeType('application/vnd.ms-office'));
+    }
+
     public function testGetMimeType(): void
     {
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';

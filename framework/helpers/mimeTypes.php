@@ -9,6 +9,8 @@
  * https://raw.githubusercontent.com/apache/httpd/refs/heads/trunk/docs/conf/mime.types
  * This file has been placed in the public domain for unlimited redistribution.
  *
+ * A value is a MIME type, or a list of MIME types when an extension maps to several.
+ *
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */

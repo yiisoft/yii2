@@ -192,6 +192,7 @@ class BaseFileHelper
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
      * @return string|null the MIME type. Null is returned if the MIME type cannot be determined.
+     * When the extension is mapped to a list of MIME types, the first one is returned.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
     {
@@ -200,7 +201,8 @@ class BaseFileHelper
         if (($ext = pathinfo($file, PATHINFO_EXTENSION)) !== '') {
             $ext = strtolower($ext);
             if (isset($mimeTypes[$ext])) {
-                return is_array($mimeTypes[$ext]) ? reset($mimeTypes[$ext]) : $mimeTypes[$ext];
+                $mimeType = $mimeTypes[$ext];
+                return is_array($mimeType) ? ($mimeType[0] ?? null) : $mimeType;
             }
         }
 
