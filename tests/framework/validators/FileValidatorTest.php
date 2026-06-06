@@ -613,6 +613,13 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($validator->validate($file));
     }
 
+    public function testValidateExtensionAcceptsSecondaryMimeType(): void
+    {
+        $validator = new FileValidator(['extensions' => ['eml']]);
+        $file = $this->getRealTestFile('test.eml');
+        $this->assertTrue($validator->validate($file));
+    }
+
     protected function createModelForAttributeTest()
     {
         return FakedValidationModel::createWithAttributes(

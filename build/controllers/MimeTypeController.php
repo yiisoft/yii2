@@ -56,8 +56,10 @@ class MimeTypeController extends Controller
     private $_additionalMimeTypes = [
         'apng' => 'image/apng',
         'avif' => 'image/avif',
+        'eml' => ['message/rfc822', 'text/plain'],
         'jfif' => 'image/jpeg',
         'mjs' => 'text/javascript',
+        'msg' => ['application/vnd.ms-outlook', 'application/vnd.ms-office'],
         'pjp' => 'image/jpeg',
         'pjpeg' => 'image/jpeg',
     ];
@@ -199,10 +201,12 @@ EOD;
         }
 
         foreach ($this->_additionalMimeTypes as $ext => $mime) {
-            if (!array_key_exists($mime, $extensionMap)) {
-                $extensionMap[$mime] = [];
+            foreach ((array) $mime as $singleMime) {
+                if (!array_key_exists($singleMime, $extensionMap)) {
+                    $extensionMap[$singleMime] = [];
+                }
+                $extensionMap[$singleMime][] = $ext;
             }
-            $extensionMap[$mime][] = $ext;
         }
 
         foreach ($extensionMap as $mime => $extensions) {

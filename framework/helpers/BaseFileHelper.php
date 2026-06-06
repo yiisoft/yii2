@@ -200,7 +200,7 @@ class BaseFileHelper
         if (($ext = pathinfo($file, PATHINFO_EXTENSION)) !== '') {
             $ext = strtolower($ext);
             if (isset($mimeTypes[$ext])) {
-                return $mimeTypes[$ext];
+                return is_array($mimeTypes[$ext]) ? reset($mimeTypes[$ext]) : $mimeTypes[$ext];
             }
         }
 
@@ -222,9 +222,19 @@ class BaseFileHelper
             $mimeType = $aliases[$mimeType];
         }
 
+        $mimeType = mb_strtolower($mimeType, 'UTF-8');
+
         // Note: For backwards compatibility the "MimeTypes" file is used.
         $mimeTypes = static::loadMimeTypes($magicFile);
-        return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
+
+        $extensions = [];
+        foreach ($mimeTypes as $extension => $type) {
+            if (is_array($type) ? in_array($mimeType, $type, true) : $type === $mimeType) {
+                $extensions[] = $extension;
+            }
+        }
+
+        return $extensions;
     }
 
     /**
