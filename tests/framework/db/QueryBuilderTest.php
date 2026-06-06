@@ -2587,6 +2587,28 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ], [], ['id'], '', $actualParams);
     }
 
+    public function testBatchUpdateInvalidKeysType(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The $keys parameter must be an array of key column names.');
+
+        $actualParams = [];
+        $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 1],
+        ], [], 'id', '', $actualParams);
+    }
+
+    public function testBatchUpdateInvalidColumnsType(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('The $columns parameter must be an array of column names.');
+
+        $actualParams = [];
+        $this->getQueryBuilder()->batchUpdate('customer', [
+            ['id' => 1, 'status' => 1],
+        ], 'status', ['id'], '', $actualParams);
+    }
+
     public function testBatchUpdateOnlyNullKeyValues(): void
     {
         $actualParams = [];

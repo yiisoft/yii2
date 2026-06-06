@@ -530,7 +530,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * They should be bound to the DB command later.
      * @return string the batch UPDATE SQL statement.
      * @throws InvalidConfigException if `$keys` is empty and the table has no primary key.
-     * @throws InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
+     * @throws InvalidArgumentException if `$keys`/`$columns` is not an array, row format is invalid, key is missing, or key values are duplicated.
      * @since 2.0.55
      */
     public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
@@ -680,12 +680,16 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table the table name.
      * @param array $keys the provided keys.
      * @return array resolved keys.
+     * @throws InvalidArgumentException if `$keys` is not an array.
      * @throws InvalidConfigException if `$keys` is empty and the table has no primary key.
      * @since 2.0.55
      */
     protected function resolveKeys($table, $keys)
     {
         if (!empty($keys)) {
+            if (!is_array($keys)) {
+                throw new InvalidArgumentException('The $keys parameter must be an array of key column names.');
+            }
             return $keys;
         }
 
@@ -731,12 +735,16 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array[] $rows the rows to resolve (already prepared by [[prepareRows()]]).
      * @param array $columns list of column names.
      * @return array[] resolved rows as associative arrays.
+     * @throws InvalidArgumentException if `$columns` is not an array.
      * @since 2.0.55
      */
     protected function resolveColumnNames($rows, $columns)
     {
         if (empty($columns)) {
             return $rows;
+        }
+        if (!is_array($columns)) {
+            throw new InvalidArgumentException('The $columns parameter must be an array of column names.');
         }
 
         $resolvedRows = [];
