@@ -32,6 +32,8 @@ class BaseFileHelper
     public const PATTERN_CASE_INSENSITIVE = 32;
     /**
      * @var string the path (or alias) of a PHP file containing MIME type information.
+     * The file must return an `array<string, string|string[]>` mapping a file extension to one
+     * lowercase MIME type or a list of them.
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
     /**
@@ -231,7 +233,7 @@ class BaseFileHelper
 
         $extensions = [];
         foreach ($mimeTypes as $extension => $type) {
-            if (is_array($type) ? in_array($mimeType, $type, true) : $type === $mimeType) {
+            if ($type === $mimeType || (is_array($type) && in_array($mimeType, $type, true))) {
                 $extensions[] = $extension;
             }
         }
@@ -283,7 +285,7 @@ class BaseFileHelper
      * Loads MIME types from the specified file.
      * @param string|null $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return array the mapping from file extensions to MIME types
+     * @return array<string, string|string[]> the mapping from a file extension to one lowercase MIME type or a list of them
      */
     protected static function loadMimeTypes($magicFile)
     {

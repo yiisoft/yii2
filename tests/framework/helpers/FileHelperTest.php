@@ -758,6 +758,16 @@ class FileHelperTest extends TestCase
         $this->assertSame('msg', FileHelper::getExtensionByMimeType('application/vnd.ms-office'));
     }
 
+    public function testGetExtensionByMimeTypeKeepsPrimaryForSharedMimeType(): void
+    {
+        $this->assertSame('txt', FileHelper::getExtensionByMimeType('text/plain'));
+    }
+
+    public function testGetExtensionsByMimeTypeIsCaseInsensitive(): void
+    {
+        $this->assertContains('eml', FileHelper::getExtensionsByMimeType('TEXT/PLAIN'));
+    }
+
     public function testGetMimeType(): void
     {
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';

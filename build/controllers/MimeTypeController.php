@@ -51,10 +51,7 @@ class MimeTypeController extends Controller
     ];
 
     /**
-     * @var array MIME types to add to the ones parsed from Apache files
-     */
-    /**
-     * @var array<string, string|string[]> extra extension-to-MIME-type entries merged on top of the Apache map.
+     * @var array<string, string|string[]> MIME types to add to the ones parsed from Apache files.
      * A value may be a single MIME type or a list of MIME types for one extension.
      */
     private $_additionalMimeTypes = [
