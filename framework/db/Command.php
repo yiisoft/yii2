@@ -560,7 +560,7 @@ class Command extends Component
      * @return $this the command object itself
      * @throws \yii\base\InvalidConfigException if `$keys` is empty and the table has no primary key.
      * @throws \yii\base\InvalidArgumentException if row format is invalid, key is missing, or key values are duplicated.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '')
     {

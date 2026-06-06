@@ -531,7 +531,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @return string the batch UPDATE SQL statement.
      * @throws InvalidConfigException if `$keys` is empty and the table has no primary key.
      * @throws InvalidArgumentException if `$keys`/`$columns` is not an array, row format is invalid, key is missing, or key values are duplicated.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     public function batchUpdate($table, $rows, $columns = [], $keys = [], $condition = '', &$params = [])
     {
@@ -682,7 +682,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @return array resolved keys.
      * @throws InvalidArgumentException if `$keys` is not an array.
      * @throws InvalidConfigException if `$keys` is empty and the table has no primary key.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     protected function resolveKeys($table, $keys)
     {
@@ -708,7 +708,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param array|\Generator $rows the rows to prepare.
      * @return array[] prepared rows.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     protected function prepareRows($rows)
     {
@@ -736,7 +736,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $columns list of column names.
      * @return array[] resolved rows as associative arrays.
      * @throws InvalidArgumentException if `$columns` is not an array.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     protected function resolveColumnNames($rows, $columns)
     {
@@ -769,7 +769,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table the table that data will be saved into.
      * @param array $columns the column data (name => value) to be saved into the table.
      * @return array normalized columns.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     protected function normalizeTableRowData($table, $columns)
     {
@@ -786,7 +786,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param array $rows the rows to normalize.
      * @param array $keys the key column names.
      * @return array normalized rows.
-     * @since 2.0.55
+     * @since 2.0.56
      */
     protected function normalizeBatchUpdateRows($table, $rows, $keys)
     {
