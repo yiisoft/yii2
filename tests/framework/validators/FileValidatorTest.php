@@ -618,7 +618,7 @@ class FileValidatorTest extends TestCase
         $validator = new FileValidator(['extensions' => ['eml']]);
         $file = $this->getRealTestFile('test.eml');
 
-        $this->assertSame('text/plain', FileHelper::getMimeType($file->tempName, null, false));
+        $this->assertSame('text/plain', FileHelper::getMimeType($file->tempName, null, false), 'Unexpected MIME detected for the test.eml fixture.');
         $this->assertTrue($validator->validate($file));
     }
 

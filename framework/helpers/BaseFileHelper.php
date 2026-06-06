@@ -204,7 +204,11 @@ class BaseFileHelper
             $ext = strtolower($ext);
             if (isset($mimeTypes[$ext])) {
                 $mimeType = $mimeTypes[$ext];
-                return is_array($mimeType) ? ($mimeType[0] ?? null) : $mimeType;
+                if (is_array($mimeType)) {
+                    $mimeType = reset($mimeType);
+                    return $mimeType === false ? null : $mimeType;
+                }
+                return $mimeType;
             }
         }
 
