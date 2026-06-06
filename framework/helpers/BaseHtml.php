@@ -577,6 +577,10 @@ class BaseHtml
             $options['type'] = $type;
         }
         $options['name'] = $name;
+        // https://github.com/yiisoft/yii2/issues/15401
+        if (is_array($value)) {
+            $value = '';
+        }
         $options['value'] = $value === null ? null : (string) $value;
         return static::tag('input', '', $options);
     }

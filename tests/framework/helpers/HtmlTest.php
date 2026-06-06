@@ -1521,6 +1521,33 @@ EOD;
         $this->assertEquals($expectedHtml, Html::activeTextInput($model, 'name', $options));
     }
 
+    public static function dataProviderActiveInputArrayValue(): array
+    {
+        return [
+            'text' => ['activeTextInput', '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="">'],
+            'password' => ['activePasswordInput', '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="">'],
+            'hidden' => ['activeHiddenInput', '<input type="hidden" id="htmltestmodel-name" name="HtmlTestModel[name]" value="">'],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderActiveInputArrayValue
+     */
+    public function testActiveInputRendersEmptyForArrayValue($method, $expectedHtml): void
+    {
+        $model = new HtmlTestModel();
+        $model->setAttributes(['name' => ['tampered@example.com']], false);
+        $this->assertSame($expectedHtml, Html::$method($model, 'name'));
+    }
+
+    public function testInputRendersEmptyForArrayValue(): void
+    {
+        $this->assertSame(
+            '<input type="text" name="n" value="">',
+            Html::input('text', 'n', ['tampered@example.com'])
+        );
+    }
+
     /**
      * Data provider for [[testActiveTextInputMaxLength]].
      * @return array test data
