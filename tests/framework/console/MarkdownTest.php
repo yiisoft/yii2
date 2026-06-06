@@ -34,6 +34,7 @@ class MarkdownTest extends TestCase
     public function testRenderStrong(): void
     {
         $result = $this->parser->parse('**bold**');
+        $this->assertStringContainsString("\033[", $result);
         $stripped = Console::stripAnsiFormat($result);
         $this->assertStringContainsString('bold', $stripped);
     }
@@ -41,6 +42,7 @@ class MarkdownTest extends TestCase
     public function testRenderEmph(): void
     {
         $result = $this->parser->parse('*italic*');
+        $this->assertStringContainsString("\033[", $result);
         $stripped = Console::stripAnsiFormat($result);
         $this->assertStringContainsString('italic', $stripped);
     }
@@ -48,6 +50,7 @@ class MarkdownTest extends TestCase
     public function testRenderInlineCode(): void
     {
         $result = $this->parser->parse('use `code` here');
+        $this->assertStringContainsString("\033[", $result);
         $stripped = Console::stripAnsiFormat($result);
         $this->assertStringContainsString('code', $stripped);
     }
@@ -55,6 +58,7 @@ class MarkdownTest extends TestCase
     public function testRenderCodeBlock(): void
     {
         $result = $this->parser->parse("```\necho 'hello';\n```");
+        $this->assertStringContainsString("\033[", $result);
         $stripped = Console::stripAnsiFormat($result);
         $this->assertStringContainsString('echo', $stripped);
     }

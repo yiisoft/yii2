@@ -592,7 +592,9 @@ class ConsoleTest extends TestCase
         $this->truncateStreams();
 
         $ref = new \ReflectionProperty(\yii\helpers\BaseConsole::class, '_progressEtaLastUpdate');
-        $ref->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $ref->setAccessible(true);
+        }
         $ref->setValue(null, time() - 2);
 
         ConsoleProgressStub::updateProgress(50, 100);

@@ -135,6 +135,7 @@ class BaseConsoleTest extends TestCase
     public function testMarkdownToAnsi(): void
     {
         $result = BaseConsole::markdownToAnsi('**bold** text');
+        $this->assertStringContainsString("\033[", $result);
         $this->assertStringContainsString('bold', BaseConsole::stripAnsiFormat($result));
     }
 
