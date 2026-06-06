@@ -357,6 +357,44 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertStringContainsString('callback failed', $log);
     }
 
+    public function testRenderFallbackExceptionMessageCastsStringableResult(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            return new class {
+                public function __toString(): string
+                {
+                    return 'Stringable fallback';
+                }
+            };
+        };
+
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev')
+        );
+
+        $this->assertSame('Stringable fallback', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageFallsBackOnNonStringResult(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            return ['not', 'a', 'string'];
+        };
+
+        $log = '';
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev'),
+            $log
+        );
+
+        $this->assertSame('An internal server error occurred.', $result);
+        $this->assertStringContainsString('non-string value of type array', $log);
+    }
+
     public function testRenderFileDoesNotAllowInternalFileOverride(): void
     {
         $viewFile = tempnam(sys_get_temp_dir(), 'yii2-error-view-');

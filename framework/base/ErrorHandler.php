@@ -218,8 +218,8 @@ abstract class ErrorHandler extends Component
      * Builds the message shown to end users when an error occurs while handling another error.
      *
      * This is only used when [[YII_DEBUG]] is `false`. The message comes from [[fallbackExceptionMessage]];
-     * when it is a callable, it is invoked with the current and previous exceptions. If the callable throws,
-     * a generic message is returned and the failure is appended to `$log`.
+     * when it is a callable, it is invoked with the current and previous exceptions. If the callable throws
+     * or the resolved value is not a string, a generic message is returned and the issue is appended to `$log`.
      *
      * @param \Throwable $exception exception that was thrown during main exception processing.
      * @param \Throwable $previousException main exception processed in [[handleException()]].
@@ -230,13 +230,22 @@ abstract class ErrorHandler extends Component
     protected function renderFallbackExceptionMessage($exception, $previousException, &$log = '')
     {
         try {
-            return is_callable($this->fallbackExceptionMessage)
+            $message = is_callable($this->fallbackExceptionMessage)
                 ? call_user_func($this->fallbackExceptionMessage, $exception, $previousException)
                 : $this->fallbackExceptionMessage;
         } catch (\Throwable $fallbackException) {
             $log .= "\nException in fallbackExceptionMessage callback:\n" . (string) $fallbackException;
             return 'An internal server error occurred.';
         }
+
+        if (is_string($message)) {
+            return $message;
+        }
+        if (is_object($message) && method_exists($message, '__toString')) {
+            return (string) $message;
+        }
+        $log .= "\nfallbackExceptionMessage returned a non-string value of type " . gettype($message);
+        return 'An internal server error occurred.';
     }
 
     /**
