@@ -311,6 +311,52 @@ Exception: yii\web\NotFoundHttpException', $out);
         $this->assertSame('Error: test', $result);
     }
 
+    public function testRenderFallbackExceptionMessageReturnsString(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = 'Service temporarily unavailable.';
+
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev')
+        );
+
+        $this->assertSame('Service temporarily unavailable.', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageInvokesCallable(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            return 'Error: ' . $exception->getMessage();
+        };
+
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev')
+        );
+
+        $this->assertSame('Error: boom', $result);
+    }
+
+    public function testRenderFallbackExceptionMessageFallsBackWhenCallableThrows(): void
+    {
+        $handler = new FallbackMessageErrorHandler();
+        $handler->fallbackExceptionMessage = static function ($exception, $previousException) {
+            throw new \RuntimeException('callback failed');
+        };
+
+        $log = '';
+        $result = $handler->callRenderFallbackExceptionMessage(
+            new \RuntimeException('boom'),
+            new \RuntimeException('prev'),
+            $log
+        );
+
+        $this->assertSame('An internal server error occurred.', $result);
+        $this->assertStringContainsString('callback failed', $log);
+    }
+
     public function testRenderFileDoesNotAllowInternalFileOverride(): void
     {
         $viewFile = tempnam(sys_get_temp_dir(), 'yii2-error-view-');
@@ -349,5 +395,13 @@ class ErrorHandler extends \yii\web\ErrorHandler
         $this->exception = $exception;
 
         return $this->renderFile($file, $params);
+    }
+}
+
+class FallbackMessageErrorHandler extends \yii\web\ErrorHandler
+{
+    public function callRenderFallbackExceptionMessage($exception, $previousException, &$log = '')
+    {
+        return $this->renderFallbackExceptionMessage($exception, $previousException, $log);
     }
 }

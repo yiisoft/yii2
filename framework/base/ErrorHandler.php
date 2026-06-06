@@ -205,20 +205,38 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
-            try {
-                echo is_callable($this->fallbackExceptionMessage)
-                    ? call_user_func($this->fallbackExceptionMessage, $exception, $previousException)
-                    : $this->fallbackExceptionMessage;
-            } catch (\Throwable $fallbackException) {
-                echo 'An internal server error occurred.';
-                $msg .= "\nException in fallbackExceptionMessage callback:\n" . (string) $fallbackException;
-            }
+            echo $this->renderFallbackExceptionMessage($exception, $previousException, $msg);
         }
         error_log($msg);
         if (defined('HHVM_VERSION')) {
             flush();
         }
         exit(1);
+    }
+
+    /**
+     * Builds the message shown to end users when an error occurs while handling another error.
+     *
+     * This is only used when [[YII_DEBUG]] is `false`. The message comes from [[fallbackExceptionMessage]];
+     * when it is a callable, it is invoked with the current and previous exceptions. If the callable throws,
+     * a generic message is returned and the failure is appended to `$log`.
+     *
+     * @param \Throwable $exception exception that was thrown during main exception processing.
+     * @param \Throwable $previousException main exception processed in [[handleException()]].
+     * @param string $log error log message that a callable failure is appended to.
+     * @return string the message to display to the end user.
+     * @since 2.0.56
+     */
+    protected function renderFallbackExceptionMessage($exception, $previousException, &$log = '')
+    {
+        try {
+            return is_callable($this->fallbackExceptionMessage)
+                ? call_user_func($this->fallbackExceptionMessage, $exception, $previousException)
+                : $this->fallbackExceptionMessage;
+        } catch (\Throwable $fallbackException) {
+            $log .= "\nException in fallbackExceptionMessage callback:\n" . (string) $fallbackException;
+            return 'An internal server error occurred.';
+        }
     }
 
     /**
