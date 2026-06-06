@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
 - Bug #20889: Remove unreachable PHP < 7 cookie deserialization fallback in `yii\web\Request::loadCookies()` (terabytesoftw)
 - Enh #20890: Harden `yii\i18n\PhpMessageSource` category path handling to reject `..` segments, absolute paths, and stream-wrapper categories (terabytesoftw)
+- Enh #20780: Add configurable `ErrorHandler::$fallbackExceptionMessage` property (WarLikeLaux)
 
 
 2.0.55 May 09, 2026
@@ -50,7 +51,6 @@ Yii Framework 2 Change Log
 - Enh #20743: Remove dead code for PHP < 5.6 in `UrlValidator` and `EmailValidator` (WarLikeLaux)
 - Enh #20756: Remove dead code for PHP < 5.6 in `SchemaBuilderTrait::json()` (WarLikeLaux)
 - Chg #20757: Remove dead code for PHP < 7.4 in `Security` (WarLikeLaux)
-- Enh #20780: Add configurable `ErrorHandler::$fallbackExceptionMessage` property (WarLikeLaux)
 
 
 2.0.54 January 09, 2026

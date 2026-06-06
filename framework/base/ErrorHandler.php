@@ -67,7 +67,7 @@ abstract class ErrorHandler extends Component
      * ],
      * ```
      *
-     * @since 2.0.55
+     * @since 2.0.56
      */
     public $fallbackExceptionMessage = 'An internal server error occurred.';
 
@@ -205,9 +205,14 @@ abstract class ErrorHandler extends Component
             }
             $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
         } else {
-            echo is_callable($this->fallbackExceptionMessage)
-                ? call_user_func($this->fallbackExceptionMessage, $exception, $previousException)
-                : $this->fallbackExceptionMessage;
+            try {
+                echo is_callable($this->fallbackExceptionMessage)
+                    ? call_user_func($this->fallbackExceptionMessage, $exception, $previousException)
+                    : $this->fallbackExceptionMessage;
+            } catch (\Throwable $fallbackException) {
+                echo 'An internal server error occurred.';
+                $msg .= "\nException in fallbackExceptionMessage callback:\n" . (string) $fallbackException;
+            }
         }
         error_log($msg);
         if (defined('HHVM_VERSION')) {
