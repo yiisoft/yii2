@@ -348,6 +348,13 @@ SQL;
                 && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $info['default'], $matches)
             ) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
+            } elseif (
+                isset($info['default'], $info['extra'])
+                && stripos($info['extra'], 'DEFAULT_GENERATED') !== false
+            ) {
+                // MySQL 8 flags expression-based column defaults with `DEFAULT_GENERATED` in the `Extra` field.
+                // https://github.com/yiisoft/yii2/issues/19747
+                $column->defaultValue = new Expression($info['default']);
             } elseif (isset($type) && $type === 'bit') {
                 $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
             } else {

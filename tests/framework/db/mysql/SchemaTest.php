@@ -71,6 +71,35 @@ SQL;
         $this->assertEquals('CURRENT_TIMESTAMP(3)', (string)$ts->defaultValue);
     }
 
+    public function testLoadDefaultExpressionColumn(): void
+    {
+        $version = $this->getConnection()->getServerVersion();
+        if (stripos($version, 'mariadb') !== false) {
+            $this->markTestSkipped('MariaDB does not expose DEFAULT_GENERATED; detection is tracked separately in #19747.');
+        }
+        if (version_compare($version, '8.0.13', '<')) {
+            $this->markTestSkipped('Expression-based column defaults are supported since MySQL 8.0.13.');
+        }
+
+        $db = $this->getConnection();
+        if ($db->getTableSchema('default_expression_test') !== null) {
+            $db->createCommand()->dropTable('default_expression_test')->execute();
+        }
+
+        $sql = <<<SQL
+CREATE TABLE `default_expression_test` (
+  `expr_col` date DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR),
+  `literal_col` date DEFAULT '2011-11-11'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+        $db->createCommand($sql)->execute();
+
+        $table = $db->getTableSchema('default_expression_test', true);
+
+        $this->assertInstanceOf(Expression::class, $table->getColumn('expr_col')->defaultValue);
+        $this->assertSame('2011-11-11', $table->getColumn('literal_col')->defaultValue);
+    }
+
     public function testGetSchemaNames(): void
     {
         $this->markTestSkipped('Schemas are not supported in MySQL.');
