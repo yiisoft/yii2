@@ -617,6 +617,8 @@ class FileValidatorTest extends TestCase
     {
         $validator = new FileValidator(['extensions' => ['eml']]);
         $file = $this->getRealTestFile('test.eml');
+
+        $this->assertSame('text/plain', FileHelper::getMimeType($file->tempName, null, false));
         $this->assertTrue($validator->validate($file));
     }
 
