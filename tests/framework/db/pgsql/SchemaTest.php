@@ -342,6 +342,44 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
     }
 
+    public function testNullableBitColumnHasNullDefaultValue(): void
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('bit_default_test') !== null) {
+            $db->createCommand()->dropTable('bit_default_test')->execute();
+        }
+
+        $db->createCommand()->createTable('bit_default_test', [
+            'nullable_bit_explicit' => 'bit(1) DEFAULT NULL',
+            'nullable_bit_implicit' => 'bit(1)',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('bit_default_test');
+        $table = $db->schema->getTableSchema('bit_default_test');
+
+        $this->assertNull($table->getColumn('nullable_bit_explicit')->defaultValue);
+        $this->assertNull($table->getColumn('nullable_bit_implicit')->defaultValue);
+    }
+
+    public function testBitColumnDefaultValueIsDecoded(): void
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('bit_default_decode_test') !== null) {
+            $db->createCommand()->dropTable('bit_default_decode_test')->execute();
+        }
+
+        $db->createCommand()->createTable('bit_default_decode_test', [
+            'zero_bit' => "bit(1) NOT NULL DEFAULT B'0'",
+            'multi_bit' => "bit(8) NOT NULL DEFAULT B'10000010'",
+        ])->execute();
+
+        $db->schema->refreshTableSchema('bit_default_decode_test');
+        $table = $db->schema->getTableSchema('bit_default_decode_test');
+
+        $this->assertSame(0, $table->getColumn('zero_bit')->defaultValue);
+        $this->assertSame(130, $table->getColumn('multi_bit')->defaultValue);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/20329
      */

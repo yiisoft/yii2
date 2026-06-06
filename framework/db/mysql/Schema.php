@@ -349,7 +349,9 @@ SQL;
             ) {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP' . (!empty($matches[1]) ? '(' . $matches[1] . ')' : ''));
             } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim(isset($info['default']) ? $info['default'] : '', 'b\''));
+                $column->defaultValue = isset($info['default'])
+                    ? bindec(trim($info['default'], 'b\''))
+                    : null;
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
             }

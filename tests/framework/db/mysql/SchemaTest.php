@@ -46,6 +46,48 @@ SQL;
         $this->assertEquals('CURRENT_TIMESTAMP', (string)$dt->defaultValue);
     }
 
+    public function testNullableBitColumnHasNullDefaultValue(): void
+    {
+        $db = $this->getConnection();
+        if ($db->getTableSchema('bit_default_test') !== null) {
+            $db->createCommand()->dropTable('bit_default_test')->execute();
+        }
+
+        $sql = <<<SQL
+CREATE TABLE `bit_default_test` (
+  `nullable_bit_explicit` BIT(1) NULL DEFAULT NULL,
+  `nullable_bit_implicit` BIT(1) NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+        $db->createCommand($sql)->execute();
+
+        $table = $db->getTableSchema('bit_default_test', true);
+
+        $this->assertNull($table->getColumn('nullable_bit_explicit')->defaultValue);
+        $this->assertNull($table->getColumn('nullable_bit_implicit')->defaultValue);
+    }
+
+    public function testBitColumnDefaultValueIsDecoded(): void
+    {
+        $db = $this->getConnection();
+        if ($db->getTableSchema('bit_default_decode_test') !== null) {
+            $db->createCommand()->dropTable('bit_default_decode_test')->execute();
+        }
+
+        $sql = <<<SQL
+CREATE TABLE `bit_default_decode_test` (
+  `zero_bit` BIT(1) NOT NULL DEFAULT b'0',
+  `multi_bit` BIT(8) NOT NULL DEFAULT b'10000010'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+SQL;
+        $db->createCommand($sql)->execute();
+
+        $table = $db->getTableSchema('bit_default_decode_test', true);
+
+        $this->assertSame(0, $table->getColumn('zero_bit')->defaultValue);
+        $this->assertSame(130, $table->getColumn('multi_bit')->defaultValue);
+    }
+
     public function testDefaultDatetimeColumnWithMicrosecs(): void
     {
         if (!version_compare($this->getConnection()->pdo->getAttribute(PDO::ATTR_SERVER_VERSION), '5.6.4', '>=')) {
