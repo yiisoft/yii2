@@ -59,11 +59,16 @@ Upgrade from Yii 2.0.55
   still returns a single `string|null`.
 
 * `yii\validators\FileValidator` with `checkExtensionByMimeType` enabled may now accept files whose detected MIME
-  type is a secondary type registered for the extension. For `.eml` this means a plain-text file detected as
-  `text/plain` passes `extensions => ['eml']`. To keep strict matching, set `mimeTypes` explicitly:
+  type is a secondary type registered for the extension. For `.eml` a plain-text file detected as `text/plain`
+  passes `extensions => ['eml']`; for `.msg` a file detected as `application/vnd.ms-office` passes
+  `extensions => ['msg']`. To keep strict matching, set `mimeTypes` explicitly:
 
   ```php
-  new FileValidator(['extensions' => ['eml'], 'mimeTypes' => ['message/rfc822']]);
+  new FileValidator([
+      'extensions' => ['eml'],
+      'checkExtensionByMimeType' => true,
+      'mimeTypes' => ['message/rfc822'],
+  ]);
   ```
 
 

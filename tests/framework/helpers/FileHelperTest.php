@@ -729,6 +729,14 @@ class FileHelperTest extends TestCase
         $this->assertSame('type/first', FileHelper::getMimeTypeByExtension('test.txm', $magicFile));
     }
 
+    public function testGetMimeTypeByExtensionReturnsNullForEmptyMimeTypeList(): void
+    {
+        $magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_empty.php';
+        file_put_contents($magicFile, '<?php return ' . var_export(['empty' => []], true) . ';');
+
+        $this->assertNull(FileHelper::getMimeTypeByExtension('test.empty', $magicFile));
+    }
+
     public function testGetExtensionsByMimeTypeMatchesMultipleMimeTypes(): void
     {
         $magicFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_multi.php';
