@@ -664,6 +664,8 @@ SQL;
             $command->pdoStatement->bindParam($name, $value['value'], $value['dataType'], $value['size']);
         }
 
+        unset($value);
+
         if (!$command->execute()) {
             return false;
         }
