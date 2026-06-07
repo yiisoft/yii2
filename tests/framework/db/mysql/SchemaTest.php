@@ -160,7 +160,7 @@ final class SchemaTest extends BaseSchema
         self::assertSame(
             ['id'],
             $schema->getTablePrimaryKey("`{$databaseName}`.`profile`", true)->columnNames,
-            "Primary key metadata should be reflected with an explicit database name.",
+            'Primary key metadata should be reflected with an explicit database name.',
         );
 
         $table = $schema->getTableSchema("`{$databaseName}`.`profile`", true);
@@ -299,5 +299,4 @@ final class SchemaTest extends BaseSchema
             'CURRENT_TIMESTAMP default expression must be normalized.',
         );
     }
-
 }
