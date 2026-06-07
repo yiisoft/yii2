@@ -20,7 +20,7 @@ use yiiunit\base\db\BaseQuery;
 #[Group('db')]
 #[Group('oci')]
 #[Group('query')]
-class QueryTest extends BaseQuery
+final class QueryTest extends BaseQuery
 {
     protected $driverName = 'oci';
 
@@ -87,10 +87,5 @@ class QueryTest extends BaseQuery
             $rows,
             "LIMIT '2' without OFFSET should return the first two rows.",
         );
-    }
-
-    public function testUnion(): void
-    {
-        $this->markTestSkipped('Unsupported use of WITH clause in Oracle.');
     }
 }

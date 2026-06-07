@@ -13,15 +13,14 @@ namespace yiiunit\framework\db\mssql\providers;
 use yii\db\Expression;
 use yii\db\mssql\Schema;
 
+use function array_walk;
 use function bin2hex;
+use function in_array;
 
 /**
  * Data provider for {@see \yiiunit\framework\db\mssql\ColumnSchemaTest} test cases.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
-final class ColumnSchemaProvider
+final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchemaProvider
 {
     /**
      * @return array<string, array{string, string, bool, mixed, mixed}>
@@ -239,5 +238,65 @@ final class ColumnSchemaProvider
                 'varchar(128)',
             ],
         ];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function expectedColumns(): array
+    {
+        $columns = parent::expectedColumns();
+
+        unset($columns['enum_col']);
+        unset($columns['ts_default']);
+        unset($columns['bit_col']);
+        unset($columns['json_col']);
+
+        $columns['int_col']['dbType'] = 'int';
+        $columns['int_col2']['dbType'] = 'int';
+        $columns['tinyint_col']['dbType'] = 'tinyint';
+        $columns['smallint_col']['dbType'] = 'smallint';
+        $columns['float_col']['dbType'] = 'decimal';
+        $columns['float_col']['phpType'] = 'string';
+        $columns['float_col']['type'] = 'decimal';
+        $columns['float_col']['scale'] = null;
+        $columns['float_col2']['dbType'] = 'float';
+        $columns['float_col2']['phpType'] = 'double';
+        $columns['float_col2']['type'] = 'float';
+        $columns['float_col2']['scale'] = null;
+        $columns['blob_col']['dbType'] = 'varbinary';
+        $columns['numeric_col']['dbType'] = 'decimal';
+        $columns['numeric_col']['scale'] = null;
+        $columns['time']['dbType'] = 'datetime';
+        $columns['time']['type'] = 'datetime';
+        $columns['bool_col']['dbType'] = 'tinyint';
+        $columns['bool_col2']['dbType'] = 'tinyint';
+
+        array_walk(
+            $columns,
+            static function (&$item): void {
+                $item['enumValues'] = [];
+            },
+        );
+
+        array_walk(
+            $columns,
+            static function (&$item, $name): void {
+                if (!in_array($name, ['char_col', 'char_col2', 'char_col3'])) {
+                    $item['size'] = null;
+                }
+            },
+        );
+
+        array_walk(
+            $columns,
+            static function (&$item, $name): void {
+                if (!in_array($name, ['char_col', 'char_col2', 'char_col3'])) {
+                    $item['precision'] = null;
+                }
+            },
+        );
+
+        return $columns;
     }
 }

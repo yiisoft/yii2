@@ -40,35 +40,6 @@ final class SchemaTest extends BaseSchema
         'dbo',
     ];
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraints(
-        string $tableName,
-        string $type,
-        Constraint|bool|array|null $expected,
-    ): void {
-        parent::testTableSchemaConstraints($tableName, $type, $expected);
-    }
-
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
-    {
-        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
-    }
-
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
-    {
-        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
-    }
 
     public function testGetStringFieldsSize(): void
     {
@@ -159,15 +130,6 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    /**
-     * @param array<string, array<string, mixed>> $columns Expected column metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
-    public function testColumnSchema(array $columns): void
-    {
-        parent::testColumnSchema($columns);
-    }
-
     public function testGetPrimaryKey(): void
     {
         $db = $this->getConnection();
@@ -195,6 +157,70 @@ final class SchemaTest extends BaseSchema
             $selectResult['id'],
             $insertResult['id'],
             'Inserted ID should match selected ID.',
+        );
+    }
+
+    public function testGetTableSchemaWithCatalogName(): void
+    {
+        $db = $this->getConnection();
+        $catalogName = (string) $db->createCommand('SELECT DB_NAME()')->queryScalar();
+        $schema = $db->getSchema();
+
+        $table = $schema->getTableSchema("{$catalogName}.dbo.profile", true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table schema should be loadable with an explicit catalog name.',
+        );
+        self::assertSame(
+            $catalogName,
+            $table->catalogName,
+            'Loaded table schema should keep the explicit catalog name.',
+        );
+        self::assertSame(
+            'dbo',
+            $table->schemaName,
+            'Loaded table schema should keep the explicit schema name.',
+        );
+        self::assertSame(
+            'profile',
+            $table->name,
+            'Loaded table name should match expected value.',
+        );
+
+        $table = $schema->getTableSchema("{$catalogName}.dbo.customer", true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table with a foreign key should be loadable with an explicit catalog name.',
+        );
+        self::assertSame(
+            $catalogName,
+            $table->catalogName,
+            'Loaded table schema should keep the explicit catalog name.',
+        );
+        self::assertSame(
+            'customer',
+            $table->name,
+            'Loaded table name should match expected value.',
+        );
+    }
+
+    public function testDefaultSchema(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema should be an instance of ' . Schema::class . '.',
+        );
+        self::assertSame(
+            'dbo',
+            $schema->defaultSchema,
+            "Default schema should be 'dbo'.",
         );
     }
 
@@ -503,31 +529,18 @@ final class SchemaTest extends BaseSchema
             $viewNames,
             "View 'animal_view' should be present in the list of view names.",
         );
-    }
-
-    public function testFindUniqueIndexes(): void
-    {
-        $db = $this->getConnection();
-
-        $table = $db->getSchema()->getTableSchema('T_upsert');
-        $indexes = $db->getSchema()->findUniqueIndexes($table);
-
-        self::assertCount(
-            2,
-            $indexes,
-            "Should return the unique constraints defined on 'T_upsert'.",
+        self::assertContains(
+            'animal_view',
+            $schema->getViewNames('dbo'),
+            "View 'animal_view' should be present when listing views with an explicit schema.",
         );
         self::assertContains(
-            ['email'],
-            array_values($indexes),
-            "Single-column unique constraint on 'email' is missing.",
-        );
-        self::assertContains(
-            ['email', 'recovery_email'],
-            array_values($indexes),
-            "Composite unique constraint on 'email, recovery_email' is missing.",
+            'animal_view',
+            $schema->getViewNames('dbo', true),
+            "View 'animal_view' should be present when refreshing views with an explicit schema.",
         );
     }
+
 
     public function testCreateColumnSchemaBuilder(): void
     {

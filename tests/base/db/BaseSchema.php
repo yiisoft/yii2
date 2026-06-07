@@ -11,29 +11,28 @@ declare(strict_types=1);
 namespace yiiunit\base\db;
 
 use PHPUnit\Framework\Attributes\DataProviderExternal;
-use PHPUnit\Framework\Attributes\Depends;
-use yii\base\NotSupportedException;
+use yii\base\InvalidCallException;
+use yii\db\Exception;
 use yiiunit\framework\db\DatabaseTestCase;
 use yiiunit\base\db\providers\SchemaProvider;
-use yiiunit\support\Assert;
-use Exception;
 use PDO;
-use yii\caching\ArrayCache;
-use yii\caching\FileCache;
-use yii\db\ColumnSchema;
-use yii\db\Constraint;
-use yii\db\Schema;
+use yii\db\ColumnSchemaBuilder;
+use yii\db\QueryBuilder;
 use yii\db\TableSchema;
 
-use function array_keys;
+use function array_key_first;
 use function array_map;
+use function fclose;
 use function count;
 use function fopen;
-use function is_object;
 use function print_r;
-use function sort;
 use function trim;
 
+/**
+ * Base unit tests for {@see \yii\db\Schema} schema reflection and table metadata retrieval across all database drivers.
+ *
+ * {@see SchemaProvider} for test case data providers.
+ */
 abstract class BaseSchema extends DatabaseTestCase
 {
     /**
@@ -41,9 +40,45 @@ abstract class BaseSchema extends DatabaseTestCase
      */
     protected array $expectedSchemas = [];
 
+    public function testCreateColumnSchemaBuilder(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $columnSchemaBuilder = $schema->createColumnSchemaBuilder('string');
+
+        self::assertInstanceOf(
+            ColumnSchemaBuilder::class,
+            $columnSchemaBuilder,
+            'Column schema builder should be created.',
+        );
+        self::assertSame(
+            'string',
+            (string) $columnSchemaBuilder,
+            'Column schema builder type does not match.',
+        );
+    }
+
+    public function testCreateQueryBuilder(): void
+    {
+        $db = $this->getConnection();
+
+        $queryBuilder = $db->getSchema()->createQueryBuilder();
+
+        self::assertInstanceOf(
+            QueryBuilder::class,
+            $queryBuilder,
+            'Query builder should be created.',
+        );
+        self::assertSame(
+            $db,
+            $queryBuilder->db,
+            'Query builder should receive the schema database connection.',
+        );
+    }
+
     public function testGetSchemaNames(): void
     {
-        $schema = $this->getConnection()->schema;
+        $schema = $this->getConnection()->getSchema();
 
         $schemas = $schema->getSchemaNames();
 
@@ -84,45 +119,44 @@ abstract class BaseSchema extends DatabaseTestCase
             $tables = array_map(static fn($item): string => trim((string) $item, '[]'), $tables);
         }
 
-        self::assertContains(
+        $expectedTables = [
             'customer',
-            $tables,
-            "'customer' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'category',
-            $tables,
-            "'category' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'item',
-            $tables,
-            "'item' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'order',
-            $tables,
-            "'order' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'order_item',
-            $tables,
-            "'order_item' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'type',
-            $tables,
-            "'type' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'animal',
-            $tables,
-            "'animal' table is missing in the list of tables.",
-        );
-        self::assertContains(
             'animal_view',
-            $tables,
-            "'animal_view' table is missing in the list of tables.",
+        ];
+
+        foreach ($expectedTables as $expectedTable) {
+            self::assertContains(
+                $expectedTable,
+                $tables,
+                "'{$expectedTable}' table is missing in the list of tables.",
+            );
+        }
+    }
+
+    /**
+     * @param string $name Table name to resolve.
+     * @param string $expectedName Expected resolved table name.
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'getTableSchema')]
+    public function testGetTableSchema(string $name, string $expectedName): void
+    {
+        $tableSchema = $this->getConnection()->getSchema()->getTableSchema($name);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Resolved table schema must be loadable.',
+        );
+        self::assertSame(
+            $expectedName,
+            $tableSchema->name,
+            'Resolved table name does not match.',
         );
     }
 
@@ -165,18 +199,20 @@ abstract class BaseSchema extends DatabaseTestCase
         $db = $this->getConnection(false);
 
         $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $schema = $db->getSchema();
 
         self::assertSame(
-            count($db->schema->getTableNames()),
-            count($db->schema->getTableSchemas()),
+            count($schema->getTableNames()),
+            count($schema->getTableSchemas()),
             "Number of table does not match the number of table names with 'PDO::ATTR_CASE' set to 'PDO::CASE_LOWER'.",
         );
 
         $db->slavePdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $schema = $db->getSchema();
 
         self::assertSame(
-            count($db->schema->getTableNames()),
-            count($db->schema->getTableSchemas()),
+            count($schema->getTableNames()),
+            count($schema->getTableSchemas()),
             "Number of table does not match the number of table names with 'PDO::ATTR_CASE' set to 'PDO::CASE_UPPER'.",
         );
     }
@@ -184,167 +220,77 @@ abstract class BaseSchema extends DatabaseTestCase
     public function testGetNonExistingTableSchema(): void
     {
         self::assertNull(
-            $this->getConnection()->schema->getTableSchema('nonexisting_table'),
+            $this->getConnection()->getSchema()->getTableSchema('nonexisting_table'),
             "Getting schema for non-existing table should return 'null'.",
         );
     }
 
-    public function testSchemaCache(): void
+    public function testGetPDOType(): void
+    {
+        $values = [
+            [null, PDO::PARAM_NULL],
+            ['', PDO::PARAM_STR],
+            ['hello', PDO::PARAM_STR],
+            [0, PDO::PARAM_INT],
+            [1, PDO::PARAM_INT],
+            [1337, PDO::PARAM_INT],
+            [true, PDO::PARAM_BOOL],
+            [false, PDO::PARAM_BOOL],
+            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
+        ];
+
+        $schema = $this->getConnection()->getSchema();
+
+        foreach ($values as $value) {
+            self::assertSame(
+                $value[1],
+                $schema->getPdoType($value[0]),
+                'type for value ' . print_r($value[0], true) . ' does not match.',
+            );
+        }
+
+        fclose($fp);
+    }
+
+    public function testSupportsSavepoint(): void
+    {
+        self::assertSame(
+            $this->getConnection()->enableSavepoint,
+            $this->getConnection()->getSchema()->supportsSavepoint(),
+            'Savepoint support should match the connection configuration.',
+        );
+    }
+
+    public function testInsertReturnsPrimaryKey(): void
     {
         $db = $this->getConnection();
 
         $schema = $db->getSchema();
-
-        $schema->db->enableSchemaCache = true;
-        $schema->db->schemaCache = new FileCache();
-
-        $noCacheTable = $schema->getTableSchema('type', true);
-        $cachedTable = $schema->getTableSchema('type', false);
-
-        self::assertSame(
-            $noCacheTable,
-            $cachedTable,
-            'Getting table with cache should return the same instance.',
+        $insertResult = $schema->insert(
+            'animal',
+            ['type' => 'cat'],
         );
 
-        $db->createCommand()->renameTable('type', 'type_test');
-        $noCacheTable = $schema->getTableSchema('type', true);
-
-        self::assertNotSame(
-            $noCacheTable,
-            $cachedTable,
-            'Getting table with cache should return a different instance.',
+        self::assertIsArray(
+            $insertResult,
+            'Insert should return primary key values.',
+        );
+        self::assertArrayHasKey(
+            'id',
+            $insertResult,
+            "Insert should return the 'id' primary key.",
+        );
+        self::assertEquals(
+            $db->createCommand(
+                <<<SQL
+                SELECT [[id]] FROM {{animal}} WHERE [[type]] = 'cat'
+                SQL,
+            )->queryScalar(),
+            $insertResult['id'],
+            'Returned primary key must match the stored row.',
         );
 
-        $db->createCommand()->renameTable('type_test', 'type');
-    }
-
-    /**
-     * @depends testSchemaCache
-     */
-    public function testRefreshTableSchema(): void
-    {
-        $schema = $this->getConnection()->schema;
-
-        $schema->db->enableSchemaCache = true;
-        $schema->db->schemaCache = new FileCache();
-
-        $noCacheTable = $schema->getTableSchema('type', true);
-
-        $schema->refreshTableSchema('type');
-
-        $refreshedTable = $schema->getTableSchema('type', false);
-
-        self::assertNotSame(
-            $noCacheTable,
-            $refreshedTable,
-            'Refreshing table should return a different instance.',
-        );
-    }
-
-    #[DataProviderExternal(SchemaProvider::class, 'tableSchemaCachePrefixes')]
-    #[Depends('testSchemaCache')]
-    public function testTableSchemaCacheWithTablePrefixes(
-        string $tablePrefix,
-        string $tableName,
-        string $testTablePrefix,
-        string $testTableName,
-    ): void {
-        $schema = $this->getConnection()->getSchema();
-
-        $schema->db->enableSchemaCache = true;
-        $schema->db->tablePrefix = $tablePrefix;
-        $schema->db->schemaCache = new ArrayCache();
-
-        $noCacheTable = $schema->getTableSchema($tableName, true);
-
-        self::assertInstanceOf(
-            TableSchema::class,
-            $noCacheTable,
-            'Getting table with cache should return an instance of ' . TableSchema::class . '.',
-        );
-
-        // Compare
-        $schema->db->tablePrefix = $testTablePrefix;
-
-        $testNoCacheTable = $schema->getTableSchema($testTableName);
-
-        self::assertSame(
-            $noCacheTable,
-            $testNoCacheTable,
-            'Getting table with cache should return the same instance.',
-        );
-
-        $schema->db->tablePrefix = $tablePrefix;
-
-        $schema->refreshTableSchema($tableName);
-        $refreshedTable = $schema->getTableSchema($tableName, false);
-
-        self::assertInstanceOf(
-            TableSchema::class,
-            $refreshedTable,
-            'Refreshing table should return an instance of ' . TableSchema::class . '.',
-        );
-        self::assertNotSame(
-            $noCacheTable,
-            $refreshedTable,
-            'Refreshing table should return a different instance.',
-        );
-
-        // Compare
-        $schema->db->tablePrefix = $testTablePrefix;
-
-        $schema->refreshTableSchema($testTablePrefix);
-
-        $testRefreshedTable = $schema->getTableSchema($testTableName, false);
-
-        self::assertInstanceOf(
-            TableSchema::class,
-            $testRefreshedTable,
-            'Refreshing table should return an instance of ' . TableSchema::class . '.',
-        );
-        self::assertSame(
-            $refreshedTable,
-            $testRefreshedTable,
-            'Refreshing table should return the same instance.',
-        );
-        self::assertNotSame(
-            $testNoCacheTable,
-            $testRefreshedTable,
-            'Refreshing table should return a different instance.',
-        );
-    }
-
-    public function testCompositeFk(): void
-    {
-        $schema = $this->getConnection()->schema;
-
-        $table = $schema->getTableSchema('composite_fk');
-
-        self::assertCount(
-            1,
-            $table->foreignKeys,
-            'Number of foreign keys does not match the expected count.',
-        );
-        self::assertTrue(
-            isset($table->foreignKeys['FK_composite_fk_order_item']),
-            "Foreign key 'FK_composite_fk_order_item' is missing in the table schema.",
-        );
-        self::assertSame(
-            'order_item',
-            $table->foreignKeys['FK_composite_fk_order_item'][0],
-            "Referenced table name for foreign key 'FK_composite_fk_order_item' does not match the expected value.",
-        );
-        self::assertSame(
-            'order_id',
-            $table->foreignKeys['FK_composite_fk_order_item']['order_id'],
-            "Referenced column name for foreign key 'FK_composite_fk_order_item' does not match the expected value.",
-        );
-        self::assertSame(
-            'item_id',
-            $table->foreignKeys['FK_composite_fk_order_item']['item_id'],
-            "Referenced column name for foreign key 'FK_composite_fk_order_item' does not match the expected value.",
-        );
+        $db->createCommand()->delete('animal', ['id' => $insertResult['id']])->execute();
     }
 
     public function testInsertReturnsProvidedPrimaryKeyValues(): void
@@ -383,343 +329,145 @@ abstract class BaseSchema extends DatabaseTestCase
         $db->createCommand()->dropTable('test_pk_insert')->execute();
     }
 
-    public function testGetPDOType(): void
+    public function testThrowInvalidCallExceptionWhenGetLastInsertIdOnInactiveConnection(): void
     {
-        $values = [
-            [null, PDO::PARAM_NULL],
-            ['', PDO::PARAM_STR],
-            ['hello', PDO::PARAM_STR],
-            [0, PDO::PARAM_INT],
-            [1, PDO::PARAM_INT],
-            [1337, PDO::PARAM_INT],
-            [true, PDO::PARAM_BOOL],
-            [false, PDO::PARAM_BOOL],
-            [$fp = fopen(__FILE__, 'rb'), PDO::PARAM_LOB],
-        ];
+        $db = $this->getConnection(false, false);
 
-        $schema = $this->getConnection()->schema;
+        $this->expectException(InvalidCallException::class);
+        $this->expectExceptionMessage(
+            'DB Connection is not active.',
+        );
 
-        foreach ($values as $value) {
-            self::assertSame(
-                $value[1],
-                $schema->getPdoType($value[0]),
-                'type for value ' . print_r($value[0], true) . ' does not match.',
-            );
-        }
-
-        fclose($fp);
+        $db->getSchema()->getLastInsertID();
     }
 
-
-    public function testNegativeDefaultValues(): void
+    public function testQuoteSpecialNames(): void
     {
-        $schema = $this->getConnection()->schema;
-
-        $table = $schema->getTableSchema('negative_default_values');
-
-        self::assertSame(
-            -123,
-            $table->getColumn('tinyint_col')->defaultValue,
-            "'defaultValue' of column 'tinyint_col' does not match.",
-        );
-        self::assertSame(
-            -123,
-            $table->getColumn('smallint_col')->defaultValue,
-            "'defaultValue' of column 'smallint_col' does not match.",
-        );
-        self::assertSame(
-            -123,
-            $table->getColumn('int_col')->defaultValue,
-            "'defaultValue' of column 'int_col' does not match.",
-        );
-        self::assertSame(
-            -123,
-            $table->getColumn('bigint_col')->defaultValue,
-            "'defaultValue' of column 'bigint_col' does not match.",
-        );
-        self::assertSame(
-            -12345.6789,
-            $table->getColumn('float_col')->defaultValue,
-            "'defaultValue' of column 'float_col' does not match.",
-        );
-        self::assertEquals(
-            -33.22,
-            $table->getColumn('numeric_col')->defaultValue,
-            "'defaultValue' of column 'numeric_col' does not match.",
-        );
-    }
-
-    /**
-     * @param array<string, array<string, mixed>> $columns Expected column metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
-    public function testColumnSchema(array $columns): void
-    {
-        $table = $this->getConnection(false)->schema->getTableSchema('type', true);
-
-        $expectedColNames = array_keys($columns);
-
-        sort($expectedColNames);
-
-        $colNames = $table->columnNames;
-
-        sort($colNames);
-
-        self::assertSame($expectedColNames, $colNames);
-
-        foreach ($table->columns as $name => $column) {
-            $expected = $columns[$name];
-
-            self::assertSame(
-                $expected['dbType'],
-                $column->dbType,
-                "'dbType' of column {$name} does not match. type is {$column->type}, dbType is {$column->dbType}.",
-            );
-            self::assertSame(
-                $expected['phpType'],
-                $column->phpType,
-                "'phpType' of column {$name} does not match. type is {$column->type}, dbType is {$column->dbType}.",
-            );
-            self::assertSame(
-                $expected['type'],
-                $column->type,
-                "'type' of column {$name} does not match.",
-            );
-            self::assertSame(
-                $expected['allowNull'],
-                $column->allowNull,
-                "'allowNull' of column {$name} does not match.",
-            );
-            self::assertSame(
-                $expected['autoIncrement'],
-                $column->autoIncrement,
-                "'autoIncrement' of column {$name} does not match.",
-            );
-            self::assertSame(
-                $expected['enumValues'],
-                $column->enumValues,
-                "'enumValues' of column {$name} does not match.",
-            );
-            self::assertSame(
-                $expected['size'],
-                $column->size,
-                "'size' of column {$name} does not match.",
-            );
-            self::assertSame(
-                $expected['precision'],
-                $column->precision,
-                "'precision' of column {$name} does not match.",
-            );
-            self::assertSame(
-                $expected['scale'],
-                $column->scale,
-                "'scale' of column {$name} does not match.",
-            );
-
-            if (is_object($expected['defaultValue'])) {
-                self::assertIsObject(
-                    $column->defaultValue,
-                    "'defaultValue' of column {$name} is expected to be an object but it is not.",
-                );
-                self::assertSame(
-                    (string) $expected['defaultValue'],
-                    (string) $column->defaultValue,
-                    "'defaultValue' of column {$name} does not match.",
-                );
-            } else {
-                self::assertSame(
-                    $expected['defaultValue'],
-                    $column->defaultValue,
-                    "'defaultValue' of column {$name} does not match.",
-                );
-            }
-
-            if (isset($expected['dimension'])) {
-                self::assertInstanceOf(
-                    \yii\db\pgsql\ColumnSchema::class,
-                    $column,
-                    "Column {$name} is expected to be an instance of " . \yii\db\pgsql\ColumnSchema::class . '.',
-                );
-                self::assertSame(
-                    $expected['dimension'],
-                    $column->dimension,
-                    "'dimension' of column {$name} does not match.",
-                );
-            }
-        }
-    }
-
-    public function testColumnSchemaDbTypecastWithEmptyCharType(): void
-    {
-        $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
-
-        self::assertSame(
-            '',
-            $columnSchema->dbTypecast(''),
-            "'dbTypecast' did not return the expected empty string for char type.",
-        );
-    }
-
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchemaDbTypecastBooleanPhpType')]
-    public function testColumnSchemaDbTypecastBooleanPhpType(mixed $value, bool $expected): void
-    {
-        $columnSchema = new ColumnSchema(['phpType' => Schema::TYPE_BOOLEAN]);
-
-        self::assertSame(
-            $expected,
-            $columnSchema->dbTypecast($value),
-            "'dbTypecast' did not return the expected boolean.",
-        );
-    }
-
-    public function testFindUniqueIndexes(): void
-    {
-        $db = $this->getConnection();
-
-        try {
-            $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (Exception) {
-        }
-        $db->createCommand()->createTable(
-            'uniqueIndex',
-            [
-                'somecol' => 'string',
-                'someCol2' => 'string',
-            ],
-        )->execute();
-
-        $schema = $db->getSchema();
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-
-        self::assertSame(
-            [],
-            $uniqueIndexes,
-            'There should be no unique indexes in the table.',
-        );
-
-        $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-
-        self::assertEquals(
-            ['somecolUnique' => ['somecol']],
-            $uniqueIndexes,
-            'Unique indexes do not match after creating unique index on "somecol".',
-        );
-
-        // create another column with upper case letter that fails postgres
-        // see https://github.com/yiisoft/yii2/issues/10613
-        $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-
-        self::assertEquals(
-            [
-                'somecolUnique' => ['somecol'],
-                'someCol2Unique' => ['someCol2'],
-            ],
-            $uniqueIndexes,
-            "Unique indexes do not match after creating unique index on 'someCol2'.",
-        );
-
-        // see https://github.com/yiisoft/yii2/issues/13814
-        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol2', true)->execute();
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-
-        self::assertEquals(
-            [
-                'somecolUnique' => ['somecol'],
-                'someCol2Unique' => ['someCol2'],
-                'another unique index' => ['someCol2'],
-            ],
-            $uniqueIndexes,
-            "Unique indexes do not match after creating unique index on 'someCol2'.",
-        );
-    }
-
-    public function testContraintTablesExistance(): void
-    {
-        $tableNames = [
-            'T_constraints_1',
-            'T_constraints_2',
-            'T_constraints_3',
-            'T_constraints_4',
-        ];
-
         $schema = $this->getConnection()->getSchema();
 
-        foreach ($tableNames as $tableName) {
-            $tableSchema = $schema->getTableSchema($tableName);
+        self::assertSame(
+            '{{%profile}}',
+            $schema->quoteTableName('{{%profile}}'),
+            'Table name with Yii prefix placeholder should not be quoted.',
+        );
+        self::assertSame(
+            '',
+            $schema->quoteColumnName(null),
+            'Null column name should be quoted as an empty string.',
+        );
+    }
 
-            $this->assertInstanceOf(
-                TableSchema::class,
-                $tableSchema,
-                "Table schema for '{$tableName}' should be an instance of " . TableSchema::class . '.',
+    public function testQuoteValueFallback(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        $dsn = $db->dsn;
+
+        try {
+            $db->dsn = 'odbc:test';
+
+            self::assertSame(
+                "'it''s'",
+                $schema->quoteValue("it's"),
+                'Fallback quote value should escape single quotes.',
             );
+        } finally {
+            $db->dsn = $dsn;
         }
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraints(
-        string $tableName,
-        string $type,
-        Constraint|bool|array|null $expected,
-    ): void {
-        if ($expected === false) {
-            $this->expectException(NotSupportedException::class);
-        }
+    public function testUnquoteSimpleNames(): void
+    {
+        $schema = $this->getConnection()->getSchema();
 
-        $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
-
-        Assert::metadataEquals(
-            $expected,
-            $constraints,
+        self::assertSame(
+            'profile',
+            $schema->unquoteSimpleTableName($schema->quoteSimpleTableName('profile')),
+            'Quoted table name should be unquoted.',
+        );
+        self::assertSame(
+            'profile',
+            $schema->unquoteSimpleTableName('profile'),
+            'Unquoted table name should stay unchanged.',
+        );
+        self::assertSame(
+            'id',
+            $schema->unquoteSimpleColumnName($schema->quoteSimpleColumnName('id')),
+            'Quoted column name should be unquoted.',
+        );
+        self::assertSame(
+            'id',
+            $schema->unquoteSimpleColumnName('id'),
+            'Unquoted column name should stay unchanged.',
         );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    public function testConvertException(): void
     {
-        if ($expected === false) {
-            $this->expectException(NotSupportedException::class);
-        }
+        $schema = $this->getConnection()->getSchema();
 
-        $db = $this->getConnection(false);
+        $error = array_key_first($schema->exceptionMap);
 
-        $db->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
-        $constraints = $db->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
+        /** @var class-string<Exception> $exceptionClass */
+        $exceptionClass = $schema->exceptionMap[$error];
 
-        Assert::metadataEquals(
-            $expected,
-            $constraints,
+        self::assertInstanceOf(
+            $exceptionClass,
+            $schema->convertException(new \Exception($error), 'SELECT 1'),
+            'Mapped DB exception should be converted to its configured exception class.',
+        );
+        self::assertInstanceOf(
+            Exception::class,
+            $schema->convertException(new \Exception('Generic database error'), 'SELECT 1'),
+            'Generic exception should be converted to DB exception.',
+        );
+
+        $exception = new Exception('Existing DB exception');
+
+        self::assertSame(
+            $exception,
+            $schema->convertException($exception, 'SELECT 1'),
+            'Existing DB exception should not be converted again.',
         );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
+    public function testIsReadQuery(): void
     {
-        if ($expected === false) {
-            $this->expectException(NotSupportedException::class);
-        }
+        $schema = $this->getConnection()->getSchema();
 
-        $db = $this->getConnection(false);
-
-        $db->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
-        $constraints = $db->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
-
-        Assert::metadataEquals(
-            $expected,
-            $constraints,
+        self::assertTrue(
+            $schema->isReadQuery(
+                <<<SQL
+                SELECT * FROM profile
+                SQL,
+            ),
+            'Read statement must yield `true`.',
+        );
+        self::assertTrue(
+            $schema->isReadQuery(
+                <<<SQL
+                SHOW TABLES
+                SQL,
+            ),
+            'Metadata listing statement must yield `true`.',
+        );
+        self::assertTrue(
+            $schema->isReadQuery(
+                <<<SQL
+                DESCRIBE profile
+                SQL,
+            ),
+            'Table inspection statement must yield `true`.',
+        );
+        self::assertFalse(
+            $schema->isReadQuery(
+                <<<SQL
+                UPDATE profile SET description = description
+                SQL,
+            ),
+            'Write statement must yield `false`.',
         );
     }
 }

@@ -10,16 +10,14 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\mysql;
 
-use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\Expression;
+use yii\db\TableSchema;
 use yii\db\mysql\ColumnSchema;
-use yii\db\mysql\QueryBuilder;
 use yii\db\mysql\Schema;
 use yiiunit\base\db\BaseSchema;
-use yiiunit\framework\db\mysql\providers\SchemaProvider;
 
 /**
  * Unit test for {@see \yii\db\mysql\Schema} schema reflection and metadata retrieval for the MySQL driver.
@@ -141,66 +139,46 @@ final class SchemaTest extends BaseSchema
         $this->getConnection()->getSchema()->getSchemaNames();
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraints(string $tableName, string $type, mixed $expected): void
+    public function testResolveAndFindTableNamesWithDatabaseName(): void
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this->getConnection(false)->getQueryBuilder();
+        $db = $this->getConnection();
 
-        parent::testTableSchemaConstraints(
-            $tableName,
-            $type,
-            SchemaProvider::prepareConstraintsExpected(
-                $qb->isMariaDb(),
-                $tableName,
-                $type,
-                $expected,
-            ),
+        $databaseName = (string) $db->createCommand('SELECT DATABASE()')->queryScalar();
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $schema,
+            'Schema should support constraint metadata retrieval.',
         );
-    }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
-    {
-        /** @var QueryBuilder $qb */
-        $qb = $this->getConnection(false)->getQueryBuilder();
-
-        parent::testTableSchemaConstraintsWithPdoUppercase(
-            $tableName,
-            $type,
-            SchemaProvider::prepareConstraintsExpected(
-                $qb->isMariaDb(),
-                $tableName,
-                $type,
-                $expected,
-            ),
+        self::assertContains(
+            'profile',
+            $schema->getTableNames($databaseName, true),
+            "Table 'profile' should be present when listing tables with an explicit database name.",
         );
-    }
+        self::assertSame(
+            ['id'],
+            $schema->getTablePrimaryKey("`{$databaseName}`.`profile`", true)->columnNames,
+            "Primary key metadata should be reflected with an explicit database name.",
+        );
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
-    {
-        /** @var QueryBuilder $qb */
-        $qb = $this->getConnection(false)->getQueryBuilder();
+        $table = $schema->getTableSchema("`{$databaseName}`.`profile`", true);
 
-        parent::testTableSchemaConstraintsWithPdoLowercase(
-            $tableName,
-            $type,
-            SchemaProvider::prepareConstraintsExpected(
-                $qb->isMariaDb(),
-                $tableName,
-                $type,
-                $expected,
-            ),
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table schema should be loadable with an explicit database name.',
+        );
+        self::assertSame(
+            $databaseName,
+            $table->schemaName,
+            'Loaded table schema should keep the explicit database name.',
+        );
+        self::assertSame(
+            'profile',
+            $table->name,
+            'Loaded table name should match expected value.',
         );
     }
 
@@ -298,53 +276,28 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    /**
-     * Real counterpart to {@see testAlternativeDisplayOfDefaultCurrentTimestampInMariaDB}: on MariaDB >= 10.2.3,
-     * `SHOW FULL COLUMNS` reports a `CURRENT_TIMESTAMP` default as the lowercase `current_timestamp()` form, which must
-     * still normalize to an {@see Expression}. Skipped on MySQL, which never emits that form.
-     *
-     * @see https://mariadb.com/kb/en/now/#description
-     */
-    public function testLoadDefaultCurrentTimestampOnMariaDB(): void
+    public function testLoadDefaultCurrentTimestamp(): void
     {
-        /** @var QueryBuilder $qb */
-        $qb = $this->getConnection(false)->getQueryBuilder();
-
-        if ($qb->isMariaDb() === false) {
-            $this->markTestSkipped('Test requires MariaDB.');
-        }
-
         $sql = <<<SQL
-        CREATE TABLE IF NOT EXISTS `mariadb_current_timestamp_test` (
+        CREATE TABLE IF NOT EXISTS `current_timestamp_default_test` (
             `dt` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8
         SQL;
 
         $this->getConnection()->createCommand($sql)->execute();
 
-        $column = $this->getConnection()->getTableSchema('mariadb_current_timestamp_test')->columns['dt'];
+        $column = $this->getConnection()->getTableSchema('current_timestamp_default_test', true)->columns['dt'];
 
         self::assertInstanceOf(
             Expression::class,
             $column->defaultValue,
-            'Lowercase form must yield an Expression.',
+            'CURRENT_TIMESTAMP default must yield an Expression.',
         );
         self::assertSame(
             'CURRENT_TIMESTAMP',
             (string) $column->defaultValue,
-            'Expression must normalize to CURRENT_TIMESTAMP.',
+            'CURRENT_TIMESTAMP default expression must be normalized.',
         );
     }
 
-    /**
-     * @param array<string, array<string, mixed>> $columns Expected column metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
-    public function testColumnSchema(array $columns): void
-    {
-        /** @var QueryBuilder $qb */
-        $qb = $this->getConnection(false)->getQueryBuilder();
-
-        parent::testColumnSchema(SchemaProvider::prepareColumnSchema($qb->isMariaDb(), $columns));
-    }
 }

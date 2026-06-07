@@ -14,11 +14,8 @@ use yii\db\Expression;
 
 /**
  * Data provider for {@see \yiiunit\framework\db\sqlite\ColumnSchemaTest} test cases.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
-final class ColumnSchemaProvider
+final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchemaProvider
 {
     /**
      * @return array<string, array{string, string, string, mixed, mixed}>
@@ -293,5 +290,55 @@ final class ColumnSchemaProvider
                 42,
             ],
         ];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function expectedColumns(): array
+    {
+        $columns = parent::expectedColumns();
+
+        unset($columns['enum_col']);
+        unset($columns['bit_col']);
+        unset($columns['json_col']);
+
+        $columns['int_col']['dbType'] = 'integer';
+        $columns['int_col']['size'] = null;
+        $columns['int_col']['precision'] = null;
+        $columns['int_col2']['dbType'] = 'integer';
+        $columns['int_col2']['size'] = null;
+        $columns['int_col2']['precision'] = null;
+        $columns['bool_col']['type'] = 'boolean';
+        $columns['bool_col']['phpType'] = 'boolean';
+        $columns['bool_col2']['type'] = 'boolean';
+        $columns['bool_col2']['phpType'] = 'boolean';
+        $columns['bool_col2']['defaultValue'] = true;
+        $columns['bit32'] = [
+            'type' => 'integer',
+            'dbType' => 'bit(32)',
+            'phpType' => 'integer',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => 32,
+            'precision' => 32,
+            'scale' => null,
+            'defaultValue' => null,
+        ];
+        $columns['bit33'] = [
+            'type' => 'bigint',
+            'dbType' => 'bit(33)',
+            'phpType' => 'integer',
+            'allowNull' => true,
+            'autoIncrement' => false,
+            'enumValues' => null,
+            'size' => 33,
+            'precision' => 33,
+            'scale' => null,
+            'defaultValue' => null,
+        ];
+
+        return $columns;
     }
 }

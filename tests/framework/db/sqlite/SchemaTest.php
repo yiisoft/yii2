@@ -13,8 +13,9 @@ namespace yiiunit\framework\db\sqlite;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
-use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\Expression;
+use yii\db\Transaction;
 use yii\db\sqlite\Schema;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\framework\db\sqlite\providers\SchemaProvider;
@@ -39,45 +40,16 @@ final class SchemaTest extends BaseSchema
         $this->getConnection()->getSchema()->getSchemaNames();
     }
 
-    /**
-     * @param array<string, array<string, mixed>> $columns Expected column metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
-    public function testColumnSchema(array $columns): void
-    {
-        parent::testColumnSchema($columns);
-    }
-
-    public function testCompositeFk(): void
+    public function testThrowNotSupportedExceptionWhenResolveTableNameIsNotSupported(): void
     {
         $schema = $this->getConnection()->getSchema();
 
-        $table = $schema->getTableSchema('composite_fk');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            Schema::class . ' does not support resolving table names.',
+        );
 
-        self::assertCount(
-            1,
-            $table->foreignKeys,
-            'There must be exactly one foreign key defined for the table.',
-        );
-        self::assertTrue(
-            isset($table->foreignKeys[0]),
-            'Foreign key must be defined.',
-        );
-        self::assertEquals(
-            'order_item',
-            $table->foreignKeys[0][0],
-            'Referenced table name does not match.',
-        );
-        self::assertEquals(
-            'order_id',
-            $table->foreignKeys[0]['order_id'],
-            'Referenced column name does not match.',
-        );
-        self::assertEquals(
-            'item_id',
-            $table->foreignKeys[0]['item_id'],
-            'Referenced column name does not match.',
-        );
+        $this->invokeMethod($schema, 'resolveTableName', ['profile']);
     }
 
     public function testCurrentTimestampLowercaseDefaultValue(): void
@@ -279,34 +251,55 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraints(
-        string $tableName,
-        string $type,
-        Constraint|bool|array|null $expected,
-    ): void {
-        parent::testTableSchemaConstraints($tableName, $type, $expected);
+    public function testLoadTableChecksReturnsEmptyForViews(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $schema,
+            'Schema should support constraint metadata retrieval.',
+        );
+
+        self::assertSame(
+            [],
+            $schema->getTableChecks('animal_view', true),
+            'Views should not expose table check constraints.',
+        );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    public function testNamedCheckConstraint(): void
     {
-        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
+        $schema = $this->getConnection()->schema;
+
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $schema,
+            'Schema should support constraint metadata retrieval.',
+        );
+
+        $checks = $schema->getTableChecks('T_check_constraint', true);
+
+        self::assertCount(
+            1,
+            $checks,
+            'Exactly one check constraint should be reflected.',
+        );
+        self::assertSame(
+            'ck_named_value',
+            $checks[0]->name,
+            'Named check constraint should keep its name.',
+        );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
+    public function testThrowNotSupportedExceptionWhenSettingUnsupportedTransactionIsolationLevel(): void
     {
-        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            Schema::class . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.',
+        );
+
+        $this->getConnection()->getSchema()->setTransactionIsolationLevel(Transaction::READ_COMMITTED);
     }
 
     /**

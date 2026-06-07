@@ -52,9 +52,6 @@ class ActiveRecordTest extends BaseActiveRecord
 
     public function testJsonColumn(): void
     {
-        if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
-            $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');
-        }
         $data = [
             'obj' => ['a' => ['b' => ['c' => 2.7418]]],
             'array' => [1,2,null,3],

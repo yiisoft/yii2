@@ -10,6 +10,7 @@ namespace yiiunit\framework\db\mssql;
 
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\IntegrityException;
 use yiiunit\data\ar\TestTrigger;
 use yiiunit\data\ar\TestTriggerAlert;
 use yiiunit\data\ar\Type;
@@ -24,9 +25,24 @@ class ActiveRecordTest extends BaseActiveRecord
     public $driverName = 'sqlsrv';
     protected static string $driverNameStatic = 'sqlsrv';
 
+    /**
+     * MSSQL rejects an explicit value for an `IDENTITY` column while `IDENTITY_INSERT` is `OFF`.
+     */
     public function testExplicitPkOnAutoIncrement(): void
     {
-        $this->markTestSkipped('MSSQL does not support explicit value for an IDENTITY column.');
+        $customerClass = $this->getCustomerClass();
+
+        $customer = new $customerClass();
+
+        $customer->id = 1337;
+        $customer->email = 'user1337@example.com';
+        $customer->name = 'user1337';
+        $customer->address = 'address1337';
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessage('Cannot insert explicit value for identity column');
+
+        $customer->save();
     }
 
     public function testCastValues(): void

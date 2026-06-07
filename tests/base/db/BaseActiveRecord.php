@@ -1920,9 +1920,13 @@ abstract class BaseActiveRecord extends DatabaseTestCase
     public function testAmbiguousColumnIndexBy(): void
     {
         switch ($this->driverName) {
+            case 'oci':
             case 'pgsql':
             case 'sqlite':
-                $selectExpression = "(customer.name || ' in ' || p.description) AS name";
+                $selectExpression = "({{customer}}.[[name]] || ' in ' || {{p}}.[[description]]) AS [[name]]";
+                break;
+            case 'sqlsrv':
+                $selectExpression = "({{customer}}.[[name]] + ' in ' + {{p}}.[[description]]) AS [[name]]";
                 break;
             case 'cubird':
             case 'mysql':

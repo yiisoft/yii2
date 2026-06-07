@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
+DROP TABLE IF EXISTS "fk_to_schema2" CASCADE;
 DROP TABLE IF EXISTS "T_upsert";
 DROP TABLE IF EXISTS "T_upsert_1";
 DROP TABLE IF EXISTS "generated" CASCADE;
@@ -458,3 +459,11 @@ CREATE TABLE "schema2"."custom_type_test_table" (
 INSERT INTO "schema2"."custom_type_test_table" ("test_type")
 VALUES (array['VAL2']::"schema2"."my_type"[]);
 
+CREATE TABLE "schema2"."fk_ref" (
+    "id" integer PRIMARY KEY
+);
+
+CREATE TABLE "fk_to_schema2" (
+    "id" serial PRIMARY KEY,
+    "ref_id" integer REFERENCES "schema2"."fk_ref" ("id")
+);

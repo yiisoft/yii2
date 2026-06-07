@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\sqlite;
 
 use PHPUnit\Framework\Attributes\Group;
+use yii\db\Exception;
 use yii\db\Query;
 use yiiunit\base\db\BaseQuery;
 
@@ -20,9 +21,27 @@ use yiiunit\base\db\BaseQuery;
 #[Group('db')]
 #[Group('sqlite')]
 #[Group('query')]
-class QueryTest extends BaseQuery
+final class QueryTest extends BaseQuery
 {
     protected $driverName = 'sqlite';
+
+    /**
+     * SQLite rejects `HAVING` on non-aggregate queries instead of treating the result as a single group.
+     */
+    public function testCountHavingWithoutGroupBy(): void
+    {
+        $db = $this->getConnection();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            'HAVING clause on a non-aggregate query',
+        );
+
+        (new Query())
+            ->from('customer')
+            ->having(['status' => 2])
+            ->count('*', $db);
+    }
 
     public function testLimitOffsetExecution(): void
     {

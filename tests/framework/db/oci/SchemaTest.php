@@ -10,13 +10,10 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\oci;
 
-use Exception;
-use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
-use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
+use yii\db\TableSchema;
 use yiiunit\base\db\BaseSchema;
-use yiiunit\framework\db\oci\providers\SchemaProvider;
 
 use function array_filter;
 use function array_values;
@@ -30,15 +27,6 @@ use function array_values;
 final class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
-
-    /**
-     * @param array<string, array<string, mixed>> $columns Expected column metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
-    public function testColumnSchema(array $columns): void
-    {
-        parent::testColumnSchema($columns);
-    }
 
     public function testGetTableSequenceNameResolvesIdentityColumnForModernTable(): void
     {
@@ -83,97 +71,60 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraints(
-        string $tableName,
-        string $type,
-        Constraint|bool|array|null $expected,
-    ): void {
-        parent::testTableSchemaConstraints($tableName, $type, $expected);
-    }
-
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    public function testResolveAndFindTableNamesWithExplicitSchema(): void
     {
-        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
-    }
+        $schema = $this->getConnection()->getSchema();
+        $schemaName = $schema->defaultSchema;
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
-    {
-        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
-    }
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $schema,
+            'Schema should support constraint metadata retrieval.',
+        );
 
-    public function testFindUniqueIndexes(): void
-    {
-        $db = $this->getConnection();
-
-        try {
-            $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (Exception) {
-        }
-        $db->createCommand()->createTable(
-            'uniqueIndex',
-            [
-                'somecol' => 'string',
-                'someCol2' => 'string',
-                'someCol3' => 'string',
-            ],
-        )->execute();
-
-        $schema = $db->getSchema();
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-
+        self::assertContains(
+            'profile',
+            $schema->getTableNames($schemaName, true),
+            "Table 'profile' should be present when listing tables with an explicit schema name.",
+        );
         self::assertSame(
-            [],
-            $uniqueIndexes,
-            'There should be no unique indexes in the table.',
+            ['id'],
+            $schema->getTablePrimaryKey("{$schemaName}.profile", true)->columnNames,
+            'Primary key metadata should be reflected with an explicit schema name.',
         );
 
-        $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $table = $schema->getTableSchema("{$schemaName}.profile", true);
 
-        self::assertEquals(
-            ['somecolUnique' => ['somecol']],
-            $uniqueIndexes,
-            'Unique indexes do not match after creating unique index on "somecol".',
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table schema should be loadable with an explicit schema name.',
         );
-
-        // create another column with upper case letter that fails postgres
-        // see https://github.com/yiisoft/yii2/issues/10613
-        $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-
-        self::assertEquals(
-            [
-                'somecolUnique' => ['somecol'],
-                'someCol2Unique' => ['someCol2'],
-            ],
-            $uniqueIndexes,
-            "Unique indexes do not match after creating unique index on 'someCol2'.",
+        self::assertSame(
+            $schemaName,
+            $table->schemaName,
+            'Loaded table schema should keep the explicit schema name.',
         );
+        self::assertSame(
+            'profile',
+            $table->name,
+            'Loaded table name should match expected value.',
+        );
+    }
 
-        // see https://github.com/yiisoft/yii2/issues/13814
-        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol3', true)->execute();
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+    public function testIntegerDataTypeColumn(): void
+    {
+        $table = $this->getConnection()->getSchema()->getTableSchema('employee');
 
-        self::assertEquals(
-            [
-                'somecolUnique' => ['somecol'],
-                'someCol2Unique' => ['someCol2'],
-                'another unique index' => ['someCol3'],
-            ],
-            $uniqueIndexes,
-            "Unique indexes do not match after creating unique index on 'someCol3'.",
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Employee fixture table should be loadable.',
+        );
+        self::assertSame(
+            'integer',
+            $table->columns['id']->type,
+            "An 'INTEGER' fixture column should be reflected as an integer.",
         );
     }
 
@@ -300,39 +251,5 @@ final class SchemaTest extends BaseSchema
         );
 
         $db->createCommand()->dropTable('cr_pk_default')->execute();
-    }
-
-    public function testCompositeFk(): void
-    {
-        $schema = $this->getConnection()->getSchema();
-
-        $table = $schema->getTableSchema('composite_fk');
-
-        $foreignKey = 'tableName';
-
-        self::assertCount(
-            1,
-            $table->foreignKeys,
-            'Number of foreign keys does not match the expected count.',
-        );
-        self::assertTrue(
-            isset($table->foreignKeys[$foreignKey]),
-            "Foreign key '{$foreignKey}' is missing in the table schema.",
-        );
-        self::assertSame(
-            'order_item',
-            $table->foreignKeys[$foreignKey][0],
-            "Referenced table name for foreign key '{$foreignKey}' does not match the expected value.",
-        );
-        self::assertSame(
-            'order_id',
-            $table->foreignKeys[$foreignKey]['order_id'],
-            "Referenced column name for foreign key '{$foreignKey}' does not match the expected value.",
-        );
-        self::assertSame(
-            'item_id',
-            $table->foreignKeys[$foreignKey]['item_id'],
-            "Referenced column name for foreign key '{$foreignKey}' does not match the expected value.",
-        );
     }
 }

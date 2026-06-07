@@ -12,6 +12,7 @@ use yiiunit\framework\db\DatabaseTestCase;
 use PDO;
 use Throwable;
 use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yiiunit\framework\db\enums\Status;
 use yiiunit\framework\db\enums\StatusTypeString;
 use yiiunit\framework\db\enums\StatusTypeInt;
@@ -26,6 +27,10 @@ use yii\db\Query;
 use yii\db\Schema;
 use yii\db\TableSchema;
 
+/**
+ * Base unit tests for {@see \yii\db\Command} query execution, parameter binding, and DDL operations across all
+ * database drivers.
+ */
 abstract class BaseCommand extends DatabaseTestCase
 {
     protected $upsertTestCharCast = 'CAST([[address]] AS VARCHAR(255))';
@@ -1361,10 +1366,6 @@ SQL;
     {
         $db = $this->getConnection(false);
 
-        if ($db->getDriverName() === 'mysql' && version_compare($db->getServerVersion(), '8.0.16', '<')) {
-            $this->markTestSkipped('MySQL < 8.0.16 does not support CHECK constraints.');
-        }
-
         $tableName = 'test_ck';
         $name = 'test_ck_constraint';
 
@@ -1394,7 +1395,14 @@ SQL;
 
     public function testAddDropDefaultValue(): void
     {
-        $this->markTestSkipped($this->driverName . ' does not support adding/dropping default value constraints.');
+        $db = $this->getConnection();
+
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessageMatches(
+            '/does not support adding default value constraints\.$|::addDefaultValue is not supported by SQLite\.$/',
+        );
+
+        $db->createCommand()->addDefaultValue('test_def_constraint', 'profile', 'description', 'def');
     }
 
     public function testIntegrityViolation(): void

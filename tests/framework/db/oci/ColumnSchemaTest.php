@@ -17,23 +17,29 @@ use yii\db\Expression;
 use yii\db\PdoValue;
 use yii\db\oci\ColumnSchema;
 use yii\db\oci\Schema;
-use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\oci\providers\ColumnSchemaProvider;
 
 /**
  * Unit tests for {@see \yii\db\oci\ColumnSchema} BLOB binding and default value type-casting for the Oracle driver.
  *
  * {@see ColumnSchemaProvider} for test case data providers.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
 #[Group('db')]
 #[Group('oci')]
 #[Group('column-schema')]
-final class ColumnSchemaTest extends DatabaseTestCase
+final class ColumnSchemaTest extends BaseColumnSchema
 {
     protected $driverName = 'oci';
+
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
+    {
+        parent::testColumnSchema($columns);
+    }
 
     #[DataProviderExternal(ColumnSchemaProvider::class, 'dbTypecast')]
     public function testDbTypecast(string $type, string $dbType, mixed $value, mixed $expected): void

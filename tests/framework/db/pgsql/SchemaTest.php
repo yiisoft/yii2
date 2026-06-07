@@ -13,19 +13,23 @@ namespace yiiunit\framework\db\pgsql;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
-use yii\db\Constraint;
+use yii\db\ConstraintFinderInterface;
 use yii\db\Expression;
+use yii\db\pgsql\Schema as PgsqlSchema;
+use yii\db\TableSchema;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\framework\db\pgsql\providers\SchemaProvider;
 
+use function fclose;
+use function print_r;
+
 /**
  * Unit tests for {@see \yii\db\pgsql\Schema} schema reflection and metadata retrieval for the PostgreSQL driver.
  *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
+ * {@see SchemaProvider} for test case data providers.
  */
 #[Group('db')]
 #[Group('pgsql')]
@@ -40,28 +44,6 @@ final class SchemaTest extends BaseSchema
     protected array $expectedSchemas = [
         'public',
     ];
-
-    /**
-     * @param array<string, array<string, mixed>> $columns Expected column metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'columnSchema')]
-    public function testColumnSchema(array $columns): void
-    {
-        parent::testColumnSchema($columns);
-    }
-
-    public function testCompositeFk(): void
-    {
-        $schema = $this->getConnection()->schema;
-
-        $table = $schema->getTableSchema('composite_fk');
-
-        $this->assertCount(1, $table->foreignKeys);
-        $this->assertTrue(isset($table->foreignKeys['fk_composite_fk_order_item']));
-        $this->assertEquals('order_item', $table->foreignKeys['fk_composite_fk_order_item'][0]);
-        $this->assertEquals('order_id', $table->foreignKeys['fk_composite_fk_order_item']['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys['fk_composite_fk_order_item']['item_id']);
-    }
 
     public function testGetPDOType(): void
     {
@@ -80,8 +62,13 @@ final class SchemaTest extends BaseSchema
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
-            $this->assertEquals($value[1], $schema->getPdoType($value[0]));
+            self::assertSame(
+                $value[1],
+                $schema->getPdoType($value[0]),
+                'PDO type for value ' . print_r($value[0], true) . ' does not match.',
+            );
         }
+
         fclose($fp);
     }
 
@@ -90,8 +77,15 @@ final class SchemaTest extends BaseSchema
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('bool_values');
-        $this->assertTrue($table->getColumn('default_true')->defaultValue);
-        $this->assertFalse($table->getColumn('default_false')->defaultValue);
+
+        self::assertTrue(
+            $table->getColumn('default_true')->defaultValue,
+            "Default must be native 'true'.",
+        );
+        self::assertFalse(
+            $table->getColumn('default_false')->defaultValue,
+            "Default must be native 'false'.",
+        );
     }
 
     public function testSequenceName(): void
@@ -100,14 +94,31 @@ final class SchemaTest extends BaseSchema
 
         $sequenceName = $connection->schema->getTableSchema('item')->sequenceName;
 
-        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'item_id_seq_2\')')->execute();
-
+        $connection->createCommand(
+            <<<SQL
+            ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval('item_id_seq_2')
+            SQL
+        )->execute();
         $connection->schema->refreshTableSchema('item');
-        $this->assertEquals('item_id_seq_2', $connection->schema->getTableSchema('item')->sequenceName);
 
-        $connection->createCommand('ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval(\'' . $sequenceName . '\')')->execute();
+        self::assertSame(
+            'item_id_seq_2',
+            $connection->schema->getTableSchema('item')->sequenceName,
+            'Sequence name must follow the redefined column default.',
+        );
+
+        $connection->createCommand(
+            <<<SQL
+            ALTER TABLE "item" ALTER COLUMN "id" SET DEFAULT nextval('{$sequenceName}')
+            SQL
+        )->execute();
         $connection->schema->refreshTableSchema('item');
-        $this->assertEquals($sequenceName, $connection->schema->getTableSchema('item')->sequenceName);
+
+        self::assertSame(
+            $sequenceName,
+            $connection->schema->getTableSchema('item')->sequenceName,
+            'Sequence name must be restored after reverting the default.',
+        );
     }
 
     public function testGeneratedValues(): void
@@ -144,44 +155,99 @@ final class SchemaTest extends BaseSchema
     {
         $schema = $this->getConnection()->schema;
 
-        $this->assertCount(3, $schema->getSchemaNames());
+        self::assertCount(
+            3,
+            $schema->getSchemaNames(),
+            'Number of schema names does not match.',
+        );
     }
 
-    public static function bigintValueProvider(): array
+    public function testGetViewNamesWithDefaultSchema(): void
     {
-        return [
-            [8_817_806_877],
-            [3_797_444_208],
-            [3_199_585_540],
-            [1_389_831_585],
-            [922_337_203_685_477_580],
-            [9_223_372_036_854_775_807],
-            [-9_223_372_036_854_775_808.0],
-        ];
+        $schema = $this->getConnection()->getSchema();
+
+        self::assertInstanceOf(
+            PgsqlSchema::class,
+            $schema,
+            'Schema should support view metadata retrieval.',
+        );
+
+        self::assertContains(
+            'animal_view',
+            $schema->getViewNames(),
+            "View 'animal_view' should be present in the default schema.",
+        );
+    }
+
+    public function testGetTableSchemasWithNonDefaultSchema(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $tables = $schema->getTableSchemas('schema1', true);
+
+        self::assertSame(
+            $schema->getTableNames('schema1', true),
+            array_map(static fn(TableSchema $table): string => $table->name, $tables),
+            'Table schemas from a non-default schema should match table names from that schema.',
+        );
+        self::assertNotEmpty(
+            $tables,
+            "Schema 'schema1' should contain table schemas.",
+        );
+
+        foreach ($tables as $table) {
+            self::assertInstanceOf(
+                TableSchema::class,
+                $table,
+                'Table schema should be an instance of ' . TableSchema::class . '.',
+            );
+            self::assertSame(
+                'schema1',
+                $table->schemaName,
+                'Table schema should keep the non-default schema name.',
+            );
+            self::assertSame(
+                "schema1.{$table->name}",
+                $table->fullName,
+                'Table schema full name should be prefixed with the non-default schema name.',
+            );
+        }
     }
 
     /**
-     * @dataProvider bigintValueProvider
-     *
      * @param int|float $bigint Bigint value to test.
      */
+    #[DataProviderExternal(SchemaProvider::class, 'bigintValue')]
     public function testBigintValue(int|float $bigint): void
     {
         $this->mockApplication();
+
         ActiveRecord::$db = $this->getConnection();
 
         Type::deleteAll();
 
         $type = new Type();
-        $type->setAttributes([
-            'bigint_col' => $bigint,
-            // whatever just to satisfy NOT NULL columns
-            'int_col' => 1, 'char_col' => 'a', 'float_col' => 0.1, 'bool_col' => true,
-        ], false);
+
+        $type->setAttributes(
+            [
+                'bigint_col' => $bigint,
+                // whatever just to satisfy NOT NULL columns
+                'int_col' => 1,
+                'char_col' => 'a',
+                'float_col' => 0.1,
+                'bool_col' => true,
+            ],
+            false,
+        );
         $type->save(false);
 
         $actual = Type::find()->one();
-        $this->assertEquals($bigint, $actual->bigint_col);
+
+        self::assertEquals(
+            $bigint,
+            $actual->bigint_col,
+            'Stored value must roundtrip unchanged.',
+        );
     }
 
     /**
@@ -190,23 +256,48 @@ final class SchemaTest extends BaseSchema
     public function testParenthesisDefaultValue(): void
     {
         $db = $this->getConnection(false);
+
         if ($db->schema->getTableSchema('test_default_parenthesis') !== null) {
             $db->createCommand()->dropTable('test_default_parenthesis')->execute();
         }
 
-        $db->createCommand()->createTable('test_default_parenthesis', [
-            'id' => 'pk',
-            'user_timezone' => 'numeric(5,2) DEFAULT (0)::numeric NOT NULL',
-        ])->execute();
+        $db->createCommand()->createTable(
+            'test_default_parenthesis',
+            [
+                'id' => 'pk',
+                'user_timezone' => 'numeric(5,2) DEFAULT (0)::numeric NOT NULL',
+            ],
+        )->execute();
 
         $db->schema->refreshTableSchema('test_default_parenthesis');
+
         $tableSchema = $db->schema->getTableSchema('test_default_parenthesis');
-        $this->assertNotNull($tableSchema);
+
+        self::assertNotNull(
+            $tableSchema,
+            'Table schema must be loadable.',
+        );
+
         $column = $tableSchema->getColumn('user_timezone');
-        $this->assertNotNull($column);
-        $this->assertFalse($column->allowNull);
-        $this->assertEquals('numeric', $column->dbType);
-        $this->assertEquals(0, $column->defaultValue);
+
+        self::assertNotNull(
+            $column,
+            'Column must be present in the table schema.',
+        );
+        self::assertFalse(
+            $column->allowNull,
+            'Column must not allow `null`.',
+        );
+        self::assertSame(
+            'numeric',
+            $column->dbType,
+            "'dbType' does not match.",
+        );
+        self::assertEquals(
+            0,
+            $column->defaultValue,
+            'Parenthesized default must typecast to its numeric value.',
+        );
     }
 
     /**
@@ -215,18 +306,27 @@ final class SchemaTest extends BaseSchema
     public function testTimestampNullDefaultValue(): void
     {
         $db = $this->getConnection(false);
+
         if ($db->schema->getTableSchema('test_timestamp_default_null') !== null) {
             $db->createCommand()->dropTable('test_timestamp_default_null')->execute();
         }
 
-        $db->createCommand()->createTable('test_timestamp_default_null', [
-            'id' => 'pk',
-            'timestamp' => 'timestamp DEFAULT NULL',
-        ])->execute();
+        $db->createCommand()->createTable(
+            'test_timestamp_default_null',
+            [
+                'id' => 'pk',
+                'timestamp' => 'timestamp DEFAULT NULL',
+            ],
+        )->execute();
 
         $db->schema->refreshTableSchema('test_timestamp_default_null');
+
         $tableSchema = $db->schema->getTableSchema('test_timestamp_default_null');
-        $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
+
+        self::assertNull(
+            $tableSchema->getColumn('timestamp')->defaultValue,
+            '`DEFAULT NULL` must yield `null`.',
+        );
     }
 
     /**
@@ -235,18 +335,28 @@ final class SchemaTest extends BaseSchema
     public function testTimestampUtcNowDefaultValue(): void
     {
         $db = $this->getConnection(false);
+
         if ($db->schema->getTableSchema('test_timestamp_utc_now_default') !== null) {
             $db->createCommand()->dropTable('test_timestamp_utc_now_default')->execute();
         }
 
-        $db->createCommand()->createTable('test_timestamp_utc_now_default', [
-            'id' => 'pk',
-            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, now()) NOT NULL',
-        ])->execute();
+        $db->createCommand()->createTable(
+            'test_timestamp_utc_now_default',
+            [
+                'id' => 'pk',
+                'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, now()) NOT NULL',
+            ],
+        )->execute();
 
         $db->schema->refreshTableSchema('test_timestamp_utc_now_default');
+
         $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_now_default');
-        $this->assertEquals(new Expression('timezone(\'UTC\'::text, now())'), $tableSchema->getColumn('timestamp')->defaultValue);
+
+        self::assertEquals(
+            new Expression('timezone(\'UTC\'::text, now())'),
+            $tableSchema->getColumn('timestamp')->defaultValue,
+            'Default must be preserved as an expression.',
+        );
     }
 
     /**
@@ -255,18 +365,28 @@ final class SchemaTest extends BaseSchema
     public function testTimestampNowDefaultValue(): void
     {
         $db = $this->getConnection(false);
+
         if ($db->schema->getTableSchema('test_timestamp_now_default') !== null) {
             $db->createCommand()->dropTable('test_timestamp_now_default')->execute();
         }
 
-        $db->createCommand()->createTable('test_timestamp_now_default', [
-            'id' => 'pk',
-            'timestamp' => 'timestamp DEFAULT now()',
-        ])->execute();
+        $db->createCommand()->createTable(
+            'test_timestamp_now_default',
+            [
+                'id' => 'pk',
+                'timestamp' => 'timestamp DEFAULT now()',
+            ],
+        )->execute();
 
         $db->schema->refreshTableSchema('test_timestamp_now_default');
+
         $tableSchema = $db->schema->getTableSchema('test_timestamp_now_default');
-        $this->assertEquals(new Expression('now()'), $tableSchema->getColumn('timestamp')->defaultValue);
+
+        self::assertEquals(
+            new Expression('now()'),
+            $tableSchema->getColumn('timestamp')->defaultValue,
+            'Default must be preserved as an expression.',
+        );
     }
 
     /**
@@ -275,18 +395,28 @@ final class SchemaTest extends BaseSchema
     public function testTimestampUtcStringDefaultValue(): void
     {
         $db = $this->getConnection(false);
+
         if ($db->schema->getTableSchema('test_timestamp_utc_string_default') !== null) {
             $db->createCommand()->dropTable('test_timestamp_utc_string_default')->execute();
         }
 
-        $db->createCommand()->createTable('test_timestamp_utc_string_default', [
-            'id' => 'pk',
-            'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone) NOT NULL',
-        ])->execute();
+        $db->createCommand()->createTable(
+            'test_timestamp_utc_string_default',
+            [
+                'id' => 'pk',
+                'timestamp' => 'timestamp DEFAULT timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone) NOT NULL',
+            ],
+        )->execute();
 
         $db->schema->refreshTableSchema('test_timestamp_utc_string_default');
+
         $tableSchema = $db->schema->getTableSchema('test_timestamp_utc_string_default');
-        $this->assertEquals(new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'), $tableSchema->getColumn('timestamp')->defaultValue);
+
+        self::assertEquals(
+            new Expression('timezone(\'UTC\'::text, \'1970-01-01 00:00:00+00\'::timestamp with time zone)'),
+            $tableSchema->getColumn('timestamp')->defaultValue,
+            'Default must be preserved as an expression.',
+        );
     }
 
     public function testCurrentDateDefaultValue(): void
@@ -360,6 +490,7 @@ final class SchemaTest extends BaseSchema
         )->execute();
 
         $db->schema->refreshTableSchema('test_default_bit');
+
         $tableSchema = $db->schema->getTableSchema('test_default_bit');
 
         self::assertSame(
@@ -454,50 +585,90 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraints(
-        string $tableName,
-        string $type,
-        Constraint|bool|array|null $expected,
-    ): void {
-        parent::testTableSchemaConstraints($tableName, $type, $expected);
+    public function testConstraintMetadataWithPdoUppercase(): void
+    {
+        $db = $this->getConnection(false);
+
+        $pdo = $db->getSlavePdo(true);
+        $case = $pdo->getAttribute(PDO::ATTR_CASE);
+
+        try {
+            $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+
+            $table = $db->schema->getTableSchema('type', true);
+
+            self::assertArrayHasKey(
+                'int_col',
+                $table->columns,
+                "Column metadata should be normalized when 'PDO::ATTR_CASE' is uppercase.",
+            );
+
+            $schema = $db->schema;
+
+            self::assertInstanceOf(
+                ConstraintFinderInterface::class,
+                $schema,
+                'Schema should support constraint metadata retrieval.',
+            );
+
+            $foreignKeys = $schema->getTableForeignKeys('composite_fk', true);
+
+            self::assertNotEmpty(
+                $foreignKeys,
+                'Foreign keys should be reflected when PDO returns uppercase keys.',
+            );
+
+            $uniqueIndexes = $db->schema->findUniqueIndexes($db->schema->getTableSchema('T_upsert', true));
+
+            self::assertNotEmpty(
+                $uniqueIndexes,
+                'Unique indexes should be reflected when PDO returns uppercase keys.',
+            );
+        } finally {
+            $pdo->setAttribute(PDO::ATTR_CASE, $case);
+        }
     }
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoUppercase(string $tableName, string $type, mixed $expected): void
+    public function testForeignKeyToNonDefaultSchema(): void
     {
-        parent::testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected);
-    }
+        $table = $this->getConnection()->schema->getTableSchema('fk_to_schema2', true);
 
-    /**
-     * @param Constraint|bool|array<array-key, mixed>|null $expected Expected constraint metadata.
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'constraints')]
-    public function testTableSchemaConstraintsWithPdoLowercase(string $tableName, string $type, mixed $expected): void
-    {
-        parent::testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected);
+        self::assertNotEmpty(
+            $table->foreignKeys,
+            'Foreign key metadata should be reflected.',
+        );
+
+        $foreignKey = reset($table->foreignKeys);
+
+        self::assertSame(
+            'schema2.fk_ref',
+            $foreignKey[0],
+            'Referenced table from a non-default schema should include the schema name.',
+        );
     }
 
     public function testCustomTypeInNonDefaultSchema(): void
     {
-        $connection = $this->getConnection();
         ActiveRecord::$db = $this->getConnection();
 
-        $schema = $connection->schema->getTableSchema('schema2.custom_type_test_table');
         $model = EnumTypeInCustomSchema::find()->one();
 
-        $this->assertSame(['VAL2'], $model->test_type);
+        self::assertSame(
+            ['VAL2'],
+            $model->test_type,
+            'Custom enum value must be decoded on read.',
+        );
 
         $model->test_type = ['VAL1'];
+
         $model->save();
 
         $modelAfterUpdate = EnumTypeInCustomSchema::find()->one();
-        $this->assertSame(['VAL1'], $modelAfterUpdate->test_type);
+
+        self::assertSame(
+            ['VAL1'],
+            $modelAfterUpdate->test_type,
+            'Updated enum value must roundtrip.',
+        );
     }
 }

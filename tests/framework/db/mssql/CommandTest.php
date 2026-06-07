@@ -29,11 +29,6 @@ class CommandTest extends BaseCommand
         $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
     }
 
-    public function testPrepareCancel(): void
-    {
-        $this->markTestSkipped('MSSQL driver does not support this feature.');
-    }
-
     public function testBindParamValue(): void
     {
         $db = $this->getConnection();
