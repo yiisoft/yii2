@@ -130,12 +130,25 @@ class ActiveRecordTest extends BaseActiveRecord
     public function testMultiplePrimaryKeyAfterSave(): void
     {
         $record = new DefaultMultiplePk();
+
         $record->id = 5;
         $record->second_key_column = 'secondKey';
         $record->type = 'type';
+
         $record->save(false);
-        $this->assertEquals(5, $record->id);
-        $this->assertEquals('secondKey', $record->second_key_column);
+
+        self::assertEquals(
+            5,
+            $record->id,
+            'Integer primary key must match the saved value.',
+        );
+        // the column is `char(10)`: Oracle blank-pads stored values, and `RETURNING INTO` surfaces the real stored
+        // value, consistent with what a subsequent `find()` returns.
+        self::assertEquals(
+            'secondKey ',
+            $record->second_key_column,
+            'String primary key must hold the blank-padded value as stored.',
+        );
     }
 
     /**
