@@ -21,7 +21,7 @@ use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
 /**
- * Schema is the class for retrieving metadata from MS SQL Server databases (version 2008 and above).
+ * Schema is the class for retrieving metadata from MS SQL Server databases (version 2019 and above).
  *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
