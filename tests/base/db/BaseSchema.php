@@ -347,6 +347,42 @@ abstract class BaseSchema extends DatabaseTestCase
         );
     }
 
+    public function testInsertReturnsProvidedPrimaryKeyValues(): void
+    {
+        $db = $this->getConnection();
+
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema('test_pk_insert', true) !== null) {
+            $db->createCommand()->dropTable('test_pk_insert')->execute();
+        }
+
+        $db->createCommand()->createTable(
+            'test_pk_insert',
+            [
+                'id1' => 'int NOT NULL',
+                'id2' => 'int NOT NULL',
+                'description' => 'string',
+                'PRIMARY KEY ([[id1]], [[id2]])',
+            ],
+        )->execute();
+
+        self::assertEquals(
+            ['id1' => 7, 'id2' => 8],
+            $schema->insert(
+                'test_pk_insert',
+                [
+                    'id1' => 7,
+                    'id2' => 8,
+                    'description' => 'provided pk',
+                ],
+            ),
+            'Provided primary key values must be returned.',
+        );
+
+        $db->createCommand()->dropTable('test_pk_insert')->execute();
+    }
+
     public function testGetPDOType(): void
     {
         $values = [

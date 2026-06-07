@@ -143,6 +143,9 @@ The minimum supported MySQL version is now **8.0+** (**MariaDB 10.6+**). The fol
 - `QueryBuilder::supportsFractionalSeconds()` method (always `true` for MySQL `8.0+`).
 - `CacheInterface` / `DbCache` imports from `QueryBuilder` (only used by the removed method).
 - Version checks for MySQL < `5.6` / < `5.6.4` / < `5.7` in tests.
+- The `SHOW CREATE TABLE` foreign key discovery fallback in `Schema::findConstraints()` for MySQL < `5.1.16`
+  (servers without `information_schema.REFERENTIAL_CONSTRAINTS`).
+- The `NotSupportedException` guard for check constraints in `Schema::loadTableChecks()` for MySQL < `8.0.16`.
 
 **Integer display width** (`int(11)`, `bigint(20)`, `smallint(6)`, `tinyint(3)`) has been removed from the MySQL type
 map. MySQL `8.0.17+` deprecated display width for integer types and emits deprecation warnings. The new defaults are:

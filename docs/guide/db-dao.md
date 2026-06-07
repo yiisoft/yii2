@@ -11,16 +11,12 @@ you have to take extra effort to create a database-agnostic application.
 
 In Yii 2.0, DAO supports the following databases out of the box:
 
-- [MySQL](https://www.mysql.com/)
-- [MariaDB](https://mariadb.com/)
-- [SQLite](https://sqlite.org/)
-- [PostgreSQL](https://www.postgresql.org/): version 8.4 or higher
+- [MySQL](https://www.mysql.com/): version 8.0 or higher
+- [MariaDB](https://mariadb.com/): version 10.6 or higher
+- [SQLite](https://sqlite.org/): version 3 or higher
+- [PostgreSQL](https://www.postgresql.org/): version 13 or higher
 - [Oracle](https://www.oracle.com/database/)
-- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
-
-> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
-  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
-  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
+- [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2019 or higher.
 
 ## Creating DB Connections <span id="creating-db-connections"></span>
 
