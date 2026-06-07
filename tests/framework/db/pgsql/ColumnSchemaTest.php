@@ -16,23 +16,29 @@ use yii\db\ArrayExpression;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\pgsql\ColumnSchema;
-use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\pgsql\providers\ColumnSchemaProvider;
 
 /**
  * Unit tests for {@see \yii\db\pgsql\ColumnSchema} type-casting and default value conversion for the PostgreSQL driver.
  *
  * {@see ColumnSchemaProvider} for test case data providers.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
 #[Group('db')]
 #[Group('pgsql')]
 #[Group('column-schema')]
-final class ColumnSchemaTest extends DatabaseTestCase
+final class ColumnSchemaTest extends BaseColumnSchema
 {
     protected $driverName = 'pgsql';
+
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
+    {
+        parent::testColumnSchema($columns);
+    }
 
     public function testDbTypecastArrayWithDimensionReturnsArrayExpression(): void
     {

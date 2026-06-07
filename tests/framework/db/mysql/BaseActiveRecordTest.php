@@ -20,9 +20,6 @@ class BaseActiveRecordTest extends BaseActiveRecordTemplate
      */
     public function testJsonDirtyAttributesWithDataChange($actual, $modified): void
     {
-        if (version_compare($this->getConnection()->getSchema()->getServerVersion(), '5.7', '<')) {
-            $this->markTestSkipped('JSON columns are not supported in MySQL < 5.7');
-        }
         $createdStorage = new Storage(['data' => $actual]);
 
         $createdStorage->save();

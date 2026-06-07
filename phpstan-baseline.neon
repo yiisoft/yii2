@@ -451,12 +451,6 @@ parameters:
 			path: tests/base/db/BaseQueryBuilder.php
 
 		-
-			message: '#^PHPDoc tag @param for parameter \$expected with type mixed is not subtype of native type array\|bool\|yii\\db\\Constraint\|null\.$#'
-			identifier: parameter.phpDocType
-			count: 1
-			path: tests/base/db/BaseSchema.php
-
-		-
 			message: '#^Access to an undefined property yiiunit\\data\\base\\NewComponent\:\:\$as f\.$#'
 			identifier: property.notFound
 			count: 1

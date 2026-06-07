@@ -28,6 +28,7 @@ DROP TABLE IF EXISTS "T_constraints_4";
 DROP TABLE IF EXISTS "T_constraints_3";
 DROP TABLE IF EXISTS "T_constraints_2";
 DROP TABLE IF EXISTS "T_constraints_1";
+DROP TABLE IF EXISTS "T_check_constraint";
 DROP TABLE IF EXISTS "T_upsert";
 DROP TABLE IF EXISTS "T_upsert_1";
 
@@ -131,6 +132,8 @@ CREATE TABLE "type" (
   time timestamp NOT NULL DEFAULT '2002-01-01 00:00:00',
   bool_col tinyint(1) NOT NULL,
   bool_col2 tinyint(1) DEFAULT '1',
+  bit32 bit(32),
+  bit33 bit(33),
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -312,6 +315,11 @@ CREATE TABLE "T_constraints_1"
     "C_unique" INT NOT NULL,
     "C_default" INT NOT NULL DEFAULT 0,
     CONSTRAINT "CN_unique" UNIQUE ("C_unique")
+);
+
+CREATE TABLE "T_check_constraint" (
+    "value" integer,
+    CONSTRAINT "ck_named_value" CHECK ("value" > 0)
 );
 
 CREATE TABLE "T_constraints_2"

@@ -10,12 +10,13 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\oci;
 
-use Exception;
 use PHPUnit\Framework\Attributes\Group;
-use yii\db\CheckConstraint;
 use yii\db\ConstraintFinderInterface;
-use yiiunit\framework\db\AnyValue;
+use yii\db\TableSchema;
 use yiiunit\base\db\BaseSchema;
+
+use function array_filter;
+use function array_values;
 
 /**
  * Unit test for {@see yii\db\oci\Schema} schema reflection and metadata retrieval for the Oracle driver.
@@ -26,85 +27,6 @@ use yiiunit\base\db\BaseSchema;
 final class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
-
-    protected $expectedSchemas = [];
-
-    public function getExpectedColumns()
-    {
-        $columns = parent::getExpectedColumns();
-        unset($columns['enum_col']);
-        unset($columns['json_col']);
-        $columns['int_col']['dbType'] = 'NUMBER';
-        $columns['int_col']['size'] = 22;
-        $columns['int_col']['precision'] = null;
-        $columns['int_col']['scale'] = 0;
-        $columns['int_col2']['dbType'] = 'NUMBER';
-        $columns['int_col2']['size'] = 22;
-        $columns['int_col2']['precision'] = null;
-        $columns['int_col2']['scale'] = 0;
-        $columns['tinyint_col']['dbType'] = 'NUMBER';
-        $columns['tinyint_col']['type'] = 'integer';
-        $columns['tinyint_col']['size'] = 22;
-        $columns['tinyint_col']['precision'] = 3;
-        $columns['tinyint_col']['scale'] = 0;
-        $columns['smallint_col']['dbType'] = 'NUMBER';
-        $columns['smallint_col']['type'] = 'integer';
-        $columns['smallint_col']['size'] = 22;
-        $columns['smallint_col']['precision'] = null;
-        $columns['smallint_col']['scale'] = 0;
-        $columns['char_col']['type'] = 'string';
-        $columns['char_col']['dbType'] = 'CHAR';
-        $columns['char_col']['precision'] = null;
-        $columns['char_col']['size'] = 100;
-        $columns['char_col2']['dbType'] = 'VARCHAR2';
-        $columns['char_col2']['precision'] = null;
-        $columns['char_col2']['size'] = 100;
-        $columns['char_col3']['type'] = 'string';
-        $columns['char_col3']['dbType'] = 'VARCHAR2';
-        $columns['char_col3']['precision'] = null;
-        $columns['char_col3']['size'] = 4000;
-        $columns['float_col']['dbType'] = 'FLOAT';
-        $columns['float_col']['precision'] = 126;
-        $columns['float_col']['scale'] = null;
-        $columns['float_col']['size'] = 22;
-        $columns['float_col2']['dbType'] = 'FLOAT';
-        $columns['float_col2']['precision'] = 126;
-        $columns['float_col2']['scale'] = null;
-        $columns['float_col2']['size'] = 22;
-        $columns['blob_col']['dbType'] = 'BLOB';
-        $columns['blob_col']['phpType'] = 'resource';
-        $columns['blob_col']['type'] = 'binary';
-        $columns['blob_col']['size'] = 4000;
-        $columns['numeric_col']['dbType'] = 'NUMBER';
-        $columns['numeric_col']['size'] = 22;
-        $columns['time']['dbType'] = 'TIMESTAMP(6)';
-        $columns['time']['size'] = 11;
-        $columns['time']['scale'] = 6;
-        $columns['time']['defaultValue'] = null;
-        $columns['bool_col']['type'] = 'string';
-        $columns['bool_col']['phpType'] = 'string';
-        $columns['bool_col']['dbType'] = 'CHAR';
-        $columns['bool_col']['size'] = 1;
-        $columns['bool_col']['precision'] = null;
-        $columns['bool_col2']['type'] = 'string';
-        $columns['bool_col2']['phpType'] = 'string';
-        $columns['bool_col2']['dbType'] = 'CHAR';
-        $columns['bool_col2']['size'] = 1;
-        $columns['bool_col2']['precision'] = null;
-        $columns['bool_col2']['defaultValue'] = '1';
-        $columns['ts_default']['type'] = 'timestamp';
-        $columns['ts_default']['phpType'] = 'string';
-        $columns['ts_default']['dbType'] = 'TIMESTAMP(6)';
-        $columns['ts_default']['scale'] = 6;
-        $columns['ts_default']['size'] = 11;
-        $columns['bit_col']['type'] = 'string';
-        $columns['bit_col']['phpType'] = 'string';
-        $columns['bit_col']['dbType'] = 'CHAR';
-        $columns['bit_col']['size'] = 3;
-        $columns['bit_col']['precision'] = null;
-        $columns['bit_col']['defaultValue'] = '130';
-        return $columns;
-    }
 
     public function testGetTableSequenceNameResolvesIdentityColumnForModernTable(): void
     {
@@ -149,123 +71,61 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    public static function constraintsProvider(): array
+    public function testResolveAndFindTableNamesWithExplicitSchema(): void
     {
-        $result = parent::constraintsProvider();
-        $result['1: check'][2][0]->expression = '"C_check" <> \'\'';
-        $result['1: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_id'],
-            'expression' => '"C_id" IS NOT NULL',
-        ]);
-        $result['1: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_not_null'],
-            'expression' => '"C_not_null" IS NOT NULL',
-        ]);
-        $result['1: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_unique'],
-            'expression' => '"C_unique" IS NOT NULL',
-        ]);
-        $result['1: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_default'],
-            'expression' => '"C_default" IS NOT NULL',
-        ]);
+        $schema = $this->getConnection()->getSchema();
+        $schemaName = $schema->defaultSchema;
 
-        $result['2: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_id_1'],
-            'expression' => '"C_id_1" IS NOT NULL',
-        ]);
-        $result['2: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_id_2'],
-            'expression' => '"C_id_2" IS NOT NULL',
-        ]);
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $schema,
+            'Schema should support constraint metadata retrieval.',
+        );
 
-        $result['3: foreign key'][2][0]->foreignSchemaName = AnyValue::getInstance();
-        $result['3: foreign key'][2][0]->onUpdate = null;
-        $result['3: index'][2] = [];
-        $result['3: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_fk_id_1'],
-            'expression' => '"C_fk_id_1" IS NOT NULL',
-        ]);
-        $result['3: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_fk_id_2'],
-            'expression' => '"C_fk_id_2" IS NOT NULL',
-        ]);
-        $result['3: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_id'],
-            'expression' => '"C_id" IS NOT NULL',
-        ]);
+        self::assertContains(
+            'profile',
+            $schema->getTableNames($schemaName, true),
+            "Table 'profile' should be present when listing tables with an explicit schema name.",
+        );
+        self::assertSame(
+            ['id'],
+            $schema->getTablePrimaryKey("{$schemaName}.profile", true)->columnNames,
+            'Primary key metadata should be reflected with an explicit schema name.',
+        );
 
-        $result['4: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_id'],
-            'expression' => '"C_id" IS NOT NULL',
-        ]);
-        $result['4: check'][2][] = new CheckConstraint([
-            'name' => AnyValue::getInstance(),
-            'columnNames' => ['C_col_2'],
-            'expression' => '"C_col_2" IS NOT NULL',
-        ]);
-        return $result;
+        $table = $schema->getTableSchema("{$schemaName}.profile", true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table schema should be loadable with an explicit schema name.',
+        );
+        self::assertSame(
+            $schemaName,
+            $table->schemaName,
+            'Loaded table schema should keep the explicit schema name.',
+        );
+        self::assertSame(
+            'profile',
+            $table->name,
+            'Loaded table name should match expected value.',
+        );
     }
 
-    public function testFindUniqueIndexes(): void
+    public function testIntegerDataTypeColumn(): void
     {
-        if ($this->driverName === 'sqlsrv') {
-            $this->markTestSkipped('`\yii\db\mssql\Schema::findUniqueIndexes()` returns only unique constraints not unique indexes.');
-        }
+        $table = $this->getConnection()->getSchema()->getTableSchema('employee');
 
-        $db = $this->getConnection();
-
-        try {
-            $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch (Exception $e) {
-        }
-        $db->createCommand()->createTable('uniqueIndex', [
-            'somecol' => 'string',
-            'someCol2' => 'string',
-            'someCol3' => 'string',
-        ])->execute();
-
-        $schema = $db->schema;
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([], $uniqueIndexes);
-
-        $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
-            'somecolUnique' => ['somecol'],
-        ], $uniqueIndexes);
-
-        // create another column with upper case letter that fails postgres
-        // see https://github.com/yiisoft/yii2/issues/10613
-        $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
-            'somecolUnique' => ['somecol'],
-            'someCol2Unique' => ['someCol2'],
-        ], $uniqueIndexes);
-
-        // see https://github.com/yiisoft/yii2/issues/13814
-        $db->createCommand()->createIndex('another unique index', 'uniqueIndex', 'someCol3', true)->execute();
-
-        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
-        $this->assertEquals([
-            'somecolUnique' => ['somecol'],
-            'someCol2Unique' => ['someCol2'],
-            'another unique index' => ['someCol3'],
-        ], $uniqueIndexes);
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Employee fixture table should be loadable.',
+        );
+        self::assertSame(
+            'integer',
+            $table->columns['id']->type,
+            "An 'INTEGER' fixture column should be reflected as an integer.",
+        );
     }
 
     /**
@@ -278,35 +138,59 @@ final class SchemaTest extends BaseSchema
     public function testLobIndexesExcluded(): void
     {
         $db = $this->getConnection();
+
         $dbSchema = $db->getSchema();
-        $this->assertInstanceOf(ConstraintFinderInterface::class, $dbSchema);
+
+        self::assertInstanceOf(
+            ConstraintFinderInterface::class,
+            $dbSchema,
+            'Schema must implement ' . ConstraintFinderInterface::class . ' for LOB index filtering.',
+        );
 
         if ($dbSchema->getTableSchema('lob_test') !== null) {
             $db->createCommand()->dropTable('lob_test')->execute();
         }
 
         $db->createCommand()->setSql(
-            'CREATE TABLE "lob_test" ("id" NUMBER(10) NOT NULL, "content" CLOB, "data" BLOB, PRIMARY KEY ("id"))'
+            <<<SQL
+            CREATE TABLE "lob_test" (
+                "id" NUMBER(10) NOT NULL,
+                "content" CLOB,
+                "data" BLOB, PRIMARY KEY ("id")
+            )
+            SQL
         )->execute();
 
         $indexes = $dbSchema->getTableIndexes('lob_test', true);
 
-        $this->assertCount(1, $indexes);
+        self::assertCount(
+            1,
+            $indexes,
+            'Only the primary key index should be present; LOB indexes must be excluded.',
+        );
 
         $primaryIndexes = array_values(
             array_filter($indexes, static fn ($index) => $index->isPrimary),
         );
 
-        $this->assertCount(1, $primaryIndexes);
-        $this->assertSame(['id'], $primaryIndexes[0]->columnNames);
+        self::assertCount(
+            1,
+            $primaryIndexes,
+            'Should be exactly one primary key index.',
+        );
+        self::assertSame(
+            ['id'],
+            $primaryIndexes[0]->columnNames,
+            'Primary key index columns do not match.',
+        );
 
         foreach ($indexes as $index) {
             foreach ($index->columnNames as $columnName) {
-                $this->assertNotNull(
+                self::assertNotNull(
                     $columnName,
                     'LOB index with "NULL" column name should be excluded',
                 );
-                $this->assertIsString(
+                self::assertIsString(
                     $columnName,
                     'Index column name must be a string',
                 );
@@ -367,10 +251,5 @@ final class SchemaTest extends BaseSchema
         );
 
         $db->createCommand()->dropTable('cr_pk_default')->execute();
-    }
-
-    public function testCompositeFk(): void
-    {
-        $this->markTestSkipped('Should be fixed.');
     }
 }

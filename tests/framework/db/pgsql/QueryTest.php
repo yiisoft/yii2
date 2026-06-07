@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\pgsql;
 
 use PHPUnit\Framework\Attributes\Group;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
 use yiiunit\base\db\BaseQuery;
@@ -21,9 +22,24 @@ use yiiunit\base\db\BaseQuery;
 #[Group('db')]
 #[Group('pgsql')]
 #[Group('query')]
-class QueryTest extends BaseQuery
+final class QueryTest extends BaseQuery
 {
     protected $driverName = 'pgsql';
+
+    public function testCountHavingWithoutGroupBy(): void
+    {
+        $db = $this->getConnection();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            'must appear in the GROUP BY clause or be used in an aggregate function',
+        );
+
+        (new Query())
+            ->from('customer')
+            ->having(['status' => 2])
+            ->count('*', $db);
+    }
 
     public function testLimitOffsetExecution(): void
     {

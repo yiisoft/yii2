@@ -14,23 +14,29 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\mssql\ColumnSchema;
-use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\mssql\providers\ColumnSchemaProvider;
 
 /**
  * Unit tests for {@see \yii\db\mssql\ColumnSchema} type-casting and OUTPUT column declarations for the MSSQL driver.
  *
  * {@see ColumnSchemaProvider} for test case data providers.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
 #[Group('db')]
 #[Group('mssql')]
 #[Group('column-schema')]
-final class ColumnSchemaTest extends DatabaseTestCase
+final class ColumnSchemaTest extends BaseColumnSchema
 {
     protected $driverName = 'sqlsrv';
+
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
+    {
+        parent::testColumnSchema($columns);
+    }
 
     #[DataProviderExternal(ColumnSchemaProvider::class, 'dbTypecast')]
     public function testDbTypecast(

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mssql;
 
 use PHPUnit\Framework\Attributes\Group;
+use yii\db\Exception;
 use yii\db\Query;
 use yiiunit\base\db\BaseQuery;
 
@@ -20,9 +21,25 @@ use yiiunit\base\db\BaseQuery;
 #[Group('db')]
 #[Group('mssql')]
 #[Group('query')]
-class QueryTest extends BaseQuery
+final class QueryTest extends BaseQuery
 {
     protected $driverName = 'sqlsrv';
+
+    /**
+     * MSSQL rejects non-aggregated columns referenced in `HAVING` without `GROUP BY`.
+     */
+    public function testCountHavingWithoutGroupBy(): void
+    {
+        $db = $this->getConnection();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('invalid in the HAVING clause');
+
+        (new Query())
+            ->from('customer')
+            ->having(['status' => 2])
+            ->count('*', $db);
+    }
 
     public function testLimitOffsetExecution(): void
     {

@@ -899,6 +899,8 @@ class CommandTest extends BaseCommand
 
     public function testColumnCase(): void
     {
-        $this->markTestSkipped('Should be fixed.');
+        $this->markTestSkipped(
+            "'pdo_oci' does not honor 'PDO::ATTR_CASE'; column names always keep their natural case.",
+        );
     }
 }

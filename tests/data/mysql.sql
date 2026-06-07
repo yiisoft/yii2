@@ -155,6 +155,8 @@ CREATE TABLE `type` (
   `bool_col2` tinyint(1) DEFAULT '1',
   `ts_default` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `bit_col` BIT(8) NOT NULL DEFAULT b'10000010',
+  `bit32` BIT(32),
+  `bit33` BIT(33),
   `json_col` json
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

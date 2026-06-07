@@ -14,23 +14,29 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\sqlite\ColumnSchema;
-use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\sqlite\providers\ColumnSchemaProvider;
 
 /**
- * Unit tests for {@see \yii\db\sqlite\ColumnSchema} default value type-casting for the SQLite driver.
+ * Unit tests for {@see \yii\db\sqlite\ColumnSchema} column reflection and type-casting for the SQLite driver.
  *
  * {@see ColumnSchemaProvider} for test case data providers.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
 #[Group('db')]
 #[Group('sqlite')]
 #[Group('column-schema')]
-final class ColumnSchemaTest extends DatabaseTestCase
+final class ColumnSchemaTest extends BaseColumnSchema
 {
     protected $driverName = 'sqlite';
+
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
+    {
+        parent::testColumnSchema($columns);
+    }
 
     #[DataProviderExternal(ColumnSchemaProvider::class, 'defaultPhpTypecast')]
     public function testDefaultPhpTypecast(

@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
+namespace yiiunit\data\db;
+
+use yii\db\TableSchema;
+
+/**
+ * Stub for {@see \yii\db\Schema} exposing the abstract base behavior with a configurable table schema.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
+ */
+final class Schema extends \yii\db\Schema
+{
+    public function __construct(private TableSchema|null $tableSchema = null)
+    {
+        parent::__construct();
+    }
+
+    protected function loadTableSchema($name)
+    {
+        return $this->tableSchema;
+    }
+}

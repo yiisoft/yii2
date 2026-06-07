@@ -14,23 +14,33 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\mysql\ColumnSchema;
-use yiiunit\framework\db\DatabaseTestCase;
+use yii\db\mysql\QueryBuilder;
+use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\mysql\providers\ColumnSchemaProvider;
 
 /**
- * Unit tests for {@see \yii\db\mysql\ColumnSchema} default value type-casting for the MySQL driver.
+ * Unit tests for {@see \yii\db\mysql\ColumnSchema} column reflection and type-casting for the MySQL driver.
  *
  * {@see ColumnSchemaProvider} for test case data providers.
- *
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
- * @since 22.0
  */
 #[Group('db')]
 #[Group('mysql')]
 #[Group('column-schema')]
-final class ColumnSchemaTest extends DatabaseTestCase
+final class ColumnSchemaTest extends BaseColumnSchema
 {
     protected $driverName = 'mysql';
+
+    /**
+     * @param array<string, array<string, mixed>> $columns Expected column metadata.
+     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'columnSchema')]
+    public function testColumnSchema(array $columns): void
+    {
+        /** @var QueryBuilder $qb */
+        $qb = $this->getConnection(false)->getQueryBuilder();
+
+        parent::testColumnSchema(ColumnSchemaProvider::prepareColumnSchema($qb->isMariaDb(), $columns));
+    }
 
     #[DataProviderExternal(ColumnSchemaProvider::class, 'defaultPhpTypecast')]
     public function testDefaultPhpTypecast(

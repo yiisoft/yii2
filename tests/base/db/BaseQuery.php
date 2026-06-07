@@ -16,6 +16,9 @@ use yii\db\Expression;
 use yii\db\Query;
 use yii\db\Schema;
 
+/**
+ * Base unit tests for {@see \yii\db\Query} query building and execution across all database drivers.
+ */
 abstract class BaseQuery extends DatabaseTestCase
 {
     use GetTablesAliasTestTrait;
@@ -425,9 +428,13 @@ abstract class BaseQuery extends DatabaseTestCase
     public function testAmbiguousColumnIndexBy(): void
     {
         switch ($this->driverName) {
+            case 'oci':
             case 'pgsql':
             case 'sqlite':
-                $selectExpression = "(customer.name || ' in ' || p.description) AS name";
+                $selectExpression = "({{customer}}.[[name]] || ' in ' || {{p}}.[[description]]) AS [[name]]";
+                break;
+            case 'sqlsrv':
+                $selectExpression = "({{customer}}.[[name]] + ' in ' + {{p}}.[[description]]) AS [[name]]";
                 break;
             case 'cubird':
             case 'mysql':
