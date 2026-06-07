@@ -282,16 +282,8 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         array_walk(
             $columns,
             static function (&$item, $name): void {
-                if (!in_array($name, ['char_col', 'char_col2', 'char_col3'])) {
+                if (!in_array($name, ['char_col', 'char_col2', 'char_col3'], true)) {
                     $item['size'] = null;
-                }
-            },
-        );
-
-        array_walk(
-            $columns,
-            static function (&$item, $name): void {
-                if (!in_array($name, ['char_col', 'char_col2', 'char_col3'])) {
                     $item['precision'] = null;
                 }
             },

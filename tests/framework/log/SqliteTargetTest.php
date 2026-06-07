@@ -28,7 +28,7 @@ final class SqliteTargetTest extends BaseDbTarget
 
     public static function getConnection()
     {
-        if (static::$db == null) {
+        if (static::$db === null) {
             $db = new Connection();
 
             $db->dsn = 'sqlite:' . self::getDbFilePath();
