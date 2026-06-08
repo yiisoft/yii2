@@ -16,11 +16,14 @@ use yii\db\ExpressionInterface;
 use yii\db\JsonExpression;
 
 use function bindec;
+use function get_resource_type;
 use function in_array;
 use function is_array;
 use function is_bool;
+use function is_resource;
 use function json_decode;
 use function preg_match;
+use function stream_get_contents;
 use function strpos;
 use function strtolower;
 use function strtoupper;
@@ -99,6 +102,12 @@ class ColumnSchema extends \yii\db\ColumnSchema
     {
         if ($value === null) {
             return null;
+        }
+
+        // `bytea` columns are returned as streams by the PDO PGSQL driver; read them into a string for consumers such
+        // as DbCache.
+        if ($this->type === Schema::TYPE_BINARY && is_resource($value) && get_resource_type($value) === 'stream') {
+            return stream_get_contents($value);
         }
 
         switch ($this->type) {

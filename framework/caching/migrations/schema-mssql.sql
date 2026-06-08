@@ -15,8 +15,8 @@ drop table if exists [cache];
 
 create table [cache]
 (
-    [id]  varchar(128) not null,
+    [id] varchar(128) not null,
     [expire] integer,
-    [data]   BLOB,
+    [data] varbinary(max),
     primary key ([id])
 );

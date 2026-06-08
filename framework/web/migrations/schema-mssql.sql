@@ -14,8 +14,8 @@ if object_id('[session]', 'U') is not null
 
 create table [session]
 (
-    [id]  varchar(256) not null,
+    [id] varchar(256) not null,
     [expire] integer,
-    [data]   nvarchar(max),
+    [data] varbinary(max),
     primary key ([id])
 );
