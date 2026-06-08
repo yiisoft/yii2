@@ -14,7 +14,7 @@ use Stringable;
 
 final class StringableObject implements Stringable
 {
-    private $value;
+    private string $value = '';
 
     public function __construct(string $value)
     {

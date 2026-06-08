@@ -139,7 +139,7 @@ class DbCache extends Cache
     protected function getValue($key)
     {
         $query = new Query();
-        $query->select(['data'])
+        $query->select([$this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
         if ($this->db->enableQueryCache) {
@@ -173,7 +173,7 @@ class DbCache extends Cache
 
         $query = new Query();
 
-        $query->select(['id', 'data'])
+        $query->select(['id', $this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
             ->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
@@ -308,6 +308,20 @@ class DbCache extends Cache
             ->execute();
 
         return true;
+    }
+
+    /**
+     * Returns the name of the `data` column read by {@see getValue()} and {@see getValues()}.
+     *
+     * Override to wrap the column in a database expression aliased as `data`.
+     *
+     * @return string Column name or expression aliased as `data`.
+     *
+     * @since 2.0.42
+     */
+    protected function getDataFieldName()
+    {
+        return 'data';
     }
 
     /**
