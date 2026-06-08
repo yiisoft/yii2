@@ -15,6 +15,9 @@ use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
+use function is_array;
+use function is_object;
+
 /**
  * DbSession extends [[Session]] by using database as session data storage.
  *
@@ -170,21 +173,35 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session read handler.
+     *
      * @internal Do not call this method directly.
-     * @param string $id session ID
-     * @return string|false the session data, or false on failure
+     *
+     * @param string $id session ID.
+     *
+     * @return string|false The session data, or false on failure.
      */
     public function readSession($id)
     {
         $query = $this->getReadQuery($id);
+        $column = $this->db->getTableSchema($this->sessionTable)->columns['data'];
 
         if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
-            return $fields === false ? '' : $this->extractData($fields);
+
+            if ($fields === false) {
+                return '';
+            }
+
+            if (isset($fields['data'])) {
+                $fields['data'] = $column->phpTypecast($fields['data']);
+            }
+
+            return $this->extractData($fields);
         }
 
         $data = $query->select(['data'])->scalar($this->db);
-        return $data === false ? '' : $data;
+
+        return $data === false ? '' : $column->phpTypecast($data);
     }
 
     /**
@@ -270,18 +287,25 @@ class DbSession extends MultiFieldSession
     }
 
     /**
-     * Method typecasts $fields before passing them to PDO.
-     * Default implementation casts field `data` to `\PDO::PARAM_LOB`.
-     * You can override this method in case you need special type casting.
+     * Typecasts `$fields` before passing them to PDO.
      *
-     * @param array $fields Fields, that will be passed to PDO. Key - name, Value - value
-     * @return array
+     * Applies the `data` column type cast resolved from the session table schema, so binary payloads bind correctly
+     * across drivers (for example, MSSQL `varbinary`, which requires a `CONVERT` to avoid implicit conversion errors).
+     *
+     * Override this method when special type casting is required.
+     *
+     * @param array $fields Fields passed to PDO, keyed by column name.
+     *
+     * @return array Fields with the `data` value cast for the active driver.
+     *
      * @since 2.0.13
      */
     protected function typecastFields($fields)
     {
         if (isset($fields['data']) && !is_array($fields['data']) && !is_object($fields['data'])) {
-            $fields['data'] = new PdoValue($fields['data'], \PDO::PARAM_LOB);
+            $column = $this->db->getTableSchema($this->sessionTable)->columns['data'];
+
+            $fields['data'] = $column->dbTypecast(new PdoValue($fields['data'], \PDO::PARAM_LOB));
         }
 
         return $fields;

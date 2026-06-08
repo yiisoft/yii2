@@ -20,6 +20,8 @@ use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function strcasecmp;
+
 /**
  * Schema is the class for retrieving metadata from MS SQL Server databases (version 2019 and above).
  *
@@ -97,7 +99,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      * {@inheritdoc}
      */
     protected $columnQuoteCharacter = ['[', ']'];
-
 
     /**
      * Resolves the table name and schema name (if any).
@@ -404,7 +405,7 @@ SQL;
                 $column->type = 'boolean';
             }
 
-            if (!empty($matches[2])) {
+            if (!empty($matches[2]) && strcasecmp($matches[2], 'max') !== 0) {
                 $values = explode(',', $matches[2]);
                 $column->size = $column->precision = (int) $values[0];
 
@@ -424,71 +425,88 @@ SQL;
 
     /**
      * Collects the metadata of table columns.
-     * @param TableSchema $table the table metadata
-     * @return bool whether the table exists in the database
+     *
+     * @param TableSchema $table The table metadata.
+     *
+     * @return bool Whether the table exists in the database.
      */
     protected function findColumns($table)
     {
-        $columnsTableName = 'INFORMATION_SCHEMA.COLUMNS';
-        $whereSql = '[t1].[table_name] = ' . $this->db->quoteValue($table->name);
-        if ($table->catalogName !== null) {
-            $columnsTableName = "{$table->catalogName}.{$columnsTableName}";
-            $whereSql .= " AND [t1].[table_catalog] = '{$table->catalogName}'";
-        }
+        $fullName = $this->quoteSimpleTableName($table->name);
+
         if ($table->schemaName !== null) {
-            $whereSql .= " AND [t1].[table_schema] = '{$table->schemaName}'";
+            $fullName = $this->quoteSimpleTableName($table->schemaName) . '.' . $fullName;
         }
-        $columnsTableName = $this->quoteTableName($columnsTableName);
+
+        if ($table->catalogName !== null) {
+            $fullName = $this->quoteSimpleTableName($table->catalogName) . '.' . $fullName;
+        }
+
+        $systemCatalogName = $table->catalogName === null
+            ? $this->quoteSimpleTableName('sys')
+            : $this->quoteSimpleTableName($table->catalogName) . '.' . $this->quoteSimpleTableName('sys');
 
         $sql = <<<SQL
-SELECT
- [t1].[column_name],
- [t1].[is_nullable],
- CASE WHEN [t1].[data_type] IN ('char','varchar','nchar','nvarchar','binary','varbinary') THEN
-    CASE WHEN [t1].[character_maximum_length] = NULL OR [t1].[character_maximum_length] = -1 THEN
-        [t1].[data_type]
-    ELSE
-        [t1].[data_type] + '(' + LTRIM(RTRIM(CONVERT(CHAR,[t1].[character_maximum_length]))) + ')'
-    END
- ELSE
-    [t1].[data_type]
- END AS 'data_type',
- [t1].[column_default],
- COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
- COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsComputed') AS is_computed,
- (
-    SELECT CONVERT(VARCHAR, [t2].[value])
-		FROM [sys].[extended_properties] AS [t2]
-		WHERE
-			[t2].[class] = 1 AND
-			[t2].[class_desc] = 'OBJECT_OR_COLUMN' AND
-			[t2].[name] = 'MS_Description' AND
-			[t2].[major_id] = OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[table_name]) AND
-			[t2].[minor_id] = COLUMNPROPERTY(OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[TABLE_NAME]), [t1].[COLUMN_NAME], 'ColumnID')
- ) as comment
-FROM {$columnsTableName} AS [t1]
-WHERE {$whereSql}
-SQL;
+        SELECT
+            [c].[name] AS [column_name],
+            CASE WHEN [c].[is_nullable] = 1 THEN 'YES' ELSE 'NO' END AS [is_nullable],
+            CASE
+                WHEN [t].[name] IN ('char','varchar','nchar','nvarchar','binary','varbinary') THEN
+                    CASE
+                        WHEN [c].[max_length] = -1 AND [t].[name] IN ('varchar','nvarchar','varbinary') THEN
+                            [t].[name] + '(max)'
+                        WHEN [t].[name] IN ('nchar','nvarchar') THEN
+                            [t].[name] + '(' + CAST([c].[max_length] / 2 AS VARCHAR) + ')'
+                        ELSE
+                            [t].[name] + '(' + CAST([c].[max_length] AS VARCHAR) + ')'
+                    END
+                WHEN [t].[name] IN ('decimal','numeric') THEN
+                    [t].[name] + '(' + CAST([c].[precision] AS VARCHAR) + ',' + CAST([c].[scale] AS VARCHAR) + ')'
+                ELSE [t].[name]
+            END AS [data_type],
+            [dc].[definition] AS [column_default],
+            [c].[is_identity],
+            [c].[is_computed],
+            CAST([ep].[value] AS NVARCHAR(MAX)) AS [comment]
+        FROM {$systemCatalogName}.[columns] AS [c]
+        INNER JOIN {$systemCatalogName}.[types] AS [t]
+            ON [c].[system_type_id] = [t].[system_type_id]
+            AND [t].[user_type_id] = [t].[system_type_id]
+        LEFT JOIN {$systemCatalogName}.[default_constraints] AS [dc]
+            ON [dc].[object_id] = [c].[default_object_id]
+        LEFT JOIN {$systemCatalogName}.[extended_properties] AS [ep]
+            ON [ep].[major_id] = [c].[object_id]
+            AND [ep].[minor_id] = [c].[column_id]
+            AND [ep].[class] = 1
+            AND [ep].[name] = 'MS_Description'
+        WHERE [c].[object_id] = OBJECT_ID(:fullName)
+        ORDER BY [c].[column_id]
+        SQL;
 
-        try {
-            $columns = $this->db->createCommand($sql)->queryAll();
-            if (empty($columns)) {
-                return false;
-            }
-        } catch (\Exception $e) {
+        $columns = $this->db->createCommand(
+            $sql,
+            [':fullName' => $fullName],
+        )->queryAll();
+
+        if (empty($columns)) {
             return false;
         }
+
         foreach ($columns as $column) {
             $column = $this->loadColumnSchema($column);
+
             foreach ($table->primaryKey as $primaryKey) {
                 if (strcasecmp($column->name, $primaryKey) === 0) {
                     $column->isPrimaryKey = true;
+
                     break;
                 }
             }
+
             if ($column->isPrimaryKey && $column->autoIncrement) {
                 $table->sequenceName = '';
             }
+
             $column->defaultValue = $column->isPrimaryKey
                 ? null
                 : $column->defaultPhpTypecast($column->defaultValue);
@@ -559,12 +577,12 @@ SQL;
      */
     protected function findForeignKeys($table)
     {
-        $object = $table->name;
+        $object = $this->quoteSimpleTableName($table->name);
         if ($table->schemaName !== null) {
-            $object = $table->schemaName . '.' . $object;
+            $object = $this->quoteSimpleTableName($table->schemaName) . '.' . $object;
         }
         if ($table->catalogName !== null) {
-            $object = $table->catalogName . '.' . $object;
+            $object = $this->quoteSimpleTableName($table->catalogName) . '.' . $object;
         }
 
         // please refer to the following page for more details:

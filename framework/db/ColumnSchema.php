@@ -124,6 +124,20 @@ class ColumnSchema extends BaseObject
     }
 
     /**
+     * Returns whether this column uses the given abstract type.
+     *
+     * @param string $type Abstract column type.
+     *
+     * @return bool Whether this column uses the given abstract type.
+     *
+     * @since 22.0
+     */
+    public function isType(string $type): bool
+    {
+        return $this->type === $type;
+    }
+
+    /**
      * Converts the input value according to [[phpType]] after retrieval from the database.
      * If the value is null or an [[Expression]], it will not be converted.
      * @param mixed $value input value

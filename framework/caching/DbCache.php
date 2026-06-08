@@ -16,6 +16,8 @@ use yii\db\PdoValue;
 use yii\db\Query;
 use yii\di\Instance;
 
+use function random_int;
+
 /**
  * DbCache implements a cache application component by storing cached data in a database.
  *
@@ -86,8 +88,6 @@ class DbCache extends Cache
      */
     public $gcProbability = 100;
 
-    protected $isVarbinaryDataField;
-
 
     /**
      * Initializes the DbCache component.
@@ -147,24 +147,32 @@ class DbCache extends Cache
             $this->db->enableQueryCache = false;
             $result = $query->createCommand($this->db)->queryScalar();
             $this->db->enableQueryCache = true;
+        } else {
+            $result = $query->createCommand($this->db)->queryScalar();
+        }
 
+        if ($result === false || $result === null) {
             return $result;
         }
 
-        return $query->createCommand($this->db)->queryScalar();
+        return $this->db->getTableSchema($this->cacheTable)->columns['data']->phpTypecast($result);
     }
 
     /**
      * Retrieves multiple values from cache with the specified keys.
-     * @param array $keys a list of keys identifying the cached values
-     * @return array a list of cached values indexed by the keys
+     *
+     * @param array $keys A list of keys identifying the cached values.
+     *
+     * @return array A list of cached values indexed by the keys.
      */
     protected function getValues($keys)
     {
         if (empty($keys)) {
             return [];
         }
+
         $query = new Query();
+
         $query->select(['id', $this->getDataFieldName()])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
@@ -179,15 +187,15 @@ class DbCache extends Cache
         }
 
         $results = [];
+
         foreach ($keys as $key) {
             $results[$key] = false;
         }
+
+        $column = $this->db->getTableSchema($this->cacheTable)->columns['data'];
+
         foreach ($rows as $row) {
-            if (is_resource($row['data']) && get_resource_type($row['data']) === 'stream') {
-                $results[$row['id']] = stream_get_contents($row['data']);
-            } else {
-                $results[$row['id']] = $row['data'];
-            }
+            $results[$row['id']] = $row['data'] === null ? null : $column->phpTypecast($row['data']);
         }
 
         return $results;
@@ -288,7 +296,9 @@ class DbCache extends Cache
 
     /**
      * Deletes all values from cache.
+     *
      * This is the implementation of the method declared in the parent class.
+     *
      * @return bool whether the flush operation was successful.
      */
     protected function flushValues()
@@ -301,37 +311,28 @@ class DbCache extends Cache
     }
 
     /**
-     * @return bool whether field is MSSQL varbinary
-     * @since 2.0.42
-     */
-    protected function isVarbinaryDataField()
-    {
-        if ($this->isVarbinaryDataField === null) {
-            $this->isVarbinaryDataField = in_array($this->db->getDriverName(), ['sqlsrv', 'dblib']) &&
-                $this->db->getTableSchema($this->cacheTable)->columns['data']->dbType === 'varbinary';
-        }
-        return $this->isVarbinaryDataField;
-    }
-
-    /**
-     * @return string `data` field name converted for usage in MSSQL (if needed)
+     * Returns the name of the `data` column read by {@see getValue()} and {@see getValues()}.
+     *
+     * Override to wrap the column in a database expression aliased as `data`.
+     *
+     * @return string Column name or expression aliased as `data`.
+     *
      * @since 2.0.42
      */
     protected function getDataFieldName()
     {
-        return $this->isVarbinaryDataField() ? 'CONVERT(VARCHAR(MAX), [[data]]) data' : 'data';
+        return 'data';
     }
 
     /**
-     * @return PdoValue|string PdoValue or direct $value for usage in MSSQL/Oracle.
+     * @return mixed Value prepared by the `data` column schema.
+     *
      * @since 2.0.42
      */
     protected function getDataFieldValue($value)
     {
-        if ($this->isVarbinaryDataField() || $this->db->getDriverName() === 'oci') {
-            return $value;
-        }
+        $column = $this->db->getTableSchema($this->cacheTable)->columns['data'];
 
-        return new PdoValue($value, PDO::PARAM_LOB);
+        return $column->dbTypecast(new PdoValue($value, PDO::PARAM_LOB));
     }
 }

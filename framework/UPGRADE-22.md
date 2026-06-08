@@ -133,6 +133,20 @@ Behavioral notes:
 > matrix; SQL Server `2017` remains in vendor extended support until October 12, `2027`, but is no longer covered by
 > Yii.
 
+##### Session data column is now binary (`varbinary(max)`)
+
+`yii\web\DbSession` now stores the `data` column as a binary type on MSSQL (`varbinary(max)`) instead of `nvarchar(max)`.
+PHP session payloads can contain arbitrary binary bytes that `nvarchar` cannot hold, which previously failed with an
+`An error occurred translating string for input param 1 to UCS-2` error. The bundled `m160313_153426_session_init`
+migration creates the binary column for fresh installations.
+
+Existing MSSQL installations must convert the column manually before upgrading (replace `session` with your configured
+`sessionTable`):
+
+```sql
+ALTER TABLE [session] ALTER COLUMN [data] VARBINARY(MAX) NULL;
+```
+
 #### MySQL 
 
 ##### Dead code removal and integer display width cleanup

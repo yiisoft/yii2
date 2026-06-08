@@ -11,12 +11,18 @@ declare(strict_types=1);
 namespace yii\db\mssql;
 
 use yii\db\Expression;
+use yii\db\PdoValue;
 
 use function bin2hex;
 use function in_array;
+use function get_resource_type;
+use function is_resource;
 use function is_string;
 use function preg_match;
 use function str_replace;
+use function str_starts_with;
+use function strtolower;
+use function stream_get_contents;
 
 /**
  * Represents the metadata of a column in a Microsoft SQL Server database table.
@@ -42,7 +48,15 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function dbTypecast($value)
     {
-        if ($this->type === Schema::TYPE_BINARY && $this->dbType === 'varbinary') {
+        if ($this->isVarbinary()) {
+            if ($value instanceof PdoValue && $value->getType() === \PDO::PARAM_LOB) {
+                $pdoValue = $value->getValue();
+
+                if (is_string($pdoValue) || $pdoValue === null) {
+                    $value = $pdoValue;
+                }
+            }
+
             if (is_string($value)) {
                 return new Expression('CONVERT(VARBINARY(MAX), 0x' . bin2hex($value) . ')');
             }
@@ -53,6 +67,24 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         return parent::dbTypecast($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Converts `varbinary` streams returned by MSSQL PDO drivers to strings for consumers such as DbCache.
+     */
+    public function phpTypecast($value)
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        if ($this->isVarbinary() && is_resource($value) && get_resource_type($value) === 'stream') {
+            return stream_get_contents($value);
+        }
+
+        return parent::phpTypecast($value);
     }
 
     /**
@@ -82,14 +114,14 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         if (is_string($value)) {
-            // string defaults: ('value') or unicode (N'value') — unwrap and resolve escaped single quotes.
+            // String defaults: ('value') or unicode (N'value'); unwrap and resolve escaped single quotes.
             if (preg_match("/^\(N?'(.*)'\)$/s", $value, $matches) === 1) {
                 $value = str_replace("''", "'", $matches[1]);
             } elseif (preg_match('/^\(\((.+)\)\)$/s', $value, $matches) === 1) {
-                // numeric defaults: ((0)), ((42)), ((3.14)).
+                // Numeric defaults: ((`0`)), ((`42`)), ((`3.14`)).
                 $value = $matches[1];
             } else {
-                // expression defaults: (getdate()), (newid()) — not representable as a PHP literal.
+                // Expression defaults: (`getdate()`), (`newid()`); not representable as a PHP literal.
                 return null;
             }
         }
@@ -100,8 +132,9 @@ class ColumnSchema extends \yii\db\ColumnSchema
     /**
      * Returns the SQL type declaration for this column inside an OUTPUT clause temp table.
      *
-     * Appends `(MAX)` to variable-length types (`varchar`, `nvarchar`, `varbinary`), preserves the declared size for
-     * fixed-length types (`char`, `nchar`, `binary`), and maps `timestamp` to `varbinary(8)` or `binary(8)`.
+     * Preserves the reflected declaration for variable-length types (`varchar`, `nvarchar`, `varbinary`), keeps the
+     * legacy `(MAX)` fallback for bare variable-length declarations, appends the declared size for fixed-length types
+     * (`char`, `nchar`, `binary`), and maps `timestamp` to `varbinary(8)` or `binary(8)`.
      *
      * @return string SQL type declaration.
      */
@@ -120,5 +153,13 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         return $dbType;
+    }
+
+    /**
+     * Whether this column is an MSSQL `varbinary` column.
+     */
+    private function isVarbinary(): bool
+    {
+        return $this->isType(Schema::TYPE_BINARY) && str_starts_with(strtolower((string) $this->dbType), 'varbinary');
     }
 }

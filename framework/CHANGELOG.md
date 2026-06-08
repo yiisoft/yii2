@@ -81,6 +81,10 @@ Yii Framework 2 Change Log
 - Enh #20923: Add explicit default values to `ColumnSchema` properties in `yii\db`, `yii\db\mssql`, and `yii\db\pgsql` (terabytesoftw)
 - Chg #20928: Remove legacy MySQL version support code from `yii\db\mysql\Schema` (terabytesoftw)
 - Bug #20929: Fix `yii\db\oci\Schema::insert()` returning only the first primary key value for composite keys, caused by a reused `foreach` reference (terabytesoftw)
+- Bug #13048: Detect MSSQL identity columns when reflecting a table across databases via catalog-qualified `sys.*` views (terabytesoftw)
+- Chg #19595: Store `yii\web\DbSession` `data` as `varbinary(max)` on MSSQL and cast it through `yii\db\mssql\ColumnSchema`, fixing binary session payloads; existing MSSQL session tables must alter the column (terabytesoftw)
+- Bug #20931: Fix `yii\caching\DbCache` reading PostgreSQL `bytea` cached data as a stream by converting it in `yii\db\pgsql\ColumnSchema::phpTypecast()` (terabytesoftw)
+- Bug #20931: Fix `yii\caching\DbCache` MSSQL reference schema using the invalid `BLOB` type instead of `varbinary(max)` for the `data` column (terabytesoftw)
 
 2.0.56 under development
 ------------------------
