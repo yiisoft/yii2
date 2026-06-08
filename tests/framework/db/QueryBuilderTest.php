@@ -1255,13 +1255,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ],
             [
                 ['and', new Expression('any_expression(:a)', [':a' => 1]), new Expression('any_expression(:a)', [':a' => 2]), new Expression('other_expression(:a)', [':a' => 1]), new Expression('other_expression(:a)', [':a' => 2])],
-                '(any_expression(:a)) AND (any_expression(:a1)) AND (other_expression(:a)) AND (other_expression(:a2))',
-                [':a' => 1, ':a1' => 2, ':a2' => 2],
+                '(any_expression(:a)) AND (any_expression(:a1)) AND (other_expression(:a2)) AND (other_expression(:a3))',
+                [':a' => 1, ':a1' => 2, ':a2' => 1, ':a3' => 2],
             ],
             [
                 ['and', new Expression('any_expression(:a)', [':a' => 1]), new Expression('any_expression(:a1)', [':a1' => 2]), new Expression('other_expression(:a)', [':a' => 1]), new Expression('other_expression(:a)', [':a' => 3])],
-                '(any_expression(:a)) AND (any_expression(:a1)) AND (other_expression(:a)) AND (other_expression(:a2))',
-                [':a' => 1, ':a1' => 2, ':a2' => 3],
+                '(any_expression(:a)) AND (any_expression(:a1)) AND (other_expression(:a2)) AND (other_expression(:a3))',
+                [':a' => 1, ':a1' => 2, ':a2' => 1, ':a3' => 3],
             ],
             [
                 ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a', ['a' => 2])],
@@ -1275,11 +1275,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             ],
             [
                 ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a', [':a' => 2])],
-                '(a = :a) AND (a = :a1)',
-                ['a' => 1, ':a1' => 2],
-            ],
-            [
-                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a', ['a' => 2])],
                 '(a = :a) AND (a = :a1)',
                 ['a' => 1, ':a1' => 2],
             ],

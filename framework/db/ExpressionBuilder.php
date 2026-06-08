@@ -29,14 +29,14 @@ class ExpressionBuilder implements ExpressionBuilderInterface
         $newSql = $expression->__toString();
         $duplicateKeys = array_filter(
             $newParams,
-            static function ($value, $key) use ($params) {
+            static function ($key) use ($params) {
                 $keyWithoutColon = ltrim((string)$key, ':');
                 $keyWithColon = ':' . $keyWithoutColon;
                 // the key could already exist with or without the leading colon, so look for both
-                return (array_key_exists($keyWithoutColon, $params) && $value !== $params[$keyWithoutColon])
-                    || (array_key_exists($keyWithColon, $params) && $value !== $params[$keyWithColon]);
+                return (array_key_exists($keyWithoutColon, $params))
+                    || (array_key_exists($keyWithColon, $params));
             },
-            ARRAY_FILTER_USE_BOTH
+            ARRAY_FILTER_USE_KEY
         );
         foreach (array_keys($duplicateKeys) as $duplicateKey) {
             $duplicateKeyWithoutColon = ltrim((string)$duplicateKey, ':');
