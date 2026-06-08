@@ -2,75 +2,78 @@
 
 declare(strict_types=1);
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\db;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\PdoValue;
 use yii\db\Query;
 use yii\db\Schema;
+use yiiunit\data\base\StringableObject;
+use yiiunit\framework\db\providers\ColumnSchemaProvider;
 use yiiunit\TestCase;
 use PDO;
+
+use function fclose;
+use function fopen;
 
 /**
  * Unit tests for {@see \yii\db\ColumnSchema} type-casting and value handling.
  */
 #[Group('db')]
 #[Group('column-schema')]
-class ColumnSchemaTest extends TestCase
+final class ColumnSchemaTest extends TestCase
 {
-    private function createColumn(array $config = []): ColumnSchema
-    {
-        $column = new ColumnSchema();
-        foreach ($config as $property => $value) {
-            $column->$property = $value;
-        }
-        return $column;
-    }
-
-    private function createStringColumn(string $type = Schema::TYPE_STRING): ColumnSchema
-    {
-        return $this->createColumn([
-            'type' => $type,
-            'phpType' => 'string',
-        ]);
-    }
-
-    private function createIntegerColumn(): ColumnSchema
-    {
-        return $this->createColumn([
-            'type' => Schema::TYPE_INTEGER,
-            'phpType' => 'integer',
-        ]);
-    }
-
-    private function createBooleanColumn(): ColumnSchema
-    {
-        return $this->createColumn([
-            'type' => Schema::TYPE_BOOLEAN,
-            'phpType' => 'boolean',
-        ]);
-    }
-
-    private function createDoubleColumn(): ColumnSchema
-    {
-        return $this->createColumn([
-            'type' => Schema::TYPE_FLOAT,
-            'phpType' => 'double',
-        ]);
-    }
-
     public function testPhpTypecastDelegatesToTypecast(): void
     {
         $column = $this->createIntegerColumn();
-        $this->assertSame(42, $column->phpTypecast('42'));
+
+        self::assertSame(
+            42,
+            $column->phpTypecast('42'),
+            "Numeric string must cast to 'int'.",
+        );
     }
 
     public function testDbTypecastDelegatesToTypecast(): void
     {
         $column = $this->createIntegerColumn();
-        $this->assertSame(42, $column->dbTypecast('42'));
+
+        self::assertSame(
+            42,
+            $column->dbTypecast('42'),
+            "Numeric string must cast to 'int'.",
+        );
+    }
+
+    public function testIsTypeReturnsTrueForMatchingType(): void
+    {
+        $column = $this->createColumn(
+            ['type' => Schema::TYPE_BINARY],
+        );
+
+        self::assertTrue(
+            $column->isType(Schema::TYPE_BINARY),
+            "Matching type must yield 'true'.",
+        );
+    }
+
+    public function testIsTypeReturnsFalseForDifferentType(): void
+    {
+        $column = $this->createStringColumn();
+
+        self::assertFalse(
+            $column->isType(Schema::TYPE_BINARY),
+            "Different type must yield 'false'.",
+        );
     }
 
     public function testDefaultPhpTypecastDelegatesToPhpTypecastForInteger(): void
@@ -119,306 +122,484 @@ class ColumnSchemaTest extends TestCase
     public function testNullPassthrough(): void
     {
         $column = $this->createIntegerColumn();
-        $this->assertNull($column->phpTypecast(null));
+
+        self::assertNull(
+            $column->phpTypecast(null),
+            "Null input must stay 'null'.",
+        );
     }
 
     public function testExpressionPassthrough(): void
     {
         $column = $this->createIntegerColumn();
+
         $expression = new Expression('NOW()');
-        $this->assertSame($expression, $column->phpTypecast($expression));
+
+        self::assertSame(
+            $expression,
+            $column->phpTypecast($expression),
+            'Expression must pass through unchanged.',
+        );
     }
 
     public function testQueryPassthrough(): void
     {
         $column = $this->createIntegerColumn();
+
         $query = new Query();
-        $this->assertSame($query, $column->phpTypecast($query));
+
+        self::assertSame(
+            $query,
+            $column->phpTypecast($query),
+            'Query must pass through unchanged.',
+        );
     }
 
     public function testSameTypePassthrough(): void
     {
         $column = $this->createIntegerColumn();
-        $this->assertSame(42, $column->phpTypecast(42));
+
+        self::assertSame(
+            42,
+            $column->phpTypecast(42),
+            'Matching type must pass through unchanged.',
+        );
     }
 
-    /**
-     * @dataProvider emptyStringToNullProvider
-     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'emptyStringToNull')]
     public function testEmptyStringToNullForNonTextTypes(string $type): void
     {
-        $column = $this->createColumn([
-            'type' => $type,
-            'phpType' => 'integer',
-        ]);
-        $this->assertNull($column->phpTypecast(''));
+        $column = $this->createColumn(
+            [
+                'type' => $type,
+                'phpType' => 'integer',
+            ],
+        );
+
+        self::assertNull(
+            $column->phpTypecast(''),
+            "Empty string must become 'null'.",
+        );
     }
 
-    public static function emptyStringToNullProvider(): array
-    {
-        return [
-            'integer' => [Schema::TYPE_INTEGER],
-            'boolean' => [Schema::TYPE_BOOLEAN],
-            'float' => [Schema::TYPE_FLOAT],
-            'decimal' => [Schema::TYPE_DECIMAL],
-            'datetime' => [Schema::TYPE_DATETIME],
-            'date' => [Schema::TYPE_DATE],
-            'time' => [Schema::TYPE_TIME],
-            'smallint' => [Schema::TYPE_SMALLINT],
-            'bigint' => [Schema::TYPE_BIGINT],
-            'money' => [Schema::TYPE_MONEY],
-            'timestamp' => [Schema::TYPE_TIMESTAMP],
-        ];
-    }
-
-    /**
-     * @dataProvider emptyStringPreservedProvider
-     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'emptyStringPreserved')]
     public function testEmptyStringPreservedForTextTypes(string $type): void
     {
-        $column = $this->createColumn([
-            'type' => $type,
-            'phpType' => 'string',
-        ]);
-        $this->assertSame('', $column->phpTypecast(''));
+        $column = $this->createColumn(
+            [
+                'type' => $type,
+                'phpType' => 'string',
+            ],
+        );
+
+        self::assertSame(
+            '',
+            $column->phpTypecast(''),
+            'Empty string must be preserved.',
+        );
     }
 
-    public static function emptyStringPreservedProvider(): array
-    {
-        return [
-            'text' => [Schema::TYPE_TEXT],
-            'string' => [Schema::TYPE_STRING],
-            'binary' => [Schema::TYPE_BINARY],
-            'char' => [Schema::TYPE_CHAR],
-        ];
-    }
-
-    /**
-     * @dataProvider pdoValueProvider
-     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'pdoValue')]
     public function testPdoValueCreation($inputValue, int $pdoType): void
     {
         $column = $this->createStringColumn();
-        $result = $column->phpTypecast([$inputValue, $pdoType]);
-        $this->assertInstanceOf(PdoValue::class, $result);
-        $this->assertSame($inputValue, $result->getValue());
-        $this->assertSame($pdoType, $result->getType());
-    }
 
-    public static function pdoValueProvider(): array
-    {
-        return [
-            'PARAM_INT' => [42, PDO::PARAM_INT],
-            'PARAM_STR' => ['hello', PDO::PARAM_STR],
-            'PARAM_BOOL' => [true, PDO::PARAM_BOOL],
-            'PARAM_LOB' => ['binary', PDO::PARAM_LOB],
-            'PARAM_NULL' => [null, PDO::PARAM_NULL],
-        ];
+        $result = $column->phpTypecast([$inputValue, $pdoType]);
+
+        self::assertInstanceOf(
+            PdoValue::class,
+            $result,
+            "Result must be a 'PdoValue'.",
+        );
+        self::assertSame(
+            $inputValue,
+            $result->getValue(),
+            'Wrapped value must be preserved.',
+        );
+        self::assertSame(
+            $pdoType,
+            $result->getType(),
+            'PDO type must be preserved.',
+        );
     }
 
     public function testArrayNotMatchingPdoPatternPassesThrough(): void
     {
-        $column = $this->createColumn(['phpType' => 'array', 'type' => Schema::TYPE_JSON]);
+        $column = $this->createColumn(
+            [
+                'phpType' => 'array',
+                'type' => Schema::TYPE_JSON,
+            ],
+        );
+
         $value = ['key' => 'value'];
-        $this->assertSame($value, $column->phpTypecast($value));
+
+        self::assertSame(
+            $value,
+            $column->phpTypecast($value),
+            'Non-PDO array must pass through unchanged.',
+        );
     }
 
     public function testArrayWithThreeElementsIsNotPdoValue(): void
     {
-        $column = $this->createColumn(['phpType' => 'object', 'type' => Schema::TYPE_JSON]);
-        $value = [1, PDO::PARAM_INT, 'extra'];
-        $this->assertSame($value, $column->phpTypecast($value));
+        $column = $this->createColumn(
+            [
+                'phpType' => 'object',
+                'type' => Schema::TYPE_JSON,
+            ],
+        );
+
+        $value = [
+            1,
+            PDO::PARAM_INT,
+            'extra',
+        ];
+
+        self::assertSame(
+            $value,
+            $column->phpTypecast($value),
+            'Three-element array must pass through unchanged.',
+        );
     }
 
     public function testArrayWithInvalidPdoTypeIsNotConverted(): void
     {
-        $column = $this->createColumn(['phpType' => 'object', 'type' => Schema::TYPE_JSON]);
-        $value = ['hello', 999];
-        $this->assertSame($value, $column->phpTypecast($value));
+        $column = $this->createColumn(
+            [
+                'phpType' => 'object',
+                'type' => Schema::TYPE_JSON,
+            ],
+        );
+
+        $value = [
+            'hello',
+            999,
+        ];
+
+        self::assertSame(
+            $value,
+            $column->phpTypecast($value),
+            'Invalid PDO type must pass through unchanged.',
+        );
     }
 
     public function testCastToStringPlain(): void
     {
         $column = $this->createStringColumn();
-        $this->assertSame('42', $column->phpTypecast(42));
+
+        self::assertSame(
+            '42',
+            $column->phpTypecast(42),
+            "Integer must cast to 'string'.",
+        );
     }
 
     public function testCastToStringFromObject(): void
     {
         $column = $this->createStringColumn();
+
         $object = new StringableObject('test');
-        $this->assertSame('test', $column->phpTypecast($object));
+
+        self::assertSame(
+            'test',
+            $column->phpTypecast($object),
+            "Stringable must cast to 'string'.",
+        );
     }
 
     public function testCastToStringFromFloat(): void
     {
         $column = $this->createStringColumn();
+
         $result = $column->phpTypecast(1.5);
-        $this->assertIsString($result);
-        $this->assertSame('1.5', $result);
+
+        self::assertIsString(
+            $result,
+            "Result must be a 'string'.",
+        );
+        self::assertSame(
+            '1.5',
+            $result,
+            "Float must cast to 'string'.",
+        );
     }
 
     public function testCastToStringFromFloatWithTrailingZero(): void
     {
         $column = $this->createStringColumn();
+
         $result = $column->phpTypecast(1.0);
-        $this->assertSame('1', $result);
+
+        self::assertSame(
+            '1',
+            $result,
+            'Trailing zero must be dropped.',
+        );
     }
 
     public function testCastToStringFromResource(): void
     {
-        $column = $this->createColumn([
-            'type' => Schema::TYPE_BINARY,
-            'phpType' => 'resource',
-        ]);
+        $column = $this->createColumn(
+            [
+                'type' => Schema::TYPE_BINARY,
+                'phpType' => 'resource',
+            ],
+        );
+
         $resource = fopen('php://memory', 'r');
+
         $result = $column->phpTypecast($resource);
-        $this->assertIsResource($result);
-        $this->assertSame($resource, $result);
+
+        self::assertIsResource(
+            $result,
+            'Result must be a resource.',
+        );
+        self::assertSame(
+            $resource,
+            $result,
+            'Resource must pass through unchanged.',
+        );
+
         fclose($resource);
     }
 
     public function testResourcePassthroughForStringPhpType(): void
     {
-        $column = $this->createColumn([
-            'type' => Schema::TYPE_STRING,
-            'phpType' => 'string',
-        ]);
+        $column = $this->createColumn(
+            [
+                'type' => Schema::TYPE_STRING,
+                'phpType' => 'string',
+            ],
+        );
+
         $resource = fopen('php://memory', 'r');
         $result = $column->phpTypecast($resource);
-        $this->assertIsResource($result);
-        $this->assertSame($resource, $result);
+
+        self::assertIsResource(
+            $result,
+            'Result must be a resource.',
+        );
+        self::assertSame(
+            $resource,
+            $result,
+            'Resource must pass through unchanged.',
+        );
+
         fclose($resource);
     }
 
     public function testNumericValueInNumericColumnPreservedAsIs(): void
     {
-        $column = $this->createColumn([
-            'type' => Schema::TYPE_INTEGER,
-            'phpType' => 'string',
-        ]);
-        $this->assertSame(42, $column->phpTypecast(42));
+        $column = $this->createColumn(
+            [
+                'type' => Schema::TYPE_INTEGER,
+                'phpType' => 'string',
+            ],
+        );
+
+        self::assertSame(
+            42,
+            $column->phpTypecast(42),
+            'Integer must be preserved as is.',
+        );
     }
 
     public function testCastToStringFromNumericStringInNumericColumn(): void
     {
-        $column = $this->createColumn([
-            'type' => Schema::TYPE_DECIMAL,
-            'phpType' => 'string',
-        ]);
+        $column = $this->createColumn(
+            [
+                'type' => Schema::TYPE_DECIMAL,
+                'phpType' => 'string',
+            ],
+        );
+
         $result = $column->phpTypecast('123.45');
-        $this->assertSame('123.45', $result);
+
+        self::assertSame(
+            '123.45',
+            $result,
+            'Numeric string must be preserved.',
+        );
     }
 
     public function testCastToInteger(): void
     {
         $column = $this->createIntegerColumn();
-        $this->assertSame(42, $column->phpTypecast('42'));
+
+        self::assertSame(
+            42,
+            $column->phpTypecast('42'),
+            "Numeric string must cast to 'int'.",
+        );
     }
 
     public function testCastToIntegerFromFloat(): void
     {
         $column = $this->createIntegerColumn();
-        $this->assertSame(3, $column->phpTypecast(3.7));
+
+        self::assertSame(
+            3,
+            $column->phpTypecast(3.7),
+            "Float must truncate to 'int'.",
+        );
     }
 
-    /**
-     * @dataProvider booleanTruthyProvider
-     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'booleanTruthy')]
     public function testCastToBooleanTruthy($value): void
     {
         $column = $this->createBooleanColumn();
-        $this->assertSame(true, $column->phpTypecast($value));
+
+        self::assertSame(
+            true,
+            $column->phpTypecast($value),
+            "Truthy value must cast to 'true'.",
+        );
     }
 
-    public static function booleanTruthyProvider(): array
-    {
-        return [
-            'integer 1' => [1],
-            'string 1' => ['1'],
-            'string yes' => ['yes'],
-            'string TRUE' => ['TRUE'],
-        ];
-    }
-
-    /**
-     * @dataProvider booleanFalsyProvider
-     */
+    #[DataProviderExternal(ColumnSchemaProvider::class, 'booleanFalsy')]
     public function testCastToBooleanFalsy($value): void
     {
         $column = $this->createBooleanColumn();
-        $this->assertSame(false, $column->phpTypecast($value));
-    }
 
-    public static function booleanFalsyProvider(): array
-    {
-        return [
-            'integer 0' => [0],
-            'string 0' => ['0'],
-            'null byte' => ["\0"],
-            'string false' => ['false'],
-            'string FALSE' => ['FALSE'],
-            'string False' => ['False'],
-        ];
+        self::assertSame(
+            false,
+            $column->phpTypecast($value),
+            "Falsy value must cast to 'false'.",
+        );
     }
 
     public function testEmptyStringOnBooleanColumnReturnsNull(): void
     {
         $column = $this->createBooleanColumn();
-        $this->assertNull($column->phpTypecast(''));
+
+        self::assertNull(
+            $column->phpTypecast(''),
+            "Empty string must become 'null'.",
+        );
     }
 
     public function testCastToDouble(): void
     {
         $column = $this->createDoubleColumn();
-        $this->assertSame(3.14, $column->phpTypecast('3.14'));
+
+        self::assertSame(
+            3.14,
+            $column->phpTypecast('3.14'),
+            "Numeric string must cast to 'float'.",
+        );
     }
 
     public function testCastToDoubleFromInt(): void
     {
         $column = $this->createDoubleColumn();
+
         $result = $column->phpTypecast(42);
-        $this->assertSame(42.0, $result);
+
+        self::assertSame(
+            42.0,
+            $result,
+            "Integer must cast to 'float'.",
+        );
     }
 
     public function testFallbackReturnsValueUnchanged(): void
     {
-        $column = $this->createColumn([
-            'type' => Schema::TYPE_JSON,
-            'phpType' => 'array',
-        ]);
+        $column = $this->createColumn(
+            [
+                'type' => Schema::TYPE_JSON,
+                'phpType' => 'array',
+            ],
+        );
+
         $value = 'json_string';
-        $this->assertSame($value, $column->phpTypecast($value));
+
+        self::assertSame(
+            $value,
+            $column->phpTypecast($value),
+            'Unhandled type must pass through unchanged.',
+        );
     }
 
     public function testEnumValuesProperty(): void
     {
-        $column = $this->createColumn([
-            'type' => Schema::TYPE_STRING,
-            'phpType' => 'string',
-            'enumValues' => ['active', 'inactive', 'pending'],
-        ]);
-        $this->assertSame(['active', 'inactive', 'pending'], $column->enumValues);
+        $column = $this->createColumn(
+            [
+                'type' => Schema::TYPE_STRING,
+                'phpType' => 'string',
+                'enumValues' => [
+                    'active',
+                    'inactive',
+                    'pending',
+                ],
+            ],
+        );
+
+        self::assertSame(
+            ['active', 'inactive', 'pending'],
+            $column->enumValues,
+            'Enum values must be stored.',
+        );
     }
 
     public function testAutoIncrementDefaultIsFalse(): void
     {
         $column = new ColumnSchema();
-        $this->assertFalse($column->autoIncrement);
-    }
-}
 
-class StringableObject
-{
-    private $value;
-
-    public function __construct(string $value)
-    {
-        $this->value = $value;
+        self::assertFalse(
+            $column->autoIncrement,
+            "Default must be 'false'.",
+        );
     }
 
-    public function __toString(): string
+    private function createColumn(array $config = []): ColumnSchema
     {
-        return $this->value;
+        $column = new ColumnSchema();
+
+        foreach ($config as $property => $value) {
+            $column->$property = $value;
+        }
+
+        return $column;
+    }
+
+    private function createStringColumn(string $type = Schema::TYPE_STRING): ColumnSchema
+    {
+        return $this->createColumn(
+            [
+                'type' => $type,
+                'phpType' => 'string',
+            ],
+        );
+    }
+
+    private function createIntegerColumn(): ColumnSchema
+    {
+        return $this->createColumn(
+            [
+                'type' => Schema::TYPE_INTEGER,
+                'phpType' => 'integer',
+            ],
+        );
+    }
+
+    private function createBooleanColumn(): ColumnSchema
+    {
+        return $this->createColumn(
+            [
+                'type' => Schema::TYPE_BOOLEAN,
+                'phpType' => 'boolean',
+            ],
+        );
+    }
+
+    private function createDoubleColumn(): ColumnSchema
+    {
+        return $this->createColumn(
+            [
+                'type' => Schema::TYPE_FLOAT,
+                'phpType' => 'double',
+            ],
+        );
     }
 }

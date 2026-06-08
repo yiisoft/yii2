@@ -10,8 +10,10 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\mssql\providers;
 
+use PDO;
 use yii\db\Expression;
 use yii\db\mssql\Schema;
+use yii\db\PdoValue;
 
 use function array_walk;
 use function bin2hex;
@@ -27,6 +29,8 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
      */
     public static function dbTypecast(): array
     {
+        $pdoValue = new PdoValue('binary data', PDO::PARAM_LOB);
+
         return [
             'non-varbinary string falls through to parent' => [
                 Schema::TYPE_STRING,
@@ -62,6 +66,34 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 true,
                 'binary data',
                 new Expression('CONVERT(VARBINARY(MAX), 0x' . bin2hex('binary data') . ')'),
+            ],
+            'varbinary max string value' => [
+                Schema::TYPE_BINARY,
+                'varbinary(max)',
+                true,
+                'binary data',
+                new Expression('CONVERT(VARBINARY(MAX), 0x' . bin2hex('binary data') . ')'),
+            ],
+            'varbinary PDO LOB string value' => [
+                Schema::TYPE_BINARY,
+                'varbinary(max)',
+                true,
+                new PdoValue('binary data', PDO::PARAM_LOB),
+                new Expression('CONVERT(VARBINARY(MAX), 0x' . bin2hex('binary data') . ')'),
+            ],
+            'varbinary nullable PDO LOB null value' => [
+                Schema::TYPE_BINARY,
+                'varbinary(max)',
+                true,
+                new PdoValue(null, PDO::PARAM_LOB),
+                new Expression('CAST(NULL AS VARBINARY(MAX))'),
+            ],
+            'non-varbinary PDO LOB falls through to parent' => [
+                Schema::TYPE_BINARY,
+                'binary(8)',
+                true,
+                $pdoValue,
+                $pdoValue,
             ],
         ];
     }
@@ -195,6 +227,12 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 null,
                 'nvarchar(MAX)',
             ],
+            'nvarchar(max) returns as-is' => [
+                'nvarchar(max)',
+                false,
+                null,
+                'nvarchar(max)',
+            ],
             'nvarchar with embedded size stays as-is' => [
                 'nvarchar(100)',
                 false,
@@ -219,6 +257,12 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 null,
                 'varbinary(MAX)',
             ],
+            'varbinary(max) returns as-is' => [
+                'varbinary(max)',
+                false,
+                null,
+                'varbinary(max)',
+            ],
             'varbinary with embedded size stays as-is' => [
                 'varbinary(50)',
                 false,
@@ -230,6 +274,12 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 false,
                 null,
                 'varchar(MAX)',
+            ],
+            'varchar(max) returns as-is' => [
+                'varchar(max)',
+                false,
+                null,
+                'varchar(max)',
             ],
             'varchar with embedded size stays as-is' => [
                 'varchar(128)',
@@ -256,17 +306,14 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         $columns['int_col2']['dbType'] = 'int';
         $columns['tinyint_col']['dbType'] = 'tinyint';
         $columns['smallint_col']['dbType'] = 'smallint';
-        $columns['float_col']['dbType'] = 'decimal';
+        $columns['float_col']['dbType'] = 'decimal(4,3)';
         $columns['float_col']['phpType'] = 'string';
         $columns['float_col']['type'] = 'decimal';
-        $columns['float_col']['scale'] = null;
         $columns['float_col2']['dbType'] = 'float';
         $columns['float_col2']['phpType'] = 'double';
         $columns['float_col2']['type'] = 'float';
         $columns['float_col2']['scale'] = null;
-        $columns['blob_col']['dbType'] = 'varbinary';
-        $columns['numeric_col']['dbType'] = 'decimal';
-        $columns['numeric_col']['scale'] = null;
+        $columns['blob_col']['dbType'] = 'varbinary(max)';
         $columns['time']['dbType'] = 'datetime';
         $columns['time']['type'] = 'datetime';
         $columns['bool_col']['dbType'] = 'tinyint';
@@ -282,7 +329,7 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         array_walk(
             $columns,
             static function (&$item, $name): void {
-                if (!in_array($name, ['char_col', 'char_col2', 'char_col3'], true)) {
+                if (!in_array($name, ['char_col', 'char_col2', 'float_col', 'numeric_col'], true)) {
                     $item['size'] = null;
                     $item['precision'] = null;
                 }

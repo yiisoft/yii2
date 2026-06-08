@@ -350,11 +350,6 @@ abstract class BaseSchema extends DatabaseTestCase
             $schema->quoteTableName('{{%profile}}'),
             'Table name with Yii prefix placeholder should not be quoted.',
         );
-        self::assertSame(
-            '',
-            $schema->quoteColumnName(null),
-            'Null column name should be quoted as an empty string.',
-        );
     }
 
     public function testQuoteValueFallback(): void

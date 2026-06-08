@@ -14,8 +14,14 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\mssql\ColumnSchema;
+use yii\db\mssql\Schema;
 use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\mssql\providers\ColumnSchemaProvider;
+
+use function fclose;
+use function fopen;
+use function fwrite;
+use function rewind;
 
 /**
  * Unit tests for {@see \yii\db\mssql\ColumnSchema} type-casting and OUTPUT column declarations for the MSSQL driver.
@@ -91,6 +97,30 @@ final class ColumnSchemaTest extends BaseColumnSchema
             $expected,
             $column->defaultPhpTypecast($value),
             'Converted default must match.',
+        );
+    }
+
+    public function testPhpTypecastVarbinaryStreamReturnsString(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->type = Schema::TYPE_BINARY;
+        $column->dbType = 'varbinary(max)';
+        $column->phpType = 'resource';
+
+        $stream = fopen('php://memory', 'r+');
+
+        fwrite($stream, 'binary data');
+        rewind($stream);
+
+        $result = $column->phpTypecast($stream);
+
+        fclose($stream);
+
+        self::assertSame(
+            'binary data',
+            $result,
+            'Varbinary streams must be converted to strings.',
         );
     }
 

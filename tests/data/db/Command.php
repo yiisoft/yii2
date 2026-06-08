@@ -13,7 +13,8 @@ namespace yiiunit\data\db;
 use Throwable;
 
 /**
- * Stub for {@see \yii\db\Command} short-circuiting execution and queries with configurable results.
+ * Stub for {@see \yii\db\Command} short-circuiting execution and queries with configurable results, including the rows
+ * returned by {@see queryAll()}.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
@@ -24,6 +25,7 @@ final class Command extends \yii\db\Command
         private int|false $executeResult = 1,
         array|false $fetchRow = false,
         private Throwable|null $queryAllException = null,
+        private array $queryAllRows = [],
     ) {
         parent::__construct();
 
@@ -46,6 +48,6 @@ final class Command extends \yii\db\Command
             throw $this->queryAllException;
         }
 
-        return [];
+        return $this->queryAllRows;
     }
 }

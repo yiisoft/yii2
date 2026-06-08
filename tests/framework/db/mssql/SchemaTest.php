@@ -208,6 +208,16 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testGetTableSchemaReturnsNullForNonExistentTable(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        self::assertNull(
+            $schema->getTableSchema('non_existent_table_xyz', true),
+            'Non-existent table schema should resolve to null.',
+        );
+    }
+
     public function testDefaultSchema(): void
     {
         $schema = $this->getConnection()->getSchema();

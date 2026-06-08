@@ -81,6 +81,7 @@ Yii Framework 2 Change Log
 - Enh #20923: Add explicit default values to `ColumnSchema` properties in `yii\db`, `yii\db\mssql`, and `yii\db\pgsql` (terabytesoftw)
 - Chg #20928: Remove legacy MySQL version support code from `yii\db\mysql\Schema` (terabytesoftw)
 - Bug #20929: Fix `yii\db\oci\Schema::insert()` returning only the first primary key value for composite keys, caused by a reused `foreach` reference (terabytesoftw)
+- Chg #20931: Discover MSSQL column metadata from `sys.*` catalog views, preserving `decimal`/`numeric` precision and scale and `varchar(max)`/`varbinary(max)` lengths (terabytesoftw)
 
 2.0.56 under development
 ------------------------
