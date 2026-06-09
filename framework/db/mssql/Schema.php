@@ -260,35 +260,45 @@ SQL;
      */
     protected function loadTableIndexes($tableName)
     {
-        static $sql = <<<'SQL'
-SELECT
-    [i].[name] AS [name],
-    [iccol].[name] AS [column_name],
-    [i].[is_unique] AS [index_is_unique],
-    [i].[is_primary_key] AS [index_is_primary]
-FROM [sys].[indexes] AS [i]
-INNER JOIN [sys].[index_columns] AS [ic]
-    ON [ic].[object_id] = [i].[object_id] AND [ic].[index_id] = [i].[index_id]
-INNER JOIN [sys].[columns] AS [iccol]
-    ON [iccol].[object_id] = [ic].[object_id] AND [iccol].[column_id] = [ic].[column_id]
-WHERE [i].[object_id] = OBJECT_ID(:fullName)
-ORDER BY [ic].[key_ordinal] ASC
-SQL;
-
         $resolvedName = $this->resolveTableName($tableName);
-        $indexes = $this->db->createCommand($sql, [
-            ':fullName' => $resolvedName->fullName,
-        ])->queryAll();
+
+        $systemCatalogName = $this->quoteSystemCatalogName($resolvedName);
+
+        $sql = <<<SQL
+        SELECT
+            [i].[name] AS [name],
+            [iccol].[name] AS [column_name],
+            [i].[is_unique] AS [index_is_unique],
+            [i].[is_primary_key] AS [index_is_primary]
+        FROM {$systemCatalogName}.[indexes] AS [i]
+        INNER JOIN {$systemCatalogName}.[index_columns] AS [ic]
+            ON [ic].[object_id] = [i].[object_id] AND [ic].[index_id] = [i].[index_id]
+        INNER JOIN {$systemCatalogName}.[columns] AS [iccol]
+            ON [iccol].[object_id] = [ic].[object_id] AND [iccol].[column_id] = [ic].[column_id]
+        WHERE [i].[object_id] = OBJECT_ID(:fullName)
+        ORDER BY [ic].[key_ordinal] ASC
+        SQL;
+
+        $indexes = $this->db->createCommand(
+            $sql,
+            [':fullName' => $this->quoteTableFullName($resolvedName)],
+        )->queryAll();
+
         $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+
         $indexes = ArrayHelper::index($indexes, null, 'name');
+
         $result = [];
+
         foreach ($indexes as $name => $index) {
-            $result[] = new IndexConstraint([
-                'isPrimary' => (bool)$index[0]['index_is_primary'],
-                'isUnique' => (bool)$index[0]['index_is_unique'],
-                'name' => $name,
-                'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
-            ]);
+            $result[] = new IndexConstraint(
+                [
+                    'isPrimary' => (bool)$index[0]['index_is_primary'],
+                    'isUnique' => (bool)$index[0]['index_is_unique'],
+                    'name' => $name,
+                    'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
+                ],
+            );
         }
 
         return $result;
@@ -572,41 +582,47 @@ SQL;
 
     /**
      * Collects the foreign key column details for the given table.
-     * @param TableSchema $table the table metadata
+     *
+     * @param TableSchema $table The table metadata
      */
     protected function findForeignKeys($table)
     {
-        $object = $this->quoteTableFullName($table);
+        $systemCatalogName = $this->quoteSystemCatalogName($table);
 
-        $sql = <<<'SQL'
-SELECT
-	[fk].[name] AS [fk_name],
-	[cp].[name] AS [fk_column_name],
-	OBJECT_NAME([fk].[referenced_object_id]) AS [uq_table_name],
-	[cr].[name] AS [uq_column_name]
-FROM
-	[sys].[foreign_keys] AS [fk]
-	INNER JOIN [sys].[foreign_key_columns] AS [fkc] ON
-		[fk].[object_id] = [fkc].[constraint_object_id]
-	INNER JOIN [sys].[columns] AS [cp] ON
-		[fk].[parent_object_id] = [cp].[object_id] AND
-		[fkc].[parent_column_id] = [cp].[column_id]
-	INNER JOIN [sys].[columns] AS [cr] ON
-		[fk].[referenced_object_id] = [cr].[object_id] AND
-		[fkc].[referenced_column_id] = [cr].[column_id]
-WHERE
-	[fk].[parent_object_id] = OBJECT_ID(:object)
-SQL;
+        $databaseId = $this->getDatabaseIdExpression($table);
 
-        $rows = $this->db->createCommand($sql, [
-            ':object' => $object,
-        ])->queryAll();
+        $sql = <<<SQL
+        SELECT
+            [fk].[name] AS [fk_name],
+            [cp].[name] AS [fk_column_name],
+            OBJECT_NAME([fk].[referenced_object_id], {$databaseId}) AS [uq_table_name],
+            [cr].[name] AS [uq_column_name]
+        FROM
+            {$systemCatalogName}.[foreign_keys] AS [fk]
+            INNER JOIN {$systemCatalogName}.[foreign_key_columns] AS [fkc] ON
+                [fk].[object_id] = [fkc].[constraint_object_id]
+            INNER JOIN {$systemCatalogName}.[columns] AS [cp] ON
+                [fk].[parent_object_id] = [cp].[object_id] AND
+                [fkc].[parent_column_id] = [cp].[column_id]
+            INNER JOIN {$systemCatalogName}.[columns] AS [cr] ON
+                [fk].[referenced_object_id] = [cr].[object_id] AND
+                [fkc].[referenced_column_id] = [cr].[column_id]
+        WHERE
+            [fk].[parent_object_id] = OBJECT_ID(:object)
+        SQL;
+
+        $rows = $this->db->createCommand(
+            $sql,
+            [':object' => $this->quoteTableFullName($table)],
+        )->queryAll();
 
         $table->foreignKeys = [];
+
         foreach ($rows as $row) {
             if (!isset($table->foreignKeys[$row['fk_name']])) {
                 $table->foreignKeys[$row['fk_name']][] = $row['uq_table_name'];
             }
+
             $table->foreignKeys[$row['fk_name']][$row['fk_column_name']] = $row['uq_column_name'];
         }
     }
@@ -666,63 +682,73 @@ SQL;
 
     /**
      * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
+     *
+     * @param string $tableName Table name.
+     * @param string $returnType Return type:
      * - primaryKey
      * - foreignKeys
      * - uniques
      * - checks
      * - defaults
-     * @return mixed constraints.
+     *
+     * @return mixed Constraint(s) of the specified type.
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        static $sql = <<<'SQL'
-SELECT
-    [o].[name] AS [name],
-    COALESCE([ccol].[name], [dcol].[name], [fccol].[name], [kiccol].[name]) AS [column_name],
-    RTRIM([o].[type]) AS [type],
-    OBJECT_SCHEMA_NAME([f].[referenced_object_id]) AS [foreign_table_schema],
-    OBJECT_NAME([f].[referenced_object_id]) AS [foreign_table_name],
-    [ffccol].[name] AS [foreign_column_name],
-    [f].[update_referential_action_desc] AS [on_update],
-    [f].[delete_referential_action_desc] AS [on_delete],
-    [c].[definition] AS [check_expr],
-    [d].[definition] AS [default_expr]
-FROM (SELECT OBJECT_ID(:fullName) AS [object_id]) AS [t]
-INNER JOIN [sys].[objects] AS [o]
-    ON [o].[parent_object_id] = [t].[object_id] AND [o].[type] IN ('PK', 'UQ', 'C', 'D', 'F')
-LEFT JOIN [sys].[check_constraints] AS [c]
-    ON [c].[object_id] = [o].[object_id]
-LEFT JOIN [sys].[columns] AS [ccol]
-    ON [ccol].[object_id] = [c].[parent_object_id] AND [ccol].[column_id] = [c].[parent_column_id]
-LEFT JOIN [sys].[default_constraints] AS [d]
-    ON [d].[object_id] = [o].[object_id]
-LEFT JOIN [sys].[columns] AS [dcol]
-    ON [dcol].[object_id] = [d].[parent_object_id] AND [dcol].[column_id] = [d].[parent_column_id]
-LEFT JOIN [sys].[key_constraints] AS [k]
-    ON [k].[object_id] = [o].[object_id]
-LEFT JOIN [sys].[index_columns] AS [kic]
-    ON [kic].[object_id] = [k].[parent_object_id] AND [kic].[index_id] = [k].[unique_index_id]
-LEFT JOIN [sys].[columns] AS [kiccol]
-    ON [kiccol].[object_id] = [kic].[object_id] AND [kiccol].[column_id] = [kic].[column_id]
-LEFT JOIN [sys].[foreign_keys] AS [f]
-    ON [f].[object_id] = [o].[object_id]
-LEFT JOIN [sys].[foreign_key_columns] AS [fc]
-    ON [fc].[constraint_object_id] = [o].[object_id]
-LEFT JOIN [sys].[columns] AS [fccol]
-    ON [fccol].[object_id] = [fc].[parent_object_id] AND [fccol].[column_id] = [fc].[parent_column_id]
-LEFT JOIN [sys].[columns] AS [ffccol]
-    ON [ffccol].[object_id] = [fc].[referenced_object_id] AND [ffccol].[column_id] = [fc].[referenced_column_id]
-ORDER BY [kic].[key_ordinal] ASC, [fc].[constraint_column_id] ASC
-SQL;
-
         $resolvedName = $this->resolveTableName($tableName);
-        $constraints = $this->db->createCommand($sql, [
-            ':fullName' => $resolvedName->fullName,
-        ])->queryAll();
+
+        $systemCatalogName = $this->quoteSystemCatalogName($resolvedName);
+        $databaseId = $this->getDatabaseIdExpression($resolvedName);
+
+        $sql = <<<SQL
+        SELECT
+            [o].[name] AS [name],
+            COALESCE([ccol].[name], [dcol].[name], [fccol].[name], [kiccol].[name]) AS [column_name],
+            RTRIM([o].[type]) AS [type],
+            OBJECT_SCHEMA_NAME([f].[referenced_object_id], {$databaseId}) AS [foreign_table_schema],
+            OBJECT_NAME([f].[referenced_object_id], {$databaseId}) AS [foreign_table_name],
+            [ffccol].[name] AS [foreign_column_name],
+            [f].[update_referential_action_desc] AS [on_update],
+            [f].[delete_referential_action_desc] AS [on_delete],
+            [c].[definition] AS [check_expr],
+            [d].[definition] AS [default_expr]
+        FROM (SELECT OBJECT_ID(:fullName) AS [object_id]) AS [t]
+        INNER JOIN {$systemCatalogName}.[objects] AS [o]
+            ON [o].[parent_object_id] = [t].[object_id] AND [o].[type] IN ('PK', 'UQ', 'C', 'D', 'F')
+        LEFT JOIN {$systemCatalogName}.[check_constraints] AS [c]
+            ON [c].[object_id] = [o].[object_id]
+        LEFT JOIN {$systemCatalogName}.[columns] AS [ccol]
+            ON [ccol].[object_id] = [c].[parent_object_id] AND [ccol].[column_id] = [c].[parent_column_id]
+        LEFT JOIN {$systemCatalogName}.[default_constraints] AS [d]
+            ON [d].[object_id] = [o].[object_id]
+        LEFT JOIN {$systemCatalogName}.[columns] AS [dcol]
+            ON [dcol].[object_id] = [d].[parent_object_id] AND [dcol].[column_id] = [d].[parent_column_id]
+        LEFT JOIN {$systemCatalogName}.[key_constraints] AS [k]
+            ON [k].[object_id] = [o].[object_id]
+        LEFT JOIN {$systemCatalogName}.[index_columns] AS [kic]
+            ON [kic].[object_id] = [k].[parent_object_id] AND [kic].[index_id] = [k].[unique_index_id]
+        LEFT JOIN {$systemCatalogName}.[columns] AS [kiccol]
+            ON [kiccol].[object_id] = [kic].[object_id] AND [kiccol].[column_id] = [kic].[column_id]
+        LEFT JOIN {$systemCatalogName}.[foreign_keys] AS [f]
+            ON [f].[object_id] = [o].[object_id]
+        LEFT JOIN {$systemCatalogName}.[foreign_key_columns] AS [fc]
+            ON [fc].[constraint_object_id] = [o].[object_id]
+        LEFT JOIN {$systemCatalogName}.[columns] AS [fccol]
+            ON [fccol].[object_id] = [fc].[parent_object_id] AND [fccol].[column_id] = [fc].[parent_column_id]
+        LEFT JOIN {$systemCatalogName}.[columns] AS [ffccol]
+            ON [ffccol].[object_id] = [fc].[referenced_object_id] AND [ffccol].[column_id] = [fc].[referenced_column_id]
+        ORDER BY [kic].[key_ordinal] ASC, [fc].[constraint_column_id] ASC
+        SQL;
+
+        $constraints = $this->db->createCommand(
+            $sql,
+            [':fullName' => $this->quoteTableFullName($resolvedName)],
+        )->queryAll();
+
         $constraints = $this->normalizePdoRowKeyCase($constraints, true);
+
         $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
+
         $result = [
             'primaryKey' => null,
             'foreignKeys' => [],
@@ -730,49 +756,66 @@ SQL;
             'checks' => [],
             'defaults' => [],
         ];
+
         foreach ($constraints as $type => $names) {
             foreach ($names as $name => $constraint) {
                 switch ($type) {
                     case 'PK':
-                        $result['primaryKey'] = new Constraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        ]);
+                        $result['primaryKey'] = new Constraint(
+                            [
+                                'name' => $name,
+                                'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            ],
+                        );
+
                         break;
                     case 'F':
-                        $result['foreignKeys'][] = new ForeignKeyConstraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
-                            'foreignTableName' => $constraint[0]['foreign_table_name'],
-                            'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
-                            'onDelete' => str_replace('_', '', $constraint[0]['on_delete']),
-                            'onUpdate' => str_replace('_', '', $constraint[0]['on_update']),
-                        ]);
+                        $result['foreignKeys'][] = new ForeignKeyConstraint(
+                            [
+                                'name' => $name,
+                                'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                                'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                                'foreignTableName' => $constraint[0]['foreign_table_name'],
+                                'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
+                                'onDelete' => str_replace('_', '', $constraint[0]['on_delete']),
+                                'onUpdate' => str_replace('_', '', $constraint[0]['on_update']),
+                            ],
+                        );
+
                         break;
                     case 'UQ':
-                        $result['uniques'][] = new Constraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        ]);
+                        $result['uniques'][] = new Constraint(
+                            [
+                                'name' => $name,
+                                'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            ],
+                        );
+
                         break;
                     case 'C':
-                        $result['checks'][] = new CheckConstraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'expression' => $constraint[0]['check_expr'],
-                        ]);
+                        $result['checks'][] = new CheckConstraint(
+                            [
+                                'name' => $name,
+                                'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                                'expression' => $constraint[0]['check_expr'],
+                            ],
+                        );
+
                         break;
                     case 'D':
-                        $result['defaults'][] = new DefaultValueConstraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'value' => $constraint[0]['default_expr'],
-                        ]);
+                        $result['defaults'][] = new DefaultValueConstraint(
+                            [
+                                'name' => $name,
+                                'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                                'value' => $constraint[0]['default_expr'],
+                            ],
+                        );
+
                         break;
                 }
             }
         }
+
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
@@ -839,7 +882,7 @@ SQL;
      *
      * @return string The quoted fully qualified table name.
      */
-    private function quoteTableFullName($table)
+    private function quoteTableFullName(TableSchema $table): string
     {
         return $this->quoteTableNameParts([$table->catalogName, $table->schemaName, $table->name]);
     }
@@ -851,9 +894,25 @@ SQL;
      *
      * @return string The quoted system catalog name.
      */
-    private function quoteSystemCatalogName($table)
+    private function quoteSystemCatalogName(TableSchema $table): string
     {
         return $this->quoteTableNameParts([$table->catalogName, 'sys']);
+    }
+
+    /**
+     * Builds a SQL Server database ID expression for metadata functions.
+     *
+     * @param TableSchema $table The table metadata.
+     *
+     * @return string The database ID expression.
+     */
+    private function getDatabaseIdExpression(TableSchema $table): string
+    {
+        if ($table->catalogName === null) {
+            return 'DB_ID()';
+        }
+
+        return 'DB_ID(' . $this->db->quoteValue($table->catalogName) . ')';
     }
 
     /**
@@ -863,7 +922,7 @@ SQL;
      *
      * @return string The quoted qualified name.
      */
-    private function quoteTableNameParts($parts)
+    private function quoteTableNameParts(array $parts): string
     {
         $quotedParts = [];
 
@@ -883,7 +942,7 @@ SQL;
      *
      * @return array{string|null, string} The catalog and schema names.
      */
-    private function resolveCatalogSchemaName($schema)
+    private function resolveCatalogSchemaName(string $schema): array
     {
         if ($schema === '') {
             return [null, $this->defaultSchema];

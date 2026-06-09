@@ -87,6 +87,7 @@ Yii Framework 2 Change Log
 - Bug #20931: Fix `yii\caching\DbCache` MSSQL reference schema using the invalid `BLOB` type instead of `varbinary(max)` for the `data` column (terabytesoftw)
 - Enh #20933: Replace MSSQL `INFORMATION_SCHEMA.KEY_COLUMN_USAGE` and `TABLE_CONSTRAINTS` in `Schema::findTableConstraints()` with `sys.key_constraints`, and preserve composite key column order with `sys.index_columns.key_ordinal` (terabytesoftw)
 - Enh #20934: Replace MSSQL `INFORMATION_SCHEMA.TABLES` in `Schema::findTableNames()` and `Schema::findViewNames()` with catalog-qualified `sys.objects` and `sys.views` catalog views (terabytesoftw)
+- Bug #20935: Fix MSSQL index, foreign key, and constraint metadata lookups for catalog-qualified table names (terabytesoftw)
 
 2.0.56 under development
 ------------------------
