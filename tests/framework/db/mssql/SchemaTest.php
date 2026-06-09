@@ -595,35 +595,49 @@ final class SchemaTest extends BaseSchema
             $payload .= chr($i % 256);
         }
 
-        try {
-            $db->createCommand()->insert('test_varbinary_max', ['id' => 1, 'data' => $payload])->execute();
+        $db->createCommand()->insert(
+            'test_varbinary_max',
+            [
+                'id' => 1,
+                'data' => $payload,
+            ],
+        )->execute();
 
-            $length = (int) $db->createCommand(
-                <<<SQL
-                SELECT DATALENGTH(data) FROM test_varbinary_max WHERE id = 1
-                SQL,
-            )->queryScalar();
+        $length = (int) $db->createCommand(
+            <<<SQL
+            SELECT DATALENGTH(data) FROM test_varbinary_max WHERE id = 1
+            SQL,
+        )->queryScalar();
+        $stored = $db->createCommand(
+            <<<SQL
+            SELECT data FROM test_varbinary_max WHERE id = 1
+            SQL,
+        )->queryScalar();
+        $stored = is_resource($stored) ? stream_get_contents($stored) : (string) $stored;
 
-            $stored = $db->createCommand(
-                <<<SQL
-                SELECT data FROM test_varbinary_max WHERE id = 1
-                SQL,
-            )->queryScalar();
-            $stored = is_resource($stored) ? stream_get_contents($stored) : (string) $stored;
+        $column = $db->getTableSchema('test_varbinary_max', true)->columns['data'];
 
-            $column = $db->getTableSchema('test_varbinary_max', true)->columns['data'];
+        self::assertSame(
+            strlen($payload),
+            $length,
+            'Stored length must match the payload (no truncation).',
+        );
+        self::assertSame(
+            hash('sha256', $payload),
+            hash('sha256', $stored),
+            'Binary payload must round-trip byte-for-byte.',
+        );
+        self::assertSame(
+            'varbinary(max)',
+            $column->dbType,
+            "'max' declaration must be preserved.",
+        );
+        self::assertNull(
+            $column->size,
+            "'max' length must not be parsed as a fixed size.",
+        );
 
-            self::assertSame(strlen($payload), $length, 'Stored length must match the payload (no truncation).');
-            self::assertSame(
-                hash('sha256', $payload),
-                hash('sha256', $stored),
-                'Binary payload must round-trip byte-for-byte.',
-            );
-            self::assertSame('varbinary(max)', $column->dbType, '`max` declaration must be preserved.');
-            self::assertNull($column->size, '`max` length must not be parsed as a fixed size.');
-        } finally {
-            $db->createCommand()->dropTable('test_varbinary_max')->execute();
-        }
+        $db->createCommand()->dropTable('test_varbinary_max')->execute();
     }
 
     /**
@@ -632,64 +646,53 @@ final class SchemaTest extends BaseSchema
     public function testGetTableSchemaDetectsIdentityColumnAcrossDatabases(): void
     {
         $db = $this->getConnection();
-        $database = 'yii2_cross_db_test';
 
-        $drop = <<<SQL
-        IF DB_ID('{$database}') IS NOT NULL
-        BEGIN
-            ALTER DATABASE [{$database}] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-            DROP DATABASE [{$database}];
-        END
-        SQL;
+        $database = 'tempdb';
+        $tableName = "{$database}.dbo.cross_identity";
 
-        $db->createCommand($drop)->execute();
-
-        try {
-            $db->createCommand(
-                <<<SQL
-                CREATE DATABASE [{$database}]
-                SQL,
-            )->execute();
-            $db->createCommand()->createTable(
-                "{$database}.dbo.cross_identity",
-                [
-                    'id' => Schema::TYPE_PK,
-                    'name' => 'nvarchar(50)',
-                ],
-            )->execute();
-
-            $table = $db->getTableSchema("{$database}.dbo.cross_identity", true);
-
-            self::assertInstanceOf(
-                TableSchema::class,
-                $table,
-                'Cross-database table metadata must be retrievable.',
-            );
-            self::assertSame(
-                $database,
-                $table->catalogName,
-                'Catalog name must be parsed from the three-part name.',
-            );
-            self::assertTrue(
-                $table->columns['id']->autoIncrement,
-                'Identity must be detected across databases.',
-            );
-            self::assertTrue(
-                $table->columns['id']->isPrimaryKey,
-                'Primary key membership must be applied.',
-            );
-            self::assertSame(
-                ['id'],
-                $table->primaryKey,
-                'Primary key column must be discovered.',
-            );
-            self::assertSame(
-                '',
-                $table->sequenceName,
-                'Identity primary key must set the sequence marker.',
-            );
-        } finally {
-            $db->createCommand($drop)->execute();
+        if ($db->getSchema()->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
         }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'id' => Schema::TYPE_PK,
+                'name' => 'nvarchar(50)',
+            ],
+        )->execute();
+
+        $table = $db->getTableSchema($tableName, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Cross-database table metadata must be retrievable.',
+        );
+        self::assertSame(
+            $database,
+            $table->catalogName,
+            'Catalog name must be parsed from the three-part name.',
+        );
+        self::assertTrue(
+            $table->columns['id']->autoIncrement,
+            'Identity must be detected across databases.',
+        );
+        self::assertTrue(
+            $table->columns['id']->isPrimaryKey,
+            'Primary key membership must be applied.',
+        );
+        self::assertSame(
+            ['id'],
+            $table->primaryKey,
+            'Primary key column must be discovered.',
+        );
+        self::assertSame(
+            '',
+            $table->sequenceName,
+            'Identity primary key must set the sequence marker.',
+        );
+
+        $db->createCommand()->dropTable($tableName)->execute();
     }
 }

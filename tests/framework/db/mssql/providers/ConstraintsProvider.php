@@ -16,9 +16,50 @@ use yiiunit\framework\db\AnyValue;
 
 /**
  * Data provider for {@see \yiiunit\framework\db\mssql\SchemaConstraintsTest} test cases.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
  */
 final class ConstraintsProvider extends \yiiunit\base\db\providers\ConstraintsProvider
 {
+    /**
+     * @return array<string, array{string, string, string|null}>
+     */
+    public static function compositePrimaryKeyColumnOrder(): array
+    {
+        return [
+            'across database' => [
+                'tempdb.dbo.test_composite_pk_cross_db',
+                'PK_test_composite_cross_db',
+                'tempdb',
+            ],
+            'current database' => [
+                'test_composite_pk',
+                'PK_test_composite',
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string|null}>
+     */
+    public static function compositeUniqueConstraintColumnOrder(): array
+    {
+        return [
+            'across database' => [
+                'tempdb.dbo.test_composite_uq_cross_db',
+                'UQ_test_composite_cross_db',
+                'tempdb',
+            ],
+            'current database' => [
+                'test_composite_uq',
+                'UQ_test_composite',
+                null,
+            ],
+        ];
+    }
+
     /**
      * @return array<string, array{string, string, Constraint|bool|array<array-key, mixed>|null}>
      */
