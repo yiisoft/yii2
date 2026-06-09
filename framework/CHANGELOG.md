@@ -85,6 +85,7 @@ Yii Framework 2 Change Log
 - Chg #19595: Store `yii\web\DbSession` `data` as `varbinary(max)` on MSSQL and cast it through `yii\db\mssql\ColumnSchema`, fixing binary session payloads; existing MSSQL session tables must alter the column (terabytesoftw)
 - Bug #20931: Fix `yii\caching\DbCache` reading PostgreSQL `bytea` cached data as a stream by converting it in `yii\db\pgsql\ColumnSchema::phpTypecast()` (terabytesoftw)
 - Bug #20931: Fix `yii\caching\DbCache` MSSQL reference schema using the invalid `BLOB` type instead of `varbinary(max)` for the `data` column (terabytesoftw)
+- Enh #20933: Replace MSSQL `INFORMATION_SCHEMA.KEY_COLUMN_USAGE` and `TABLE_CONSTRAINTS` in `Schema::findTableConstraints()` with `sys.key_constraints`, and preserve composite key column order with `sys.index_columns.key_ordinal` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

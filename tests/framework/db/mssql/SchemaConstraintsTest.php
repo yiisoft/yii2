@@ -13,6 +13,8 @@ namespace yiiunit\framework\db\mssql;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Constraint;
+use yii\db\mssql\Schema;
+use yii\db\mssql\TableSchema;
 use yiiunit\base\db\BaseSchemaConstraints;
 use yiiunit\framework\db\mssql\providers\ConstraintsProvider;
 
@@ -52,6 +54,116 @@ final class SchemaConstraintsTest extends BaseSchemaConstraints
             array_values($indexes),
             "Composite unique constraint on 'email, recovery_email' is missing.",
         );
+    }
+
+    #[DataProviderExternal(ConstraintsProvider::class, 'compositePrimaryKeyColumnOrder')]
+    public function testCompositePrimaryKeyColumnOrder(
+        string $tableName,
+        string $constraintName,
+        string|null $expectedCatalog,
+    ): void {
+        $db = $this->getConnection();
+
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'col_b' => Schema::TYPE_INTEGER . ' NOT NULL',
+                'col_a' => Schema::TYPE_INTEGER . ' NOT NULL',
+                'col_c' => Schema::TYPE_INTEGER . ' NOT NULL',
+                'data' => Schema::TYPE_STRING,
+            ],
+        )->execute();
+        $db->createCommand()->addPrimaryKey(
+            $constraintName,
+            $tableName,
+            ['col_b', 'col_a', 'col_c'],
+        )->execute();
+
+        $schema->refreshTableSchema($tableName);
+
+        $tableSchema = $schema->getTableSchema($tableName);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table schema should be returned for existing table.',
+        );
+        self::assertSame(
+            $expectedCatalog,
+            $tableSchema->catalogName,
+            'Table schema catalog name should match the requested table name.',
+        );
+        self::assertSame(
+            ['col_b', 'col_a', 'col_c'],
+            $tableSchema->primaryKey,
+            "Composite PK columns should follow 'key_ordinal' order, not alphabetical.",
+        );
+
+        $db->createCommand()->dropTable($tableName)->execute();
+    }
+
+    #[DataProviderExternal(ConstraintsProvider::class, 'compositeUniqueConstraintColumnOrder')]
+    public function testCompositeUniqueConstraintColumnOrder(
+        string $tableName,
+        string $constraintName,
+        string|null $expectedCatalog,
+    ): void {
+        $db = $this->getConnection();
+
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'id' => Schema::TYPE_PK,
+                'col_z' => Schema::TYPE_INTEGER . ' NOT NULL',
+                'col_y' => Schema::TYPE_INTEGER . ' NOT NULL',
+                'col_x' => Schema::TYPE_INTEGER . ' NOT NULL',
+            ],
+        )->execute();
+        $db->createCommand()->addUnique(
+            $constraintName,
+            $tableName,
+            ['col_z', 'col_y', 'col_x'],
+        )->execute();
+
+        $schema->refreshTableSchema($tableName);
+
+        $tableSchema = $schema->getTableSchema($tableName);
+        $uniqueIndexes = $schema->findUniqueIndexes($tableSchema);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table schema should be returned for existing table.',
+        );
+        self::assertSame(
+            $expectedCatalog,
+            $tableSchema->catalogName,
+            'Table schema catalog name should match the requested table name.',
+        );
+        self::assertArrayHasKey(
+            $constraintName,
+            $uniqueIndexes,
+            'Unique constraint should be found by name.',
+        );
+        self::assertSame(
+            ['col_z', 'col_y', 'col_x'],
+            $uniqueIndexes[$constraintName],
+            "Composite UQ columns should follow 'key_ordinal' order, not alphabetical.",
+        );
+
+        $db->createCommand()->dropTable($tableName)->execute();
     }
 
     /**
