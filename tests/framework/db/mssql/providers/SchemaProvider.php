@@ -46,6 +46,36 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
     }
 
     /**
+     * @return array<string, array{string, string, string, string, string|null}>
+     */
+    public static function catalogSchemaNames(): array
+    {
+        return [
+            'across database' => [
+                'tempdb.dbo',
+                'tempdb.dbo',
+                'test_sys_catalog_table_cross_db',
+                'test_sys_catalog_view_cross_db',
+                'tempdb',
+            ],
+            'current database' => [
+                'dbo',
+                'dbo',
+                'test_sys_catalog_table_current',
+                'test_sys_catalog_view_current',
+                null,
+            ],
+            'default schema' => [
+                '',
+                'dbo',
+                'test_sys_catalog_table_default',
+                'test_sys_catalog_view_default',
+                null,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string|null, string, string, string}>
      */
     public static function resolveTableName(): array

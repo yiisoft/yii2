@@ -20,6 +20,7 @@ use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function count;
 use function implode;
 use function strcasecmp;
 
@@ -175,20 +176,28 @@ SQL;
 
     /**
      * {@inheritdoc}
+     *
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
      */
     protected function findTableNames($schema = '')
     {
-        if ($schema === '') {
-            $schema = $this->defaultSchema;
-        }
+        [$catalogName, $schemaName] = $this->resolveCatalogSchemaName($schema);
 
-        $sql = <<<'SQL'
-SELECT [t].[table_name]
-FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
-WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
-ORDER BY [t].[table_name]
-SQL;
-        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+        $systemCatalogName = $this->quoteTableNameParts([$catalogName, 'sys']);
+
+        $sql = <<<SQL
+        SELECT [o].[name]
+        FROM {$systemCatalogName}.[objects] AS [o]
+        INNER JOIN {$systemCatalogName}.[schemas] AS [s] ON [s].[schema_id] = [o].[schema_id]
+        WHERE [s].[name] = :schema
+            AND [o].[type] IN ('U', 'V')
+        ORDER BY [o].[name]
+        SQL;
+
+        return $this->db->createCommand(
+            $sql,
+            [':schema' => $schemaName],
+        )->queryColumn();
     }
 
     /**
@@ -569,8 +578,6 @@ SQL;
     {
         $object = $this->quoteTableFullName($table);
 
-        // please refer to the following page for more details:
-        // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
         $sql = <<<'SQL'
 SELECT
 	[fk].[name] AS [fk_name],
@@ -606,21 +613,27 @@ SQL;
 
     /**
      * {@inheritdoc}
+     *
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-views-transact-sql
      */
     protected function findViewNames($schema = '')
     {
-        if ($schema === '') {
-            $schema = $this->defaultSchema;
-        }
+        [$catalogName, $schemaName] = $this->resolveCatalogSchemaName($schema);
 
-        $sql = <<<'SQL'
-SELECT [t].[table_name]
-FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
-WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'VIEW'
-ORDER BY [t].[table_name]
-SQL;
+        $systemCatalogName = $this->quoteTableNameParts([$catalogName, 'sys']);
 
-        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+        $sql = <<<SQL
+        SELECT [v].[name]
+        FROM {$systemCatalogName}.[views] AS [v]
+        INNER JOIN {$systemCatalogName}.[schemas] AS [s] ON [s].[schema_id] = [v].[schema_id]
+        WHERE [s].[name] = :schema
+        ORDER BY [v].[name]
+        SQL;
+
+        return $this->db->createCommand(
+            $sql,
+            [':schema' => $schemaName],
+        )->queryColumn();
     }
 
     /**
@@ -861,5 +874,29 @@ SQL;
         }
 
         return implode('.', $quotedParts);
+    }
+
+    /**
+     * Resolves a schema argument into optional catalog and schema names.
+     *
+     * @param string $schema The schema argument.
+     *
+     * @return array{string|null, string} The catalog and schema names.
+     */
+    private function resolveCatalogSchemaName($schema)
+    {
+        if ($schema === '') {
+            return [null, $this->defaultSchema];
+        }
+
+        $parts = $this->getTableNameParts($schema);
+
+        $partCount = count($parts);
+
+        if ($partCount > 1) {
+            return [$parts[$partCount - 2], $parts[$partCount - 1]];
+        }
+
+        return [null, $parts[0]];
     }
 }

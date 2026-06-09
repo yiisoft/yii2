@@ -13,6 +13,7 @@ namespace yiiunit\framework\db\mssql;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
+use yii\db\Connection;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderInterface;
 use yii\db\mssql\ColumnSchemaBuilder;
@@ -21,7 +22,10 @@ use yii\db\mssql\TableSchema;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\framework\db\mssql\providers\SchemaProvider;
 
+use function array_map;
 use function chr;
+use function count;
+use function explode;
 use function hash;
 use function is_resource;
 use function str_starts_with;
@@ -527,6 +531,93 @@ final class SchemaTest extends BaseSchema
         )->execute();
     }
 
+    #[DataProviderExternal(SchemaProvider::class, 'catalogSchemaNames')]
+    public function testGetTableAndViewNamesFromSysCatalogViews(
+        string $schemaName,
+        string $objectSchemaName,
+        string $tableName,
+        string $viewName,
+        string|null $expectedCatalog,
+    ): void {
+        $db = $this->getConnection();
+
+        $schema = $db->getSchema();
+
+        $qualifiedTableName = "{$objectSchemaName}.{$tableName}";
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema should be an instance of ' . Schema::class . '.',
+        );
+
+        $this->dropMssqlViewIfExists($db, $objectSchemaName, $viewName);
+
+        if ($schema->getTableSchema($qualifiedTableName, true) !== null) {
+            $db->createCommand()->dropTable($qualifiedTableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $qualifiedTableName,
+            ['id' => Schema::TYPE_PK],
+        )->execute();
+
+        $this->createMssqlView($db, $objectSchemaName, $viewName, $tableName);
+
+        $tableNames = $schema->getTableNames($schemaName, true);
+
+        self::assertContains(
+            $tableName,
+            $tableNames,
+            "Table '{$tableName}' should be present in the list of table names.",
+        );
+        self::assertContains(
+            $viewName,
+            $tableNames,
+            "View '{$viewName}' should be present in the list of table names.",
+        );
+        self::assertContains(
+            $viewName,
+            $schema->getViewNames($schemaName, true),
+            "View '{$viewName}' should be present in the list of view names.",
+        );
+
+        $tableSchemaNames = array_map(
+            static fn(TableSchema $tableSchema): string => $tableSchema->name,
+            $schema->getTableSchemas($schemaName, true),
+        );
+
+        self::assertContains(
+            $tableName,
+            $tableSchemaNames,
+            "Table '{$tableName}' should be present in the list of table schemas.",
+        );
+        self::assertContains(
+            $viewName,
+            $tableSchemaNames,
+            "View '{$viewName}' should be present in the list of table schemas.",
+        );
+
+        $tableSchema = $schema->getTableSchema($qualifiedTableName, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table schema should be returned for existing table.',
+        );
+        self::assertSame(
+            $expectedCatalog,
+            $tableSchema->catalogName,
+            'Table schema catalog name should match the requested table name.',
+        );
+
+        $this->dropMssqlViewIfExists($db, $objectSchemaName, $viewName);
+
+        if ($schema->getTableSchema($qualifiedTableName, true) !== null) {
+            $db->createCommand()->dropTable($qualifiedTableName)->execute();
+        }
+    }
+
     public function testGetViewNamesWithDefaultSchema(): void
     {
         $schema = $this->getConnection()->getSchema();
@@ -554,6 +645,68 @@ final class SchemaTest extends BaseSchema
             $schema->getViewNames('dbo', true),
             "View 'animal_view' should be present when refreshing views with an explicit schema.",
         );
+    }
+
+    private function createMssqlView(
+        Connection $db,
+        string $objectSchemaName,
+        string $viewName,
+        string $tableName,
+    ): void {
+        [$catalogName, $schemaName] = $this->resolveMssqlCatalogSchemaName($objectSchemaName);
+
+        $quotedTableName = $db->quoteTableName("{$schemaName}.{$tableName}");
+        $quotedViewName = $db->quoteTableName("{$schemaName}.{$viewName}");
+
+        $sql = <<<SQL
+        CREATE VIEW {$quotedViewName}
+        AS SELECT [id] FROM {$quotedTableName}
+        SQL;
+
+        $this->executeMssqlCatalogCommand($db, $catalogName, $sql);
+    }
+
+    private function dropMssqlViewIfExists(Connection $db, string $objectSchemaName, string $viewName): void
+    {
+        [$catalogName, $schemaName] = $this->resolveMssqlCatalogSchemaName($objectSchemaName);
+
+        $quotedObjectName = $db->quoteValue("{$schemaName}.{$viewName}");
+        $quotedViewName = $db->quoteTableName("{$schemaName}.{$viewName}");
+
+        $sql = <<<SQL
+        IF OBJECT_ID(N{$quotedObjectName}, N'V') IS NOT NULL
+            DROP VIEW {$quotedViewName}
+        SQL;
+
+        $this->executeMssqlCatalogCommand($db, $catalogName, $sql);
+    }
+
+    private function executeMssqlCatalogCommand(Connection $db, string|null $catalogName, string $sql): void
+    {
+        if ($catalogName === null) {
+            $db->createCommand($sql)->execute();
+
+            return;
+        }
+
+        $db->createCommand(
+            'EXEC ' . $db->quoteTableName("{$catalogName}.sys.sp_executesql") . ' N' . $db->quoteValue($sql),
+        )->execute();
+    }
+
+    /**
+     * @return array{string|null, string}
+     */
+    private function resolveMssqlCatalogSchemaName(string $schemaName): array
+    {
+        $parts = explode('.', $schemaName);
+        $partCount = count($parts);
+
+        if ($partCount > 1) {
+            return [$parts[$partCount - 2], $parts[$partCount - 1]];
+        }
+
+        return [null, $schemaName];
     }
 
 
