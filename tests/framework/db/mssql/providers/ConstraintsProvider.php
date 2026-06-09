@@ -61,6 +61,87 @@ final class ConstraintsProvider extends \yiiunit\base\db\providers\ConstraintsPr
     }
 
     /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function catalogQualifiedTableMetadata(): array
+    {
+        return [
+            'current database with bracketed special names' => [
+                'dbo.[test.metadata parent]',
+                'dbo.[test.metadata child]',
+                'special',
+            ],
+            'current database with normal names' => [
+                'test_metadata_parent_current',
+                'test_metadata_child_current',
+                'current',
+            ],
+            'tempdb catalog with normal names' => [
+                'tempdb.dbo.test_metadata_parent_cross_db',
+                'tempdb.dbo.test_metadata_child_cross_db',
+                'cross_db',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string, string}>
+     */
+    public static function catalogQualifiedTableSchemaForeignKeys(): array
+    {
+        return [
+            'current database with bracketed special names' => [
+                'dbo.[test.metadata parent]',
+                'dbo.[test.metadata child]',
+                'test.metadata parent',
+                'special',
+            ],
+            'current database with normal names' => [
+                'test_metadata_parent_current',
+                'test_metadata_child_current',
+                'test_metadata_parent_current',
+                'current',
+            ],
+            'tempdb catalog with normal names' => [
+                'tempdb.dbo.test_metadata_parent_cross_db',
+                'tempdb.dbo.test_metadata_child_cross_db',
+                'test_metadata_parent_cross_db',
+                'cross_db',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string, string, string}>
+     */
+    public static function catalogQualifiedTableForeignKeys(): array
+    {
+        return [
+            'current database with bracketed special names' => [
+                'dbo.[test.metadata parent]',
+                'dbo.[test.metadata child]',
+                'dbo',
+                'test.metadata parent',
+                'special',
+            ],
+            'current database with normal names' => [
+                'test_metadata_parent_current',
+                'test_metadata_child_current',
+                'dbo',
+                'test_metadata_parent_current',
+                'current',
+            ],
+            'tempdb catalog with normal names' => [
+                'tempdb.dbo.test_metadata_parent_cross_db',
+                'tempdb.dbo.test_metadata_child_cross_db',
+                'dbo',
+                'test_metadata_parent_cross_db',
+                'cross_db',
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, Constraint|bool|array<array-key, mixed>|null}>
      */
     public static function constraints(): array
