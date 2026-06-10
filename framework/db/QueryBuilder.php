@@ -1328,7 +1328,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
                 list($sql, $params) = $this->build($table, $params);
-                $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
+                $tables[$i] = "($sql) " . $this->db->quoteTableName((string) $i);
             } elseif (is_string($i)) {
                 if (strpos($table, '(') === false) {
                     $table = $this->db->quoteTableName($table);

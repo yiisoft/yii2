@@ -22,6 +22,9 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function explode;
+use function str_replace;
+
 /**
  * Schema is the class for retrieving metadata from a MySQL database (version 8.0 and later).
  *
@@ -96,16 +99,20 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function resolveTableName($name)
     {
-        $resolvedName = new TableSchema();
         $parts = explode('.', str_replace('`', '', $name));
-        if (isset($parts[1])) {
-            $resolvedName->schemaName = $parts[0];
-            $resolvedName->name = $parts[1];
-        } else {
-            $resolvedName->schemaName = $this->defaultSchema;
-            $resolvedName->name = $name;
-        }
-        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+
+        $hasSchemaName = isset($parts[1]);
+
+        $tableName = $hasSchemaName ? $parts[1] : $parts[0];
+        $schemaName = $hasSchemaName ? $parts[0] : null;
+        $fullName = $hasSchemaName ? "{$schemaName}.{$tableName}" : $tableName;
+
+        $resolvedName = new TableSchema();
+
+        $resolvedName->name = $tableName;
+        $resolvedName->schemaName = $schemaName;
+        $resolvedName->fullName = $fullName;
+
         return $resolvedName;
     }
 
@@ -127,8 +134,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function loadTableSchema($name)
     {
-        $table = new TableSchema();
-        $this->resolveTableNames($table, $name);
+        $table = $this->resolveTableName($name);
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
@@ -251,23 +257,6 @@ SQL;
     public function createQueryBuilder()
     {
         return Yii::createObject(QueryBuilder::class, [$this->db]);
-    }
-
-    /**
-     * Resolves the table name and schema name (if any).
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
-     */
-    protected function resolveTableNames($table, $name)
-    {
-        $parts = explode('.', str_replace('`', '', $name));
-        if (isset($parts[1])) {
-            $table->schemaName = $parts[0];
-            $table->name = $parts[1];
-            $table->fullName = $table->schemaName . '.' . $table->name;
-        } else {
-            $table->fullName = $table->name = $parts[0];
-        }
     }
 
     /**

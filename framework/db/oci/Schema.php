@@ -25,6 +25,9 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function explode;
+use function str_replace;
+
 /**
  * Schema is the class for retrieving metadata from an Oracle database.
  *
@@ -78,16 +81,18 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function resolveTableName($name)
     {
-        $resolvedName = new TableSchema();
         $parts = explode('.', str_replace('"', '', $name));
-        if (isset($parts[1])) {
-            $resolvedName->schemaName = $parts[0];
-            $resolvedName->name = $parts[1];
-        } else {
-            $resolvedName->schemaName = $this->defaultSchema;
-            $resolvedName->name = $name;
-        }
-        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+
+        $tableName = $parts[1] ?? $parts[0];
+        $schemaName = isset($parts[1]) ? $parts[0] : $this->defaultSchema;
+        $fullName = $schemaName !== $this->defaultSchema ? "{$schemaName}.{$tableName}" : $tableName;
+
+        $resolvedName = new TableSchema();
+
+        $resolvedName->name = $tableName;
+        $resolvedName->schemaName = $schemaName;
+        $resolvedName->fullName = $fullName;
+
         return $resolvedName;
     }
 
@@ -158,8 +163,7 @@ SQL;
      */
     protected function loadTableSchema($name)
     {
-        $table = new TableSchema();
-        $this->resolveTableNames($table, $name);
+        $table = $this->resolveTableName($name);
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
 
@@ -288,26 +292,6 @@ SQL;
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return Yii::createObject(ColumnSchemaBuilder::class, [$type, $length]);
-    }
-
-    /**
-     * Resolves the table name and schema name (if any).
-     *
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
-     */
-    protected function resolveTableNames($table, $name)
-    {
-        $parts = explode('.', str_replace('"', '', $name));
-        if (isset($parts[1])) {
-            $table->schemaName = $parts[0];
-            $table->name = $parts[1];
-        } else {
-            $table->schemaName = $this->defaultSchema;
-            $table->name = $name;
-        }
-
-        $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
     }
 
     /**

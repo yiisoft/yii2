@@ -77,6 +77,27 @@ Example:
 
 If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
 
+#### `resolveTableNames()` removed from MSSQL, MySQL, PostgreSQL, and Oracle drivers
+
+The `protected` method `resolveTableNames($table, $name)` has been removed from MSSQL, MySQL, PostgreSQL, and Oracle
+Schema classes. This method was never defined in the parent `\yii\db\Schema` class; it was a per-driver internal method
+that duplicated table-name resolution logic.
+
+`loadTableSchema()` now uses `resolveTableName()` directly:
+
+```php
+// before
+$table = new TableSchema();
+$this->resolveTableNames($table, $name);
+
+// after
+$table = $this->resolveTableName($name);
+```
+
+If your application extends any affected database Schema class and overrides `resolveTableNames()`, migrate your logic
+to `resolveTableName($name)` instead. The method signature differs: `resolveTableName($name)` returns a new `TableSchema`
+with the resolved parts, rather than mutating an existing one.
+
 #### MariaDB
 
 ##### Pagination now uses `OFFSET ... FETCH` (`10.6+`)
@@ -103,7 +124,7 @@ pagination.
 > through June 4, `2028`). MariaDB `10.5` LTS reached community support EOL on June 24, `2025` and is no longer covered
 > by Yii. The `10.6+` floor matches the earliest MariaDB release with the standard `OFFSET ... FETCH` syntax.
 
-#### MSSQL 
+#### MSSQL
 
 ##### Pagination now uses `OFFSET ... FETCH` (`2019+`)
 
@@ -147,7 +168,7 @@ Existing MSSQL installations must convert the column manually before upgrading (
 ALTER TABLE [session] ALTER COLUMN [data] VARBINARY(MAX) NULL;
 ```
 
-#### MySQL 
+#### MySQL
 
 ##### Dead code removal and integer display width cleanup
 
@@ -473,7 +494,7 @@ ALTER TABLE auth_item_child WITH CHECK CHECK CONSTRAINT FK__auth_item__child;
 The `auth_item_child.child` FK is intentionally left without actions; do not add `ON DELETE CASCADE` or
 `ON UPDATE CASCADE` to it (MSSQL will reject the constraint with error 1785).
 
-The orphan row in your `migration` table for `m200409_110543_rbac_update_mssql_trigger` is harmless for `migrate/up`, 
+The orphan row in your `migration` table for `m200409_110543_rbac_update_mssql_trigger` is harmless for `migrate/up`,
 but `migrate/down --all` will fail trying to load the missing class. If you need full rollback, remove the row:
 
 ```sql
