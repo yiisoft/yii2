@@ -89,6 +89,7 @@ Yii Framework 2 Change Log
 - Enh #20934: Replace MSSQL `INFORMATION_SCHEMA.TABLES` in `Schema::findTableNames()` and `Schema::findViewNames()` with catalog-qualified `sys.objects` and `sys.views` catalog views (terabytesoftw)
 - Bug #20935: Fix MSSQL index, foreign key, and constraint metadata lookups for catalog-qualified table names (terabytesoftw)
 - Chg #20936: Remove redundant `resolveTableNames()` from MSSQL, MySQL, PostgreSQL, and Oracle schema classes; `loadTableSchema()` now uses `resolveTableName()` directly (terabytesoftw)
+- Bug #20937: Exclude configurable system schema names from MSSQL `yii\db\Schema::getSchemaNames()` to match the non-system schema contract (terabytesoftw)
 
 2.0.56 under development
 ------------------------
