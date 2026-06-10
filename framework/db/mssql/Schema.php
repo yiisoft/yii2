@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -23,6 +25,7 @@ use yii\db\Schema as BaseSchema;
 use function count;
 use function implode;
 use function strcasecmp;
+use function str_replace;
 
 /**
  * Schema is the class for retrieving metadata from MS SQL Server databases (version 2019 and above).
@@ -41,11 +44,12 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * {@inheritdoc}
      */
-    public $columnSchemaClass = 'yii\db\mssql\ColumnSchema';
+    public $columnSchemaClass = ColumnSchema::class;
     /**
      * @var string the default schema used for the current session.
      */
     public $defaultSchema = 'dbo';
+    public array $systemSchemaNames = ['guest'];
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
@@ -159,19 +163,26 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
     /**
      * {@inheritdoc}
-     * @see https://docs.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
+     *
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-database-principals-transact-sql
      */
     protected function findSchemaNames()
     {
-        static $sql = <<<'SQL'
-SELECT [s].[name]
-FROM [sys].[schemas] AS [s]
-INNER JOIN [sys].[database_principals] AS [p] ON [p].[principal_id] = [s].[principal_id]
-WHERE [p].[is_fixed_role] = 0 AND [p].[sid] IS NOT NULL
-ORDER BY [s].[name] ASC
-SQL;
+        $systemSchemaNames = "'" . implode("', '", str_replace("'", "''", $this->systemSchemaNames)) . "'";
 
-        return $this->db->createCommand($sql)->queryColumn();
+        $sql = <<<SQL
+        SELECT [s].[name]
+        FROM [sys].[schemas] AS [s]
+        INNER JOIN [sys].[database_principals] AS [p] ON [p].[principal_id] = [s].[principal_id]
+        WHERE [p].[is_fixed_role] = 0
+            AND [p].[sid] IS NOT NULL
+            AND [s].[name] NOT IN ({$systemSchemaNames})
+        ORDER BY [s].[name] ASC
+        SQL;
+
+        return $this->db->createCommand(
+            $sql,
+        )->queryColumn();
     }
 
     /**

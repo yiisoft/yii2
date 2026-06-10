@@ -22,7 +22,9 @@ use yii\db\mssql\TableSchema;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\framework\db\mssql\providers\SchemaProvider;
 
+use function array_diff;
 use function array_map;
+use function array_values;
 use function chr;
 use function count;
 use function explode;
@@ -49,6 +51,72 @@ final class SchemaTest extends BaseSchema
         'dbo',
     ];
 
+    /**
+     * @param list<string> $systemSchemaNames
+     * @param list<string> $schemaNamesToCreate
+     * @param list<string> $expectedSchemaNames
+     */
+    #[DataProviderExternal(SchemaProvider::class, 'systemSchemaNames')]
+    public function testGetSchemaNamesUsesConfiguredSystemSchemaNames(
+        array $systemSchemaNames,
+        array $schemaNamesToCreate,
+        array $expectedSchemaNames,
+    ): void {
+        $db = $this->getConnection();
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema should be an instance of ' . Schema::class . '.',
+        );
+
+        foreach ($schemaNamesToCreate as $schemaName) {
+            $db->createCommand(
+                <<<SQL
+                DROP SCHEMA IF EXISTS {{{$schemaName}}}
+                SQL
+            )->execute();
+            $db->createCommand(
+                <<<SQL
+                CREATE SCHEMA {{{$schemaName}}}
+                SQL
+            )->execute();
+        }
+
+        if ($schemaNamesToCreate !== []) {
+            $schema->systemSchemaNames = [];
+
+            $actualSchemaNames = $schema->getSchemaNames(true);
+
+            $missingSchemaNames = array_values(array_diff($schemaNamesToCreate, $actualSchemaNames));
+
+            self::assertSame(
+                [],
+                $missingSchemaNames,
+                'Created schemas should be present before they are excluded.',
+            );
+        }
+
+        $schema->systemSchemaNames = $systemSchemaNames;
+
+        $actualSchemaNames = $schema->getSchemaNames(true);
+
+        self::assertSame(
+            $expectedSchemaNames,
+            $actualSchemaNames,
+            'Schema names should match the expected list.',
+        );
+
+        foreach ($schemaNamesToCreate as $schemaName) {
+            $db->createCommand(
+                <<<SQL
+                DROP SCHEMA IF EXISTS {{{$schemaName}}}
+                SQL
+            )->execute();
+        }
+    }
 
     public function testGetStringFieldsSize(): void
     {

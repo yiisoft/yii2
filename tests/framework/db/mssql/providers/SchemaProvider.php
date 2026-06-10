@@ -76,6 +76,30 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
     }
 
     /**
+     * @return array<string, array{list<string>, list<string>, list<string>}>
+     */
+    public static function systemSchemaNames(): array
+    {
+        return [
+            'custom configured system schemas' => [
+                ['guest', 'yii_custom_system_schema', 'yii custom system schema'],
+                ['yii_custom_system_schema', 'yii custom system schema'],
+                ['dbo'],
+            ],
+            'default system schemas' => [
+                ['guest'],
+                [],
+                ['dbo'],
+            ],
+            'empty configured system schemas' => [
+                [],
+                [],
+                ['dbo', 'guest'],
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string|null, string, string, string}>
      */
     public static function resolveTableName(): array

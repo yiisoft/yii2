@@ -80,6 +80,12 @@ abstract class Schema extends BaseObject
      */
     public $defaultSchema;
     /**
+     * @var list<string> list of schema names that should be excluded from {@see getSchemaNames()}.
+     *
+     * DBMS-specific implementations may use this list in {@see findSchemaNames()}.
+     */
+    public array $systemSchemaNames = [];
+    /**
      * @var array map of DB errors and corresponding exceptions
      * If left part is found in DB error message exception class from the right part is used.
      */
