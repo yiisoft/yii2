@@ -16,6 +16,8 @@ use yii\db\Expression;
 use yii\db\Query;
 
 use function count;
+use function str_replace;
+use function strpos;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -546,38 +548,94 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for dropping constraints for column of table.
+     * Builds a SQL batch that drops the constraints attached to a column.
      *
-     * @param string $table the table whose constraint is to be dropped. The name will be properly quoted by the method.
-     * @param string $column the column whose constraint is to be dropped. The name will be properly quoted by the method.
-     * @param string $type type of constraint, leave empty for all type of constraints(for example: D - default, 'UQ' - unique, 'C' - check)
-     * @see https://docs.microsoft.com/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
-     * @return string the DROP CONSTRAINTS SQL
+     * Generates one `ALTER TABLE ... DROP CONSTRAINT` command per matching constraint and executes them in a single
+     * dynamic batch. Foreign key constraints are dropped first because a primary key or unique constraint cannot be
+     * dropped while a foreign key references it.
+     *
+     * @param string $table The table whose constraints are to be dropped. The name is properly quoted by the method.
+     * @param string $column The column whose constraints are to be dropped. The name is matched verbatim against the
+     * system catalog.
+     * @param string $type The constraint type: `'D'` - default, `'C'` - check, `'PK'` - primary key, `'UQ'` - unique,
+     * `'F'` - foreign key. Leave empty to drop the constraints of all these types.
+     *
+     * @return string The DROP CONSTRAINTS SQL batch.
+     *
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-default-constraints-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-check-constraints-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-sql-expression-dependencies-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-key-constraints-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-index-columns-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-foreign-key-columns-transact-sql
      */
     private function dropConstraintsForColumn($table, $column, $type = '')
     {
-        return "DECLARE @tableName VARCHAR(MAX) = '" . $this->db->quoteTableName($table) . "'
-DECLARE @columnName VARCHAR(MAX) = '{$column}'
+        $tableName = strpos($table, '{{') === false ? "{{{$table}}}" : $table;
+        $columnName = str_replace("'", "''", $column);
 
-WHILE 1=1 BEGIN
-    DECLARE @constraintName NVARCHAR(128)
-    SET @constraintName = (SELECT TOP 1 OBJECT_NAME(cons.[object_id])
+        $subqueries = [
+            'F' => <<<SQL
+                SELECT DISTINCT N'ALTER TABLE '
+                    + QUOTENAME(OBJECT_SCHEMA_NAME([fk].[parent_object_id])) + N'.'
+                    + QUOTENAME(OBJECT_NAME([fk].[parent_object_id]))
+                    + N' DROP CONSTRAINT ' + QUOTENAME([fk].[name]) AS [sql], 0 AS [ord]
+                FROM [sys].[foreign_keys] AS [fk]
+                JOIN [sys].[foreign_key_columns] AS [fkc] ON [fkc].[constraint_object_id]=[fk].[object_id]
+                JOIN [sys].[columns] AS [pc] ON [pc].[object_id]=[fkc].[parent_object_id] AND [pc].[column_id]=[fkc].[parent_column_id]
+                JOIN [sys].[columns] AS [rc] ON [rc].[object_id]=[fkc].[referenced_object_id] AND [rc].[column_id]=[fkc].[referenced_column_id]
+                WHERE ([fkc].[parent_object_id]=OBJECT_ID(@tableName) AND [pc].[name]=@columnName)
+                    OR ([fkc].[referenced_object_id]=OBJECT_ID(@tableName) AND [rc].[name]=@columnName)
+            SQL,
+            'D' => <<<SQL
+                SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                FROM [sys].[default_constraints] AS [dc]
+                JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+            SQL,
+            'C' => <<<SQL
+                SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                FROM [sys].[check_constraints] AS [cc]
+                JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                    AND (
+                        [cc].[parent_column_id]=[c].[column_id]
+                        OR EXISTS (
+                            SELECT 1
+                            FROM [sys].[sql_expression_dependencies] AS [sed]
+                            WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                AND [sed].[referenced_minor_id]=[c].[column_id]
+                        )
+                    )
+            SQL,
+        ];
+
+        foreach (['PK', 'UQ'] as $keyType) {
+            $subqueries[$keyType] = <<<SQL
+                SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                FROM [sys].[key_constraints] AS [kc]
+                JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'{$keyType}'
+            SQL;
+        }
+
+        $unionSql = implode("\n    UNION\n", $type === '' ? $subqueries : [$subqueries[$type]]);
+
+        return <<<SQL
+        DECLARE @tableName NVARCHAR(MAX) = N'{$tableName}'
+        DECLARE @columnName NVARCHAR(MAX) = N'{$columnName}'
+        DECLARE @dropCommands NVARCHAR(MAX)
+
+        SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
         FROM (
-            SELECT sc.[constid] object_id
-            FROM [sys].[sysconstraints] sc
-            JOIN [sys].[columns] c ON c.[object_id]=sc.[id] AND c.[column_id]=sc.[colid] AND c.[name]=@columnName
-            WHERE sc.[id] = OBJECT_ID(@tableName)
-            UNION
-            SELECT object_id(i.[name]) FROM [sys].[indexes] i
-            JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
-            JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
-            WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
-        ) cons
-        JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
-        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : '') . ")
-    IF @constraintName IS NULL BREAK
-    EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
-END";
+        {$unionSql}
+        ) AS [cons]
+
+        IF @dropCommands IS NOT NULL
+            EXEC (@dropCommands)
+        SQL;
     }
 
     /**
