@@ -16,6 +16,7 @@ use yii\db\Expression;
 use yii\db\Query;
 
 use function count;
+use function str_replace;
 use function strpos;
 
 /**
@@ -571,6 +572,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     private function dropConstraintsForColumn($table, $column, $type = '')
     {
         $tableName = strpos($table, '{{') === false ? "{{{$table}}}" : $table;
+        $columnName = str_replace("'", "''", $column);
 
         $subqueries = [
             'F' => <<<SQL
@@ -623,7 +625,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return <<<SQL
         DECLARE @tableName NVARCHAR(MAX) = N'{$tableName}'
-        DECLARE @columnName NVARCHAR(MAX) = N'{$column}'
+        DECLARE @columnName NVARCHAR(MAX) = N'{$columnName}'
         DECLARE @dropCommands NVARCHAR(MAX)
 
         SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])

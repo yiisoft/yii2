@@ -241,6 +241,65 @@ final class QueryBuilderProvider
     public static function dropColumn(): array
     {
         return [
+            'column name with single quote' => [
+                'foo1',
+                "my'col",
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @columnName NVARCHAR(MAX) = N'my''col'
+                DECLARE @dropCommands NVARCHAR(MAX)
+
+                SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
+                FROM (
+                    SELECT DISTINCT N'ALTER TABLE '
+                        + QUOTENAME(OBJECT_SCHEMA_NAME([fk].[parent_object_id])) + N'.'
+                        + QUOTENAME(OBJECT_NAME([fk].[parent_object_id]))
+                        + N' DROP CONSTRAINT ' + QUOTENAME([fk].[name]) AS [sql], 0 AS [ord]
+                    FROM [sys].[foreign_keys] AS [fk]
+                    JOIN [sys].[foreign_key_columns] AS [fkc] ON [fkc].[constraint_object_id]=[fk].[object_id]
+                    JOIN [sys].[columns] AS [pc] ON [pc].[object_id]=[fkc].[parent_object_id] AND [pc].[column_id]=[fkc].[parent_column_id]
+                    JOIN [sys].[columns] AS [rc] ON [rc].[object_id]=[fkc].[referenced_object_id] AND [rc].[column_id]=[fkc].[referenced_column_id]
+                    WHERE ([fkc].[parent_object_id]=OBJECT_ID(@tableName) AND [pc].[name]=@columnName)
+                        OR ([fkc].[referenced_object_id]=OBJECT_ID(@tableName) AND [rc].[name]=@columnName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[default_constraints] AS [dc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                    WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'PK'
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
+                ) AS [cons]
+
+                IF @dropCommands IS NOT NULL
+                    EXEC (@dropCommands)
+                ALTER TABLE [foo1] DROP COLUMN [my'col]
+                SQL,
+            ],
             'drops all constraint types for column' => [
                 'foo1',
                 'bar',
@@ -334,6 +393,19 @@ final class QueryBuilderProvider
                 ],
                 'yii2_mssql_drop_default',
                 'bar',
+            ],
+            'default constraint on column with single quote' => [
+                ['yii2_mssql_drop_quote'],
+                [
+                    <<<SQL
+                    CREATE TABLE [yii2_mssql_drop_quote] (
+                        [id] [int] NOT NULL,
+                        [my'col] [int] NULL CONSTRAINT [DF_yii2_mssql_drop_quote_col] DEFAULT 1
+                    )
+                    SQL,
+                ],
+                'yii2_mssql_drop_quote',
+                "my'col",
             ],
             'foreign key constraint' => [
                 ['yii2_mssql_drop_fk_child', 'yii2_mssql_drop_fk_parent'],
