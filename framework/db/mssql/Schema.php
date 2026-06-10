@@ -104,36 +104,36 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
     /**
      * Resolves the table name and schema name (if any).
-     * @param string $name the table name
-     * @return TableSchema resolved table, schema, etc. names.
+     *
+     * @param string $name The table name
+     *
+     * @return TableSchema Resolved table, schema, etc. names.
      */
     protected function resolveTableName($name)
     {
-        $resolvedName = new TableSchema();
         $parts = $this->getTableNameParts($name);
+
         $partCount = count($parts);
-        if ($partCount === 4) {
-            // server name, catalog name, schema name and table name passed
-            $resolvedName->catalogName = $parts[1];
-            $resolvedName->schemaName = $parts[2];
-            $resolvedName->name = $parts[3];
-            $resolvedName->fullName = $resolvedName->catalogName . '.' . $resolvedName->schemaName . '.' . $resolvedName->name;
-        } elseif ($partCount === 3) {
-            // catalog name, schema name and table name passed
-            $resolvedName->catalogName = $parts[0];
-            $resolvedName->schemaName = $parts[1];
-            $resolvedName->name = $parts[2];
-            $resolvedName->fullName = $resolvedName->catalogName . '.' . $resolvedName->schemaName . '.' . $resolvedName->name;
-        } elseif ($partCount === 2) {
-            // only schema name and table name passed
-            $resolvedName->schemaName = $parts[0];
-            $resolvedName->name = $parts[1];
-            $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
-        } else {
-            // only table name passed
-            $resolvedName->schemaName = $this->defaultSchema;
-            $resolvedName->fullName = $resolvedName->name = $parts[0];
-        }
+
+        $last = $partCount - 1;
+        $penultimate = $partCount - 2;
+        $catalogIndex = $partCount === 4 ? 1 : 0;
+        $tableName = $parts[$last];
+        $schemaName = $partCount >= 2 ? $parts[$penultimate] : $this->defaultSchema;
+        $catalogName = $partCount >= 3 ? $parts[$catalogIndex] : null;
+
+        $fullName = match (true) {
+            $catalogName !== null => "{$catalogName}.{$schemaName}.{$tableName}",
+            $schemaName !== $this->defaultSchema => "{$schemaName}.{$tableName}",
+            default => $tableName,
+        };
+
+        $resolvedName = new TableSchema();
+
+        $resolvedName->name = $tableName;
+        $resolvedName->schemaName = $schemaName;
+        $resolvedName->catalogName = $catalogName;
+        $resolvedName->fullName = $fullName;
 
         return $resolvedName;
     }
@@ -205,8 +205,7 @@ SQL;
      */
     protected function loadTableSchema($name)
     {
-        $table = new TableSchema();
-        $this->resolveTableNames($table, $name);
+        $table = $this->resolveTableName($name);
         $this->findPrimaryKeys($table);
         if ($this->findColumns($table)) {
             $this->findForeignKeys($table);
@@ -359,39 +358,6 @@ SQL;
     public function createQueryBuilder()
     {
         return Yii::createObject(QueryBuilder::class, [$this->db]);
-    }
-
-    /**
-     * Resolves the table name and schema name (if any).
-     * @param TableSchema $table the table metadata object
-     * @param string $name the table name
-     */
-    protected function resolveTableNames($table, $name)
-    {
-        $parts = $this->getTableNameParts($name);
-        $partCount = count($parts);
-        if ($partCount === 4) {
-            // server name, catalog name, schema name and table name passed
-            $table->catalogName = $parts[1];
-            $table->schemaName = $parts[2];
-            $table->name = $parts[3];
-            $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
-        } elseif ($partCount === 3) {
-            // catalog name, schema name and table name passed
-            $table->catalogName = $parts[0];
-            $table->schemaName = $parts[1];
-            $table->name = $parts[2];
-            $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
-        } elseif ($partCount === 2) {
-            // only schema name and table name passed
-            $table->schemaName = $parts[0];
-            $table->name = $parts[1];
-            $table->fullName = $table->schemaName !== $this->defaultSchema ? $table->schemaName . '.' . $table->name : $table->name;
-        } else {
-            // only table name passed
-            $table->schemaName = $this->defaultSchema;
-            $table->fullName = $table->name = $parts[0];
-        }
     }
 
     /**

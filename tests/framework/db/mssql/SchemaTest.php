@@ -364,48 +364,6 @@ final class SchemaTest extends BaseSchema
         $db->transaction->rollBack();
     }
 
-    #[DataProviderExternal(SchemaProvider::class, 'resolveTableName')]
-    public function testResolveTableNames(
-        string $name,
-        string|null $expectedCatalog,
-        string $expectedSchema,
-        string $expectedTable,
-        string $expectedFullName
-    ): void {
-        $schema = $this->getConnection()->getSchema();
-        $table = new TableSchema();
-
-        $this->invokeMethod(
-            $schema,
-            'resolveTableNames',
-            [
-                $table,
-                $name,
-            ],
-        );
-
-        self::assertSame(
-            $expectedCatalog,
-            $table->catalogName,
-            'Resolved catalog name should match expected value.',
-        );
-        self::assertSame(
-            $expectedSchema,
-            $table->schemaName,
-            'Resolved schema name should match expected value.',
-        );
-        self::assertSame(
-            $expectedTable,
-            $table->name,
-            'Resolved table name should match expected value.',
-        );
-        self::assertSame(
-            $expectedFullName,
-            $table->fullName,
-            'Resolved full name should match expected value.',
-        );
-    }
-
     public function testGetSchemaPrimaryKeysWithExplicitSchema(): void
     {
         $schema = $this->getConnection(true, true)->getSchema();
