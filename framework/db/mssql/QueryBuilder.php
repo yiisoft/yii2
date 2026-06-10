@@ -16,6 +16,7 @@ use yii\db\Expression;
 use yii\db\Query;
 
 use function count;
+use function strpos;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -551,33 +552,44 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $table the table whose constraint is to be dropped. The name will be properly quoted by the method.
      * @param string $column the column whose constraint is to be dropped. The name will be properly quoted by the method.
      * @param string $type type of constraint, leave empty for all type of constraints(for example: D - default, 'UQ' - unique, 'C' - check)
-     * @see https://docs.microsoft.com/sql/relational-databases/system-catalog-views/sys-objects-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-default-constraints-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-check-constraints-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-indexes-transact-sql
      * @return string the DROP CONSTRAINTS SQL
      */
     private function dropConstraintsForColumn($table, $column, $type = '')
     {
-        return "DECLARE @tableName VARCHAR(MAX) = '" . $this->db->quoteTableName($table) . "'
-DECLARE @columnName VARCHAR(MAX) = '{$column}'
+        $tableName = strpos($table, '{{') === false ? "{{{$table}}}" : $table;
 
-WHILE 1=1 BEGIN
-    DECLARE @constraintName NVARCHAR(128)
-    SET @constraintName = (SELECT TOP 1 OBJECT_NAME(cons.[object_id])
+        $typeFilter = $type !== '' ? "\nWHERE [cons].[type] = N'{$type}'" : '';
+
+        return <<<SQL
+        DECLARE @tableName VARCHAR(MAX) = '{$tableName}'
+        DECLARE @columnName VARCHAR(MAX) = '{$column}'
+        DECLARE @constraintNames NVARCHAR(MAX)
+
+        SELECT @constraintNames = STRING_AGG(CONVERT(NVARCHAR(MAX), QUOTENAME([cons].[name])), N', ')
         FROM (
-            SELECT sc.[constid] object_id
-            FROM [sys].[sysconstraints] sc
-            JOIN [sys].[columns] c ON c.[object_id]=sc.[id] AND c.[column_id]=sc.[colid] AND c.[name]=@columnName
-            WHERE sc.[id] = OBJECT_ID(@tableName)
+            SELECT [dc].[name], N'D' AS [type]
+            FROM [sys].[default_constraints] AS [dc]
+            JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+            WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
             UNION
-            SELECT object_id(i.[name]) FROM [sys].[indexes] i
-            JOIN [sys].[columns] c ON c.[object_id]=i.[object_id] AND c.[name]=@columnName
-            JOIN [sys].[index_columns] ic ON ic.[object_id]=i.[object_id] AND i.[index_id]=ic.[index_id] AND c.[column_id]=ic.[column_id]
-            WHERE i.[is_unique_constraint]=1 and i.[object_id]=OBJECT_ID(@tableName)
-        ) cons
-        JOIN [sys].[objects] so ON so.[object_id]=cons.[object_id]
-        " . (!empty($type) ? " WHERE so.[type]='{$type}'" : '') . ")
-    IF @constraintName IS NULL BREAK
-    EXEC (N'ALTER TABLE ' + @tableName + ' DROP CONSTRAINT [' + @constraintName + ']')
-END";
+            SELECT [cc].[name], N'C' AS [type]
+            FROM [sys].[check_constraints] AS [cc]
+            JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[column_id]=[cc].[parent_column_id] AND [c].[name]=@columnName
+            WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+            UNION
+            SELECT [i].[name], N'UQ' AS [type]
+            FROM [sys].[indexes] AS [i]
+            JOIN [sys].[columns] AS [c] ON [c].[object_id]=[i].[object_id] AND [c].[name]=@columnName
+            JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[i].[object_id] AND [i].[index_id]=[ic].[index_id] AND [c].[column_id]=[ic].[column_id]
+            WHERE [i].[is_unique_constraint]=1 and [i].[object_id]=OBJECT_ID(@tableName)
+        ) AS [cons]{$typeFilter}
+
+        IF @constraintNames IS NOT NULL
+            EXEC (N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + @constraintNames)
+        SQL;
     }
 
     /**
