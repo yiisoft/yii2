@@ -112,6 +112,24 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testGetTableSchemaWithQuotedTableName(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $tableSchema = $schema->getTableSchema('"profile"', true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table schema should be loadable with a quoted table name.',
+        );
+        self::assertSame(
+            'profile',
+            $tableSchema->name,
+            'Loaded table name should not keep quote characters.',
+        );
+    }
+
     public function testIntegerDataTypeColumn(): void
     {
         $table = $this->getConnection()->getSchema()->getTableSchema('employee');

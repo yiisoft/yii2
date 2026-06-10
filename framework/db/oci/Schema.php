@@ -83,7 +83,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     {
         $parts = explode('.', str_replace('"', '', $name));
 
-        $tableName = $parts[1] ?? $name;
+        $tableName = $parts[1] ?? $parts[0];
         $schemaName = isset($parts[1]) ? $parts[0] : $this->defaultSchema;
         $fullName = $schemaName !== $this->defaultSchema ? "{$schemaName}.{$tableName}" : $tableName;
 
