@@ -27,6 +27,7 @@ use function is_string;
 use function mb_stripos;
 use function str_contains;
 use function str_replace;
+use function str_starts_with;
 use function strlen;
 use function strpos;
 use function strrpos;
