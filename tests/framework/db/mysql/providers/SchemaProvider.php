@@ -8,13 +8,24 @@ declare(strict_types=1);
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db\sqlite\providers;
+namespace yiiunit\framework\db\mysql\providers;
 
 /**
- * Data provider for {@see \yiiunit\framework\db\sqlite\SchemaQuoteTest} test cases.
+ * Data provider for {@see \yiiunit\framework\db\mysql\SchemaQuoteTest} test cases.
  */
 final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
 {
+    /**
+     * @return list<array{string, string}>
+     */
+    public static function quoteValue(): array
+    {
+        return [
+            ['string', "'string'"],
+            ["It's interesting", "'It\\'s interesting'"],
+        ];
+    }
+
     /**
      * @return list<array{string, string}>
      */

@@ -176,21 +176,6 @@ final class SchemaTest extends BaseSchema
     }
 
     /**
-     * @throws NotSupportedException
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'quoteTableName')]
-    public function testQuoteTableName(string $name, string $expectedName): void
-    {
-        $schema = $this->getConnection()->getSchema();
-
-        self::assertSame(
-            $expectedName,
-            $schema->quoteTableName($name),
-            "Quoted table name for '{$name}' should be '{$expectedName}'.",
-        );
-    }
-
-    /**
      * @throws NotSupportedException if the table does not exist or schema retrieval is not supported.
      */
     #[DataProviderExternal(SchemaProvider::class, 'getTableSchema')]
@@ -308,17 +293,6 @@ final class SchemaTest extends BaseSchema
             'dbo',
             $schema->defaultSchema,
             "Default schema should be 'dbo'.",
-        );
-    }
-
-    public function testQuoteColumnNameWithBrackets(): void
-    {
-        $schema = $this->getConnection()->getSchema();
-
-        self::assertSame(
-            '[already_quoted]',
-            $schema->quoteColumnName('[already_quoted]'),
-            "Column name '[already_quoted]' should not be double-quoted.",
         );
     }
 

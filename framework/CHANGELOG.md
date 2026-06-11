@@ -91,6 +91,7 @@ Yii Framework 2 Change Log
 - Chg #20936: Remove redundant `resolveTableNames()` from MSSQL, MySQL, PostgreSQL, and Oracle schema classes; `loadTableSchema()` now uses `resolveTableName()` directly (terabytesoftw)
 - Bug #20937: Exclude configurable system schema names from MSSQL `yii\db\Schema::getSchemaNames()` to match the non-system schema contract (terabytesoftw)
 - Bug #20938: Fix MSSQL `QueryBuilder::dropConstraintsForColumn()` to drop primary key, foreign key, and table-level check constraints, replacing deprecated `sys.sysconstraints` with modern catalog views (terabytesoftw)
+- Enh #20939: Replace `strpos()` with `str_contains()` in `yii\db\Schema` quoting methods and fix `quoteValue()` `@param` to `mixed` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

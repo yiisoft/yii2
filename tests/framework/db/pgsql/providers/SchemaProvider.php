@@ -11,7 +11,8 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\pgsql\providers;
 
 /**
- * Data provider for {@see \yiiunit\framework\db\pgsql\SchemaTest} test cases.
+ * Data provider for {@see \yiiunit\framework\db\pgsql\SchemaTest} and {@see \yiiunit\framework\db\pgsql\SchemaQuoteTest}
+ * test cases.
  */
 final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
 {
@@ -28,6 +29,20 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
             [922_337_203_685_477_580],
             [9_223_372_036_854_775_807],
             [-9_223_372_036_854_775_808.0],
+        ];
+    }
+
+    /**
+     * Extends the shared cases with a name embedding a double quote (the driver's own quote character), passed through
+     * unchanged.
+     *
+     * @return list<array{string, string}>
+     */
+    public static function quoteSimpleTableName(): array
+    {
+        return [
+            ...parent::quoteSimpleTableName(),
+            ['a"b', 'a"b'],
         ];
     }
 }

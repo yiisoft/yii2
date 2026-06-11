@@ -11,7 +11,8 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mssql\providers;
 
 /**
- * Data provider for {@see \yiiunit\framework\db\mssql\SchemaTest} test cases.
+ * Data provider for {@see \yiiunit\framework\db\mssql\SchemaTest} and {@see \yiiunit\framework\db\mssql\SchemaQuoteTest}
+ * test cases.
  */
 final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
 {
@@ -21,14 +22,33 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
     public static function quoteTableName(): array
     {
         return [
-            ['[test]', '[test]'],
-            ['[test].[test.test]', '[test].[test.test]'],
-            ['[test].[test]', '[test].[test]'],
-            ['test', '[test]'],
-            ['test.[test.test]', '[test].[test.test]'],
-            ['test.test', '[test].[test]'],
-            ['test.test.[test.test]', '[test].[test].[test.test]'],
-            ['test.test.test', '[test].[test].[test]'],
+            ...parent::quoteTableName(),
+            ['[[test]].[[test.test]]', '[[test]].[[test.test]]'],
+            ['test.[[test.test]]', '[[test]].[[test.test]]'],
+            ['test.test.[[test.test]]', '[[test]].[[test]].[[test.test]]'],
+        ];
+    }
+
+    /**
+     * @return list<array{string, string}>
+     */
+    public static function quoteColumnName(): array
+    {
+        return [
+            ...parent::quoteColumnName(),
+            ['[[already_quoted]]', '[[already_quoted]]'],
+            ['[[a.b]]', '[[a.b]]'],
+        ];
+    }
+
+    /**
+     * @return list<array{string, string}>
+     */
+    public static function quoteSimpleTableName(): array
+    {
+        return [
+            ...parent::quoteSimpleTableName(),
+            ['a[b', 'a[b'],
         ];
     }
 
