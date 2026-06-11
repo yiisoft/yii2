@@ -92,6 +92,7 @@ Yii Framework 2 Change Log
 - Bug #20937: Exclude configurable system schema names from MSSQL `yii\db\Schema::getSchemaNames()` to match the non-system schema contract (terabytesoftw)
 - Bug #20938: Fix MSSQL `QueryBuilder::dropConstraintsForColumn()` to drop primary key, foreign key, and table-level check constraints, replacing deprecated `sys.sysconstraints` with modern catalog views (terabytesoftw)
 - Enh #20939: Replace `strpos()` with `str_contains()` in `yii\db\Schema` quoting methods and fix `quoteValue()` `@param` to `mixed` (terabytesoftw)
+- Enh #20940: Modernize MSSQL `yii\db\mssql\Schema` internals and remove dead `unsigned` detection (terabytesoftw)
 
 2.0.56 under development
 ------------------------
