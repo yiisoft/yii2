@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yiiunit\framework\db\sqlite\providers;
+namespace yiiunit\framework\db\oci\providers;
 
 /**
- * Data provider for {@see \yiiunit\framework\db\sqlite\SchemaQuoteTest} test cases.
+ * Data provider for {@see \yiiunit\framework\db\oci\SchemaQuoteTest} test cases.
  */
 final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
 {
@@ -22,7 +22,7 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
     {
         return [
             ...parent::quoteSimpleTableName(),
-            ['a`b', 'a`b'],
+            ['a"b', 'a"b'],
         ];
     }
 }

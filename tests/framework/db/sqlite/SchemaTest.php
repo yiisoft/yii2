@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\sqlite;
 
-use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\NotSupportedException;
 use yii\db\ConstraintFinderInterface;
@@ -18,7 +17,6 @@ use yii\db\Expression;
 use yii\db\Transaction;
 use yii\db\sqlite\Schema;
 use yiiunit\base\db\BaseSchema;
-use yiiunit\framework\db\sqlite\providers\SchemaProvider;
 
 /**
  * Unit tests for {@see \yii\db\sqlite\Schema} schema reflection and metadata retrieval for the SQLite driver.
@@ -300,16 +298,5 @@ final class SchemaTest extends BaseSchema
         );
 
         $this->getConnection()->getSchema()->setTransactionIsolationLevel(Transaction::READ_COMMITTED);
-    }
-
-    /**
-     * @throws NotSupportedException
-     */
-    #[DataProviderExternal(SchemaProvider::class, 'quoteTableName')]
-    public function testQuoteTableName(string $name, string $expectedName): void
-    {
-        $schema = $this->getConnection()->getSchema();
-        $quotedName = $schema->quoteTableName($name);
-        $this->assertEquals($expectedName, $quotedName);
     }
 }
