@@ -22,10 +22,17 @@ use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function array_map;
 use function count;
+use function explode;
 use function implode;
+use function preg_match;
+use function preg_match_all;
 use function strcasecmp;
+use function str_ends_with;
 use function str_replace;
+use function str_starts_with;
+use function ucfirst;
 
 /**
  * Schema is the class for retrieving metadata from MS SQL Server databases (version 2019 and above).
@@ -144,21 +151,16 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
     /**
      * {@inheritDoc}
-     * @param string $name
-     * @return array
+     *
      * @since 2.0.22
      */
     protected function getTableNameParts($name)
     {
-        $parts = [$name];
         preg_match_all('/([^.\[\]]+)|\[([^\[\]]+)\]/', $name, $matches);
-        if (isset($matches[0]) && is_array($matches[0]) && !empty($matches[0])) {
-            $parts = $matches[0];
-        }
 
-        $parts = str_replace(['[', ']'], '', $parts);
+        $parts = $matches[0] === [] ? [$name] : $matches[0];
 
-        return $parts;
+        return str_replace(['[', ']'], '', $parts);
     }
 
     /**
@@ -217,9 +219,12 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     protected function loadTableSchema($name)
     {
         $table = $this->resolveTableName($name);
+
         $this->findPrimaryKeys($table);
+
         if ($this->findColumns($table)) {
             $this->findForeignKeys($table);
+
             return $table;
         }
 
@@ -232,15 +237,21 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     protected function getSchemaMetadata($schema, $type, $refresh)
     {
         $metadata = [];
+
         $methodName = 'getTable' . ucfirst($type);
-        $tableNames = array_map(function ($table) {
-            return $this->quoteSimpleTableName($table);
-        }, $this->getTableNames($schema, $refresh));
+
+        $tableNames = array_map(
+            fn (string $table): string => $this->quoteSimpleTableName($table),
+            $this->getTableNames($schema, $refresh),
+        );
+
         foreach ($tableNames as $name) {
             if ($schema !== '') {
-                $name = $schema . '.' . $name;
+                $name = "{$schema}.{$name}";
             }
+
             $tableMetadata = $this->$methodName($name, $refresh);
+
             if ($tableMetadata !== null) {
                 $metadata[] = $tableMetadata;
             }
@@ -303,8 +314,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         foreach ($indexes as $name => $index) {
             $result[] = new IndexConstraint(
                 [
-                    'isPrimary' => (bool)$index[0]['index_is_primary'],
-                    'isUnique' => (bool)$index[0]['index_is_unique'],
+                    'isPrimary' => (bool) $index[0]['index_is_primary'],
+                    'isUnique' => (bool) $index[0]['index_is_unique'],
                     'name' => $name,
                     'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
                 ],
@@ -385,9 +396,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         $column->dbType = $info['data_type'];
         $column->enumValues = []; // mssql has only vague equivalents to enum
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
-        $column->autoIncrement = $info['is_identity'] == 1;
-        $column->isComputed = (bool)$info['is_computed'];
-        $column->unsigned = stripos($column->dbType, 'unsigned') !== false;
+        $column->autoIncrement = (bool) $info['is_identity'];
+        $column->isComputed = (bool) $info['is_computed'];
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
         $column->type = self::TYPE_STRING;
 
@@ -399,7 +409,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
             }
 
             if ($type === 'bit') {
-                $column->type = 'boolean';
+                $column->type = self::TYPE_BOOLEAN;
             }
 
             if (!empty($matches[2]) && strcasecmp($matches[2], 'max') !== 0) {
@@ -805,7 +815,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public function quoteColumnName($name)
     {
-        if (preg_match('/^\[.*\]$/', $name)) {
+        if (str_starts_with($name, '[') && str_ends_with($name, ']')) {
             return $name;
         }
 
@@ -815,13 +825,13 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * {@inheritdoc}
      *
-     * Retrieves the inserted row via the `OUTPUT INSERTED.*` block emitted by
-     * `\yii\db\mssql\QueryBuilder::insert()` so that `IDENTITY` values, computed columns, and
-     * `uniqueidentifier` defaults are returned to the caller.
+     * Retrieves the inserted row via the `OUTPUT INSERTED.*` block emitted by `\yii\db\mssql\QueryBuilder::insert()` so
+     * that `IDENTITY` values, computed columns, and `uniqueidentifier` defaults are returned to the caller.
      */
     public function insert($table, $columns)
     {
         $command = $this->db->createCommand()->insert($table, $columns);
+
         if (!$command->execute()) {
             return false;
         }
@@ -829,7 +839,9 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         $inserted = $command->pdoStatement->fetch();
 
         $tableSchema = $this->getTableSchema($table);
+
         $result = [];
+
         foreach ($tableSchema->primaryKey as $name) {
             // @see https://github.com/yiisoft/yii2/issues/13828 & https://github.com/yiisoft/yii2/issues/17474
             if (isset($inserted[$name])) {
