@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mssql;
 
 use PHPUnit\Framework\Attributes\Group;
-use yii\db\Connection;
 use yii\db\IntegrityException;
 use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
@@ -323,9 +322,9 @@ final class CommandTest extends BaseCommand
             $tableSchema->getColumn('bar')->dbType,
             'Type change must succeed with a default bound.',
         );
-        self::assertSame(
+        self::assertCount(
             1,
-            $this->countDefaultConstraints($db),
+            $db->getSchema()->getTableDefaultValues($table, true),
             'Old default constraint must be replaced, not duplicated.',
         );
     }
@@ -352,10 +351,66 @@ final class CommandTest extends BaseCommand
             $tableSchema->getColumn('bar')->dbType,
             'Type change must succeed with a default bound.',
         );
+        self::assertCount(
+            1,
+            $db->getSchema()->getTableDefaultValues('foo1', true),
+            'Old default constraint must be replaced, not duplicated.',
+        );
+    }
+
+    public function testAlterColumnReplacesCheckConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 5'),
+        )->execute();
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 3'),
+        )->execute();
+
+        self::assertCount(
+            1,
+            $db->getSchema()->getTableChecks('foo1', true),
+            'Old check constraint must be replaced, not duplicated.',
+        );
         self::assertSame(
             1,
-            $this->countDefaultConstraints($db),
-            'Old default constraint must be replaced, not duplicated.',
+            $db->createCommand("INSERT INTO [foo1]([bar]) VALUES('abcd')")->execute(),
+            'New check must be in effect instead of the old one.',
+        );
+    }
+
+    public function testAlterColumnReplacesUniqueConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->unique(),
+        )->execute();
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 32)->unique(),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('foo1', true);
+
+        self::assertSame(
+            'nvarchar(32)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+        self::assertCount(
+            1,
+            $db->getSchema()->getTableUniques('foo1', true),
+            'Old unique constraint must be replaced, not duplicated.',
         );
     }
 
@@ -388,24 +443,5 @@ final class CommandTest extends BaseCommand
         $resultData = $query->createCommand($db)->queryOne();
 
         $this->assertSame($testData, $resultData['blob_col']);
-    }
-
-    private function countDefaultConstraints(
-        Connection $db,
-        string $table = 'dbo.foo1',
-        string $column = 'bar',
-    ): int {
-        return (int) $db->createCommand(
-            <<<SQL
-            SELECT COUNT(*)
-            FROM [sys].[default_constraints] AS [dc]
-            JOIN [sys].[columns] AS [c] ON [c].[object_id] = [dc].[parent_object_id] AND [c].[column_id] = [dc].[parent_column_id]
-            WHERE [dc].[parent_object_id] = OBJECT_ID(:tableName) AND [c].[name] = :columnName
-            SQL,
-            [
-                ':tableName' => $table,
-                ':columnName' => $column,
-            ],
-        )->queryScalar();
     }
 }

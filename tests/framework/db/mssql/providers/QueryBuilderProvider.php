@@ -43,6 +43,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -67,6 +88,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -88,6 +130,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -110,6 +173,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -132,6 +216,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -155,6 +260,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -178,6 +304,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -201,6 +348,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -224,6 +392,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -255,6 +444,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -278,6 +488,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -300,6 +531,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
@@ -323,6 +575,27 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL

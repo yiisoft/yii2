@@ -13,9 +13,10 @@ namespace yii\db\mssql;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
-use yii\db\mssql\ColumnSchemaBuilder;
 use yii\db\Query;
 
+use function array_flip;
+use function array_intersect_key;
 use function count;
 use function implode;
 use function preg_replace;
@@ -132,8 +133,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds a SQL statement for changing the definition of a column.
      *
-     * Drops the default constraints attached to the column before the `ALTER COLUMN` statement, because SQL Server
-     * rejects a data type change while a `DEFAULT` definition is bound to the column. Default, check, and unique
+     * Drops the default, check, and unique constraints attached to the column before the `ALTER COLUMN` statement,
+     * because SQL Server rejects altering a column while such constraints are bound to it. Default, check, and unique
      * constraints defined by a {@see ColumnSchemaBuilder} type are re-created after the column is altered.
      *
      * @param string $table The table whose column is to be changed. The table name will be properly quoted by the
@@ -153,7 +154,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $tableName = $this->db->quoteTableName($table);
         $columnName = $this->db->quoteColumnName($column);
 
-        $dropDefaultsSql = $this->dropConstraintsForColumn($tableName, $column, 'D');
+        $dropConstraintsSql = $this->dropConstraintsForColumn($tableName, $column, ['D', 'C', 'UQ']);
 
         $sqlAfter = [];
 
@@ -199,7 +200,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return implode(
             "\n",
             [
-                $dropDefaultsSql,
+                $dropConstraintsSql,
                 <<<SQL
                 ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$columnType}
                 SQL,
@@ -607,8 +608,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * caller.
      * @param string $column The column whose constraints are to be dropped. The raw, unquoted name is matched verbatim
      * against the system catalog; single quotes are escaped by the method.
-     * @param string $type The constraint type: `'D'` - default, `'C'` - check, `'PK'` - primary key, `'UQ'` - unique,
-     * `'F'` - foreign key. Leave empty to drop the constraints of all these types.
+     * @param string[] $types The constraint types: `'D'` - default, `'C'` - check, `'PK'` - primary key,
+     * `'UQ'` - unique, `'F'` - foreign key. Leave empty to drop the constraints of all these types.
      *
      * @return string The DROP CONSTRAINTS SQL batch.
      *
@@ -619,7 +620,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-index-columns-transact-sql
      * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-foreign-key-columns-transact-sql
      */
-    private function dropConstraintsForColumn($table, $column, $type = '')
+    private function dropConstraintsForColumn($table, $column, $types = [])
     {
         $columnName = str_replace("'", "''", $column);
 
@@ -670,7 +671,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             SQL;
         }
 
-        $unionSql = implode("\n    UNION\n", $type === '' ? $subqueries : [$subqueries[$type]]);
+        $selectedSubqueries = $types === [] ? $subqueries : array_intersect_key($subqueries, array_flip($types));
+
+        $unionSql = implode("\n    UNION\n", $selectedSubqueries);
 
         return <<<SQL
         DECLARE @tableName NVARCHAR(MAX) = N'{$table}'
