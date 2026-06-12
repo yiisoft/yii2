@@ -15,9 +15,12 @@ use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\Query;
 
+use function array_flip;
+use function array_intersect_key;
 use function count;
+use function implode;
+use function preg_replace;
 use function str_replace;
-use function strpos;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -129,52 +132,81 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType]] method will be invoked to convert abstract column type (if any)
-     * into the physical one. Anything that is not recognized as abstract type will be kept in the generated SQL.
-     * For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become 'varchar(255) not null'.
-     * @return string the SQL statement for changing the definition of a column.
+     *
+     * Drops the default, check, and unique constraints attached to the column before the `ALTER COLUMN` statement,
+     * because SQL Server rejects altering a column while such constraints are bound to it. Default, check, and unique
+     * constraints defined by a {@see ColumnSchemaBuilder} type are re-created after the column is altered.
+     *
+     * @param string $table The table whose column is to be changed. The table name will be properly quoted by the
+     * method.
+     * @param string $column The name of the column to be changed. The name will be properly quoted by the method.
+     * @param string $type The new column type. The {@see getColumnType} method will be invoked to convert abstract
+     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept in the
+     * generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null' will become
+     * 'varchar(255) not null'.
+     *
      * @throws NotSupportedException if this is not supported by the underlying DBMS.
+     *
+     * @return string The SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
     {
-        $sqlAfter = [$this->dropConstraintsForColumn($table, $column, 'D')];
-
-        $columnName = $this->db->quoteColumnName($column);
         $tableName = $this->db->quoteTableName($table);
-        $constraintBase = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
+        $columnName = $this->db->quoteColumnName($column);
 
-        if ($type instanceof \yii\db\mssql\ColumnSchemaBuilder) {
+        $dropConstraintsSql = $this->dropConstraintsForColumn($tableName, $column, ['D', 'C', 'UQ']);
+
+        $sqlAfter = [];
+
+        $constraintBase = preg_replace('/[^a-z0-9_]/i', '', "{$table}_{$column}");
+
+        if ($type instanceof ColumnSchemaBuilder) {
             $type->setAlterColumnFormat();
 
-
             $defaultValue = $type->getDefaultValue();
+
             if ($defaultValue !== null) {
                 $sqlAfter[] = $this->addDefaultValue(
                     "DF_{$constraintBase}",
                     $table,
                     $column,
-                    $defaultValue instanceof Expression ? $defaultValue : new Expression($defaultValue)
+                    $defaultValue instanceof Expression ? $defaultValue : new Expression($defaultValue),
                 );
             }
 
             $checkValue = $type->getCheckValue();
+
             if ($checkValue !== null) {
-                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " .
-                    $this->db->quoteColumnName("CK_{$constraintBase}") .
-                    ' CHECK (' . ($defaultValue instanceof Expression ?  $checkValue : new Expression($checkValue)) . ')';
+                $columnCheckConstraint = $this->db->quoteColumnName("CK_{$constraintBase}");
+
+                $checkSQL = $checkValue instanceof Expression ?  $checkValue : new Expression($checkValue);
+
+                $sqlAfter[] = <<<SQL
+                ALTER TABLE {$tableName} ADD CONSTRAINT {$columnCheckConstraint} CHECK ({$checkSQL})
+                SQL;
             }
 
             if ($type->isUnique()) {
-                $sqlAfter[] = "ALTER TABLE {$tableName} ADD CONSTRAINT " . $this->db->quoteColumnName("UQ_{$constraintBase}") . " UNIQUE ({$columnName})";
+                $columnUniqueConstraint = $this->db->quoteColumnName("UQ_{$constraintBase}");
+
+                $sqlAfter[] = <<<SQL
+                ALTER TABLE {$tableName} ADD CONSTRAINT {$columnUniqueConstraint} UNIQUE ({$columnName})
+                SQL;
             }
         }
 
-        return 'ALTER TABLE ' . $tableName . ' ALTER COLUMN '
-            . $columnName . ' '
-            . $this->getColumnType($type) . "\n"
-            . implode("\n", $sqlAfter);
+        $columnType = $this->getColumnType($type);
+
+        return implode(
+            "\n",
+            [
+                $dropConstraintsSql,
+                <<<SQL
+                ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$columnType}
+                SQL,
+                ...$sqlAfter,
+            ],
+        );
     }
 
     /**
@@ -536,6 +568,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * Drop all constraints before column delete.
+     *
+     * {@inheritdoc}
+     */
+    public function dropColumn($table, $column)
+    {
+        $tableName = $this->db->quoteTableName($table);
+        $columnName = $this->db->quoteColumnName($column);
+
+        $dropConstraintsSql = $this->dropConstraintsForColumn($tableName, $column);
+
+        return <<<SQL
+        {$dropConstraintsSql}
+        ALTER TABLE {$tableName} DROP COLUMN {$columnName}
+        SQL;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function extractAlias($table)
@@ -554,11 +604,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * dynamic batch. Foreign key constraints are dropped first because a primary key or unique constraint cannot be
      * dropped while a foreign key references it.
      *
-     * @param string $table The table whose constraints are to be dropped. The name is properly quoted by the method.
-     * @param string $column The column whose constraints are to be dropped. The name is matched verbatim against the
-     * system catalog.
-     * @param string $type The constraint type: `'D'` - default, `'C'` - check, `'PK'` - primary key, `'UQ'` - unique,
-     * `'F'` - foreign key. Leave empty to drop the constraints of all these types.
+     * @param string $table The table whose constraints are to be dropped. The name must already be quoted by the
+     * caller.
+     * @param string $column The column whose constraints are to be dropped. The raw, unquoted name is matched verbatim
+     * against the system catalog; single quotes are escaped by the method.
+     * @param string[] $types The constraint types: `'D'` - default, `'C'` - check, `'PK'` - primary key,
+     * `'UQ'` - unique, `'F'` - foreign key. Leave empty to drop the constraints of all these types.
      *
      * @return string The DROP CONSTRAINTS SQL batch.
      *
@@ -569,9 +620,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-index-columns-transact-sql
      * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-foreign-key-columns-transact-sql
      */
-    private function dropConstraintsForColumn($table, $column, $type = '')
+    private function dropConstraintsForColumn($table, $column, $types = [])
     {
-        $tableName = strpos($table, '{{') === false ? "{{{$table}}}" : $table;
         $columnName = str_replace("'", "''", $column);
 
         $subqueries = [
@@ -621,10 +671,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             SQL;
         }
 
-        $unionSql = implode("\n    UNION\n", $type === '' ? $subqueries : [$subqueries[$type]]);
+        $selectedSubqueries = $types === [] ? $subqueries : array_intersect_key($subqueries, array_flip($types));
+
+        $unionSql = implode("\n    UNION\n", $selectedSubqueries);
 
         return <<<SQL
-        DECLARE @tableName NVARCHAR(MAX) = N'{$tableName}'
+        DECLARE @tableName NVARCHAR(MAX) = N'{$table}'
         DECLARE @columnName NVARCHAR(MAX) = N'{$columnName}'
         DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -655,15 +707,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return parent::buildWithQueries($withs, $params);
-    }
-
-    /**
-     * Drop all constraints before column delete
-     * {@inheritdoc}
-     */
-    public function dropColumn($table, $column)
-    {
-        return $this->dropConstraintsForColumn($table, $column) . "\nALTER TABLE " . $this->db->quoteTableName($table)
-            . ' DROP COLUMN ' . $this->db->quoteColumnName($column);
     }
 }

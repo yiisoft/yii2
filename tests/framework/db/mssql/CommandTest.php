@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,15 +10,20 @@
 
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\pgsql\Schema;
+use PHPUnit\Framework\Attributes\Group;
+use yii\db\IntegrityException;
+use yii\db\mssql\Schema;
+use yii\db\mssql\TableSchema;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
 
 /**
- * @group db
- * @group mssql
+ * Unit tests for {@see \yii\db\mssql\Command} functionality for the MSSQL driver.
  */
-class CommandTest extends BaseCommand
+#[Group('db')]
+#[Group('mssql')]
+#[Group('command')]
+final class CommandTest extends BaseCommand
 {
     protected $driverName = 'sqlsrv';
 
@@ -120,6 +127,326 @@ class CommandTest extends BaseCommand
         $db->createCommand()->dropDefaultValue($name, $tableName)->execute();
         $defaultValues = $schema->getTableDefaultValues($tableName, true);
         $this->assertEmpty($defaultValues);
+    }
+
+    public function testAlterColumn(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            'varchar(255)',
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('foo1', true);
+
+        self::assertSame(
+            'varchar(255)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+        self::assertTrue(
+            $tableSchema->getColumn('bar')->allowNull,
+            'Column must stay nullable.',
+        );
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->notNull(),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('foo1', true);
+
+        self::assertSame(
+            'nvarchar(128)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+        self::assertFalse(
+            $tableSchema->getColumn('bar')->allowNull,
+            'Column must be NOT NULL after the change.',
+        );
+    }
+
+    public function testAlterColumnWithCheckConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->null()->check('LEN(bar) > 5'),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('foo1', true);
+
+        self::assertSame(
+            'nvarchar(128)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+        self::assertTrue(
+            $tableSchema->getColumn('bar')->allowNull,
+            'Column must stay nullable.',
+        );
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                INSERT INTO [foo1]([bar]) VALUES('abcdef')
+                SQL
+            )->execute(),
+            'Value satisfying the check must be accepted.',
+        );
+    }
+
+    public function testThrowIntegrityExceptionWhenInsertViolatesAlterColumnCheckConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 5'),
+        )->execute();
+
+        $this->expectException(IntegrityException::class);
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [foo1]([bar]) VALUES('abcde')
+            SQL,
+        )->execute();
+    }
+
+    public function testThrowIntegrityExceptionWhenInsertViolatesAlterColumnUniqueConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->unique(),
+        )->execute();
+
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                INSERT INTO [foo1]([bar]) VALUES('abcdef')
+                SQL
+            )->execute(),
+            'First value must be accepted.',
+        );
+
+        $this->expectException(IntegrityException::class);
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [foo1]([bar]) VALUES('abcdef')
+            SQL
+        )->execute();
+    }
+
+    public function testAlterColumnWithSchemaQualifiedTable(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'dbo.foo1',
+            'bar',
+            'varchar(255)',
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('dbo.foo1', true);
+
+        self::assertSame(
+            'varchar(255)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+        self::assertTrue(
+            $tableSchema->getColumn('bar')->allowNull,
+            'Column must stay nullable.',
+        );
+    }
+
+    public function testAlterColumnWithCatalogQualifiedTable(): void
+    {
+        $db = $this->getConnection();
+
+        $catalogName = (string) $db->createCommand(
+            <<<SQL
+            SELECT DB_NAME()
+            SQL
+        )->queryScalar();
+
+        $table = "{$catalogName}.dbo.foo1";
+
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->defaultValue('initial'),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema($table, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Schema must load for the catalog-qualified name.',
+        );
+        self::assertSame(
+            $catalogName,
+            $tableSchema->catalogName,
+            'Catalog name must be preserved.',
+        );
+        self::assertSame(
+            'nvarchar(128)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INTEGER)->defaultValue(0),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema($table, true);
+
+        self::assertSame(
+            'int',
+            $tableSchema->getColumn('bar')->dbType,
+            'Type change must succeed with a default bound.',
+        );
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableDefaultValues($table, true),
+            'Old default constraint must be replaced, not duplicated.',
+        );
+    }
+
+    public function testAlterColumnReplacesDefaultValue(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->defaultValue('initial'),
+        )->execute();
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INTEGER)->defaultValue(0),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('foo1', true);
+
+        self::assertSame(
+            'int',
+            $tableSchema->getColumn('bar')->dbType,
+            'Type change must succeed with a default bound.',
+        );
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableDefaultValues('foo1', true),
+            'Old default constraint must be replaced, not duplicated.',
+        );
+    }
+
+    public function testAlterColumnReplacesCheckConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 5'),
+        )->execute();
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 3'),
+        )->execute();
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableChecks('foo1', true),
+            'Old check constraint must be replaced, not duplicated.',
+        );
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                INSERT INTO [foo1]([bar]) VALUES('abcd')
+                SQL
+            )->execute(),
+            'New check must be in effect instead of the old one.',
+        );
+    }
+
+    public function testAlterColumnReplacesUniqueConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->unique(),
+        )->execute();
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 32)->unique(),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema('foo1', true);
+
+        self::assertSame(
+            'nvarchar(32)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the new definition.',
+        );
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableUniques('foo1', true),
+            'Old unique constraint must be replaced, not duplicated.',
+        );
     }
 
     public static function batchInsertSqlProvider(): array

@@ -33,8 +33,7 @@ final class QueryBuilderProvider
                     ->null()
                     ->defaultValue(new Expression('CAST(GETDATE() AS INT)')),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] int NULL
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -44,10 +43,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] int NULL
                 ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT CAST(GETDATE() AS INT) FOR [bar]
                 SQL,
             ],
@@ -57,8 +78,7 @@ final class QueryBuilderProvider
                     ->null()
                     ->defaultValue(null),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] int NULL
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -68,18 +88,39 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] int NULL
                 ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT NULL FOR [bar]
                 SQL,
             ],
             'plain string type' => [
                 'varchar(255)',
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] varchar(255)
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -89,10 +130,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] varchar(255)
                 SQL,
             ],
             'string not null' => [
@@ -100,8 +163,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
                     ->notNull(),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255) NOT NULL
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -111,10 +173,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255) NOT NULL
                 SQL,
             ],
             'string unique' => [
@@ -122,8 +206,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 30)
                     ->unique(),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(30)
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -133,10 +216,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(30)
                 ALTER TABLE [foo1] ADD CONSTRAINT [UQ_foo1_bar] UNIQUE ([bar])
                 SQL,
             ],
@@ -145,8 +250,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
                     ->check('LEN(bar) > 5'),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255)
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -156,10 +260,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255)
                 ALTER TABLE [foo1] ADD CONSTRAINT [CK_foo1_bar] CHECK (LEN(bar) > 5)
                 SQL,
             ],
@@ -168,8 +294,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
                     ->defaultValue('AbCdE'),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255)
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -179,10 +304,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255)
                 ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT 'AbCdE' FOR [bar]
                 SQL,
             ],
@@ -191,8 +338,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
                     ->defaultValue(''),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255)
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -202,10 +348,32 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] nvarchar(255)
                 ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT '' FOR [bar]
                 SQL,
             ],
@@ -214,8 +382,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP)
                     ->defaultExpression('CURRENT_TIMESTAMP'),
                 <<<SQL
-                ALTER TABLE [foo1] ALTER COLUMN [bar] datetime
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -225,11 +392,216 @@ final class QueryBuilderProvider
                     FROM [sys].[default_constraints] AS [dc]
                     JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
                     WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
                 ) AS [cons]
 
                 IF @dropCommands IS NOT NULL
                     EXEC (@dropCommands)
+                ALTER TABLE [foo1] ALTER COLUMN [bar] datetime
                 ALTER TABLE [foo1] ADD CONSTRAINT [DF_foo1_bar] DEFAULT CURRENT_TIMESTAMP FOR [bar]
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, Closure|string, string}>
+     */
+    public static function alterColumnQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified plain string type' => [
+                'yiitest.dbo.foo1',
+                'varchar(255)',
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[yiitest].[dbo].[foo1]'
+                DECLARE @columnName NVARCHAR(MAX) = N'bar'
+                DECLARE @dropCommands NVARCHAR(MAX)
+
+                SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
+                FROM (
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[default_constraints] AS [dc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                    WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
+                ) AS [cons]
+
+                IF @dropCommands IS NOT NULL
+                    EXEC (@dropCommands)
+                ALTER TABLE [yiitest].[dbo].[foo1] ALTER COLUMN [bar] varchar(255)
+                SQL,
+            ],
+            'catalog-qualified string with default value' => [
+                'yiitest.dbo.foo1',
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->defaultValue('AbCdE'),
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[yiitest].[dbo].[foo1]'
+                DECLARE @columnName NVARCHAR(MAX) = N'bar'
+                DECLARE @dropCommands NVARCHAR(MAX)
+
+                SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
+                FROM (
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[default_constraints] AS [dc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                    WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
+                ) AS [cons]
+
+                IF @dropCommands IS NOT NULL
+                    EXEC (@dropCommands)
+                ALTER TABLE [yiitest].[dbo].[foo1] ALTER COLUMN [bar] nvarchar(255)
+                ALTER TABLE [yiitest].[dbo].[foo1] ADD CONSTRAINT [DF_yiitestdbofoo1_bar] DEFAULT 'AbCdE' FOR [bar]
+                SQL,
+            ],
+            'schema-qualified plain string type' => [
+                'dbo.foo1',
+                'varchar(255)',
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[dbo].[foo1]'
+                DECLARE @columnName NVARCHAR(MAX) = N'bar'
+                DECLARE @dropCommands NVARCHAR(MAX)
+
+                SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
+                FROM (
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[default_constraints] AS [dc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                    WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
+                ) AS [cons]
+
+                IF @dropCommands IS NOT NULL
+                    EXEC (@dropCommands)
+                ALTER TABLE [dbo].[foo1] ALTER COLUMN [bar] varchar(255)
+                SQL,
+            ],
+            'schema-qualified string with default value' => [
+                'dbo.foo1',
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->defaultValue('AbCdE'),
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[dbo].[foo1]'
+                DECLARE @columnName NVARCHAR(MAX) = N'bar'
+                DECLARE @dropCommands NVARCHAR(MAX)
+
+                SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
+                FROM (
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[default_constraints] AS [dc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                    WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
+                ) AS [cons]
+
+                IF @dropCommands IS NOT NULL
+                    EXEC (@dropCommands)
+                ALTER TABLE [dbo].[foo1] ALTER COLUMN [bar] nvarchar(255)
+                ALTER TABLE [dbo].[foo1] ADD CONSTRAINT [DF_dbofoo1_bar] DEFAULT 'AbCdE' FOR [bar]
                 SQL,
             ],
         ];
@@ -245,7 +617,7 @@ final class QueryBuilderProvider
                 'foo1',
                 "my'col",
                 <<<SQL
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'my''col'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
@@ -304,7 +676,7 @@ final class QueryBuilderProvider
                 'foo1',
                 'bar',
                 <<<SQL
-                DECLARE @tableName NVARCHAR(MAX) = N'{{foo1}}'
+                DECLARE @tableName NVARCHAR(MAX) = N'[foo1]'
                 DECLARE @columnName NVARCHAR(MAX) = N'bar'
                 DECLARE @dropCommands NVARCHAR(MAX)
 
