@@ -93,7 +93,7 @@ Yii Framework 2 Change Log
 - Bug #20938: Fix MSSQL `QueryBuilder::dropConstraintsForColumn()` to drop primary key, foreign key, and table-level check constraints, replacing deprecated `sys.sysconstraints` with modern catalog views (terabytesoftw)
 - Enh #20939: Replace `strpos()` with `str_contains()` in `yii\db\Schema` quoting methods and fix `quoteValue()` `@param` to `mixed` (terabytesoftw)
 - Enh #20941: Modernize MSSQL `yii\db\mssql\Schema` internals and remove dead `unsigned` detection (terabytesoftw)
-- Bug #20942: Fix MSSQL `yii\db\mssql\QueryBuilder::alterColumn()` to drop column default constraints before the `ALTER COLUMN` statement, allowing data type changes on columns with a default value (terabytesoftw)
+- Bug #20942: Fix MSSQL `yii\db\mssql\QueryBuilder::alterColumn()` to drop column default, check, and unique constraints before the `ALTER COLUMN` statement, allowing column redefinition on constrained columns without duplicate constraint name errors (terabytesoftw)
 
 2.0.56 under development
 ------------------------
