@@ -94,6 +94,7 @@ Yii Framework 2 Change Log
 - Enh #20939: Replace `strpos()` with `str_contains()` in `yii\db\Schema` quoting methods and fix `quoteValue()` `@param` to `mixed` (terabytesoftw)
 - Enh #20941: Modernize MSSQL `yii\db\mssql\Schema` internals and remove dead `unsigned` detection (terabytesoftw)
 - Bug #20942: Fix MSSQL `yii\db\mssql\QueryBuilder::alterColumn()` to drop column default, check, and unique constraints before the `ALTER COLUMN` statement, allowing column redefinition on constrained columns without duplicate constraint name errors (terabytesoftw)
+- Bug #20943: Fix MSSQL `QueryBuilder::renameTable()` to call `sp_rename` with string parameters and one-part new table names (terabytesoftw)
 
 2.0.56 under development
 ------------------------

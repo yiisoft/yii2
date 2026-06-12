@@ -10,15 +10,19 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\mssql;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\IntegrityException;
 use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
+use yiiunit\framework\db\mssql\providers\CommandProvider;
 
 /**
  * Unit tests for {@see \yii\db\mssql\Command} functionality for the MSSQL driver.
+ *
+ * {@see CommandProvider} for test case data providers.
  */
 #[Group('db')]
 #[Group('mssql')]
@@ -34,6 +38,53 @@ final class CommandTest extends BaseCommand
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'renameTable')]
+    public function testRenameTableWithQuotedNames(
+        string $fromTableName,
+        string $toTableName,
+        string $fromRawTableName,
+        string $toRawTableName,
+    ): void {
+        $db = $this->getConnection();
+
+        foreach ([$toRawTableName, $fromRawTableName] as $tableName) {
+            if ($db->getSchema()->getTableSchema($tableName, true) !== null) {
+                $db->createCommand()->dropTable($tableName)->execute();
+            }
+        }
+
+        $db->createCommand()->createTable(
+            $fromTableName,
+            ['id' => 'integer'],
+        )->execute();
+
+        self::assertNotNull(
+            $db->getSchema()->getTableSchema($fromRawTableName, true),
+            'Table must be created with the expected raw name.',
+        );
+        self::assertNull(
+            $db->getSchema()->getTableSchema($toRawTableName, true),
+            'Table must not exist with the expected raw name.',
+        );
+
+        $db->createCommand()->renameTable($fromTableName, $toTableName)->execute();
+
+        self::assertNull(
+            $db->getSchema()->getTableSchema($fromRawTableName, true),
+            'Table must not exist with the expected raw name after renaming.',
+        );
+        self::assertNotNull(
+            $db->getSchema()->getTableSchema($toRawTableName, true),
+            'Table must exist with the expected raw name after renaming.',
+        );
+
+        foreach ([$toRawTableName, $fromRawTableName] as $tableName) {
+            if ($db->getSchema()->getTableSchema($tableName, true) !== null) {
+                $db->createCommand()->dropTable($tableName)->execute();
+            }
+        }
     }
 
     public function testBindParamValue(): void

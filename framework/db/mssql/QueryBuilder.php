@@ -12,6 +12,8 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\db\conditions\InCondition;
+use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -62,10 +64,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\conditions\InCondition' => 'yii\db\mssql\conditions\InConditionBuilder',
-            'yii\db\conditions\LikeCondition' => 'yii\db\mssql\conditions\LikeConditionBuilder',
-        ]);
+        return [
+            ...parent::defaultExpressionBuilders(),
+            InCondition::class => conditions\InConditionBuilder::class,
+            LikeCondition::class => conditions\LikeConditionBuilder::class,
+        ];
     }
 
     /**
@@ -95,6 +98,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         $offset = $this->hasOffset($offset) ? $offset : 0;
+
         $sql .= "{$this->separator}{$orderBy}{$this->separator}OFFSET {$offset} ROWS";
 
         if ($this->hasLimit($limit)) {
@@ -106,13 +110,28 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a DB table.
-     * @param string $oldName the table to be renamed. The name will be properly quoted by the method.
-     * @param string $newName the new table name. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB table.
+     *
+     * @param string $oldName The table to be renamed. The name will be properly quoted by the method.
+     * @param string $newName The new table name. The name will be properly quoted by the method.
+     *
+     * @return string The SQL statement for renaming a DB table.
      */
     public function renameTable($oldName, $newName)
     {
-        return 'sp_rename ' . $this->db->quoteTableName($oldName) . ', ' . $this->db->quoteTableName($newName);
+        $schema = $this->db->getSchema();
+
+        $oldTableName = str_replace("'", "''", $this->db->quoteTableName($oldName));
+        $newTableName = $this->db->quoteSql($this->db->quoteTableName($newName));
+
+        if (($pos = strrpos($newTableName, '].[')) !== false) {
+            $newTableName = substr($newTableName, $pos + 2);
+        }
+
+        $newTableName = str_replace("'", "''", $schema->unquoteSimpleTableName($newTableName));
+
+        return <<<SQL
+        EXEC sp_rename @objname = N'{$oldTableName}', @newname = N'{$newTableName}', @objtype = N'OBJECT'
+        SQL;
     }
 
     /**
