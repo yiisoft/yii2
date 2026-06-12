@@ -18,9 +18,70 @@ use yii\db\Schema;
 
 /**
  * Data provider for {@see \yiiunit\framework\db\mssql\QueryBuilderTest} test cases.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 22.0
  */
 final class QueryBuilderProvider
 {
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function renameTable(): array
+    {
+        return [
+            'already quoted table names' => [
+                '[dbo].[old_table]',
+                '[new_table]',
+                <<<SQL
+                EXEC sp_rename @objname = N'[dbo].[old_table]', @newname = [new_table], @objtype = N'OBJECT'
+                SQL,
+            ],
+            'curly brace table placeholders' => [
+                '{{old_table}}',
+                '{{new_table}}',
+                <<<SQL
+                EXEC sp_rename @objname = N'{{old_table}}', @newname = {{new_table}}, @objtype = N'OBJECT'
+                SQL,
+            ],
+            'schema qualified old table name' => [
+                'dbo.old_table',
+                'new_table',
+                <<<SQL
+                EXEC sp_rename @objname = N'[dbo].[old_table]', @newname = [new_table], @objtype = N'OBJECT'
+                SQL,
+            ],
+            'simple table names' => [
+                'old_table',
+                'new_table',
+                <<<SQL
+                EXEC sp_rename @objname = N'[old_table]', @newname = [new_table], @objtype = N'OBJECT'
+                SQL,
+            ],
+            'square bracket placeholders' => [
+                '[[old_table]]',
+                '[[new_table]]',
+                <<<SQL
+                EXEC sp_rename @objname = N'[[old_table]]', @newname = [[new_table]], @objtype = N'OBJECT'
+                SQL,
+            ],
+            'table names with single quotes' => [
+                "old'table",
+                "new'table",
+                <<<SQL
+                EXEC sp_rename @objname = N'[old''table]', @newname = [new'table], @objtype = N'OBJECT'
+                SQL,
+            ],
+            'table names with spaces' => [
+                'old table',
+                'new table',
+                <<<SQL
+                EXEC sp_rename @objname = N'[old table]', @newname = [new table], @objtype = N'OBJECT'
+                SQL,
+            ],
+        ];
+    }
+
     /**
      * @return array<string, array{Closure|string, string}>
      */
