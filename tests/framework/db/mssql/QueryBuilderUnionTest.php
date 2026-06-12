@@ -22,7 +22,7 @@ use yiiunit\base\db\BaseQueryBuilderUnion;
  */
 #[Group('db')]
 #[Group('mssql')]
-#[Group('querybuilder')]
+#[Group('query-builder')]
 class QueryBuilderUnionTest extends BaseQueryBuilderUnion
 {
     protected $driverName = 'sqlsrv';

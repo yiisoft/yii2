@@ -53,12 +53,12 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public $columnSchemaClass = ColumnSchema::class;
     /**
-     * @var string the default schema used for the current session.
+     * @var string The default schema used for the current session.
      */
     public $defaultSchema = 'dbo';
     public array $systemSchemaNames = ['guest'];
     /**
-     * @var array mapping from physical column types (keys) to abstract column types (values)
+     * @var array Mapping from physical column types (keys) to abstract column types (values).
      */
     public $typeMap = [
         // exact numbers
@@ -362,7 +362,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public function releaseSavepoint($name)
     {
-        // does nothing as MSSQL does not support this
+        // Does nothing as MSSQL does not support this.
     }
 
     /**
@@ -375,7 +375,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
     /**
      * Creates a query builder for the MSSQL database.
-     * @return QueryBuilder query builder interface.
+     *
+     * @return QueryBuilder Query builder interface.
      */
     public function createQueryBuilder()
     {
@@ -383,9 +384,11 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     }
 
     /**
-     * Loads the column information into a [[ColumnSchema]] object.
-     * @param array $info column information
-     * @return T the column schema object
+     * Loads the column information into a {@see ColumnSchema} object.
+     *
+     * @param array $info Column information.
+     *
+     * @return T The column schema object.
      */
     protected function loadColumnSchema($info)
     {
@@ -394,8 +397,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         $column->name = $info['column_name'];
         $column->allowNull = $info['is_nullable'] === 'YES';
         $column->dbType = $info['data_type'];
-        $column->enumValues = []; // mssql has only vague equivalents to enum
-        $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
+        $column->enumValues = []; // MSSQL has only vague equivalents to enum.
+        $column->isPrimaryKey = null; // Primary key will be determined in `findColumns()` method.
         $column->autoIncrement = (bool) $info['is_identity'];
         $column->isComputed = (bool) $info['is_computed'];
         $column->comment = $info['comment'] === null ? '' : $info['comment'];
@@ -424,7 +427,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        // store raw default for deferred resolution in `findColumns()`, where isPrimaryKey is known.
+        // Store raw default for deferred resolution in `findColumns()`, where isPrimaryKey is known.
         $column->defaultValue = $info['column_default'];
 
         return $column;
@@ -554,7 +557,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     /**
      * Collects the primary key column details for the given table.
      *
-     * @param TableSchema $table the table metadata
+     * @param TableSchema $table The table metadata
      */
     protected function findPrimaryKeys($table)
     {

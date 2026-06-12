@@ -27,7 +27,7 @@ use yiiunit\framework\db\mssql\providers\QueryBuilderProvider;
  */
 #[Group('db')]
 #[Group('mssql')]
-#[Group('queryBuilder')]
+#[Group('query-builder')]
 final class QueryBuilderTest extends BaseQueryBuilder
 {
     public $driverName = 'sqlsrv';
@@ -667,62 +667,20 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public function testAlterColumnOnDb(): void
+    #[DataProviderExternal(QueryBuilderProvider::class, 'alterColumnQualifiedTableNames')]
+    public function testAlterColumnWithQualifiedTableName(string $table, string|Closure $type, string $expected): void
     {
-        $connection = $this->getConnection();
+        $qb = $this->getQueryBuilder(false);
 
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', 'varchar(255)');
-        $connection->createCommand($sql)->execute();
-        $schema = $connection->getTableSchema('[foo1]', true);
+        if ($type instanceof Closure) {
+            $type = $type($this->getDb());
+        }
 
-        $this->assertEquals('varchar(255)', $schema->getColumn('bar')->dbType);
-        $this->assertEquals(true, $schema->getColumn('bar')->allowNull);
-
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(128)->notNull());
-        $connection->createCommand($sql)->execute();
-        $schema = $connection->getTableSchema('[foo1]', true);
-        $this->assertEquals('nvarchar(128)', $schema->getColumn('bar')->dbType);
-        $this->assertEquals(false, $schema->getColumn('bar')->allowNull);
-    }
-
-    public function testAlterColumnWithCheckConstraintOnDb(): void
-    {
-        $connection = $this->getConnection();
-
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(128)->null()->check('LEN(bar) > 5'));
-        $connection->createCommand($sql)->execute();
-        $schema = $connection->getTableSchema('[foo1]', true);
-        $this->assertEquals('nvarchar(128)', $schema->getColumn('bar')->dbType);
-        $this->assertEquals(true, $schema->getColumn('bar')->allowNull);
-
-        $sql = "INSERT INTO [foo1]([bar]) values('abcdef')";
-        $this->assertEquals(1, $connection->createCommand($sql)->execute());
-    }
-
-    public function testAlterColumnWithCheckConstraintOnDbWithException(): void
-    {
-        $connection = $this->getConnection();
-
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(64)->check('LEN(bar) > 5'));
-        $connection->createCommand($sql)->execute();
-
-        $sql = "INSERT INTO [foo1]([bar]) values('abcde')";
-        $this->expectException('yii\db\IntegrityException');
-        $this->assertEquals(1, $connection->createCommand($sql)->execute());
-    }
-
-    public function testAlterColumnWithUniqueConstraintOnDbWithException(): void
-    {
-        $connection = $this->getConnection();
-
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(64)->unique());
-        $connection->createCommand($sql)->execute();
-
-        $sql = "INSERT INTO [foo1]([bar]) values('abcdef')";
-        $this->assertEquals(1, $connection->createCommand($sql)->execute());
-
-        $this->expectException('yii\db\IntegrityException');
-        $this->assertEquals(1, $connection->createCommand($sql)->execute());
+        self::assertSame(
+            $expected,
+            $qb->alterColumn($table, 'bar', $type),
+            'Generated SQL must match the expected batch.',
+        );
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'dropColumn')]
