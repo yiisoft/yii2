@@ -322,9 +322,17 @@ final class CommandTest extends BaseCommand
             $tableSchema->getColumn('bar')->dbType,
             'Type change must succeed with a default bound.',
         );
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
         self::assertCount(
             1,
-            $db->getSchema()->getTableDefaultValues($table, true),
+            $schema->getTableDefaultValues($table, true),
             'Old default constraint must be replaced, not duplicated.',
         );
     }
@@ -351,9 +359,17 @@ final class CommandTest extends BaseCommand
             $tableSchema->getColumn('bar')->dbType,
             'Type change must succeed with a default bound.',
         );
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
         self::assertCount(
             1,
-            $db->getSchema()->getTableDefaultValues('foo1', true),
+            $schema->getTableDefaultValues('foo1', true),
             'Old default constraint must be replaced, not duplicated.',
         );
     }
@@ -373,14 +389,25 @@ final class CommandTest extends BaseCommand
             $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 3'),
         )->execute();
 
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
         self::assertCount(
             1,
-            $db->getSchema()->getTableChecks('foo1', true),
+            $schema->getTableChecks('foo1', true),
             'Old check constraint must be replaced, not duplicated.',
         );
         self::assertSame(
             1,
-            $db->createCommand("INSERT INTO [foo1]([bar]) VALUES('abcd')")->execute(),
+            $db->createCommand(
+                <<<SQL
+                INSERT INTO [foo1]([bar]) VALUES('abcd')
+                SQL
+            )->execute(),
             'New check must be in effect instead of the old one.',
         );
     }
@@ -407,9 +434,17 @@ final class CommandTest extends BaseCommand
             $tableSchema->getColumn('bar')->dbType,
             'Column type must reflect the new definition.',
         );
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema must be available.',
+        );
         self::assertCount(
             1,
-            $db->getSchema()->getTableUniques('foo1', true),
+            $schema->getTableUniques('foo1', true),
             'Old unique constraint must be replaced, not duplicated.',
         );
     }
