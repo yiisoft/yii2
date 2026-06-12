@@ -34,49 +34,63 @@ final class QueryBuilderProvider
                 '[dbo].[old_table]',
                 '[new_table]',
                 <<<SQL
-                EXEC sp_rename @objname = N'[dbo].[old_table]', @newname = [new_table], @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'[dbo].[old_table]', @newname = N'new_table', @objtype = N'OBJECT'
                 SQL,
             ],
             'curly brace table placeholders' => [
                 '{{old_table}}',
                 '{{new_table}}',
                 <<<SQL
-                EXEC sp_rename @objname = N'{{old_table}}', @newname = {{new_table}}, @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'{{old_table}}', @newname = N'new_table', @objtype = N'OBJECT'
+                SQL,
+            ],
+            'schema qualified new table name' => [
+                'old_table',
+                'dbo.new_table',
+                <<<SQL
+                EXEC sp_rename @objname = N'[old_table]', @newname = N'new_table', @objtype = N'OBJECT'
                 SQL,
             ],
             'schema qualified old table name' => [
                 'dbo.old_table',
                 'new_table',
                 <<<SQL
-                EXEC sp_rename @objname = N'[dbo].[old_table]', @newname = [new_table], @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'[dbo].[old_table]', @newname = N'new_table', @objtype = N'OBJECT'
                 SQL,
             ],
             'simple table names' => [
                 'old_table',
                 'new_table',
                 <<<SQL
-                EXEC sp_rename @objname = N'[old_table]', @newname = [new_table], @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'[old_table]', @newname = N'new_table', @objtype = N'OBJECT'
                 SQL,
             ],
             'square bracket placeholders' => [
                 '[[old_table]]',
                 '[[new_table]]',
                 <<<SQL
-                EXEC sp_rename @objname = N'[[old_table]]', @newname = [[new_table]], @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'[[old_table]]', @newname = N'new_table', @objtype = N'OBJECT'
                 SQL,
             ],
             'table names with single quotes' => [
                 "old'table",
                 "new'table",
                 <<<SQL
-                EXEC sp_rename @objname = N'[old''table]', @newname = [new'table], @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'[old''table]', @newname = N'new''table', @objtype = N'OBJECT'
                 SQL,
             ],
             'table names with spaces' => [
                 'old table',
                 'new table',
                 <<<SQL
-                EXEC sp_rename @objname = N'[old table]', @newname = [new table], @objtype = N'OBJECT'
+                EXEC sp_rename @objname = N'[old table]', @newname = N'new table', @objtype = N'OBJECT'
+                SQL,
+            ],
+            'table names with unicode characters' => [
+                'old_table',
+                'new_ñ_表',
+                <<<SQL
+                EXEC sp_rename @objname = N'[old_table]', @newname = N'new_ñ_表', @objtype = N'OBJECT'
                 SQL,
             ],
         ];

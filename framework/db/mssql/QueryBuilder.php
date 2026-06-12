@@ -118,11 +118,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function renameTable($oldName, $newName)
     {
-        $oldTableName = "N'" . str_replace("'", "''", $this->db->quoteTableName($oldName)) . "'";
-        $newTableName = $this->db->quoteTableName($newName);
+        $schema = $this->db->getSchema();
+
+        $oldTableName = str_replace("'", "''", $this->db->quoteTableName($oldName));
+        $newTableName = $this->db->quoteSql($this->db->quoteTableName($newName));
+
+        if (($pos = strrpos($newTableName, '].[')) !== false) {
+            $newTableName = substr($newTableName, $pos + 2);
+        }
+
+        $newTableName = str_replace("'", "''", $schema->unquoteSimpleTableName($newTableName));
 
         return <<<SQL
-        EXEC sp_rename @objname = {$oldTableName}, @newname = {$newTableName}, @objtype = N'OBJECT'
+        EXEC sp_rename @objname = N'{$oldTableName}', @newname = N'{$newTableName}', @objtype = N'OBJECT'
         SQL;
     }
 
