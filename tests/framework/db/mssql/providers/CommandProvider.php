@@ -80,4 +80,77 @@ final class CommandProvider
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{string, string, string, string, string, string}>
+     */
+    public static function renameColumn(): array
+    {
+        return [
+            'already quoted names' => [
+                '[dbo].[yii2_mssql_rename_column_quoted]',
+                '[old_col]',
+                '[new_col]',
+                'yii2_mssql_rename_column_quoted',
+                'old_col',
+                'new_col',
+            ],
+            'curly brace table and square bracket column placeholders' => [
+                '{{yii2_mssql_rename_column_curly}}',
+                '[[old_col]]',
+                '[[new_col]]',
+                'yii2_mssql_rename_column_curly',
+                'old_col',
+                'new_col',
+            ],
+            'names with single quotes' => [
+                "yii2_mssql_rename_column_quote'from",
+                "old'col",
+                "new'col",
+                "yii2_mssql_rename_column_quote'from",
+                "old'col",
+                "new'col",
+            ],
+            'names with spaces' => [
+                'yii2 mssql rename column',
+                'old col',
+                'new col',
+                'yii2 mssql rename column',
+                'old col',
+                'new col',
+            ],
+            'names with unicode characters' => [
+                'yii2_mssql_rename_column_unicode',
+                'old_ñ_表',
+                'new_ñ_表',
+                'yii2_mssql_rename_column_unicode',
+                'old_ñ_表',
+                'new_ñ_表',
+            ],
+            'schema qualified new column name' => [
+                'yii2_mssql_rename_column_new_schema',
+                'old_col',
+                'dbo.new_col',
+                'yii2_mssql_rename_column_new_schema',
+                'old_col',
+                'new_col',
+            ],
+            'schema qualified table name' => [
+                'dbo.yii2_mssql_rename_column_schema',
+                'old_col',
+                'new_col',
+                'yii2_mssql_rename_column_schema',
+                'old_col',
+                'new_col',
+            ],
+            'simple names' => [
+                'yii2_mssql_rename_column',
+                'old_col',
+                'new_col',
+                'yii2_mssql_rename_column',
+                'old_col',
+                'new_col',
+            ],
+        ];
+    }
 }
