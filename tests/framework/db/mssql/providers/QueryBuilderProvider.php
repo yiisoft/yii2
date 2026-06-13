@@ -97,6 +97,79 @@ final class QueryBuilderProvider
     }
 
     /**
+     * @return array<string, array{string, string, string, string}>
+     */
+    public static function renameColumn(): array
+    {
+        return [
+            'already quoted names' => [
+                '[dbo].[test_table]',
+                '[old_col]',
+                '[new_col]',
+                <<<SQL
+                EXEC sp_rename @objname = N'[dbo].[test_table].[old_col]', @newname = N'new_col', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'curly brace table and square bracket column placeholders' => [
+                '{{test_table}}',
+                '[[old_col]]',
+                '[[new_col]]',
+                <<<SQL
+                EXEC sp_rename @objname = N'{{test_table}}.[[old_col]]', @newname = N'new_col', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'names with single quotes' => [
+                "test'table",
+                "old'col",
+                "new'col",
+                <<<SQL
+                EXEC sp_rename @objname = N'[test''table].[old''col]', @newname = N'new''col', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'names with spaces' => [
+                'test table',
+                'old col',
+                'new col',
+                <<<SQL
+                EXEC sp_rename @objname = N'[test table].[old col]', @newname = N'new col', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'names with unicode characters' => [
+                'test_table',
+                'old_ñ_表',
+                'new_ñ_表',
+                <<<SQL
+                EXEC sp_rename @objname = N'[test_table].[old_ñ_表]', @newname = N'new_ñ_表', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'schema qualified new column name' => [
+                'test_table',
+                'old_col',
+                'dbo.new_col',
+                <<<SQL
+                EXEC sp_rename @objname = N'[test_table].[old_col]', @newname = N'new_col', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'schema qualified table name' => [
+                'dbo.test_table',
+                'old_col',
+                'new_col',
+                <<<SQL
+                EXEC sp_rename @objname = N'[dbo].[test_table].[old_col]', @newname = N'new_col', @objtype = N'COLUMN'
+                SQL,
+            ],
+            'simple names' => [
+                'test_table',
+                'old_col',
+                'new_col',
+                <<<SQL
+                EXEC sp_rename @objname = N'[test_table].[old_col]', @newname = N'new_col', @objtype = N'COLUMN'
+                SQL,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{Closure|string, string}>
      */
     public static function alterColumn(): array

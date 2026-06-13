@@ -87,6 +87,66 @@ final class CommandTest extends BaseCommand
         }
     }
 
+    #[DataProviderExternal(CommandProvider::class, 'renameColumn')]
+    public function testRenameColumnWithQuotedNames(
+        string $tableName,
+        string $oldColumnName,
+        string $newColumnName,
+        string $rawTableName,
+        string $oldRawColumnName,
+        string $newRawColumnName,
+    ): void {
+        $db = $this->getConnection();
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($rawTableName, true) !== null) {
+            $db->createCommand()->dropTable($rawTableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [$oldColumnName => 'integer'],
+        )->execute();
+
+        $tableSchema = $schema->getTableSchema($rawTableName, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table must be created with the expected raw name.',
+        );
+        self::assertNotNull(
+            $tableSchema->getColumn($oldRawColumnName),
+            'Old column must exist before renaming.',
+        );
+        self::assertNull(
+            $tableSchema->getColumn($newRawColumnName),
+            'New column must not exist before renaming.',
+        );
+
+        $db->createCommand()->renameColumn($tableName, $oldColumnName, $newColumnName)->execute();
+
+        $tableSchema = $schema->getTableSchema($rawTableName, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table must exist with the expected raw name after renaming.',
+        );
+        self::assertNull(
+            $tableSchema->getColumn($oldRawColumnName),
+            'Old column must not exist after renaming.',
+        );
+        self::assertNotNull(
+            $tableSchema->getColumn($newRawColumnName),
+            'New column must exist after renaming.',
+        );
+
+        if ($schema->getTableSchema($rawTableName, true) !== null) {
+            $db->createCommand()->dropTable($rawTableName)->execute();
+        }
+    }
+
     public function testBindParamValue(): void
     {
         $db = $this->getConnection();

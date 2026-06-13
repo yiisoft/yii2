@@ -23,6 +23,8 @@ use function count;
 use function implode;
 use function preg_replace;
 use function str_replace;
+use function strrpos;
+use function substr;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -136,17 +138,31 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
+     *
+     * @param string $table The table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param string $oldName The old name of the column. The name will be properly quoted by the method.
+     * @param string $newName The new name of the column. The name will be properly quoted by the method.
+     *
+     * @return string The SQL statement for renaming a DB column.
      */
     public function renameColumn($table, $oldName, $newName)
     {
-        $table = $this->db->quoteTableName($table);
-        $oldName = $this->db->quoteColumnName($oldName);
-        $newName = $this->db->quoteColumnName($newName);
-        return "sp_rename '{$table}.{$oldName}', {$newName}, 'COLUMN'";
+        $schema = $this->db->getSchema();
+
+        $table = str_replace("'", "''", $this->db->quoteTableName($table));
+        $oldName = str_replace("'", "''", $this->db->quoteColumnName($oldName));
+
+        $newName = $this->db->quoteSql($this->db->quoteColumnName($newName));
+
+        if (($pos = strrpos($newName, '].[')) !== false) {
+            $newName = substr($newName, $pos + 2);
+        }
+
+        $newName = str_replace("'", "''", $schema->unquoteSimpleColumnName($newName));
+
+        return <<<SQL
+        EXEC sp_rename @objname = N'{$table}.{$oldName}', @newname = N'{$newName}', @objtype = N'COLUMN'
+        SQL;
     }
 
     /**

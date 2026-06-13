@@ -799,11 +799,16 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public function testRenameColumn(): void
+    #[DataProviderExternal(QueryBuilderProvider::class, 'renameColumn')]
+    public function testRenameColumn(string $table, string $oldName, string $newName, string $expectedSql): void
     {
         $qb = $this->getQueryBuilder();
-        $sql = $qb->renameColumn('test_table', 'old_col', 'new_col');
-        $this->assertSame("sp_rename '[test_table].[old_col]', [new_col], 'COLUMN'", $sql);
+
+        self::assertSame(
+            $expectedSql,
+            $qb->renameColumn($table, $oldName, $newName),
+            'Generated SQL must match the expected batch.',
+        );
     }
 
     public function testSelectExists(): void
