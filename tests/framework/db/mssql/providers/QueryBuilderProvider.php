@@ -170,6 +170,51 @@ final class QueryBuilderProvider
     }
 
     /**
+     * @return array<string, array{string, string, string, mixed, string}>
+     */
+    public static function addDefaultValue(): array
+    {
+        return [
+            'expression default' => [
+                'CN_default',
+                'T_constraints_1',
+                'C_timestamp',
+                new Expression('CURRENT_TIMESTAMP'),
+                <<<SQL
+                ALTER TABLE [T_constraints_1] ADD CONSTRAINT [CN_default] DEFAULT CURRENT_TIMESTAMP FOR [C_timestamp]
+                SQL,
+            ],
+            'false default' => [
+                'CN_default',
+                'T_constraints_1',
+                'C_bit',
+                false,
+                <<<SQL
+                ALTER TABLE [T_constraints_1] ADD CONSTRAINT [CN_default] DEFAULT 0 FOR [C_bit]
+                SQL,
+            ],
+            'integer default' => [
+                'CN_default',
+                'T_constraints_1',
+                'C_default',
+                1,
+                <<<SQL
+                ALTER TABLE [T_constraints_1] ADD CONSTRAINT [CN_default] DEFAULT 1 FOR [C_default]
+                SQL,
+            ],
+            'null default' => [
+                'CN_default',
+                'T_constraints_1',
+                'C_default',
+                null,
+                <<<SQL
+                ALTER TABLE [T_constraints_1] ADD CONSTRAINT [CN_default] DEFAULT NULL FOR [C_default]
+                SQL,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{Closure|string, string}>
      */
     public static function alterColumn(): array

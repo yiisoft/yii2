@@ -651,6 +651,23 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $newData;
     }
 
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addDefaultValue')]
+    public function testAddDefaultValue(
+        string $name,
+        string $table,
+        string $column,
+        mixed $value,
+        string $expected,
+    ): void {
+        $qb = $this->getQueryBuilder(false);
+
+        self::assertSame(
+            $expected,
+            $qb->addDefaultValue($name, $table, $column, $value),
+            'Generated SQL must match the expected DEFAULT constraint statement.',
+        );
+    }
+
     #[DataProviderExternal(QueryBuilderProvider::class, 'alterColumn')]
     public function testAlterColumn(string|Closure $type, string $expected): void
     {

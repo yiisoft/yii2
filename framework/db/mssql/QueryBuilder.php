@@ -249,9 +249,21 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function addDefaultValue($name, $table, $column, $value)
     {
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
-            . $this->db->quoteColumnName($column);
+        $tableName = $this->db->quoteTableName($table);
+        $constraintName = $this->db->quoteColumnName($name);
+
+        $defaultValue = match ($value) {
+            null => 'NULL',
+            false => '0',
+            true => '1',
+            default => (string) $this->db->quoteValue($value),
+        };
+
+        $columnName = $this->db->quoteColumnName($column);
+
+        return <<<SQL
+        ALTER TABLE {$tableName} ADD CONSTRAINT {$constraintName} DEFAULT {$defaultValue} FOR {$columnName}
+        SQL;
     }
 
     /**

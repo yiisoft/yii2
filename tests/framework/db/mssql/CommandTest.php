@@ -216,28 +216,132 @@ final class CommandTest extends BaseCommand
     public function testAddDropDefaultValue(): void
     {
         $db = $this->getConnection(false);
+
         $tableName = 'test_def';
         $name = 'test_def_constraint';
+
         /** @var Schema $schema */
         $schema = $db->getSchema();
 
         if ($schema->getTableSchema($tableName) !== null) {
             $db->createCommand()->dropTable($tableName)->execute();
         }
-        $db->createCommand()->createTable($tableName, [
-            'int1' => 'integer',
-        ])->execute();
+
+        $db->createCommand()->createTable(
+            $tableName,
+            ['int1' => 'integer'],
+        )->execute();
 
         $defaultValues = $schema->getTableDefaultValues($tableName, true);
-        $this->assertEmpty($defaultValues);
 
-        $db->createCommand()->addDefaultValue($name, $tableName, 'int1', 41)->execute();
-        $defaultValues = $schema->getTableDefaultValues($tableName, true);
-        $this->assertMatchesRegularExpression('/^.*41.*$/', $defaultValues[0]->value);
+        self::assertEmpty(
+            $defaultValues,
+            'Default constraints must be empty before adding a default value.',
+        );
 
-        $db->createCommand()->dropDefaultValue($name, $tableName)->execute();
+        $db->createCommand()->addDefaultValue(
+            $name,
+            $tableName,
+            'int1',
+            41,
+        )->execute();
+
         $defaultValues = $schema->getTableDefaultValues($tableName, true);
-        $this->assertEmpty($defaultValues);
+
+        self::assertMatchesRegularExpression(
+            '/^.*41.*$/',
+            $defaultValues[0]->value,
+            'Default constraint definition must contain the integer literal.',
+        );
+
+        $db->createCommand()->dropDefaultValue(
+            $name,
+            $tableName,
+        )->execute();
+
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+
+        self::assertEmpty(
+            $defaultValues,
+            'Default constraints must be empty after dropping the default value.',
+        );
+
+        if ($schema->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'addDefaultValue')]
+    public function testAddDropDefaultValueWithMssqlLiterals(
+        string $tableName,
+        string $name,
+        string $column,
+        string $columnType,
+        mixed $value,
+        string $expectedValuePattern,
+    ): void {
+        $db = $this->getConnection(false);
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [$column => $columnType],
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableDefaultValues($tableName, true),
+            'Default constraints must be empty before adding a default value.',
+        );
+
+        $db->createCommand()->addDefaultValue(
+            $name,
+            $tableName,
+            $column,
+            $value,
+        )->execute();
+
+        $defaultValues = $schema->getTableDefaultValues($tableName, true);
+
+        self::assertCount(
+            1,
+            $defaultValues,
+            'Exactly one default constraint must be created.',
+        );
+        self::assertSame(
+            $name,
+            $defaultValues[0]->name,
+            'Default constraint name must match the requested name.',
+        );
+        self::assertSame(
+            [$column],
+            $defaultValues[0]->columnNames,
+            'Default constraint must be bound to the requested column.',
+        );
+        self::assertMatchesRegularExpression(
+            $expectedValuePattern,
+            $defaultValues[0]->value,
+            'Default constraint definition must contain the expected MSSQL literal.',
+        );
+
+        $db->createCommand()->dropDefaultValue(
+            $name,
+            $tableName,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableDefaultValues($tableName, true),
+            'Default constraints must be empty after dropping the default value.',
+        );
+
+        if ($schema->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
     }
 
     public function testAlterColumn(): void
