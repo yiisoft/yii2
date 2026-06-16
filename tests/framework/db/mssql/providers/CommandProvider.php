@@ -19,6 +19,39 @@ namespace yiiunit\framework\db\mssql\providers;
 final class CommandProvider
 {
     /**
+     * @return array<string, array{string, string, string, string, mixed, string}>
+     */
+    public static function addDefaultValue(): array
+    {
+        return [
+            'false bit default' => [
+                'test_def_bit',
+                'test_def_bit_constraint',
+                'bit1',
+                'bit',
+                false,
+                '/^.*0.*$/',
+            ],
+            'integer default' => [
+                'test_def_int',
+                'test_def_int_constraint',
+                'int1',
+                'integer',
+                41,
+                '/^.*41.*$/',
+            ],
+            'null default' => [
+                'test_def_null',
+                'test_def_null_constraint',
+                'int1',
+                'integer',
+                null,
+                '/^.*NULL.*$/i',
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string}>
      */
     public static function renameTable(): array
