@@ -14,6 +14,7 @@ use Closure;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\QueryBuilder;
 use yii\db\Schema;
 
 /**
@@ -24,6 +25,72 @@ use yii\db\Schema;
  */
 final class QueryBuilderProvider
 {
+    /**
+     * @return array<string, array{string, Closure}>
+     */
+    public static function defaultValuesProvider(): array
+    {
+        return [
+            'add' => [
+                <<<SQL
+                ALTER TABLE [T_constraints_1] ADD CONSTRAINT [CN_default] DEFAULT 0 FOR [C_default]
+                SQL,
+                fn (QueryBuilder $qb): string => $qb->addDefaultValue(
+                    'CN_default',
+                    'T_constraints_1',
+                    'C_default',
+                    0,
+                ),
+            ],
+            'drop' => [
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[T_constraints_1]'
+                DECLARE @constraintName SYSNAME = N'CN_default'
+                DECLARE @dropSql NVARCHAR(MAX)
+
+                SELECT @dropSql = N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name])
+                FROM [sys].[default_constraints] AS [dc]
+                WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName, N'U')
+                    AND [dc].[name] = @constraintName
+
+                IF @dropSql IS NULL
+                BEGIN
+                    THROW 50000, 'Default constraint not found on table.', 1;
+                END
+
+                EXEC (@dropSql)
+                SQL,
+                fn (QueryBuilder $qb): string => $qb->dropDefaultValue(
+                    'CN_default',
+                    'T_constraints_1',
+                ),
+            ],
+            'drop catalog-qualified' => [
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[yiitest].[dbo].[T_constraints_1]'
+                DECLARE @constraintName SYSNAME = N'CN_default'
+                DECLARE @dropSql NVARCHAR(MAX)
+
+                SELECT @dropSql = N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name])
+                FROM [sys].[default_constraints] AS [dc]
+                WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName, N'U')
+                    AND [dc].[name] = @constraintName
+
+                IF @dropSql IS NULL
+                BEGIN
+                    THROW 50000, 'Default constraint not found on table.', 1;
+                END
+
+                EXEC (@dropSql)
+                SQL,
+                fn (QueryBuilder $qb): string => $qb->dropDefaultValue(
+                    'CN_default',
+                    'yiitest.dbo.T_constraints_1',
+                ),
+            ],
+        ];
+    }
+
     /**
      * @return array<string, array{string, string, string}>
      */
@@ -708,6 +775,55 @@ final class QueryBuilderProvider
                     EXEC (@dropCommands)
                 ALTER TABLE [yiitest].[dbo].[foo1] ALTER COLUMN [bar] nvarchar(255)
                 ALTER TABLE [yiitest].[dbo].[foo1] ADD CONSTRAINT [DF_yiitestdbofoo1_bar] DEFAULT 'AbCdE' FOR [bar]
+                SQL,
+            ],
+            'catalog-qualified string with default check and unique constraints' => [
+                'yiitest.dbo.foo1',
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                    ->defaultValue('AbCdE')
+                    ->check('LEN(bar) > 3')
+                    ->unique(),
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[yiitest].[dbo].[foo1]'
+                DECLARE @columnName NVARCHAR(MAX) = N'bar'
+                DECLARE @dropCommands NVARCHAR(MAX)
+
+                SELECT @dropCommands = STRING_AGG(CONVERT(NVARCHAR(MAX), [cons].[sql]), N'; ') WITHIN GROUP (ORDER BY [cons].[ord], [cons].[sql])
+                FROM (
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[default_constraints] AS [dc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[dc].[parent_object_id] AND [c].[column_id]=[dc].[parent_column_id] AND [c].[name]=@columnName
+                    WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName)
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([cc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[check_constraints] AS [cc]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[cc].[parent_object_id] AND [c].[name]=@columnName
+                    WHERE [cc].[parent_object_id] = OBJECT_ID(@tableName)
+                        AND (
+                            [cc].[parent_column_id]=[c].[column_id]
+                            OR EXISTS (
+                                SELECT 1
+                                FROM [sys].[sql_expression_dependencies] AS [sed]
+                                WHERE [sed].[referencing_class]=1 AND [sed].[referencing_id]=[cc].[object_id]
+                                    AND [sed].[referenced_class]=1 AND [sed].[referenced_id]=[cc].[parent_object_id]
+                                    AND [sed].[referenced_minor_id]=[c].[column_id]
+                            )
+                        )
+                    UNION
+                    SELECT N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([kc].[name]) AS [sql], 1 AS [ord]
+                    FROM [sys].[key_constraints] AS [kc]
+                    JOIN [sys].[index_columns] AS [ic] ON [ic].[object_id]=[kc].[parent_object_id] AND [ic].[index_id]=[kc].[unique_index_id]
+                    JOIN [sys].[columns] AS [c] ON [c].[object_id]=[kc].[parent_object_id] AND [c].[column_id]=[ic].[column_id] AND [c].[name]=@columnName
+                    WHERE [kc].[parent_object_id] = OBJECT_ID(@tableName) AND [kc].[type] = N'UQ'
+                ) AS [cons]
+
+                IF @dropCommands IS NOT NULL
+                    EXEC (@dropCommands)
+                ALTER TABLE [yiitest].[dbo].[foo1] ALTER COLUMN [bar] nvarchar(64)
+                ALTER TABLE [yiitest].[dbo].[foo1] ADD CONSTRAINT [DF_yiitestdbofoo1_bar] DEFAULT 'AbCdE' FOR [bar]
+                ALTER TABLE [yiitest].[dbo].[foo1] ADD CONSTRAINT [CK_yiitestdbofoo1_bar] CHECK (LEN(bar) > 3)
+                ALTER TABLE [yiitest].[dbo].[foo1] ADD CONSTRAINT [UQ_yiitestdbofoo1_bar] UNIQUE ([bar])
                 SQL,
             ],
             'schema-qualified plain string type' => [

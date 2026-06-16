@@ -96,7 +96,8 @@ Yii Framework 2 Change Log
 - Bug #20942: Fix MSSQL `yii\db\mssql\QueryBuilder::alterColumn()` to drop column default, check, and unique constraints before the `ALTER COLUMN` statement, allowing column redefinition on constrained columns without duplicate constraint name errors (terabytesoftw)
 - Bug #20943: Fix MSSQL `QueryBuilder::renameTable()` to call `sp_rename` with string parameters and one-part new table names (terabytesoftw)
 - Bug #20944: Fix MSSQL `QueryBuilder::renameColumn()` to pass `sp_rename` named arguments and a one-part new column name (terabytesoftw)
-- Bug: Fix MSSQL `QueryBuilder::addDefaultValue()` to generate valid `DEFAULT NULL` and `DEFAULT 0` SQL for `null` and `false` values (terabytesoftw)
+- Bug #20951: Fix MSSQL `QueryBuilder::addDefaultValue()` to generate valid `DEFAULT NULL` and `DEFAULT 0` SQL for `null` and `false` values (terabytesoftw)
+- Bug #20952: Restrict MSSQL `dropDefaultValue()` to default constraints and cover catalog-qualified `alterColumn()` constraint replacement (terabytesoftw)
 
 2.0.56 under development
 ------------------------

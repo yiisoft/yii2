@@ -12,6 +12,7 @@ namespace yiiunit\framework\db\mssql;
 
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
+use yii\db\Exception;
 use yii\db\IntegrityException;
 use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
@@ -271,6 +272,99 @@ final class CommandTest extends BaseCommand
         }
     }
 
+    public function testDropDefaultValueDoesNotDropNonDefaultConstraints(): void
+    {
+        $db = $this->getConnection(false);
+
+        $tableName = 'test_def_non_default';
+        $defaultName = 'test_def_non_default_constraint';
+        $checkName = 'test_def_non_default_check';
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            ['int1' => 'integer'],
+        )->execute();
+        $db->createCommand()->addDefaultValue(
+            $defaultName,
+            $tableName,
+            'int1',
+            41,
+        )->execute();
+        $db->createCommand()->addCheck(
+            $checkName,
+            $tableName,
+            '[[int1]] >= 0',
+        )->execute();
+
+        $db->createCommand()->dropDefaultValue(
+            $defaultName,
+            $tableName,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableDefaultValues($tableName, true),
+            'The default constraint must be removable by its own name.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableChecks($tableName, true),
+            'The CHECK constraint must remain after dropping only the default constraint.',
+        );
+
+        if ($schema->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+    }
+
+    public function testThrowExceptionWhenDropDefaultValueUsesNonDefaultConstraint(): void
+    {
+        $db = $this->getConnection(false);
+
+        $tableName = 'test_def_non_default';
+        $defaultName = 'test_def_non_default_constraint';
+        $checkName = 'test_def_non_default_check';
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            ['int1' => 'integer'],
+        )->execute();
+        $db->createCommand()->addDefaultValue(
+            $defaultName,
+            $tableName,
+            'int1',
+            41,
+        )->execute();
+        $db->createCommand()->addCheck(
+            $checkName,
+            $tableName,
+            '[[int1]] >= 0',
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessageMatches(
+            '/Default constraint not found on table\./',
+        );
+
+        $db->createCommand()->dropDefaultValue(
+            $checkName,
+            $tableName,
+        )->execute();
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'addDefaultValue')]
     public function testAddDropDefaultValueWithMssqlLiterals(
         string $tableName,
@@ -369,7 +463,10 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->notNull(),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
+                ->notNull(),
         )->execute();
 
         $tableSchema = $db->getTableSchema('foo1', true);
@@ -392,7 +489,11 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->null()->check('LEN(bar) > 5'),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
+                ->null()
+                ->check('LEN(bar) > 5'),
         )->execute();
 
         $tableSchema = $db->getTableSchema('foo1', true);
@@ -424,7 +525,10 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 5'),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                ->check('LEN(bar) > 5'),
         )->execute();
 
         $this->expectException(IntegrityException::class);
@@ -443,7 +547,10 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->unique(),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                ->unique(),
         )->execute();
 
         self::assertSame(
@@ -500,10 +607,15 @@ final class CommandTest extends BaseCommand
 
         $table = "{$catalogName}.dbo.foo1";
 
+        $quotedTable = $db->quoteTableName($table);
+
         $db->createCommand()->alterColumn(
             $table,
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->defaultValue('initial'),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
+                ->defaultValue('initial'),
         )->execute();
 
         $tableSchema = $db->getTableSchema($table, true);
@@ -527,7 +639,10 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             $table,
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INTEGER)->defaultValue(0),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                ->defaultValue(0),
         )->execute();
 
         $tableSchema = $db->getTableSchema($table, true);
@@ -538,18 +653,195 @@ final class CommandTest extends BaseCommand
             'Type change must succeed with a default bound.',
         );
 
+        /** @var Schema $schema */
         $schema = $db->getSchema();
 
-        self::assertInstanceOf(
-            Schema::class,
-            $schema,
-            'Schema must be available.',
-        );
         self::assertCount(
             1,
             $schema->getTableDefaultValues($table, true),
             'Old default constraint must be replaced, not duplicated.',
         );
+
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 96)
+                ->defaultValue('catalog')
+                ->check('LEN(bar) > 3')
+                ->unique(),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema($table, true);
+
+        self::assertSame(
+            'nvarchar(96)',
+            $tableSchema->getColumn('bar')->dbType,
+            'Column type must reflect the catalog-qualified ALTER COLUMN definition.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableDefaultValues($table, true),
+            'Exactly one default constraint must be created for the catalog-qualified table.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableChecks($table, true),
+            'Exactly one check constraint must be created for the catalog-qualified table.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableUniques($table, true),
+            'Exactly one unique constraint must be created for the catalog-qualified table.',
+        );
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                INSERT INTO {$quotedTable} DEFAULT VALUES
+                SQL,
+            )->execute(),
+            'The catalog-qualified default constraint must be usable by INSERT.',
+        );
+        self::assertSame(
+            'catalog',
+            $db->createCommand(
+                <<<SQL
+                SELECT TOP 1 [bar] FROM {$quotedTable} ORDER BY [id] DESC
+                SQL,
+            )->queryScalar(),
+            'The default constraint must populate the column value.',
+        );
+
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
+                ->defaultValue('changed')
+                ->check('LEN(bar) > 5')
+                ->unique(),
+        )->execute();
+
+        $tableSchema = $db->getTableSchema($table, true);
+
+        self::assertSame(
+            'nvarchar(128)',
+            $tableSchema->getColumn('bar')->dbType,
+            'A second catalog-qualified ALTER COLUMN must change the column type.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableDefaultValues($table, true),
+            'The old default constraint must be replaced, not duplicated.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableChecks($table, true),
+            'The old check constraint must be replaced, not duplicated.',
+        );
+        self::assertCount(
+            1,
+            $schema->getTableUniques($table, true),
+            'The old unique constraint must be replaced, not duplicated.',
+        );
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                INSERT INTO {$quotedTable} DEFAULT VALUES
+                SQL,
+            )->execute(),
+            'The replacement default constraint must be usable by INSERT.',
+        );
+        self::assertSame(
+            'changed',
+            $db->createCommand(
+                <<<SQL
+                SELECT TOP 1 [bar] FROM {$quotedTable} ORDER BY [id] DESC
+                SQL,
+            )->queryScalar(),
+            'The replacement default constraint must populate the column value.',
+        );
+    }
+
+    public function testThrowIntegrityExceptionWhenInsertViolatesCatalogQualifiedAlterColumnCheckConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $catalogName = (string) $db->createCommand(
+            <<<SQL
+            SELECT DB_NAME()
+            SQL
+        )->queryScalar();
+
+        $table = "{$catalogName}.dbo.foo1";
+        $quotedTable = $db->quoteTableName($table);
+
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 96)
+                ->defaultValue('catalog')
+                ->check('LEN(bar) > 3')
+                ->unique(),
+        )->execute();
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessageMatches(
+            '/CHECK constraint/i',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO {$quotedTable} ([bar]) VALUES ('abc')
+            SQL,
+        )->execute();
+    }
+
+    public function testThrowIntegrityExceptionWhenInsertViolatesCatalogQualifiedAlterColumnReplacementCheckConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $catalogName = (string) $db->createCommand(
+            <<<SQL
+            SELECT DB_NAME()
+            SQL
+        )->queryScalar();
+
+        $table = "{$catalogName}.dbo.foo1";
+        $quotedTable = $db->quoteTableName($table);
+
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 96)
+                ->defaultValue('catalog')
+                ->check('LEN(bar) > 3')
+                ->unique(),
+        )->execute();
+        $db->createCommand()->alterColumn(
+            $table,
+            'bar',
+            $db->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
+                ->defaultValue('changed')
+                ->check('LEN(bar) > 5')
+                ->unique(),
+        )->execute();
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessageMatches(
+            '/CHECK constraint/i',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO {$quotedTable} ([bar]) VALUES ('abcd')
+            SQL,
+        )->execute();
     }
 
     public function testAlterColumnReplacesDefaultValue(): void
@@ -559,12 +851,18 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)->defaultValue('initial'),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
+                ->defaultValue('initial'),
         )->execute();
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_INTEGER)->defaultValue(0),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                ->defaultValue(0),
         )->execute();
 
         $tableSchema = $db->getTableSchema('foo1', true);
@@ -596,12 +894,18 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 5'),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                ->check('LEN(bar) > 5'),
         )->execute();
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->check('LEN(bar) > 3'),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                ->check('LEN(bar) > 3'),
         )->execute();
 
         $schema = $db->getSchema();
@@ -634,12 +938,18 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)->unique(),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                ->unique(),
         )->execute();
         $db->createCommand()->alterColumn(
             'foo1',
             'bar',
-            $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 32)->unique(),
+            $db
+                ->getSchema()
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 32)
+                ->unique(),
         )->execute();
 
         $tableSchema = $db->getTableSchema('foo1', true);
