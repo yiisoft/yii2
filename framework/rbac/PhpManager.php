@@ -180,7 +180,7 @@ class PhpManager extends BaseManager
         }
 
         if ($parent->name === $child->name) {
-            throw new InvalidArgumentException("Cannot add '{$parent->name} ' as a child of itself.");
+            throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
         if ($parent instanceof Permission && $child instanceof Role) {
             throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
