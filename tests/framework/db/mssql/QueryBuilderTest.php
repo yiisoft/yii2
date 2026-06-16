@@ -668,6 +668,12 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
+    #[DataProviderExternal(QueryBuilderProvider::class, 'defaultValuesProvider')]
+    public function testAddDropDefaultValue(string $sql, Closure $builder): void
+    {
+        parent::testAddDropDefaultValue($sql, $builder);
+    }
+
     #[DataProviderExternal(QueryBuilderProvider::class, 'alterColumn')]
     public function testAlterColumn(string|Closure $type, string $expected): void
     {

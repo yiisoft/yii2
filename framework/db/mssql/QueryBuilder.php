@@ -268,11 +268,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-default-constraints-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-table-transact-sql
      */
     public function dropDefaultValue($name, $table)
     {
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+        $tableName = str_replace("'", "''", $this->db->quoteTableName($table));
+        $constraintName = str_replace("'", "''", $name);
+
+        return <<<SQL
+        DECLARE @tableName NVARCHAR(MAX) = N'{$tableName}'
+        DECLARE @constraintName SYSNAME = N'{$constraintName}'
+        DECLARE @dropSql NVARCHAR(MAX)
+
+        SELECT @dropSql = N'ALTER TABLE ' + @tableName + N' DROP CONSTRAINT ' + QUOTENAME([dc].[name])
+        FROM [sys].[default_constraints] AS [dc]
+        WHERE [dc].[parent_object_id] = OBJECT_ID(@tableName, N'U')
+            AND [dc].[name] = @constraintName
+
+        IF @dropSql IS NULL
+        BEGIN
+            THROW 50000, 'Default constraint not found on table.', 1;
+        END
+
+        EXEC (@dropSql)
+        SQL;
     }
 
     /**
