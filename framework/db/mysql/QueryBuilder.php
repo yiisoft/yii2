@@ -161,8 +161,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * The sequence will be reset such that the primary key of the next new row inserted will have the specified value
      * or `1`.
      * @param string $tableName The name of the table whose primary key sequence will be reset.
-     * @param int|string|null $value The integer or numeric string value for the primary key of the next new row
-     * inserted. If this is not set, the next new row's primary key will have a value `1`.
+     * @param int|null $value The integer value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value `1`.
      *
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      *

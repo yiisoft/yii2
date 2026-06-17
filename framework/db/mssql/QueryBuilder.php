@@ -302,7 +302,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * or the next value after the current maximum identity value.
      *
      * @param string $tableName The name of the table whose primary key sequence will be reset.
-     * @param int|string|null $value The integer or numeric string value for the primary key of the next new row inserted.
+     * @param int|null $value The integer value for the primary key of the next new row inserted.
      * If this is not set, the next new row's primary key will have the next value after the current maximum identity
      * value.
      *

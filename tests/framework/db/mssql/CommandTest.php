@@ -444,7 +444,7 @@ final class CommandTest extends BaseCommand
         string $rawTableName,
         int $rowsBeforeReset,
         bool $deleteBeforeReset,
-        int|string|null $value,
+        int|null $value,
         int $expectedId,
     ): void {
         $db = $this->getConnection(false);

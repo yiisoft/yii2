@@ -586,7 +586,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'resetSequence')]
-    public function testResetSequence(string $table, int|string|null $value, string $expected): void
+    public function testResetSequence(string $table, int|null $value, string $expected): void
     {
         $qb = $this->getQueryBuilder();
 

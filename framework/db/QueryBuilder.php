@@ -1036,8 +1036,8 @@ class QueryBuilder extends \yii\base\BaseObject
      * or the maximum existing value `+1`.
      *
      * @param string $tableName The name of the table whose primary key sequence will be reset.
-     * @param int|string|null $value The integer or numeric string value for the primary key of the next new row
-     * inserted. If this is not set, the next new row's primary key will have the maximum existing value `+1`.
+     * @param int|null $value The integer value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value `+1`.
      *
      * @throws NotSupportedException if this is not supported by the underlying DBMS.
      *
@@ -1057,8 +1057,8 @@ class QueryBuilder extends \yii\base\BaseObject
      * maximum existing value `+1`.
      *
      * @param string $table The name of the table whose primary key sequence is reset.
-     * @param int|string|null $value The integer or numeric string value for the primary key of the next new row
-     * inserted. If this is not set, the next new row's primary key will have the maximum existing value `+1`.
+     * @param int|null $value The integer value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the maximum existing value `+1`.
      *
      * @throws NotSupportedException if this is not supported by the underlying DBMS
      *

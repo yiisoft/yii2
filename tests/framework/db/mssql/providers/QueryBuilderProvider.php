@@ -92,7 +92,7 @@ final class QueryBuilderProvider
     }
 
     /**
-     * @return array<string, array{string, int|string|null, string}>
+     * @return array<string, array{string, int|null, string}>
      */
     public static function resetSequence(): array
     {
@@ -392,12 +392,12 @@ final class QueryBuilderProvider
                 EXEC (@checkIdentSql)
                 SQL,
             ],
-            'explicit numeric string next value' => [
+            'explicit maximum integer next value' => [
                 'item',
-                '6',
+                9223372036854775807,
                 <<<SQL
                 DECLARE @tableName NVARCHAR(MAX) = N'[item]'
-                DECLARE @requestedNextValue DECIMAL(38, 0) = 6
+                DECLARE @requestedNextValue DECIMAL(38, 0) = 9223372036854775807
                 DECLARE @identityColumn SYSNAME
                 DECLARE @seedValue DECIMAL(38, 0)
                 DECLARE @incrementValue DECIMAL(38, 0)

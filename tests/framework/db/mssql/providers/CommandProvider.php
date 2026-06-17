@@ -52,7 +52,7 @@ final class CommandProvider
     }
 
     /**
-     * @return array<string, array{string, string, int, bool, int|string|null, int}>
+     * @return array<string, array{string, string, int, bool, int|null, int}>
      */
     public static function resetSequence(): array
     {
@@ -73,6 +73,14 @@ final class CommandProvider
                 5,
                 5,
             ],
+            'new table with maximum integer reset' => [
+                'yii2_mssql_reset_sequence_int_max',
+                'yii2_mssql_reset_sequence_int_max',
+                0,
+                false,
+                2147483647,
+                2147483647,
+            ],
             'used table with default reset' => [
                 'yii2_mssql_reset_sequence_used_default',
                 'yii2_mssql_reset_sequence_used_default',
@@ -88,14 +96,6 @@ final class CommandProvider
                 false,
                 5,
                 5,
-            ],
-            'used table with numeric string reset' => [
-                'yii2_mssql_reset_sequence_used_numeric_string',
-                'yii2_mssql_reset_sequence_used_numeric_string',
-                1,
-                false,
-                '6',
-                6,
             ],
             'deleted table with default reset' => [
                 'yii2_mssql_reset_sequence_deleted_default',
