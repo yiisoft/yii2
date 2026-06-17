@@ -52,6 +52,87 @@ final class CommandProvider
     }
 
     /**
+     * @return array<string, array{string, string, int, bool, int|null, int}>
+     */
+    public static function resetSequence(): array
+    {
+        return [
+            'new table with default reset' => [
+                'yii2_mssql_reset_sequence_new_default',
+                'yii2_mssql_reset_sequence_new_default',
+                0,
+                false,
+                null,
+                1,
+            ],
+            'new table with explicit reset and quoted name' => [
+                '[yii2_mssql_reset_sequence_quoted]',
+                'yii2_mssql_reset_sequence_quoted',
+                0,
+                false,
+                5,
+                5,
+            ],
+            'new table with maximum integer reset' => [
+                'yii2_mssql_reset_sequence_int_max',
+                'yii2_mssql_reset_sequence_int_max',
+                0,
+                false,
+                2147483647,
+                2147483647,
+            ],
+            'used table with default reset' => [
+                'yii2_mssql_reset_sequence_used_default',
+                'yii2_mssql_reset_sequence_used_default',
+                2,
+                false,
+                null,
+                3,
+            ],
+            'used table with explicit reset' => [
+                'yii2_mssql_reset_sequence_used_explicit',
+                'yii2_mssql_reset_sequence_used_explicit',
+                1,
+                false,
+                5,
+                5,
+            ],
+            'deleted table with default reset' => [
+                'yii2_mssql_reset_sequence_deleted_default',
+                'yii2_mssql_reset_sequence_deleted_default',
+                1,
+                true,
+                null,
+                1,
+            ],
+            'deleted table with explicit reset and single quote name' => [
+                "yii2_mssql_reset_sequence_quote'",
+                "yii2_mssql_reset_sequence_quote'",
+                1,
+                true,
+                5,
+                5,
+            ],
+            'new table with explicit reset and spaces' => [
+                'yii2 mssql reset sequence',
+                'yii2 mssql reset sequence',
+                0,
+                false,
+                5,
+                5,
+            ],
+            'new table with explicit reset and unicode characters' => [
+                'yii2_mssql_reset_sequence_ñ_表',
+                'yii2_mssql_reset_sequence_ñ_表',
+                0,
+                false,
+                5,
+                5,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string}>
      */
     public static function renameTable(): array
