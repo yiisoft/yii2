@@ -92,6 +92,428 @@ final class QueryBuilderProvider
     }
 
     /**
+     * @return array<string, array{string, int|string|null, string}>
+     */
+    public static function resetSequence(): array
+    {
+        return [
+            'already quoted table name' => [
+                '[item]',
+                2,
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = 2
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+            'catalog-qualified table name' => [
+                'yiitest.dbo.item',
+                null,
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[yiitest].[dbo].[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = NULL
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [yiitest].[sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+            'default next value from existing rows' => [
+                'item',
+                null,
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = NULL
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+            'explicit first value after identity use' => [
+                'item',
+                1,
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = 1
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+            'explicit next value' => [
+                'item',
+                4,
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = 4
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+            'explicit numeric string next value' => [
+                'item',
+                '6',
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = 6
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+            'schema-qualified table name' => [
+                'dbo.item',
+                7,
+                <<<SQL
+                DECLARE @tableName NVARCHAR(MAX) = N'[dbo].[item]'
+                DECLARE @requestedNextValue DECIMAL(38, 0) = 7
+                DECLARE @identityColumn SYSNAME
+                DECLARE @seedValue DECIMAL(38, 0)
+                DECLARE @incrementValue DECIMAL(38, 0)
+                DECLARE @lastValue DECIMAL(38, 0)
+                DECLARE @maxValue DECIMAL(38, 0)
+                DECLARE @reseedValue DECIMAL(38, 0)
+                DECLARE @maxSql NVARCHAR(MAX)
+                DECLARE @checkIdentSql NVARCHAR(MAX)
+
+                SELECT
+                    @identityColumn = [name],
+                    @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                    @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                    @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+                FROM [sys].[identity_columns]
+                WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+                IF @identityColumn IS NULL
+                BEGIN
+                    THROW 50000, 'Identity column not found on table.', 1;
+                END
+
+                SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                    + QUOTENAME(@identityColumn)
+                    + N')) FROM '
+                    + @tableName
+
+                EXEC sp_executesql
+                    @maxSql,
+                    N'@maxValue DECIMAL(38, 0) OUTPUT',
+                    @maxValue OUTPUT
+
+                SET @reseedValue = CASE
+                    WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                        THEN @requestedNextValue - @incrementValue
+                    WHEN @requestedNextValue IS NOT NULL
+                        THEN @requestedNextValue
+                    WHEN @maxValue IS NOT NULL
+                        THEN @maxValue
+                    WHEN @lastValue IS NOT NULL
+                        THEN @seedValue - @incrementValue
+                    ELSE @seedValue
+                END
+
+                SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                    + REPLACE(@tableName, '''', '''''')
+                    + N''', RESEED, '
+                    + CONVERT(NVARCHAR(50), @reseedValue)
+                    + N')'
+
+                EXEC (@checkIdentSql)
+                SQL,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string}>
      */
     public static function renameTable(): array

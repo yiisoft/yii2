@@ -15,7 +15,6 @@ use yii\base\NotSupportedException;
 use yii\db\conditions\InCondition;
 use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
-use yii\db\Query;
 
 use function array_flip;
 use function array_intersect_key;
@@ -298,36 +297,95 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
-     * The sequence will be reset such that the primary key of the next new row inserted
-     * will have the specified value or 1.
-     * @param string $tableName the name of the table whose primary key sequence will be reset
-     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value 1.
-     * @return string the SQL statement for resetting sequence
+     *
+     * The sequence will be reset such that the primary key of the next new row inserted will have the specified value
+     * or the next value after the current maximum identity value.
+     *
+     * @param string $tableName The name of the table whose primary key sequence will be reset.
+     * @param int|string|null $value The integer or numeric string value for the primary key of the next new row inserted.
+     * If this is not set, the next new row's primary key will have the next value after the current maximum identity
+     * value.
+     *
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
+     *
+     * @return string The SQL statement for resetting sequence.
+     *
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-checkident-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-identity-columns-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/functions/ident-seed-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/functions/ident-incr-transact-sql
      */
     public function resetSequence($tableName, $value = null)
     {
         $table = $this->db->getTableSchema($tableName);
-        if ($table !== null && $table->sequenceName !== null) {
-            $tableName = $this->db->quoteTableName($tableName);
 
-            if ($value === null || $value === 1) {
-                $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $subSql = (new Query())
-                    ->select('last_value')
-                    ->from('sys.identity_columns')
-                    ->where(['object_id' => new Expression("OBJECT_ID('{$tableName}')")])
-                    ->andWhere(['IS NOT', 'last_value', null])
-                    ->createCommand($this->db)
-                    ->getRawSql();
-                $sql = "SELECT COALESCE(MAX({$key}), CASE WHEN EXISTS({$subSql}) THEN 0 ELSE 1 END) FROM {$tableName}";
-                $value = $this->db->createCommand($sql)->queryScalar();
-            } else {
-                $value = (int) $value;
+        if ($table !== null && $table->sequenceName !== null) {
+            $quotedTableName = $this->db->quoteTableName($tableName);
+
+            $tableNameLiteral = str_replace("'", "''", $quotedTableName);
+
+            $requestedNextValue = $value === null ? 'NULL' : (string) (int) $value;
+            $systemCatalogName = '[sys]';
+
+            if ($table instanceof TableSchema && $table->catalogName !== null) {
+                $systemCatalogName = $this->db->getSchema()->quoteSimpleTableName($table->catalogName) . '.[sys]';
             }
 
-            return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
+            return <<<SQL
+            DECLARE @tableName NVARCHAR(MAX) = N'{$tableNameLiteral}'
+            DECLARE @requestedNextValue DECIMAL(38, 0) = {$requestedNextValue}
+            DECLARE @identityColumn SYSNAME
+            DECLARE @seedValue DECIMAL(38, 0)
+            DECLARE @incrementValue DECIMAL(38, 0)
+            DECLARE @lastValue DECIMAL(38, 0)
+            DECLARE @maxValue DECIMAL(38, 0)
+            DECLARE @reseedValue DECIMAL(38, 0)
+            DECLARE @maxSql NVARCHAR(MAX)
+            DECLARE @checkIdentSql NVARCHAR(MAX)
+
+            SELECT
+                @identityColumn = [name],
+                @seedValue = CONVERT(DECIMAL(38, 0), [seed_value]),
+                @incrementValue = CONVERT(DECIMAL(38, 0), [increment_value]),
+                @lastValue = CONVERT(DECIMAL(38, 0), [last_value])
+            FROM {$systemCatalogName}.[identity_columns]
+            WHERE [object_id] = OBJECT_ID(@tableName, N'U')
+
+            IF @identityColumn IS NULL
+            BEGIN
+                THROW 50000, 'Identity column not found on table.', 1;
+            END
+
+            SET @maxSql = N'SELECT @maxValue = CONVERT(DECIMAL(38, 0), MAX('
+                + QUOTENAME(@identityColumn)
+                + N')) FROM '
+                + @tableName
+
+            EXEC sp_executesql
+                @maxSql,
+                N'@maxValue DECIMAL(38, 0) OUTPUT',
+                @maxValue OUTPUT
+
+            SET @reseedValue = CASE
+                WHEN @requestedNextValue IS NOT NULL AND (@maxValue IS NOT NULL OR @lastValue IS NOT NULL)
+                    THEN @requestedNextValue - @incrementValue
+                WHEN @requestedNextValue IS NOT NULL
+                    THEN @requestedNextValue
+                WHEN @maxValue IS NOT NULL
+                    THEN @maxValue
+                WHEN @lastValue IS NOT NULL
+                    THEN @seedValue - @incrementValue
+                ELSE @seedValue
+            END
+
+            SET @checkIdentSql = N'DBCC CHECKIDENT (N'''
+                + REPLACE(@tableName, '''', '''''')
+                + N''', RESEED, '
+                + CONVERT(NVARCHAR(50), @reseedValue)
+                + N')'
+
+            EXEC (@checkIdentSql)
+            SQL;
         } elseif ($table === null) {
             throw new InvalidArgumentException("Table not found: $tableName");
         }

@@ -585,17 +585,18 @@ final class QueryBuilderTest extends BaseQueryBuilder
         ];
     }
 
-    public function testResetSequence(): void
+    #[DataProviderExternal(QueryBuilderProvider::class, 'resetSequence')]
+    public function testResetSequence(string $table, int|string|null $value, string $expected): void
     {
         $qb = $this->getQueryBuilder();
 
-        $expected = "DBCC CHECKIDENT ('[item]', RESEED, 5)";
-        $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $sql = $value === null ? $qb->resetSequence($table) : $qb->resetSequence($table, $value);
 
-        $expected = "DBCC CHECKIDENT ('[item]', RESEED, 4)";
-        $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        self::assertSame(
+            $expected,
+            $sql,
+            'Generated SQL must reseed SQL Server so the next identity value matches the requested value.',
+        );
     }
 
     public static function upsertProvider(): array
