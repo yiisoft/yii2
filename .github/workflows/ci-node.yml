@@ -1,3 +1,6 @@
+permissions:
+  contents: read
+
 name: build-node
 
 on:
@@ -39,16 +42,21 @@ concurrency:
 jobs:
   test:
     name: NPM 10 on ubuntu-22.04
+    permissions:
+      contents: read
+      pull-requests: write
 
     runs-on: ubuntu-22.04
 
     steps:
       - name: Monitor action permissions.
         if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@v1
+        uses: GitHubSecurityLab/actions-permissions/monitor@bf82d13b9b10051d224345ab9184f5ede0a94289
 
       - name: Checkout.
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
 
       - name: Install dependencies.
         run: composer update $DEFAULT_COMPOSER_FLAGS
@@ -57,7 +65,7 @@ jobs:
         run: composer require "bower-asset/jquery:3.6.*@stable"
 
       - name: Install node.js.
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: 20
 

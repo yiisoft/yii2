@@ -3,7 +3,6 @@ name: build
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   pull_request: &ignore-paths
@@ -57,7 +56,7 @@ jobs:
 
     services: &memcached-service
       memcached:
-        image: memcached:latest
+        image: memcached:1
         ports:
           - 11211:11211
         options: >-
@@ -73,7 +72,9 @@ jobs:
 
     steps: &build-steps
       - name: Checkout.
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        with:
+          persist-credentials: false
 
       - name: Generate french locale.
         run: sudo locale-gen fr_FR.UTF-8
