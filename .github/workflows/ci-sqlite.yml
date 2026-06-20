@@ -36,7 +36,7 @@ on:
 jobs:
   tests:
     name: SQLite tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/phpunit.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/phpunit.yml@master
     with:
       concurrency-group: sqlite-${{ github.ref }}
       coverage-driver: xdebug
@@ -50,7 +50,7 @@ jobs:
 
   tests-dev:
     name: SQLite tests
-    uses: yiisoft/yii2-actions/.github/workflows/phpunit.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/phpunit.yml@master
     with:
       concurrency-group: sqlite-dev-${{ github.ref }}
       coverage-driver: none
