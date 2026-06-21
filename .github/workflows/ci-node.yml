@@ -49,9 +49,6 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Monitor action permissions.
-        if: runner.os != 'Windows'
-        uses: GitHubSecurityLab/actions-permissions/monitor@bf82d13b9b10051d224345ab9184f5ede0a94289
 
       - name: Checkout.
         uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
