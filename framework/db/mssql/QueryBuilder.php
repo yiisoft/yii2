@@ -325,11 +325,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $tableNameLiteral = str_replace("'", "''", $quotedTableName);
 
             $requestedNextValue = $value === null ? 'NULL' : (string) (int) $value;
-            $systemCatalogName = '[sys]';
 
-            if ($table instanceof TableSchema && $table->catalogName !== null) {
-                $systemCatalogName = $this->db->getSchema()->quoteSimpleTableName($table->catalogName) . '.[sys]';
-            }
+            $systemCatalogName = $this->qualifiedSystemCatalog(
+                $table instanceof TableSchema ? $table->catalogName : null,
+            );
 
             return <<<SQL
             DECLARE @tableName NVARCHAR(MAX) = N'{$tableNameLiteral}'
@@ -394,29 +393,68 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table the table name.
-     * @return string the SQL statement for checking integrity
+     * Builds a SQL statement for enabling or disabling integrity checks on table constraints.
+     *
+     * Resolves the table and schema names without loading metadata, so the statement is built without opening a
+     * database connection. A single table yields a direct `ALTER TABLE` statement; an empty table targets every base
+     * table in the schema, enumerated server-side from `sys.tables` (views excluded) and run in one batch.
+     *
+     * Enabling uses `WITH CHECK CHECK CONSTRAINT ALL`, re-validating existing rows and marking the constraints
+     * trusted; disabling uses `NOCHECK CONSTRAINT ALL`.
+     *
+     * @param bool $check Whether to enable (`true`) or disable (`false`) the integrity checks.
+     * @param string $schema The schema of the tables. Defaults to an empty string, meaning the default schema.
+     * @param string $table The table name. Defaults to an empty string, meaning every table in the schema.
+     *
+     * @return string The SQL statement for enabling or disabling the integrity checks.
+     *
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-table-transact-sql
+     * @see https://learn.microsoft.com/en-us/sql/relational-databases/system-catalog-views/sys-tables-transact-sql
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        /** @var Schema $dbSchema */
-        $dbSchema = $this->db->getSchema();
-        $enable = $check ? 'CHECK' : 'NOCHECK';
-        $schema = $schema ?: $dbSchema->defaultSchema;
-        $tableNames = $this->db->getTableSchema($table) ? [$table] : $dbSchema->getTableNames($schema);
-        $viewNames = $dbSchema->getViewNames($schema);
-        $tableNames = array_diff($tableNames, $viewNames);
-        $command = '';
+        $constraintCheck = $check ? 'WITH CHECK CHECK' : 'NOCHECK';
 
-        foreach ($tableNames as $tableName) {
-            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
-            $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
+        if ($table !== '') {
+            $tableName = $this->db->quoteTableName($schema === '' ? $table : "{$schema}.{$table}");
+
+            return "ALTER TABLE {$tableName} {$constraintCheck} CONSTRAINT ALL";
         }
 
-        return $command;
+        /** @var Schema $dbSchema */
+        $dbSchema = $this->db->getSchema();
+
+        [$catalogName, $schemaName] = $dbSchema->resolveRawCatalogSchemaName($schema);
+        $systemCatalog = $this->qualifiedSystemCatalog($catalogName);
+
+        $catalogNameLiteral = $catalogName === null ? 'NULL' : "N'" . str_replace("'", "''", $catalogName) . "'";
+
+        $schemaNameLiteral = "N'" . str_replace("'", "''", $schemaName) . "'";
+
+        return <<<SQL
+        DECLARE @catalogName SYSNAME = {$catalogNameLiteral}
+        DECLARE @schemaName SYSNAME = {$schemaNameLiteral}
+        DECLARE @sql NVARCHAR(MAX)
+
+        SELECT @sql = STRING_AGG(
+            CONVERT(
+                NVARCHAR(MAX),
+                N'ALTER TABLE '
+                    + COALESCE(QUOTENAME(@catalogName) + N'.', N'')
+                    + QUOTENAME(@schemaName)
+                    + N'.'
+                    + QUOTENAME([t].[name])
+                    + N' {$constraintCheck} CONSTRAINT ALL'
+            ),
+            N'; '
+        )
+        FROM {$systemCatalog}.[tables] AS [t]
+        INNER JOIN {$systemCatalog}.[schemas] AS [s] ON [s].[schema_id] = [t].[schema_id]
+        WHERE [s].[name] = @schemaName
+
+        IF @sql IS NOT NULL
+            EXEC (@sql)
+        SQL;
     }
 
      /**
@@ -833,5 +871,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return parent::buildWithQueries($withs, $params);
+    }
+
+    /**
+     * Returns the `[sys]` system catalog name, optionally qualified by the database catalog.
+     *
+     * @param string|null $catalogName The database catalog name, or `null` to target the current database.
+     *
+     * @return string The `[sys]` schema name, prefixed with the quoted catalog when one is provided.
+     */
+    private function qualifiedSystemCatalog(?string $catalogName): string
+    {
+        return $catalogName === null
+            ? '[sys]'
+            : $this->db->getSchema()->quoteSimpleTableName($catalogName) . '.[sys]';
     }
 }

@@ -19,6 +19,17 @@ namespace yiiunit\framework\db\mssql\providers;
 final class CommandProvider
 {
     /**
+     * @return array<string, array{string}>
+     */
+    public static function checkIntegrity(): array
+    {
+        return [
+            'catalog-qualified table name' => ['yiitest.dbo.T_constraints_3'],
+            'simple table name' => ['T_constraints_3'],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string, mixed, string}>
      */
     public static function addDefaultValue(): array

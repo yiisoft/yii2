@@ -47,7 +47,7 @@ final class SchemaTest extends BaseSchema
             Schema::class . ' does not support resolving table names.',
         );
 
-        $this->invokeMethod($schema, 'resolveTableName', ['profile']);
+        $schema->resolveRawTableName('profile');
     }
 
     public function testCurrentTimestampLowercaseDefaultValue(): void
