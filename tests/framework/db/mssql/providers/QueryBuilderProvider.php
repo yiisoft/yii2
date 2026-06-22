@@ -92,6 +92,142 @@ final class QueryBuilderProvider
     }
 
     /**
+     * @return array<string, array{bool, string, string, string}>
+     */
+    public static function checkIntegrity(): array
+    {
+        return [
+            'all tables, catalog-qualified schema, enable' => [
+                true,
+                'yiitest.dbo',
+                '',
+                <<<SQL
+                DECLARE @catalogName SYSNAME = N'yiitest'
+                DECLARE @schemaName SYSNAME = N'dbo'
+                DECLARE @sql NVARCHAR(MAX)
+
+                SELECT @sql = STRING_AGG(
+                    CONVERT(
+                        NVARCHAR(MAX),
+                        N'ALTER TABLE '
+                            + COALESCE(QUOTENAME(@catalogName) + N'.', N'')
+                            + QUOTENAME(@schemaName)
+                            + N'.'
+                            + QUOTENAME([t].[name])
+                            + N' WITH CHECK CHECK CONSTRAINT ALL'
+                    ),
+                    N'; '
+                )
+                FROM [yiitest].[sys].[tables] AS [t]
+                INNER JOIN [yiitest].[sys].[schemas] AS [s] ON [s].[schema_id] = [t].[schema_id]
+                WHERE [s].[name] = @schemaName
+
+                IF @sql IS NOT NULL
+                    EXEC (@sql)
+                SQL,
+            ],
+            'all tables, default schema, disable' => [
+                false,
+                '',
+                '',
+                <<<SQL
+                DECLARE @catalogName SYSNAME = NULL
+                DECLARE @schemaName SYSNAME = N'dbo'
+                DECLARE @sql NVARCHAR(MAX)
+
+                SELECT @sql = STRING_AGG(
+                    CONVERT(
+                        NVARCHAR(MAX),
+                        N'ALTER TABLE '
+                            + COALESCE(QUOTENAME(@catalogName) + N'.', N'')
+                            + QUOTENAME(@schemaName)
+                            + N'.'
+                            + QUOTENAME([t].[name])
+                            + N' NOCHECK CONSTRAINT ALL'
+                    ),
+                    N'; '
+                )
+                FROM [sys].[tables] AS [t]
+                INNER JOIN [sys].[schemas] AS [s] ON [s].[schema_id] = [t].[schema_id]
+                WHERE [s].[name] = @schemaName
+
+                IF @sql IS NOT NULL
+                    EXEC (@sql)
+                SQL,
+            ],
+            'all tables, default schema, enable' => [
+                true,
+                '',
+                '',
+                <<<SQL
+                DECLARE @catalogName SYSNAME = NULL
+                DECLARE @schemaName SYSNAME = N'dbo'
+                DECLARE @sql NVARCHAR(MAX)
+
+                SELECT @sql = STRING_AGG(
+                    CONVERT(
+                        NVARCHAR(MAX),
+                        N'ALTER TABLE '
+                            + COALESCE(QUOTENAME(@catalogName) + N'.', N'')
+                            + QUOTENAME(@schemaName)
+                            + N'.'
+                            + QUOTENAME([t].[name])
+                            + N' WITH CHECK CHECK CONSTRAINT ALL'
+                    ),
+                    N'; '
+                )
+                FROM [sys].[tables] AS [t]
+                INNER JOIN [sys].[schemas] AS [s] ON [s].[schema_id] = [t].[schema_id]
+                WHERE [s].[name] = @schemaName
+
+                IF @sql IS NOT NULL
+                    EXEC (@sql)
+                SQL,
+            ],
+            'single table, catalog-qualified' => [
+                true,
+                '',
+                'yiitest.dbo.customer',
+                <<<SQL
+                ALTER TABLE [yiitest].[dbo].[customer] WITH CHECK CHECK CONSTRAINT ALL
+                SQL,
+            ],
+            'single table, disable' => [
+                false,
+                '',
+                'customer',
+                <<<SQL
+                ALTER TABLE [customer] NOCHECK CONSTRAINT ALL
+                SQL,
+            ],
+            'single table, enable' => [
+                true,
+                '',
+                'customer',
+                <<<SQL
+                ALTER TABLE [customer] WITH CHECK CHECK CONSTRAINT ALL
+                SQL,
+            ],
+            'single table, explicit schema' => [
+                true,
+                'dbo',
+                'customer',
+                <<<SQL
+                ALTER TABLE [dbo].[customer] WITH CHECK CHECK CONSTRAINT ALL
+                SQL,
+            ],
+            'single table, single-quoted identifiers' => [
+                true,
+                '',
+                "yiit's.dbo.customer's",
+                <<<SQL
+                ALTER TABLE [yiit's].[dbo].[customer's] WITH CHECK CHECK CONSTRAINT ALL
+                SQL,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, int|null, string}>
      */
     public static function resetSequence(): array

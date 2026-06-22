@@ -950,4 +950,18 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
         return [null, $parts[0]];
     }
+
+    /**
+     * Resolves a schema argument into optional catalog and schema names without loading database metadata.
+     *
+     * @param string $schema The schema argument.
+     *
+     * @return array{string|null, string} The catalog and schema names.
+     *
+     * @since 22.0
+     */
+    public function resolveRawCatalogSchemaName(string $schema): array
+    {
+        return $this->resolveCatalogSchemaName($schema);
+    }
 }

@@ -331,6 +331,22 @@ abstract class Schema extends BaseObject
     }
 
     /**
+     * Resolves the table name and schema name (if any) without loading database metadata.
+     *
+     * @param string $name The table name.
+     *
+     * @throws NotSupportedException if this method is not supported by the DBMS.
+     *
+     * @return TableSchema TableSchema with resolved table, schema, etc. names.
+     *
+     * @since 22.0
+     */
+    public function resolveRawTableName($name): TableSchema
+    {
+        return $this->resolveTableName($name);
+    }
+
+    /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
      * @return QueryBuilder query builder instance

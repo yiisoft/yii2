@@ -41,6 +41,83 @@ final class CommandTest extends BaseCommand
         $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
     }
 
+    #[DataProviderExternal(CommandProvider::class, 'checkIntegrity')]
+    public function testThrowIntegrityExceptionWhenExistingRowsViolateForeignKey(string $tableName): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->checkIntegrity(
+            false,
+            '',
+            $tableName,
+        )->execute();
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [T_constraints_3] ([C_id], [C_fk_id_1], [C_fk_id_2]) VALUES (1, 2, 3)
+            SQL,
+        )->execute();
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessageMatches(
+            '/FOREIGN KEY constraint/i',
+        );
+
+        $db->createCommand()->checkIntegrity(
+            true,
+            '',
+            $tableName,
+        )->execute();
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'checkIntegrity')]
+    public function testCheckIntegrityEnablesTrustedForeignKeyWhenExistingRowsAreValid(string $tableName): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [T_constraints_2] ([C_id_1], [C_id_2]) VALUES (2, 3)
+            SQL,
+        )->execute();
+        $db->createCommand()->checkIntegrity(
+            false,
+            '',
+            $tableName,
+        )->execute();
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [T_constraints_3] ([C_id], [C_fk_id_1], [C_fk_id_2]) VALUES (1, 2, 3)
+            SQL,
+        )->execute();
+        $db->createCommand()->checkIntegrity(
+            true,
+            '',
+            $tableName,
+        )->execute();
+        $constraintState = $db->createCommand(
+            <<<SQL
+            SELECT [is_disabled], [is_not_trusted]
+            FROM [sys].[foreign_keys]
+            WHERE [name] = 'CN_constraints_3'
+            SQL,
+        )->queryOne();
+
+        self::assertIsArray(
+            $constraintState,
+            'Constraint state row must be found.',
+        );
+        self::assertSame(
+            0,
+            (int) $constraintState['is_disabled'],
+            'Foreign key must be enabled.',
+        );
+        self::assertSame(
+            0,
+            (int) $constraintState['is_not_trusted'],
+            'Foreign key must be trusted.',
+        );
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'renameTable')]
     public function testRenameTableWithQuotedNames(
         string $fromTableName,

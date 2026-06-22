@@ -304,14 +304,21 @@ final class SchemaTest extends BaseSchema
         string $expectedTable,
         string $expectedFullName
     ): void {
-        $schema = $this->getConnection()->getSchema();
+        $schema = $this->getConnection(false, false)->getSchema();
 
-        $result = $this->invokeMethod(
+        self::assertInstanceOf(
+            Schema::class,
             $schema,
-            'resolveTableName',
-            [$name],
+            'Schema should be an instance of ' . Schema::class . '.',
         );
 
+        $result = $schema->resolveRawTableName($name);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $result,
+            'Resolved table name should be an MSSQL table schema instance.',
+        );
         self::assertSame(
             $expectedCatalog,
             $result->catalogName,
@@ -331,6 +338,33 @@ final class SchemaTest extends BaseSchema
             $expectedFullName,
             $result->fullName,
             'Resolved full name should match expected value.',
+        );
+    }
+
+    public function testResolveRawCatalogSchemaName(): void
+    {
+        $schema = $this->getConnection(false, false)->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'Schema should be an instance of ' . Schema::class . '.',
+        );
+
+        self::assertSame(
+            [null, 'dbo'],
+            $schema->resolveRawCatalogSchemaName(''),
+            'Empty schema should resolve to the default MSSQL schema.',
+        );
+        self::assertSame(
+            [null, 'sales'],
+            $schema->resolveRawCatalogSchemaName('sales'),
+            'Single-part schema should resolve without catalog.',
+        );
+        self::assertSame(
+            ['yiitest', 'sales'],
+            $schema->resolveRawCatalogSchemaName('yiitest.sales'),
+            'Two-part schema should resolve to catalog and schema.',
         );
     }
 

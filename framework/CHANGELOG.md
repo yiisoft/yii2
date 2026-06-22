@@ -99,6 +99,7 @@ Yii Framework 2 Change Log
 - Bug #20951: Fix MSSQL `QueryBuilder::addDefaultValue()` to generate valid `DEFAULT NULL` and `DEFAULT 0` SQL for `null` and `false` values (terabytesoftw)
 - Bug #20952: Restrict MSSQL `dropDefaultValue()` to default constraints and cover catalog-qualified `alterColumn()` constraint replacement (terabytesoftw)
 - Bug #20953: Fix MSSQL `QueryBuilder::resetSequence()` to reseed `DBCC CHECKIDENT` for the requested next identity value (terabytesoftw)
+- Enh #20957: Rework MSSQL `yii\db\mssql\QueryBuilder::checkIntegrity()` for trusted constraints and catalog-qualified names (terabytesoftw)
 
 2.0.56 under development
 ------------------------
