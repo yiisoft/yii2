@@ -65,7 +65,9 @@ class Quoter
      */
     public static function extractSimpleIdentifier(string $name): string
     {
-        if (($pos = strrpos($name, '].[')) !== false) {
+        $pos = strrpos($name, '].[');
+
+        if ($pos !== false) {
             return substr($name, $pos + 2);
         }
 
