@@ -170,7 +170,9 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findSchemaNames()
     {
-        $systemSchemaNames = "'" . implode("', '", str_replace("'", "''", $this->systemSchemaNames)) . "'";
+        $systemSchemaNames = "'"
+            . implode("', '", array_map([Quoter::class, 'escapeLiteralValue'], $this->systemSchemaNames))
+            . "'";
 
         $sql = <<<SQL
         SELECT [s].[name]

@@ -21,7 +21,6 @@ use function array_intersect_key;
 use function count;
 use function implode;
 use function preg_replace;
-use function str_replace;
 use function strrpos;
 use function substr;
 
@@ -121,14 +120,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $schema = $this->db->getSchema();
 
-        $oldTableName = str_replace("'", "''", $this->db->quoteTableName($oldName));
+        $oldTableName = Quoter::escapeLiteralValue($this->db->quoteTableName($oldName));
+
         $newTableName = $this->db->quoteSql($this->db->quoteTableName($newName));
 
         if (($pos = strrpos($newTableName, '].[')) !== false) {
             $newTableName = substr($newTableName, $pos + 2);
         }
 
-        $newTableName = str_replace("'", "''", $schema->unquoteSimpleTableName($newTableName));
+        $newTableName = Quoter::escapeLiteralValue($schema->unquoteSimpleTableName($newTableName));
 
         return <<<SQL
         EXEC sp_rename @objname = N'{$oldTableName}', @newname = N'{$newTableName}', @objtype = N'OBJECT'
@@ -148,8 +148,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $schema = $this->db->getSchema();
 
-        $table = str_replace("'", "''", $this->db->quoteTableName($table));
-        $oldName = str_replace("'", "''", $this->db->quoteColumnName($oldName));
+        $table = Quoter::escapeLiteralValue($this->db->quoteTableName($table));
+        $oldName = Quoter::escapeLiteralValue($this->db->quoteColumnName($oldName));
 
         $newName = $this->db->quoteSql($this->db->quoteColumnName($newName));
 
@@ -157,7 +157,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $newName = substr($newName, $pos + 2);
         }
 
-        $newName = str_replace("'", "''", $schema->unquoteSimpleColumnName($newName));
+        $newName = Quoter::escapeLiteralValue($schema->unquoteSimpleColumnName($newName));
 
         return <<<SQL
         EXEC sp_rename @objname = N'{$table}.{$oldName}', @newname = N'{$newName}', @objtype = N'COLUMN'
@@ -273,8 +273,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function dropDefaultValue($name, $table)
     {
-        $tableName = str_replace("'", "''", $this->db->quoteTableName($table));
-        $constraintName = str_replace("'", "''", $name);
+        $tableName = Quoter::escapeLiteralValue($this->db->quoteTableName($table));
+        $constraintName = Quoter::escapeLiteralValue($name);
 
         return <<<SQL
         DECLARE @tableName NVARCHAR(MAX) = N'{$tableName}'
@@ -322,7 +322,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if ($table !== null && $table->sequenceName !== null) {
             $quotedTableName = $this->db->quoteTableName($tableName);
 
-            $tableNameLiteral = str_replace("'", "''", $quotedTableName);
+            $tableNameLiteral = Quoter::escapeLiteralValue($quotedTableName);
 
             $requestedNextValue = $value === null ? 'NULL' : (string) (int) $value;
 
@@ -418,7 +418,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if ($table !== '') {
             $tableName = $this->db->quoteTableName($schema === '' ? $table : "{$schema}.{$table}");
 
-            return "ALTER TABLE {$tableName} {$constraintCheck} CONSTRAINT ALL";
+            return <<<SQL
+            ALTER TABLE {$tableName} {$constraintCheck} CONSTRAINT ALL
+            SQL;
         }
 
         /** @var Schema $dbSchema */
@@ -427,9 +429,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         [$catalogName, $schemaName] = $dbSchema->resolveRawCatalogSchemaName($schema);
         $systemCatalog = $this->qualifiedSystemCatalog($catalogName);
 
-        $catalogNameLiteral = $catalogName === null ? 'NULL' : "N'" . str_replace("'", "''", $catalogName) . "'";
+        $catalogNameLiteral = $catalogName === null ? 'NULL' : "N'" . Quoter::escapeLiteralValue($catalogName) . "'";
 
-        $schemaNameLiteral = "N'" . str_replace("'", "''", $schemaName) . "'";
+        $schemaNameLiteral = "N'" . Quoter::escapeLiteralValue($schemaName) . "'";
 
         return <<<SQL
         DECLARE @catalogName SYSNAME = {$catalogNameLiteral}
@@ -786,7 +788,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function dropConstraintsForColumn($table, $column, $types = [])
     {
-        $columnName = str_replace("'", "''", $column);
+        $columnName = Quoter::escapeLiteralValue($column);
 
         $subqueries = [
             'F' => <<<SQL
