@@ -29,9 +29,7 @@ use function implode;
 use function preg_match;
 use function preg_match_all;
 use function strcasecmp;
-use function str_ends_with;
 use function str_replace;
-use function str_starts_with;
 use function ucfirst;
 
 /**
@@ -820,7 +818,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public function quoteColumnName($name)
     {
-        if (str_starts_with($name, '[') && str_ends_with($name, ']')) {
+        if (Quoter::isIdentifierBracketQuoted($name)) {
             return $name;
         }
 

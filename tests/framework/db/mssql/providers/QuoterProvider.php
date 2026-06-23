@@ -32,4 +32,33 @@ final class QuoterProvider
             'unicode content preserved' => ["héllo' wörld", "héllo'' wörld"],
         ];
     }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function extractSimpleIdentifier(): array
+    {
+        return [
+            'catalog-qualified name' => ['[db].[schema].[table]', '[table]'],
+            'schema-qualified name' => ['[schema].[table]', '[table]'],
+            'simple bracketed name' => ['[table]', '[table]'],
+            'unqualified name' => ['table', 'table'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, bool}>
+     */
+    public static function isIdentifierBracketQuoted(): array
+    {
+        return [
+            'bracketed multi-part name' => ['[dbo].[user]', true],
+            'bracketed simple name' => ['[user]', true],
+            'empty brackets' => ['[]', true],
+            'empty string' => ['', false],
+            'name with alias' => ['[user] u', false],
+            'star' => ['*', false],
+            'unbracketed name' => ['user', false],
+        ];
+    }
 }

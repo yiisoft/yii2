@@ -22,7 +22,6 @@ use function count;
 use function implode;
 use function preg_replace;
 use function strrpos;
-use function substr;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -124,10 +123,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $newTableName = $this->db->quoteSql($this->db->quoteTableName($newName));
 
-        if (($pos = strrpos($newTableName, '].[')) !== false) {
-            $newTableName = substr($newTableName, $pos + 2);
-        }
-
+        $newTableName = Quoter::extractSimpleIdentifier($newTableName);
         $newTableName = Quoter::escapeLiteralValue($schema->unquoteSimpleTableName($newTableName));
 
         return <<<SQL
@@ -153,10 +149,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $newName = $this->db->quoteSql($this->db->quoteColumnName($newName));
 
-        if (($pos = strrpos($newName, '].[')) !== false) {
-            $newName = substr($newName, $pos + 2);
-        }
-
+        $newName = Quoter::extractSimpleIdentifier($newName);
         $newName = Quoter::escapeLiteralValue($schema->unquoteSimpleColumnName($newName));
 
         return <<<SQL
@@ -196,7 +189,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if ($type instanceof ColumnSchemaBuilder) {
             $type->setAlterColumnFormat();
-
             $defaultValue = $type->getDefaultValue();
 
             if ($defaultValue !== null) {
@@ -756,7 +748,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function extractAlias($table)
     {
-        if (preg_match('/^\[.*\]$/', $table)) {
+        if (Quoter::isIdentifierBracketQuoted($table)) {
             return false;
         }
 
