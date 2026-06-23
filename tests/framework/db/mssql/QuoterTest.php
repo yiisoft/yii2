@@ -17,7 +17,7 @@ use yiiunit\framework\db\mssql\providers\QuoterProvider;
 use yiiunit\TestCase;
 
 /**
- * Unit tests for {@see \yii\db\mssql\Quoter::escapeLiteralValue()} single-quote escaping for the MSSQL driver.
+ * Unit tests for {@see \yii\db\mssql\Quoter} for the MSSQL driver.
  *
  * {@see QuoterProvider} for test case data providers.
  *
@@ -36,6 +36,26 @@ final class QuoterTest extends TestCase
             $expected,
             Quoter::escapeLiteralValue($value),
             'Each single quote must be doubled.',
+        );
+    }
+
+    #[DataProviderExternal(QuoterProvider::class, 'extractSimpleIdentifier')]
+    public function testExtractSimpleIdentifierReturnsTrailingPart(string $name, string $expected): void
+    {
+        self::assertSame(
+            $expected,
+            Quoter::extractSimpleIdentifier($name),
+            'Trailing identifier must be returned.',
+        );
+    }
+
+    #[DataProviderExternal(QuoterProvider::class, 'isIdentifierBracketQuoted')]
+    public function testIsIdentifierBracketQuotedDetectsBracketedNames(string $identifier, bool $expected): void
+    {
+        self::assertSame(
+            $expected,
+            Quoter::isIdentifierBracketQuoted($identifier),
+            'Bracket-quoted state must match.',
         );
     }
 }
