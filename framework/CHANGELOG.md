@@ -100,6 +100,7 @@ Yii Framework 2 Change Log
 - Bug #20952: Restrict MSSQL `dropDefaultValue()` to default constraints and cover catalog-qualified `alterColumn()` constraint replacement (terabytesoftw)
 - Bug #20953: Fix MSSQL `QueryBuilder::resetSequence()` to reseed `DBCC CHECKIDENT` for the requested next identity value (terabytesoftw)
 - Enh #20957: Rework MSSQL `yii\db\mssql\QueryBuilder::checkIntegrity()` for trusted constraints and catalog-qualified names (terabytesoftw)
+- Enh #20958: Add MSSQL `yii\db\mssql\Quoter::escapeLiteralValue()` and route literal escaping in `QueryBuilder` and `Schema` through it (terabytesoftw)
 
 2.0.56 under development
 ------------------------
