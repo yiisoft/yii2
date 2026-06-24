@@ -1,0 +1,22 @@
+name: GitHub Actions Security Analysis with zizmor 🌈
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths:
+      - '.github/**.yml'
+      - '.github/**.yaml'
+  pull_request:
+    paths:
+      - '.github/**.yml'
+      - '.github/**.yaml'
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  zizmor:
+    uses: yiisoft/actions/.github/workflows/zizmor.yml@master
