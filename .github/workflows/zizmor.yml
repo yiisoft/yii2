@@ -14,8 +14,8 @@ on:
       - '.github/**.yaml'
 
 permissions:
-  actions: read
-  contents: read
+  actions: read # Required by zizmor when reading workflow metadata through the API.
+  contents: read # Required to read workflow files.
 
 jobs:
   zizmor:
