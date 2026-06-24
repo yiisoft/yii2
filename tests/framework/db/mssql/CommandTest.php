@@ -41,6 +41,65 @@ final class CommandTest extends BaseCommand
         $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
     }
 
+    #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
+    public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
+    {
+        $db = $this->getConnection(false);
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'id' => 'integer',
+                $columnName => 'string',
+            ],
+        )->execute();
+
+        $db->createCommand()->addCommentOnColumn(
+            $commentTarget,
+            $columnName,
+            'Initial column comment.',
+        )->execute();
+
+        self::assertSame(
+            'Initial column comment.',
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be created.',
+        );
+
+        $db->createCommand()->addCommentOnColumn(
+            $commentTarget,
+            $columnName,
+            'Updated column comment.',
+        )->execute();
+
+        self::assertSame(
+            'Updated column comment.',
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be updated.',
+        );
+
+        $db->createCommand()->dropCommentFromColumn(
+            $commentTarget,
+            $columnName,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be removed.',
+        );
+
+        if ($schema->getTableSchema($tableName, true) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'checkIntegrity')]
     public function testThrowIntegrityExceptionWhenExistingRowsViolateForeignKey(string $tableName): void
     {

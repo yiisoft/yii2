@@ -30,6 +30,30 @@ final class CommandProvider
     }
 
     /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function addCommentOnColumn(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yii2_mssql_comment_column_catalog',
+                'yiitest.dbo.yii2_mssql_comment_column_catalog',
+                'comment_column',
+            ],
+            'column name with single quote' => [
+                "yii2_mssql_comment_column'",
+                "yii2_mssql_comment_column'",
+                "comment column'",
+            ],
+            'simple table name' => [
+                'yii2_mssql_comment_column',
+                'yii2_mssql_comment_column',
+                'comment_column',
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string, mixed, string}>
      */
     public static function addDefaultValue(): array
