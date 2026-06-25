@@ -14,6 +14,7 @@ use Closure;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
 
@@ -2136,6 +2137,233 @@ final class QueryBuilderProvider
                 ],
                 'yii2_mssql_drop_unique',
                 'bar',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, array<string, mixed>|Query, array<string, mixed>|bool, string, array<string, mixed>}>
+     */
+    public static function upsert(): array
+    {
+        return [
+            'query' => [
+                'T_upsert',
+                (new Query())
+                    ->select([
+                        'email',
+                        'status' => new Expression('2'),
+                    ])
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                true,
+                <<<SQL
+                MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [status]=[EXCLUDED].[status] WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);
+                SQL,
+                [
+                    ':qp0' => 'user1',
+                ],
+            ],
+            'query, values and expressions with update part' => [
+                '{{%T_upsert}}',
+                (new Query())
+                    ->select([
+                        'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                        '[[time]]' => new Expression('now()'),
+                    ]),
+                [
+                    'ts' => 0,
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                MERGE {{%T_upsert}} WITH (HOLDLOCK) USING (SELECT :phEmail AS [email], now() AS [[time]]) AS [EXCLUDED] ([email], [[time]]) ON ({{%T_upsert}}.[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [ts]=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ([email], [[time]]) VALUES ([EXCLUDED].[email], [EXCLUDED].[[time]]);
+                SQL,
+                [
+                    ':phEmail' => 'dynamic@example.com',
+                    ':qp1' => 0,
+                ],
+            ],
+            'query, values and expressions without update part' => [
+                '{{%T_upsert}}',
+                (new Query())
+                    ->select([
+                        'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                        '[[time]]' => new Expression('now()'),
+                    ]),
+                [
+                    'ts' => 0,
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                MERGE {{%T_upsert}} WITH (HOLDLOCK) USING (SELECT :phEmail AS [email], now() AS [[time]]) AS [EXCLUDED] ([email], [[time]]) ON ({{%T_upsert}}.[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [ts]=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ([email], [[time]]) VALUES ([EXCLUDED].[email], [EXCLUDED].[[time]]);
+                SQL,
+                [
+                    ':phEmail' => 'dynamic@example.com',
+                    ':qp1' => 0,
+                ],
+            ],
+            'query with update part' => [
+                'T_upsert',
+                (new Query())
+                    ->select([
+                        'email',
+                        'status' => new Expression('2'),
+                    ])
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                [
+                    'address' => 'foo {{city}}',
+                    'status' => 2,
+                    'orders' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=:qp1, [status]=:qp2, [orders]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);
+                SQL,
+                [
+                    ':qp0' => 'user1',
+                    ':qp1' => 'foo {{city}}',
+                    ':qp2' => 2,
+                ],
+            ],
+            'query without update part' => [
+                'T_upsert',
+                (new Query())
+                    ->select([
+                        'email',
+                        'status' => new Expression('2'),
+                    ])
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                false,
+                <<<SQL
+                MERGE [T_upsert] WITH (HOLDLOCK) USING (SELECT [email], 2 AS [status] FROM [customer] WHERE [name]=:qp0 ORDER BY (SELECT NULL) OFFSET 0 ROWS FETCH NEXT 1 ROWS ONLY) AS [EXCLUDED] ([email], [status]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN NOT MATCHED THEN INSERT ([email], [status]) VALUES ([EXCLUDED].[email], [EXCLUDED].[status]);
+                SQL,
+                [
+                    ':qp0' => 'user1',
+                ],
+            ],
+            'no columns to update' => [
+                'T_upsert_1',
+                [
+                    'a' => 1,
+                ],
+                true,
+                <<<SQL
+                MERGE [T_upsert_1] WITH (HOLDLOCK) USING (VALUES (:qp0)) AS [EXCLUDED] ([a]) ON ([T_upsert_1].[a]=[EXCLUDED].[a]) WHEN NOT MATCHED THEN INSERT ([a]) VALUES ([EXCLUDED].[a]);
+                SQL,
+                [
+                    ':qp0' => 1,
+                ],
+            ],
+            'regular values' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                true,
+                <<<SQL
+                MERGE [T_upsert] WITH (HOLDLOCK) USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS [EXCLUDED] ([email], [address], [status], [profile_id]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=[EXCLUDED].[address], [status]=[EXCLUDED].[status], [profile_id]=[EXCLUDED].[profile_id] WHEN NOT MATCHED THEN INSERT ([email], [address], [status], [profile_id]) VALUES ([EXCLUDED].[email], [EXCLUDED].[address], [EXCLUDED].[status], [EXCLUDED].[profile_id]);
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'regular values with update part' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                [
+                    'address' => 'foo {{city}}',
+                    'status' => 2,
+                    'orders' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                MERGE [T_upsert] WITH (HOLDLOCK) USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS [EXCLUDED] ([email], [address], [status], [profile_id]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=:qp4, [status]=:qp5, [orders]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ([email], [address], [status], [profile_id]) VALUES ([EXCLUDED].[email], [EXCLUDED].[address], [EXCLUDED].[status], [EXCLUDED].[profile_id]);
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                    ':qp4' => 'foo {{city}}',
+                    ':qp5' => 2,
+                ],
+            ],
+            'regular values without update part' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                false,
+                <<<SQL
+                MERGE [T_upsert] WITH (HOLDLOCK) USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS [EXCLUDED] ([email], [address], [status], [profile_id]) ON ([T_upsert].[email]=[EXCLUDED].[email]) WHEN NOT MATCHED THEN INSERT ([email], [address], [status], [profile_id]) VALUES ([EXCLUDED].[email], [EXCLUDED].[address], [EXCLUDED].[status], [EXCLUDED].[profile_id]);
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'values and expressions' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                true,
+                <<<SQL
+                SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [ts] int NULL, [email] varchar(128) , [recovery_email] varchar(128) NULL, [address] text NULL, [status] tinyint , [orders] int , [profile_id] int NULL);INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) OUTPUT INSERTED.[id],INSERTED.[ts],INSERTED.[email],INSERTED.[recovery_email],INSERTED.[address],INSERTED.[status],INSERTED.[orders],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp0, now());SELECT * FROM @temporary_inserted
+                SQL,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'values and expressions with update part' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                [
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [ts] int NULL, [email] varchar(128) , [recovery_email] varchar(128) NULL, [address] text NULL, [status] tinyint , [orders] int , [profile_id] int NULL);INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) OUTPUT INSERTED.[id],INSERTED.[ts],INSERTED.[email],INSERTED.[recovery_email],INSERTED.[address],INSERTED.[status],INSERTED.[orders],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp0, now());SELECT * FROM @temporary_inserted
+                SQL,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'values and expressions without update part' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                false,
+                <<<SQL
+                SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [ts] int NULL, [email] varchar(128) , [recovery_email] varchar(128) NULL, [address] text NULL, [status] tinyint , [orders] int , [profile_id] int NULL);INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) OUTPUT INSERTED.[id],INSERTED.[ts],INSERTED.[email],INSERTED.[recovery_email],INSERTED.[address],INSERTED.[status],INSERTED.[orders],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp0, now());SELECT * FROM @temporary_inserted
+                SQL,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
             ],
         ];
     }

@@ -8,6 +8,7 @@
 
 namespace yii\db;
 
+use Closure;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\conditions\ConditionInterface;
@@ -657,6 +658,38 @@ class QueryBuilder extends \yii\base\BaseObject
             $sets[] = $this->db->quoteColumnName($name) . '=' . $placeholder;
         }
         return [$sets, $params];
+    }
+
+    /**
+     * Prepares the `SET` assignments for the update branch of an upsert statement.
+     *
+     * @param string $table The table that the upsert targets.
+     * @param array<string, mixed>|bool $updateColumns `true` for every non-unique inserted column, or an explicit
+     * `name => value` map.
+     * @param string[]|null $updateNames Quoted column names eligible for update.
+     * @param array<string, mixed> $params The binding parameters modified by this method.
+     * @param Closure(string): string $sourceColumnRef Maps a quoted column name to its source reference.
+     *
+     * @return array{string[], array<string, mixed>} The `SET` assignments (first element) and params (second element).
+     *
+     * @since 22.0
+     */
+    protected function prepareUpsertSets(
+        string $table,
+        array|bool $updateColumns,
+        array|null $updateNames,
+        array $params,
+        Closure $sourceColumnRef,
+    ): array {
+        if ($updateColumns === true && $updateNames !== null) {
+            $updateColumns = [];
+
+            foreach ($updateNames as $quotedName) {
+                $updateColumns[$quotedName] = new Expression($sourceColumnRef($quotedName));
+            }
+        }
+
+        return $this->prepareUpdateSets($table, $updateColumns, $params);
     }
 
     /**

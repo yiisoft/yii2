@@ -20,8 +20,8 @@ use function array_flip;
 use function array_intersect_key;
 use function count;
 use function implode;
+use function ltrim;
 use function preg_replace;
-use function strrpos;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -649,7 +649,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
             throw new InvalidArgumentException("Table not found: {$table}");
         }
 
-        [$names, $placeholders, $values, $params] = $this->prepareInsertValues($table, $columns, $params);
+        [$names, $placeholders, $values, $params] = $this->prepareInsertValues(
+            $table,
+            $columns,
+            $params,
+        );
 
         $cols = [];
         $outputColumns = [];
@@ -660,8 +664,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
 
             $quoteColumnName = $this->db->quoteColumnName($column->name);
-
             $cols[] = "{$quoteColumnName} {$column->getOutputColumnDeclaration()} " . ($column->allowNull ? 'NULL' : '');
+
             $outputColumns[] = "INSERTED.{$quoteColumnName}";
         }
 
@@ -684,65 +688,80 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
-     * @see https://docs.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
+     * Generates a `MERGE` statement that inserts a row or updates the matching one in a single atomic operation.
+     *
+     * The `WITH (HOLDLOCK)` table hint serializes concurrent upserts so they cannot insert duplicate keys.
+     *
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql
      * @see https://weblogs.sqlteam.com/dang/2009/01/31/upsert-race-condition-with-merge/
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
-        if (empty($uniqueNames)) {
+        [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns(
+            $table,
+            $insertColumns,
+            $updateColumns,
+            $constraints,
+        );
+
+        if ($uniqueNames === []) {
             return $this->insert($table, $insertColumns, $params);
-        }
-        if ($updateNames === []) {
-            // there are no columns to update
-            $updateColumns = false;
         }
 
         $onCondition = ['or'];
+
         $quotedTableName = $this->db->quoteTableName($table);
+
         foreach ($constraints as $constraint) {
             $constraintCondition = ['and'];
+
             foreach ($constraint->columnNames as $name) {
                 $quotedName = $this->db->quoteColumnName($name);
-                $constraintCondition[] = "$quotedTableName.$quotedName=[EXCLUDED].$quotedName";
+
+                $constraintCondition[] = "{$quotedTableName}.{$quotedName}=[EXCLUDED].{$quotedName}";
             }
+
             $onCondition[] = $constraintCondition;
         }
+
         $on = $this->buildCondition($onCondition, $params);
-        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
+        [, $placeholders, $values, $params] = $this->prepareInsertValues($table, $insertColumns, $params);
 
-        $mergeSql = 'MERGE ' . $this->db->quoteTableName($table) . ' WITH (HOLDLOCK) '
-            . 'USING (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') AS [EXCLUDED] (' . implode(', ', $insertNames) . ') '
-            . "ON ($on)";
+        $source = $placeholders !== []
+            ? 'VALUES (' . implode(', ', $placeholders) . ')'
+            : ltrim($values, ' ');
+
+        $columnList = implode(', ', $insertNames);
+
         $insertValues = [];
-        foreach ($insertNames as $name) {
-            $quotedName = $this->db->quoteColumnName($name);
-            if (strrpos($quotedName, '.') === false) {
-                $quotedName = '[EXCLUDED].' . $quotedName;
-            }
-            $insertValues[] = $quotedName;
-        }
-        $insertSql = 'INSERT (' . implode(', ', $insertNames) . ')'
-            . ' VALUES (' . implode(', ', $insertValues) . ')';
-        if ($updateColumns === false) {
-            return "$mergeSql WHEN NOT MATCHED THEN $insertSql;";
+
+        foreach ($insertNames as $quotedName) {
+            $insertValues[] = "[EXCLUDED].{$quotedName}";
         }
 
-        if ($updateColumns === true) {
-            $updateColumns = [];
-            foreach ($updateNames as $name) {
-                $quotedName = $this->db->quoteColumnName($name);
-                if (strrpos($quotedName, '.') === false) {
-                    $quotedName = '[EXCLUDED].' . $quotedName;
-                }
-                $updateColumns[$name] = new Expression($quotedName);
-            }
+        $insertColumnRefs = implode(', ', $insertValues);
+
+        $mergeSql = <<<SQL
+        MERGE {$quotedTableName} WITH (HOLDLOCK) USING ({$source}) AS [EXCLUDED] ({$columnList}) ON ({$on})
+        SQL;
+
+        $insertSql = "INSERT ({$columnList}) VALUES ({$insertColumnRefs})";
+
+        if ($updateColumns === false || $updateNames === []) {
+            return "{$mergeSql} WHEN NOT MATCHED THEN {$insertSql};";
         }
 
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+        [$updates, $params] = $this->prepareUpsertSets(
+            $table,
+            $updateColumns,
+            $updateNames,
+            $params,
+            static fn($quotedName): string => "[EXCLUDED].{$quotedName}",
+        );
+
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
-        return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql;";
+
+        return "{$mergeSql} WHEN MATCHED THEN {$updateSql} WHEN NOT MATCHED THEN {$insertSql};";
     }
 
     /**
