@@ -630,7 +630,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function selectExists($rawSql)
     {
-        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+        return <<<SQL
+        SELECT CASE WHEN EXISTS($rawSql) THEN 1 ELSE 0 END AS [result]
+        SQL;
     }
 
     /**

@@ -103,6 +103,7 @@ Yii Framework 2 Change Log
 - Enh #20958: Add MSSQL `yii\db\mssql\Quoter::escapeLiteralValue()` and route literal escaping in `QueryBuilder` and `Schema` through it (terabytesoftw)
 - Enh #20959: Centralize MSSQL identifier bracket detection and qualified-name part extraction in `yii\db\mssql\Quoter` (terabytesoftw)
 - Enh #20960: Rework MSSQL `yii\db\mssql\QueryBuilder` comment builders to emit `MS_Description` extended-property SQL connection-free with catalog-qualified names (terabytesoftw)
+- Enh #20961: Rework MSSQL `yii\db\mssql\QueryBuilder::selectExists()` to return a named `[result]` existence column (terabytesoftw)
 
 2.0.56 under development
 ------------------------
