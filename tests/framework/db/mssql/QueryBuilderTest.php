@@ -725,9 +725,30 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testSelectExists(): void
     {
-        $qb = $this->getQueryBuilder();
-        $sql = $qb->selectExists('SELECT 1 FROM [customer]');
-        $this->assertSame('SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer]) THEN 1 ELSE 0 END', $sql);
+        $qb = $this->getQueryBuilder(false, false);
+
+        self::assertSame(
+            <<<SQL
+            SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer]) THEN 1 ELSE 0 END AS [result]
+            SQL,
+            $qb->selectExists(
+                <<<SQL
+                SELECT 1 FROM [customer]
+                SQL,
+            ),
+            "Generated SQL must match the expected 'EXISTS()' statement with a simple subquery.",
+        );
+        self::assertSame(
+            <<<SQL
+            SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer] WHERE [status] = 2) THEN 1 ELSE 0 END AS [result]
+            SQL,
+            $qb->selectExists(
+                <<<SQL
+                SELECT 1 FROM [customer] WHERE [status] = 2
+                SQL,
+            ),
+            "Generated SQL must match the expected 'EXISTS()' statement with a subquery containing a WHERE clause.",
+        );
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'checkIntegrity')]

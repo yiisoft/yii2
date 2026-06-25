@@ -41,6 +41,36 @@ final class CommandTest extends BaseCommand
         $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
     }
 
+    public function testSelectExistsReturnsScalarExistenceFlag(): void
+    {
+        $db = $this->getConnection();
+
+        $qb = $db->getQueryBuilder();
+
+        self::assertSame(
+            1,
+            (int) $db->createCommand(
+                $qb->selectExists(
+                   <<<SQL
+                    SELECT 1 FROM [customer] WHERE [status] = 2
+                    SQL
+                ),
+            )->queryScalar(),
+            "Matching row must yield '1'.",
+        );
+        self::assertSame(
+            0,
+            (int) $db->createCommand(
+                $qb->selectExists(
+                    <<<SQL
+                    SELECT 1 FROM [customer] WHERE [status] = 3
+                    SQL
+                ),
+            )->queryScalar(),
+            "No matching row must yield '0'.",
+        );
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
     public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
     {
