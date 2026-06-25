@@ -626,8 +626,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
     ): void {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         $this->dropTablesIfExist($db, $tableNames);
 
         foreach ($createTablesSql as $sql) {
@@ -641,8 +639,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     private function assertDropColumnOnDb(Connection $db, string $table, string $column): void
     {
-        $db = $this->getConnection(false, false);
-
         $qb = $db->getQueryBuilder();
 
         $sql = $qb->dropColumn($table, $column);
