@@ -652,6 +652,414 @@ final class QueryBuilderProvider
     /**
      * @return array<string, array{string, string, string}>
      */
+    public static function addCommentOnTable(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.profile',
+                'A profile comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM [yiitest].sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC [yiitest].sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A profile comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                ELSE
+                    EXEC [yiitest].sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A profile comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                SQL,
+            ],
+            'schema-qualified table name' => [
+                'myschema.profile',
+                'A profile comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'myschema',
+                        'TABLE', N'profile',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A profile comment.',
+                        @level0type = 'SCHEMA', @level0name = N'myschema',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                ELSE
+                    EXEC sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A profile comment.',
+                        @level0type = 'SCHEMA', @level0name = N'myschema',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                SQL,
+            ],
+            'simple table name' => [
+                'profile',
+                'A profile comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A profile comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                ELSE
+                    EXEC sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A profile comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                SQL,
+            ],
+            'table name and comment with single quotes' => [
+                'stranger\'s table',
+                'It\'s a table comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'stranger''s table',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'It''s a table comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'stranger''s table'
+                ELSE
+                    EXEC sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'It''s a table comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'stranger''s table'
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string, string}>
+     */
+    public static function addCommentOnColumn(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.profile',
+                'description',
+                'A column comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM [yiitest].sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        'COLUMN', N'description'
+                    )
+                )
+                    EXEC [yiitest].sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                ELSE
+                    EXEC [yiitest].sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                SQL,
+            ],
+            'column and comment with single quotes' => [
+                'stranger\'s table',
+                'stranger\'s field',
+                'It\'s a column comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'stranger''s table',
+                        'COLUMN', N'stranger''s field'
+                    )
+                )
+                    EXEC sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'It''s a column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'stranger''s table',
+                        @level2type = 'COLUMN', @level2name = N'stranger''s field'
+                ELSE
+                    EXEC sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'It''s a column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'stranger''s table',
+                        @level2type = 'COLUMN', @level2name = N'stranger''s field'
+                SQL,
+            ],
+            'schema-qualified table name' => [
+                'myschema.profile',
+                'description',
+                'A column comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'myschema',
+                        'TABLE', N'profile',
+                        'COLUMN', N'description'
+                    )
+                )
+                    EXEC sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'myschema',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                ELSE
+                    EXEC sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'myschema',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                SQL,
+            ],
+            'simple table name' => [
+                'profile',
+                'description',
+                'A column comment.',
+                <<<SQL
+                IF NOT EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        'COLUMN', N'description'
+                    )
+                )
+                    EXEC sys.sp_addextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                ELSE
+                    EXEC sys.sp_updateextendedproperty
+                        @name = N'MS_Description',
+                        @value = N'A column comment.',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function dropCommentFromTable(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.profile',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM [yiitest].sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC [yiitest].sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                SQL,
+            ],
+            'schema-qualified table name' => [
+                'myschema.profile',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'myschema',
+                        'TABLE', N'profile',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'myschema',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                SQL,
+            ],
+            'simple table name' => [
+                'profile',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile'
+                SQL,
+            ],
+            'table name with single quote' => [
+                'stranger\'s table',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'stranger''s table',
+                        DEFAULT, DEFAULT
+                    )
+                )
+                    EXEC sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'stranger''s table'
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function dropCommentFromColumn(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.profile',
+                'description',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM [yiitest].sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        'COLUMN', N'description'
+                    )
+                )
+                    EXEC [yiitest].sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                SQL,
+            ],
+            'column with single quote' => [
+                'stranger\'s table',
+                'stranger\'s field',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'stranger''s table',
+                        'COLUMN', N'stranger''s field'
+                    )
+                )
+                    EXEC sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'stranger''s table',
+                        @level2type = 'COLUMN', @level2name = N'stranger''s field'
+                SQL,
+            ],
+            'simple table name' => [
+                'profile',
+                'description',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'dbo',
+                        'TABLE', N'profile',
+                        'COLUMN', N'description'
+                    )
+                )
+                    EXEC sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'dbo',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                SQL,
+            ],
+            'schema-qualified table name' => [
+                'myschema.profile',
+                'description',
+                <<<SQL
+                IF EXISTS (
+                    SELECT 1
+                    FROM sys.fn_listextendedproperty(
+                        N'MS_Description',
+                        'SCHEMA', N'myschema',
+                        'TABLE', N'profile',
+                        'COLUMN', N'description'
+                    )
+                )
+                    EXEC sys.sp_dropextendedproperty
+                        @name = N'MS_Description',
+                        @level0type = 'SCHEMA', @level0name = N'myschema',
+                        @level1type = 'TABLE', @level1name = N'profile',
+                        @level2type = 'COLUMN', @level2name = N'description'
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
     public static function renameTable(): array
     {
         return [

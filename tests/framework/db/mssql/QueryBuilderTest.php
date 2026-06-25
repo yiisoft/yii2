@@ -293,178 +293,66 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    protected function getCommmentsFromTable($table)
-    {
-        $db = $this->getConnection(false, false);
-        $sql = "SELECT *
-            FROM fn_listextendedproperty (
-                N'MS_description',
-                'SCHEMA', N'dbo',
-                'TABLE', N" . $db->quoteValue($table) . ',
-                DEFAULT, DEFAULT
-        )';
-        return $db->createCommand($sql)->queryAll();
-    }
-
-    protected function getCommentsFromColumn($table, $column)
-    {
-        $db = $this->getConnection(false, false);
-        $sql = "SELECT *
-            FROM fn_listextendedproperty (
-                N'MS_description',
-                'SCHEMA', N'dbo',
-                'TABLE', N" . $db->quoteValue($table) . ",
-                'COLUMN', N" . $db->quoteValue($column) . '
-        )';
-        return $db->createCommand($sql)->queryAll();
-    }
-
-    protected function runAddCommentOnTable($comment, $table)
-    {
-        $qb = $this->getQueryBuilder();
-        $db = $this->getConnection(false, false);
-        $sql = $qb->addCommentOnTable($table, $comment);
-        return $db->createCommand($sql)->execute();
-    }
-
-    protected function runAddCommentOnColumn($comment, $table, $column)
-    {
-        $qb = $this->getQueryBuilder();
-        $db = $this->getConnection(false, false);
-        $sql = $qb->addCommentOnColumn($table, $column, $comment);
-        return $db->createCommand($sql)->execute();
-    }
-
-    protected function runDropCommentFromTable($table)
-    {
-        $qb = $this->getQueryBuilder();
-        $db = $this->getConnection(false, false);
-        $sql = $qb->dropCommentFromTable($table);
-        return $db->createCommand($sql)->execute();
-    }
-
-    protected function runDropCommentFromColumn($table, $column)
-    {
-        $qb = $this->getQueryBuilder();
-        $db = $this->getConnection(false, false);
-        $sql = $qb->dropCommentFromColumn($table, $column);
-        return $db->createCommand($sql)->execute();
-    }
-
-    public function testCommentAdditionOnTableAndOnColumn(): void
-    {
-        $table = 'profile';
-        $tableComment = 'A comment for profile table.';
-        $this->runAddCommentOnTable($tableComment, $table);
-        $resultTable = $this->getCommmentsFromTable($table);
-        $this->assertEquals([
-            'objtype' => 'TABLE',
-            'objname' => $table,
-            'name' => 'MS_description',
-            'value' => $tableComment,
-        ], $resultTable[0]);
-
-        $column = 'description';
-        $columnComment = 'A comment for description column in profile table.';
-        $this->runAddCommentOnColumn($columnComment, $table, $column);
-        $resultColumn = $this->getCommentsFromColumn($table, $column);
-        $this->assertEquals([
-            'objtype' => 'COLUMN',
-            'objname' => $column,
-            'name' => 'MS_description',
-            'value' => $columnComment,
-        ], $resultColumn[0]);
-
-        // Add another comment to the same table to test update
-        $tableComment2 = 'Another comment for profile table.';
-        $this->runAddCommentOnTable($tableComment2, $table);
-        $result = $this->getCommmentsFromTable($table);
-        $this->assertEquals([
-            'objtype' => 'TABLE',
-            'objname' => $table,
-            'name' => 'MS_description',
-            'value' => $tableComment2,
-        ], $result[0]);
-
-        // Add another comment to the same column to test update
-        $columnComment2 = 'Another comment for description column in profile table.';
-        $this->runAddCommentOnColumn($columnComment2, $table, $column);
-        $result = $this->getCommentsFromColumn($table, $column);
-        $this->assertEquals([
-            'objtype' => 'COLUMN',
-            'objname' => $column,
-            'name' => 'MS_description',
-            'value' => $columnComment2,
-        ], $result[0]);
-    }
-
-    public function testCommentAdditionOnQuotedTableOrColumn(): void
-    {
-        $table = 'stranger \'table';
-        $tableComment = 'A comment for stranger \'table.';
-        $this->runAddCommentOnTable($tableComment, $table);
-        $resultTable = $this->getCommmentsFromTable($table);
-        $this->assertEquals([
-            'objtype' => 'TABLE',
-            'objname' => $table,
-            'name' => 'MS_description',
-            'value' => $tableComment,
-        ], $resultTable[0]);
-
-        $column = 'stranger \'field';
-        $columnComment = 'A comment for stranger \'field column in stranger \'table.';
-        $this->runAddCommentOnColumn($columnComment, $table, $column);
-        $resultColumn = $this->getCommentsFromColumn($table, $column);
-        $this->assertEquals([
-            'objtype' => 'COLUMN',
-            'objname' => $column,
-            'name' => 'MS_description',
-            'value' => $columnComment,
-        ], $resultColumn[0]);
-    }
-
-    public function testCommentRemovalFromTableAndFromColumn(): void
-    {
-        $table = 'profile';
-        $tableComment = 'A comment for profile table.';
-        $this->runAddCommentOnTable($tableComment, $table);
-        $this->runDropCommentFromTable($table);
-        $result = $this->getCommmentsFromTable($table);
-        $this->assertEquals([], $result);
-
-        $column = 'description';
-        $columnComment = 'A comment for description column in profile table.';
-        $this->runAddCommentOnColumn($columnComment, $table, $column);
-        $this->runDropCommentFromColumn($table, $column);
-        $result = $this->getCommentsFromColumn($table, $column);
-        $this->assertEquals([], $result);
-    }
-
-    public function testCommentRemovalFromQuotedTableOrColumn(): void
-    {
-        $table = 'stranger \'table';
-        $tableComment = 'A comment for stranger \'table.';
-        $this->runAddCommentOnTable($tableComment, $table);
-        $this->runDropCommentFromTable($table);
-        $result = $this->getCommmentsFromTable($table);
-        $this->assertEquals([], $result);
-
-        $column = 'stranger \'field';
-        $columnComment = 'A comment for stranger \'field in stranger \'table.';
-        $this->runAddCommentOnColumn($columnComment, $table, $column);
-        $this->runDropCommentFromColumn($table, $column);
-        $result = $this->getCommentsFromColumn($table, $column);
-        $this->assertEquals([], $result);
-    }
-
     public function testCommentColumn(): void
     {
-        $this->markTestSkipped('Testing the behavior, not sql generation anymore.');
+        self::markTestSkipped(
+            "Covered by 'testAddCommentOnColumn()' and 'testDropCommentFromColumn()'.",
+        );
     }
 
     public function testCommentTable(): void
     {
-        $this->markTestSkipped('Testing the behavior, not sql generation anymore.');
+        self::markTestSkipped(
+            "Covered by 'testAddCommentOnTable()' and 'testDropCommentFromTable()'.",
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnTable')]
+    public function testAddCommentOnTable(string $table, string $comment, string $expected): void
+    {
+        $qb = $this->getQueryBuilder(false, false);
+
+        self::assertSame(
+            $expected,
+            $qb->addCommentOnTable($table, $comment),
+            'Generated extended-property SQL must match the expected statement.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnColumn')]
+    public function testAddCommentOnColumn(string $table, string $column, string $comment, string $expected): void
+    {
+        $qb = $this->getQueryBuilder(false, false);
+
+        self::assertSame(
+            $expected,
+            $qb->addCommentOnColumn($table, $column, $comment),
+            'Generated extended-property SQL must match the expected statement.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromTable')]
+    public function testDropCommentFromTable(string $table, string $expected): void
+    {
+        $qb = $this->getQueryBuilder(false, false);
+
+        self::assertSame(
+            $expected,
+            $qb->dropCommentFromTable($table),
+            'Generated extended-property SQL must match the expected statement.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromColumn')]
+    public function testDropCommentFromColumn(string $table, string $column, string $expected): void
+    {
+        $qb = $this->getQueryBuilder(false, false);
+
+        self::assertSame(
+            $expected,
+            $qb->dropCommentFromColumn($table, $column),
+            'Generated extended-property SQL must match the expected statement.',
+        );
     }
 
     /**
@@ -886,21 +774,5 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $condition = ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')];
         $this->expectException('yii\base\NotSupportedException');
         $qb->buildCondition($condition, $params);
-    }
-
-    public function testAddCommentOnNonExistentTableThrowsException(): void
-    {
-        $qb = $this->getQueryBuilder(true, true);
-        $this->expectException('yii\base\InvalidArgumentException');
-        $this->expectExceptionMessage('Table not found: non_existent_table');
-        $qb->addCommentOnColumn('non_existent_table', 'col', 'comment');
-    }
-
-    public function testDropCommentFromNonExistentTableThrowsException(): void
-    {
-        $qb = $this->getQueryBuilder(true, true);
-        $this->expectException('yii\base\InvalidArgumentException');
-        $this->expectExceptionMessage('Table not found: non_existent_table');
-        $qb->dropCommentFromColumn('non_existent_table', 'col');
     }
 }

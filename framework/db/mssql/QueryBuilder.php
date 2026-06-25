@@ -294,9 +294,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * or the next value after the current maximum identity value.
      *
      * @param string $tableName The name of the table whose primary key sequence will be reset.
-     * @param int|null $value The integer value for the primary key of the next new row inserted.
-     * If this is not set, the next new row's primary key will have the next value after the current maximum identity
-     * value.
+     * @param int|null $value The integer value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have the next value after the current maximum identity value.
      *
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      *
@@ -391,8 +390,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * database connection. A single table yields a direct `ALTER TABLE` statement; an empty table targets every base
      * table in the schema, enumerated server-side from `sys.tables` (views excluded) and run in one batch.
      *
-     * Enabling uses `WITH CHECK CHECK CONSTRAINT ALL`, re-validating existing rows and marking the constraints
-     * trusted; disabling uses `NOCHECK CONSTRAINT ALL`.
+     * Enabling uses `WITH CHECK CHECK CONSTRAINT ALL`, re-validating existing rows and marking the constraints trusted;
+     * disabling uses `NOCHECK CONSTRAINT ALL`.
      *
      * @param bool $check Whether to enable (`true`) or disable (`false`) the integrity checks.
      * @param string $schema The schema of the tables. Defaults to an empty string, meaning the default schema.
@@ -451,53 +450,88 @@ class QueryBuilder extends \yii\db\QueryBuilder
         SQL;
     }
 
-     /**
-      * Builds a SQL command for adding or updating a comment to a table or a column. The command built will check if a comment
-      * already exists. If so, it will be updated, otherwise, it will be added.
-      *
-      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
-      * @param string $table the table to be commented or whose column is to be commented. The table name will be
-      * properly quoted by the method.
-      * @param string|null $column optional. The name of the column to be commented. If empty, the command will add the
-      * comment to the table instead. The column name will be properly quoted by the method.
-      * @return string the SQL statement for adding a comment.
-      * @throws InvalidArgumentException if the table does not exist.
-      * @since 2.0.24
-      */
-    protected function buildAddCommentSql($comment, $table, $column = null)
+    /**
+     * Resolves a table name into the literals shared by the extended-property statements, without loading metadata.
+     *
+     * @param string $table Target table. May be 'catalog-', 'schema-', or bracket-qualified.
+     * @param string|null $column Target column, or `null` for the table itself.
+     *
+     * @return array{string, string, string, string, string} Catalog prefix (`[catalog].` or empty), schema-name
+     * literal, table-name literal, the `fn_listextendedproperty` level-2 arguments, and the stored-procedure level-2
+     * parameter line.
+     */
+    private function resolveCommentParts($table, $column): array
     {
-        $tableSchema = $this->db->schema->getTableSchema($table);
+        $schema = $this->db->getSchema();
 
-        if ($tableSchema === null) {
-            throw new InvalidArgumentException("Table not found: $table");
+        $resolved = $schema->resolveRawTableName($table);
+
+        $catalogName = $resolved instanceof TableSchema ? $resolved->catalogName : null;
+
+        $listLevel2 = 'DEFAULT, DEFAULT';
+        $paramLevel2 = '';
+
+        if ($column !== null) {
+            $columnLiteral = "N'" . Quoter::escapeLiteralValue($column) . "'";
+            $listLevel2 = "'COLUMN', {$columnLiteral}";
+            $paramLevel2 = ",\n        @level2type = 'COLUMN', @level2name = {$columnLiteral}";
         }
 
-        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'" : 'SCHEMA_NAME()';
-        $tableName = 'N' . $this->db->quoteValue($tableSchema->name);
-        $columnName = $column ? 'N' . $this->db->quoteValue($column) : null;
-        $comment = 'N' . $this->db->quoteValue($comment);
+        return [
+            $catalogName === null ? '' : $schema->quoteSimpleTableName($catalogName) . '.',
+            "N'" . Quoter::escapeLiteralValue($resolved->schemaName) . "'",
+            "N'" . Quoter::escapeLiteralValue($resolved->name) . "'",
+            $listLevel2,
+            $paramLevel2,
+        ];
+    }
 
-        $functionParams = "
-            @name = N'MS_description',
-            @value = $comment,
-            @level0type = N'SCHEMA', @level0name = $schemaName,
-            @level1type = N'TABLE', @level1name = $tableName"
-            . ($column ? ", @level2type = N'COLUMN', @level2name = $columnName" : '') . ';';
+    /**
+     * Builds the SQL to add or update the `MS_Description` extended property of a table or column.
+     *
+     * Resolves the table name without loading metadata, so the statement is assembled without opening a database
+     * connection. The comment is added when the property is absent and updated otherwise, and the extended-property
+     * routines are qualified with the catalog when the name includes one.
+     *
+     * @param string $comment Comment text. Escaped and wrapped as an `N'...'` literal by the method.
+     * @param string $table Target table. May be 'catalog-', 'schema-', or bracket-qualified.
+     * @param string|null $column Target column, or `null` to comment the table itself.
+     *
+     * @return string SQL statement that adds or updates the comment.
+     *
+     * @since 2.0.24
+     */
+    protected function buildAddCommentSql($comment, $table, $column = null)
+    {
+        [$catalog, $schemaLiteral, $tableLiteral, $listLevel2, $paramLevel2] = $this->resolveCommentParts(
+            $table,
+            $column,
+        );
 
-        return "
-            IF NOT EXISTS (
-                    SELECT 1
-                    FROM fn_listextendedproperty (
-                        N'MS_description',
-                        'SCHEMA', $schemaName,
-                        'TABLE', $tableName,
-                        " . ($column ? "'COLUMN', $columnName " : ' DEFAULT, DEFAULT ') . "
-                    )
+        $valueLiteral = "N'" . Quoter::escapeLiteralValue($comment) . "'";
+
+        return <<<SQL
+        IF NOT EXISTS (
+            SELECT 1
+            FROM {$catalog}sys.fn_listextendedproperty(
+                N'MS_Description',
+                'SCHEMA', {$schemaLiteral},
+                'TABLE', {$tableLiteral},
+                {$listLevel2}
             )
-                EXEC sys.sp_addextendedproperty $functionParams
-            ELSE
-                EXEC sys.sp_updateextendedproperty $functionParams
-        ";
+        )
+            EXEC {$catalog}sys.sp_addextendedproperty
+                @name = N'MS_Description',
+                @value = {$valueLiteral},
+                @level0type = 'SCHEMA', @level0name = {$schemaLiteral},
+                @level1type = 'TABLE', @level1name = {$tableLiteral}{$paramLevel2}
+        ELSE
+            EXEC {$catalog}sys.sp_updateextendedproperty
+                @name = N'MS_Description',
+                @value = {$valueLiteral},
+                @level0type = 'SCHEMA', @level0name = {$schemaLiteral},
+                @level1type = 'TABLE', @level1name = {$tableLiteral}{$paramLevel2}
+        SQL;
     }
 
     /**
@@ -519,44 +553,41 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL command for removing a comment from a table or a column. The command built will check if a comment
-     * already exists before trying to perform the removal.
+     * Builds the SQL to remove the `MS_Description` extended property from a table or column.
      *
-     * @param string $table the table that will have the comment removed or whose column will have the comment removed.
-     * The table name will be properly quoted by the method.
-     * @param string|null $column optional. The name of the column whose comment will be removed. If empty, the command
-     * will remove the comment from the table instead. The column name will be properly quoted by the method.
-     * @return string the SQL statement for removing the comment.
-     * @throws InvalidArgumentException if the table does not exist.
+     * Resolves the table name without loading metadata, so the statement is assembled without opening a database
+     * connection. The property is dropped only when present, and the extended-property routines are qualified with the
+     * catalog when the name includes one.
+     *
+     * @param string $table Target table. May be 'catalog-', 'schema-', or bracket-qualified.
+     * @param string|null $column Target column, or `null` to remove the table comment.
+     *
+     * @return string SQL statement that removes the comment.
+     *
      * @since 2.0.24
      */
     protected function buildRemoveCommentSql($table, $column = null)
     {
-        $tableSchema = $this->db->schema->getTableSchema($table);
+        [$catalog, $schemaLiteral, $tableLiteral, $listLevel2, $paramLevel2] = $this->resolveCommentParts(
+            $table,
+            $column,
+        );
 
-        if ($tableSchema === null) {
-            throw new InvalidArgumentException("Table not found: $table");
-        }
-
-        $schemaName = $tableSchema->schemaName ? "N'" . $tableSchema->schemaName . "'" : 'SCHEMA_NAME()';
-        $tableName = 'N' . $this->db->quoteValue($tableSchema->name);
-        $columnName = $column ? 'N' . $this->db->quoteValue($column) : null;
-
-        return "
-            IF EXISTS (
-                    SELECT 1
-                    FROM fn_listextendedproperty (
-                        N'MS_description',
-                        'SCHEMA', $schemaName,
-                        'TABLE', $tableName,
-                        " . ($column ? "'COLUMN', $columnName " : ' DEFAULT, DEFAULT ') . "
-                    )
+        return <<<SQL
+        IF EXISTS (
+            SELECT 1
+            FROM {$catalog}sys.fn_listextendedproperty(
+                N'MS_Description',
+                'SCHEMA', {$schemaLiteral},
+                'TABLE', {$tableLiteral},
+                {$listLevel2}
             )
-                EXEC sys.sp_dropextendedproperty
-                    @name = N'MS_description',
-                    @level0type = N'SCHEMA', @level0name = $schemaName,
-                    @level1type = N'TABLE', @level1name = $tableName"
-                    . ($column ? ", @level2type = N'COLUMN', @level2name = $columnName" : '') . ';';
+        )
+            EXEC {$catalog}sys.sp_dropextendedproperty
+                @name = N'MS_Description',
+                @level0type = 'SCHEMA', @level0name = {$schemaLiteral},
+                @level1type = 'TABLE', @level1name = {$tableLiteral}{$paramLevel2}
+        SQL;
     }
 
     /**
