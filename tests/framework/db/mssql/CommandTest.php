@@ -1229,11 +1229,11 @@ final class CommandTest extends BaseCommand
         $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData], ['blob_col' => $testData], $params);
         $result = $db->createCommand($sql, $params)->execute();
 
-        $this->assertSame(1, $result);
+        self::assertSame(1, $result, 'Executing the merge command must affect exactly one row.');
 
         $query = (new Query())->select(['blob_col'])->from('T_upsert_varbinary')->where(['id' => 1]);
         $resultData = $query->createCommand($db)->queryOne();
 
-        $this->assertSame($testData, $resultData['blob_col']);
+        self::assertSame($testData, $resultData['blob_col'], 'The varbinary column must store and return the JSON payload unchanged.');
     }
 }
