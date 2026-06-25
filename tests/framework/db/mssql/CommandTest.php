@@ -51,9 +51,9 @@ final class CommandTest extends BaseCommand
             1,
             (int) $db->createCommand(
                 $qb->selectExists(
-                   <<<SQL
+                    <<<SQL
                     SELECT 1 FROM [customer] WHERE [status] = 2
-                    SQL
+                    SQL,
                 ),
             )->queryScalar(),
             "Matching row must yield '1'.",
@@ -64,7 +64,7 @@ final class CommandTest extends BaseCommand
                 $qb->selectExists(
                     <<<SQL
                     SELECT 1 FROM [customer] WHERE [status] = 3
-                    SQL
+                    SQL,
                 ),
             )->queryScalar(),
             "No matching row must yield '0'.",
