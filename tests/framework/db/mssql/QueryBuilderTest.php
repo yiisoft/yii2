@@ -14,11 +14,12 @@ use Closure;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yii\db\Connection;
-use yii\db\Expression;
 use yii\db\Query;
 use yiiunit\base\db\BaseQueryBuilder;
 use yiiunit\framework\db\mssql\providers\QueryBuilderProvider;
+use yiiunit\support\DbHelper;
 
 /**
  * Unit test for {@see \yii\db\QueryBuilder} with MSSQL driver.
@@ -43,11 +44,17 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testOffsetLimit(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->limit(10)->offset(5);
+        $query
+            ->select('id')
+            ->from('example')
+            ->limit(10)
+            ->offset(5);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -64,11 +71,16 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testLimit(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->limit(10);
+        $query
+            ->select('id')
+            ->from('example')
+            ->limit(10);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -85,11 +97,16 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testOffset(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->offset(10);
+        $query
+            ->select('id')
+            ->from('example')
+            ->offset(10);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -106,11 +123,15 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithoutOffsetAndLimit(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example');
+        $query
+            ->select('id')
+            ->from('example');
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -127,11 +148,18 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithExplicitOrderBy(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->orderBy('id')->limit(10)->offset(5);
+        $query
+            ->select('id')
+            ->from('example')
+            ->orderBy('id')
+            ->limit(10)
+            ->offset(5);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -148,11 +176,16 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithOrderByWithoutPagination(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->orderBy('id');
+        $query
+            ->select('id')
+            ->from('example')
+            ->orderBy('id');
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -169,11 +202,16 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithZeroLimit(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->limit(0);
+        $query
+            ->select('id')
+            ->from('example')
+            ->limit(0);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -190,11 +228,17 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithZeroLimitAndOffset(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->from('example')->limit(0)->offset(5);
+        $query
+            ->select('id')
+            ->from('example')
+            ->limit(0)
+            ->offset(5);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -211,11 +255,18 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithDistinctWithoutOrderBy(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->distinct()->from('example')->limit(10)->offset(5);
+        $query
+            ->select('id')
+            ->distinct()
+            ->from('example')
+            ->limit(10)
+            ->offset(5);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -232,11 +283,17 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithDistinctLimitOnly(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->distinct()->from('example')->limit(10);
+        $query
+            ->select('id')
+            ->distinct()
+            ->from('example')
+            ->limit(10);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -253,11 +310,17 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithDistinctOffsetOnly(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->distinct()->from('example')->offset(5);
+        $query
+            ->select('id')
+            ->distinct()
+            ->from('example')
+            ->offset(5);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -274,11 +337,17 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
     public function testBuildOrderByAndLimitWithDistinctZeroLimit(): void
     {
+        $db = $this->getConnection(false, false);
+
         $query = new Query();
 
-        $query->select('id')->distinct()->from('example')->limit(0);
+        $query
+            ->select('id')
+            ->distinct()
+            ->from('example')
+            ->limit(0);
 
-        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
 
         self::assertSame(
             <<<SQL
@@ -312,11 +381,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         self::assertSame(
             $expected,
-            $qb->addCommentOnTable($table, $comment),
+            $db->getQueryBuilder()->addCommentOnTable($table, $comment),
             'Generated extended-property SQL must match the expected statement.',
         );
     }
@@ -326,11 +393,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         self::assertSame(
             $expected,
-            $qb->addCommentOnColumn($table, $column, $comment),
+            $db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment),
             'Generated extended-property SQL must match the expected statement.',
         );
     }
@@ -340,11 +405,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         self::assertSame(
             $expected,
-            $qb->dropCommentFromTable($table),
+            $db->getQueryBuilder()->dropCommentFromTable($table),
             'Generated extended-property SQL must match the expected statement.',
         );
     }
@@ -354,11 +417,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         self::assertSame(
             $expected,
-            $qb->dropCommentFromColumn($table, $column),
+            $db->getQueryBuilder()->dropCommentFromColumn($table, $column),
             'Generated extended-property SQL must match the expected statement.',
         );
     }
@@ -369,116 +430,30 @@ final class QueryBuilderTest extends BaseQueryBuilder
      */
     public function columnTypes()
     {
-        return array_merge(parent::columnTypes(), []);
+        return [...parent::columnTypes()];
     }
 
-    public static function batchInsertProvider(): array
-    {
-        $data = parent::batchInsertProvider();
-
-        $data['escape-danger-chars'][3] = "INSERT INTO [customer] ([address]) VALUES ('SQL-danger chars are escaped: ''); --')";
-        $data['bool-false, bool2-null'][3] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (0, NULL)';
-        $data['bool-false, time-now()'][3] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())';
-
-        return $data;
+    #[DataProviderExternal(QueryBuilderProvider::class, 'batchInsert')]
+    public function testBatchInsert(
+        string $table,
+        array $columns,
+        array $value,
+        string $expected,
+        bool $replaceQuotes = true,
+    ): void {
+        parent::testBatchInsert($table, $columns, $value, $expected, $replaceQuotes);
     }
 
-    public static function insertProvider(): array
-    {
-        return [
-            'regular-values' => [
-                'customer',
-                [
-                    'email' => 'test@example.com',
-                    'name' => 'silverfire',
-                    'address' => 'Kyiv {{city}}, Ukraine',
-                    'is_active' => false,
-                    'related_id' => null,
-                ],
-                [],
-                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
-                    'INSERT INTO [customer] ([email], [name], [address], [is_active], [related_id]) OUTPUT INSERTED.[id],INSERTED.[email],INSERTED.[name],INSERTED.[address],INSERTED.[status],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp0, :qp1, :qp2, :qp3, :qp4);' .
-                    'SELECT * FROM @temporary_inserted',
-                [
-                    ':qp0' => 'test@example.com',
-                    ':qp1' => 'silverfire',
-                    ':qp2' => 'Kyiv {{city}}, Ukraine',
-                    ':qp3' => false,
-                    ':qp4' => null,
-                ],
-            ],
-            'params-and-expressions' => [
-                '{{%type}}',
-                [
-                    '{{%type}}.[[related_id]]' => null,
-                    '[[time]]' => new Expression('now()'),
-                ],
-                [],
-                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([int_col] int , [int_col2] int NULL, [tinyint_col] tinyint NULL, [smallint_col] smallint NULL, [char_col] char(100) , [char_col2] varchar(100) NULL, [char_col3] text NULL, [float_col] decimal(4,3) , [float_col2] float NULL, [blob_col] varbinary(max) NULL, [numeric_col] decimal(5,2) NULL, [time] datetime , [bool_col] tinyint , [bool_col2] tinyint NULL);' .
-                'INSERT INTO {{%type}} ({{%type}}.[[related_id]], [[time]]) OUTPUT INSERTED.[int_col],INSERTED.[int_col2],INSERTED.[tinyint_col],INSERTED.[smallint_col],INSERTED.[char_col],INSERTED.[char_col2],INSERTED.[char_col3],INSERTED.[float_col],INSERTED.[float_col2],INSERTED.[blob_col],INSERTED.[numeric_col],INSERTED.[time],INSERTED.[bool_col],INSERTED.[bool_col2] INTO @temporary_inserted VALUES (:qp0, now());' .
-                'SELECT * FROM @temporary_inserted',
-                [
-                    ':qp0' => null,
-                ],
-                false,
-            ],
-            'carry passed params' => [
-                'customer',
-                [
-                    'email' => 'test@example.com',
-                    'name' => 'sergeymakinen',
-                    'address' => '{{city}}',
-                    'is_active' => false,
-                    'related_id' => null,
-                    'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
-                ],
-                [':phBar' => 'bar'],
-                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
-                    'INSERT INTO [customer] ([email], [name], [address], [is_active], [related_id], [col]) OUTPUT INSERTED.[id],INSERTED.[email],INSERTED.[name],INSERTED.[address],INSERTED.[status],INSERTED.[profile_id] INTO @temporary_inserted VALUES (:qp1, :qp2, :qp3, :qp4, :qp5, CONCAT(:phFoo, :phBar));' .
-                    'SELECT * FROM @temporary_inserted',
-                [
-                    ':phBar' => 'bar',
-                    ':qp1' => 'test@example.com',
-                    ':qp2' => 'sergeymakinen',
-                    ':qp3' => '{{city}}',
-                    ':qp4' => false,
-                    ':qp5' => null,
-                    ':phFoo' => 'foo',
-                ],
-            ],
-            'carry passed params (query)' => [
-                'customer',
-                (new Query())
-                    ->select([
-                        'email',
-                        'name',
-                        'address',
-                        'is_active',
-                        'related_id',
-                    ])
-                    ->from('customer')
-                    ->where([
-                        'email' => 'test@example.com',
-                        'name' => 'sergeymakinen',
-                        'address' => '{{city}}',
-                        'is_active' => false,
-                        'related_id' => null,
-                        'col' => new Expression('CONCAT(:phFoo, :phBar)', [':phFoo' => 'foo']),
-                    ]),
-                [':phBar' => 'bar'],
-                'SET NOCOUNT ON;DECLARE @temporary_inserted TABLE ([id] int , [email] varchar(128) , [name] varchar(128) NULL, [address] text NULL, [status] int NULL, [profile_id] int NULL);' .
-                    'INSERT INTO [customer] ([email], [name], [address], [is_active], [related_id]) OUTPUT INSERTED.[id],INSERTED.[email],INSERTED.[name],INSERTED.[address],INSERTED.[status],INSERTED.[profile_id] INTO @temporary_inserted SELECT [email], [name], [address], [is_active], [related_id] FROM [customer] WHERE ([email]=:qp1) AND ([name]=:qp2) AND ([address]=:qp3) AND ([is_active]=:qp4) AND ([related_id] IS NULL) AND ([col]=CONCAT(:phFoo, :phBar));' .
-                    'SELECT * FROM @temporary_inserted',
-                [
-                    ':phBar' => 'bar',
-                    ':qp1' => 'test@example.com',
-                    ':qp2' => 'sergeymakinen',
-                    ':qp3' => '{{city}}',
-                    ':qp4' => false,
-                    ':phFoo' => 'foo',
-                ],
-            ],
-        ];
+    #[DataProviderExternal(QueryBuilderProvider::class, 'insert')]
+    public function testInsert(
+        string $table,
+        array|Query $columns,
+        array $params,
+        string $expectedSQL,
+        array|string $expectedParams,
+        bool $replaceQuotes = true,
+    ): void {
+        parent::testInsert($table, $columns, $params, $expectedSQL, $expectedParams, $replaceQuotes);
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'resetSequence')]
@@ -505,11 +480,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
     ): void {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         $actualParams = [];
 
-        $actualSql = $qb->upsert(
+        $actualSql = $db->getQueryBuilder()->upsert(
             $table,
             $insertColumns,
             $updateColumns,
@@ -538,11 +511,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
     ): void {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         self::assertSame(
             $expected,
-            $qb->addDefaultValue($name, $table, $column, $value),
+            $db->getQueryBuilder()->addDefaultValue($name, $table, $column, $value),
             'Generated SQL must match the expected DEFAULT constraint statement.',
         );
     }
@@ -558,15 +529,13 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         if ($type instanceof Closure) {
             $type = $type($this->getDb());
         }
 
         self::assertSame(
             $expected,
-            $qb->alterColumn('foo1', 'bar', $type),
+            $db->getQueryBuilder()->alterColumn('foo1', 'bar', $type),
             'Generated SQL must match the expected batch.',
         );
     }
@@ -576,15 +545,13 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         if ($type instanceof Closure) {
             $type = $type($this->getDb());
         }
 
         self::assertSame(
             $expected,
-            $qb->alterColumn($table, 'bar', $type),
+            $db->getQueryBuilder()->alterColumn($table, 'bar', $type),
             'Generated SQL must match the expected batch.',
         );
     }
@@ -594,27 +561,40 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         self::assertSame(
             $expected,
-            $qb->dropColumn($table, $column),
+            $db->getQueryBuilder()->dropColumn($table, $column),
             'Generated SQL must match the expected batch.',
         );
     }
 
     public function testDropColumnOnDb(): void
     {
-        $connection = $this->getConnection();
+        $db = $this->getConnection(false, false);
 
-        $sql = $connection->getQueryBuilder()->alterColumn('foo1', 'bar', $this->string(64)->defaultValue('')->check('LEN(bar) < 5')->unique());
-        $connection->createCommand($sql)->execute();
+        $sql = $db->getQueryBuilder()->alterColumn(
+            'foo1',
+            'bar',
+            $this->string(64)->defaultValue('')->check('LEN(bar) < 5')->unique(),
+        );
 
-        $sql = $connection->getQueryBuilder()->dropColumn('foo1', 'bar');
-        $this->assertEquals(0, $connection->createCommand($sql)->execute());
+        $db->createCommand($sql)->execute();
 
-        $schema = $connection->getTableSchema('[foo1]', true);
-        $this->assertEquals(null, $schema->getColumn('bar'));
+        $sql = $db->getQueryBuilder()->dropColumn('foo1', 'bar');
+
+        self::assertEquals(
+            0,
+            $db->createCommand($sql)->execute(),
+            'Batch must affect zero rows.',
+        );
+
+        $schema = $db->getTableSchema('[foo1]', true);
+
+        self::assertEquals(
+            null,
+            $schema->getColumn('bar'),
+            'Column must be removed from the table schema.',
+        );
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'dropColumnConstraintsOnDb')]
@@ -626,7 +606,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
     ): void {
         $db = $this->getConnection(false, false);
 
-        $this->dropTablesIfExist($db, $tableNames);
+        DbHelper::dropTablesIfExist($db, $tableNames);
 
         foreach ($createTablesSql as $sql) {
             $db->createCommand($sql)->execute();
@@ -634,14 +614,12 @@ final class QueryBuilderTest extends BaseQueryBuilder
 
         $this->assertDropColumnOnDb($db, $table, $column);
 
-        $this->dropTablesIfExist($db, $tableNames);
+        DbHelper::dropTablesIfExist($db, $tableNames);
     }
 
     private function assertDropColumnOnDb(Connection $db, string $table, string $column): void
     {
-        $qb = $db->getQueryBuilder();
-
-        $sql = $qb->dropColumn($table, $column);
+        $sql = $db->getQueryBuilder()->dropColumn($table, $column);
 
         self::assertSame(
             0,
@@ -657,19 +635,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    private function dropTablesIfExist(Connection $connection, array $tables): void
-    {
-        foreach ($tables as $table) {
-            $quotedTable = $connection->quoteTableName($table);
-
-            $connection->createCommand(
-                <<<SQL
-                IF OBJECT_ID(N'{$quotedTable}', N'U') IS NOT NULL DROP TABLE {$quotedTable}
-                SQL,
-            )->execute();
-        }
-    }
-
     public function testThrowInvalidArgumentExceptionWhenInsertTargetsMissingTableSchema(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -682,27 +647,20 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $this->getConnection()->getQueryBuilder()->insert('non_existent_table', ['email' => 'x@example.com'], $params);
     }
 
-    public static function buildFromDataProvider(): array
+    #[DataProviderExternal(QueryBuilderProvider::class, 'buildFrom')]
+    public function testBuildFrom(string $table, string $expected): void
     {
-        $data = parent::buildFromDataProvider();
-        $data[] = ['[test]', '[[test]]'];
-        $data[] = ['[test] [t1]', '[[test]] [[t1]]'];
-        $data[] = ['[table.name]', '[[table.name]]'];
-        $data[] = ['[table.name.with.dots]', '[[table.name.with.dots]]'];
-        $data[] = ['[table name]', '[[table name]]'];
-        $data[] = ['[table name with spaces]', '[[table name with spaces]]'];
-
-        return $data;
+        parent::testBuildFrom($table, $expected);
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'renameTable')]
     public function testRenameTable(string $oldName, string $newName, string $expectedSql): void
     {
-        $qb = $this->getQueryBuilder();
+        $db = $this->getConnection(false, false);
 
         self::assertSame(
             $expectedSql,
-            $qb->renameTable($oldName, $newName),
+            $db->getQueryBuilder()->renameTable($oldName, $newName),
             'Generated SQL must match the expected batch.',
         );
     }
@@ -710,24 +668,24 @@ final class QueryBuilderTest extends BaseQueryBuilder
     #[DataProviderExternal(QueryBuilderProvider::class, 'renameColumn')]
     public function testRenameColumn(string $table, string $oldName, string $newName, string $expectedSql): void
     {
-        $qb = $this->getQueryBuilder();
+        $db = $this->getConnection(false, false);
 
         self::assertSame(
             $expectedSql,
-            $qb->renameColumn($table, $oldName, $newName),
+            $db->getQueryBuilder()->renameColumn($table, $oldName, $newName),
             'Generated SQL must match the expected batch.',
         );
     }
 
     public function testSelectExists(): void
     {
-        $qb = $this->getQueryBuilder(false, false);
+        $db = $this->getConnection(false, false);
 
         self::assertSame(
             <<<SQL
             SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer]) THEN 1 ELSE 0 END AS [result]
             SQL,
-            $qb->selectExists(
+            $db->getQueryBuilder()->selectExists(
                 <<<SQL
                 SELECT 1 FROM [customer]
                 SQL,
@@ -738,7 +696,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
             <<<SQL
             SELECT CASE WHEN EXISTS(SELECT 1 FROM [customer] WHERE [status] = 2) THEN 1 ELSE 0 END AS [result]
             SQL,
-            $qb->selectExists(
+            $db->getQueryBuilder()->selectExists(
                 <<<SQL
                 SELECT 1 FROM [customer] WHERE [status] = 2
                 SQL,
@@ -750,52 +708,78 @@ final class QueryBuilderTest extends BaseQueryBuilder
     #[DataProviderExternal(QueryBuilderProvider::class, 'checkIntegrity')]
     public function testCheckIntegrity(bool $check, string $schema, string $table, string $expectedSql): void
     {
-        $qb = $this->getQueryBuilder(false, false);
+        $db = $this->getConnection(false, false);
 
         self::assertSame(
             $expectedSql,
-            $qb->checkIntegrity($check, $schema, $table),
+            $db->getQueryBuilder()->checkIntegrity($check, $schema, $table),
             'Generated SQL must match the expected statement.',
         );
     }
 
     public function testResetSequenceThrowsExceptionForNonExistentTable(): void
     {
-        $qb = $this->getQueryBuilder(true, true);
-        $this->expectException('yii\base\InvalidArgumentException');
-        $this->expectExceptionMessage('Table not found: non_existent_table');
-        $qb->resetSequence('non_existent_table');
+        $db = $this->getConnection(false, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'Table not found: non_existent_table',
+        );
+
+        $db->getQueryBuilder()->resetSequence('non_existent_table');
     }
 
     public function testResetSequenceThrowsExceptionForTableWithoutSequence(): void
     {
-        $qb = $this->getQueryBuilder(true, true);
-        $this->expectException('yii\base\InvalidArgumentException');
-        $this->expectExceptionMessage("There is not sequence associated with table 'order_item'.");
-        $qb->resetSequence('order_item');
+        $db = $this->getConnection(false, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            "There is not sequence associated with table 'order_item'.",
+        );
+
+        $db->getQueryBuilder()->resetSequence('order_item');
     }
 
     public function testUpdateWithVarbinaryData(): void
     {
-        $qb = $this->getQueryBuilder(true, true);
+        $db = $this->getConnection(false, false);
+
         $params = [];
-        $sql = $qb->update('T_upsert_varbinary', ['blob_col' => 'test data'], ['id' => 1], $params);
-        $this->assertStringContainsString('CONVERT(VARBINARY(MAX), 0x' . bin2hex('test data') . ')', $sql);
-        $this->assertSame([':qp0' => 1], $params);
+
+        $sql = $db->getQueryBuilder()->update('T_upsert_varbinary', ['blob_col' => 'test data'], ['id' => 1], $params);
+
+        self::assertSame(
+            <<<SQL
+            UPDATE [T_upsert_varbinary] SET [blob_col]=CONVERT(VARBINARY(MAX), 0x746573742064617461) WHERE [id]=:qp0
+            SQL,
+            $sql,
+            'VARBINARY value must be inlined, not parameter-bound.',
+        );
+        self::assertSame(
+            [':qp0' => 1],
+            $params,
+            'Only the WHERE value must be bound as a parameter.',
+        );
     }
 
-    public function testCompositeInWithSubqueryThrowsException(): void
+    public function testThrowNotSupportedExceptionForCompositeInWithSubquery(): void
     {
         $db = $this->getConnection(false, false);
 
-        $qb = $db->getQueryBuilder();
-
         $params = [];
 
-        $condition = ['in', ['id', 'name'], (new Query())->select(['id', 'name'])->from('users')];
+        $condition = [
+            'in',
+            ['id', 'name'],
+            (new Query())->select(['id', 'name'])->from('users'),
+        ];
 
-        $this->expectException('yii\base\NotSupportedException');
+        $this->expectException(NotSupportedException::class);
+        $this->expectExceptionMessage(
+            'yii\db\mssql\conditions\InConditionBuilder::buildSubqueryInCondition is not supported by MSSQL.',
+        );
 
-        $qb->buildCondition($condition, $params);
+        $db->getQueryBuilder()->buildCondition($condition, $params);
     }
 }

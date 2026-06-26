@@ -302,4 +302,54 @@ final class CommandProvider
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{string, array<string, mixed>, array<string, mixed>}>
+     */
+    public static function insert(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.customer',
+                [
+                    'email' => 'catalog@example.com',
+                    'name' => 'catalog',
+                    'address' => 'catalog address',
+                    'status' => 1,
+                ],
+                [
+                    'email' => 'catalog@example.com',
+                    'name' => 'catalog',
+                    'address' => 'catalog address',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, array<string, mixed>, array<string, mixed>, array<string, mixed>}>
+     */
+    public static function upsert(): array
+    {
+        return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.T_upsert',
+                [
+                    'email' => 'catalog@example.com',
+                    'address' => 'first address',
+                    'status' => 1,
+                ],
+                [
+                    'email' => 'catalog@example.com',
+                    'address' => 'second address',
+                    'status' => 2,
+                ],
+                [
+                    'email' => 'catalog@example.com',
+                    'address' => 'second address',
+                    'status' => 2,
+                ],
+            ],
+        ];
+    }
 }

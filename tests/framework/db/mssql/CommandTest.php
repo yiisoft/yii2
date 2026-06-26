@@ -20,6 +20,8 @@ use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mssql\providers\CommandProvider;
 
+use function json_encode;
+
 /**
  * Unit tests for {@see \yii\db\mssql\Command} functionality for the MSSQL driver.
  *
@@ -1221,19 +1223,117 @@ final class CommandTest extends BaseCommand
     {
         $db = $this->getConnection();
 
-        $qb = $db->getQueryBuilder();
         $testData = json_encode(['test' => 'string', 'test2' => 'integer'], JSON_THROW_ON_ERROR);
 
         $params = [];
 
-        $sql = $qb->upsert('T_upsert_varbinary', ['id' => 1, 'blob_col' => $testData], ['blob_col' => $testData], $params);
+        $sql = $db->getQueryBuilder()->upsert(
+            'T_upsert_varbinary',
+            ['id' => 1, 'blob_col' => $testData],
+            ['blob_col' => $testData],
+            $params,
+        );
         $result = $db->createCommand($sql, $params)->execute();
 
-        self::assertSame(1, $result, 'Executing the merge command must affect exactly one row.');
+        self::assertSame(
+            1,
+            $result,
+            'Executing the merge command must affect exactly one row.',
+        );
 
-        $query = (new Query())->select(['blob_col'])->from('T_upsert_varbinary')->where(['id' => 1]);
+        $query = (new Query())
+            ->select(['blob_col'])
+            ->from('T_upsert_varbinary')
+            ->where(['id' => 1]);
+
         $resultData = $query->createCommand($db)->queryOne();
 
-        self::assertSame($testData, $resultData['blob_col'], 'The varbinary column must store and return the JSON payload unchanged.');
+        self::assertSame(
+            $testData,
+            $resultData['blob_col'],
+            'The varbinary column must store and return the JSON payload unchanged.',
+        );
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'insert')]
+    public function testInsertWithCatalogQualifiedTableName(string $table, array $columns, array $expected): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->delete(
+            $table,
+            ['email' => $expected['email']],
+        )->execute();
+        $db->createCommand()->insert(
+            $table,
+            $columns,
+        )->execute();
+
+        $actual = (new Query())
+            ->select(['email', 'name', 'address'])
+            ->from($table)
+            ->where(['email' => $expected['email']])
+            ->one($db);
+
+        self::assertEquals(
+            $expected,
+            $actual,
+            'Catalog qualified insert must persist the row.',
+        );
+
+        $db->createCommand()->delete(
+            $table,
+            ['email' => $expected['email']],
+        )->execute();
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'upsert')]
+    public function testUpsertWithCatalogQualifiedTableName(
+        string $table,
+        array $insertColumns,
+        array $updateColumns,
+        array $expected,
+    ): void {
+        $db = $this->getConnection();
+
+        $db->createCommand()->delete(
+            $table,
+            ['email' => $expected['email']],
+        )->execute();
+        $db->createCommand()->upsert(
+            $table,
+            $insertColumns,
+        )->execute();
+
+        self::assertSame(
+            1,
+            (int) (new Query())
+                ->from($table)
+                ->where(['email' => $expected['email']])
+                ->count('*', $db),
+            'Upsert insert path must create exactly one row.',
+        );
+
+        $db->createCommand()->upsert(
+            $table,
+            $updateColumns,
+        )->execute();
+
+        $actual = (new Query())
+            ->select(['email', 'address', 'status'])
+            ->from($table)
+            ->where(['email' => $expected['email']])
+            ->one($db);
+
+        self::assertEquals(
+            $expected,
+            $actual,
+            'Upsert update path must overwrite the matched row.',
+        );
+
+        $db->createCommand()->delete(
+            $table,
+            ['email' => $expected['email']],
+        )->execute();
     }
 }
