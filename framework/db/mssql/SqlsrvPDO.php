@@ -10,8 +10,6 @@ declare(strict_types=1);
 
 namespace yii\db\mssql;
 
-use PDO;
-
 /**
  * This is an extension of the default PDO class of SQLSRV driver.
  *
@@ -20,7 +18,7 @@ use PDO;
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
-class SqlsrvPDO extends PDO
+class SqlsrvPDO extends \PDO
 {
     /**
      * Returns value of the last inserted ID.
