@@ -770,6 +770,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function getColumnType($type)
     {
         $columnType = parent::getColumnType($type);
+
         // remove unsupported keywords
         $columnType = preg_replace("/\s*comment '.*'/i", '', $columnType);
         $columnType = preg_replace('/ first$/i', '', $columnType);
