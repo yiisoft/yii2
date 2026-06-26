@@ -43,7 +43,7 @@ final class DBLibPDOTest extends DatabaseTestCase
         );
         self::assertNotEmpty(
             $version,
-            "Version must not be empty.",
+            'Version must not be empty.',
         );
     }
 
