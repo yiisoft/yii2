@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mssql;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\PreserveGlobalState;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use yii\db\mssql\DBLibPDO;
 use yiiunit\framework\db\DatabaseTestCase;
 
@@ -27,7 +29,9 @@ final class DBLibPDOTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
-    public function testLastInsertIdReturnsFalseWithoutInsert(): void
+    #[RunInSeparateProcess]
+    #[PreserveGlobalState(false)]
+    public function testLastInsertIdReturnsFalseWhenNoIdentityGenerated(): void
     {
         $db = $this->getConnection();
 
@@ -37,7 +41,7 @@ final class DBLibPDOTest extends DatabaseTestCase
 
         self::assertFalse(
             $pdo->lastInsertId(),
-            "No prior insert must yield 'false'.",
+            "No identity value must yield 'false'.",
         );
     }
 
@@ -87,8 +91,6 @@ final class DBLibPDOTest extends DatabaseTestCase
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        // `OUTPUT INSERTED.[id]` returns the new id from the `INSERT` itself, so the assertion is independent of the
-        // table contents.
         $expectedId = $pdo
             ->query(
                 <<<SQL
