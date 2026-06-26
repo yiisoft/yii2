@@ -27,6 +27,22 @@ final class SqlsrvPDOTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
+    public function testLastInsertIdForwardsSequenceNameToParent(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = new SqlsrvPDO($db->dsn, $db->username, $db->password);
+
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        // A non-empty sequence name is forwarded to the native driver, which reports an empty string for `sqlsrv`.
+        self::assertSame(
+            '',
+            $pdo->lastInsertId('non_existent_sequence'),
+            'Explicit sequence name must be forwarded to the parent driver.',
+        );
+    }
+
     public function testLastInsertIdReturnsInsertedRowId(): void
     {
         $db = $this->getConnection();
@@ -35,21 +51,17 @@ final class SqlsrvPDOTest extends DatabaseTestCase
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $pdo->exec(
-            <<<SQL
-            INSERT INTO [dbo].[profile] ([description]) VALUES ('sqlsrv last insert id')
-            SQL,
-        );
-
-        $id = $pdo->lastInsertId();
-
+        // `OUTPUT INSERTED.[id]` returns the new id from the `INSERT` itself, so the assertion is independent of the
+        // table contents.
         $expectedId = $pdo
             ->query(
                 <<<SQL
-                SELECT [id] FROM [dbo].[profile] WHERE [description] = 'sqlsrv last insert id'
+                INSERT INTO [dbo].[profile] ([description]) OUTPUT INSERTED.[id] VALUES ('sqlsrv last insert id')
                 SQL,
             )
             ->fetchColumn();
+
+        $id = $pdo->lastInsertId();
 
         self::assertIsString(
             $id,

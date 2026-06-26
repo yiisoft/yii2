@@ -36,6 +36,10 @@ class SqlsrvPDO extends PDO
      */
     public function lastInsertId(string|null $sequence = null): string|false
     {
-        return !$sequence ? parent::lastInsertId() : parent::lastInsertId($sequence);
+        if ($sequence === null || $sequence === '') {
+            return parent::lastInsertId();
+        }
+
+        return parent::lastInsertId($sequence);
     }
 }

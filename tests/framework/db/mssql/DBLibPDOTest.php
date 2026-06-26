@@ -27,6 +27,37 @@ final class DBLibPDOTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
+    public function testLastInsertIdReturnsFalseWithoutInsert(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = new DBLibPDO($db->dsn, $db->username, $db->password);
+
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        self::assertFalse(
+            $pdo->lastInsertId(),
+            "No prior insert must yield 'false'.",
+        );
+    }
+
+    public function testThrowPDOExceptionWhenAttributeUnsupported(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = new DBLibPDO($db->dsn, $db->username, $db->password);
+
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        $this->expectException(\PDOException::class);
+        $this->expectExceptionMessageMatches(
+            '/^SQLSTATE\[IM001\]: Driver does not support this function: driver does not support that attribute/',
+        );
+
+        // An unsupported attribute other than `ATTR_SERVER_VERSION` must propagate through the `default` branch.
+        $pdo->getAttribute(\PDO::ATTR_AUTOCOMMIT);
+    }
+
     public function testGetAttributeReturnsServerVersion(): void
     {
         $db = $this->getConnection();
@@ -35,6 +66,7 @@ final class DBLibPDOTest extends DatabaseTestCase
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
+        // `sqlsrv` supports `ATTR_SERVER_VERSION` natively, so the dblib `catch` fallback is not reached here.
         $version = $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
 
         self::assertIsString(
@@ -54,21 +86,18 @@ final class DBLibPDOTest extends DatabaseTestCase
         $pdo = new DBLibPDO($db->dsn, $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        $pdo->exec(
-            <<<SQL
-            INSERT INTO [dbo].[profile] ([description]) VALUES ('dblib last insert id')
-            SQL,
-        );
 
-        $id = $pdo->lastInsertId();
-
+        // `OUTPUT INSERTED.[id]` returns the new id from the `INSERT` itself, so the assertion is independent of the
+        // table contents.
         $expectedId = $pdo
             ->query(
                 <<<SQL
-                SELECT [id] FROM [dbo].[profile] WHERE [description] = 'dblib last insert id'
+                INSERT INTO [dbo].[profile] ([description]) OUTPUT INSERTED.[id] VALUES ('dblib last insert id')
                 SQL,
             )
             ->fetchColumn();
+
+        $id = $pdo->lastInsertId();
 
         self::assertIsString(
             $id,

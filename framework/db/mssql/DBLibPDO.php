@@ -62,7 +62,10 @@ class DBLibPDO extends PDO
         } catch (PDOException $e) {
             switch ($attribute) {
                 case self::ATTR_SERVER_VERSION:
+                    // Reached only on the `dblib` driver (throws on `getAttribute()`); never on `sqlsrv`/CI.
+                    // @codeCoverageIgnoreStart
                     return $this->query($sql)->fetchColumn();
+                    // @codeCoverageIgnoreEnd
                 default:
                     throw $e;
             }

@@ -27,6 +27,37 @@ final class PDOTest extends DatabaseTestCase
 {
     protected $driverName = 'sqlsrv';
 
+    public function testLastInsertIdReturnsFalseWithoutInsert(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = new MssqlPdo($db->dsn, $db->username, $db->password);
+
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        self::assertFalse(
+            $pdo->lastInsertId(),
+            "No prior insert must yield 'false'.",
+        );
+    }
+
+    public function testThrowPDOExceptionWhenAttributeUnsupported(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = new MssqlPdo($db->dsn, $db->username, $db->password);
+
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+
+        $this->expectException(\PDOException::class);
+        $this->expectExceptionMessageMatches(
+            '/^SQLSTATE\[IM001\]: Driver does not support this function: driver does not support that attribute/',
+        );
+
+        // An unsupported attribute other than `ATTR_SERVER_VERSION` must propagate through the `default` branch.
+        $pdo->getAttribute(\PDO::ATTR_AUTOCOMMIT);
+    }
+
     public function testBeginTransactionAndCommitPersistsInsert(): void
     {
         $db = $this->getConnection();
@@ -41,7 +72,7 @@ final class PDOTest extends DatabaseTestCase
 
         self::assertTrue(
             $started,
-            "Start must report 'true0'.",
+            "Start must report 'true'.",
         );
 
         $pdo->exec(
@@ -151,21 +182,17 @@ final class PDOTest extends DatabaseTestCase
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $pdo->exec(
-            <<<SQL
-            INSERT INTO [dbo].[profile] ([description]) VALUES ('pdo last insert id')
-            SQL,
-        );
-
-        $id = $pdo->lastInsertId();
-
+        // `OUTPUT INSERTED.[id]` returns the new id from the `INSERT` itself, so the assertion is independent of the
+        // table contents.
         $expectedId = $pdo
             ->query(
                 <<<SQL
-                SELECT [id] FROM [dbo].[profile] WHERE [description] = 'pdo last insert id'
+                INSERT INTO [dbo].[profile] ([description]) OUTPUT INSERTED.[id] VALUES ('pdo last insert id')
                 SQL,
             )
             ->fetchColumn();
+
+        $id = $pdo->lastInsertId();
 
         self::assertIsString(
             $id,
