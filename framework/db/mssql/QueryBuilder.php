@@ -317,7 +317,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             $requestedNextValue = $value === null ? 'NULL' : (string) (int) $value;
 
-            $systemCatalogName = $this->qualifiedSystemCatalog(
+            /** @var Schema $dbSchema */
+            $dbSchema = $this->db->getSchema();
+            $systemCatalogName = $dbSchema->quoteSystemCatalogName(
                 $table instanceof TableSchema ? $table->catalogName : null,
             );
 
@@ -416,9 +418,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         /** @var Schema $dbSchema */
         $dbSchema = $this->db->getSchema();
-
         [$catalogName, $schemaName] = $dbSchema->resolveRawCatalogSchemaName($schema);
-        $systemCatalog = $this->qualifiedSystemCatalog($catalogName);
+        $systemCatalog = $dbSchema->quoteSystemCatalogName($catalogName);
 
         $catalogNameLiteral = $catalogName === null ? 'NULL' : "N'" . Quoter::escapeLiteralValue($catalogName) . "'";
 
@@ -920,17 +921,4 @@ class QueryBuilder extends \yii\db\QueryBuilder
         return parent::buildWithQueries($withs, $params);
     }
 
-    /**
-     * Returns the `[sys]` system catalog name, optionally qualified by the database catalog.
-     *
-     * @param string|null $catalogName The database catalog name, or `null` to target the current database.
-     *
-     * @return string The `[sys]` schema name, prefixed with the quoted catalog when one is provided.
-     */
-    private function qualifiedSystemCatalog(?string $catalogName): string
-    {
-        return $catalogName === null
-            ? '[sys]'
-            : $this->db->getSchema()->quoteSimpleTableName($catalogName) . '.[sys]';
-    }
 }
