@@ -34,4 +34,38 @@ final class DbHelper
             }
         }
     }
+
+    /**
+     * Creates the given schema on SQL Server when it does not already exist.
+     *
+     * Targets the MSSQL driver through `SCHEMA_ID()` and a batched `EXEC('CREATE SCHEMA ...')` statement.
+     *
+     * @param Connection $db Database connection.
+     * @param string $schema Schema name to create.
+     */
+    public static function createSchemaIfNotExist(Connection $db, string $schema): void
+    {
+        $sql = <<<SQL
+        IF SCHEMA_ID('$schema') IS NULL EXEC('CREATE SCHEMA [$schema]')
+        SQL;
+
+        $db->createCommand($sql)->execute();
+    }
+
+    /**
+     * Drops the given schema on SQL Server when it exists.
+     *
+     * Targets the MSSQL driver through `SCHEMA_ID()` and a batched `EXEC('DROP SCHEMA ...')` statement.
+     *
+     * @param Connection $db Database connection.
+     * @param string $schema Schema name to drop.
+     */
+    public static function dropSchemaIfExist(Connection $db, string $schema): void
+    {
+        $sql = <<<SQL
+        IF SCHEMA_ID('$schema') IS NOT NULL EXEC('DROP SCHEMA [$schema]')
+        SQL;
+
+        $db->createCommand($sql)->execute();
+    }
 }

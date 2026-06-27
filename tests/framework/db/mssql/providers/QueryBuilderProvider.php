@@ -2542,4 +2542,175 @@ final class QueryBuilderProvider
 
         return $data;
     }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function createTableWithQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified name' => [
+                'yiitest.dbo.T_migration',
+                <<<SQL
+                CREATE TABLE [yiitest].[dbo].[T_migration] (
+                \t[id] int IDENTITY PRIMARY KEY
+                )
+                SQL,
+            ],
+            'schema-qualified bracket-quoted name' => [
+                '[dbo].[T_migration]',
+                <<<SQL
+                CREATE TABLE [dbo].[T_migration] (
+                \t[id] int IDENTITY PRIMARY KEY
+                )
+                SQL,
+            ],
+            'schema-qualified plain name' => [
+                'dbo.T_migration',
+                <<<SQL
+                CREATE TABLE [dbo].[T_migration] (
+                \t[id] int IDENTITY PRIMARY KEY
+                )
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function addColumnWithQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified name' => [
+                'yiitest.dbo.T_migration',
+                <<<SQL
+                ALTER TABLE [yiitest].[dbo].[T_migration] ADD [label] nvarchar(255)
+                SQL,
+            ],
+            'schema-qualified bracket-quoted name' => [
+                '[dbo].[T_migration]',
+                <<<SQL
+                ALTER TABLE [dbo].[T_migration] ADD [label] nvarchar(255)
+                SQL,
+            ],
+            'schema-qualified plain name' => [
+                'dbo.T_migration',
+                <<<SQL
+                ALTER TABLE [dbo].[T_migration] ADD [label] nvarchar(255)
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function createIndexWithQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified name' => [
+                'yiitest.dbo.T_migration',
+                <<<SQL
+                CREATE INDEX [idx_label] ON [yiitest].[dbo].[T_migration] ([label])
+                SQL,
+            ],
+            'schema-qualified bracket-quoted name' => [
+                '[dbo].[T_migration]',
+                <<<SQL
+                CREATE INDEX [idx_label] ON [dbo].[T_migration] ([label])
+                SQL,
+            ],
+            'schema-qualified plain name' => [
+                'dbo.T_migration',
+                <<<SQL
+                CREATE INDEX [idx_label] ON [dbo].[T_migration] ([label])
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function addPrimaryKeyWithQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified name' => [
+                'yiitest.dbo.T_migration',
+                <<<SQL
+                ALTER TABLE [yiitest].[dbo].[T_migration] ADD CONSTRAINT [pk_T_migration] PRIMARY KEY ([id])
+                SQL,
+            ],
+            'schema-qualified bracket-quoted name' => [
+                '[dbo].[T_migration]',
+                <<<SQL
+                ALTER TABLE [dbo].[T_migration] ADD CONSTRAINT [pk_T_migration] PRIMARY KEY ([id])
+                SQL,
+            ],
+            'schema-qualified plain name' => [
+                'dbo.T_migration',
+                <<<SQL
+                ALTER TABLE [dbo].[T_migration] ADD CONSTRAINT [pk_T_migration] PRIMARY KEY ([id])
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function addForeignKeyWithQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified names' => [
+                'yiitest.dbo.T_child',
+                'yiitest.dbo.T_parent',
+                <<<SQL
+                ALTER TABLE [yiitest].[dbo].[T_child] ADD CONSTRAINT [fk_child_parent] FOREIGN KEY ([parent_id]) REFERENCES [yiitest].[dbo].[T_parent] ([id])
+                SQL,
+            ],
+            'schema-qualified bracket-quoted names' => [
+                '[dbo].[T_child]',
+                '[dbo].[T_parent]',
+                <<<SQL
+                ALTER TABLE [dbo].[T_child] ADD CONSTRAINT [fk_child_parent] FOREIGN KEY ([parent_id]) REFERENCES [dbo].[T_parent] ([id])
+                SQL,
+            ],
+            'schema-qualified plain names' => [
+                'dbo.T_child',
+                'dbo.T_parent',
+                <<<SQL
+                ALTER TABLE [dbo].[T_child] ADD CONSTRAINT [fk_child_parent] FOREIGN KEY ([parent_id]) REFERENCES [dbo].[T_parent] ([id])
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function dropTableWithQualifiedTableNames(): array
+    {
+        return [
+            'catalog-qualified name' => [
+                'yiitest.dbo.T_migration',
+                <<<SQL
+                DROP TABLE [yiitest].[dbo].[T_migration]
+                SQL,
+            ],
+            'schema-qualified bracket-quoted name' => [
+                '[dbo].[T_migration]',
+                <<<SQL
+                DROP TABLE [dbo].[T_migration]
+                SQL,
+            ],
+            'schema-qualified plain name' => [
+                'dbo.T_migration',
+                <<<SQL
+                DROP TABLE [dbo].[T_migration]
+                SQL,
+            ],
+        ];
+    }
 }

@@ -19,6 +19,7 @@ use yii\db\mssql\TableSchema;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mssql\providers\CommandProvider;
+use yiiunit\support\DbHelper;
 
 use function json_encode;
 
@@ -1335,5 +1336,98 @@ final class CommandTest extends BaseCommand
             $table,
             ['email' => $expected['email']],
         )->execute();
+    }
+
+    public function testCreateTableAndDropTableWithSchemaQualifiedName(): void
+    {
+        $db = $this->getConnection();
+
+        $tableName = 'dbo.T_migration_schema';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            ['id' => Schema::TYPE_PK],
+        )->execute();
+
+        $tableSchema = $db->getTableSchema($tableName, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table must exist in the schema after creation.',
+        );
+        self::assertSame(
+            'dbo',
+            $tableSchema->schemaName,
+            'Schema name must match the qualified prefix.',
+        );
+        self::assertNotNull(
+            $tableSchema->getColumn('id'),
+            'Primary key column must be present.',
+        );
+
+        $db->createCommand()->dropTable($tableName)->execute();
+
+        self::assertNull(
+            $db->getTableSchema($tableName, true),
+            'Table must be absent from the schema after drop.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
+
+    public function testMigrationDdlLifecycleWithSchemaQualifiedName(): void
+    {
+        $db = $this->getConnection();
+
+        $tableName = 'dbo.T_migration_ddl';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            ['id' => Schema::TYPE_PK],
+        )->execute();
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $db->getTableSchema($tableName, true),
+            'Table must exist after creation.',
+        );
+
+        $db->createCommand()->addColumn(
+            $tableName,
+            'label',
+            Schema::TYPE_STRING,
+        )->execute();
+
+        $tableSchema = $db->getTableSchema($tableName, true);
+
+        self::assertNotNull(
+            $tableSchema->getColumn('label'),
+            'Added column must appear in refreshed schema.',
+        );
+
+        $db->createCommand()->createIndex(
+            'idx_T_migration_ddl_label',
+            $tableName,
+            'label',
+        )->execute();
+
+        $db->createCommand()->dropIndex(
+            'idx_T_migration_ddl_label',
+            $tableName,
+        )->execute();
+
+        $db->createCommand()->dropTable($tableName)->execute();
+
+        self::assertNull(
+            $db->getTableSchema($tableName, true),
+            'Table must be absent from the schema after drop.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
     }
 }

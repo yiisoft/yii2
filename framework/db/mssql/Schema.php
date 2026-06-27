@@ -28,6 +28,7 @@ use function explode;
 use function implode;
 use function preg_match;
 use function preg_match_all;
+use function str_starts_with;
 use function strcasecmp;
 use function str_replace;
 use function ucfirst;
@@ -159,6 +160,24 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         $parts = $matches[0] === [] ? [$name] : $matches[0];
 
         return str_replace(['[', ']'], '', $parts);
+    }
+
+    /**
+     * Qualifies single-part table names with {@see $defaultSchema} when it differs from `'dbo'`, ensuring
+     * unqualified DDL and DML statements target the configured schema rather than the SQL Server login default.
+     */
+    public function quoteTableName($name)
+    {
+        if (
+            $this->defaultSchema !== 'dbo'
+            && !str_starts_with($name, '(')
+            && !str_contains($name, '{{')
+            && !str_contains($name, '.')
+        ) {
+            $name = "{$this->defaultSchema}.$name";
+        }
+
+        return parent::quoteTableName($name);
     }
 
     /**

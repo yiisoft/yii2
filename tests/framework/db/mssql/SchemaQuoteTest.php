@@ -47,4 +47,21 @@ final class SchemaQuoteTest extends BaseSchemaQuote
     {
         parent::testQuoteTableName($name, $expectedName);
     }
+
+    #[DataProviderExternal(SchemaProvider::class, 'quoteTableNameWithDefaultSchema')]
+    public function testQuoteTableNameAppliesConfiguredDefaultSchema(
+        string $defaultSchema,
+        string $name,
+        string $expectedName,
+    ): void {
+        $schema = $this->getConnection(false, false)->getSchema();
+
+        $schema->defaultSchema = $defaultSchema;
+
+        self::assertSame(
+            $expectedName,
+            $schema->quoteTableName($name),
+            'Single-part name must be qualified with the configured default schema.',
+        );
+    }
 }
