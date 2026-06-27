@@ -43,8 +43,15 @@ final class MigrateControllerTest extends DatabaseTestCase
 
         $migrationPath = Yii::getAlias('@yiiunit/runtime/mssql_migrations');
 
+        $artifacts = [
+            'migration_test.T_18318',
+            'migration_test.migration_18318',
+            'dbo.T_18318',
+            'dbo.migration_18318',
+        ];
+
         DbHelper::createSchemaIfNotExist($db, 'migration_test');
-        DbHelper::dropTablesIfExist($db, ['migration_test.T_18318', 'migration_test.migration_18318']);
+        DbHelper::dropTablesIfExist($db, $artifacts);
 
         $db->getSchema()->defaultSchema = 'migration_test';
 
@@ -73,6 +80,14 @@ final class MigrateControllerTest extends DatabaseTestCase
             $db->getTableSchema('dbo.T_18318', true),
             "Table must not leak into the 'dbo' schema.",
         );
+        self::assertNotNull(
+            $db->getTableSchema('migration_test.migration_18318', true),
+            'History table must reside in the configured schema.',
+        );
+        self::assertNull(
+            $db->getTableSchema('dbo.migration_18318', true),
+            "History table must not leak into the 'dbo' schema.",
+        );
         self::assertSame(
             ExitCode::OK,
             $this->runMigrateAction($db, $migrationPath, 'down'),
@@ -83,7 +98,7 @@ final class MigrateControllerTest extends DatabaseTestCase
             'Reverted table must be removed from the configured schema.',
         );
 
-        DbHelper::dropTablesIfExist($db, ['migration_test.T_18318', 'migration_test.migration_18318']);
+        DbHelper::dropTablesIfExist($db, $artifacts);
         DbHelper::dropSchemaIfExist($db, 'migration_test');
         FileHelper::removeDirectory($migrationPath);
     }
