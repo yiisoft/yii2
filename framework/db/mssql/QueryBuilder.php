@@ -920,5 +920,4 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return parent::buildWithQueries($withs, $params);
     }
-
 }
