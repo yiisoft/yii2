@@ -30,6 +30,50 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
     }
 
     /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function quoteTableNameWithDefaultSchema(): array
+    {
+        return [
+            '`dbo` default leaves the unqualified name unchanged' => [
+                'dbo',
+                'T_migration',
+                '[T_migration]',
+            ],
+            'already schema-qualified name is preserved' => [
+                'ecbox',
+                'ecbox.T_migration',
+                '[ecbox].[T_migration]',
+            ],
+            'bracket-quoted single name gains the configured schema prefix' => [
+                'ecbox',
+                '[T_migration]',
+                '[ecbox].[T_migration]',
+            ],
+            'explicit foreign schema is preserved' => [
+                'ecbox',
+                'other.T_migration',
+                '[other].[T_migration]',
+            ],
+            'placeholder syntax is left untouched' => [
+                'ecbox',
+                '{{%T_migration}}',
+                '{{%T_migration}}',
+            ],
+            'subquery expression is left untouched' => [
+                'ecbox',
+                '(SELECT 1)',
+                '(SELECT 1)',
+            ],
+            'unqualified name gains the configured schema prefix' => [
+                'ecbox',
+                'T_migration',
+                '[ecbox].[T_migration]',
+            ],
+        ];
+    }
+
+    /**
      * @return list<array{string, string}>
      */
     public static function quoteColumnName(): array

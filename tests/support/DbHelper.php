@@ -34,4 +34,53 @@ final class DbHelper
             }
         }
     }
+
+    /**
+     * Creates the given schema on SQL Server when it does not already exist.
+     *
+     * Targets the MSSQL driver: binds the name as a parameter and quotes it with `QUOTENAME()`, so schema names
+     *
+     * @param Connection $db Database connection.
+     * @param string $schema Schema name to create.
+     */
+    public static function createSchemaIfNotExist(Connection $db, string $schema): void
+    {
+        $sql = <<<SQL
+        DECLARE @schema sysname = :schema;
+
+        IF SCHEMA_ID(@schema) IS NULL
+        BEGIN
+            DECLARE @sql nvarchar(max) = N'CREATE SCHEMA ' + QUOTENAME(@schema);
+
+            EXEC (@sql);
+        END
+        SQL;
+
+        $db->createCommand($sql, [':schema' => $schema])->execute();
+    }
+
+    /**
+     * Drops the given schema on SQL Server when it exists.
+     *
+     * Targets the MSSQL driver: binds the name as a parameter and quotes it with `QUOTENAME()`, so schema names
+     * containing reserved characters are handled safely.
+     *
+     * @param Connection $db Database connection.
+     * @param string $schema Schema name to drop.
+     */
+    public static function dropSchemaIfExist(Connection $db, string $schema): void
+    {
+        $sql = <<<SQL
+        DECLARE @schema sysname = :schema;
+
+        IF SCHEMA_ID(@schema) IS NOT NULL
+        BEGIN
+            DECLARE @sql nvarchar(max) = N'DROP SCHEMA ' + QUOTENAME(@schema);
+
+            EXEC (@sql);
+        END
+        SQL;
+
+        $db->createCommand($sql, [':schema' => $schema])->execute();
+    }
 }

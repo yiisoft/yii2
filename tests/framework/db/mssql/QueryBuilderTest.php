@@ -17,6 +17,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\db\Schema;
 use yiiunit\base\db\BaseQueryBuilder;
 use yiiunit\framework\db\mssql\providers\QueryBuilderProvider;
 use yiiunit\support\DbHelper;
@@ -781,5 +782,110 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
 
         $db->getQueryBuilder()->buildCondition($condition, $params);
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'createTableWithQualifiedTableNames')]
+    public function testCreateTableWithQualifiedTableNames(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->createTable($table, ['id' => Schema::TYPE_PK]),
+            'Schema-qualified name must appear in generated SQL.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addColumnWithQualifiedTableNames')]
+    public function testAddColumnWithQualifiedTableNames(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addColumn($table, 'label', Schema::TYPE_STRING),
+            'Schema-qualified name must appear in generated SQL.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'createIndexWithQualifiedTableNames')]
+    public function testCreateIndexWithQualifiedTableNames(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->createIndex('idx_label', $table, 'label'),
+            'Schema-qualified name must appear in generated SQL.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addPrimaryKeyWithQualifiedTableNames')]
+    public function testAddPrimaryKeyWithQualifiedTableNames(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addPrimaryKey('pk_T_migration', $table, 'id'),
+            'Schema-qualified name must appear in generated SQL.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addForeignKeyWithQualifiedTableNames')]
+    public function testAddForeignKeyWithQualifiedTableNames(string $table, string $refTable, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addForeignKey('fk_child_parent', $table, 'parent_id', $refTable, 'id'),
+            'Schema-qualified name must appear in generated SQL.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropTableWithQualifiedTableNames')]
+    public function testDropTableWithQualifiedTableNames(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropTable($table),
+            'Schema-qualified name must appear in generated SQL.',
+        );
+    }
+
+    public function testDdlOperationsApplyConfiguredDefaultSchemaToUnqualifiedNames(): void
+    {
+        $db = $this->getConnection(false, false);
+
+        $db->getSchema()->defaultSchema = 'ecbox';
+
+        $qb = $db->getQueryBuilder();
+
+        self::assertSame(
+            <<<SQL
+            CREATE TABLE [ecbox].[T_migration] (
+            \t[id] int IDENTITY PRIMARY KEY
+            )
+            SQL,
+            $qb->createTable('T_migration', ['id' => Schema::TYPE_PK]),
+            'Unqualified `createTable` target must resolve to the configured schema.',
+        );
+        self::assertSame(
+            <<<SQL
+            ALTER TABLE [ecbox].[T_migration] ADD [label] nvarchar(255)
+            SQL,
+            $qb->addColumn('T_migration', 'label', Schema::TYPE_STRING),
+            'Unqualified `addColumn` target must resolve to the configured schema.',
+        );
+        self::assertSame(
+            <<<SQL
+            DROP TABLE [ecbox].[T_migration]
+            SQL,
+            $qb->dropTable('T_migration'),
+            'Unqualified `dropTable` target must resolve to the configured schema.',
+        );
     }
 }

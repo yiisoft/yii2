@@ -106,6 +106,7 @@ Yii Framework 2 Change Log
 - Enh #20961: Rework MSSQL `yii\db\mssql\QueryBuilder::selectExists()` to return a named `[result]` existence column (terabytesoftw)
 - Enh #20962: Rework MSSQL `yii\db\mssql\QueryBuilder::upsert()` (terabytesoftw)
 - Enh #20964: Declare native return types on MSSQL `yii\db\mssql\PDO`, `yii\db\mssql\DBLibPDO`, and `yii\db\mssql\SqlsrvPDO` method overrides and remove `#[\ReturnTypeWillChange]` (terabytesoftw)
+- Bug #18318: Qualify MSSQL unqualified table names with the configured non `dbo` `defaultSchema` in `yii\db\mssql\Schema::quoteTableName()` (terabytesoftw)
 
 2.0.56 under development
 ------------------------
