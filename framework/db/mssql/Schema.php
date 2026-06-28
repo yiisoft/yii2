@@ -215,7 +215,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     {
         [$catalogName, $schemaName] = $this->resolveCatalogSchemaName($schema);
 
-        $systemCatalogName = $this->quoteTableNameParts([$catalogName, 'sys']);
+        $systemCatalogName = $this->quoteSystemCatalogName($catalogName);
 
         $sql = <<<SQL
         SELECT [o].[name]
@@ -301,8 +301,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     protected function loadTableIndexes($tableName)
     {
         $resolvedName = $this->resolveTableName($tableName);
-
-        $systemCatalogName = $this->quoteSystemCatalogName($resolvedName);
+        $systemCatalogName = $this->quoteSystemCatalogName($resolvedName->catalogName);
 
         $sql = <<<SQL
         SELECT
@@ -461,7 +460,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findColumns($table)
     {
-        $systemCatalogName = $this->quoteSystemCatalogName($table);
+        $systemCatalogName = $this->quoteSystemCatalogName($table->catalogName);
 
         $sql = <<<SQL
         SELECT
@@ -546,7 +545,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findTableConstraints($table, $type)
     {
-        $systemCatalogName = $this->quoteSystemCatalogName($table);
+        $systemCatalogName = $this->quoteSystemCatalogName($table->catalogName);
 
         $sql = <<<SQL
         SELECT
@@ -596,7 +595,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findForeignKeys($table)
     {
-        $systemCatalogName = $this->quoteSystemCatalogName($table);
+        $systemCatalogName = $this->quoteSystemCatalogName($table->catalogName);
 
         $databaseId = $this->getDatabaseIdExpression($table);
 
@@ -644,8 +643,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     protected function findViewNames($schema = '')
     {
         [$catalogName, $schemaName] = $this->resolveCatalogSchemaName($schema);
-
-        $systemCatalogName = $this->quoteTableNameParts([$catalogName, 'sys']);
+        $systemCatalogName = $this->quoteSystemCatalogName($catalogName);
 
         $sql = <<<SQL
         SELECT [v].[name]
@@ -705,8 +703,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     private function loadTableConstraints($tableName, $returnType)
     {
         $resolvedName = $this->resolveTableName($tableName);
-
-        $systemCatalogName = $this->quoteSystemCatalogName($resolvedName);
+        $systemCatalogName = $this->quoteSystemCatalogName($resolvedName->catalogName);
         $databaseId = $this->getDatabaseIdExpression($resolvedName);
 
         $sql = <<<SQL
@@ -899,15 +896,17 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     }
 
     /**
-     * Quotes the SQL Server system catalog name for the table catalog context.
+     * Quotes the `[sys]` system catalog name, optionally qualified by the database catalog.
      *
-     * @param TableSchema $table The table metadata.
+     * @param string|null $catalogName The database catalog name, or `null` to target the current database.
      *
-     * @return string The quoted system catalog name.
+     * @return string The `[sys]` schema name, prefixed with the quoted catalog when one is provided.
+     *
+     * @since 22.0
      */
-    private function quoteSystemCatalogName(TableSchema $table): string
+    public function quoteSystemCatalogName(string|null $catalogName): string
     {
-        return $this->quoteTableNameParts([$table->catalogName, 'sys']);
+        return $this->quoteTableNameParts([$catalogName, 'sys']);
     }
 
     /**
