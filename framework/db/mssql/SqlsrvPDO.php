@@ -21,6 +21,22 @@ namespace yii\db\mssql;
 class SqlsrvPDO extends \PDO
 {
     /**
+     * A constant for the pdo_sqlsrv encoding attribute. Pass as a key in [[yii\db\Connection::$attributes]].
+     *
+     * @see https://learn.microsoft.com/en-us/sql/connect/php/constants-microsoft-drivers-for-php-for-sql-server
+     */
+    public const int SQLSRV_ATTR_ENCODING = 1000;
+    /**
+     * A constant for ANSI (system code page) string encoding. Use with [[SQLSRV_ATTR_ENCODING]] to avoid the implicit
+     * `nvarchar`-to-`varchar` conversion that degrades performance on `char`/`varchar` indexed columns.
+     */
+    public const int SQLSRV_ENCODING_SYSTEM = 3;
+    /**
+     * A constant for UTF-8 string encoding. This is the pdo_sqlsrv default for [[PDO::PARAM_STR]] parameters.
+     */
+    public const int SQLSRV_ENCODING_UTF8 = 65001;
+
+    /**
      * Returns value of the last inserted ID.
      *
      * SQLSRV driver implements [[PDO::lastInsertId()]] method but with a single peculiarity:
