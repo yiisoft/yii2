@@ -17,11 +17,32 @@ use PDOException;
  *
  * It provides workarounds for improperly implemented functionalities of the MSSQL and DBLIB drivers.
  *
+ * The [[SQLSRV_ATTR_ENCODING]] and [[SQLSRV_ENCODING_SYSTEM]] constants can be used in [[yii\db\Connection::$attributes]]
+ * to eliminate the implicit `nvarchar` conversion overhead on `char`/`varchar` indexed columns.
+ *
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
  */
 class PDO extends \PDO
 {
+    /**
+     * A constant for the pdo_sqlsrv encoding attribute. Pass as a key in [[yii\db\Connection::$attributes]].
+     *
+     * Not supported by the FreeTDS (`dblib`) driver.
+     *
+     * @see https://learn.microsoft.com/en-us/sql/connect/php/constants-microsoft-drivers-for-php-for-sql-server
+     */
+    public const int SQLSRV_ATTR_ENCODING = 1000;
+    /**
+     * A constant for ANSI (system code page) string encoding. Use with [[SQLSRV_ATTR_ENCODING]] to avoid the implicit
+     * `nvarchar`-to-`varchar` conversion that degrades performance on `char`/`varchar` indexed columns.
+     */
+    public const int SQLSRV_ENCODING_SYSTEM = 3;
+    /**
+     * A constant for UTF-8 string encoding. This is the pdo_sqlsrv default for [[PDO::PARAM_STR]] parameters.
+     */
+    public const int SQLSRV_ENCODING_UTF8 = 65001;
+
     /**
      * Returns value of the last inserted ID.
      *

@@ -13,11 +13,13 @@ namespace yiiunit\framework\db\mssql;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\PreserveGlobalState;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
-use yii\db\mssql\PDO as MssqlPdo;
+use yii\db\mssql\PDO;
 use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\support\DbHelper;
 
 /**
- * Unit tests for {@see \yii\db\mssql\PDO} last-insert-id, transaction, and attribute workarounds for the MSSQL driver.
+ * Unit tests for {@see \yii\db\mssql\PDO} last-insert-id, transaction, attribute workarounds, and SQLSRV encoding
+ * constants for the MSSQL driver.
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
@@ -35,7 +37,7 @@ final class PDOTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $pdo = new MssqlPdo($db->dsn, $db->username, $db->password);
+        $pdo = new PDO($db->dsn, $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
@@ -49,7 +51,7 @@ final class PDOTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $pdo = new MssqlPdo($db->dsn, $db->username, $db->password);
+        $pdo = new PDO($db->dsn, $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
@@ -68,7 +70,7 @@ final class PDOTest extends DatabaseTestCase
 
         // The raw `BEGIN TRANSACTION` workaround targets the non-MARS `mssql`/`dblib` drivers; `sqlsrv` enables MARS by
         // default, which forbids an open transaction at the end of a batch, so disable MARS for this handle.
-        $pdo = new MssqlPdo($db->dsn . ';MultipleActiveResultSets=false', $db->username, $db->password);
+        $pdo = new PDO($db->dsn . ';MultipleActiveResultSets=false', $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
@@ -119,7 +121,7 @@ final class PDOTest extends DatabaseTestCase
 
         // The raw `BEGIN TRANSACTION` workaround targets the non-MARS `mssql`/`dblib` drivers; `sqlsrv` enables MARS by
         // default, which forbids an open transaction at the end of a batch, so disable MARS for this handle.
-        $pdo = new MssqlPdo($db->dsn . ';MultipleActiveResultSets=false', $db->username, $db->password);
+        $pdo = new PDO("{$db->dsn};MultipleActiveResultSets=false", $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
@@ -158,11 +160,68 @@ final class PDOTest extends DatabaseTestCase
         );
     }
 
+    /**
+     * @link https://github.com/yiisoft/yii2/issues/12121
+     */
+    public function testSqlsrvEncodingSystemAttributeReturnsCorrectRowsFromCharColumn(): void
+    {
+        $config = $this->database;
+
+        unset($config['fixture']);
+
+        $config['attributes'] = [
+            PDO::SQLSRV_ATTR_ENCODING => PDO::SQLSRV_ENCODING_SYSTEM,
+        ];
+
+        $db = $this->prepareDatabase($config, null);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE [dbo].[encoding_char_test] (
+                [id]   INT IDENTITY PRIMARY KEY,
+                [code] CHAR(10) NOT NULL
+            )
+            SQL,
+        )->execute();
+        $db->createCommand(
+            <<<SQL
+            CREATE INDEX [idx_encoding_char_test_code] ON [dbo].[encoding_char_test] ([code])
+            SQL,
+        )->execute();
+        $db->createCommand(
+            <<<SQL
+            INSERT INTO [dbo].[encoding_char_test] ([code]) VALUES ('ABC'), ('DEF'), ('GHI')
+            SQL,
+        )->execute();
+        $rows = $db->createCommand(
+            'SELECT [code] FROM [dbo].[encoding_char_test] WHERE [code] IN (:c1, :c2)',
+            [':c1' => 'ABC', ':c2' => 'GHI'],
+        )->queryAll();
+
+        self::assertCount(
+            2,
+            $rows,
+            'ANSI-encoded bound params must match both CHAR column rows.',
+        );
+        self::assertSame(
+            'ABC       ',
+            $rows[0]['code'],
+            'First matched code must be CHAR-padded ABC.',
+        );
+        self::assertSame(
+            'GHI       ',
+            $rows[1]['code'],
+            'Second matched code must be CHAR-padded GHI.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['encoding_char_test']);
+    }
+
     public function testGetAttributeReturnsServerVersion(): void
     {
         $db = $this->getConnection();
 
-        $pdo = new MssqlPdo($db->dsn, $db->username, $db->password);
+        $pdo = new PDO($db->dsn, $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
@@ -182,7 +241,7 @@ final class PDOTest extends DatabaseTestCase
     {
         $db = $this->getConnection();
 
-        $pdo = new MssqlPdo($db->dsn, $db->username, $db->password);
+        $pdo = new PDO($db->dsn, $db->username, $db->password);
 
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
