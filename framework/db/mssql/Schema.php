@@ -215,7 +215,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     {
         [$catalogName, $schemaName] = $this->resolveCatalogSchemaName($schema);
 
-        $systemCatalogName = $this->quoteTableNameParts([$catalogName, 'sys']);
+        $systemCatalogName = $this->quoteSystemCatalogName($catalogName);
 
         $sql = <<<SQL
         SELECT [o].[name]
@@ -643,8 +643,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     protected function findViewNames($schema = '')
     {
         [$catalogName, $schemaName] = $this->resolveCatalogSchemaName($schema);
-
-        $systemCatalogName = $this->quoteTableNameParts([$catalogName, 'sys']);
+        $systemCatalogName = $this->quoteSystemCatalogName($catalogName);
 
         $sql = <<<SQL
         SELECT [v].[name]
