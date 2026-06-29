@@ -8,6 +8,7 @@
 
 namespace yiiunit\base\db;
 
+use Yii;
 use yiiunit\framework\db\DatabaseTestCase;
 use yii\db\BatchQueryResult;
 use yii\db\Query;
@@ -128,6 +129,67 @@ abstract class BaseBatchQueryResult extends DatabaseTestCase
         $this->assertEquals('user1', $customers[0]->name);
         $this->assertEquals('user2', $customers[1]->name);
         $this->assertEquals('user3', $customers[2]->name);
+    }
+
+    public function testBatchWithoutDbParameterOnPlainQuery(): void
+    {
+        $db = $this->getConnection();
+
+        Yii::$app->set('db', $db);
+
+        // `batch()`: customer has `3` rows; batchSize `2` forces the extra fetch past the end that triggers
+        // MSSQL error `-13`.
+
+        $query = (new Query())->from('customer')->orderBy('id');
+
+        $allRows = $this->getAllRowsFromBatch($query->batch(2));
+
+        self::assertCount(
+            3,
+            $allRows,
+            'Batch must return all rows without an explicit connection.',
+        );
+        self::assertSame(
+            'user1',
+            $allRows[0]['name'],
+            'First record must be returned.',
+        );
+        self::assertSame(
+            'user2',
+            $allRows[1]['name'],
+            'Second record must be returned.',
+        );
+        self::assertSame(
+            'user3',
+            $allRows[2]['name'],
+            'Third record must be returned.',
+        );
+
+        // `each()`: same path, single-row iteration.
+        $query = (new Query())->from('customer')->orderBy('id');
+
+        $allRows = $this->getAllRowsFromEach($query->each(2));
+
+        self::assertCount(
+            3,
+            $allRows,
+            'Each must return all rows without an explicit connection.',
+        );
+        self::assertSame(
+            'user1',
+            $allRows[0]['name'],
+            'First record must be returned.',
+        );
+        self::assertSame(
+            'user2',
+            $allRows[1]['name'],
+            'Second record must be returned.',
+        );
+        self::assertSame(
+            'user3',
+            $allRows[2]['name'],
+            'Third record must be returned.',
+        );
     }
 
     protected function getAllRowsFromBatch(BatchQueryResult $batch)
