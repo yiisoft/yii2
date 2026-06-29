@@ -15,11 +15,14 @@ use yii\base\NotSupportedException;
 use yii\db\conditions\InCondition;
 use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
+use yii\db\ExpressionInterface;
 
 use function array_flip;
 use function array_intersect_key;
+use function array_map;
 use function count;
 use function implode;
+use function is_array;
 use function ltrim;
 use function preg_replace;
 
@@ -639,6 +642,54 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      *
+     * Excludes server-managed `rowversion` columns from the `SET` clause and renders any `rowversion` in the WHERE as a
+     * binary literal, enabling a `rowversion` column to serve as the optimistic lock attribute.
+     *
+     * Note: SQL Server regenerates the `rowversion` on every write and the in-memory attribute is not refreshed
+     * afterwards; reload the record before saving the same instance again to avoid a spurious `StaleObjectException`.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/9653
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        $schema = $this->db->getTableSchema($table);
+
+        if ($schema !== null) {
+            foreach ($columns as $name => $_value) {
+                $column = $schema->columns[$name] ?? null;
+
+                if ($column instanceof ColumnSchema && $column->isRowVersion()) {
+                    unset($columns[$name]); // server-managed; never in the SET clause.
+                }
+            }
+
+            $condition = $this->castRowVersionConditions($schema, $condition);
+        }
+
+        return parent::update($table, $columns, $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * Renders any `rowversion` in the WHERE condition as a binary literal, enabling optimistic-lock deletes.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/9653
+     */
+    public function delete($table, $condition, &$params)
+    {
+        $schema = $this->db->getTableSchema($table);
+
+        if ($schema !== null) {
+            $condition = $this->castRowVersionConditions($schema, $condition);
+        }
+
+        return parent::delete($table, $condition, $params);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
      * Wraps the `INSERT` with an `OUTPUT INSERTED.* INTO @temporary_inserted` block so that the inserted row
      * (including computed columns and `IDENTITY` values) can be retrieved by the caller.
      */
@@ -919,5 +970,37 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return parent::buildWithQueries($withs, $params);
+    }
+
+    /**
+     * Converts `rowversion` values in a hash condition to `binary(8)` literals via {@see ColumnSchema::dbTypecast()}.
+     *
+     * Operator-format and non-array conditions are returned unchanged.
+     *
+     * @param TableSchema $schema The metadata of the table targeted by the statement.
+     * @param mixed $condition The condition passed to {@see update()} or {@see delete()}.
+     *
+     * @return mixed The condition with `rowversion` values converted, unchanged when it carries none.
+     */
+    private function castRowVersionConditions(TableSchema $schema, mixed $condition): mixed
+    {
+        if (!is_array($condition)) {
+            return $condition;
+        }
+
+        foreach ($condition as $name => $value) {
+            $column = $schema->columns[$name] ?? null;
+
+            if (!$column instanceof ColumnSchema || !$column->isRowVersion()) {
+                continue;
+            }
+
+            // Cast each element of an array value individually so an `IN` condition keeps its shape.
+            $cast = static fn($item) => $item instanceof ExpressionInterface ? $item : $column->dbTypecast($item);
+
+            $condition[$name] = is_array($value) ? array_map($cast, $value) : $cast($value);
+        }
+
+        return $condition;
     }
 }
