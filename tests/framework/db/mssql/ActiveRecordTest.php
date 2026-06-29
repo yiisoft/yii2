@@ -11,10 +11,13 @@ namespace yiiunit\framework\db\mssql;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
+use yii\db\StaleObjectException;
+use yiiunit\data\ar\OptimisticRowVersion;
 use yiiunit\data\ar\TestTrigger;
 use yiiunit\data\ar\TestTriggerAlert;
 use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseActiveRecord;
+use yiiunit\support\DbHelper;
 
 /**
  * @group db
@@ -168,5 +171,184 @@ END';
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
         $this->assertEquals('test', $record->stringcol);
+    }
+
+    public function testOptimisticRowVersionUpdateSucceeds(): void
+    {
+        $this->createOptimisticRowVersionTable();
+
+        $record = new OptimisticRowVersion();
+
+        $record->name = 'initial';
+
+        self::assertTrue(
+            $record->save(false),
+            'INSERT must succeed.',
+        );
+
+        $id = $record->id;
+
+        // Rowversion is server-managed and not returned by the INSERT path; fetch to read its initial value.
+        /** @var OptimisticRowVersion $fetched */
+        $fetched = OptimisticRowVersion::findOne($id);
+
+        $rvAfterInsert = $fetched->rv;
+
+        self::assertIsInt(
+            $rvAfterInsert,
+            'Rowversion must load as an integer token.',
+        );
+
+        $fetched->name = 'updated';
+
+        self::assertTrue(
+            $fetched->save(false),
+            'UPDATE must not throw.',
+        );
+
+        // The server bumps the rowversion; a fresh read confirms the change was persisted and advanced.
+        /** @var OptimisticRowVersion $reloaded */
+
+        $reloaded = OptimisticRowVersion::findOne($id);
+
+        self::assertSame(
+            'updated',
+            $reloaded->name,
+            'New value must be persisted.',
+        );
+        self::assertGreaterThan(
+            $rvAfterInsert,
+            $reloaded->rv,
+            'Persisted rowversion must advance.',
+        );
+
+        DbHelper::dropTablesIfExist($this->getConnection(), ['test_optimistic_rowversion']);
+    }
+
+    public function testOptimisticRowVersionDeleteSucceeds(): void
+    {
+        $this->createOptimisticRowVersionTable();
+
+        $record = new OptimisticRowVersion();
+
+        $record->name = 'to-delete';
+
+        self::assertTrue(
+            $record->save(false),
+            'INSERT must succeed.',
+        );
+
+        $id = $record->id;
+
+        /** @var OptimisticRowVersion $fetched */
+        $fetched = OptimisticRowVersion::findOne($id);
+
+        self::assertSame(
+            1,
+            $fetched->delete(),
+            'Exactly one row must be deleted.',
+        );
+        self::assertNull(
+            OptimisticRowVersion::findOne($id),
+            'Record must be absent after DELETE.',
+        );
+
+        DbHelper::dropTablesIfExist($this->getConnection(), ['test_optimistic_rowversion']);
+    }
+
+    public function testThrowStaleObjectExceptionWhenRowVersionConflictsOnUpdate(): void
+    {
+        $this->createOptimisticRowVersionTable();
+
+        $record = new OptimisticRowVersion();
+
+        $record->name = 'shared';
+
+        self::assertTrue(
+            $record->save(false),
+            'INSERT must succeed.',
+        );
+
+        $id = $record->id;
+
+        /** @var OptimisticRowVersion $record1 */
+        $record1 = OptimisticRowVersion::findOne($id);
+        /** @var OptimisticRowVersion $record2 */
+        $record2 = OptimisticRowVersion::findOne($id);
+
+        $record1->name = 'copy1';
+
+        self::assertTrue(
+            $record1->save(false),
+            'First UPDATE must succeed.',
+        );
+
+        $this->expectException(StaleObjectException::class);
+        $this->expectExceptionMessage(
+            'The object being updated is outdated.',
+        );
+
+        $record2->name = 'copy2';
+
+        $record2->save(false);
+
+        DbHelper::dropTablesIfExist($this->getConnection(), ['test_optimistic_rowversion']);
+    }
+
+    public function testThrowStaleObjectExceptionWhenRowVersionConflictsOnDelete(): void
+    {
+        $this->createOptimisticRowVersionTable();
+
+        $record = new OptimisticRowVersion();
+
+        $record->name = 'shared';
+
+        self::assertTrue(
+            $record->save(false),
+            'INSERT must succeed.',
+        );
+
+        $id = $record->id;
+
+        /** @var OptimisticRowVersion $record1 */
+        $record1 = OptimisticRowVersion::findOne($id);
+        /** @var OptimisticRowVersion $record2 */
+        $record2 = OptimisticRowVersion::findOne($id);
+
+        $record1->name = 'updated-before-delete';
+
+        self::assertTrue(
+            $record1->save(false),
+            'UPDATE must succeed before stale delete attempt.',
+        );
+
+        $this->expectException(StaleObjectException::class);
+        $this->expectExceptionMessage(
+            'The object being deleted is outdated.',
+        );
+
+        $record2->delete();
+
+        DbHelper::dropTablesIfExist($this->getConnection(), ['test_optimistic_rowversion']);
+    }
+
+    private function createOptimisticRowVersionTable(): void
+    {
+        $db = $this->getConnection();
+
+        DbHelper::dropTablesIfExist($db, ['test_optimistic_rowversion']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE [dbo].[test_optimistic_rowversion] (
+                [id]   INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+                [name] NVARCHAR(128)     NOT NULL,
+                [rv]   ROWVERSION        NOT NULL
+            )
+            SQL,
+        )->execute();
+
+        // Flush the cached `null` entry so `getTableSchema()` picks up the newly created table.
+        $db->getSchema()->refreshTableSchema('test_optimistic_rowversion');
     }
 }

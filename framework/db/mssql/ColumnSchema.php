@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yii\db\mssql;
 
 use yii\db\Expression;
+use yii\db\ExpressionInterface;
 use yii\db\PdoValue;
 
 use function bin2hex;
@@ -19,10 +20,13 @@ use function get_resource_type;
 use function is_resource;
 use function is_string;
 use function preg_match;
+use function sprintf;
 use function str_replace;
 use function str_starts_with;
+use function strlen;
 use function strtolower;
 use function stream_get_contents;
+use function unpack;
 
 /**
  * Represents the metadata of a column in a Microsoft SQL Server database table.
@@ -38,16 +42,22 @@ class ColumnSchema extends \yii\db\ColumnSchema
     public $isComputed = false;
 
     /**
-     * {@inheritdoc}
+     * Renders a `rowversion`/`timestamp` value as an 8-byte binary literal (`0x...`) for WHERE comparisons, and
+     * converts `varbinary` strings to `CONVERT(VARBINARY(MAX), 0x...)` expressions to avoid conversion errors.
      *
-     * Converts string values for `varbinary` columns to explicit `CONVERT(VARBINARY(MAX), 0x...)` expressions to avoid
-     * implicit `varchar` to `varbinary` conversion errors in SQL Server, particularly under `INSERT ... OUTPUT INTO`
-     * and `UPDATE`.
-     *
+     * @see https://github.com/yiisoft/yii2/issues/9653
      * @see https://github.com/yiisoft/yii2/issues/12599
      */
     public function dbTypecast($value)
     {
+        if ($this->isRowVersion() && $value !== null && !$value instanceof ExpressionInterface) {
+            $hex = is_string($value) && strlen($value) === 8
+                ? bin2hex($value) // raw 8-byte binary value.
+                : sprintf('%016x', (int) $value); // integer representation from `phpTypecast()`.
+
+            return new Expression("0x{$hex}");
+        }
+
         if ($this->isVarbinary()) {
             if ($value instanceof PdoValue && $value->getType() === \PDO::PARAM_LOB) {
                 $pdoValue = $value->getValue();
@@ -72,12 +82,22 @@ class ColumnSchema extends \yii\db\ColumnSchema
     /**
      * {@inheritdoc}
      *
-     * Converts `varbinary` streams returned by MSSQL PDO drivers to strings for consumers such as DbCache.
+     * Decodes a `rowversion`/`timestamp` token to its integer value, and reads `varbinary` streams into strings.
      */
     public function phpTypecast($value)
     {
         if ($value === null) {
             return null;
+        }
+
+        if ($this->isRowVersion()) {
+            if (is_resource($value) && get_resource_type($value) === 'stream') {
+                $value = stream_get_contents($value);
+            }
+
+            return is_string($value) && strlen($value) === 8
+                ? unpack('J', $value)[1]
+                : $value;
         }
 
         if ($this->isVarbinary() && is_resource($value) && get_resource_type($value) === 'stream') {
@@ -153,6 +173,16 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         return $dbType;
+    }
+
+    /**
+     * Returns whether this column is a SQL Server `rowversion` (legacy synonym `timestamp`) auto-versioning column.
+     *
+     * @see https://learn.microsoft.com/en-us/sql/t-sql/data-types/rowversion-transact-sql
+     */
+    public function isRowVersion(): bool
+    {
+        return $this->isType(Schema::TYPE_TIMESTAMP);
     }
 
     /**
