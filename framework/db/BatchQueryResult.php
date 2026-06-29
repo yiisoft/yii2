@@ -72,6 +72,10 @@ class BatchQueryResult extends Component implements \Iterator
     public $each = false;
 
     /**
+     * @var string|null The driver name of the connection resolved when the batch query is executed.
+     */
+    private string|null $_driverName = null;
+    /**
      * @var DataReader|null the data reader associated with this batch query.
      */
     private $_dataReader;
@@ -87,7 +91,6 @@ class BatchQueryResult extends Component implements \Iterator
      * @var TKey|null the key for the current iteration
      */
     private $_key;
-
 
     /**
      * Destructor.
@@ -160,7 +163,11 @@ class BatchQueryResult extends Component implements \Iterator
     protected function fetchData()
     {
         if ($this->_dataReader === null) {
-            $this->_dataReader = $this->query->createCommand($this->db)->query();
+            $command = $this->query->createCommand($this->db);
+
+            $this->_driverName = $command->db->driverName;
+
+            $this->_dataReader = $command->query();
         }
 
         $rows = $this->getRows();
@@ -190,7 +197,7 @@ class BatchQueryResult extends Component implements \Iterator
             }
         } catch (\PDOException $e) {
             $errorCode = isset($e->errorInfo[1]) ? $e->errorInfo[1] : null;
-            if ($this->getDbDriverName() !== 'sqlsrv' || $errorCode !== self::MSSQL_NO_MORE_ROWS_ERROR_CODE) {
+            if ($this->_driverName !== 'sqlsrv' || $errorCode !== self::MSSQL_NO_MORE_ROWS_ERROR_CODE) {
                 throw $e;
             }
         }
@@ -229,27 +236,6 @@ class BatchQueryResult extends Component implements \Iterator
     public function valid()
     {
         return !empty($this->_batch);
-    }
-
-    /**
-     * Gets db driver name from the db connection that is passed to the `batch()`, if it is not passed it uses
-     * connection from the active record model
-     * @return string|null
-     */
-    private function getDbDriverName()
-    {
-        if (isset($this->db->driverName)) {
-            return $this->db->driverName;
-        }
-
-        if (!empty($this->_batch)) {
-            $key = array_keys($this->_batch)[0];
-            if (isset($this->_batch[$key]->db->driverName)) {
-                return $this->_batch[$key]->db->driverName;
-            }
-        }
-
-        return null;
     }
 
     /**
