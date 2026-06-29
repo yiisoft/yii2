@@ -111,6 +111,7 @@ Yii Framework 2 Change Log
 - Enh #12121: Add SQLSRV encoding constants to `yii\db\mssql\PDO` and `yii\db\mssql\SqlsrvPDO` (terabytesoftw)
 - Enh #9653: Support MSSQL `rowversion`/`timestamp` columns as `optimisticLock()` attributes in `yii\db\mssql\ColumnSchema` and `yii\db\mssql\QueryBuilder` (terabytesoftw)
 - Bug #18521: Fix "no more rows in the active result set" error in `yii\db\BatchQueryResult` for MSSQL when batching a plain `Query` without an explicit DB connection (terabytesoftw)
+- Chg #20972: Remove unused legacy `getAllColumnNames()` method from `yii\db\mssql\QueryBuilder` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

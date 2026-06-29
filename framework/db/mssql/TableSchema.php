@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -20,5 +22,5 @@ class TableSchema extends \yii\db\TableSchema
      * @var string|null name of the catalog (database) that this table belongs to.
      * Defaults to null, meaning no catalog (or the current database).
      */
-    public $catalogName;
+    public $catalogName = null;
 }

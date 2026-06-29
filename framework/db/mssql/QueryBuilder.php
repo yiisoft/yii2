@@ -613,22 +613,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Returns an array of column names given model name.
-     *
-     * @param string|null $modelClass name of the model class
-     * @return array|null array of column names
-     */
-    protected function getAllColumnNames($modelClass = null)
-    {
-        if (!$modelClass) {
-            return null;
-        }
-        /** @var \yii\db\ActiveRecord $modelClass */
-        $schema = $modelClass::getTableSchema();
-        return array_keys($schema->columns);
-    }
-
-    /**
      * {@inheritdoc}
      * @since 2.0.8
      */

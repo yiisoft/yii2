@@ -24,7 +24,6 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
 {
     protected $format = '{type}{length}{notnull}{unique}{default}{check}{append}';
 
-
     /**
      * Builds the full string for the column's schema.
      * @return string
