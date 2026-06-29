@@ -19,6 +19,7 @@ use yii\db\ExpressionInterface;
 
 use function array_flip;
 use function array_intersect_key;
+use function array_map;
 use function count;
 use function implode;
 use function is_array;
@@ -644,6 +645,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Excludes server-managed `rowversion` columns from the `SET` clause and renders any `rowversion` in the WHERE as a
      * binary literal, enabling a `rowversion` column to serve as the optimistic lock attribute.
      *
+     * Note: SQL Server regenerates the `rowversion` on every write and the in-memory attribute is not refreshed
+     * afterwards; reload the record before saving the same instance again to avoid a spurious `StaleObjectException`.
+     *
      * @see https://github.com/yiisoft/yii2/issues/9653
      */
     public function update($table, $columns, $condition, &$params)
@@ -651,7 +655,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $schema = $this->db->getTableSchema($table);
 
         if ($schema !== null) {
-            foreach ($columns as $name => $value) {
+            foreach ($columns as $name => $_value) {
                 $column = $schema->columns[$name] ?? null;
 
                 if ($column instanceof ColumnSchema && $column->isRowVersion()) {
@@ -987,9 +991,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         foreach ($condition as $name => $value) {
             $column = $schema->columns[$name] ?? null;
 
-            if ($column instanceof ColumnSchema && $column->isRowVersion() && !$value instanceof ExpressionInterface) {
-                $condition[$name] = $column->dbTypecast($value);
+            if (!$column instanceof ColumnSchema || !$column->isRowVersion()) {
+                continue;
             }
+
+            // Cast each element of an array value individually so an `IN` condition keeps its shape.
+            $cast = static fn($item) => $item instanceof ExpressionInterface ? $item : $column->dbTypecast($item);
+
+            $condition[$name] = is_array($value) ? array_map($cast, $value) : $cast($value);
         }
 
         return $condition;
