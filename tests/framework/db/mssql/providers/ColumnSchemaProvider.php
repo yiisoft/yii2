@@ -17,6 +17,7 @@ use yii\db\PdoValue;
 
 use function array_walk;
 use function bin2hex;
+use function hex2bin;
 use function in_array;
 
 /**
@@ -32,12 +33,33 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         $pdoValue = new PdoValue('binary data', PDO::PARAM_LOB);
 
         return [
+            'non-varbinary PDO LOB falls through to parent' => [
+                Schema::TYPE_BINARY,
+                'binary(8)',
+                true,
+                $pdoValue,
+                $pdoValue,
+            ],
             'non-varbinary string falls through to parent' => [
                 Schema::TYPE_STRING,
                 'varchar',
                 true,
                 'test',
                 'test',
+            ],
+            'rowversion integer to binary literal' => [
+                Schema::TYPE_TIMESTAMP,
+                'timestamp',
+                false,
+                4841,
+                new Expression('0x00000000000012e9'),
+            ],
+            'rowversion raw 8-byte binary to binary literal' => [
+                Schema::TYPE_TIMESTAMP,
+                'timestamp',
+                false,
+                hex2bin('00000000000012e9'),
+                new Expression('0x00000000000012e9'),
             ],
             'varbinary integer value falls through to parent' => [
                 Schema::TYPE_BINARY,
@@ -87,13 +109,6 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 true,
                 new PdoValue(null, PDO::PARAM_LOB),
                 new Expression('CAST(NULL AS VARBINARY(MAX))'),
-            ],
-            'non-varbinary PDO LOB falls through to parent' => [
-                Schema::TYPE_BINARY,
-                'binary(8)',
-                true,
-                $pdoValue,
-                $pdoValue,
             ],
         ];
     }

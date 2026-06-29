@@ -21,6 +21,7 @@ use yiiunit\framework\db\mssql\providers\ColumnSchemaProvider;
 use function fclose;
 use function fopen;
 use function fwrite;
+use function hex2bin;
 use function rewind;
 
 /**
@@ -121,6 +122,28 @@ final class ColumnSchemaTest extends BaseColumnSchema
             'binary data',
             $result,
             'Varbinary streams must be converted to strings.',
+        );
+    }
+
+    public function testPhpTypecastRowVersionStreamReturnsInteger(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->type = Schema::TYPE_TIMESTAMP;
+
+        $stream = fopen('php://memory', 'r+');
+
+        fwrite($stream, hex2bin('00000000000012e9'));
+        rewind($stream);
+
+        $result = $column->phpTypecast($stream);
+
+        fclose($stream);
+
+        self::assertSame(
+            4841,
+            $result,
+            'Rowversion streams must be decoded to the integer token.',
         );
     }
 
