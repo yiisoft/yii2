@@ -24,6 +24,32 @@ final class QueryBuilderProvider
     public static function addCommentOnColumn(): array
     {
         return [
+            'column default containing CHECK literal' => [
+                'yii2_mysql_qb_check_in_default',
+                'description',
+                <<<SQL
+                CREATE TABLE `yii2_mysql_qb_check_in_default` (
+                  `description` varchar(255) DEFAULT 'literal CHECK (x)'
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                'New comment.',
+                <<<SQL
+                ALTER TABLE `yii2_mysql_qb_check_in_default` CHANGE `description` `description` varchar(255) DEFAULT 'literal CHECK (x)' COMMENT 'New comment.'
+                SQL,
+            ],
+            'column default containing COMMENT literal' => [
+                'yii2_mysql_qb_comment_in_default',
+                'description',
+                <<<SQL
+                CREATE TABLE `yii2_mysql_qb_comment_in_default` (
+                  `description` varchar(255) DEFAULT 'see COMMENT text'
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                'New comment.',
+                <<<SQL
+                ALTER TABLE `yii2_mysql_qb_comment_in_default` CHANGE `description` `description` varchar(255) DEFAULT 'see COMMENT text' COMMENT 'New comment.'
+                SQL,
+            ],
             'column without existing comment' => [
                 'yii2_mysql_qb_comment_add',
                 'description',
@@ -171,6 +197,78 @@ final class QueryBuilderProvider
                 'yii2_mysql_qb_comment_table_drop',
                 <<<SQL
                 ALTER TABLE `yii2_mysql_qb_comment_table_drop` COMMENT ''
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function addCommentOnTableSpecialCharacters(): array
+    {
+        return [
+            'backslash' => [
+                'path C:\\dir',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'path C:\\dir'
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'path C:\dir'
+                SQL,
+            ],
+            'double quote' => [
+                'say "hello"',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'say \"hello\"'
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'say "hello"'
+                SQL,
+            ],
+            'mixed quote and backslash' => [
+                'It\'s a \\ path "q"',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'It\'s a \\ path \"q\"'
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'It''s a \ path "q"'
+                SQL,
+            ],
+            'multiple single quotes' => [
+                '\'a\' and \'b\'',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT '\'a\' and \'b\''
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT '''a'' and ''b'''
+                SQL,
+            ],
+            'single quote' => [
+                'It\'s a comment',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'It\'s a comment'
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'It''s a comment'
+                SQL,
+            ],
+            'sql injection attempt' => [
+                '\'; DROP TABLE x; --',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT '\'; DROP TABLE x; --'
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT '''; DROP TABLE x; --'
+                SQL,
+            ],
+            'unicode accents' => [
+                'café déjà vu',
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'café déjà vu'
+                SQL,
+                <<<'SQL'
+                ALTER TABLE `profile` COMMENT 'café déjà vu'
                 SQL,
             ],
         ];

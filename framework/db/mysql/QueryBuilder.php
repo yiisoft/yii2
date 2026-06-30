@@ -17,7 +17,8 @@ use yii\db\Query;
 
 use function preg_match;
 use function preg_replace;
-use function str_replace;
+use function strlen;
+use function substr_replace;
 use function trim;
 
 /**
@@ -356,7 +357,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $tableName = $this->db->quoteTableName($table);
         $columnName = $this->db->quoteColumnName($column);
 
-        $value = "'" . Quoter::escapeLiteralValue($comment) . "'";
+        $value = $this->db->quoteValue($comment);
 
         $definitionSql = $definition === '' ? '' : " $definition";
         $checkSql = $check === null ? '' : " $check";
@@ -375,7 +376,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $tableName = $this->db->quoteTableName($table);
 
-        $value = "'" . Quoter::escapeLiteralValue($comment) . "'";
+        $value = $this->db->quoteValue($comment);
 
         return <<<SQL
         ALTER TABLE $tableName COMMENT $value
@@ -420,15 +421,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function extractCheckFromColumnDefinition($definition)
     {
-        $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/i';
+        $checkRegex = "/'(?:\\\\.|''|[^'\\\\])*'(*SKIP)(*F)|CHECK *(\(([^()]|(?-2))*\))/i";
 
-        if (preg_match($checkRegex, $definition, $checkMatches) !== 1) {
+        if (preg_match($checkRegex, $definition, $checkMatches, PREG_OFFSET_CAPTURE) !== 1) {
             return [$definition, null];
         }
 
-        $definitionWithoutCheck = str_replace($checkMatches[0], '', $definition);
+        $check = $checkMatches[0][0];
+        $withoutCheck = substr_replace($definition, '', $checkMatches[0][1], strlen($check));
 
-        return [trim($definitionWithoutCheck), $checkMatches[0]];
+        return [trim($withoutCheck), $check];
     }
 
     /**
@@ -476,6 +478,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
 
-        return trim(preg_replace("/\s+COMMENT\s+'(?:\\\\.|''|[^'\\\\])*'/i", '', $definition) ?? '');
+        $commentRegex = "/'(?:\\\\.|''|[^'\\\\])*'(*SKIP)(*F)|\s+COMMENT\s+'(?:\\\\.|''|[^'\\\\])*'/i";
+
+        return trim(preg_replace($commentRegex, '', $definition) ?? '');
     }
 }

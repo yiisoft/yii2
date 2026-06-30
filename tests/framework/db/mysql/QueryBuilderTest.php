@@ -610,6 +610,51 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnTableSpecialCharacters')]
+    public function testAddCommentOnTableEscapesSpecialCharacters(
+        string $comment,
+        string $expectedDefault,
+        string $expectedNoBackslashEscapes
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        $sqlMode = $db->createCommand(
+            <<<SQL
+            SELECT @@SESSION.sql_mode
+            SQL,
+        )->queryScalar();
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = ''
+            SQL,
+        )->execute();
+
+        self::assertSame(
+            $expectedDefault,
+            $db->getQueryBuilder()->addCommentOnTable('profile', $comment),
+            'Backslash-escaped literal must match under the default sql_mode.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES'
+            SQL,
+        )->execute();
+
+        self::assertSame(
+            $expectedNoBackslashEscapes,
+            $db->getQueryBuilder()->addCommentOnTable('profile', $comment),
+            'Doubled-quote literal must match under `NO_BACKSLASH_ESCAPES`.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = :sqlMode
+            SQL,
+            [':sqlMode' => $sqlMode],
+        )->execute();
+    }
+
     #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromTable')]
     public function testDropCommentFromTable(string $table, string $expected): void
     {

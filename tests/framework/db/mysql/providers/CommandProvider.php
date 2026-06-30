@@ -41,4 +41,20 @@ final class CommandProvider
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function commentSpecialCharacters(): array
+    {
+        return [
+            'backslash' => ['path C:\\dir'],
+            'double quote' => ['say "hello"'],
+            'mixed quote and backslash' => ['It\'s a \\ path "q"'],
+            'multiple single quotes' => ['\'a\' and \'b\''],
+            'single quote' => ['It\'s a comment'],
+            'sql injection attempt' => ['\'; DROP TABLE x; --'],
+            'unicode accents' => ['café déjà vu'],
+        ];
+    }
 }

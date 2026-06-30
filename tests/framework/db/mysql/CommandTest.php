@@ -48,11 +48,11 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->addCommentOnColumn(
             $commentTarget,
             $columnName,
-            'Initial column comment.',
+            'It\'s an initial comment.',
         )->execute();
 
         self::assertSame(
-            'Initial column comment.',
+            'It\'s an initial comment.',
             $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
             'Column comment must be created.',
         );
@@ -60,11 +60,11 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->addCommentOnColumn(
             $commentTarget,
             $columnName,
-            'Updated column comment.',
+            'It\'s an updated comment.',
         )->execute();
 
         self::assertSame(
-            'Updated column comment.',
+            'It\'s an updated comment.',
             $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
             'Column comment must be updated.',
         );
@@ -80,6 +80,62 @@ final class CommandTest extends BaseCommand
         );
 
         DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'commentSpecialCharacters')]
+    public function testAddCommentOnColumnRoundTripsSpecialCharacters(string $comment): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+        $sqlMode = $db->createCommand(
+            <<<SQL
+            SELECT @@SESSION.sql_mode
+            SQL,
+        )->queryScalar();
+
+        $modes = [
+            'default' => '',
+            'no_backslash_escapes' => 'NO_BACKSLASH_ESCAPES',
+        ];
+
+        foreach ($modes as $label => $mode) {
+            $db->createCommand(
+                <<<SQL
+                SET SESSION sql_mode = '$mode'
+                SQL,
+            )->execute();
+
+            DbHelper::dropTablesIfExist($db, ['yii2_mysql_comment_special']);
+
+            $db->createCommand()->createTable(
+                'yii2_mysql_comment_special',
+                [
+                    'id' => 'integer',
+                    'description' => 'string',
+                ],
+            )->execute();
+            $db->createCommand()->addCommentOnColumn(
+                'yii2_mysql_comment_special',
+                'description',
+                $comment,
+            )->execute();
+
+            self::assertSame(
+                $comment,
+                $schema->getTableSchema('yii2_mysql_comment_special', true)->getColumn('description')->comment,
+                "Comment must round-trip under the `$label` sql_mode.",
+            );
+
+            DbHelper::dropTablesIfExist($db, ['yii2_mysql_comment_special']);
+        }
+
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = :sqlMode
+            SQL,
+            [':sqlMode' => $sqlMode],
+        )->execute();
     }
 
     public function testAddDropCheckSeveral(): void
