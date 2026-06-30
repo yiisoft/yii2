@@ -56,7 +56,7 @@ jobs:
 
     services: &memcached-service
       memcached:
-        image: memcached:1
+        image: memcached:1.6@sha256:e2a8683c7fbb73d12dce8082525adf9df857765970e639bd9f4705acc31dfcba
         ports:
           - 11211:11211
         options: >-
@@ -72,7 +72,7 @@ jobs:
 
     steps: &build-steps
       - name: Checkout.
-        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           persist-credentials: false
 

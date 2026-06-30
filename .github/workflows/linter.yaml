@@ -35,6 +35,6 @@ on:
 
 jobs:
   phpcs:
-    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@master
+    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
     with:
       php-version: '["7.4", "8.5"]'
