@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mysql;
 
 use Closure;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\DynamicModel;
 use yii\base\NotSupportedException;
@@ -20,9 +21,13 @@ use yii\db\Query;
 use yii\db\Schema;
 use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseQueryBuilder;
+use yiiunit\framework\db\mysql\providers\QueryBuilderProvider;
+use yiiunit\support\DbHelper;
 
 /**
  * Unit test for {@see \yii\db\QueryBuilder} with MySQL driver.
+ *
+ * {@see QueryBuilderProvider} for test case data providers.
  */
 #[Group('db')]
 #[Group('mysql')]
@@ -577,6 +582,89 @@ final class QueryBuilderTest extends BaseQueryBuilder
         ];
 
         return $items;
+    }
+
+    public function testCommentColumn(): void
+    {
+        self::markTestSkipped(
+            "Covered by 'testAddCommentOnColumn()' and 'testDropCommentFromColumn()'.",
+        );
+    }
+
+    public function testCommentTable(): void
+    {
+        self::markTestSkipped(
+            "Covered by 'testAddCommentOnTable()' and 'testDropCommentFromTable()'.",
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnTable')]
+    public function testAddCommentOnTable(string $table, string $comment, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addCommentOnTable($table, $comment),
+            'Table comment SQL must match.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromTable')]
+    public function testDropCommentFromTable(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropCommentFromTable($table),
+            'Empty comment SQL must match.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnColumn')]
+    public function testAddCommentOnColumn(
+        string $table,
+        string $column,
+        string $createSql,
+        string $comment,
+        string $expected
+    ): void {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand($createSql)->execute();
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment),
+            'Column definition must be preserved.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromColumn')]
+    public function testDropCommentFromColumn(
+        string $table,
+        string $column,
+        string $createSql,
+        string $expected
+    ): void {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand($createSql)->execute();
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropCommentFromColumn($table, $column),
+            'Definition must survive comment removal.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
     }
 
     public function testIssue17449(): void

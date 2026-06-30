@@ -8,18 +8,79 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
 use yiiunit\base\db\BaseCommand;
+use yiiunit\framework\db\mysql\providers\CommandProvider;
+use yiiunit\support\DbHelper;
 
 /**
- * @group db
- * @group mysql
+ * Unit tests for {@see \yii\db\Command} functionality for the MySQL driver.
+ *
+ * {@see CommandProvider} for test case data providers.
  */
-class CommandTest extends BaseCommand
+#[Group('db')]
+#[Group('mysql')]
+#[Group('command')]
+final class CommandTest extends BaseCommand
 {
     public $driverName = 'mysql';
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
+
+    #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
+    public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'id' => 'integer',
+                $columnName => 'string',
+            ],
+        )->execute();
+        $db->createCommand()->addCommentOnColumn(
+            $commentTarget,
+            $columnName,
+            'Initial column comment.',
+        )->execute();
+
+        self::assertSame(
+            'Initial column comment.',
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be created.',
+        );
+
+        $db->createCommand()->addCommentOnColumn(
+            $commentTarget,
+            $columnName,
+            'Updated column comment.',
+        )->execute();
+
+        self::assertSame(
+            'Updated column comment.',
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be updated.',
+        );
+
+        $db->createCommand()->dropCommentFromColumn(
+            $commentTarget,
+            $columnName,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be removed.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
 
     public function testAddDropCheckSeveral(): void
     {

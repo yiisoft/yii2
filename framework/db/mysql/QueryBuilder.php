@@ -15,6 +15,11 @@ use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
 
+use function preg_match;
+use function preg_replace;
+use function str_replace;
+use function trim;
+
 /**
  * QueryBuilder is the query builder for MySQL databases (MySQL 8.0+ and MariaDB 10.6+).
  *
@@ -340,36 +345,41 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
-        // Strip existing comment which may include escaped quotes
-        $definition = trim(preg_replace("/COMMENT '(?:''|[^'])*'/i", '', $this->getColumnDefinition($table, $column)));
+        $definition = $this->removeCommentFromColumnDefinition($this->getColumnDefinition($table, $column));
 
-        $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/';
-        $check = preg_match($checkRegex, $definition, $checkMatches);
-        if ($check === 1) {
-            $definition = preg_replace($checkRegex, '', $definition);
-        }
-        $alterSql = 'ALTER TABLE ' . $this->db->quoteTableName($table)
-            . ' CHANGE ' . $this->db->quoteColumnName($column)
-            . ' ' . $this->db->quoteColumnName($column)
-            . (empty($definition) ? '' : ' ' . $definition)
-            . ' COMMENT ' . $this->db->quoteValue($comment);
-        if ($check === 1) {
-            $alterSql .= ' ' . $checkMatches[0];
-        }
-        return $alterSql;
+        [$definition, $check] = $this->extractCheckFromColumnDefinition($definition);
+        $tableName = $this->db->quoteTableName($table);
+        $columnName = $this->db->quoteColumnName($column);
+
+        $value = "'" . Quoter::escapeLiteralValue($comment) . "'";
+
+        $definitionSql = $definition === '' ? '' : " $definition";
+        $checkSql = $check === null ? '' : " $check";
+
+        return <<<SQL
+        ALTER TABLE $tableName CHANGE $columnName {$columnName}{$definitionSql} COMMENT {$value}{$checkSql}
+        SQL;
     }
 
     /**
      * {@inheritdoc}
+     *
      * @since 2.0.8
      */
     public function addCommentOnTable($table, $comment)
     {
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' COMMENT ' . $this->db->quoteValue($comment);
+        $tableName = $this->db->quoteTableName($table);
+
+        $value = "'" . Quoter::escapeLiteralValue($comment) . "'";
+
+        return <<<SQL
+        ALTER TABLE $tableName COMMENT $value
+        SQL;
     }
 
     /**
@@ -397,6 +407,28 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function selectExists($rawSql)
     {
         return 'SELECT EXISTS(' . $rawSql . ') AS ' . $this->db->quoteColumnName('result');
+    }
+
+    /**
+     * Extracts an inline CHECK clause from a column definition.
+     *
+     * MySQL requires COMMENT to be part of the column definition before the CHECK clause when both are present.
+     *
+     * @param string $definition Column definition without the COMMENT clause.
+     *
+     * @return array{string, string|null} Column definition and CHECK clause
+     */
+    private function extractCheckFromColumnDefinition($definition)
+    {
+        $checkRegex = '/CHECK *(\(([^()]|(?-2))*\))/i';
+
+        if (preg_match($checkRegex, $definition, $checkMatches) !== 1) {
+            return [$definition, null];
+        }
+
+        $definitionWithoutCheck = str_replace($checkMatches[0], '', $definition);
+
+        return [trim($definitionWithoutCheck), $checkMatches[0]];
     }
 
     /**
@@ -429,5 +461,21 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return null;
+    }
+
+    /**
+     * Removes the current COMMENT clause from a column definition.
+     *
+     * @param string|null $definition Column definition from SHOW CREATE TABLE.
+     *
+     * @return string Column definition without the COMMENT clause.
+     */
+    private function removeCommentFromColumnDefinition(string|null $definition): string
+    {
+        if ($definition === null) {
+            return '';
+        }
+
+        return trim(preg_replace("/\s+COMMENT\s+'(?:\\\\.|''|[^'\\\\])*'/i", '', $definition) ?? '');
     }
 }
