@@ -58,7 +58,7 @@ runs:
   using: composite
   steps:
     - name: Install PHP
-      uses: shivammathur/setup-php@v2
+      uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # v2
       with:
         coverage: ${{ inputs.coverage-driver }}
         extensions: ${{ inputs.extensions }}
@@ -68,16 +68,29 @@ runs:
 
     - name: Update composer.
       shell: bash
-      run: composer self-update ${{ inputs.composer-version }}
+      env:
+        COMPOSER_VERSION: ${{ inputs.composer-version }}
+      run: |
+        command=(composer self-update)
+
+        if [ -n "$COMPOSER_VERSION" ]; then
+          command+=("$COMPOSER_VERSION")
+        fi
+
+        "${command[@]}"
 
     - name: Install dependencies with composer.
       shell: bash
-      run: >-
-        composer
-        ${{ inputs.composer-command }}
-        ${{ inputs.composer-flags }}
-        ${{
-          inputs.ignore-platform-reqs == 'true'
-          && '--ignore-platform-reqs'
-          || ''
-        }}
+      env:
+        COMPOSER_COMMAND: ${{ inputs.composer-command }}
+        COMPOSER_FLAGS: ${{ inputs.composer-flags }}
+        IGNORE_PLATFORM_REQS: ${{ inputs.ignore-platform-reqs }}
+      run: |
+        read -r -a composer_flags <<< "$COMPOSER_FLAGS"
+        command=(composer "$COMPOSER_COMMAND" "${composer_flags[@]}")
+
+        if [ "$IGNORE_PLATFORM_REQS" = "true" ]; then
+          command+=(--ignore-platform-reqs)
+        fi
+
+        "${command[@]}"
