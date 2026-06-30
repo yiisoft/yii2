@@ -421,7 +421,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function extractCheckFromColumnDefinition($definition)
     {
-        $checkRegex = "/'(?:\\\\.|''|[^'\\\\])*'(*SKIP)(*F)|CHECK *(\(([^()]|(?-2))*\))/i";
+        $checkRegex = "/'(?:\\\\.|''|[^'\\\\])*'(*SKIP)(*F)|CHECK *(\(('(?:\\\\.|''|[^'\\\\])*'|[^'()]|(?-2))*\))/i";
 
         if (preg_match($checkRegex, $definition, $checkMatches, PREG_OFFSET_CAPTURE) !== 1) {
             return [$definition, null];

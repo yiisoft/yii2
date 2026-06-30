@@ -138,6 +138,31 @@ final class CommandTest extends BaseCommand
         )->execute();
     }
 
+    public function testAddCommentOnColumnExecutesWithCheckContainingQuotedParenthesis(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_mysql_quoted_paren` (`status` varchar(32) CHECK (`status` <> '('))
+            SQL,
+        )->execute();
+
+        $db->createCommand()->addCommentOnColumn('yii2_mysql_quoted_paren', 'status', 'A column comment.')->execute();
+
+        self::assertSame(
+            'A column comment.',
+            $schema->getTableSchema('yii2_mysql_quoted_paren', true)->getColumn('status')->comment,
+            'Comment must round-trip when the CHECK contains a quoted parenthesis.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+    }
+
     public function testAddDropCheckSeveral(): void
     {
         $db = $this->getConnection(false);

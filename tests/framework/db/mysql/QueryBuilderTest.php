@@ -736,6 +736,40 @@ MySqlStatement;
         $this->assertLessThan($checkPos, $commentPos);
     }
 
+    public function testAddCommentOnColumnPlacesCommentBeforeCheckWithQuotedParenthesis(): void
+    {
+        $db = $this->getConnection(false);
+
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['yii2_qb_quoted_paren']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_qb_quoted_paren` (`status` varchar(32) CHECK (`status` <> '('))
+            SQL,
+        )->execute();
+
+        $actual = $qb->addCommentOnColumn('yii2_qb_quoted_paren', 'status', 'A column comment.');
+
+        DbHelper::dropTablesIfExist($db, ['yii2_qb_quoted_paren']);
+
+        $expected = $qb->isMariaDb()
+            ? <<<SQL
+            ALTER TABLE `yii2_qb_quoted_paren` CHANGE `status` `status` varchar(32) DEFAULT NULL COMMENT 'A column comment.' CHECK (`status` <> '(')
+            SQL
+            : <<<SQL
+            ALTER TABLE `yii2_qb_quoted_paren` CHANGE `status` `status` varchar(32) DEFAULT NULL COMMENT 'A column comment.'
+            SQL;
+
+        self::assertSame(
+            $expected,
+            $actual,
+            'Generated ALTER must place COMMENT before the inline CHECK with a quoted parenthesis.',
+        );
+    }
+
     /**
      * Test for issue https://github.com/yiisoft/yii2/issues/14663
      */
