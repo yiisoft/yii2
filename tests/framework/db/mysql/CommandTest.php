@@ -11,6 +11,8 @@ namespace yiiunit\framework\db\mysql;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
+use yii\db\Exception;
+use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mysql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
@@ -152,7 +154,11 @@ final class CommandTest extends BaseCommand
             SQL,
         )->execute();
 
-        $db->createCommand()->addCommentOnColumn('yii2_mysql_quoted_paren', 'status', 'A column comment.')->execute();
+        $db->createCommand()->addCommentOnColumn(
+            'yii2_mysql_quoted_paren',
+            'status',
+            'A column comment.',
+        )->execute();
 
         self::assertSame(
             'A column comment.',
@@ -161,6 +167,37 @@ final class CommandTest extends BaseCommand
         );
 
         DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+    }
+
+    public function testThrowExceptionWhenColumnIsMissing(): void
+    {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, ['yii2_mysql_missing_column']);
+
+        /**  @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        $expectedExceptionMessage = 'SQLSTATE[42000]: Syntax error or access violation';
+
+        if ($qb->isMariaDB()) {
+            $expectedExceptionMessage = "SQLSTATE[HY000]: General error: 4161 Unknown data type: 'COMMENT'";
+        }
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_mysql_missing_column` (`id` int)
+            SQL,
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $db->createCommand()->addCommentOnColumn(
+            'yii2_mysql_missing_column',
+            'nonexistent',
+            'A column comment.',
+        )->execute();
     }
 
     public function testAddDropCheckSeveral(): void
