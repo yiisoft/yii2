@@ -112,6 +112,7 @@ Yii Framework 2 Change Log
 - Enh #9653: Support MSSQL `rowversion`/`timestamp` columns as `optimisticLock()` attributes in `yii\db\mssql\ColumnSchema` and `yii\db\mssql\QueryBuilder` (terabytesoftw)
 - Bug #18521: Fix "no more rows in the active result set" error in `yii\db\BatchQueryResult` for MSSQL when batching a plain `Query` without an explicit DB connection (terabytesoftw)
 - Chg #20972: Remove unused legacy `getAllColumnNames()` method from `yii\db\mssql\QueryBuilder` (terabytesoftw)
+- Bug #20975: Fix `yii\db\mysql\QueryBuilder::addCommentOnColumn()` to build column-comment DDL quote-aware, no longer corrupting `DEFAULT` literals that contain `CHECK (` or `COMMENT` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

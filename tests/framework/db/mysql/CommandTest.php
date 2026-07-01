@@ -8,18 +8,197 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
+use yii\db\Exception;
+use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseCommand;
+use yiiunit\framework\db\mysql\providers\CommandProvider;
+use yiiunit\support\DbHelper;
 
 /**
- * @group db
- * @group mysql
+ * Unit tests for {@see \yii\db\Command} functionality for the MySQL driver.
+ *
+ * {@see CommandProvider} for test case data providers.
  */
-class CommandTest extends BaseCommand
+#[Group('db')]
+#[Group('mysql')]
+#[Group('command')]
+final class CommandTest extends BaseCommand
 {
     public $driverName = 'mysql';
 
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
+
+    #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
+    public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'id' => 'integer',
+                $columnName => 'string',
+            ],
+        )->execute();
+        $db->createCommand()->addCommentOnColumn(
+            $commentTarget,
+            $columnName,
+            'It\'s an initial comment.',
+        )->execute();
+
+        self::assertSame(
+            'It\'s an initial comment.',
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be created.',
+        );
+
+        $db->createCommand()->addCommentOnColumn(
+            $commentTarget,
+            $columnName,
+            'It\'s an updated comment.',
+        )->execute();
+
+        self::assertSame(
+            'It\'s an updated comment.',
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be updated.',
+        );
+
+        $db->createCommand()->dropCommentFromColumn(
+            $commentTarget,
+            $columnName,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            'Column comment must be removed.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'commentSpecialCharacters')]
+    public function testAddCommentOnColumnRoundTripsSpecialCharacters(string $comment): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+        $sqlMode = $db->createCommand(
+            <<<SQL
+            SELECT @@SESSION.sql_mode
+            SQL,
+        )->queryScalar();
+
+        $modes = [
+            'default' => '',
+            'no_backslash_escapes' => 'NO_BACKSLASH_ESCAPES',
+        ];
+
+        foreach ($modes as $label => $mode) {
+            $db->createCommand(
+                <<<SQL
+                SET SESSION sql_mode = '$mode'
+                SQL,
+            )->execute();
+
+            DbHelper::dropTablesIfExist($db, ['yii2_mysql_comment_special']);
+
+            $db->createCommand()->createTable(
+                'yii2_mysql_comment_special',
+                [
+                    'id' => 'integer',
+                    'description' => 'string',
+                ],
+            )->execute();
+            $db->createCommand()->addCommentOnColumn(
+                'yii2_mysql_comment_special',
+                'description',
+                $comment,
+            )->execute();
+
+            self::assertSame(
+                $comment,
+                $schema->getTableSchema('yii2_mysql_comment_special', true)->getColumn('description')->comment,
+                "Comment must round-trip under the `$label` sql_mode.",
+            );
+
+            DbHelper::dropTablesIfExist($db, ['yii2_mysql_comment_special']);
+        }
+
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = :sqlMode
+            SQL,
+            [':sqlMode' => $sqlMode],
+        )->execute();
+    }
+
+    public function testAddCommentOnColumnExecutesWithCheckContainingQuotedParenthesis(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_mysql_quoted_paren` (`status` varchar(32) CHECK (`status` <> '('))
+            SQL,
+        )->execute();
+
+        $db->createCommand()->addCommentOnColumn(
+            'yii2_mysql_quoted_paren',
+            'status',
+            'A column comment.',
+        )->execute();
+
+        self::assertSame(
+            'A column comment.',
+            $schema->getTableSchema('yii2_mysql_quoted_paren', true)->getColumn('status')->comment,
+            'Comment must round-trip when the CHECK contains a quoted parenthesis.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+    }
+
+    public function testThrowExceptionWhenColumnIsMissing(): void
+    {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, ['yii2_mysql_missing_column']);
+
+        /**  @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        $expectedExceptionMessage = 'SQLSTATE[42000]: Syntax error or access violation';
+
+        if ($qb->isMariaDB()) {
+            $expectedExceptionMessage = "SQLSTATE[HY000]: General error: 4161 Unknown data type: 'COMMENT'";
+        }
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_mysql_missing_column` (`id` int)
+            SQL,
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage($expectedExceptionMessage);
+
+        $db->createCommand()->addCommentOnColumn(
+            'yii2_mysql_missing_column',
+            'nonexistent',
+            'A column comment.',
+        )->execute();
+    }
 
     public function testAddDropCheckSeveral(): void
     {

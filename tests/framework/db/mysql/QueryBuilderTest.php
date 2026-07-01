@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\mysql;
 
 use Closure;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\DynamicModel;
 use yii\base\NotSupportedException;
@@ -20,9 +21,13 @@ use yii\db\Query;
 use yii\db\Schema;
 use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseQueryBuilder;
+use yiiunit\framework\db\mysql\providers\QueryBuilderProvider;
+use yiiunit\support\DbHelper;
 
 /**
  * Unit test for {@see \yii\db\QueryBuilder} with MySQL driver.
+ *
+ * {@see QueryBuilderProvider} for test case data providers.
  */
 #[Group('db')]
 #[Group('mysql')]
@@ -579,6 +584,134 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $items;
     }
 
+    public function testCommentColumn(): void
+    {
+        self::markTestSkipped(
+            "Covered by 'testAddCommentOnColumn()' and 'testDropCommentFromColumn()'.",
+        );
+    }
+
+    public function testCommentTable(): void
+    {
+        self::markTestSkipped(
+            "Covered by 'testAddCommentOnTable()' and 'testDropCommentFromTable()'.",
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnTable')]
+    public function testAddCommentOnTable(string $table, string $comment, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addCommentOnTable($table, $comment),
+            'Table comment SQL must match.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnTableSpecialCharacters')]
+    public function testAddCommentOnTableEscapesSpecialCharacters(
+        string $comment,
+        string $expectedDefault,
+        string $expectedNoBackslashEscapes
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        $sqlMode = $db->createCommand(
+            <<<SQL
+            SELECT @@SESSION.sql_mode
+            SQL,
+        )->queryScalar();
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = ''
+            SQL,
+        )->execute();
+
+        self::assertSame(
+            $expectedDefault,
+            $db->getQueryBuilder()->addCommentOnTable('profile', $comment),
+            'Backslash-escaped literal must match under the default sql_mode.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = 'NO_BACKSLASH_ESCAPES'
+            SQL,
+        )->execute();
+
+        self::assertSame(
+            $expectedNoBackslashEscapes,
+            $db->getQueryBuilder()->addCommentOnTable('profile', $comment),
+            'Doubled-quote literal must match under `NO_BACKSLASH_ESCAPES`.',
+        );
+
+        $db->createCommand(
+            <<<SQL
+            SET SESSION sql_mode = :sqlMode
+            SQL,
+            [':sqlMode' => $sqlMode],
+        )->execute();
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromTable')]
+    public function testDropCommentFromTable(string $table, string $expected): void
+    {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropCommentFromTable($table),
+            'Empty comment SQL must match.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'addCommentOnColumn')]
+    public function testAddCommentOnColumn(
+        string $table,
+        string $column,
+        string $createSql,
+        string $comment,
+        string $expected
+    ): void {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand($createSql)->execute();
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment),
+            'Column definition must be preserved.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropCommentFromColumn')]
+    public function testDropCommentFromColumn(
+        string $table,
+        string $column,
+        string $createSql,
+        string $expected
+    ): void {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand($createSql)->execute();
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropCommentFromColumn($table, $column),
+            'Definition must survive comment removal.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
+
     public function testIssue17449(): void
     {
         $db = $this->getConnection();
@@ -601,6 +734,40 @@ MySqlStatement;
         $commentPos = stripos($actual, 'comment');
         $this->assertNotFalse($commentPos);
         $this->assertLessThan($checkPos, $commentPos);
+    }
+
+    public function testAddCommentOnColumnPlacesCommentBeforeCheckWithQuotedParenthesis(): void
+    {
+        $db = $this->getConnection(false);
+
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['yii2_qb_quoted_paren']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_qb_quoted_paren` (`status` varchar(32) CHECK (`status` <> '('))
+            SQL,
+        )->execute();
+
+        $actual = $qb->addCommentOnColumn('yii2_qb_quoted_paren', 'status', 'A column comment.');
+
+        DbHelper::dropTablesIfExist($db, ['yii2_qb_quoted_paren']);
+
+        $expected = $qb->isMariaDb()
+            ? <<<SQL
+            ALTER TABLE `yii2_qb_quoted_paren` CHANGE `status` `status` varchar(32) DEFAULT NULL COMMENT 'A column comment.' CHECK (`status` <> '(')
+            SQL
+            : <<<SQL
+            ALTER TABLE `yii2_qb_quoted_paren` CHANGE `status` `status` varchar(32) DEFAULT NULL COMMENT 'A column comment.'
+            SQL;
+
+        self::assertSame(
+            $expected,
+            $actual,
+            'Generated ALTER must place COMMENT before the inline CHECK with a quoted parenthesis.',
+        );
     }
 
     /**
