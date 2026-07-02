@@ -15,7 +15,9 @@ use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Query;
 
+use function array_values;
 use function preg_match;
+use function preg_match_all;
 use function preg_replace;
 use function strlen;
 use function substr_replace;
@@ -91,30 +93,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function renameColumn($table, $oldName, $newName)
     {
         $quotedTable = $this->db->quoteTableName($table);
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
-        if ($row === false) {
-            throw new Exception("Unable to find column '$oldName' in table '$table'.");
-        }
-        if (isset($row['Create Table'])) {
-            $sql = $row['Create Table'];
-        } else {
-            $row = array_values($row);
-            $sql = $row[1];
-        }
-        if (preg_match_all('/^\s*[`"](.*?)[`"]\s+(.*?),?$/m', $sql, $matches)) {
-            foreach ($matches[1] as $i => $c) {
-                if ($c === $oldName) {
-                    return "ALTER TABLE $quotedTable CHANGE "
-                        . $this->db->quoteColumnName($oldName) . ' '
-                        . $this->db->quoteColumnName($newName) . ' '
-                        . $matches[2][$i];
-                }
-            }
-        }
-        // try to give back a SQL anyway
-        return "ALTER TABLE $quotedTable CHANGE "
-            . $this->db->quoteColumnName($oldName) . ' '
-            . $this->db->quoteColumnName($newName);
+        $definition = $this->getColumnDefinition($table, $oldName);
+        $oldNameQuoted = $this->db->quoteColumnName($oldName);
+        $newNameQuoted = $this->db->quoteColumnName($newName);
+
+        return <<<SQL
+        ALTER TABLE {$quotedTable} CHANGE {$oldNameQuoted} {$newNameQuoted} {$definition}
+        SQL;
     }
 
     /**
@@ -352,18 +337,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addCommentOnColumn($table, $column, $comment)
     {
         $definition = $this->removeCommentFromColumnDefinition($this->getColumnDefinition($table, $column));
-
         [$definition, $check] = $this->extractCheckFromColumnDefinition($definition);
         $tableName = $this->db->quoteTableName($table);
         $columnName = $this->db->quoteColumnName($column);
-
         $value = $this->db->quoteValue($comment);
 
         $definitionSql = $definition === '' ? '' : " $definition";
         $checkSql = $check === null ? '' : " $check";
 
         return <<<SQL
-        ALTER TABLE $tableName CHANGE $columnName {$columnName}{$definitionSql} COMMENT {$value}{$checkSql}
+        ALTER TABLE {$tableName} CHANGE {$columnName} {$columnName}{$definitionSql} COMMENT {$value}{$checkSql}
         SQL;
     }
 
@@ -375,11 +358,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function addCommentOnTable($table, $comment)
     {
         $tableName = $this->db->quoteTableName($table);
-
         $value = $this->db->quoteValue($comment);
 
         return <<<SQL
-        ALTER TABLE $tableName COMMENT $value
+        ALTER TABLE {$tableName} COMMENT {$value}
         SQL;
     }
 
@@ -428,6 +410,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         $check = $checkMatches[0][0];
+
         $withoutCheck = substr_replace($definition, '', $checkMatches[0][1], strlen($check));
 
         return [trim($withoutCheck), $check];
@@ -436,25 +419,30 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Gets column definition.
      *
-     * @param string $table table name
-     * @param string $column column name
-     * @return string|null the column definition
-     * @throws Exception in case when table does not contain column
+     * @param string $table Table name.
+     * @param string $column Column name.
+     *
+     * @throws Exception when the table does not exist or does not contain the column.
+     *
+     * @return string The column definition.
      */
-    private function getColumnDefinition($table, $column)
+    private function getColumnDefinition(string $table, string $column): string
     {
         $quotedTable = $this->db->quoteTableName($table);
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $quotedTable)->queryOne();
+
+        $row = $this->db->createCommand(
+            <<<SQL
+            SHOW CREATE TABLE {$quotedTable}
+            SQL,
+        )->queryOne();
+
         if ($row === false) {
-            throw new Exception("Unable to find column '$column' in table '$table'.");
+            throw new Exception("Table not found: '$table'.");
         }
-        if (isset($row['Create Table'])) {
-            $sql = $row['Create Table'];
-        } else {
-            $row = array_values($row);
-            $sql = $row[1];
-        }
-        if (preg_match_all('/^\s*[`"](.*?)[`"]\s+(.*?),?$/m', $sql, $matches)) {
+
+        $createTable = $row['Create Table'] ?? array_values($row)[1];
+
+        if (preg_match_all('/^\s*[`"](.*?)[`"]\s+(.*?),?$/m', $createTable, $matches)) {
             foreach ($matches[1] as $i => $c) {
                 if ($c === $column) {
                     return $matches[2][$i];
@@ -462,22 +450,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
 
-        return null;
+        throw new Exception("Unable to find column '$column' in table '$table'.");
     }
 
     /**
      * Removes the current COMMENT clause from a column definition.
      *
-     * @param string|null $definition Column definition from SHOW CREATE TABLE.
+     * @param string $definition Column definition from SHOW CREATE TABLE.
      *
      * @return string Column definition without the COMMENT clause.
      */
-    private function removeCommentFromColumnDefinition(string|null $definition): string
+    private function removeCommentFromColumnDefinition(string $definition): string
     {
-        if ($definition === null) {
-            return '';
-        }
-
         $commentRegex = "/'(?:\\\\.|''|[^'\\\\])*'(*SKIP)(*F)|\s+COMMENT\s+'(?:\\\\.|''|[^'\\\\])*'/i";
 
         return trim(preg_replace($commentRegex, '', $definition) ?? '');

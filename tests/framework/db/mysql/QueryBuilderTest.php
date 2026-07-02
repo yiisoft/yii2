@@ -712,28 +712,43 @@ final class QueryBuilderTest extends BaseQueryBuilder
         DbHelper::dropTablesIfExist($db, [$table]);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/17449
+     */
     public function testIssue17449(): void
     {
-        $db = $this->getConnection();
-        $pdo = $db->pdo;
-        $pdo->exec('DROP TABLE IF EXISTS `issue_17449`');
+        $db = $this->getConnection(false);
 
-        $tableQuery = <<<MySqlStatement
-CREATE TABLE `issue_17449` (
-  `test_column` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'some comment' CHECK (json_valid(`test_column`))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1
-MySqlStatement;
-        $db->createCommand($tableQuery)->execute();
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
 
-        $actual = $db->createCommand()->addCommentOnColumn('issue_17449', 'test_column', 'Some comment')->rawSql;
+        DbHelper::dropTablesIfExist($db, ['issue_17449']);
 
-        $checkPos = stripos($actual, 'check');
-        if ($checkPos === false) {
-            $this->markTestSkipped("The used MySql-Server removed or moved the CHECK from the column line, so the original bug doesn't affect it");
-        }
-        $commentPos = stripos($actual, 'comment');
-        $this->assertNotFalse($commentPos);
-        $this->assertLessThan($checkPos, $commentPos);
+        $sql = <<<SQL
+        CREATE TABLE `issue_17449` (
+            `test_column` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'some comment' CHECK (json_valid(`test_column`))
+        ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+        SQL;
+
+        $db->createCommand($sql)->execute();
+        $command = $db->createCommand()->addCommentOnColumn('issue_17449', 'test_column', 'Some comment');
+
+        // MariaDB keeps the inline CHECK on the column line; MySQL 8.0+ promotes it to a table-level constraint.
+        $expected = $qb->isMariaDb()
+            ? <<<SQL
+            ALTER TABLE `issue_17449` CHANGE `test_column` `test_column` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'Some comment' CHECK (json_valid(`test_column`))
+            SQL
+            : <<<SQL
+            ALTER TABLE `issue_17449` CHANGE `test_column` `test_column` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin COMMENT 'Some comment'
+            SQL;
+
+        self::assertSame(
+            $expected,
+            $command->getRawSql(),
+            'Generated ALTER must restate the column with COMMENT before any inline CHECK.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['issue_17449']);
     }
 
     public function testAddCommentOnColumnPlacesCommentBeforeCheckWithQuotedParenthesis(): void
