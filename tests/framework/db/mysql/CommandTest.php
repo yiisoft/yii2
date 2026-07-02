@@ -12,7 +12,6 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
 use yii\db\Exception;
-use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mysql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
@@ -175,15 +174,6 @@ final class CommandTest extends BaseCommand
 
         DbHelper::dropTablesIfExist($db, ['yii2_mysql_missing_column']);
 
-        /**  @var QueryBuilder $qb */
-        $qb = $db->getQueryBuilder();
-
-        $expectedExceptionMessage = 'SQLSTATE[42000]: Syntax error or access violation';
-
-        if ($qb->isMariaDB()) {
-            $expectedExceptionMessage = "SQLSTATE[HY000]: General error: 4161 Unknown data type: 'COMMENT'";
-        }
-
         $db->createCommand(
             <<<SQL
             CREATE TABLE `yii2_mysql_missing_column` (`id` int)
@@ -191,13 +181,15 @@ final class CommandTest extends BaseCommand
         )->execute();
 
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage($expectedExceptionMessage);
+        $this->expectExceptionMessage(
+            "Unable to find column 'nonexistent' in table 'yii2_mysql_missing_column'.",
+        );
 
         $db->createCommand()->addCommentOnColumn(
             'yii2_mysql_missing_column',
             'nonexistent',
             'A column comment.',
-        )->execute();
+        );
     }
 
     public function testAddDropCheckSeveral(): void

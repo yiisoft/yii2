@@ -93,18 +93,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function renameColumn($table, $oldName, $newName)
     {
         $quotedTable = $this->db->quoteTableName($table);
-
         $definition = $this->getColumnDefinition($table, $oldName);
-
         $oldNameQuoted = $this->db->quoteColumnName($oldName);
         $newNameQuoted = $this->db->quoteColumnName($newName);
 
-        $sql = <<<SQL
-        ALTER TABLE {$quotedTable} CHANGE {$oldNameQuoted} {$newNameQuoted}
+        return <<<SQL
+        ALTER TABLE {$quotedTable} CHANGE {$oldNameQuoted} {$newNameQuoted} {$definition}
         SQL;
-
-        // append the current definition so MySQL keeps the column intact; null means it could not be recovered.
-        return $definition === null ? $sql : "$sql $definition";
     }
 
     /**
@@ -427,11 +422,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $table Table name.
      * @param string $column Column name.
      *
-     * @throws Exception in case when table does not contain column.
+     * @throws Exception when the table does not exist or does not contain the column.
      *
-     * @return string|null The column definition.
+     * @return string The column definition.
      */
-    private function getColumnDefinition(string $table, string $column): string|null
+    private function getColumnDefinition(string $table, string $column): string
     {
         $quotedTable = $this->db->quoteTableName($table);
 
@@ -442,9 +437,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         )->queryOne();
 
         if ($row === false) {
-            throw new Exception(
-                "Unable to find column '$column' in table '$table'.",
-            );
+            throw new Exception("Table not found: '$table'.");
         }
 
         $createTable = $row['Create Table'] ?? array_values($row)[1];
@@ -457,22 +450,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
 
-        return null;
+        throw new Exception("Unable to find column '$column' in table '$table'.");
     }
 
     /**
      * Removes the current COMMENT clause from a column definition.
      *
-     * @param string|null $definition Column definition from SHOW CREATE TABLE.
+     * @param string $definition Column definition from SHOW CREATE TABLE.
      *
      * @return string Column definition without the COMMENT clause.
      */
-    private function removeCommentFromColumnDefinition(string|null $definition): string
+    private function removeCommentFromColumnDefinition(string $definition): string
     {
-        if ($definition === null) {
-            return '';
-        }
-
         $commentRegex = "/'(?:\\\\.|''|[^'\\\\])*'(*SKIP)(*F)|\s+COMMENT\s+'(?:\\\\.|''|[^'\\\\])*'/i";
 
         return trim(preg_replace($commentRegex, '', $definition) ?? '');
