@@ -51,6 +51,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.55
+-----------------------
+
+* When using multiple `\yii\db\Expression`s with the same parameter names in a query, the parameters are renamed to avoid clashes.
+  If your code relies on inspecting the SQL created by the query builder, you might need to change it.
+
 Upgrade from Yii 2.0.53
 -----------------------
 
