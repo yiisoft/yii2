@@ -1279,14 +1279,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ['a' => 1, ':a1' => 2],
             ],
             [
-                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a1', ['a1' => 2]), new Expression('a = :a', [':a' => 3])],
-                '(a = :a) AND (a = :a1) AND (a = :a2)',
-                ['a' => 1, 'a1' => 2, ':a2' => 3],
+                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a2', ['a2' => 2]), new Expression('a = :a', [':a' => 3])],
+                '(a = :a) AND (a = :a2) AND (a = :a3)',
+                ['a' => 1, 'a2' => 2, ':a3' => 3],
             ],
             [
-                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a1', ['a1' => 2]), new Expression('a = :a', ['a' => 3])],
-                '(a = :a) AND (a = :a1) AND (a = :a2)',
-                ['a' => 1, 'a1' => 2, ':a2' => 3],
+                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a2', ['a2' => 2]), new Expression('a = :a', ['a' => 3])],
+                '(a = :a) AND (a = :a2) AND (a = :a3)',
+                ['a' => 1, 'a2' => 2, ':a3' => 3],
             ],
         ];
     }
