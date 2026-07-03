@@ -12,6 +12,7 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
 use yii\db\Exception;
+use yii\db\mysql\QueryBuilder;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mysql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
@@ -107,28 +108,28 @@ final class CommandTest extends BaseCommand
                 SQL,
             )->execute();
 
-            DbHelper::dropTablesIfExist($db, ['yii2_mysql_comment_special']);
+            DbHelper::dropTablesIfExist($db, ['comment_special']);
 
             $db->createCommand()->createTable(
-                'yii2_mysql_comment_special',
+                'comment_special',
                 [
                     'id' => 'integer',
                     'description' => 'string',
                 ],
             )->execute();
             $db->createCommand()->addCommentOnColumn(
-                'yii2_mysql_comment_special',
+                'comment_special',
                 'description',
                 $comment,
             )->execute();
 
             self::assertSame(
                 $comment,
-                $schema->getTableSchema('yii2_mysql_comment_special', true)->getColumn('description')->comment,
+                $schema->getTableSchema('comment_special', true)->getColumn('description')->comment,
                 "Comment must round-trip under the `$label` sql_mode.",
             );
 
-            DbHelper::dropTablesIfExist($db, ['yii2_mysql_comment_special']);
+            DbHelper::dropTablesIfExist($db, ['comment_special']);
         }
 
         $db->createCommand(
@@ -145,50 +146,224 @@ final class CommandTest extends BaseCommand
 
         $schema = $db->getSchema();
 
-        DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+        DbHelper::dropTablesIfExist($db, ['quoted_paren']);
 
         $db->createCommand(
             <<<SQL
-            CREATE TABLE `yii2_mysql_quoted_paren` (`status` varchar(32) CHECK (`status` <> '('))
+            CREATE TABLE `quoted_paren` (`status` varchar(32) CHECK (`status` <> '('))
             SQL,
         )->execute();
 
         $db->createCommand()->addCommentOnColumn(
-            'yii2_mysql_quoted_paren',
+            'quoted_paren',
             'status',
             'A column comment.',
         )->execute();
 
         self::assertSame(
             'A column comment.',
-            $schema->getTableSchema('yii2_mysql_quoted_paren', true)->getColumn('status')->comment,
+            $schema->getTableSchema('quoted_paren', true)->getColumn('status')->comment,
             'Comment must round-trip when the CHECK contains a quoted parenthesis.',
         );
 
-        DbHelper::dropTablesIfExist($db, ['yii2_mysql_quoted_paren']);
+        DbHelper::dropTablesIfExist($db, ['quoted_paren']);
     }
 
     public function testThrowExceptionWhenColumnIsMissing(): void
     {
         $db = $this->getConnection(false);
 
-        DbHelper::dropTablesIfExist($db, ['yii2_mysql_missing_column']);
+        DbHelper::dropTablesIfExist($db, ['missing_column']);
 
         $db->createCommand(
             <<<SQL
-            CREATE TABLE `yii2_mysql_missing_column` (`id` int)
+            CREATE TABLE `missing_column` (`id` int)
             SQL,
         )->execute();
 
         $this->expectException(Exception::class);
         $this->expectExceptionMessage(
-            "Unable to find column 'nonexistent' in table 'yii2_mysql_missing_column'.",
+            "Unable to find column 'nonexistent' in table 'missing_column'.",
         );
 
         $db->createCommand()->addCommentOnColumn(
-            'yii2_mysql_missing_column',
+            'missing_column',
             'nonexistent',
             'A column comment.',
+        );
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'renameColumn')]
+    public function testRenameColumn(
+        string $rawTableName,
+        string $renameTarget,
+        string $oldColumnName,
+        string $newColumnName,
+    ): void {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, [$rawTableName]);
+
+        $db->createCommand()->createTable(
+            $rawTableName,
+            [$oldColumnName => 'integer'],
+        )->execute();
+
+        self::assertNotNull(
+            $schema->getTableSchema($rawTableName, true)->getColumn($oldColumnName),
+            'Old column must exist before renaming.',
+        );
+        self::assertNull(
+            $schema->getTableSchema($rawTableName, true)->getColumn($newColumnName),
+            'New column must not exist before renaming.',
+        );
+
+        $db->createCommand()->renameColumn(
+            $renameTarget,
+            $oldColumnName,
+            $newColumnName,
+        )->execute();
+
+        self::assertNull(
+            $schema->getTableSchema($rawTableName, true)->getColumn($oldColumnName),
+            'Old column must not exist after renaming.',
+        );
+        self::assertNotNull(
+            $schema->getTableSchema($rawTableName, true)->getColumn($newColumnName),
+            'New column must exist after renaming.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$rawTableName]);
+    }
+
+    public function testRenameColumnPreservesColumnDefinition(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, ['rename_column_definition']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `rename_column_definition` (
+              `old_col` varchar(255) NOT NULL DEFAULT 'keep' COMMENT 'Keep me.'
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+            SQL,
+        )->execute();
+
+        $db->createCommand()->renameColumn(
+            'rename_column_definition',
+            'old_col',
+            'new_col',
+        )->execute();
+
+        $column = $schema->getTableSchema('rename_column_definition', true)->getColumn('new_col');
+
+        self::assertNotNull(
+            $column,
+            'Renamed column must exist.',
+        );
+        self::assertFalse(
+            $column->allowNull,
+            "'NOT NULL' must be preserved.",
+        );
+        self::assertSame(
+            'keep',
+            $column->defaultValue,
+            'Default value must be preserved.',
+        );
+        self::assertSame(
+            'Keep me.',
+            $column->comment,
+            'Comment must be preserved.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['rename_column_definition']);
+    }
+
+    public function testThrowExceptionWhenRenamingColumnReferencedByCheckConstraint(): void
+    {
+        $db = $this->getConnection(false);
+
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['rename_column_check']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `rename_column_check` (`status` varchar(32) CHECK (`status` <> '('))
+            SQL,
+        )->execute();
+
+        $expectedMessage = "Check constraint 'rename_column_check_chk_1' uses column 'status', "
+            . 'hence column cannot be dropped or renamed.';
+
+        if ($qb->isMariaDb()) {
+            $expectedMessage = "Unknown column 'status'";
+        }
+
+        // MySQL 8.0.16+ rejects with error 3959: the table-level CHECK still references the old column. MariaDB keeps
+        // the CHECK inline, so the restated column definition rejects with error 1054 for the now-missing column.
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            $expectedMessage,
+        );
+
+        $db->createCommand()->renameColumn(
+            'rename_column_check',
+            'status',
+            'new_status',
+        )->execute();
+    }
+
+    public function testThrowExceptionWhenRenamingMissingColumn(): void
+    {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, ['rename_missing_column']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `rename_missing_column` (`id` int)
+            SQL,
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            "Unable to find column 'nonexistent' in table 'rename_missing_column'.",
+        );
+
+        $db->createCommand()->renameColumn(
+            'rename_missing_column',
+            'nonexistent',
+            'new_col',
+        );
+    }
+
+    public function testThrowExceptionWhenRenamingColumnInMissingTable(): void
+    {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, ['rename_absent_table']);
+
+        $expectedMessage = "SQLSTATE[42S02]: Base table or view not found: 1146 Table 'yiitest.rename_absent_table' "
+            . "doesn't exist";
+
+        // Both MySQL and MariaDB surface the missing table as error 1146 (`ER_NO_SUCH_TABLE`) when the reworked
+        // `renameColumn()` inspects the table via `SHOW CREATE TABLE`.
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            $expectedMessage,
+        );
+
+        $db->createCommand()->renameColumn(
+            'rename_absent_table',
+            'old_col',
+            'new_col',
         );
     }
 

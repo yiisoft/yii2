@@ -84,11 +84,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for renaming a column.
-     * @param string $table the table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName the old name of the column. The name will be properly quoted by the method.
-     * @param string $newName the new name of the column. The name will be properly quoted by the method.
-     * @return string the SQL statement for renaming a DB column.
-     * @throws Exception
+     *
+     * @param string $table The table whose column is to be renamed. The name will be properly quoted by the method.
+     * @param string $oldName The old name of the column. The name will be properly quoted by the method.
+     * @param string $newName The new name of the column. The name will be properly quoted by the method.
+     *
+     * @throws Exception if the table does not exist or does not contain the column.
+     *
+     * @return string The SQL statement for renaming a DB column.
      */
     public function renameColumn($table, $oldName, $newName)
     {
