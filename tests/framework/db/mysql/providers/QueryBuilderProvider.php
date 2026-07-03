@@ -25,94 +25,168 @@ final class QueryBuilderProvider
     {
         return [
             'column default containing CHECK literal' => [
-                'yii2_mysql_qb_check_in_default',
+                'qb_check_in_default',
                 'description',
                 <<<SQL
-                CREATE TABLE `yii2_mysql_qb_check_in_default` (
+                CREATE TABLE `qb_check_in_default` (
                   `description` varchar(255) DEFAULT 'literal CHECK (x)'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 'New comment.',
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_check_in_default` CHANGE `description` `description` varchar(255) DEFAULT 'literal CHECK (x)' COMMENT 'New comment.'
+                ALTER TABLE `qb_check_in_default` CHANGE `description` `description` varchar(255) DEFAULT 'literal CHECK (x)' COMMENT 'New comment.'
                 SQL,
             ],
             'column default containing COMMENT literal' => [
-                'yii2_mysql_qb_comment_in_default',
+                'qb_comment_in_default',
                 'description',
                 <<<SQL
-                CREATE TABLE `yii2_mysql_qb_comment_in_default` (
+                CREATE TABLE `qb_comment_in_default` (
                   `description` varchar(255) DEFAULT 'see COMMENT text'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 'New comment.',
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_in_default` CHANGE `description` `description` varchar(255) DEFAULT 'see COMMENT text' COMMENT 'New comment.'
+                ALTER TABLE `qb_comment_in_default` CHANGE `description` `description` varchar(255) DEFAULT 'see COMMENT text' COMMENT 'New comment.'
                 SQL,
             ],
             'column without existing comment' => [
-                'yii2_mysql_qb_comment_add',
+                'qb_comment_add',
                 'description',
                 <<<SQL
-                CREATE TABLE `yii2_mysql_qb_comment_add` (
+                CREATE TABLE `qb_comment_add` (
                   `description` varchar(255) NOT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 'Column comment.',
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_add` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'Column comment.'
+                ALTER TABLE `qb_comment_add` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'Column comment.'
                 SQL,
             ],
             'comment with single quote' => [
-                'yii2_mysql_qb_comment_quote',
+                'qb_comment_quote',
                 'description',
                 <<<SQL
-                CREATE TABLE `yii2_mysql_qb_comment_quote` (
+                CREATE TABLE `qb_comment_quote` (
                   `description` varchar(255) NOT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 "It's a column comment.",
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_quote` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'It\'s a column comment.'
+                ALTER TABLE `qb_comment_quote` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'It\'s a column comment.'
                 SQL,
             ],
             'database-qualified table name' => [
-                'yiitest.yii2_mysql_qb_comment_qualified',
+                'yiitest.qb_comment_qualified',
                 'description',
                 <<<SQL
-                CREATE TABLE `yiitest`.`yii2_mysql_qb_comment_qualified` (
+                CREATE TABLE `yiitest`.`qb_comment_qualified` (
                   `description` varchar(255) NOT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 'Qualified table comment.',
                 <<<SQL
-                ALTER TABLE `yiitest`.`yii2_mysql_qb_comment_qualified` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'Qualified table comment.'
+                ALTER TABLE `yiitest`.`qb_comment_qualified` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'Qualified table comment.'
                 SQL,
             ],
             'replace existing comment' => [
-                'yii2_mysql_qb_comment_replace',
+                'qb_comment_replace',
                 'description',
                 <<<SQL
-                CREATE TABLE `yii2_mysql_qb_comment_replace` (
+                CREATE TABLE `qb_comment_replace` (
                   `description` varchar(255) DEFAULT NULL COMMENT 'Old comment.'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 'New comment.',
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_replace` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'New comment.'
+                ALTER TABLE `qb_comment_replace` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'New comment.'
                 SQL,
             ],
             'replace existing comment with single quote' => [
-                'yii2_mysql_qb_comment_replace_quote',
+                'qb_comment_replace_quote',
                 'description',
                 <<<'SQL'
-                CREATE TABLE `yii2_mysql_qb_comment_replace_quote` (
+                CREATE TABLE `qb_comment_replace_quote` (
                   `description` varchar(255) DEFAULT NULL COMMENT 'It\'s old.'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 "It's a new column comment.",
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_replace_quote` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'It\'s a new column comment.'
+                ALTER TABLE `qb_comment_replace_quote` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'It\'s a new column comment.'
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string, string, string}>
+     */
+    public static function renameColumn(): array
+    {
+        return [
+            'column preserves comment' => [
+                'qb_rename_comment',
+                'old_col',
+                'new_col',
+                <<<SQL
+                CREATE TABLE `qb_rename_comment` (
+                  `old_col` varchar(255) NOT NULL COMMENT 'Keep me.'
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                <<<SQL
+                ALTER TABLE `qb_rename_comment` CHANGE `old_col` `new_col` varchar(255) NOT NULL COMMENT 'Keep me.'
+                SQL,
+            ],
+            'column with default' => [
+                'qb_rename_default',
+                'old_col',
+                'new_col',
+                <<<SQL
+                CREATE TABLE `qb_rename_default` (
+                  `old_col` varchar(255) DEFAULT 'something'
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                <<<SQL
+                ALTER TABLE `qb_rename_default` CHANGE `old_col` `new_col` varchar(255) DEFAULT 'something'
+                SQL,
+            ],
+            'database-qualified table name' => [
+                'yiitest.qb_rename_qualified',
+                'old_col',
+                'new_col',
+                <<<SQL
+                CREATE TABLE `yiitest`.`qb_rename_qualified` (
+                  `old_col` varchar(255) NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                <<<SQL
+                ALTER TABLE `yiitest`.`qb_rename_qualified` CHANGE `old_col` `new_col` varchar(255) NOT NULL
+                SQL,
+            ],
+            'not null column' => [
+                'qb_rename_notnull',
+                'old_col',
+                'new_col',
+                <<<SQL
+                CREATE TABLE `qb_rename_notnull` (
+                  `old_col` varchar(255) NOT NULL
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                <<<SQL
+                ALTER TABLE `qb_rename_notnull` CHANGE `old_col` `new_col` varchar(255) NOT NULL
+                SQL,
+            ],
+            'simple column' => [
+                'qb_rename_simple',
+                'old_col',
+                'new_col',
+                <<<SQL
+                CREATE TABLE `qb_rename_simple` (
+                  `old_col` varchar(255)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                SQL,
+                <<<SQL
+                ALTER TABLE `qb_rename_simple` CHANGE `old_col` `new_col` varchar(255) DEFAULT NULL
                 SQL,
             ],
         ];
@@ -125,27 +199,27 @@ final class QueryBuilderProvider
     {
         return [
             'column with existing comment' => [
-                'yii2_mysql_qb_comment_drop',
+                'qb_comment_drop',
                 'description',
                 <<<SQL
-                CREATE TABLE `yii2_mysql_qb_comment_drop` (
+                CREATE TABLE `qb_comment_drop` (
                   `description` varchar(255) NOT NULL COMMENT 'Old comment.'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_drop` CHANGE `description` `description` varchar(255) NOT NULL COMMENT ''
+                ALTER TABLE `qb_comment_drop` CHANGE `description` `description` varchar(255) NOT NULL COMMENT ''
                 SQL,
             ],
             'database-qualified table name' => [
-                'yiitest.yii2_mysql_qb_comment_drop_qualified',
+                'yiitest.qb_comment_drop_qualified',
                 'description',
                 <<<SQL
-                CREATE TABLE `yiitest`.`yii2_mysql_qb_comment_drop_qualified` (
+                CREATE TABLE `yiitest`.`qb_comment_drop_qualified` (
                   `description` varchar(255) DEFAULT NULL COMMENT 'Old comment.'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `yiitest`.`yii2_mysql_qb_comment_drop_qualified` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT ''
+                ALTER TABLE `yiitest`.`qb_comment_drop_qualified` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT ''
                 SQL,
             ],
         ];
@@ -158,24 +232,24 @@ final class QueryBuilderProvider
     {
         return [
             'comment with single quote' => [
-                'yii2_mysql_qb_comment_table_quote',
+                'qb_comment_table_quote',
                 "It's a table comment.",
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_table_quote` COMMENT 'It\'s a table comment.'
-                SQL,
-            ],
-            'simple table name' => [
-                'yii2_mysql_qb_comment_table',
-                'A table comment.',
-                <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_table` COMMENT 'A table comment.'
+                ALTER TABLE `qb_comment_table_quote` COMMENT 'It\'s a table comment.'
                 SQL,
             ],
             'database-qualified table name' => [
-                'yiitest.yii2_mysql_qb_comment_table_qualified',
+                'yiitest.qb_comment_table_qualified',
                 'Qualified table comment.',
                 <<<SQL
-                ALTER TABLE `yiitest`.`yii2_mysql_qb_comment_table_qualified` COMMENT 'Qualified table comment.'
+                ALTER TABLE `yiitest`.`qb_comment_table_qualified` COMMENT 'Qualified table comment.'
+                SQL,
+            ],
+            'simple table name' => [
+                'qb_comment_table',
+                'A table comment.',
+                <<<SQL
+                ALTER TABLE `qb_comment_table` COMMENT 'A table comment.'
                 SQL,
             ],
         ];
@@ -188,15 +262,15 @@ final class QueryBuilderProvider
     {
         return [
             'database-qualified table name' => [
-                'yiitest.yii2_mysql_qb_comment_table_drop_qualified',
+                'yiitest.qb_comment_table_drop_qualified',
                 <<<SQL
-                ALTER TABLE `yiitest`.`yii2_mysql_qb_comment_table_drop_qualified` COMMENT ''
+                ALTER TABLE `yiitest`.`qb_comment_table_drop_qualified` COMMENT ''
                 SQL,
             ],
             'simple table name' => [
-                'yii2_mysql_qb_comment_table_drop',
+                'qb_comment_table_drop',
                 <<<SQL
-                ALTER TABLE `yii2_mysql_qb_comment_table_drop` COMMENT ''
+                ALTER TABLE `qb_comment_table_drop` COMMENT ''
                 SQL,
             ],
         ];

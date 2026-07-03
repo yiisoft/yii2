@@ -712,6 +712,68 @@ final class QueryBuilderTest extends BaseQueryBuilder
         DbHelper::dropTablesIfExist($db, [$table]);
     }
 
+    #[DataProviderExternal(QueryBuilderProvider::class, 'renameColumn')]
+    public function testRenameColumn(
+        string $table,
+        string $oldName,
+        string $newName,
+        string $createSql,
+        string $expected
+    ): void {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand($createSql)->execute();
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->renameColumn(
+                $table,
+                $oldName,
+                $newName,
+            ),
+            'Renamed column DDL must restate the preserved definition.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
+
+    public function testRenameColumnRetainsInlineCheckInGeneratedDefinition(): void
+    {
+        $db = $this->getConnection(false);
+
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['rename_check']);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `rename_check` (`status` varchar(32) CHECK (`status` <> '('))
+            SQL,
+        )->execute();
+
+        $actual = $qb->renameColumn('rename_check', 'status', 'new_status');
+
+        DbHelper::dropTablesIfExist($db, ['rename_check']);
+
+        // MariaDB keeps the inline CHECK on the column line; MySQL 8.0+ promotes it to a table-level constraint.
+        $expected = $qb->isMariaDb()
+            ? <<<SQL
+            ALTER TABLE `rename_check` CHANGE `status` `new_status` varchar(32) DEFAULT NULL CHECK (`status` <> '(')
+            SQL
+            : <<<SQL
+            ALTER TABLE `rename_check` CHANGE `status` `new_status` varchar(32) DEFAULT NULL
+            SQL;
+
+        self::assertSame(
+            $expected,
+            $actual,
+            'Inline CHECK must be restated on MariaDB but absent on MySQL (promoted to table level).',
+        );
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/issues/17449
      */

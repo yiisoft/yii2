@@ -2018,125 +2018,125 @@ final class QueryBuilderProvider
     {
         return [
             'column check constraint' => [
-                ['yii2_mssql_drop_column_check'],
+                ['drop_column_check'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_column_check] (
+                    CREATE TABLE [drop_column_check] (
                         [id] [int] NOT NULL,
-                        [bar] [int] NULL CONSTRAINT [CK_yii2_mssql_drop_column_check_bar] CHECK ([bar] > 0)
+                        [bar] [int] NULL CONSTRAINT [CK_drop_column_check_bar] CHECK ([bar] > 0)
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_column_check',
+                'drop_column_check',
                 'bar',
             ],
             'default constraint' => [
-                ['yii2_mssql_drop_default'],
+                ['drop_default'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_default] (
+                    CREATE TABLE [drop_default] (
                         [id] [int] NOT NULL,
-                        [bar] [int] NULL CONSTRAINT [DF_yii2_mssql_drop_default_bar] DEFAULT 1
+                        [bar] [int] NULL CONSTRAINT [DF_drop_default_bar] DEFAULT 1
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_default',
+                'drop_default',
                 'bar',
             ],
             'default constraint on column with single quote' => [
-                ['yii2_mssql_drop_quote'],
+                ['drop_quote'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_quote] (
+                    CREATE TABLE [drop_quote] (
                         [id] [int] NOT NULL,
-                        [my'col] [int] NULL CONSTRAINT [DF_yii2_mssql_drop_quote_col] DEFAULT 1
+                        [my'col] [int] NULL CONSTRAINT [DF_drop_quote_col] DEFAULT 1
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_quote',
+                'drop_quote',
                 "my'col",
             ],
             'foreign key constraint' => [
-                ['yii2_mssql_drop_fk_child', 'yii2_mssql_drop_fk_parent'],
+                ['drop_fk_child', 'drop_fk_parent'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_fk_parent] (
+                    CREATE TABLE [drop_fk_parent] (
                         [id] [int] NOT NULL,
-                        CONSTRAINT [PK_yii2_mssql_drop_fk_parent_id] PRIMARY KEY ([id])
+                        CONSTRAINT [PK_drop_fk_parent_id] PRIMARY KEY ([id])
                     )
                     SQL,
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_fk_child] (
+                    CREATE TABLE [drop_fk_child] (
                         [id] [int] NOT NULL,
                         [parent_id] [int] NULL,
-                        CONSTRAINT [FK_yii2_mssql_drop_fk_child_parent_id] FOREIGN KEY ([parent_id]) REFERENCES [yii2_mssql_drop_fk_parent] ([id])
+                        CONSTRAINT [FK_drop_fk_child_parent_id] FOREIGN KEY ([parent_id]) REFERENCES [drop_fk_parent] ([id])
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_fk_child',
+                'drop_fk_child',
                 'parent_id',
             ],
             'multi column check constraint' => [
-                ['yii2_mssql_drop_multi_check'],
+                ['drop_multi_check'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_multi_check] (
+                    CREATE TABLE [drop_multi_check] (
                         [id] [int] NOT NULL,
                         [bar] [int] NULL,
-                        CONSTRAINT [CK_yii2_mssql_drop_multi_check_bar] CHECK ([bar] > [id])
+                        CONSTRAINT [CK_drop_multi_check_bar] CHECK ([bar] > [id])
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_multi_check',
+                'drop_multi_check',
                 'bar',
             ],
             'primary key constraint' => [
-                ['yii2_mssql_drop_pk'],
+                ['drop_pk'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_pk] (
+                    CREATE TABLE [drop_pk] (
                         [id] [int] NULL,
                         [bar] [int] NOT NULL,
-                        CONSTRAINT [PK_yii2_mssql_drop_pk_bar] PRIMARY KEY ([bar])
+                        CONSTRAINT [PK_drop_pk_bar] PRIMARY KEY ([bar])
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_pk',
+                'drop_pk',
                 'bar',
             ],
             'referencing foreign key constraint' => [
-                ['yii2_mssql_drop_ref_fk_child', 'yii2_mssql_drop_ref_fk_parent'],
+                ['drop_ref_fk_child', 'drop_ref_fk_parent'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_ref_fk_parent] (
+                    CREATE TABLE [drop_ref_fk_parent] (
                         [id] [int] NOT NULL,
                         [name] [varchar](32) NULL,
-                        CONSTRAINT [PK_yii2_mssql_drop_ref_fk_parent_id] PRIMARY KEY ([id])
+                        CONSTRAINT [PK_drop_ref_fk_parent_id] PRIMARY KEY ([id])
                     )
                     SQL,
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_ref_fk_child] (
+                    CREATE TABLE [drop_ref_fk_child] (
                         [id] [int] NOT NULL,
                         [parent_id] [int] NULL,
-                        CONSTRAINT [FK_yii2_mssql_drop_ref_fk_child_parent_id] FOREIGN KEY ([parent_id]) REFERENCES [yii2_mssql_drop_ref_fk_parent] ([id])
+                        CONSTRAINT [FK_drop_ref_fk_child_parent_id] FOREIGN KEY ([parent_id]) REFERENCES [drop_ref_fk_parent] ([id])
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_ref_fk_parent',
+                'drop_ref_fk_parent',
                 'id',
             ],
             'unique constraint' => [
-                ['yii2_mssql_drop_unique'],
+                ['drop_unique'],
                 [
                     <<<SQL
-                    CREATE TABLE [yii2_mssql_drop_unique] (
+                    CREATE TABLE [drop_unique] (
                         [id] [int] NOT NULL,
                         [bar] [int] NULL,
-                        CONSTRAINT [UQ_yii2_mssql_drop_unique_bar] UNIQUE ([bar])
+                        CONSTRAINT [UQ_drop_unique_bar] UNIQUE ([bar])
                     )
                     SQL,
                 ],
-                'yii2_mssql_drop_unique',
+                'drop_unique',
                 'bar',
             ],
         ];

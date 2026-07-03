@@ -114,6 +114,7 @@ Yii Framework 2 Change Log
 - Chg #20972: Remove unused legacy `getAllColumnNames()` method from `yii\db\mssql\QueryBuilder` (terabytesoftw)
 - Bug #20975: Fix `yii\db\mysql\QueryBuilder::addCommentOnColumn()` to build column-comment DDL quote-aware, no longer corrupting `DEFAULT` literals that contain `CHECK (` or `COMMENT` (terabytesoftw)
 - Enh #20976: Rework `yii\db\mysql\QueryBuilder::getColumnDefinition()` and reuse it in `renameColumn()` (terabytesoftw)
+- Bug #20979: Document the `yii\db\mysql\QueryBuilder::renameColumn()` exception and reach 100% method coverage (terabytesoftw)
 
 2.0.56 under development
 ------------------------
