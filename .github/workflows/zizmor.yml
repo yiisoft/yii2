@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - main
+      - '22.0'
     paths:
       - '.github/**.yml'
       - '.github/**.yaml'
