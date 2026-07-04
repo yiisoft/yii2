@@ -524,7 +524,7 @@ class View extends \yii\base\View
 
         if (empty($depends)) {
             // register directly without AssetManager
-            if ($appendTimestamp && Url::isRelative($url)) {
+            if ($appendTimestamp && Url::isRelative($url) && strpbrk($url, '?#') === false) {
                 $prefix = Yii::getAlias('@web');
                 $prefixLength = strlen($prefix);
                 $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');
