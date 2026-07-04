@@ -95,7 +95,7 @@ runs:
 
         if [ -n "$EXCLUDE_GROUP_INPUT" ]; then
           for group in $EXCLUDE_GROUP_INPUT; do
-            PHPUNIT_CMD="$PHPUNIT_CMD --exclude-group $group"
+            command+=("--exclude-group" "$group")
           done
         fi
 
