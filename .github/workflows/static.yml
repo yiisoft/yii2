@@ -2,7 +2,6 @@ name: static analysis
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   pull_request: &ignore-paths
@@ -37,7 +36,7 @@ on:
 
 jobs:
   phpstan:
-    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@master
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
     with:
       configuration: phpstan.dist.neon
       concurrency-group: phpstan-${{ github.ref }}
