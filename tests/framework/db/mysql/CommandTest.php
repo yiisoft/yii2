@@ -423,7 +423,7 @@ final class CommandTest extends BaseCommand
         $this->assertEmpty($schema->getTableChecks($tableName, true));
     }
 
-    #[DataProviderExternal(CommandProvider::class, 'createIndexWithQualifiedTableNames')]
+    #[DataProviderExternal(CommandProvider::class, 'createIndex')]
     public function testCreateIndexWithQualifiedTableNames(
         string $table,
         string $indexTarget,
@@ -486,6 +486,66 @@ final class CommandTest extends BaseCommand
         self::assertEmpty(
             $schema->getTableIndexes($table, true),
             'Index must be removed after drop.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'dropForeignKey')]
+    public function testDropForeignKeyWithQualifiedTableNames(
+        string $table,
+        string $fkTarget,
+        string $fkName,
+        array $fkColumns,
+        array $refColumns,
+    ): void {
+        $db = $this->getConnection(false);
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand()->createTable(
+            $table,
+            [
+                'int1' => 'integer not null unique',
+                'int2' => 'integer not null unique',
+                'int3' => 'integer not null unique',
+                'int4' => 'integer not null unique',
+                'unique ([[int1]], [[int2]])',
+                'unique ([[int3]], [[int4]])',
+            ],
+        )->execute();
+        $db->createCommand()->addForeignKey(
+            $fkName,
+            $fkTarget,
+            $fkColumns,
+            $fkTarget,
+            $refColumns,
+        )->execute();
+
+        $foreignKeys = $schema->getTableForeignKeys($table, true);
+
+        self::assertCount(
+            1,
+            $foreignKeys,
+            'Foreign key must exist before drop.',
+        );
+        self::assertSame(
+            $fkColumns,
+            $foreignKeys[0]->columnNames,
+            'Foreign key must cover the requested columns.',
+        );
+
+        $db->createCommand()->dropForeignKey(
+            $fkName,
+            $fkTarget,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableForeignKeys($table, true),
+            'Foreign key must be removed after drop.',
         );
 
         DbHelper::dropTablesIfExist($db, [$table]);

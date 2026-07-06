@@ -116,6 +116,7 @@ Yii Framework 2 Change Log
 - Enh #20976: Rework `yii\db\mysql\QueryBuilder::getColumnDefinition()` and reuse it in `renameColumn()` (terabytesoftw)
 - Bug #20979: Document the `yii\db\mysql\QueryBuilder::renameColumn()` exception and reach 100% method coverage (terabytesoftw)
 - Enh #20982: Rework `yii\db\mysql\QueryBuilder::createIndex()` to build the `ALTER TABLE ... ADD [UNIQUE] INDEX` statement (terabytesoftw)
+- Enh #20983: Rework `yii\db\mysql\QueryBuilder::dropForeignKey()` to build the `ALTER TABLE ... DROP FOREIGN KEY` statement (terabytesoftw)
 
 2.0.56 under development
 ------------------------
