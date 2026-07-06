@@ -779,6 +779,24 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropPrimaryKey')]
+    public function testDropPrimaryKeyWithQualifiedTableNames(
+        string $table,
+        string $pkName,
+        string $expected,
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropPrimaryKey(
+                $pkName,
+                $table,
+            ),
+            'Generated SQL must match the expected ALTER TABLE statement.',
+        );
+    }
+
     public function testRenameColumnRetainsInlineCheckInGeneratedDefinition(): void
     {
         $db = $this->getConnection(false);

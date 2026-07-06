@@ -550,4 +550,56 @@ final class CommandTest extends BaseCommand
 
         DbHelper::dropTablesIfExist($db, [$table]);
     }
+
+    #[DataProviderExternal(CommandProvider::class, 'dropPrimaryKey')]
+    public function testDropPrimaryKeyWithQualifiedTableNames(
+        string $table,
+        string $pkTarget,
+        string $pkName,
+        array $pkColumns,
+    ): void {
+        $db = $this->getConnection(false);
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand()->createTable(
+            $table,
+            [
+                'int1' => 'integer not null',
+                'int2' => 'integer not null',
+            ],
+        )->execute();
+
+        self::assertNull(
+            $schema->getTablePrimaryKey($table, true),
+            'No primary key must exist before creation.',
+        );
+
+        $db->createCommand()->addPrimaryKey(
+            $pkName,
+            $pkTarget,
+            $pkColumns,
+        )->execute();
+
+        self::assertSame(
+            $pkColumns,
+            $schema->getTablePrimaryKey($table, true)->columnNames,
+            'Primary key must cover the requested columns.',
+        );
+
+        $db->createCommand()->dropPrimaryKey(
+            $pkName,
+            $pkTarget,
+        )->execute();
+
+        self::assertNull(
+            $schema->getTablePrimaryKey($table, true),
+            'Primary key must be removed after drop.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
 }

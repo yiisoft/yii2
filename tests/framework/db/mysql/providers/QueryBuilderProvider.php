@@ -456,4 +456,41 @@ final class QueryBuilderProvider
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function dropPrimaryKey(): array
+    {
+        return [
+            'database-qualified backtick-quoted name' => [
+                '`yiitest`.`drop_pk_qualified_bt`',
+                'pk_qualified_bt',
+                <<<SQL
+                ALTER TABLE `yiitest`.`drop_pk_qualified_bt` DROP PRIMARY KEY
+                SQL,
+            ],
+            'database-qualified name' => [
+                'yiitest.drop_pk_qualified',
+                'pk_qualified',
+                <<<SQL
+                ALTER TABLE `yiitest`.`drop_pk_qualified` DROP PRIMARY KEY
+                SQL,
+            ],
+            'multiple columns' => [
+                'drop_pk_multi',
+                'pk_multi',
+                <<<SQL
+                ALTER TABLE `drop_pk_multi` DROP PRIMARY KEY
+                SQL,
+            ],
+            'single column' => [
+                'drop_pk_single',
+                'pk_single',
+                <<<SQL
+                ALTER TABLE `drop_pk_single` DROP PRIMARY KEY
+                SQL,
+            ],
+        ];
+    }
 }
