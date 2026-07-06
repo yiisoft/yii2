@@ -584,9 +584,15 @@ final class CommandTest extends BaseCommand
             $pkColumns,
         )->execute();
 
+        $primaryKey = $schema->getTablePrimaryKey($table, true);
+
+        self::assertNotNull(
+            $primaryKey,
+            'Primary key must exist after creation.',
+        );
         self::assertSame(
             $pkColumns,
-            $schema->getTablePrimaryKey($table, true)->columnNames,
+            $primaryKey->columnNames,
             'Primary key must cover the requested columns.',
         );
 
