@@ -13,6 +13,7 @@ use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
 use yii\db\Exception;
 use yii\db\mysql\QueryBuilder;
+use yii\db\mysql\Schema;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mysql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
@@ -32,16 +33,16 @@ final class CommandTest extends BaseCommand
     protected $upsertTestCharCast = 'CONVERT([[address]], CHAR)';
 
     #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
-    public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
+    public function testAddUpdateDropCommentOnColumn(string $table, string $commentTarget, string $columnName): void
     {
         $db = $this->getConnection(false);
 
         $schema = $db->getSchema();
 
-        DbHelper::dropTablesIfExist($db, [$tableName]);
+        DbHelper::dropTablesIfExist($db, [$table]);
 
         $db->createCommand()->createTable(
-            $tableName,
+            $table,
             [
                 'id' => 'integer',
                 $columnName => 'string',
@@ -55,7 +56,7 @@ final class CommandTest extends BaseCommand
 
         self::assertSame(
             'It\'s an initial comment.',
-            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            $schema->getTableSchema($table, true)->getColumn($columnName)->comment,
             'Column comment must be created.',
         );
 
@@ -67,7 +68,7 @@ final class CommandTest extends BaseCommand
 
         self::assertSame(
             'It\'s an updated comment.',
-            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            $schema->getTableSchema($table, true)->getColumn($columnName)->comment,
             'Column comment must be updated.',
         );
 
@@ -77,11 +78,11 @@ final class CommandTest extends BaseCommand
         )->execute();
 
         self::assertEmpty(
-            $schema->getTableSchema($tableName, true)->getColumn($columnName)->comment,
+            $schema->getTableSchema($table, true)->getColumn($columnName)->comment,
             'Column comment must be removed.',
         );
 
-        DbHelper::dropTablesIfExist($db, [$tableName]);
+        DbHelper::dropTablesIfExist($db, [$table]);
     }
 
     #[DataProviderExternal(CommandProvider::class, 'commentSpecialCharacters')]
@@ -195,7 +196,7 @@ final class CommandTest extends BaseCommand
 
     #[DataProviderExternal(CommandProvider::class, 'renameColumn')]
     public function testRenameColumn(
-        string $rawTableName,
+        string $table,
         string $renameTarget,
         string $oldColumnName,
         string $newColumnName,
@@ -204,19 +205,19 @@ final class CommandTest extends BaseCommand
 
         $schema = $db->getSchema();
 
-        DbHelper::dropTablesIfExist($db, [$rawTableName]);
+        DbHelper::dropTablesIfExist($db, [$table]);
 
         $db->createCommand()->createTable(
-            $rawTableName,
+            $table,
             [$oldColumnName => 'integer'],
         )->execute();
 
         self::assertNotNull(
-            $schema->getTableSchema($rawTableName, true)->getColumn($oldColumnName),
+            $schema->getTableSchema($table, true)->getColumn($oldColumnName),
             'Old column must exist before renaming.',
         );
         self::assertNull(
-            $schema->getTableSchema($rawTableName, true)->getColumn($newColumnName),
+            $schema->getTableSchema($table, true)->getColumn($newColumnName),
             'New column must not exist before renaming.',
         );
 
@@ -227,15 +228,15 @@ final class CommandTest extends BaseCommand
         )->execute();
 
         self::assertNull(
-            $schema->getTableSchema($rawTableName, true)->getColumn($oldColumnName),
+            $schema->getTableSchema($table, true)->getColumn($oldColumnName),
             'Old column must not exist after renaming.',
         );
         self::assertNotNull(
-            $schema->getTableSchema($rawTableName, true)->getColumn($newColumnName),
+            $schema->getTableSchema($table, true)->getColumn($newColumnName),
             'New column must exist after renaming.',
         );
 
-        DbHelper::dropTablesIfExist($db, [$rawTableName]);
+        DbHelper::dropTablesIfExist($db, [$table]);
     }
 
     public function testRenameColumnPreservesColumnDefinition(): void
@@ -420,5 +421,73 @@ final class CommandTest extends BaseCommand
         }
 
         $this->assertEmpty($schema->getTableChecks($tableName, true));
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'createIndexWithQualifiedTableNames')]
+    public function testCreateIndexWithQualifiedTableNames(
+        string $table,
+        string $indexTarget,
+        string $indexName,
+        array|string $columns,
+        bool $unique,
+        array $expectedColumns,
+        bool $expectedUnique,
+    ): void {
+        $db = $this->getConnection(false);
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $db->createCommand()->createTable(
+            $table,
+            [
+                'int1' => 'integer not null',
+                'int2' => 'integer not null',
+            ],
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableIndexes($table, true),
+            'No index must exist before creation.',
+        );
+
+        $db->createCommand()->createIndex(
+            $indexName,
+            $indexTarget,
+            $columns,
+            $unique,
+        )->execute();
+
+        $indexes = $schema->getTableIndexes($table, true);
+
+        self::assertCount(
+            1,
+            $indexes,
+            'Exactly one index must exist after creation.',
+        );
+        self::assertSame(
+            $expectedColumns,
+            $indexes[0]->columnNames,
+            'Index must cover the requested columns in order.',
+        );
+        self::assertSame(
+            $expectedUnique,
+            $indexes[0]->isUnique,
+            'Uniqueness must match the requested flag.',
+        );
+
+        $db->createCommand()->dropIndex(
+            $indexName,
+            $indexTarget,
+        )->execute();
+
+        self::assertEmpty(
+            $schema->getTableIndexes($table, true),
+            'Index must be removed after drop.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
     }
 }

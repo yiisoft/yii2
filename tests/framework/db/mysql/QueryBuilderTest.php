@@ -739,6 +739,28 @@ final class QueryBuilderTest extends BaseQueryBuilder
         DbHelper::dropTablesIfExist($db, [$table]);
     }
 
+    #[DataProviderExternal(QueryBuilderProvider::class, 'createIndexWithQualifiedTableNames')]
+    public function testCreateIndexWithQualifiedTableNames(
+        string $table,
+        string $indexName,
+        array|string $columns,
+        bool $unique,
+        string $expected,
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->createIndex(
+                $indexName,
+                $table,
+                $columns,
+                $unique,
+            ),
+            'Generated SQL must match the expected ALTER TABLE statement.',
+        );
+    }
+
     public function testRenameColumnRetainsInlineCheckInGeneratedDefinition(): void
     {
         $db = $this->getConnection(false);

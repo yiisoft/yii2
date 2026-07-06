@@ -347,4 +347,76 @@ final class QueryBuilderProvider
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{string, string, array<string>|string, bool, string}>
+     */
+    public static function createIndexWithQualifiedTableNames(): array
+    {
+        return [
+            'columns as comma-separated string' => [
+                'create_index_string_columns',
+                'idx_string_columns',
+                'int1, int2',
+                false,
+                <<<SQL
+                ALTER TABLE `create_index_string_columns` ADD INDEX `idx_string_columns` (`int1`, `int2`)
+                SQL,
+            ],
+            'database-qualified name' => [
+                'yiitest.create_index_qualified',
+                'idx_qualified',
+                ['int1'],
+                false,
+                <<<SQL
+                ALTER TABLE `yiitest`.`create_index_qualified` ADD INDEX `idx_qualified` (`int1`)
+                SQL,
+            ],
+            'database-qualified name unique' => [
+                'yiitest.create_index_qualified_unique',
+                'idx_qualified_unique',
+                ['int1'],
+                true,
+                <<<SQL
+                ALTER TABLE `yiitest`.`create_index_qualified_unique` ADD UNIQUE INDEX `idx_qualified_unique` (`int1`)
+                SQL,
+            ],
+            'multiple columns' => [
+                'create_index_multi',
+                'idx_multi',
+                ['int1', 'int2'],
+                false,
+                <<<SQL
+                ALTER TABLE `create_index_multi` ADD INDEX `idx_multi` (`int1`, `int2`)
+                SQL,
+            ],
+            'single column' => [
+                'create_index_single',
+                'idx_single',
+                ['int1'],
+                false,
+                <<<SQL
+                ALTER TABLE `create_index_single` ADD INDEX `idx_single` (`int1`)
+                SQL,
+            ],
+            'unique multiple columns' => [
+                'create_index_unique_multi',
+                'idx_unique_multi',
+                ['int1', 'int2'],
+                true,
+                <<<SQL
+                ALTER TABLE `create_index_unique_multi` ADD UNIQUE INDEX `idx_unique_multi` (`int1`, `int2`)
+                SQL,
+            ],
+            'unique single column' => [
+                'create_index_unique_single',
+                'idx_unique_single',
+                ['int1'],
+                true,
+                <<<SQL
+                ALTER TABLE `create_index_unique_single` ADD UNIQUE INDEX `idx_unique_single` (`int1`)
+                SQL,
+            ],
+        ];
+    }
 }
