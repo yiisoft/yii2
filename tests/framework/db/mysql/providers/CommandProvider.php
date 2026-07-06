@@ -43,6 +43,78 @@ final class CommandProvider
     }
 
     /**
+     * @return array<string, array{string, string, string, array<string>|string, bool, array<string>, bool}>
+     */
+    public static function createIndexWithQualifiedTableNames(): array
+    {
+        return [
+            'columns as comma-separated string' => [
+                'create_index_string_columns',
+                'create_index_string_columns',
+                'idx_string_columns',
+                'int1, int2',
+                false,
+                ['int1', 'int2'],
+                false,
+            ],
+            'database-qualified name' => [
+                'create_index_qualified',
+                'yiitest.create_index_qualified',
+                'idx_qualified',
+                ['int1'],
+                false,
+                ['int1'],
+                false,
+            ],
+            'database-qualified name unique' => [
+                'create_index_qualified_unique',
+                'yiitest.create_index_qualified_unique',
+                'idx_qualified_unique',
+                ['int1'],
+                true,
+                ['int1'],
+                true,
+            ],
+            'multiple columns' => [
+                'create_index_multi',
+                'create_index_multi',
+                'idx_multi',
+                ['int1', 'int2'],
+                false,
+                ['int1', 'int2'],
+                false,
+            ],
+            'single column' => [
+                'create_index_single',
+                'create_index_single',
+                'idx_single',
+                ['int1'],
+                false,
+                ['int1'],
+                false,
+            ],
+            'unique multiple columns' => [
+                'create_index_unique_multi',
+                'create_index_unique_multi',
+                'idx_unique_multi',
+                ['int1', 'int2'],
+                true,
+                ['int1', 'int2'],
+                true,
+            ],
+            'unique single column' => [
+                'create_index_unique_single',
+                'create_index_unique_single',
+                'idx_unique_single',
+                ['int1'],
+                true,
+                ['int1'],
+                true,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string}>
      */
     public static function renameColumn(): array

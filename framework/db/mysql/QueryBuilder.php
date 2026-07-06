@@ -13,6 +13,7 @@ namespace yii\db\mysql;
 use yii\base\InvalidArgumentException;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\JsonExpression;
 use yii\db\Query;
 
 use function array_values;
@@ -56,7 +57,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_JSON => 'json'
     ];
 
-
     /**
      * {@inheritdoc}
      */
@@ -77,9 +77,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\JsonExpression' => 'yii\db\mysql\JsonExpressionBuilder',
-        ]);
+        return [
+            ...parent::defaultExpressionBuilders(),
+            JsonExpression::class => JsonExpressionBuilder::class,
+        ];
     }
 
     /**
@@ -106,16 +107,34 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * {@inheritdoc}
+     * Builds a SQL statement for creating a new index.
+     *
+     * MySQL emits `ALTER TABLE ... ADD [UNIQUE] INDEX` instead of `CREATE INDEX`.
+     *
+     * @param string $name The name of the index. The name will be properly quoted by the method.
+     * @param string $table The table that the new index will be created for. The name will be properly quoted by the
+     * method.
+     * @param array|string $columns The column(s) that should be included in the index. If there are multiple columns,
+     * separate them with commas or use an array to represent them. Each column name will be properly quoted by the
+     * method, unless a parenthesis is found in the name.
+     * @param bool $unique Whether to add a `UNIQUE` constraint on the created index.
+     *
+     * @return string The SQL statement for creating a new index.
+     *
      * @see https://bugs.mysql.com/bug.php?id=48875
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
-        return 'ALTER TABLE '
-        . $this->db->quoteTableName($table)
-        . ($unique ? ' ADD UNIQUE INDEX ' : ' ADD INDEX ')
-        . $this->db->quoteTableName($name)
-        . ' (' . $this->buildColumns($columns) . ')';
+        $quotedTable = $this->db->quoteTableName($table);
+        $quotedName = $this->db->quoteTableName($name);
+
+        $indexType = $unique ? 'ADD UNIQUE INDEX' : 'ADD INDEX';
+
+        $indexColumns = $this->buildColumns($columns);
+
+        return <<<SQL
+        ALTER TABLE {$quotedTable} {$indexType} {$quotedName} ({$indexColumns})
+        SQL;
     }
 
     /**
