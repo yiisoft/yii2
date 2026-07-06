@@ -45,7 +45,7 @@ final class CommandProvider
     /**
      * @return array<string, array{string, string, string, array<string>|string, bool, array<string>, bool}>
      */
-    public static function createIndexWithQualifiedTableNames(): array
+    public static function createIndex(): array
     {
         return [
             'columns as comma-separated string' => [
@@ -110,6 +110,43 @@ final class CommandProvider
                 true,
                 ['int1'],
                 true,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string, array<string>, array<string>}>
+     */
+    public static function dropForeignKey(): array
+    {
+        return [
+            'database-qualified backtick-quoted name' => [
+                'drop_fk_qualified_bt',
+                '`yiitest`.`drop_fk_qualified_bt`',
+                'fk_qualified_bt',
+                ['int1'],
+                ['int3'],
+            ],
+            'database-qualified name' => [
+                'drop_fk_qualified',
+                'yiitest.drop_fk_qualified',
+                'fk_qualified',
+                ['int1'],
+                ['int3'],
+            ],
+            'multiple columns' => [
+                'drop_fk_multi',
+                'drop_fk_multi',
+                'fk_multi',
+                ['int1', 'int2'],
+                ['int3', 'int4'],
+            ],
+            'single column' => [
+                'drop_fk_single',
+                'drop_fk_single',
+                'fk_single',
+                ['int1'],
+                ['int3'],
             ],
         ];
     }

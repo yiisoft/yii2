@@ -739,7 +739,7 @@ final class QueryBuilderTest extends BaseQueryBuilder
         DbHelper::dropTablesIfExist($db, [$table]);
     }
 
-    #[DataProviderExternal(QueryBuilderProvider::class, 'createIndexWithQualifiedTableNames')]
+    #[DataProviderExternal(QueryBuilderProvider::class, 'createIndex')]
     public function testCreateIndexWithQualifiedTableNames(
         string $table,
         string $indexName,
@@ -756,6 +756,24 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 $table,
                 $columns,
                 $unique,
+            ),
+            'Generated SQL must match the expected ALTER TABLE statement.',
+        );
+    }
+
+    #[DataProviderExternal(QueryBuilderProvider::class, 'dropForeignKey')]
+    public function testDropForeignKeyWithQualifiedTableNames(
+        string $table,
+        string $fkName,
+        string $expected,
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->dropForeignKey(
+                $fkName,
+                $table,
             ),
             'Generated SQL must match the expected ALTER TABLE statement.',
         );

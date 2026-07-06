@@ -351,7 +351,7 @@ final class QueryBuilderProvider
     /**
      * @return array<string, array{string, string, array<string>|string, bool, string}>
      */
-    public static function createIndexWithQualifiedTableNames(): array
+    public static function createIndex(): array
     {
         return [
             'columns as comma-separated string' => [
@@ -415,6 +415,43 @@ final class QueryBuilderProvider
                 true,
                 <<<SQL
                 ALTER TABLE `create_index_unique_single` ADD UNIQUE INDEX `idx_unique_single` (`int1`)
+                SQL,
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string, string}>
+     */
+    public static function dropForeignKey(): array
+    {
+        return [
+            'database-qualified backtick-quoted name' => [
+                '`yiitest`.`drop_fk_qualified_bt`',
+                'fk_qualified_bt',
+                <<<SQL
+                ALTER TABLE `yiitest`.`drop_fk_qualified_bt` DROP FOREIGN KEY `fk_qualified_bt`
+                SQL,
+            ],
+            'database-qualified name' => [
+                'yiitest.drop_fk_qualified',
+                'fk_qualified',
+                <<<SQL
+                ALTER TABLE `yiitest`.`drop_fk_qualified` DROP FOREIGN KEY `fk_qualified`
+                SQL,
+            ],
+            'multiple columns' => [
+                'drop_fk_multi',
+                'fk_multi',
+                <<<SQL
+                ALTER TABLE `drop_fk_multi` DROP FOREIGN KEY `fk_multi`
+                SQL,
+            ],
+            'single column' => [
+                'drop_fk_single',
+                'fk_single',
+                <<<SQL
+                ALTER TABLE `drop_fk_single` DROP FOREIGN KEY `fk_single`
                 SQL,
             ],
         ];

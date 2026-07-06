@@ -139,14 +139,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for dropping a foreign key constraint.
-     * @param string $name the name of the foreign key constraint to be dropped. The name will be properly quoted by the method.
-     * @param string $table the table whose foreign is to be dropped. The name will be properly quoted by the method.
-     * @return string the SQL statement for dropping a foreign key constraint.
+     *
+     * MySQL emits `ALTER TABLE ... DROP FOREIGN KEY` instead of the standard `DROP CONSTRAINT`.
+     *
+     * @param string $name The name of the foreign key constraint to be dropped. The name will be properly quoted by
+     * the method.
+     * @param string $table The table whose foreign key is to be dropped. The name will be properly quoted by the
+     * method.
+     *
+     * @return string The SQL statement for dropping a foreign key constraint.
      */
     public function dropForeignKey($name, $table)
     {
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
-            . ' DROP FOREIGN KEY ' . $this->db->quoteColumnName($name);
+        $quotedTable = $this->db->quoteTableName($table);
+        $quotedName = $this->db->quoteColumnName($name);
+
+        return <<<SQL
+        ALTER TABLE {$quotedTable} DROP FOREIGN KEY {$quotedName}
+        SQL;
     }
 
     /**
