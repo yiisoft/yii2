@@ -160,14 +160,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for removing a primary key constraint to an existing table.
-     * @param string $name the name of the primary key constraint to be removed.
-     * @param string $table the table that the primary key constraint will be removed from.
-     * @return string the SQL statement for removing a primary key constraint from an existing table.
+     * Builds a SQL statement for removing a primary key constraint from an existing table.
+     *
+     * MySQL emits `ALTER TABLE ... DROP PRIMARY KEY` and ignores the constraint name, since a MySQL primary key is
+     * always named `PRIMARY`.
+     *
+     * @param string $name The name of the primary key constraint to be removed. Ignored by MySQL.
+     * @param string $table The table that the primary key constraint will be removed from. The name will be properly
+     * quoted by the method.
+     *
+     * @return string The SQL statement for removing a primary key constraint from an existing table.
      */
     public function dropPrimaryKey($name, $table)
     {
-        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' DROP PRIMARY KEY';
+        $quotedTable = $this->db->quoteTableName($table);
+
+        return <<<SQL
+        ALTER TABLE {$quotedTable} DROP PRIMARY KEY
+        SQL;
     }
 
     /**

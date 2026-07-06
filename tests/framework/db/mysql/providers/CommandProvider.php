@@ -152,6 +152,39 @@ final class CommandProvider
     }
 
     /**
+     * @return array<string, array{string, string, string, array<string>}>
+     */
+    public static function dropPrimaryKey(): array
+    {
+        return [
+            'database-qualified backtick-quoted name' => [
+                'drop_pk_qualified_bt',
+                '`yiitest`.`drop_pk_qualified_bt`',
+                'pk_qualified_bt',
+                ['int1'],
+            ],
+            'database-qualified name' => [
+                'drop_pk_qualified',
+                'yiitest.drop_pk_qualified',
+                'pk_qualified',
+                ['int1'],
+            ],
+            'multiple columns' => [
+                'drop_pk_multi',
+                'drop_pk_multi',
+                'pk_multi',
+                ['int1', 'int2'],
+            ],
+            'single column' => [
+                'drop_pk_single',
+                'drop_pk_single',
+                'pk_single',
+                ['int1'],
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string}>
      */
     public static function renameColumn(): array
