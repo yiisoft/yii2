@@ -14,6 +14,7 @@ use Closure;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\DynamicModel;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
 use yii\db\JsonExpression;
@@ -435,17 +436,40 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $result;
     }
 
-    public function testResetSequence(): void
+    #[DataProviderExternal(QueryBuilderProvider::class, 'resetSequence')]
+    public function testResetSequence(string $table, int|null $value, string $expected): void
     {
-        $qb = $this->getQueryBuilder();
+        $db = $this->getConnection(false);
 
-        $expected = 'ALTER TABLE `item` AUTO_INCREMENT=6';
-        $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $sql = $value === null
+            ? $db->getQueryBuilder()->resetSequence($table)
+            : $db->getQueryBuilder()->resetSequence($table, $value);
 
-        $expected = 'ALTER TABLE `item` AUTO_INCREMENT=4';
-        $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        self::assertSame(
+            $expected,
+            $sql,
+            'Generated SQL must reseed AUTO_INCREMENT to the requested next value.',
+        );
+    }
+
+    public function testResetSequenceThrowsExceptionForNonExistentTable(): void
+    {
+        $db = $this->getConnection(false, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Table not found: non_existent_table');
+
+        $db->getQueryBuilder()->resetSequence('non_existent_table');
+    }
+
+    public function testResetSequenceThrowsExceptionForTableWithoutSequence(): void
+    {
+        $db = $this->getConnection(false, false);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("There is no sequence associated with table 'order_item'.");
+
+        $db->getQueryBuilder()->resetSequence('order_item');
     }
 
     public static function upsertProvider(): array

@@ -608,4 +608,62 @@ final class CommandTest extends BaseCommand
 
         DbHelper::dropTablesIfExist($db, [$table]);
     }
+
+    #[DataProviderExternal(CommandProvider::class, 'resetSequence')]
+    public function testResetSequence(
+        string $tableName,
+        string $rawTableName,
+        int $rowsBeforeReset,
+        bool $deleteBeforeReset,
+        int|null $value,
+        int $expectedId,
+    ): void {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, [$rawTableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'id' => Schema::TYPE_PK,
+                'description' => Schema::TYPE_STRING,
+            ],
+        )->execute();
+
+        for ($i = 1; $i <= $rowsBeforeReset; ++$i) {
+            $db->createCommand()->insert(
+                $tableName,
+                ['description' => "before reset {$i}"],
+            )->execute();
+        }
+
+        if ($deleteBeforeReset) {
+            $db->createCommand()->delete($tableName)->execute();
+        }
+
+        $command = $db->createCommand();
+
+        if ($value === null) {
+            $command->resetSequence($tableName)->execute();
+        } else {
+            $command->resetSequence($tableName, $value)->execute();
+        }
+
+        $db->createCommand()->insert(
+            $tableName,
+            ['description' => 'after reset'],
+        )->execute();
+
+        self::assertSame(
+            $expectedId,
+            (int) $db->createCommand(
+                <<<SQL
+                SELECT MAX(`id`) FROM {$db->quoteTableName($rawTableName)}
+                SQL,
+            )->queryScalar(),
+            'The generated identity value must match the expected next value.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$rawTableName]);
+    }
 }

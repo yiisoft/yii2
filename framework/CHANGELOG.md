@@ -118,6 +118,7 @@ Yii Framework 2 Change Log
 - Enh #20982: Rework `yii\db\mysql\QueryBuilder::createIndex()` to build the `ALTER TABLE ... ADD [UNIQUE] INDEX` statement (terabytesoftw)
 - Enh #20983: Rework `yii\db\mysql\QueryBuilder::dropForeignKey()` to build the `ALTER TABLE ... DROP FOREIGN KEY` statement (terabytesoftw)
 - Enh #20984: Rework `yii\db\mysql\QueryBuilder::dropPrimaryKey()` to build the `ALTER TABLE ... DROP PRIMARY KEY` statement (terabytesoftw)
+- Enh #20985: Rework `yii\db\mysql\QueryBuilder::resetSequence()` to build the `ALTER TABLE ... AUTO_INCREMENT` statement (terabytesoftw)
 
 2.0.56 under development
 ------------------------
