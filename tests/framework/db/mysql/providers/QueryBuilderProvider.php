@@ -493,4 +493,48 @@ final class QueryBuilderProvider
             ],
         ];
     }
+
+    /**
+     * @return array<string, array{string, int|null, string}>
+     */
+    public static function resetSequence(): array
+    {
+        return [
+            'already quoted table name' => [
+                '`item`',
+                4,
+                <<<SQL
+                ALTER TABLE `item` AUTO_INCREMENT=4
+                SQL,
+            ],
+            'database-qualified name' => [
+                'yiitest.item',
+                4,
+                <<<SQL
+                ALTER TABLE `yiitest`.`item` AUTO_INCREMENT=4
+                SQL,
+            ],
+            'default next value from existing rows' => [
+                'item',
+                null,
+                <<<SQL
+                ALTER TABLE `item` AUTO_INCREMENT=6
+                SQL,
+            ],
+            'explicit next value' => [
+                'item',
+                4,
+                <<<SQL
+                ALTER TABLE `item` AUTO_INCREMENT=4
+                SQL,
+            ],
+            'maximum integer next value' => [
+                'item',
+                2147483647,
+                <<<SQL
+                ALTER TABLE `item` AUTO_INCREMENT=2147483647
+                SQL,
+            ],
+        ];
+    }
 }

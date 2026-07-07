@@ -185,6 +185,87 @@ final class CommandProvider
     }
 
     /**
+     * @return array<string, array{string, string, int, bool, int|null, int}>
+     */
+    public static function resetSequence(): array
+    {
+        return [
+            'new table with default reset' => [
+                'reset_sequence_new_default',
+                'reset_sequence_new_default',
+                0,
+                false,
+                null,
+                1,
+            ],
+            'new table with explicit reset and quoted name' => [
+                '`reset_sequence_quoted`',
+                'reset_sequence_quoted',
+                0,
+                false,
+                5,
+                5,
+            ],
+            'new table with maximum integer reset' => [
+                'reset_sequence_int_max',
+                'reset_sequence_int_max',
+                0,
+                false,
+                2147483647,
+                2147483647,
+            ],
+            'used table with default reset' => [
+                'reset_sequence_used_default',
+                'reset_sequence_used_default',
+                2,
+                false,
+                null,
+                3,
+            ],
+            'used table with explicit reset' => [
+                'reset_sequence_used_explicit',
+                'reset_sequence_used_explicit',
+                1,
+                false,
+                5,
+                5,
+            ],
+            'deleted table with default reset' => [
+                'reset_sequence_deleted_default',
+                'reset_sequence_deleted_default',
+                1,
+                true,
+                null,
+                1,
+            ],
+            'deleted table with explicit reset' => [
+                'reset_sequence_deleted_explicit',
+                'reset_sequence_deleted_explicit',
+                1,
+                true,
+                5,
+                5,
+            ],
+            'new table with explicit reset and spaces' => [
+                'reset sequence',
+                'reset sequence',
+                0,
+                false,
+                5,
+                5,
+            ],
+            'new table with explicit reset and unicode characters' => [
+                'reset_sequence_ñ_表',
+                'reset_sequence_ñ_表',
+                0,
+                false,
+                5,
+                5,
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, string, string, string}>
      */
     public static function renameColumn(): array

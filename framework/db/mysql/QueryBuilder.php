@@ -20,6 +20,7 @@ use function array_values;
 use function preg_match;
 use function preg_match_all;
 use function preg_replace;
+use function reset;
 use function strlen;
 use function substr_replace;
 use function trim;
@@ -192,28 +193,39 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      *
      * The sequence will be reset such that the primary key of the next new row inserted will have the specified value
-     * or `1`.
+     * or the maximum existing value `+1`.
+     *
      * @param string $tableName The name of the table whose primary key sequence will be reset.
      * @param int|null $value The integer value for the primary key of the next new row inserted. If this is not set,
-     * the next new row's primary key will have a value `1`.
+     * the next new row's primary key will have the maximum existing value `+1`.
      *
      * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      *
-     * @return string the SQL statement for resetting sequence.
+     * @return string The SQL statement for resetting sequence.
      */
     public function resetSequence($tableName, $value = null)
     {
         $table = $this->db->getTableSchema($tableName);
+
         if ($table !== null && $table->sequenceName !== null) {
-            $tableName = $this->db->quoteTableName($tableName);
+            $quotedTableName = $this->db->quoteTableName($tableName);
+
             if ($value === null) {
                 $key = reset($table->primaryKey);
-                $value = $this->db->createCommand("SELECT MAX(`$key`) FROM $tableName")->queryScalar() + 1;
+
+                $quotedKey = $this->db->quoteColumnName($key);
+                $value = $this->db->createCommand(
+                    <<<SQL
+                    SELECT MAX({$quotedKey}) FROM {$quotedTableName}
+                    SQL,
+                )->queryScalar() + 1;
             } else {
                 $value = (int) $value;
             }
 
-            return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
+            return <<<SQL
+            ALTER TABLE {$quotedTableName} AUTO_INCREMENT={$value}
+            SQL;
         } elseif ($table === null) {
             throw new InvalidArgumentException("Table not found: $tableName");
         }
