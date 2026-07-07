@@ -464,7 +464,7 @@ class Component extends BaseObject
      *
      * Behaviors declared in this method will be attached to the component automatically (on demand).
      *
-     * @return array<array-key, class-string|array{class: class-string, ...}> the behavior configurations.
+     * @return array<array-key, class-string|array{class: class-string, ...}|Behavior> the behavior configurations.
      */
     public function behaviors()
     {
@@ -778,7 +778,7 @@ class Component extends BaseObject
      * @param string|int $name the name of the behavior. If this is an integer, it means the behavior
      * is an anonymous one. Otherwise, the behavior is a named one and any existing behavior with the same name
      * will be detached first.
-     * @param string|array|Behavior<static> $behavior the behavior to be attached
+     * @param string|array|Behavior $behavior the behavior to be attached
      * @return Behavior<static> the attached behavior.
      */
     private function attachBehaviorInternal($name, $behavior)
