@@ -691,7 +691,7 @@ class Component extends BaseObject
      * configuration. After that, the behavior object will be attached to
      * this component by calling the [[Behavior::attach()]] method.
      * @param string $name the name of the behavior.
-     * @param string|array|Behavior<static> $behavior the behavior configuration. This can be one of the following:
+     * @param string|array|Behavior $behavior the behavior configuration. This can be one of the following:
      *
      *  - a [[Behavior]] object
      *  - a string specifying the behavior class
@@ -699,9 +699,6 @@ class Component extends BaseObject
      *
      * @return Behavior<static> the behavior object
      * @see detachBehavior()
-     *
-     * @phpstan-param string|array|Behavior<static> $behavior
-     * @psalm-param string|array|Behavior<self> $behavior
      *
      * @phpstan-return Behavior<static>
      * @psalm-return Behavior<self>

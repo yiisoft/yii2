@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Enh #20888: Preserve the modification time of a log file when it is rotated by copy in `yii\log\FileTarget` (WarLikeLaux)
 - Bug #20978: Fix `AssetManager::appendTimestamp` triggering `filemtime()` stat warnings for timestamped asset URLs (terabytesoftw)
 - Bug #20986: Fix `@return` annotation for `yii\base\Component::behaviors()` (mspirkov)
+- Bug #20986: Fix `@param` annotation for `$behavior` in `yii\base\Component::attachBehavior()` (mspirkov)
 
 
 2.0.55 May 09, 2026
