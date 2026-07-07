@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #20890: Harden `yii\i18n\PhpMessageSource` category path handling to reject `..` segments, absolute paths, and stream-wrapper categories (terabytesoftw)
 - Enh #20888: Preserve the modification time of a log file when it is rotated by copy in `yii\log\FileTarget` (WarLikeLaux)
 - Bug #20978: Fix `AssetManager::appendTimestamp` triggering `filemtime()` stat warnings for timestamped asset URLs (terabytesoftw)
+- Bug #20986: Fix `@return` annotation for `yii\base\Component::behaviors()` (mspirkov)
 
 
 2.0.55 May 09, 2026
