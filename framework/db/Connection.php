@@ -132,6 +132,9 @@ use yii\caching\CacheInterface;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @template TSchema of Schema = Schema
+ * @template TQueryBuilder of QueryBuilder = QueryBuilder
  */
 class Connection extends Component
 {
@@ -852,7 +855,7 @@ class Connection extends Component
 
     /**
      * Returns the schema information for the database opened by this connection.
-     * @return Schema the schema information for the database opened by this connection.
+     * @return TSchema the schema information for the database opened by this connection.
      * @throws NotSupportedException if there is no support for the current driver type
      */
     public function getSchema()
@@ -877,7 +880,7 @@ class Connection extends Component
 
     /**
      * Returns the query builder for the current DB connection.
-     * @return QueryBuilder the query builder for the current DB connection.
+     * @return TQueryBuilder the query builder for the current DB connection.
      */
     public function getQueryBuilder()
     {
