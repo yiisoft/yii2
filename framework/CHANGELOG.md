@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #20978: Fix `AssetManager::appendTimestamp` triggering `filemtime()` stat warnings for timestamped asset URLs (terabytesoftw)
 - Bug #20986: Fix `@return` annotation for `yii\base\Component::behaviors()` (mspirkov)
 - Bug #20986: Fix `@param` annotation for `$behavior` in `yii\base\Component::attachBehavior()` (mspirkov)
+- Bug #20987: Fix `@var` annotations for `TimestampBehavior` properties (mspirkov)
 
 
 2.0.55 May 09, 2026
