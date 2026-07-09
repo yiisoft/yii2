@@ -56,6 +56,7 @@ use function substr;
  * @since 2.0
  *
  * @template T of ColumnSchema = ColumnSchema
+ * @template TQueryBuilder of QueryBuilder = QueryBuilder
  */
 abstract class Schema extends BaseObject
 {
@@ -140,7 +141,7 @@ abstract class Schema extends BaseObject
      */
     private $_tableMetadata = [];
     /**
-     * @var QueryBuilder the query builder for this database
+     * @var TQueryBuilder|null the query builder for this database
      */
     private $_builder;
     /**
@@ -263,7 +264,7 @@ abstract class Schema extends BaseObject
     }
 
     /**
-     * @return QueryBuilder the query builder for this connection.
+     * @return TQueryBuilder the query builder for this connection.
      */
     public function getQueryBuilder()
     {
@@ -349,7 +350,7 @@ abstract class Schema extends BaseObject
     /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
-     * @return QueryBuilder query builder instance
+     * @return TQueryBuilder query builder instance
      */
     public function createQueryBuilder()
     {

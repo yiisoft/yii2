@@ -40,7 +40,7 @@ use function ucfirst;
  * @since 2.0
  *
  * @template T of ColumnSchema = ColumnSchema
- * @extends BaseSchema<T>
+ * @extends BaseSchema<T, QueryBuilder>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface
 {
