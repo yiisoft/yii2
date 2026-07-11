@@ -18,6 +18,7 @@ use yii\db\PdoValue;
 use yii\db\Query;
 use yiiunit\framework\db\DatabaseTestCase;
 use yiiunit\support\DbHelper;
+
 use function fclose;
 use function fopen;
 use function rewind;
