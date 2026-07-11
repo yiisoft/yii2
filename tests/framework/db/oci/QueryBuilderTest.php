@@ -542,6 +542,16 @@ final class QueryBuilderTest extends BaseQueryBuilder
             $identityOptions,
             'Cache size must survive the reset.',
         );
+        self::assertSame(
+            'YES',
+            $db->createCommand(
+                <<<SQL
+                SELECT DEFAULT_ON_NULL FROM USER_TAB_COLUMNS
+                WHERE TABLE_NAME = 'reset_identity_options' AND COLUMN_NAME = 'id'
+                SQL
+            )->queryScalar(),
+            "The 'ON NULL' variant must survive the reset.",
+        );
     }
 
     public function conditionProvidertmp()
