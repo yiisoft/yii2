@@ -12,16 +12,22 @@ namespace yiiunit\framework\db\oci\type;
 
 use PDO;
 use PHPUnit\Framework\Attributes\Group;
+use RuntimeException;
 use yii\base\NotSupportedException;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\PdoValue;
 use yii\db\Query;
+use yiiunit\data\db\oci\ZeroWriteStreamWrapper;
 use yiiunit\framework\db\DatabaseTestCase;
 use yiiunit\support\DbHelper;
 
 use function fclose;
 use function fopen;
 use function rewind;
+use function stream_wrapper_register;
+use function stream_wrapper_restore;
+use function stream_wrapper_unregister;
 use function strlen;
 use function strrev;
 
@@ -1022,6 +1028,42 @@ final class BlobTest extends DatabaseTestCase
         );
 
         fclose($stream);
+    }
+
+    public function testThrowRuntimeExceptionWhenLobStreamCannotBeCreated(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command = $command->insert(
+            'type',
+            $this->rowValues(1, $this->createPayload(1_024)),
+        );
+
+        stream_wrapper_unregister('php');
+        stream_wrapper_register('php', ZeroWriteStreamWrapper::class);
+
+        try {
+            $command->execute();
+
+            self::fail(
+                'LOB stream failure must abort the execution.',
+            );
+        } catch (Exception $e) {
+            self::assertStringContainsString(
+                'Unable to create an Oracle LOB stream.',
+                $e->getMessage(),
+                'Failure must surface the LOB stream error.',
+            );
+            self::assertInstanceOf(
+                RuntimeException::class,
+                $e->getPrevious(),
+                'Original exception must be preserved as previous.',
+            );
+        } finally {
+            stream_wrapper_restore('php');
+        }
     }
 
     /**
