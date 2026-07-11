@@ -13,6 +13,7 @@ namespace yiiunit\framework\db\oci;
 use Closure;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Query;
 use yii\db\oci\QueryBuilder;
@@ -552,6 +553,46 @@ final class QueryBuilderTest extends BaseQueryBuilder
             )->queryScalar(),
             "The 'ON NULL' variant must survive the reset.",
         );
+    }
+
+    public function testThrowInvalidArgumentExceptionWhenIdentityColumnIsDroppedAfterSchemaCache(): void
+    {
+        $db = $this->getConnection();
+
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['stale_identity']);
+
+        $db->createCommand()->createTable(
+            'stale_identity',
+            [
+                'id' => 'NUMBER(10) GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY',
+                'name' => 'VARCHAR2(32)',
+            ],
+        )->execute();
+
+        // Prime the schema cache while the identity column still exists; `sequenceName` becomes the `ISEQ$$_*` one.
+        $db->getSchema()->refreshTableSchema('stale_identity');
+
+        self::assertStringStartsWith(
+            'ISEQ$$_',
+            (string) $db->getTableSchema('stale_identity')->sequenceName,
+            'Cached sequence must be the system-generated identity one.',
+        );
+
+        // Drop the identity out-of-band: the data dictionary loses the row, but the cached schema keeps the sequence.
+        $db->createCommand(
+            <<<SQL
+            ALTER TABLE "stale_identity" MODIFY ("id" DROP IDENTITY)
+            SQL
+        )->execute();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'There is no identity column in table: stale_identity',
+        );
+
+        $qb->executeResetSequence('stale_identity', 100);
     }
 
     public function conditionProvidertmp()
