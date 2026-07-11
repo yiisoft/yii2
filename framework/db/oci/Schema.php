@@ -624,7 +624,7 @@ SQL;
         $sql = $queryBuilder->insert($table, $columns, $params);
         $tableSchema = $this->getTableSchema($table);
         $returnColumns = $tableSchema->primaryKey;
-        if (!empty($returnColumns)) {
+        if ($returnColumns !== []) {
             $columnSchemas = $tableSchema->columns;
             $returning = [];
             foreach ((array) $returnColumns as $name) {

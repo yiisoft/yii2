@@ -350,7 +350,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $constraints,
         );
 
-        if (empty($uniqueNames)) {
+        if ($uniqueNames === []) {
             return $this->insert($table, $insertColumns, $params);
         }
 
@@ -382,7 +382,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $params,
         );
 
-        if (!empty($placeholders)) {
+        if ($placeholders !== []) {
             $usingSelectValues = [];
 
             foreach ($insertNames as $index => $name) {
@@ -474,7 +474,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows, &$params = [])
     {
-        if (empty($rows)) {
+        if ($rows === []) {
             return '';
         }
 
@@ -525,7 +525,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $values[] = implode(', ', $vs);
         }
 
-        if (empty($values)) {
+        if ($values === []) {
             return '';
         }
 
@@ -577,11 +577,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         [$names, $placeholders, $values, $params] = parent::prepareInsertValues($table, $columns, $params);
 
-        if (!$columns instanceof Query && empty($names)) {
+        if (!$columns instanceof Query && $names === []) {
             $tableSchema = $this->db->getSchema()->getTableSchema($table);
 
             if ($tableSchema !== null) {
-                $columns = !empty($tableSchema->primaryKey)
+                $columns = $tableSchema->primaryKey !== []
                     ? $tableSchema->primaryKey
                     : [reset($tableSchema->columns)->name];
 
