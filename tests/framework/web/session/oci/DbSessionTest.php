@@ -11,10 +11,13 @@ declare(strict_types=1);
 namespace yiiunit\framework\web\session\oci;
 
 use PHPUnit\Framework\Attributes\Group;
-use stdClass;
+use yii\web\DbSession;
 use yiiunit\base\web\session\BaseDbSession;
 
 use function str_repeat;
+use function strlen;
+use function strrev;
+use function substr;
 
 /**
  * Unit test for {@see \yii\web\DbSession} with Oracle driver.
@@ -35,14 +38,24 @@ final class DbSessionTest extends BaseDbSession
         return ['oci'];
     }
 
-    protected function buildObjectForSerialization(): stdClass
+    public function testReadWriteReplaceLargeBinarySessionData(): void
     {
-        $object = parent::buildObjectForSerialization();
+        $session = new DbSession();
+        $seed = "Yii2\0Oracle\xFF\xFE\x80Session";
+        $data = substr(str_repeat($seed, 8_000), 0, 131_072);
+        $replacement = strrev($data);
 
-        // Oracle `UTL_RAW.CAST_TO_RAW()` is limited by the `RAW` maximum size. With `MAX_STRING_SIZE=STANDARD`,
-        // that limit is `2000` bytes, so this Oracle-specific fixture keeps both serialized writes under it.
-        $object->textValue = str_repeat('QweåßƒТест', 94);
+        self::assertStringContainsString("\0", $data, 'Fixture must contain a NUL byte.');
+        self::assertSame(131_072, strlen($data), 'Fixture must exceed 100,000 bytes.');
 
-        return $object;
+        $session->writeSession('big', $data);
+
+        self::assertSame($data, $session->readSession('big'), 'Large session data must round-trip on insert.');
+
+        $session->writeSession('big', $replacement);
+
+        self::assertSame($replacement, $session->readSession('big'), 'Large session data must round-trip on replace.');
+
+        $session->destroySession('big');
     }
 }

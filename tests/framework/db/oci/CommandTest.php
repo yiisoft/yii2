@@ -40,6 +40,38 @@ class CommandTest extends BaseCommand
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
+    public function testBlobUpsertAffectedPrefixInStringLiteralDoesNotEnableOutputBinding(): void
+    {
+        $db = $this->getConnection();
+
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                UPDATE "customer"
+                SET "name" = ':yii_upsert_affected'
+                WHERE "id" = 1
+                SQL,
+            )->execute(),
+        );
+    }
+
+    public function testBlobUpsertAffectedPrefixInCommentDoesNotEnableOutputBinding(): void
+    {
+        $db = $this->getConnection();
+
+        self::assertSame(
+            1,
+            $db->createCommand(
+                <<<SQL
+                UPDATE "customer"
+                SET "name" = "name"
+                WHERE "id" = 1 /* :yii_upsert_affected */
+                SQL,
+            )->execute(),
+        );
+    }
+
     public function testBatchInsert(): void
     {
         $db = $this->getConnection();

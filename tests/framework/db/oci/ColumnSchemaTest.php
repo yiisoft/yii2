@@ -16,9 +16,11 @@ use PHPUnit\Framework\Attributes\Group;
 use yii\db\Expression;
 use yii\db\PdoValue;
 use yii\db\oci\ColumnSchema;
+use yii\db\oci\LobValue;
 use yii\db\oci\Schema;
 use yiiunit\base\db\BaseColumnSchema;
 use yiiunit\framework\db\oci\providers\ColumnSchemaProvider;
+use function fopen;
 
 /**
  * Unit tests for {@see \yii\db\oci\ColumnSchema} BLOB binding and default value type-casting for the Oracle driver.
@@ -46,12 +48,13 @@ final class ColumnSchemaTest extends BaseColumnSchema
     {
         $column = new ColumnSchema();
 
+        $column->name = 'blob_col';
         $column->type = $type;
         $column->dbType = $dbType;
 
         $result = $column->dbTypecast($value);
 
-        if ($expected !== Expression::class) {
+        if ($expected !== LobValue::class) {
             self::assertSame(
                 $expected,
                 $result,
@@ -62,14 +65,19 @@ final class ColumnSchemaTest extends BaseColumnSchema
         }
 
         self::assertInstanceOf(
-            Expression::class,
+            LobValue::class,
             $result,
-            'BLOB string must yield an Expression.',
+            "BLOB string must yield an 'LobValue'.",
         );
-        self::assertStringContainsString(
-            'TO_BLOB(UTL_RAW.CAST_TO_RAW(',
-            $result->expression,
-            "Expression must wrap the value in 'TO_BLOB'.",
+        self::assertSame(
+            'blob_col',
+            $result->getColumnName(),
+            'Target column name must be carried.',
+        );
+        self::assertSame(
+            $value,
+            $result->getValue(),
+            'Original bytes must be preserved.',
         );
     }
 
@@ -77,21 +85,160 @@ final class ColumnSchemaTest extends BaseColumnSchema
     {
         $column = new ColumnSchema();
 
+        $column->name = 'blob_col';
         $column->type = Schema::TYPE_BINARY;
         $column->dbType = 'BLOB';
 
         $result = $column->dbTypecast(new PdoValue('binary data', PDO::PARAM_LOB));
 
         self::assertInstanceOf(
-            Expression::class,
+            LobValue::class,
             $result,
-            "LOB 'PdoValue' must yield an Expression.",
+            "LOB 'PdoValue' must yield an 'LobValue'.",
         );
-        self::assertStringContainsString(
-            'TO_BLOB(UTL_RAW.CAST_TO_RAW(',
-            $result->expression,
-            "Expression must wrap the value in 'TO_BLOB'.",
+        self::assertSame(
+            'binary data',
+            $result->getValue(),
+            'Wrapped bytes must be preserved.',
         );
+    }
+
+    public function testDbTypecastBlobNonLobPdoValuePreserved(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->name = 'blob_col';
+        $column->type = Schema::TYPE_BINARY;
+        $column->dbType = 'BLOB';
+
+        $value = new PdoValue('plain', PDO::PARAM_STR);
+
+        self::assertSame(
+            $value,
+            $column->dbTypecast($value),
+            'Non-LOB `PdoValue` must be preserved.',
+        );
+    }
+
+    public function testDbTypecastBlobStreamResources(): void
+    {
+        $column = new ColumnSchema();
+        $column->name = 'blob_col';
+        $column->type = Schema::TYPE_BINARY;
+        $column->dbType = 'BLOB';
+        $stream = fopen('php://temp', 'w+b');
+
+        self::assertIsResource($stream, 'Fixture stream must open.');
+
+        try {
+            $result = $column->dbTypecast($stream);
+
+            self::assertInstanceOf(
+                LobValue::class,
+                $result,
+                "Stream must yield an 'LobValue'.",
+            );
+            self::assertSame(
+                $stream,
+                $result->getValue(),
+                'Stream resource must be carried unchanged.',
+            );
+
+            $result = $column->dbTypecast(new PdoValue($stream, PDO::PARAM_LOB));
+
+            self::assertInstanceOf(
+                LobValue::class,
+                $result,
+                "LOB 'PdoValue' stream must yield an 'LobValue'.",
+            );
+            self::assertSame(
+                $stream,
+                $result->getValue(),
+                'Wrapped stream resource must be carried unchanged.',
+            );
+        } finally {
+            fclose($stream);
+        }
+    }
+
+    public function testDbTypecastBlobBinaryString(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->name = 'blob_col';
+        $column->type = Schema::TYPE_BINARY;
+        $column->dbType = 'BLOB';
+        $value = "binary\0\xFF\xFE\x80data";
+
+        $result = $column->dbTypecast($value);
+
+        self::assertInstanceOf(
+            LobValue::class,
+            $result,
+            "Binary string must yield an 'LobValue'.",
+        );
+        self::assertSame(
+            $value,
+            $result->getValue(),
+            'NUL and non-text bytes must be preserved.',
+        );
+    }
+
+    public function testDbTypecastBlobExpression(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->type = Schema::TYPE_BINARY;
+        $column->dbType = 'BLOB';
+
+        $expression = new Expression('EMPTY_BLOB()');
+
+        self::assertSame(
+            $expression,
+            $column->dbTypecast($expression),
+            'BLOB expressions must retain their existing behavior.',
+        );
+    }
+
+    public function testDbTypecastBlobLobValuePreserved(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->name = 'blob_col';
+        $column->type = Schema::TYPE_BINARY;
+        $column->dbType = 'BLOB';
+
+        $value = new LobValue('blob_col', 'payload');
+
+        self::assertSame(
+            $value,
+            $column->dbTypecast($value),
+            "An existing 'LobValue' must pass through unchanged.",
+        );
+    }
+
+    public function testDbTypecastNonBlobColumnDoesNotWrapResource(): void
+    {
+        $column = new ColumnSchema();
+
+        $column->name = 'char_col';
+        $column->type = Schema::TYPE_STRING;
+        $column->dbType = 'VARCHAR2';
+        $column->phpType = 'string';
+
+        $stream = fopen('php://temp', 'w+b');
+
+        self::assertIsResource(
+            $stream,
+            'Fixture stream must open.',
+        );
+        self::assertNotInstanceOf(
+            LobValue::class,
+            $column->dbTypecast($stream),
+            "A resource on a non-BLOB column must not become a 'LobValue'.",
+        );
+
+        fclose($stream);
     }
 
     #[DataProviderExternal(ColumnSchemaProvider::class, 'defaultPhpTypecast')]

@@ -613,12 +613,15 @@ SQL;
 
     /**
      * {@inheritdoc}
+     *
+     * Merges primary-key and `BLOB` locator entries into one Oracle `RETURNING` clause.
      */
     public function insert($table, $columns)
     {
         $params = [];
         $returnParams = [];
-        $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
+        $queryBuilder = $this->getQueryBuilder();
+        $sql = $queryBuilder->insert($table, $columns, $params);
         $tableSchema = $this->getTableSchema($table);
         $returnColumns = $tableSchema->primaryKey;
         if (!empty($returnColumns)) {
@@ -636,9 +639,9 @@ SQL;
                     $returnParams[$phName]['dataType'] = \PDO::PARAM_INT;
                 }
                 $returnParams[$phName]['size'] = isset($columnSchemas[$name]->size) ? $columnSchemas[$name]->size : -1;
-                $returning[] = $this->quoteColumnName($name);
+                $returning[$name] = $phName;
             }
-            $sql .= ' RETURNING ' . implode(', ', $returning) . ' INTO ' . implode(', ', array_keys($returnParams));
+            $sql = $queryBuilder->mergeReturning($sql, $params, $returning);
         }
 
         $command = $this->db->createCommand($sql, $params);
