@@ -10,9 +10,11 @@ declare(strict_types=1);
 
 namespace yii\db\oci;
 
+use PDO;
 use yii\db\Expression;
 use yii\db\PdoValue;
 
+use function is_resource;
 use function is_string;
 use function preg_match;
 use function str_replace;
@@ -21,7 +23,6 @@ use function stripos;
 use function strlen;
 use function substr;
 use function trim;
-use function uniqid;
 
 /**
  * Represents the metadata of a column in an Oracle database table.
@@ -34,22 +35,23 @@ class ColumnSchema extends \yii\db\ColumnSchema
     /**
      * {@inheritdoc}
      *
-     * Wraps `string` values for Oracle `BLOB` columns in `TO_BLOB(UTL_RAW.CAST_TO_RAW(:placeholder))` expressions so
-     * PDO does not bind them directly as LONG values.
+     * Converts strings and streams for Oracle `BLOB` columns to locator-bound values.
      */
     public function dbTypecast($value)
     {
         if ($this->type === Schema::TYPE_BINARY && $this->dbType === 'BLOB') {
             if ($value instanceof PdoValue) {
-                if ($value->getType() === \PDO::PARAM_LOB && is_string($value->getValue())) {
-                    return $this->createBlobExpression($value->getValue());
+                $inner = $value->getValue();
+
+                if ($value->getType() === PDO::PARAM_LOB && (is_string($inner) || is_resource($inner))) {
+                    return new LobValue($this->name, $inner);
                 }
 
                 return parent::dbTypecast($value);
             }
 
-            if (is_string($value)) {
-                return $this->createBlobExpression($value);
+            if (is_string($value) || is_resource($value)) {
+                return new LobValue($this->name, $value);
             }
         }
 
@@ -107,22 +109,5 @@ class ColumnSchema extends \yii\db\ColumnSchema
         }
 
         return parent::defaultPhpTypecast($value);
-    }
-
-    /**
-     * Creates an Oracle BLOB expression for a PHP `string` value.
-     *
-     * @param string $value Value to bind.
-     *
-     * @return Expression Oracle BLOB expression.
-     */
-    private function createBlobExpression(string $value): Expression
-    {
-        $placeholder = 'qp' . str_replace('.', '', uniqid('', true));
-
-        return new Expression(
-            "TO_BLOB(UTL_RAW.CAST_TO_RAW(:{$placeholder}))",
-            [":{$placeholder}" => $value],
-        );
     }
 }

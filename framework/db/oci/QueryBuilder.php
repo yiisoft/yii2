@@ -11,15 +11,28 @@ declare(strict_types=1);
 namespace yii\db\oci;
 
 use Generator;
+use PDO;
 use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
+use yii\db\PdoValue;
 use yii\db\Query;
 use yii\helpers\StringHelper;
 use yii\db\ExpressionInterface;
+use yii\db\TableSchema;
 
+use function array_diff_key;
+use function array_flip;
+use function array_key_exists;
+use function array_keys;
 use function count;
+use function is_array;
+use function is_float;
+use function is_string;
+use function strlen;
+use function substr;
 
 /**
  * QueryBuilder is the query builder for Oracle databases (version 12.1 and above).
@@ -29,6 +42,13 @@ use function count;
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+    /**
+     * Parameter name prefix for the affected-row OUT bind registered by a `BLOB` upsert.
+     *
+     * {@see Command} detects this prefix to read `SQL%ROWCOUNT` back from the PL/SQL block.
+     */
+    public const string UPSERT_AFFECTED_PARAM_PREFIX = ':yii_upsert_affected';
+
     /**
      * @var array mapping from abstract column types (keys) to physical column types (values).
      */
@@ -61,10 +81,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\conditions\InCondition' => 'yii\db\oci\conditions\InConditionBuilder',
-            'yii\db\conditions\LikeCondition' => 'yii\db\oci\conditions\LikeConditionBuilder',
-        ]);
+        return [
+            ...parent::defaultExpressionBuilders(),
+            \yii\db\conditions\InCondition::class => conditions\InConditionBuilder::class,
+            \yii\db\conditions\LikeCondition::class => conditions\LikeConditionBuilder::class,
+            LobValue::class => LobValueBuilder::class,
+        ];
     }
 
     /**
@@ -229,90 +251,202 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
+     * Appends the locator `RETURNING` clause required by Oracle `BLOB` values.
      */
-    protected function prepareInsertValues($table, $columns, $params = [])
+    public function insert($table, $columns, &$params)
     {
-        list($names, $placeholders, $values, $params) = parent::prepareInsertValues($table, $columns, $params);
-        if (!$columns instanceof Query && empty($names)) {
-            $tableSchema = $this->db->getSchema()->getTableSchema($table);
-            if ($tableSchema !== null) {
-                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
-                foreach ($columns as $name) {
-                    $names[] = $this->db->quoteColumnName($name);
-                    $placeholders[] = 'DEFAULT';
-                }
-            }
-        }
-        return [$names, $placeholders, $values, $params];
+        return parent::insert($table, $columns, $params)
+            . $this->lobReturningClause($this->getLobReturning($params));
     }
 
     /**
      * {@inheritdoc}
+     *
+     * The locator protocol supports only a single-row `BLOB` update.
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        return parent::update($table, $columns, $condition, $params)
+            . $this->lobReturningClause($this->getLobReturning($params));
+    }
+
+    /**
+     * Appends a `RETURNING` clause for the given OUT placeholders, merging any locator clause already present.
+     *
+     * A DML statement built by {@see insert()} or {@see update()} may already end with a locator `RETURNING`
+     * clause; its entries fold into the new clause because Oracle allows a single `RETURNING` clause per statement.
+     *
+     * @param string $sql DML statement built by this query builder.
+     * @param array $params The parameters bound to the SQL statement.
+     * @param array<string, string> $placeholders OUT placeholders indexed by unquoted column name.
+     *
+     * @return string The SQL statement with the merged `RETURNING` clause.
+     */
+    public function mergeReturning(string $sql, array $params, array $placeholders): string
+    {
+        $lobPlaceholders = $this->getLobReturning($params);
+
+        if ($lobPlaceholders !== []) {
+            $sql = substr($sql, 0, -strlen($this->lobReturningClause($lobPlaceholders)));
+        }
+
+        return $sql . $this->lobReturningClause([...$lobPlaceholders, ...$placeholders]);
+    }
+
+    /**
+     * Returns the locator placeholder of every {@see LobValue} parameter, indexed by unquoted column name.
+     *
+     * @param array $params The parameters to be checked for `BLOB` values.
+     *
+     * @return array<string, string> Locator placeholders indexed by column name.
+     */
+    private function getLobReturning(array $params): array
+    {
+        $placeholders = [];
+
+        foreach ($params as $placeholder => $value) {
+            if ($value instanceof LobValue) {
+                $placeholders[$value->getColumnName()] = $placeholder;
+            }
+        }
+
+        return $placeholders;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * A `BLOB` value routes to a single anonymous PL/SQL block through {@see upsertWithLob()}, because Oracle `MERGE`
+     * cannot return the LOB locators the payload binds require; every other case builds the regular `MERGE`.
+     *
      * @see https://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_9016.htm#SQLRF01606
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
-        if (empty($uniqueNames)) {
+        $tableSchema = $this->db->getTableSchema($table);
+
+        if ($tableSchema !== null) {
+            $insertHasLob = false;
+            $updateHasLob = false;
+
+            if (is_array($insertColumns)) {
+                [$insertColumns, $insertHasLob] = $this->normalizeLobColumns($tableSchema, $insertColumns);
+            }
+
+            if (is_array($updateColumns)) {
+                [$updateColumns, $updateHasLob] = $this->normalizeLobColumns($tableSchema, $updateColumns);
+            }
+
+            if ($insertHasLob || $updateHasLob) {
+                return $this->upsertWithLob($table, $insertColumns, $updateColumns, $params);
+            }
+        }
+
+        [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns(
+            $table,
+            $insertColumns,
+            $updateColumns,
+            $constraints,
+        );
+
+        if ($uniqueNames === []) {
             return $this->insert($table, $insertColumns, $params);
         }
+
         if ($updateNames === []) {
             // there are no columns to update
             $updateColumns = false;
         }
 
         $onCondition = ['or'];
+
         $quotedTableName = $this->db->quoteTableName($table);
+
         foreach ($constraints as $constraint) {
             $constraintCondition = ['and'];
+
             foreach ($constraint->columnNames as $name) {
                 $quotedName = $this->db->quoteColumnName($name);
+
                 $constraintCondition[] = "$quotedTableName.$quotedName=\"EXCLUDED\".$quotedName";
             }
+
             $onCondition[] = $constraintCondition;
         }
+
         $on = $this->buildCondition($onCondition, $params);
-        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
-        if (!empty($placeholders)) {
+        [, $placeholders, $values, $params] = $this->prepareInsertValues(
+            $table,
+            $insertColumns,
+            $params,
+        );
+
+        if ($placeholders !== []) {
             $usingSelectValues = [];
+
             foreach ($insertNames as $index => $name) {
                 $usingSelectValues[$name] = new Expression($placeholders[$index]);
             }
+
             $usingSubQuery = (new Query())
                 ->select($usingSelectValues)
                 ->from('DUAL');
-            list($usingValues, $params) = $this->build($usingSubQuery, $params);
+
+            [$usingValues, $params] = $this->build($usingSubQuery, $params);
         }
-        $mergeSql = 'MERGE INTO ' . $this->db->quoteTableName($table) . ' '
-            . 'USING (' . (isset($usingValues) ? $usingValues : ltrim($values, ' ')) . ') "EXCLUDED" '
-            . "ON ($on)";
+
+        $usingSource = $usingValues ?? ltrim($values, ' ');
+
+        $mergeSql = <<<SQL
+        MERGE INTO {$quotedTableName} USING ({$usingSource}) "EXCLUDED" ON ({$on})
+        SQL;
+
         $insertValues = [];
+
         foreach ($insertNames as $name) {
             $quotedName = $this->db->quoteColumnName($name);
+
             if (strrpos($quotedName, '.') === false) {
-                $quotedName = '"EXCLUDED".' . $quotedName;
+                $quotedName = "\"EXCLUDED\".{$quotedName}";
             }
+
             $insertValues[] = $quotedName;
         }
-        $insertSql = 'INSERT (' . implode(', ', $insertNames) . ')'
-            . ' VALUES (' . implode(', ', $insertValues) . ')';
+
+        $namesList = implode(', ', $insertNames);
+        $valuesList = implode(', ', $insertValues);
+
+        $insertSql = <<<SQL
+        INSERT ({$namesList}) VALUES ({$valuesList})
+        SQL;
+
         if ($updateColumns === false) {
-            return "$mergeSql WHEN NOT MATCHED THEN $insertSql";
+            return <<<SQL
+            {$mergeSql} WHEN NOT MATCHED THEN {$insertSql}
+            SQL;
         }
 
         if ($updateColumns === true) {
             $updateColumns = [];
             foreach ($updateNames as $name) {
                 $quotedName = $this->db->quoteColumnName($name);
+
                 if (strrpos($quotedName, '.') === false) {
-                    $quotedName = '"EXCLUDED".' . $quotedName;
+                    $quotedName = "\"EXCLUDED\".{$quotedName}";
                 }
+
                 $updateColumns[$name] = new Expression($quotedName);
             }
         }
-        list($updates, $params) = $this->prepareUpdateSets($table, $updateColumns, $params);
+
+        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
+
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
-        return "$mergeSql WHEN MATCHED THEN $updateSql WHEN NOT MATCHED THEN $insertSql";
+
+        return <<<SQL
+        {$mergeSql} WHEN MATCHED THEN {$updateSql} WHEN NOT MATCHED THEN {$insertSql}
+        SQL;
     }
 
     /**
@@ -340,7 +474,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows, &$params = [])
     {
-        if (empty($rows)) {
+        if ($rows === []) {
             return '';
         }
 
@@ -360,9 +494,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
 
             $vs = [];
+
             foreach ($row as $i => $value) {
                 if (isset($columns[$i], $columnSchemas[$columns[$i]])) {
                     $value = $columnSchemas[$columns[$i]]->dbTypecast($value);
+                }
+
+                if ($value instanceof LobValue) {
+                    throw new NotSupportedException(
+                        "Oracle does not support 'batchInsert()' with a BLOB value; insert the rows individually.",
+                    );
                 }
 
                 if (is_string($value)) {
@@ -384,7 +525,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $values[] = implode(', ', $vs);
         }
 
-        if (empty($values)) {
+        if ($values === []) {
             return '';
         }
 
@@ -398,8 +539,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $sourceRows = implode(' FROM SYS.DUAL UNION ALL SELECT ', $values);
 
         return <<<SQL
-            INSERT INTO {$tableName}{$columnList} SELECT {$sourceRows} FROM SYS.DUAL
-            SQL;
+        INSERT INTO {$tableName}{$columnList} SELECT {$sourceRows} FROM SYS.DUAL
+        SQL;
     }
 
     /**
@@ -427,5 +568,264 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function dropCommentFromTable($table)
     {
         return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . " IS ''";
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function prepareInsertValues($table, $columns, $params = [])
+    {
+        [$names, $placeholders, $values, $params] = parent::prepareInsertValues($table, $columns, $params);
+
+        if (!$columns instanceof Query && $names === []) {
+            $tableSchema = $this->db->getSchema()->getTableSchema($table);
+
+            if ($tableSchema !== null) {
+                $columns = $tableSchema->primaryKey !== []
+                    ? $tableSchema->primaryKey
+                    : [reset($tableSchema->columns)->name];
+
+                foreach ($columns as $name) {
+                    $names[] = $this->db->quoteColumnName($name);
+                    $placeholders[] = 'DEFAULT';
+                }
+            }
+        }
+        return [$names, $placeholders, $values, $params];
+    }
+
+    /**
+     * Builds the SQL tokens and LOB locator placeholders for one upsert branch.
+     *
+     * A {@see LobValue} binds through {@see LobValueBuilder::bind()}, which returns its locator placeholder
+     * explicitly instead of leaving it to be inferred from `$params`.
+     *
+     * @param array<string, mixed> $columns Column values indexed by column name.
+     * @param array $params The parameters to be bound to the SQL statement. This parameter is passed by reference and
+     * will be modified by this method.
+     *
+     * @return array{0: array<string, string>, 1: array<string, string>} SQL tokens and LOB locator placeholders.
+     */
+    private function buildUpsertLobTokens(array $columns, array &$params): array
+    {
+        $tokens = [];
+        $lobPlaceholders = [];
+
+        foreach ($columns as $name => $value) {
+            if ($value instanceof LobValue) {
+                [$tokens[$name], $lobPlaceholders[$name]] = LobValueBuilder::bind($value, $params);
+            } elseif ($value instanceof ExpressionInterface) {
+                $tokens[$name] = $this->buildExpression($value, $params);
+            } else {
+                $tokens[$name] = $this->bindParam($value, $params);
+            }
+        }
+
+        return [$tokens, $lobPlaceholders];
+    }
+
+    /**
+     * Registers the affected-row OUT parameter for a `BLOB` upsert.
+     */
+    private function bindUpsertAffected(array &$params): string
+    {
+        $placeholder = self::UPSERT_AFFECTED_PARAM_PREFIX;
+
+        while (array_key_exists($placeholder, $params)) {
+            $placeholder .= '_';
+        }
+
+        $params[$placeholder] = new PdoValue(
+            '',
+            PDO::PARAM_STR | PDO::PARAM_INPUT_OUTPUT,
+        );
+
+        return $placeholder;
+    }
+
+    /**
+     * Builds the `RETURNING ... INTO ...` clause for the given placeholders.
+     *
+     * @param array<string, string> $lobPlaceholders Placeholders indexed by unquoted column name.
+     *
+     * @return string Clause with a leading space, or an empty string when there are no placeholders.
+     */
+    private function lobReturningClause(array $lobPlaceholders): string
+    {
+        if ($lobPlaceholders === []) {
+            return '';
+        }
+
+        $columns = [];
+
+        foreach (array_keys($lobPlaceholders) as $name) {
+            $columns[] = $this->db->quoteColumnName($name);
+        }
+
+        $columnList = implode(', ', $columns);
+        $placeholderList = implode(', ', $lobPlaceholders);
+
+        return <<<SQL
+         RETURNING {$columnList} INTO {$placeholderList}
+        SQL;
+    }
+
+    /**
+     * Normalizes the column values and detects whether they contain an Oracle `BLOB` value.
+     *
+     * @param TableSchema $tableSchema The table schema.
+     * @param array<string, mixed> $columns Column values indexed by column name.
+     *
+     * @return array{0: array, 1: bool} Typecast columns and whether they contain an Oracle `BLOB` value.
+     */
+    private function normalizeLobColumns(TableSchema $tableSchema, array $columns): array
+    {
+        $hasLob = false;
+
+        foreach ($columns as $name => $value) {
+            $column = $tableSchema->columns[$name] ?? null;
+
+            if ($column !== null) {
+                $value = $column->dbTypecast($value);
+                $columns[$name] = $value;
+            }
+
+            if ($value instanceof LobValue) {
+                $hasLob = true;
+            }
+        }
+
+        return [$columns, $hasLob];
+    }
+
+    /**
+     * Builds an `UPDATE`/`INSERT` PL/SQL block because Oracle `MERGE` cannot return LOB locators.
+     *
+     * A duplicate insert retries the update to handle concurrent upserts. An OUT parameter receives the affected row
+     * count because PDO reports the PL/SQL block execution instead.
+     *
+     * @param string $table Target table.
+     * @param array|Query $insertColumns Normalized insert values, or a source query.
+     * @param array|bool $updateColumns Normalized update values, or a mode flag.
+     * @param array $params Binding parameters, passed by reference.
+     *
+     * @throws NotSupportedException When the insert values come from a {@see Query}, or when zero or more than one
+     * primary-key or unique constraint matches the insert values.
+     *
+     * @return string PL/SQL block.
+     */
+    private function upsertWithLob(
+        string $table,
+        array|Query $insertColumns,
+        array|bool $updateColumns,
+        array &$params,
+    ): string {
+        if ($insertColumns instanceof Query) {
+            throw new NotSupportedException(
+                'Oracle does not support upserting a BLOB value sourced from a query.',
+            );
+        }
+
+        $constraints = [];
+
+        $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
+
+        if (count($constraints) !== 1) {
+            throw new NotSupportedException(
+                'Oracle BLOB upsert requires exactly one matching primary-key or unique constraint.',
+            );
+        }
+
+        [$insertTokens, $insertLobs] = $this->buildUpsertLobTokens($insertColumns, $params);
+
+        if ($updateColumns === true) {
+            $excluded = array_flip($constraints[0]->columnNames);
+            $updateTokens = array_diff_key($insertTokens, $excluded);
+            $updateLobs = array_diff_key($insertLobs, $excluded);
+        } elseif (is_array($updateColumns)) {
+            [$updateTokens, $updateLobs] = $this->buildUpsertLobTokens($updateColumns, $params);
+        } else {
+            $updateTokens = [];
+            $updateLobs = [];
+        }
+
+        $affectedParam = $this->bindUpsertAffected($params);
+        $quotedTable = $this->db->quoteTableName($table);
+
+        $insertNames = [];
+
+        foreach (array_keys($insertTokens) as $name) {
+            $insertNames[] = $this->db->quoteColumnName($name);
+        }
+
+        $columnList = implode(', ', $insertNames);
+        $valuesList = implode(', ', $insertTokens);
+
+        $returningClause = $this->lobReturningClause($insertLobs);
+
+        $insertSql = <<<SQL
+        INSERT INTO {$quotedTable} ({$columnList}) VALUES ({$valuesList}){$returningClause}
+        SQL;
+
+        if ($updateTokens === []) {
+            return <<<SQL
+            DECLARE
+                affected PLS_INTEGER := 0;
+            BEGIN
+                BEGIN
+                    {$insertSql};
+                    affected := SQL%ROWCOUNT;
+                EXCEPTION
+                    WHEN DUP_VAL_ON_INDEX THEN
+                        affected := 0;
+                END;
+                {$affectedParam} := affected;
+            END;
+            SQL;
+        }
+
+        $sets = [];
+
+        foreach ($updateTokens as $name => $token) {
+            $sets[] = $this->db->quoteColumnName($name) . ' = ' . $token;
+        }
+
+        $condition = [];
+
+        foreach ($constraints[0]->columnNames as $name) {
+            $condition[] = $this->db->quoteColumnName($name) . ' = ' . $insertTokens[$name];
+        }
+
+        $setClause = implode(', ', $sets);
+        $whereClause = implode(' AND ', $condition);
+
+        $returningClause = $this->lobReturningClause($updateLobs);
+
+        $updateSql = <<<SQL
+        UPDATE {$quotedTable} SET {$setClause} WHERE {$whereClause}{$returningClause}
+        SQL;
+
+        return <<<SQL
+        DECLARE
+            affected PLS_INTEGER := 0;
+        BEGIN
+            {$updateSql};
+            affected := SQL%ROWCOUNT;
+            IF affected = 0 THEN
+                BEGIN
+                    {$insertSql};
+                    affected := SQL%ROWCOUNT;
+                EXCEPTION
+                    WHEN DUP_VAL_ON_INDEX THEN
+                        {$updateSql};
+                        affected := SQL%ROWCOUNT;
+                        IF affected = 0 THEN
+                            RAISE;
+                        END IF;
+                END;
+            END IF;
+            {$affectedParam} := affected;
+        END;
+        SQL;
     }
 }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\oci\providers;
 
 use yii\db\Expression;
+use yii\db\oci\LobValue;
 use yii\db\oci\Schema;
 
 /**
@@ -36,11 +37,11 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 null,
                 null,
             ],
-            'BLOB string value returns Expression' => [
+            'BLOB string value returns LobValue' => [
                 Schema::TYPE_BINARY,
                 'BLOB',
                 'binary data',
-                Expression::class,
+                LobValue::class,
             ],
             'non-BLOB string falls through to parent' => [
                 Schema::TYPE_STRING,

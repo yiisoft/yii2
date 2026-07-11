@@ -12,6 +12,11 @@ namespace yiiunit\framework\caching;
 
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Connection;
+use yiiunit\support\DbHelper;
+
+use function str_repeat;
+use function strrev;
+use function substr;
 
 /**
  * Unit test for {@see \yii\caching\DbCache} with Oracle driver.
@@ -36,9 +41,7 @@ class OciCacheTest extends DbCacheTest
 
         $db = $this->getConnection();
 
-        if ($db->schema->getTableSchema('cache') !== null) {
-            $db->createCommand()->dropTable('cache')->execute();
-        }
+        DbHelper::dropTablesIfExist($db, ['cache']);
 
         $db->createCommand()->createTable(
             'cache',
@@ -59,16 +62,47 @@ class OciCacheTest extends DbCacheTest
     {
         if ($this->_connection === null) {
             $databases = self::getParam('databases');
+
             $params = $databases['oci'];
             $db = new Connection();
             $db->dsn = $params['dsn'];
             $db->username = $params['username'];
             $db->password = $params['password'];
+
             $db->open();
 
             $this->_connection = $db;
         }
 
         return $this->_connection;
+    }
+
+    public function testLargeBinaryValue(): void
+    {
+        $seed = "Yii2\0Oracle\xFF\xFE\x80Cache";
+
+        $value = substr(str_repeat($seed, 60_000), 0, 1_048_576);
+        $updatedValue = strrev($value);
+
+        $cache = $this->getCacheInstance();
+
+        self::assertTrue(
+            $cache->set('large-binary', $value),
+            'Failed to set large binary value in cache',
+        );
+        self::assertSame(
+            $value,
+            $cache->get('large-binary'),
+            'Failed to retrieve large binary value from cache',
+        );
+        self::assertTrue(
+            $cache->set('large-binary', $updatedValue),
+            'Failed to update large binary value in cache',
+        );
+        self::assertSame(
+            $updatedValue,
+            $cache->get('large-binary'),
+            'Failed to retrieve updated large binary value from cache',
+        );
     }
 }

@@ -119,6 +119,7 @@ Yii Framework 2 Change Log
 - Enh #20983: Rework `yii\db\mysql\QueryBuilder::dropForeignKey()` to build the `ALTER TABLE ... DROP FOREIGN KEY` statement (terabytesoftw)
 - Enh #20984: Rework `yii\db\mysql\QueryBuilder::dropPrimaryKey()` to build the `ALTER TABLE ... DROP PRIMARY KEY` statement (terabytesoftw)
 - Enh #20985: Rework `yii\db\mysql\QueryBuilder::resetSequence()` to build the `ALTER TABLE ... AUTO_INCREMENT` statement (terabytesoftw)
+- Enh #20991: Bind Oracle `BLOB` values through native PDO_OCI LOB locators, removing the `RAW` size limit for insert, update and upsert (terabytesoftw)
 
 2.0.56 under development
 ------------------------
