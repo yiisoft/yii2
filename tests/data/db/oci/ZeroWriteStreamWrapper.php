@@ -20,6 +20,8 @@ namespace yiiunit\data\db\oci;
  */
 final class ZeroWriteStreamWrapper
 {
+    // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps -- PHP streamWrapper API mandates these names.
+
     /**
      * @var resource|null Stream context set by PHP.
      */
@@ -43,4 +45,6 @@ final class ZeroWriteStreamWrapper
     public function stream_close(): void
     {
     }
+
+    // phpcs:enable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
 }
