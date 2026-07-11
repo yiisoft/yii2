@@ -457,6 +457,58 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $newData;
     }
 
+    public function testInsertWithEmptyColumnsUsesPrimaryKeyDefault(): void
+    {
+        $params = [];
+
+        $db = $this->getConnection(false, false);
+
+        $sql = $db->getQueryBuilder()->insert(
+            'null_values',
+            [],
+            $params,
+        );
+
+        self::assertSame(
+            <<<SQL
+            INSERT INTO "null_values" ("id") VALUES (DEFAULT)
+            SQL,
+            $sql,
+            "Empty insert must target the primary key with 'DEFAULT'.",
+        );
+        self::assertSame(
+            [],
+            $params,
+            'No parameters must be bound.',
+        );
+    }
+
+    public function testInsertWithEmptyColumnsUsesFirstColumnDefaultWhenTableHasNoPrimaryKey(): void
+    {
+        $params = [];
+
+        $db = $this->getConnection(false, false);
+
+        $sql = $db->getQueryBuilder()->insert(
+            'negative_default_values',
+            [],
+            $params,
+        );
+
+        self::assertSame(
+            <<<SQL
+            INSERT INTO "negative_default_values" ("tinyint_col") VALUES (DEFAULT)
+            SQL,
+            $sql,
+            "Empty insert must fall back to the first table column with 'DEFAULT'.",
+        );
+        self::assertSame(
+            [],
+            $params,
+            'No parameters must be bound.',
+        );
+    }
+
     public function testBatchInsertEmitsUnionAllSourceRowsRegressionForORA00001(): void
     {
         $qb = $this->getQueryBuilder();
