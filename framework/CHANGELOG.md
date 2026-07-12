@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #20987: Fix `@var` annotations for `TimestampBehavior` properties (mspirkov)
 - Enh #20988: Add generics to `yii\db\Connection` and `yii\db\Schema` so `getSchema()` and `getQueryBuilder()` infer driver-specific types (terabytesoftw)
 - Bug #20994: Fix `@var` annotations for `BlameableBehavior` properties (mspirkov)
+- Enh #20990: Show created migration file path on migrate create CLI command (flaviovs)
 
 
 2.0.55 May 09, 2026
