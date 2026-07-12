@@ -61,12 +61,12 @@ use yii\db\BaseActiveRecord;
 class BlameableBehavior extends AttributeBehavior
 {
     /**
-     * @var string the attribute that will receive current user ID value
+     * @var string|false the attribute that will receive current user ID value
      * Set this property to false if you do not want to record the creator ID.
      */
     public $createdByAttribute = 'created_by';
     /**
-     * @var string the attribute that will receive current user ID value
+     * @var string|false the attribute that will receive current user ID value
      * Set this property to false if you do not want to record the updater ID.
      */
     public $updatedByAttribute = 'updated_by';
