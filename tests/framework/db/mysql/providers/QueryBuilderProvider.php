@@ -10,6 +10,9 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\mysql\providers;
 
+use yii\db\Expression;
+use yii\db\Query;
+
 /**
  * Data provider for {@see \yiiunit\framework\db\mysql\QueryBuilderTest} test cases.
  *
@@ -18,6 +21,258 @@ namespace yiiunit\framework\db\mysql\providers;
  */
 final class QueryBuilderProvider
 {
+    /**
+     * @return array<string, array{string, array<string, mixed>|Query, array<string, mixed>|bool, string|list<string>, array<string, mixed>}>
+     */
+    public static function upsert(): array
+    {
+        return [
+            'no columns to update' => [
+                'T_upsert_1',
+                [
+                    'a' => 1,
+                ],
+                true,
+                <<<SQL
+                INSERT INTO `T_upsert_1` (`a`) VALUES (:qp0) ON DUPLICATE KEY UPDATE `a`=`T_upsert_1`.`a`
+                SQL,
+                [
+                    ':qp0' => 1,
+                ],
+            ],
+            'query' => [
+                'T_upsert',
+                (new Query())
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                true,
+                [
+                    <<<SQL
+                    INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)
+                    SQL,
+                    <<<SQL
+                    INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)
+                    SQL,
+                ],
+                [
+                    ':qp0' => 'user1',
+                ],
+            ],
+            'query values and expressions with update part' => [
+                '{{%T_upsert}}',
+                (new Query())
+                    ->select(
+                        [
+                            'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                            '[[time]]' => new Expression('now()'),
+                        ],
+                    ),
+                [
+                    'ts' => 0,
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]] ON DUPLICATE KEY UPDATE `ts`=:qp1, [[orders]]=T_upsert.orders + 1
+                SQL,
+                [
+                    ':phEmail' => 'dynamic@example.com',
+                    ':qp1' => 0,
+                ],
+            ],
+            'query values and expressions without update part' => [
+                '{{%T_upsert}}',
+                (new Query())
+                    ->select(
+                        [
+                            'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                            '[[time]]' => new Expression('now()'),
+                        ],
+                    ),
+                [
+                    'ts' => 0,
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]] ON DUPLICATE KEY UPDATE `ts`=:qp1, [[orders]]=T_upsert.orders + 1
+                SQL,
+                [
+                    ':phEmail' => 'dynamic@example.com',
+                    ':qp1' => 0,
+                ],
+            ],
+            'query with update part' => [
+                'T_upsert',
+                (new Query())
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                [
+                    'address' => 'foo {{city}}',
+                    'status' => 2,
+                    'orders' => new Expression('T_upsert.orders + 1'),
+                ],
+                [
+                    <<<SQL
+                    INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1
+                    SQL,
+                    <<<SQL
+                    INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1
+                    SQL,
+                ],
+                [
+                    ':qp0' => 'user1',
+                    ':qp1' => 'foo {{city}}',
+                    ':qp2' => 2,
+                ],
+            ],
+            'query without update part' => [
+                'T_upsert',
+                (new Query())
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
+                    ->from('customer')
+                    ->where(['name' => 'user1'])
+                    ->limit(1),
+                false,
+                [
+                    <<<SQL
+                    INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`
+                    SQL,
+                    <<<SQL
+                    INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`
+                    SQL,
+                ],
+                [
+                    ':qp0' => 'user1',
+                ],
+            ],
+            'regular values' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                true,
+                <<<SQL
+                INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `address`=VALUES(`address`), `status`=VALUES(`status`), `profile_id`=VALUES(`profile_id`)
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'regular values with update part' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                [
+                    'address' => 'foo {{city}}',
+                    'status' => 2,
+                    'orders' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `address`=:qp4, `status`=:qp5, `orders`=T_upsert.orders + 1
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                    ':qp4' => 'foo {{city}}',
+                    ':qp5' => 2,
+                ],
+            ],
+            'regular values without update part' => [
+                'T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                false,
+                <<<SQL
+                INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'values and expressions' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                true,
+                <<<SQL
+                INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())
+                SQL,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'values and expressions with update part' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                [
+                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
+                ],
+                <<<SQL
+                INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())
+                SQL,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+            'values and expressions without update part' => [
+                '{{%T_upsert}}',
+                [
+                    '{{%T_upsert}}.[[email]]' => 'dynamic@example.com',
+                    '[[ts]]' => new Expression('now()'),
+                ],
+                false,
+                <<<SQL
+                INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())
+                SQL,
+                [
+                    ':qp0' => 'dynamic@example.com',
+                ],
+            ],
+        ];
+    }
+
     /**
      * @return array<string, array{string, string, string, string, string}>
      */
@@ -71,9 +326,9 @@ final class QueryBuilderProvider
                   `description` varchar(255) NOT NULL
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
-                "It's a column comment.",
+                'It\'s a column comment.',
                 <<<SQL
-                ALTER TABLE `qb_comment_quote` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'It\'s a column comment.'
+                ALTER TABLE `qb_comment_quote` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'It''s a column comment.'
                 SQL,
             ],
             'database-qualified table name' => [
@@ -105,14 +360,14 @@ final class QueryBuilderProvider
             'replace existing comment with single quote' => [
                 'qb_comment_replace_quote',
                 'description',
-                <<<'SQL'
+                <<<SQL
                 CREATE TABLE `qb_comment_replace_quote` (
-                  `description` varchar(255) DEFAULT NULL COMMENT 'It\'s old.'
+                  `description` varchar(255) DEFAULT NULL COMMENT 'It''s old.'
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
-                "It's a new column comment.",
+                'It\'s a new column comment.',
                 <<<SQL
-                ALTER TABLE `qb_comment_replace_quote` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'It\'s a new column comment.'
+                ALTER TABLE `qb_comment_replace_quote` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'It''s a new column comment.'
                 SQL,
             ],
         ];
@@ -233,9 +488,9 @@ final class QueryBuilderProvider
         return [
             'comment with single quote' => [
                 'qb_comment_table_quote',
-                "It's a table comment.",
+                'It\'s a table comment.',
                 <<<SQL
-                ALTER TABLE `qb_comment_table_quote` COMMENT 'It\'s a table comment.'
+                ALTER TABLE `qb_comment_table_quote` COMMENT 'It''s a table comment.'
                 SQL,
             ],
             'database-qualified table name' => [
@@ -303,7 +558,7 @@ final class QueryBuilderProvider
             'mixed quote and backslash' => [
                 'It\'s a \\ path "q"',
                 <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'It\'s a \\ path \"q\"'
+                ALTER TABLE `profile` COMMENT 'It''s a \\ path \"q\"'
                 SQL,
                 <<<'SQL'
                 ALTER TABLE `profile` COMMENT 'It''s a \ path "q"'
@@ -312,7 +567,7 @@ final class QueryBuilderProvider
             'multiple single quotes' => [
                 '\'a\' and \'b\'',
                 <<<'SQL'
-                ALTER TABLE `profile` COMMENT '\'a\' and \'b\''
+                ALTER TABLE `profile` COMMENT '''a'' and ''b'''
                 SQL,
                 <<<'SQL'
                 ALTER TABLE `profile` COMMENT '''a'' and ''b'''
@@ -321,7 +576,7 @@ final class QueryBuilderProvider
             'single quote' => [
                 'It\'s a comment',
                 <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'It\'s a comment'
+                ALTER TABLE `profile` COMMENT 'It''s a comment'
                 SQL,
                 <<<'SQL'
                 ALTER TABLE `profile` COMMENT 'It''s a comment'

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\pgsql;
 
 use Closure;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\DynamicModel;
 use yii\base\NotSupportedException;
@@ -21,6 +22,7 @@ use yii\db\Query;
 use yii\db\Schema;
 use yiiunit\data\base\TraversableObject;
 use yiiunit\base\db\BaseQueryBuilder;
+use yiiunit\framework\db\pgsql\providers\QueryBuilderProvider;
 
 /**
  * Unit test for {@see \yii\db\QueryBuilder} with PostgreSQL driver.
@@ -481,71 +483,35 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public static function upsertProvider(): array
-    {
-        $concreteData = [
-            'regular values' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "address", "status", "profile_id") VALUES (:qp0, :qp1, :qp2, :qp3) ON CONFLICT ("email") DO UPDATE SET "address"=EXCLUDED."address", "status"=EXCLUDED."status", "profile_id"=EXCLUDED."profile_id"',
-                4 => [
-                    ':qp0' => 'test@example.com',
-                    ':qp1' => 'bar {{city}}',
-                    ':qp2' => 1,
-                    ':qp3' => null,
-                ],
-            ],
-            'regular values with update part' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "address", "status", "profile_id") VALUES (:qp0, :qp1, :qp2, :qp3) ON CONFLICT ("email") DO UPDATE SET "address"=:qp4, "status"=:qp5, "orders"=T_upsert.orders + 1',
-                4 => [
-                    ':qp0' => 'test@example.com',
-                    ':qp1' => 'bar {{city}}',
-                    ':qp2' => 1,
-                    ':qp3' => null,
-                    ':qp4' => 'foo {{city}}',
-                    ':qp5' => 2,
-                ],
-            ],
-            'regular values without update part' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "address", "status", "profile_id") VALUES (:qp0, :qp1, :qp2, :qp3) ON CONFLICT DO NOTHING',
-                4 => [
-                    ':qp0' => 'test@example.com',
-                    ':qp1' => 'bar {{city}}',
-                    ':qp2' => 1,
-                    ':qp3' => null,
-                ],
-            ],
-            'query' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY ON CONFLICT ("email") DO UPDATE SET "status"=EXCLUDED."status"',
-            ],
-            'query with update part' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY ON CONFLICT ("email") DO UPDATE SET "address"=:qp1, "status"=:qp2, "orders"=T_upsert.orders + 1',
-            ],
-            'query without update part' => [
-                3 => 'INSERT INTO "T_upsert" ("email", "status") SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY ON CONFLICT DO NOTHING',
-            ],
-            'values and expressions' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'values and expressions with update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'values and expressions without update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'query, values and expressions with update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ("email", [[time]]) SELECT :phEmail AS "email", now() AS [[time]] ON CONFLICT ("email") DO UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1',
-            ],
-            'query, values and expressions without update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ("email", [[time]]) SELECT :phEmail AS "email", now() AS [[time]] ON CONFLICT ("email") DO UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1',
-            ],
-            'no columns to update' => [
-                3 => 'INSERT INTO "T_upsert_1" ("a") VALUES (:qp0) ON CONFLICT DO NOTHING',
-            ],
-        ];
-        $newData = parent::upsertProvider();
-        foreach ($concreteData as $testName => $data) {
-            $newData[$testName] = array_replace($newData[$testName], $data);
-        }
-        return $newData;
+    #[DataProviderExternal(QueryBuilderProvider::class, 'upsert')]
+    public function testUpsert(
+        string $table,
+        array|Query $insertColumns,
+        array|bool|null $updateColumns,
+        array|string $expectedSql,
+        array $expectedParams,
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        $actualParams = [];
+
+        $actualSql = $db->getQueryBuilder()->upsert(
+            $table,
+            $insertColumns,
+            $updateColumns,
+            $actualParams,
+        );
+
+        self::assertSame(
+            $expectedSql,
+            $actualSql,
+            'Generated SQL must match the expected statement.',
+        );
+        self::assertSame(
+            $expectedParams,
+            $actualParams,
+            'Bound parameters must match the expected binding map.',
+        );
     }
 
     public static function updateProvider(): array

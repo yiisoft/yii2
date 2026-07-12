@@ -25,6 +25,8 @@ use yiiunit\base\db\BaseQueryBuilder;
 use yiiunit\framework\db\mysql\providers\QueryBuilderProvider;
 use yiiunit\support\DbHelper;
 
+use function is_array;
+
 /**
  * Unit test for {@see \yii\db\QueryBuilder} with MySQL driver.
  *
@@ -472,60 +474,44 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $db->getQueryBuilder()->resetSequence('order_item');
     }
 
-    public static function upsertProvider(): array
-    {
-        $concreteData = [
-            'regular values' => [
-                3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `address`=VALUES(`address`), `status`=VALUES(`status`), `profile_id`=VALUES(`profile_id`)',
-            ],
-            'regular values with update part' => [
-                3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `address`=:qp4, `status`=:qp5, `orders`=T_upsert.orders + 1',
-            ],
-            'regular values without update part' => [
-                3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
-            ],
-            'query' => [
-                3 => [
-                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)',
-                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `status`=VALUES(`status`)',
-                ],
-            ],
-            'query with update part' => [
-                3 => [
-                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1',
-                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1',
-                ],
-            ],
-            'query without update part' => [
-                3 => [
-                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1 ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
-                    'INSERT INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 FETCH NEXT 1 ROWS ONLY ON DUPLICATE KEY UPDATE `email`=`T_upsert`.`email`',
-                ],
-            ],
-            'values and expressions' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'values and expressions with update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'values and expressions without update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'query, values and expressions with update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]] ON DUPLICATE KEY UPDATE `ts`=:qp1, [[orders]]=T_upsert.orders + 1',
-            ],
-            'query, values and expressions without update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]] ON DUPLICATE KEY UPDATE `ts`=:qp1, [[orders]]=T_upsert.orders + 1',
-            ],
-            'no columns to update' => [
-                3 => 'INSERT INTO `T_upsert_1` (`a`) VALUES (:qp0) ON DUPLICATE KEY UPDATE `a`=`T_upsert_1`.`a`',
-            ],
-        ];
-        $newData = parent::upsertProvider();
-        foreach ($concreteData as $testName => $data) {
-            $newData[$testName] = array_replace($newData[$testName], $data);
+    #[DataProviderExternal(QueryBuilderProvider::class, 'upsert')]
+    public function testUpsert(
+        string $table,
+        array|Query $insertColumns,
+        array|bool|null $updateColumns,
+        array|string $expectedSql,
+        array $expectedParams,
+    ): void {
+        $db = $this->getConnection(false, false);
+
+        $actualParams = [];
+
+        $actualSql = $db->getQueryBuilder()->upsert(
+            $table,
+            $insertColumns,
+            $updateColumns,
+            $actualParams,
+        );
+
+        if (is_array($expectedSql)) {
+            self::assertContains(
+                $actualSql,
+                $expectedSql,
+                'Generated SQL must match one of the accepted MySQL/MariaDB statements.',
+            );
+        } else {
+            self::assertSame(
+                $expectedSql,
+                $actualSql,
+                'Generated SQL must match the expected statement.',
+            );
         }
-        return $newData;
+
+        self::assertSame(
+            $expectedParams,
+            $actualParams,
+            'Bound parameters must match the expected binding map.',
+        );
     }
 
     public static function conditionProvider(): array

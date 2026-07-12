@@ -2148,13 +2148,47 @@ final class QueryBuilderProvider
     public static function upsert(): array
     {
         return [
+            'catalog-qualified table name' => [
+                'yiitest.dbo.T_upsert',
+                [
+                    'email' => 'test@example.com',
+                    'address' => 'bar {{city}}',
+                    'status' => 1,
+                    'profile_id' => null,
+                ],
+                true,
+                <<<SQL
+                MERGE [yiitest].[dbo].[T_upsert] WITH (HOLDLOCK) USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS [EXCLUDED] ([email], [address], [status], [profile_id]) ON ([yiitest].[dbo].[T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=[EXCLUDED].[address], [status]=[EXCLUDED].[status], [profile_id]=[EXCLUDED].[profile_id] WHEN NOT MATCHED THEN INSERT ([email], [address], [status], [profile_id]) VALUES ([EXCLUDED].[email], [EXCLUDED].[address], [EXCLUDED].[status], [EXCLUDED].[profile_id]);
+                SQL,
+                [
+                    ':qp0' => 'test@example.com',
+                    ':qp1' => 'bar {{city}}',
+                    ':qp2' => 1,
+                    ':qp3' => null,
+                ],
+            ],
+            'no columns to update' => [
+                'T_upsert_1',
+                [
+                    'a' => 1,
+                ],
+                true,
+                <<<SQL
+                MERGE [T_upsert_1] WITH (HOLDLOCK) USING (VALUES (:qp0)) AS [EXCLUDED] ([a]) ON ([T_upsert_1].[a]=[EXCLUDED].[a]) WHEN NOT MATCHED THEN INSERT ([a]) VALUES ([EXCLUDED].[a]);
+                SQL,
+                [
+                    ':qp0' => 1,
+                ],
+            ],
             'query' => [
                 'T_upsert',
                 (new Query())
-                    ->select([
-                        'email',
-                        'status' => new Expression('2'),
-                    ])
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
                     ->from('customer')
                     ->where(['name' => 'user1'])
                     ->limit(1),
@@ -2166,13 +2200,15 @@ final class QueryBuilderProvider
                     ':qp0' => 'user1',
                 ],
             ],
-            'query, values and expressions with update part' => [
+            'query values and expressions with update part' => [
                 '{{%T_upsert}}',
                 (new Query())
-                    ->select([
-                        'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
-                        '[[time]]' => new Expression('now()'),
-                    ]),
+                    ->select(
+                        [
+                            'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                            '[[time]]' => new Expression('now()'),
+                        ],
+                    ),
                 [
                     'ts' => 0,
                     '[[orders]]' => new Expression('T_upsert.orders + 1'),
@@ -2185,13 +2221,15 @@ final class QueryBuilderProvider
                     ':qp1' => 0,
                 ],
             ],
-            'query, values and expressions without update part' => [
+            'query values and expressions without update part' => [
                 '{{%T_upsert}}',
                 (new Query())
-                    ->select([
-                        'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
-                        '[[time]]' => new Expression('now()'),
-                    ]),
+                    ->select(
+                        [
+                            'email' => new Expression(':phEmail', [':phEmail' => 'dynamic@example.com']),
+                            '[[time]]' => new Expression('now()'),
+                        ],
+                    ),
                 false,
                 <<<SQL
                 MERGE {{%T_upsert}} WITH (HOLDLOCK) USING (SELECT :phEmail AS [email], now() AS [[time]]) AS [EXCLUDED] ([email], [[time]]) ON ({{%T_upsert}}.[email]=[EXCLUDED].[email]) WHEN NOT MATCHED THEN INSERT ([email], [[time]]) VALUES ([EXCLUDED].[email], [EXCLUDED].[[time]]);
@@ -2203,10 +2241,12 @@ final class QueryBuilderProvider
             'query with update part' => [
                 'T_upsert',
                 (new Query())
-                    ->select([
-                        'email',
-                        'status' => new Expression('2'),
-                    ])
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
                     ->from('customer')
                     ->where(['name' => 'user1'])
                     ->limit(1),
@@ -2227,10 +2267,12 @@ final class QueryBuilderProvider
             'query without update part' => [
                 'T_upsert',
                 (new Query())
-                    ->select([
-                        'email',
-                        'status' => new Expression('2'),
-                    ])
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
                     ->from('customer')
                     ->where(['name' => 'user1'])
                     ->limit(1),
@@ -2240,19 +2282,6 @@ final class QueryBuilderProvider
                 SQL,
                 [
                     ':qp0' => 'user1',
-                ],
-            ],
-            'no columns to update' => [
-                'T_upsert_1',
-                [
-                    'a' => 1,
-                ],
-                true,
-                <<<SQL
-                MERGE [T_upsert_1] WITH (HOLDLOCK) USING (VALUES (:qp0)) AS [EXCLUDED] ([a]) ON ([T_upsert_1].[a]=[EXCLUDED].[a]) WHEN NOT MATCHED THEN INSERT ([a]) VALUES ([EXCLUDED].[a]);
-                SQL,
-                [
-                    ':qp0' => 1,
                 ],
             ],
             'regular values' => [
@@ -2360,25 +2389,6 @@ final class QueryBuilderProvider
                 SQL,
                 [
                     ':qp0' => 'dynamic@example.com',
-                ],
-            ],
-            'catalog-qualified table name' => [
-                'yiitest.dbo.T_upsert',
-                [
-                    'email' => 'test@example.com',
-                    'address' => 'bar {{city}}',
-                    'status' => 1,
-                    'profile_id' => null,
-                ],
-                true,
-                <<<SQL
-                MERGE [yiitest].[dbo].[T_upsert] WITH (HOLDLOCK) USING (VALUES (:qp0, :qp1, :qp2, :qp3)) AS [EXCLUDED] ([email], [address], [status], [profile_id]) ON ([yiitest].[dbo].[T_upsert].[email]=[EXCLUDED].[email]) WHEN MATCHED THEN UPDATE SET [address]=[EXCLUDED].[address], [status]=[EXCLUDED].[status], [profile_id]=[EXCLUDED].[profile_id] WHEN NOT MATCHED THEN INSERT ([email], [address], [status], [profile_id]) VALUES ([EXCLUDED].[email], [EXCLUDED].[address], [EXCLUDED].[status], [EXCLUDED].[profile_id]);
-                SQL,
-                [
-                    ':qp0' => 'test@example.com',
-                    ':qp1' => 'bar {{city}}',
-                    ':qp2' => 1,
-                    ':qp3' => null,
                 ],
             ],
         ];
