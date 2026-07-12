@@ -100,9 +100,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $columnList = $insertNames !== [] ? ' (' . implode(', ', $insertNames) . ')' : '';
 
-        if ($placeholders !== []) {
-            $source = 'VALUES (' . implode(', ', $placeholders) . ')';
-        } elseif ($insertColumns instanceof Query) {
+        if ($insertColumns instanceof Query) {
             // A WHERE clause resolves SQLite's parsing ambiguity between a JOIN and the UPSERT ON CONFLICT clause.
             $selectSql = ltrim($values);
 
@@ -110,7 +108,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             SELECT * FROM ({$selectSql}) WHERE TRUE
             SQL;
         } else {
-            $source = ltrim($values);
+            $source = 'VALUES (' . implode(', ', $placeholders) . ')';
         }
 
         $insertSql = <<<SQL
