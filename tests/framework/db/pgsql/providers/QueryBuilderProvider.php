@@ -90,16 +90,12 @@ final class QueryBuilderProvider
                             '[[time]]' => new Expression('now()'),
                         ],
                     ),
-                [
-                    'ts' => 0,
-                    '[[orders]]' => new Expression('T_upsert.orders + 1'),
-                ],
+                false,
                 <<<SQL
-                INSERT INTO {{%T_upsert}} ("email", [[time]]) SELECT :phEmail AS "email", now() AS [[time]] ON CONFLICT ("email") DO UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1
+                INSERT INTO {{%T_upsert}} ("email", [[time]]) SELECT :phEmail AS "email", now() AS [[time]] ON CONFLICT DO NOTHING
                 SQL,
                 [
                     ':phEmail' => 'dynamic@example.com',
-                    ':qp1' => 0,
                 ],
             ],
             'query with update part' => [
