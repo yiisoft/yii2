@@ -13,7 +13,7 @@ In Yii 2.0, DAO supports the following databases out of the box:
 
 - [MySQL](https://www.mysql.com/): version 8.0 or higher
 - [MariaDB](https://mariadb.com/): version 10.6 or higher
-- [SQLite](https://sqlite.org/): version 3 or higher
+- [SQLite](https://sqlite.org/): version 3.35 or higher
 - [PostgreSQL](https://www.postgresql.org/): version 13 or higher
 - [Oracle](https://www.oracle.com/database/)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2019 or higher.

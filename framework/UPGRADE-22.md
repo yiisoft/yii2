@@ -301,10 +301,25 @@ deterministic pagination.
 
 #### SQLite
 
-##### `batchInsert()` requires SQLite `3.7.11+`
+##### SQLite `3.35+` is required
 
-`yii\db\sqlite\QueryBuilder::batchInsert()` override removed; the base `QueryBuilder::batchInsert()` is used
-unconditionally. SQLite `3.7.11+` is required.
+The minimum supported SQLite version is now **`3.35+`**. This allows
+`yii\db\sqlite\QueryBuilder::upsert()` to use a single native `INSERT ... ON CONFLICT` statement with a targetless
+`DO UPDATE` clause. The native statement is atomic and handles conflicts from any applicable uniqueness constraint.
+
+The previous implementation emitted `UPDATE; INSERT OR IGNORE;`. Besides requiring two statements, `OR IGNORE`
+silently discarded `NOT NULL` and other applicable constraint violations. Native UPSERT only handles uniqueness
+conflicts; other constraint violations now raise an error.
+
+`INSERT ... SELECT` upserts wrap the source query in a derived table with a neutral `WHERE TRUE` condition to avoid
+SQLite's documented ambiguity between a join's `ON` clause and the UPSERT `ON CONFLICT` clause.
+
+There is no runtime fallback for SQLite `< 3.35`.
+
+##### `batchInsert()` fallback removed
+
+`yii\db\sqlite\QueryBuilder::batchInsert()` override was removed; the base `QueryBuilder::batchInsert()` is used
+unconditionally.
 
 ##### Offset-only pagination now uses `LIMIT -1 OFFSET`
 
