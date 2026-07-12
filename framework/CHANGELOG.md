@@ -145,6 +145,7 @@ Yii Framework 2 Change Log
 - Enh #20650: Add PHPStan/Psalm annotations for `yii\di\Container` (mspirkov)
 - New #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (mspirkov)
 
+
 2.0.53 June 27, 2025
 --------------------
 
