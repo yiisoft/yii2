@@ -312,22 +312,22 @@ final class QueryBuilderTest extends BaseQueryBuilder
     {
         $concreteData = [
             'regular values' => [
-                3 => 'WITH "EXCLUDED" (`email`, `address`, `status`, `profile_id`) AS (VALUES (:qp0, :qp1, :qp2, :qp3)) UPDATE `T_upsert` SET `address`=(SELECT `address` FROM `EXCLUDED`), `status`=(SELECT `status` FROM `EXCLUDED`), `profile_id`=(SELECT `profile_id` FROM `EXCLUDED`) WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3);',
+                3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON CONFLICT DO UPDATE SET `address`=EXCLUDED.`address`, `status`=EXCLUDED.`status`, `profile_id`=EXCLUDED.`profile_id`',
             ],
             'regular values with update part' => [
-                3 => 'WITH "EXCLUDED" (`email`, `address`, `status`, `profile_id`) AS (VALUES (:qp0, :qp1, :qp2, :qp3)) UPDATE `T_upsert` SET `address`=:qp4, `status`=:qp5, `orders`=T_upsert.orders + 1 WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3);',
+                3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON CONFLICT DO UPDATE SET `address`=:qp4, `status`=:qp5, `orders`=T_upsert.orders + 1',
             ],
             'regular values without update part' => [
-                3 => 'INSERT OR IGNORE INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3)',
+                3 => 'INSERT INTO `T_upsert` (`email`, `address`, `status`, `profile_id`) VALUES (:qp0, :qp1, :qp2, :qp3) ON CONFLICT DO NOTHING',
             ],
             'query' => [
-                3 => 'WITH "EXCLUDED" (`email`, `status`) AS (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) UPDATE `T_upsert` SET `status`=(SELECT `status` FROM `EXCLUDED`) WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1;',
+                3 => 'INSERT INTO `T_upsert` (`email`, `status`) SELECT * FROM (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) WHERE TRUE ON CONFLICT DO UPDATE SET `status`=EXCLUDED.`status`',
             ],
             'query with update part' => [
-                3 => 'WITH "EXCLUDED" (`email`, `status`) AS (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) UPDATE `T_upsert` SET `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1 WHERE `T_upsert`.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1;',
+                3 => 'INSERT INTO `T_upsert` (`email`, `status`) SELECT * FROM (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) WHERE TRUE ON CONFLICT DO UPDATE SET `address`=:qp1, `status`=:qp2, `orders`=T_upsert.orders + 1',
             ],
             'query without update part' => [
-                3 => 'INSERT OR IGNORE INTO `T_upsert` (`email`, `status`) SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1',
+                3 => 'INSERT INTO `T_upsert` (`email`, `status`) SELECT * FROM (SELECT `email`, 2 AS `status` FROM `customer` WHERE `name`=:qp0 LIMIT 1) WHERE TRUE ON CONFLICT DO NOTHING',
             ],
             'values and expressions' => [
                 3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
@@ -339,19 +339,34 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
             ],
             'query, values and expressions with update part' => [
-                3 => 'WITH "EXCLUDED" (`email`, [[time]]) AS (SELECT :phEmail AS `email`, now() AS [[time]]) UPDATE {{%T_upsert}} SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1 WHERE {{%T_upsert}}.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]];',
+                3 => 'INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT * FROM (SELECT :phEmail AS `email`, now() AS [[time]]) WHERE TRUE ON CONFLICT DO UPDATE SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1',
             ],
             'query, values and expressions without update part' => [
-                3 => 'WITH "EXCLUDED" (`email`, [[time]]) AS (SELECT :phEmail AS `email`, now() AS [[time]]) UPDATE {{%T_upsert}} SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1 WHERE {{%T_upsert}}.`email`=(SELECT `email` FROM `EXCLUDED`); INSERT OR IGNORE INTO {{%T_upsert}} (`email`, [[time]]) SELECT :phEmail AS `email`, now() AS [[time]];',
+                3 => 'INSERT INTO {{%T_upsert}} (`email`, [[time]]) SELECT * FROM (SELECT :phEmail AS `email`, now() AS [[time]]) WHERE TRUE ON CONFLICT DO UPDATE SET `ts`=:qp1, [[orders]]=T_upsert.orders + 1',
             ],
             'no columns to update' => [
-                3 => 'INSERT OR IGNORE INTO `T_upsert_1` (`a`) VALUES (:qp0)',
+                3 => 'INSERT INTO `T_upsert_1` (`a`) VALUES (:qp0) ON CONFLICT DO NOTHING',
             ],
         ];
         $newData = parent::upsertProvider();
         foreach ($concreteData as $testName => $data) {
             $newData[$testName] = array_replace($newData[$testName], $data);
         }
+
+        $newData['regular values with empty update part'] = [
+            'T_upsert',
+            [
+                'email' => 'test@example.com',
+                'status' => 1,
+            ],
+            [],
+            'INSERT INTO `T_upsert` (`email`, `status`) VALUES (:qp0, :qp1) ON CONFLICT DO NOTHING',
+            [
+                ':qp0' => 'test@example.com',
+                ':qp1' => 1,
+            ],
+        ];
+
         return $newData;
     }
 

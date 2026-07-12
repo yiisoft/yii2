@@ -12,10 +12,12 @@ namespace yii\db\sqlite;
 
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\db\conditions\InCondition;
+use yii\db\conditions\LikeCondition;
 use yii\db\Connection;
-use yii\db\Expression;
 use yii\db\ExpressionInterface;
 use yii\db\Query;
+use function ltrim;
 
 /**
  * QueryBuilder is the query builder for SQLite databases.
@@ -58,59 +60,81 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\conditions\LikeCondition' => 'yii\db\sqlite\conditions\LikeConditionBuilder',
-            'yii\db\conditions\InCondition' => 'yii\db\sqlite\conditions\InConditionBuilder',
-        ]);
+        return [
+            ...parent::defaultExpressionBuilders(),
+            LikeCondition::class => \yii\db\sqlite\conditions\LikeConditionBuilder::class,
+            InCondition::class => \yii\db\sqlite\conditions\InConditionBuilder::class,
+        ];
     }
 
     /**
      * {@inheritdoc}
-     * @see https://stackoverflow.com/questions/15277373/sqlite-upsert-update-or-insert/15277374#15277374
+     *
+     * @see https://www.sqlite.org/lang_upsert.html
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        list($uniqueNames, $insertNames, $updateNames) = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns, $constraints);
-        if (empty($uniqueNames)) {
+        [$uniqueNames, $insertNames, $updateNames] = $this->prepareUpsertColumns(
+            $table,
+            $insertColumns,
+            $updateColumns,
+        );
+
+        if ($uniqueNames === []) {
             return $this->insert($table, $insertColumns, $params);
         }
+
         if ($updateNames === []) {
             // there are no columns to update
             $updateColumns = false;
         }
 
-        list(, $placeholders, $values, $params) = $this->prepareInsertValues($table, $insertColumns, $params);
-        $insertSql = 'INSERT OR IGNORE INTO ' . $this->db->quoteTableName($table)
-            . (!empty($insertNames) ? ' (' . implode(', ', $insertNames) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
-        if ($updateColumns === false) {
-            return $insertSql;
+        [, $placeholders, $values, $params] = $this->prepareInsertValues(
+            $table,
+            $insertColumns,
+            $params,
+        );
+
+        $quotedTableName = $this->db->quoteTableName($table);
+
+        $columnList = $insertNames !== [] ? ' (' . implode(', ', $insertNames) . ')' : '';
+
+        if ($placeholders !== []) {
+            $source = 'VALUES (' . implode(', ', $placeholders) . ')';
+        } elseif ($insertColumns instanceof Query) {
+            // A WHERE clause resolves SQLite's parsing ambiguity between a JOIN and the UPSERT ON CONFLICT clause.
+            $selectSql = ltrim($values);
+
+            $source = <<<SQL
+            SELECT * FROM ({$selectSql}) WHERE TRUE
+            SQL;
+        } else {
+            $source = ltrim($values);
         }
 
-        $updateCondition = ['or'];
-        $quotedTableName = $this->db->quoteTableName($table);
-        foreach ($constraints as $constraint) {
-            $constraintCondition = ['and'];
-            foreach ($constraint->columnNames as $name) {
-                $quotedName = $this->db->quoteColumnName($name);
-                $constraintCondition[] = "$quotedTableName.$quotedName=(SELECT $quotedName FROM `EXCLUDED`)";
-            }
-            $updateCondition[] = $constraintCondition;
+        $insertSql = <<<SQL
+        INSERT INTO {$quotedTableName}{$columnList} {$source}
+        SQL;
+
+        if ($updateColumns === false || $updateColumns === []) {
+            return <<<SQL
+            {$insertSql} ON CONFLICT DO NOTHING
+            SQL;
         }
-        if ($updateColumns === true) {
-            $updateColumns = [];
-            foreach ($updateNames as $name) {
-                $quotedName = $this->db->quoteColumnName($name);
-                if (strrpos($quotedName, '.') === false) {
-                    $quotedName = "(SELECT $quotedName FROM `EXCLUDED`)";
-                }
-                $updateColumns[$name] = new Expression($quotedName);
-            }
-        }
-        $updateSql = 'WITH "EXCLUDED" (' . implode(', ', $insertNames)
-            . ') AS (' . (!empty($placeholders) ? 'VALUES (' . implode(', ', $placeholders) . ')' : ltrim($values, ' ')) . ') '
-            . $this->update($table, $updateColumns, $updateCondition, $params);
-        return "$updateSql; $insertSql;";
+
+        [$updates, $params] = $this->prepareUpsertSets(
+            $table,
+            $updateColumns,
+            $updateNames,
+            $params,
+            static fn(string $quotedName): string => "EXCLUDED.{$quotedName}",
+        );
+
+        $updateSql = implode(', ', $updates);
+
+        return <<<SQL
+        {$insertSql} ON CONFLICT DO UPDATE SET {$updateSql}
+        SQL;
     }
 
     /**

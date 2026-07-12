@@ -8,15 +8,22 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\db\Expression;
+use yii\db\IntegrityException;
+use yii\db\Query;
 use yii\db\sqlite\Schema;
 use yiiunit\base\db\BaseCommand;
+use yiiunit\support\DbHelper;
 
 /**
- * @group db
- * @group sqlite
+ * Unit tests for {@see \yii\db\sqlite\Command} functionality for the SQLite driver.
  */
+#[Group('db')]
+#[Group('sqlite')]
+#[Group('command')]
 class CommandTest extends BaseCommand
 {
     protected $driverName = 'sqlite';
@@ -30,20 +37,158 @@ class CommandTest extends BaseCommand
         $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
 
-    /**
-     * @dataProvider upsertProvider
-     *
-     * @param array $firstData First data to upsert.
-     * @param array $secondData Second data to upsert.
-     */
-    public function testUpsert(array $firstData, array $secondData): void
+    public function testUpsertUsesAnyUniqueConstraint(): void
     {
-        if (version_compare($this->getConnection(false)->getServerVersion(), '3.8.3', '<')) {
-            $this->markTestSkipped('SQLite < 3.8.3 does not support "WITH" keyword.');
-            return;
-        }
+        $db = $this->getConnection();
 
-        parent::testUpsert($firstData, $secondData);
+        $table = 'upsert_multiple_unique';
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+
+        $command = $db->createCommand();
+
+        $command->createTable(
+            $table,
+            [
+                'id' => Schema::TYPE_PK,
+                'email' => 'text NOT NULL UNIQUE',
+                'username' => 'text NOT NULL UNIQUE',
+                'status' => 'integer NOT NULL',
+            ],
+        )->execute();
+
+        self::assertSame(
+            1,
+            $command->upsert(
+                $table,
+                ['email' => 'first@example.com', 'username' => 'shared', 'status' => 1],
+            )->execute(),
+            'Initial upsert must insert one row.',
+        );
+        self::assertSame(
+            1,
+            $command->upsert(
+                $table,
+                ['email' => 'second@example.com', 'username' => 'shared', 'status' => 2],
+            )->execute(),
+            'A username conflict must update one row.',
+        );
+        self::assertSame(
+            1,
+            $command->upsert(
+                $table,
+                ['email' => 'first@example.com', 'username' => 'different', 'status' => 3],
+            )->execute(),
+            'An email conflict must update one row.',
+        );
+        self::assertSame(
+            [
+                'email' => 'first@example.com',
+                'username' => 'shared',
+                'status' => '3',
+            ],
+            (new Query())
+                ->select(['email', 'username', 'status'])
+                ->from($table)
+                ->one($db),
+            'Conflicts on either unique constraint must update the same row.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$table]);
+    }
+
+    public function testUpsertFromUnionQueryWithoutFinalWhere(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $query = (new Query())
+            ->select(
+                [
+                    'email',
+                    'status' => new Expression('2'),
+                ],
+            )
+            ->from('customer')
+            ->where(['id' => -1])
+            ->union(
+                (new Query())
+                    ->select(
+                        [
+                            'email',
+                            'status' => new Expression('2'),
+                        ],
+                    )
+                    ->from('customer'),
+            );
+
+        self::assertSame(
+            3,
+            $command->upsert(
+                'T_upsert',
+                $query,
+            )->execute(),
+            'A UNION source without a final WHERE clause must upsert every selected row.',
+        );
+        self::assertSame(
+            3,
+            (int) $command->setSql(
+                <<<SQL
+                SELECT COUNT(*) FROM {{T_upsert}}
+                SQL
+            )->queryScalar(),
+            'The upsert must persist every row selected by the UNION source.',
+        );
+    }
+
+    public function testUpsertDoNothingAffectedRows(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $values = [
+            'email' => 'same@example.com',
+            'status' => 1,
+        ];
+
+        self::assertSame(
+            1,
+            $command->upsert(
+                'T_upsert',
+                $values,
+                false,
+            )->execute(),
+            'The first insert-only upsert must insert one row.',
+        );
+        self::assertSame(
+            0,
+            $command->upsert(
+                'T_upsert',
+                $values,
+                false,
+            )->execute(),
+            'A conflicting insert-only upsert must report no affected rows.',
+        );
+    }
+
+    public function testThrowIntegrityExceptionWhenUpsertViolatesNotNullConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessage(
+            'NOT NULL constraint failed: T_upsert.email',
+        );
+
+        $command->upsert(
+            'T_upsert',
+            ['email' => null],
+            false,
+        )->execute();
     }
 
     /**
