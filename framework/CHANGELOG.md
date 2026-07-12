@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #20987: Fix `@var` annotations for `TimestampBehavior` properties (mspirkov)
 - Enh #20988: Add generics to `yii\db\Connection` and `yii\db\Schema` so `getSchema()` and `getQueryBuilder()` infer driver-specific types (terabytesoftw)
 - Bug #20994: Fix `@var` annotations for `BlameableBehavior` properties (mspirkov)
+- Enh #20990: Show created migration file path on migrate create CLI command (flaviovs)
 
 
 2.0.55 May 09, 2026
@@ -143,7 +144,6 @@ Yii Framework 2 Change Log
 - Enh #20642: Pass `$model` and `$attribute` in Compare Validator's compareValue property closure (samuelrajan747)
 - Enh #20650: Add PHPStan/Psalm annotations for `yii\di\Container` (mspirkov)
 - New #19526: Add the `convertIniSizeToBytes` method to `BaseStringHelper` (mspirkov)
-
 
 2.0.53 June 27, 2025
 --------------------
