@@ -123,6 +123,7 @@ Yii Framework 2 Change Log
 - Bug #20992: Preserve the identity column generation clause in `yii\db\oci\QueryBuilder::executeResetSequence()` (terabytesoftw)
 - Chg #20995: Use native atomic `INSERT ... ON CONFLICT` statements for `yii\db\sqlite\QueryBuilder::upsert()` (terabytesoftw)
 - Bug #20996: Fix `yii\db\pgsql\QueryBuilder::upsert()` with empty update columns (terabytesoftw)
+- Bug #20100: Fix `yii\db\pgsql\QueryBuilder::upsert()` generating an invalid conflict target when multiple unique constraints match (terabytesoftw)
 
 2.0.56 under development
 ------------------------
