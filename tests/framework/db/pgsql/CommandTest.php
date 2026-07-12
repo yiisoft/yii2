@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,17 +10,86 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\ArrayExpression;
+use yii\db\Expression;
 use yii\db\JsonExpression;
+use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
+use yiiunit\framework\db\pgsql\providers\CommandProvider;
+
+use function array_keys;
 
 /**
- * @group db
- * @group pgsql
+ * Unit tests for {@see \yii\db\Command} functionality for the PostgreSQL driver.
+ *
+ * {@see CommandProvider} for test case data providers.
  */
+#[Group('db')]
+#[Group('pgsql')]
+#[Group('command')]
 class CommandTest extends BaseCommand
 {
     public $driverName = 'pgsql';
+
+    #[DataProviderExternal(CommandProvider::class, 'upsert')]
+    public function testUpsert(
+        string $table,
+        array|Query $firstInsert,
+        array|Query $secondInsert,
+        array|bool $updateColumns,
+        array $expected,
+    ): void {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        self::assertSame(
+            0,
+            (int) (new Query())
+                ->from($table)
+                ->count('*', $db),
+            'Target table must start empty.',
+        );
+
+        $command->upsert(
+            $table,
+            $firstInsert,
+            $updateColumns,
+        )->execute();
+
+        self::assertSame(
+            1,
+            (int) (new Query())
+                ->from($table)
+                ->count('*', $db),
+            'Insert path must create exactly one row.',
+        );
+
+        $command->upsert(
+            $table,
+            $secondInsert,
+            $updateColumns,
+        )->execute();
+
+        $select = [];
+
+        foreach (array_keys($expected) as $column) {
+            $select[$column] = $column === 'address'
+                ? new Expression('CAST([[address]] AS VARCHAR(255))')
+                : $column;
+        }
+
+        self::assertEquals(
+            $expected,
+            (new Query())
+                ->select($select)
+                ->from($table)
+                ->one($db),
+            'Conflict must apply the update behavior.',
+        );
+    }
 
     public function testAutoQuoting(): void
     {
