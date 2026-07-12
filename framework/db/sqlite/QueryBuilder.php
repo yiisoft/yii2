@@ -85,8 +85,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return $this->insert($table, $insertColumns, $params);
         }
 
-        if ($updateNames === []) {
-            // there are no columns to update
+        if ($updateColumns === [] || $updateNames === []) {
+            // There are no columns to update.
             $updateColumns = false;
         }
 
@@ -97,8 +97,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         );
 
         $quotedTableName = $this->db->quoteTableName($table);
-
-        $columnList = $insertNames !== [] ? ' (' . implode(', ', $insertNames) . ')' : '';
+        $columnList = ' (' . implode(', ', $insertNames) . ')';
 
         if ($insertColumns instanceof Query) {
             // A WHERE clause resolves SQLite's parsing ambiguity between a JOIN and the UPSERT ON CONFLICT clause.
@@ -115,7 +114,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         INSERT INTO {$quotedTableName}{$columnList} {$source}
         SQL;
 
-        if ($updateColumns === false || $updateColumns === []) {
+        if ($updateColumns === false) {
             return <<<SQL
             {$insertSql} ON CONFLICT DO NOTHING
             SQL;
