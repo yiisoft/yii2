@@ -328,7 +328,7 @@ final class QueryBuilderProvider
                 SQL,
                 'It\'s a column comment.',
                 <<<SQL
-                ALTER TABLE `qb_comment_quote` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'It''s a column comment.'
+                ALTER TABLE `qb_comment_quote` CHANGE `description` `description` varchar(255) NOT NULL COMMENT 'It\\'s a column comment.'
                 SQL,
             ],
             'database-qualified table name' => [
@@ -367,7 +367,7 @@ final class QueryBuilderProvider
                 SQL,
                 'It\'s a new column comment.',
                 <<<SQL
-                ALTER TABLE `qb_comment_replace_quote` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'It''s a new column comment.'
+                ALTER TABLE `qb_comment_replace_quote` CHANGE `description` `description` varchar(255) DEFAULT NULL COMMENT 'It\\'s a new column comment.'
                 SQL,
             ],
         ];
@@ -490,7 +490,7 @@ final class QueryBuilderProvider
                 'qb_comment_table_quote',
                 'It\'s a table comment.',
                 <<<SQL
-                ALTER TABLE `qb_comment_table_quote` COMMENT 'It''s a table comment.'
+                ALTER TABLE `qb_comment_table_quote` COMMENT 'It\\'s a table comment.'
                 SQL,
             ],
             'database-qualified table name' => [
@@ -539,64 +539,64 @@ final class QueryBuilderProvider
         return [
             'backslash' => [
                 'path C:\\dir',
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'path C:\\dir'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT 'path C:\\\\dir'
                 SQL,
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'path C:\dir'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT 'path C:\\dir'
                 SQL,
             ],
             'double quote' => [
                 'say "hello"',
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'say \"hello\"'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT 'say \\"hello\\"'
                 SQL,
-                <<<'SQL'
+                <<<SQL
                 ALTER TABLE `profile` COMMENT 'say "hello"'
                 SQL,
             ],
             'mixed quote and backslash' => [
                 'It\'s a \\ path "q"',
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'It''s a \\ path \"q\"'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT 'It\\'s a \\\\ path \\"q\\"'
                 SQL,
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'It''s a \ path "q"'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT 'It''s a \\ path "q"'
                 SQL,
             ],
             'multiple single quotes' => [
                 '\'a\' and \'b\'',
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT '''a'' and ''b'''
+                <<<SQL
+                ALTER TABLE `profile` COMMENT '\\'a\\' and \\'b\\''
                 SQL,
-                <<<'SQL'
+                <<<SQL
                 ALTER TABLE `profile` COMMENT '''a'' and ''b'''
                 SQL,
             ],
             'single quote' => [
                 'It\'s a comment',
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT 'It''s a comment'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT 'It\\'s a comment'
                 SQL,
-                <<<'SQL'
+                <<<SQL
                 ALTER TABLE `profile` COMMENT 'It''s a comment'
                 SQL,
             ],
             'sql injection attempt' => [
                 '\'; DROP TABLE x; --',
-                <<<'SQL'
-                ALTER TABLE `profile` COMMENT '\'; DROP TABLE x; --'
+                <<<SQL
+                ALTER TABLE `profile` COMMENT '\\'; DROP TABLE x; --'
                 SQL,
-                <<<'SQL'
+                <<<SQL
                 ALTER TABLE `profile` COMMENT '''; DROP TABLE x; --'
                 SQL,
             ],
             'unicode accents' => [
                 'café déjà vu',
-                <<<'SQL'
+                <<<SQL
                 ALTER TABLE `profile` COMMENT 'café déjà vu'
                 SQL,
-                <<<'SQL'
+                <<<SQL
                 ALTER TABLE `profile` COMMENT 'café déjà vu'
                 SQL,
             ],
