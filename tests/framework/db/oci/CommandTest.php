@@ -11,18 +11,24 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\oci;
 
 use Exception;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use Throwable;
 use yii\caching\ArrayCache;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\db\Schema;
 use yiiunit\base\db\BaseCommand;
+use yiiunit\framework\db\oci\providers\CommandProvider;
 
+use function array_keys;
 use function count;
 
 /**
- * Unit test for {@see \yii\db\Command} with Oracle driver.
+ * Unit tests for {@see \yii\db\Command} functionality for the Oracle driver.
+ *
+ * {@see CommandProvider} for test case data providers.
  */
 #[Group('db')]
 #[Group('oci')]
@@ -30,6 +36,64 @@ use function count;
 class CommandTest extends BaseCommand
 {
     protected $driverName = 'oci';
+
+    #[DataProviderExternal(CommandProvider::class, 'upsert')]
+    public function testUpsert(
+        string $table,
+        array|Query $firstInsert,
+        array|Query $secondInsert,
+        array|bool $updateColumns,
+        array $expected,
+    ): void {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        self::assertSame(
+            0,
+            (int) (new Query())
+                ->from($table)
+                ->count('*', $db),
+            'Target table must start empty.',
+        );
+
+        $command->upsert(
+            $table,
+            $firstInsert,
+            $updateColumns,
+        )->execute();
+
+        self::assertSame(
+            1,
+            (int) (new Query())
+                ->from($table)
+                ->count('*', $db),
+            'Insert path must create exactly one row.',
+        );
+
+        $command->upsert(
+            $table,
+            $secondInsert,
+            $updateColumns,
+        )->execute();
+
+        $select = [];
+
+        foreach (array_keys($expected) as $column) {
+            $select[$column] = $column === 'address'
+                ? new Expression('CAST([[address]] AS VARCHAR(255))')
+                : $column;
+        }
+
+        self::assertEquals(
+            $expected,
+            (new Query())
+                ->select($select)
+                ->from($table)
+                ->one($db),
+            'Conflict must apply the update behavior.',
+        );
+    }
 
     public function testAutoQuoting(): void
     {

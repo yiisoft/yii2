@@ -13,6 +13,7 @@ namespace yiiunit\framework\db\mssql;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Exception;
+use yii\db\Expression;
 use yii\db\IntegrityException;
 use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
@@ -21,6 +22,7 @@ use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mssql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
 
+use function array_keys;
 use function json_encode;
 
 /**
@@ -1289,6 +1291,64 @@ final class CommandTest extends BaseCommand
     }
 
     #[DataProviderExternal(CommandProvider::class, 'upsert')]
+    public function testUpsert(
+        string $table,
+        array|Query $firstInsert,
+        array|Query $secondInsert,
+        array|bool $updateColumns,
+        array $expected,
+    ): void {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        self::assertSame(
+            0,
+            (int) (new Query())
+                ->from($table)
+                ->count('*', $db),
+            'Target table must start empty.',
+        );
+
+        $command->upsert(
+            $table,
+            $firstInsert,
+            $updateColumns,
+        )->execute();
+
+        self::assertSame(
+            1,
+            (int) (new Query())
+                ->from($table)
+                ->count('*', $db),
+            'Insert path must create exactly one row.',
+        );
+
+        $command->upsert(
+            $table,
+            $secondInsert,
+            $updateColumns,
+        )->execute();
+
+        $select = [];
+
+        foreach (array_keys($expected) as $column) {
+            $select[$column] = $column === 'address'
+                ? new Expression('CAST([[address]] AS VARCHAR(255))')
+                : $column;
+        }
+
+        self::assertEquals(
+            $expected,
+            (new Query())
+                ->select($select)
+                ->from($table)
+                ->one($db),
+            'Conflict must apply the update behavior.',
+        );
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'upsertWithCatalogQualifiedTableName')]
     public function testUpsertWithCatalogQualifiedTableName(
         string $table,
         array $insertColumns,
@@ -1297,11 +1357,13 @@ final class CommandTest extends BaseCommand
     ): void {
         $db = $this->getConnection();
 
-        $db->createCommand()->delete(
+        $command = $db->createCommand();
+
+        $command->delete(
             $table,
             ['email' => $expected['email']],
         )->execute();
-        $db->createCommand()->upsert(
+        $command->upsert(
             $table,
             $insertColumns,
         )->execute();
@@ -1315,13 +1377,19 @@ final class CommandTest extends BaseCommand
             'Upsert insert path must create exactly one row.',
         );
 
-        $db->createCommand()->upsert(
+        $command->upsert(
             $table,
             $updateColumns,
         )->execute();
 
         $actual = (new Query())
-            ->select(['email', 'address', 'status'])
+            ->select(
+                [
+                    'email',
+                    'address',
+                    'status',
+                ],
+            )
             ->from($table)
             ->where(['email' => $expected['email']])
             ->one($db);
@@ -1332,7 +1400,7 @@ final class CommandTest extends BaseCommand
             'Upsert update path must overwrite the matched row.',
         );
 
-        $db->createCommand()->delete(
+        $command->delete(
             $table,
             ['email' => $expected['email']],
         )->execute();
