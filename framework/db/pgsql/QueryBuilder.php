@@ -11,8 +11,11 @@ declare(strict_types=1);
 namespace yii\db\pgsql;
 
 use yii\base\InvalidArgumentException;
+use yii\db\ArrayExpression;
+use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
+use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\PdoValue;
 use yii\helpers\StringHelper;
@@ -85,12 +88,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function defaultConditionClasses()
     {
-        return array_merge(parent::defaultConditionClasses(), [
-            'ILIKE' => 'yii\db\conditions\LikeCondition',
-            'NOT ILIKE' => 'yii\db\conditions\LikeCondition',
-            'OR ILIKE' => 'yii\db\conditions\LikeCondition',
-            'OR NOT ILIKE' => 'yii\db\conditions\LikeCondition',
-        ]);
+        return [
+            ...parent::defaultConditionClasses(),
+            'ILIKE' => LikeCondition::class,
+            'NOT ILIKE' => LikeCondition::class,
+            'OR ILIKE' => LikeCondition::class,
+            'OR NOT ILIKE' => LikeCondition::class,
+        ];
     }
 
     /**
@@ -98,10 +102,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected function defaultExpressionBuilders()
     {
-        return array_merge(parent::defaultExpressionBuilders(), [
-            'yii\db\ArrayExpression' => 'yii\db\pgsql\ArrayExpressionBuilder',
-            'yii\db\JsonExpression' => 'yii\db\pgsql\JsonExpressionBuilder',
-        ]);
+        return [
+            ...parent::defaultExpressionBuilders(),
+            ArrayExpression::class => ArrayExpressionBuilder::class,
+            JsonExpression::class => JsonExpressionBuilder::class,
+        ];
     }
 
     /**
@@ -361,46 +366,47 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * {@inheritdoc}
+     *
      * @see https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT
      */
     public function upsert($table, $insertColumns, $updateColumns, &$params)
     {
-        $insertColumns = $this->normalizeTableRowData($table, $insertColumns);
-
         if (!is_bool($updateColumns)) {
             $updateColumns = $this->normalizeTableRowData($table, $updateColumns);
         }
 
         $insertSql = $this->insert($table, $insertColumns, $params);
 
-        [$uniqueNames, , $updateNames] = $this->prepareUpsertColumns($table, $insertColumns, $updateColumns);
+        [$uniqueNames, , $updateNames] = $this->prepareUpsertColumns(
+            $table,
+            $insertColumns,
+            $updateColumns,
+        );
 
-        if (empty($uniqueNames)) {
+        if ($uniqueNames === []) {
             return $insertSql;
         }
 
-        if ($updateNames === []) {
-            // there are no columns to update
-            $updateColumns = false;
+        if ($updateColumns === false || $updateColumns === [] || $updateNames === []) {
+            return <<<SQL
+            {$insertSql} ON CONFLICT DO NOTHING
+            SQL;
         }
 
-        if ($updateColumns === false) {
-            return "$insertSql ON CONFLICT DO NOTHING";
-        }
+        [$updates, $params] = $this->prepareUpsertSets(
+            $table,
+            $updateColumns,
+            $updateNames,
+            $params,
+            static fn(string $quotedName): string => "EXCLUDED.{$quotedName}",
+        );
 
-        if ($updateColumns === true) {
-            $updateColumns = [];
-            foreach ($updateNames as $name) {
-                $updateColumns[$name] = new Expression('EXCLUDED.' . $this->db->quoteColumnName($name));
-            }
-        }
+        $conflictTarget = implode(', ', $uniqueNames);
+        $updateSql = implode(', ', $updates);
 
-        [$updates, $params] = $this->prepareUpdateSets($table, $updateColumns, $params);
-
-        return "{$insertSql} ON CONFLICT ("
-            . implode(', ', $uniqueNames)
-            . ') DO UPDATE SET '
-            . implode(', ', $updates);
+        return <<<SQL
+        {$insertSql} ON CONFLICT ({$conflictTarget}) DO UPDATE SET {$updateSql}
+        SQL;
     }
 
     /**
