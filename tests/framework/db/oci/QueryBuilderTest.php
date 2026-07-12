@@ -12,6 +12,7 @@ namespace yiiunit\framework\db\oci;
 
 use Closure;
 use Exception;
+use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
@@ -20,6 +21,7 @@ use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
 use yiiunit\data\base\TraversableObject;
 use yiiunit\base\db\BaseQueryBuilder;
+use yiiunit\framework\db\oci\providers\QueryBuilderProvider;
 use yiiunit\support\DbHelper;
 
 /**
@@ -647,52 +649,35 @@ final class QueryBuilderTest extends BaseQueryBuilder
         return $items;
     }
 
-    public static function upsertProvider(): array
-    {
-        $concreteData = [
-            'regular values' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT :qp0 AS "email", :qp1 AS "address", :qp2 AS "status", :qp3 AS "profile_id" FROM "DUAL") "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "address"="EXCLUDED"."address", "status"="EXCLUDED"."status", "profile_id"="EXCLUDED"."profile_id" WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
-            ],
-            'regular values with update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT :qp0 AS "email", :qp1 AS "address", :qp2 AS "status", :qp3 AS "profile_id" FROM "DUAL") "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "address"=:qp4, "status"=:qp5, "orders"=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
-            ],
-            'regular values without update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT :qp0 AS "email", :qp1 AS "address", :qp2 AS "status", :qp3 AS "profile_id" FROM "DUAL") "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NOT MATCHED THEN INSERT ("email", "address", "status", "profile_id") VALUES ("EXCLUDED"."email", "EXCLUDED"."address", "EXCLUDED"."status", "EXCLUDED"."profile_id")',
-            ],
-            'query' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "status"="EXCLUDED"."status" WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")'
-            ],
-            'query with update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "address"=:qp1, "status"=:qp2, "orders"=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")'
-            ],
-            'query without update part' => [
-                3 => 'MERGE INTO "T_upsert" USING (SELECT "email", 2 AS "status" FROM "customer" WHERE "name"=:qp0 FETCH NEXT 1 ROWS ONLY) "EXCLUDED" ON ("T_upsert"."email"="EXCLUDED"."email") WHEN NOT MATCHED THEN INSERT ("email", "status") VALUES ("EXCLUDED"."email", "EXCLUDED"."status")'
-            ],
-            'values and expressions' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'values and expressions with update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'values and expressions without update part' => [
-                3 => 'INSERT INTO {{%T_upsert}} ({{%T_upsert}}.[[email]], [[ts]]) VALUES (:qp0, now())',
-            ],
-            'query, values and expressions with update part' => [
-                3 => 'MERGE INTO {{%T_upsert}} USING (SELECT :phEmail AS "email", now() AS [[time]]) "EXCLUDED" ON ({{%T_upsert}}."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", [[time]]) VALUES ("EXCLUDED"."email", "EXCLUDED".[[time]])',
-            ],
-            'query, values and expressions without update part' => [
-                3 => 'MERGE INTO {{%T_upsert}} USING (SELECT :phEmail AS "email", now() AS [[time]]) "EXCLUDED" ON ({{%T_upsert}}."email"="EXCLUDED"."email") WHEN MATCHED THEN UPDATE SET "ts"=:qp1, [[orders]]=T_upsert.orders + 1 WHEN NOT MATCHED THEN INSERT ("email", [[time]]) VALUES ("EXCLUDED"."email", "EXCLUDED".[[time]])',
-            ],
-            'no columns to update' => [
-                3 => 'MERGE INTO "T_upsert_1" USING (SELECT :qp0 AS "a" FROM "DUAL") "EXCLUDED" ON ("T_upsert_1"."a"="EXCLUDED"."a") WHEN NOT MATCHED THEN INSERT ("a") VALUES ("EXCLUDED"."a")',
-            ],
-        ];
-        $newData = parent::upsertProvider();
-        foreach ($concreteData as $testName => $data) {
-            $newData[$testName] = array_replace($newData[$testName], $data);
-        }
+    #[DataProviderExternal(QueryBuilderProvider::class, 'upsert')]
+    public function testUpsert(
+        string $table,
+        array|Query $insertColumns,
+        array|bool|null $updateColumns,
+        array|string $expectedSql,
+        array $expectedParams,
+    ): void {
+        $db = $this->getConnection(false, false);
 
-        return $newData;
+        $actualParams = [];
+
+        $actualSql = $db->getQueryBuilder()->upsert(
+            $table,
+            $insertColumns,
+            $updateColumns,
+            $actualParams,
+        );
+
+        self::assertSame(
+            $expectedSql,
+            $actualSql,
+            'Generated SQL must match the expected statement.',
+        );
+        self::assertSame(
+            $expectedParams,
+            $actualParams,
+            'Bound parameters must match the expected binding map.',
+        );
     }
 
     public function testInsertWithEmptyColumnsUsesPrimaryKeyDefault(): void
@@ -878,22 +863,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $this->assertInstanceOf('yii\db\QueryBuilder', $this->getQueryBuilder(true, true));
     }
 
-    /**
-     * @depends testInitFixtures
-     *
-     * @dataProvider upsertProvider
-     * @param string $table
-     * @param array $insertColumns
-     * @param array|null $updateColumns
-     * @param string|string[] $expectedSQL
-     * @param array $expectedParams
-     * @throws NotSupportedException
-     * @throws Exception
-     */
-    public function testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams): void
-    {
-        parent::testUpsert($table, $insertColumns, $updateColumns, $expectedSQL, $expectedParams);
-    }
 
     /**
      * @dataProvider defaultValuesProvider
