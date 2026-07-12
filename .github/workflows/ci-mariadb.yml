@@ -40,7 +40,7 @@ jobs:
     uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
     with:
       concurrency-group: mariadb-${{ github.ref }}
-      coverage-driver: xdebug
+      coverage-driver: pcov
       database-env: '{"MARIADB_ROOT_PASSWORD":"root","MARIADB_DATABASE":"yiitest"}'
       database-health-cmd: mariadb-admin ping
       database-image: mariadb

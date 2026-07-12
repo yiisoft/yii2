@@ -40,7 +40,7 @@ jobs:
     uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
     with:
       concurrency-group: mssql-${{ github.ref }}
-      coverage-driver: xdebug
+      coverage-driver: pcov
       database-env: '{"SA_PASSWORD":"YourStrong!Passw0rd","ACCEPT_EULA":"Y","MSSQL_PID":"Developer"}'
       database-health-cmd: /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U SA -P 'YourStrong!Passw0rd' -Q 'SELECT 1'
       database-image: mcr.microsoft.com/mssql/server

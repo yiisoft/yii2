@@ -40,7 +40,7 @@ jobs:
     uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
     with:
       concurrency-group: pgsql-${{ github.ref }}
-      coverage-driver: xdebug
+      coverage-driver: pcov
       database-env: '{"POSTGRES_USER":"postgres","POSTGRES_PASSWORD":"postgres","POSTGRES_DB":"yiitest"}'
       database-health-cmd: pg_isready
       database-image: postgres
