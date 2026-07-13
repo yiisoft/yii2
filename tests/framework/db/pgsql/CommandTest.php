@@ -23,7 +23,9 @@ use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\pgsql\providers\CommandProvider;
 
+use function array_diff;
 use function array_keys;
+use function count;
 
 /**
  * Unit tests for {@see \yii\db\Command} functionality for the PostgreSQL driver.
@@ -152,16 +154,18 @@ class CommandTest extends BaseCommand
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
 
-    public function testCheckIntegrityPreservesNativePreparesDuringExecution(): void
+    public function testThrowIntegrityExceptionWhenCheckIntegrityEnablesTriggersWithoutChangingNativePrepares(): void
     {
         $db = $this->getConnection();
+
+        $command = $db->createCommand();
         $pdo = $db->getMasterPdo();
+
         $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
 
         try {
             $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-            $db->createCommand()->checkIntegrity(false, '', 'item')->execute();
+            $command->checkIntegrity(false, '', 'item')->execute();
 
             self::assertFalse(
                 $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
@@ -169,155 +173,162 @@ class CommandTest extends BaseCommand
             );
             self::assertSame(
                 1,
-                $db->createCommand()->insert('item', [
-                    'name' => 'invalid category while disabled',
-                    'category_id' => -1,
-                ])->execute(),
+                $command->insert(
+                    'item',
+                    ['name' => 'invalid category while disabled', 'category_id' => -1],
+                )->execute(),
                 'Disabling integrity checks must disable the foreign key trigger.',
             );
 
-            $db->createCommand()->checkIntegrity(true, '', 'item')->execute();
+            $command->checkIntegrity(true, '', 'item')->execute();
 
             self::assertFalse(
                 $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
                 'Enabling integrity checks must preserve native prepares.',
             );
 
-            $integrityExceptionThrown = false;
-
-            try {
-                $db->createCommand()->insert('item', [
-                    'name' => 'invalid category while enabled',
-                    'category_id' => -2,
-                ])->execute();
-            } catch (IntegrityException) {
-                $integrityExceptionThrown = true;
-            }
-
-            self::assertTrue(
-                $integrityExceptionThrown,
-                'Enabling integrity checks must enable the foreign key trigger.',
+            $this->expectException(IntegrityException::class);
+            $this->expectExceptionMessage(
+                'insert or update on table "item" violates foreign key constraint "item_category_id_fkey"',
             );
+
+            $command->insert(
+                'item',
+                ['name' => 'invalid category while enabled', 'category_id' => -2],
+            )->execute();
         } finally {
-            try {
-                $db->createCommand()->checkIntegrity(true, '', 'item')->execute();
-            } finally {
-                $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
-            }
+            $command->checkIntegrity(true, '', 'item')->execute();
+            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
         }
     }
 
     public function testCheckIntegrityPreservesEmulatedPrepares(): void
     {
         $db = $this->getConnection();
+
         $pdo = $db->getMasterPdo();
+
         $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
 
-        try {
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $command = $db->createCommand()->checkIntegrity(true, 'schema1', 'profile');
 
-            $command = $db->createCommand()->checkIntegrity(true, 'schema1', 'profile');
+        self::assertTrue(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Building the command must preserve emulated prepares.',
+        );
 
-            self::assertTrue(
-                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                'Building the command must preserve emulated prepares.',
-            );
+        $command->execute();
 
-            $command->execute();
+        self::assertTrue(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Executing the command must preserve emulated prepares.',
+        );
 
-            self::assertTrue(
-                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                'Executing the command must preserve emulated prepares.',
-            );
-        } finally {
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
-        }
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
     }
 
-    public function testCheckIntegrityPreservesNativePreparesWhenExecutionFails(): void
+    public function testThrowExceptionWhenCheckIntegrityTargetsMissingTableWithoutChangingNativePrepares(): void
     {
         $db = $this->getConnection();
+
         $pdo = $db->getMasterPdo();
+
         $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
 
         try {
             $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             $command = $db->createCommand()->checkIntegrity(false, '', 'missing_check_integrity_table');
 
-            try {
-                $command->execute();
-                self::fail('Executing checkIntegrity() for a missing table must fail.');
-            } catch (Exception) {
-                self::assertFalse(
-                    $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                    'A failed command must preserve native prepares.',
-                );
-            }
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage(
+                'relation "public.missing_check_integrity_table" does not exist',
+            );
+
+            $command->execute();
         } finally {
+            $emulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
             $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+
+            self::assertFalse(
+                $emulatePrepares,
+                'A failed command must preserve native prepares.',
+            );
         }
     }
 
     public function testCheckIntegritySupportsMultipleTablesWithNativePrepares(): void
     {
         $db = $this->getConnection();
+
         $schema = $db->getSchema();
 
-        self::assertInstanceOf(Schema::class, $schema);
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'The connection must return a PostgreSQL schema instance.',
+        );
 
         $viewNames = $schema->getViewNames('public');
+
         $tableNames = array_diff($schema->getTableNames('public'), $viewNames);
+
         $pdo = $db->getMasterPdo();
         $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
 
-        self::assertGreaterThan(1, count($tableNames), 'The fixture must contain multiple tables.');
-        self::assertContains('animal_view', $viewNames, 'The fixture must contain a view to exclude.');
+        self::assertGreaterThan(
+            1,
+            count($tableNames),
+            'The fixture must contain multiple tables.',
+        );
+        self::assertContains(
+            'animal_view',
+            $viewNames,
+            'The fixture must contain a view to exclude.',
+        );
 
-        try {
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            $command = $db->createCommand()->checkIntegrity(true, 'public');
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $command = $db->createCommand()->checkIntegrity(true, 'public');
 
-            self::assertFalse(
-                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                'Building a schema-wide command must preserve native prepares.',
-            );
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Building a schema-wide command must preserve native prepares.',
+        );
 
-            $command->prepare();
+        $command->prepare();
 
-            self::assertFalse(
-                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                'Preparing a schema-wide command must preserve native prepares.',
-            );
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Preparing a schema-wide command must preserve native prepares.',
+        );
 
-            $command->execute();
+        $command->execute();
 
-            self::assertFalse(
-                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                'Executing a schema-wide command must preserve native prepares.',
-            );
-        } finally {
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
-        }
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Executing a schema-wide command must preserve native prepares.',
+        );
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
     }
 
     public function testBuildingCheckIntegrityDoesNotChangeNativePrepares(): void
     {
         $db = $this->getConnection();
+
         $pdo = $db->getMasterPdo();
         $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
 
-        try {
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $db->createCommand()->checkIntegrity(false, '', 'item');
 
-            $db->createCommand()->checkIntegrity(false, '', 'item');
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Building the command must not change the PDO attribute.',
+        );
 
-            self::assertFalse(
-                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
-                'Building the command must not change the PDO attribute.',
-            );
-        } finally {
-            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
-        }
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
     }
 
     public function testBooleanValuesInsert(): void
