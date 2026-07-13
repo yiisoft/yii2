@@ -1,191 +1,409 @@
-# Upgrading Instructions for Yii Framework 22.x
+# Upgrading from Yii 2.0 to Yii 22.0
 
-This file lists the **backwards-incompatible** changes between `2.0.x` and `22.x` and the concrete steps required to
-upgrade an existing application. Non-breaking enhancements are documented in [`CHANGELOG.md`](CHANGELOG.md).
+This file documents the backward-incompatible changes between Yii `2.0.x` and Yii `22.0` and explains how to update an
+existing application. Non-breaking enhancements and bug fixes are listed in [`CHANGELOG.md`](CHANGELOG.md).
 
-For the historical `2.0.x` upgrade notes see [`UPGRADE.md`](UPGRADE.md).
+Before following this guide, update the application to the latest Yii `2.0.x` release and apply every relevant section
+of [`UPGRADE.md`](UPGRADE.md). This keeps the `22.0` migration focused on changes introduced by the new major release.
 
-## Upgrade from Yii 2.0.x
+## Recommended upgrade process
 
-### General upgrade notes
+1. Update the application to the latest Yii `2.0.x` release.
+2. Upgrade the runtime and CI environments to PHP `8.3` or later.
+3. Remove the deprecated APIs listed in this guide while the application still runs on Yii `2.0.x`, where possible.
+4. Check that every installed Yii extension supports Yii `22.0` and PHP `8.3`.
+5. Review the front-end asset and optional jQuery changes before running Composer.
+6. Verify that the database server meets the new minimum version and apply any required schema migrations.
+7. Upgrade Yii, regenerate Composer's autoloader, clear runtime caches, and run the full test suite.
 
-- Raised minimum supported PHP version to `8.3`.
-- All methods that were previously deprecated have been removed. If your application still uses any deprecated methods,
-  you must update your code before upgrading.
+> [!IMPORTANT]
+> Back up the database before applying the MSSQL session or RBAC schema changes described below.
 
-### ApcCache renamed to ApcuCache
+## Runtime and database requirements
 
-The `yii\caching\ApcCache` class has been renamed to `yii\caching\ApcuCache`. The legacy APC extension (`ext-apc`) is
-not available in PHP >= `8.0`, so the dual-mode `$useApcu` property has been removed.
+Yii `22.0` requires PHP `8.3` or later.
 
-- Replace all references to `yii\caching\ApcCache` with `yii\caching\ApcuCache`.
-- Remove any `'useApcu' => true` configuration, as it is no longer needed.
-- Migration example:
+The supported database versions are:
+
+| Database             | Minimum version | Important migration impact                                                                  |
+| -------------------- | --------------: | ------------------------------------------------------------------------------------------- |
+| MySQL                |           `8.0` | Integer display widths are no longer generated.                                             |
+| MariaDB              |          `10.6` | Pagination uses `OFFSET ... FETCH`.                                                         |
+| Microsoft SQL Server |          `2019` | Pagination and schema operations use modern SQL Server syntax and catalog views.            |
+| Oracle Database      |          `12.1` | New auto-increment columns use native identity columns; pagination uses `OFFSET ... FETCH`. |
+| PostgreSQL           |            `13` | Legacy upsert and identity-detection branches have been removed.                            |
+| SQLite               |          `3.35` | Upserts use native `INSERT ... ON CONFLICT`.                                                |
+
+CUBRID support has been removed. Applications using CUBRID must migrate to another database engine before upgrading.
+
+## Composer is now the only class autoloader
+
+Yii no longer registers its own SPL autoloader. The following APIs and files have been removed:
+
+- `Yii::autoload()` and `yii\BaseYii::autoload()`;
+- `Yii::$classMap` and `yii\BaseYii::$classMap`;
+- `framework/classes.php`;
+- the `build classmap` console command.
+
+All framework and application classes must be reachable through Composer's `autoload` or `autoload-dev` configuration.
+
+### Registering application classes
+
+Replace runtime class-map entries with PSR-4 mappings in the application's `composer.json`.
+
+Before:
 
 ```php
-// before
+Yii::$classMap['app\\helpers\\MyHelper'] = '@app/helpers/MyHelper.php';
+```
+
+After:
+
+```json
+{
+    "autoload": {
+        "psr-4": {
+            "app\\": "src/"
+       }
+    }
+}
+```
+
+Place `app\helpers\MyHelper` in `src/helpers/MyHelper.php`, then regenerate the autoloader:
+
+```bash
+composer dump-autoload
+```
+
+Use an optimized or authoritative class map in production when appropriate:
+
+```bash
+composer dump-autoload --classmap-authoritative
+```
+
+### Replacing framework classes
+
+If the application used `Yii::$classMap` to replace a framework class, use Composer's `classmap` and 
+`exclude-from-classmap` options instead:
+
+```json
+{
+    "autoload": {
+        "classmap": ["src/overrides/Request.php"],
+        "exclude-from-classmap": ["vendor/yiisoft/yii2/web/Request.php"]
+    }
+}
+```
+
+The replacement file must declare the original FQCN and implement its complete public API. It cannot extend the class it
+replaces because that would be self-inheritance. If only customization is needed, create a subclass under an application
+namespace and configure the corresponding application component to use it.
+
+### Archive installations
+
+The official Yii archive includes a Composer-generated `vendor/` directory. Custom entry scripts must load
+`vendor/autoload.php` before referencing `Yii` or any `yii\...` class. Requiring `framework/Yii.php` directly without an
+active Composer autoloader is no longer supported.
+
+## Front-end assets
+
+### Bower dependencies replaced by NPM packages
+
+The framework no longer declares `bower-asset/*` Composer dependencies. Its JavaScript dependencies are declared as NPM
+packages instead.
+
+The default asset aliases have changed:
+
+| Yii 2.0                                 | Yii 22.0                                           |
+| --------------------------------------- | -------------------------------------------------- |
+| `@bower` points to `<vendorPath>/bower` | `@bower` is no longer registered by the framework. |
+| `@npm` points to `<vendorPath>/npm`     | `@npm` points to `<basePath>/node_modules`.        |
+
+If the application or an extension uses an `@bower/...` source path, replace it with the corresponding `@npm/...` path
+and ensure that the package is installed in the application's `node_modules` directory. Remove Asset Packagist and Bower
+requirements only after confirming that no installed extension still needs them.
+
+Applications may manage the required packages with NPM directly, through Foxy, from a CDN, or by overriding the affected
+asset bundles. Whichever approach is used, every registered bundle must resolve its files under the configured `@npm`
+alias.
+
+### jQuery integration moved to `yiisoft/yii2-jquery`
+
+jQuery-backed client-script strategies are now provided by the `yiisoft/yii2-jquery` extension. Applications that need
+the Yii `2.0.x` client-side behavior must install and bootstrap it:
+
+```bash
+composer require yiisoft/yii2-jquery
+```
+
+```php
+// config/web.php
+return [
+    'bootstrap' => [
+        \yii\jquery\Bootstrap::class,
+    ],
+];
+```
+
+The extension registers the default client-script strategies for `ActiveForm`, `GridView`, `CheckboxColumn`, `Captcha`,
+`CaptchaValidator`, and the built-in validators that support client-side validation.
+
+The following properties have been removed:
+
+- `yii\web\Application::$useJquery`;
+- `yii\console\Application::$useJquery`;
+- `yii\web\View::$useJquery`.
+
+Whether jQuery behavior is active is now determined by the configured client-script strategies. Without the extension or
+a custom strategy:
+
+- widgets render their server-side HTML without registering their jQuery behavior;
+- built-in validators continue to validate on the server but do not generate client-side validation scripts;
+- `clientValidateAttribute()` returns `null` and `getClientOptions()` returns an empty array where applicable.
+
+The public asset-bundle and widget FQCNs, including `yii\web\JqueryAsset`, `yii\web\YiiAsset`, `MaskedInput`, and `Pjax`,
+remain in the framework in `22.0` for compatibility with existing extensions.
+
+Custom integrations may implement:
+
+- `yii\web\client\ClientScriptInterface` for widgets and web components;
+- `yii\validators\client\ClientValidatorScriptInterface` for validators.
+
+The affected widgets and validators expose a `clientScript` property that accepts an implementation instance or an
+object configuration.
+
+```php
+ActiveForm::begin([
+    'clientScript' => [
+        'class' => MyFormClientScript::class,
+    ],
+]);
+```
+
+If a subclass overrides `ActiveForm::getClientOptions()`, `ActiveField::getClientOptions()`,
+`Validator::clientValidateAttribute()`, `Captcha::registerClientScript()`, `Captcha::getClientOptions()`, or
+`CaptchaValidator::clientValidateAttribute()`, review the override because the default implementation now delegates to
+the configured strategy.
+
+### `View::registerJs()` no longer assumes jQuery
+
+`yii\web\View::registerJs()` no longer registers `JqueryAsset` automatically for `POS_READY` or `POS_LOAD`. Its wrappers
+now use native DOM events:
+
+| Position    | Yii 2.0 wrapper                                   | Yii 22.0 wrapper                                                           |
+| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------- |
+| `POS_READY` | `jQuery(function ($) { ... });`                   | `document.addEventListener('DOMContentLoaded', function (event) { ... });` |
+| `POS_LOAD`  | `jQuery(window).on('load', function () { ... });` | `window.addEventListener('load', function (event) { ... });`               |
+
+JavaScript fragments that assume `$` is injected must either wrap themselves explicitly or use native DOM APIs.
+
+```php
+// Keep using jQuery explicitly.
+$this->registerJs("jQuery(function ($) { $('#save').on('click', handler); });");
+
+// Or migrate to native DOM APIs.
+$this->registerJs("document.getElementById('save').addEventListener('click', handler);");
+```
+
+If jQuery is still required globally, register `yii\web\JqueryAsset` through the application's layout asset bundle.
+
+### Bootstrap-specific widget defaults removed
+
+Core widgets no longer assume Bootstrap CSS. The following defaults changed:
+
+| Class and property                | Yii 2.0 default                                                 | Yii 22.0 default             |
+| --------------------------------- | --------------------------------------------------------------- | ---------------------------- |
+| `ActiveField::$options`           | `['class' => 'form-group']`                                     | `[]`                         |
+| `ActiveField::$inputOptions`      | `['class' => 'form-control']`                                   | `[]`                         |
+| `ActiveField::$errorOptions`      | `['class' => 'help-block']`                                     | `['class' => 'field-error']` |
+| `ActiveField::$labelOptions`      | `['class' => 'control-label']`                                  | `[]`                         |
+| `ActiveForm::$errorCssClass`      | `'has-error'`                                                   | `''`                         |
+| `ActiveForm::$successCssClass`    | `'has-success'`                                                 | `''`                         |
+| `GridView::$tableOptions`         | `['class' => 'table table-striped table-bordered']`             | `[]`                         |
+| `GridView::$filterErrorOptions`   | `['class' => 'help-block']`                                     | `['class' => 'field-error']` |
+| `DataColumn::$filterInputOptions` | `['class' => 'form-control', 'id' => null]`                     | `['id' => null]`             |
+| `DetailView::$options`            | `['class' => 'table table-striped table-bordered detail-view']` | `['class' => 'detail-view']` |
+| `Breadcrumbs::$options`           | `['class' => 'breadcrumb']`                                     | `[]`                         |
+| `LinkPager::$options`             | `['class' => 'pagination']`                                     | `[]`                         |
+| `Captcha::$options`               | `['class' => 'form-control']`                                   | `[]`                         |
+
+Set the required classes explicitly in application configuration or use the corresponding UI extension. Also review
+snapshots and CSS selectors that depended on these implicit classes.
+
+`yii\grid\ActionColumn` no longer creates Bootstrap Glyphicon markup when an icon is not present in `$icons`. Its
+fallback is a plain `<span>` containing the icon name. Configure `$icons` or `$buttons` to render the application's icon
+system.
+
+## Caching
+
+### `ApcCache` renamed to `ApcuCache`
+
+Replace `yii\caching\ApcCache` with `yii\caching\ApcuCache` and remove the obsolete `$useApcu` configuration.
+
+```php
+// Before
 'cache' => [
-    'class' => 'yii\caching\ApcCache',
+    'class' => \yii\caching\ApcCache::class,
     'useApcu' => true,
 ],
 
-// after
+// After
 'cache' => [
-    'class' => 'yii\caching\ApcuCache',
+    'class' => \yii\caching\ApcuCache::class,
 ],
 ```
 
-### Bootstrap CSS class defaults removed
+### XCache and Zend Data Cache removed
 
-Bootstrap-specific CSS class defaults have been removed from framework widget properties (`ActiveField`, `ActiveForm`,
-`GridView`, `DataColumn`, `DetailView`, `Breadcrumbs`, `LinkPager`, `Captcha`, `ActionColumn`). The framework is now
-CSS-agnostic.
+`yii\caching\XCache` and `yii\caching\ZendDataCache` have been removed. Replace them with a supported cache backend such
+as APCu, Redis, Memcached, the filesystem, or a database cache.
 
-### Database
+### Deprecated cache aliases removed
 
-#### CUBRID database support removed
+| Removed API                   | Replacement               |
+| ----------------------------- | ------------------------- |
+| `Cache::mget()`               | `Cache::multiGet()`       |
+| `Cache::mset()`               | `Cache::multiSet()`       |
+| `Cache::madd()`               | `Cache::multiAdd()`       |
+| `Dependency::getHasChanged()` | `Dependency::isChanged()` |
 
-Yii `22.x` no longer includes support for the CUBRID database driver. Applications that still depend on CUBRID must
-migrate to a supported database engine before upgrading to Yii `22.x`.
+## Removed core APIs
 
-There is no compatibility layer for CUBRID in this release. The framework no longer ships CUBRID-specific database
-classes, configuration entries, fixtures, or test coverage.
+The following table lists removed APIs that may still appear in applications or custom framework subclasses. It is more
+precise than assuming that every API marked deprecated in Yii `2.0.x` was removed; some deprecated APIs remain in
+`22.0`.
 
-#### `InCondition` and `InConditionBuilder` typing + composite `NULL` handling
+| Removed API                                                                        | Migration                                                                                                      |
+| ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `yii\BaseYii::trace()` / `Yii::trace()`                                            | Use `Yii::debug()`.                                                                                            |
+| `yii\BaseYii::powered()` / `Yii::powered()`                                        | Render the attribution text in application code if it is still needed.                                         |
+| `yii\base\InvalidParamException`                                                   | Use `yii\base\InvalidArgumentException`.                                                                       |
+| `Security::$passwordHashStrategy`                                                  | Remove the configuration; `generatePasswordHash()` selects the supported strategy.                             |
+| `Security::generateSalt()`                                                         | Use `generatePasswordHash()` for password hashing; custom subclasses should use PHP's supported password APIs. |
+| `Security::shouldUseLibreSSL()`                                                    | Remove the override or call; there is no replacement.                                                          |
+| `View::$cacheStack`                                                                | Use `getDynamicContents()`, `pushDynamicContent()`, and `popDynamicContent()`.                                 |
+| `View::$dynamicPlaceholders`                                                       | Use `getDynamicPlaceholders()`, `setDynamicPlaceholders()`, and `addDynamicPlaceholder()`.                     |
+| `ErrorHandler::convertExceptionToError()`                                          | Throw or handle the original exception directly.                                                               |
+| `UniqueValidator::$comboNotUnique`                                                 | Use `UniqueValidator::$message`.                                                                               |
+| `Query::getUniqueColumns()`                                                        | Remove custom calls or move the required logic into the application subclass.                                  |
+| `Query::getUnaliasedColumnsFromSelect()`                                           | Remove custom calls or move the required logic into the application subclass.                                  |
+| `QueryBuilder::$conditionBuilders`                                                 | Use `setExpressionBuilders()` or override `defaultExpressionBuilders()`.                                       |
+| `QueryBuilder::buildHashCondition()` and the deprecated `build*Condition()` family | Use `QueryBuilder::buildCondition()`.                                                                          |
+| `Connection::$commandClass`                                                        | Configure the required driver entries in `Connection::$commandMap`.                                            |
+| `console\Controller::EXIT_CODE_NORMAL`                                             | Use `yii\console\ExitCode::OK`.                                                                                |
+| `console\Controller::EXIT_CODE_ERROR`                                              | Use `yii\console\ExitCode::UNSPECIFIED_ERROR`.                                                                 |
+| `FileTarget::$rotateByCopy`                                                        | Remove the configuration; setting it to `false` had no effect.                                                 |
+| `Request::CSRF_MASK_LENGTH`                                                        | Remove references; the mask length is an implementation detail.                                                |
+| `User::getAuthManager()`                                                           | Use `User::getAccessChecker()`.                                                                                |
+| `mysql\ColumnSchema::$disableJsonSupport`                                          | Remove the configuration; JSON support is no longer optional.                                                  |
+| `pgsql\ColumnSchema::$disableJsonSupport`                                          | Remove the configuration.                                                                                      |
+| `pgsql\ColumnSchema::$disableArraySupport`                                         | Remove the configuration.                                                                                      |
+| `pgsql\ColumnSchema::$deserializeArrayColumnToArrayExpression`                     | Remove the configuration.                                                                                      |
+| `DbMessageSource::CACHE_KEY_PREFIX`                                                | Remove references; the unused constant has no replacement.                                                     |
+| `framework/views/createJunctionMigration.php`                                      | Use a normal migration and define the junction table explicitly.                                               |
 
-`yii\db\conditions\InCondition` now uses typed constructor parameters and typed return values:
+## Method signatures and subclass compatibility
 
-- `__construct(array|string|ExpressionInterface|Traversable $column, string $operator, array|int|string|ExpressionInterface|Traversable $values)`
-- `getOperator(): string`
-- `getColumn(): array|string|ExpressionInterface`
-- `getValues(): array|int|string|ExpressionInterface`
-- `fromArrayDefinition(...): static`
+PHP `8.3` compatibility and native typing changed several public or protected signatures. Custom subclasses must remain
+compatible with their parent declarations.
 
-`Traversable` values passed as `$column` or `$values` are normalized to arrays on first access in `getColumn()` /
-`getValues()` and cached for subsequent calls.
+Notable changes include:
 
-`yii\db\conditions\InConditionBuilder` protected methods now declare parameter and return types. If you extend this
-builder (or DB-specific builders that inherit it), update overridden method signatures accordingly.
+- `BaseObject::className(): string` now declares its return type.
+- `Action::runWithParams(array $params)` now requires an array.
+- `InlineAction::runWithParams($params): mixed` now declares its return type.
+- `InCondition` constructor parameters, accessors, and `fromArrayDefinition()` are typed.
+- protected methods in `InConditionBuilder` and driver-specific condition builders now declare parameter and return
+  types; `getRawValuesFromTraversableObject()` was removed.
+- MSSQL `PDO`, `DBLibPDO`, and `SqlsrvPDO` overrides now declare native PDO-compatible parameter and return types.
+- `yii\rbac\DbManager` and its new cascade extension points declare native parameter and return types.
 
-Composite `IN` / `NOT IN` generation has changed: the builder now decomposes composite comparisons into boolean
-expressions and uses `IS NULL` / `IS NOT NULL` instead of literal `NULL` comparisons.
+Run the application's static analysis and test suite after upgrading. Pay particular attention to classes extending
+`Action`, `InlineAction`, `InConditionBuilder`, a database query builder, a database schema class, an MSSQL PDO wrapper,
+or `DbManager`.
 
-Example:
+`#[\SensitiveParameter]` is now applied to secret-bearing parameters in `Security`, `User`, and `IdentityInterface` so
+that their values are redacted from stack traces. This does not require a call-site change, but reflection-based tests may
+need updated expectations.
 
-- Before: `([[id]], [[name]]) IN ((:p0, NULL))`
-- After: `(([[id]] = :p0 AND [[name]] IS NULL))`
+## Actions and routing
 
-If your tests assert exact SQL strings for composite `IN` / `NOT IN`, update expected SQL.
+### Inline action lifecycle
 
-#### `resolveTableNames()` removed from MSSQL, MySQL, PostgreSQL, and Oracle drivers
+`yii\base\InlineAction::runWithParams()` now invokes `beforeRun()` and `afterRun()`, matching the lifecycle of other
+actions. If a custom inline-action class called these hooks manually, remove the duplicate calls. A `false` result from
+`beforeRun()` now prevents the action method from running, and `afterRun()` may transform the result.
 
-The `protected` method `resolveTableNames($table, $name)` has been removed from MSSQL, MySQL, PostgreSQL, and Oracle
-Schema classes. This method was never defined in the parent `\yii\db\Schema` class; it was a per-driver internal method
-that duplicated table-name resolution logic.
+### Standalone actions
 
-`loadTableSchema()` now uses `resolveTableName()` directly:
+Yii `22.0` adds standalone action discovery through `Module::$actionMap`, `Module::$actionNamespace`, and
+`yii\web\Action`. Most of this feature is additive, but it introduces the following compatibility considerations:
+
+- `yii\base\Action::$controller` may be `null`; code reading it must perform a null check.
+- `yii\filters\AccessRule::matchController()` accepts `null`. A rule with a non-empty `controllers` constraint does not
+  match a standalone action.
+- `Module::$actionMap` is consulted by the module whose `runAction()` handles the route. It is not recursively resolved
+  through child modules. Use the child module's `actionNamespace`, or register the action in the dispatching module's
+  `actionMap`.
+
+## Database abstraction layer
+
+### Composite `IN` and `NOT IN` conditions
+
+`yii\db\conditions\InCondition` now normalizes `Traversable` columns and values to arrays and caches the normalized
+value. Its constructor and getters use native union types.
+
+Composite conditions are expanded into boolean expressions so that `NULL` values use `IS NULL` or `IS NOT NULL`.
+
+```sql
+-- Yii 2.0
+([[id]], [[name]]) IN ((:p0, NULL))
+
+-- Yii 22.0
+(([[id]] = :p0 AND [[name]] IS NULL))
+```
+
+Update tests that compare exact SQL strings. Subclasses of `InConditionBuilder` must also update their protected method
+signatures.
+
+### `resolveTableNames()` removed from database schemas
+
+The protected `resolveTableNames($table, $name)` method has been removed from the MSSQL, MySQL, PostgreSQL, and Oracle
+schema classes. Override `resolveTableName($name)` instead. The replacement returns a `TableSchema`; it does not mutate a
+`TableSchema` supplied by the caller.
 
 ```php
-// before
+// Before
 $table = new TableSchema();
 $this->resolveTableNames($table, $name);
 
-// after
+// After
 $table = $this->resolveTableName($name);
 ```
 
-If your application extends any affected database Schema class and overrides `resolveTableNames()`, migrate your logic
-to `resolveTableName($name)` instead. The method signature differs: `resolveTableName($name)` returns a new `TableSchema`
-with the resolved parts, rather than mutating an existing one.
+### Pagination SQL
 
-#### MariaDB
+Generated pagination SQL changed for every supported database except MySQL:
 
-##### Pagination now uses `OFFSET ... FETCH` (`10.6+`)
+| Database   | Yii 22.0 behavior                                                                                         |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| MariaDB    | Uses `OFFSET ... ROWS` and `FETCH NEXT ... ROWS ONLY`.                                                    |
+| MSSQL      | Uses `ORDER BY ... OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; the legacy `ROW_NUMBER()` path was removed. |
+| Oracle     | Uses `OFFSET ... ROWS` and `FETCH NEXT ... ROWS ONLY`; the legacy `ROWNUM`/CTE path was removed.          |
+| PostgreSQL | Uses `OFFSET ... ROWS` and `FETCH NEXT ... ROWS ONLY`; expressions are parenthesized.                     |
+| SQLite     | Offset-only queries use `LIMIT -1 OFFSET ...` instead of the maximum signed integer.                      |
 
-`yii\db\mysql\QueryBuilder::buildLimit()` now delegates to `buildOffsetFetch()` and emits SQL using MariaDB's standard
-row-limiting clause when the connected server is MariaDB:
+MSSQL adds `ORDER BY (SELECT NULL)` when no order is provided, or `ORDER BY 1` for `SELECT DISTINCT`. Its `limit(0)`
+path wraps the query so that it returns no rows. The other standard-pagination drivers emit a zero-row `FETCH` clause.
 
-- `OFFSET <n> ROWS` is emitted only when an offset is set.
-- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`.
-- No synthetic `ORDER BY` is added when the user did not specify an `ORDER BY`.
+Always specify `orderBy()` when pagination order must be deterministic. Update snapshot tests or code that compares exact
+SQL generated by the query builders.
 
-MariaDB versions earlier than `10.6` are no longer supported for Yii-generated pagination SQL. MySQL continues to use
-`LIMIT` / `LIMIT ... OFFSET ...` because MySQL's `SELECT` syntax does not support `OFFSET ... FETCH`.
+### MySQL and MariaDB
 
-If you rely on paginated results without specifying `orderBy()`, note that MariaDB returns rows in an unspecified order,
-so `OFFSET`/`FETCH` results may vary between executions. Always specify `orderBy()` when you need deterministic
-pagination.
+MySQL integer display widths are no longer generated:
 
-> [!NOTE]
-> **Lifecycle:** MariaDB `10.6` LTS was released on July 6, `2021` and introduced the standard
-> `SELECT ... OFFSET ... FETCH` row-limiting clause. Community support for `10.6` ends on July 6, `2026`. Newer LTS
-> releases are `10.11` (released February 16, `2023`; community support through February 16, `2028`), `11.4` (released
-> May 29, `2024`; community support through May 29, `2029`), and `11.8` (released June 4, `2025`; community support
-> through June 4, `2028`). MariaDB `10.5` LTS reached community support EOL on June 24, `2025` and is no longer covered
-> by Yii. The `10.6+` floor matches the earliest MariaDB release with the standard `OFFSET ... FETCH` syntax.
-
-#### MSSQL
-
-##### Pagination now uses `OFFSET ... FETCH` (`2019+`)
-
-`yii\db\mssql\QueryBuilder::buildOrderByAndLimit()` now emits SQL using SQL Server's native row-limiting clause. SQL
-Server versions earlier than `2019` are no longer supported (the legacy `ROW_NUMBER()` fallback was removed).
-
-Generated SQL:
-
-- `ORDER BY` is always present (Yii adds `ORDER BY (SELECT NULL)`, or `ORDER BY 1` for `SELECT DISTINCT`, when no
-  `orderBy()` is set).
-- `OFFSET <n> ROWS` is always emitted for paginated queries (`OFFSET 0 ROWS` when only `limit()` is set).
-- `FETCH NEXT <n> ROWS ONLY` is emitted only when `limit(n)` with `n >= 1`.
-- `limit(0)` wraps the query as `SELECT * FROM (...) sub WHERE 1=0` (returns zero rows, consistent with
-  MySQL/PostgreSQL/SQLite/Oracle).
-
-Behavioral notes:
-
-- `DISTINCT` + unorderable column types: the `ORDER BY 1` fallback cannot sort `text`, `ntext`, `image`, `xml`,
-  `geography`, or `geometry`. Add an explicit `orderBy()` when the first selected column has one of those types and
-  `DISTINCT` is required.
-- Always specify `orderBy()` for deterministic pagination; SQL Server returns rows in an unspecified order otherwise.
-
-> [!NOTE]
-> **Lifecycle:** SQL Server `2019` was released on November 4, `2019`. Mainstream support ended on February 28, `2025`;
-> extended support (security-only) ends on January 8, `2030`. Although `OFFSET ... FETCH NEXT` has been available since
-> SQL Server `2012`, Yii `22.x` raises its supported floor to `2019+` as a policy decision to reduce the legacy test
-> matrix; SQL Server `2017` remains in vendor extended support until October 12, `2027`, but is no longer covered by
-> Yii.
-
-##### Session data column is now binary (`varbinary(max)`)
-
-`yii\web\DbSession` now stores the `data` column as a binary type on MSSQL (`varbinary(max)`) instead of `nvarchar(max)`.
-PHP session payloads can contain arbitrary binary bytes that `nvarchar` cannot hold, which previously failed with an
-`An error occurred translating string for input param 1 to UCS-2` error. The bundled `m160313_153426_session_init`
-migration creates the binary column for fresh installations.
-
-Existing MSSQL installations must convert the column manually before upgrading (replace `session` with your configured
-`sessionTable`):
-
-```sql
-ALTER TABLE [session] ALTER COLUMN [data] VARBINARY(MAX) NULL;
-```
-
-#### MySQL
-
-##### Dead code removal and integer display width cleanup
-
-The minimum supported MySQL version is now **8.0+** (**MariaDB 10.6+**). The following dead code has been removed:
-
-- `Schema::isOldMysql()` method and `$_oldMysql` property (checked for MySQL <= `5.1`, never called).
-- `QueryBuilder::supportsFractionalSeconds()` method (always `true` for MySQL `8.0+`).
-- `CacheInterface` / `DbCache` imports from `QueryBuilder` (only used by the removed method).
-- Version checks for MySQL < `5.6` / < `5.6.4` / < `5.7` in tests.
-- The `SHOW CREATE TABLE` foreign key discovery fallback in `Schema::findConstraints()` for MySQL < `5.1.16`
-  (servers without `information_schema.REFERENTIAL_CONSTRAINTS`).
-- The `NotSupportedException` guard for check constraints in `Schema::loadTableChecks()` for MySQL < `8.0.16`.
-
-**Integer display width** (`int(11)`, `bigint(20)`, `smallint(6)`, `tinyint(3)`) has been removed from the MySQL type
-map. MySQL `8.0.17+` deprecated display width for integer types and emits deprecation warnings. The new defaults are:
-
-| Before                | After             |
+| Yii 2.0               | Yii 22.0          |
 | --------------------- | ----------------- |
 | `int(11)`             | `int`             |
 | `int(10) UNSIGNED`    | `int UNSIGNED`    |
@@ -194,544 +412,143 @@ map. MySQL `8.0.17+` deprecated display width for integer types and emits deprec
 | `smallint(6)`         | `smallint`        |
 | `tinyint(3)`          | `tinyint`         |
 
-`tinyint(1)` for `TYPE_BOOLEAN` is preserved; MySQL uses it as the canonical boolean representation.
+`tinyint(1)` remains the representation of `TYPE_BOOLEAN`. Explicit sizes passed for integer abstract types, such as
+`primaryKey(8)`, no longer produce a display width.
 
-Explicit integer sizes (for example, `$this->primaryKey(8)`) are now ignored; display width is no longer emitted.
+The following legacy extension points were removed:
 
-If your application or migrations rely on the exact SQL output of `QueryBuilder::getColumnType()` for integer types
-(for example, in string assertions or snapshot tests), update the expected values.
+- `mysql\Schema::isOldMysql()` and `$_oldMysql`;
+- `mysql\QueryBuilder::supportsFractionalSeconds()`;
+- legacy foreign-key and check-constraint branches for unsupported MySQL versions.
 
-> [!NOTE]
-> **Lifecycle:** MySQL `5.7` reached end of extended support on October 31, `2023`. MySQL `8.0` reaches end of extended
-> support on April 30, `2026`; MySQL `8.4` is the current LTS release (premier support through April `2029`). MariaDB
-> `10.4` reached community support EOL on June 18, `2024`, and MariaDB `10.5` reached community support EOL on June 24,
-> `2025`. The version floors catch up to releases that are at or near EOL; the dead code removed in this change
-> targeted MySQL branches already unsupported by the vendor.
+### Microsoft SQL Server
 
-#### Oracle
+The legacy `isOldMssql()`, `oldBuildOrderByAndLimit()`, `newBuildOrderByAndLimit()`, and `getAllColumnNames()` query-builder
+extension points have been removed.
 
-##### Auto-increment primary keys now use native `IDENTITY` columns (`12.1+`)
+MSSQL schema discovery now uses catalog-qualified `sys.*` views and preserves composite-key order. Code that depended on
+raw `INFORMATION_SCHEMA` result shapes or exact generated DDL should be retested.
 
-`yii\db\oci\QueryBuilder::$typeMap` emits `NUMBER(N) GENERATED BY DEFAULT ON NULL AS IDENTITY NOT NULL PRIMARY KEY`
-for `TYPE_PK`, `TYPE_UPK`, `TYPE_BIGPK`, and `TYPE_UBIGPK`. The legacy sequence + `BEFORE INSERT` trigger pattern is
-no longer generated by `createTable()`. `ON NULL` preserves the old trigger semantics: passing `NULL` auto-generates
-the PK, and explicit values are still accepted. `\yii\db\ColumnSchema::$autoIncrement` is now populated for Oracle.
+#### `DbSession` data is now binary
 
-##### `UNSIGNED` keyword removed from Oracle PK type map
-
-`TYPE_UPK` and `TYPE_UBIGPK` no longer emit the literal `UNSIGNED`, which Oracle has never supported (`ORA-00907`).
-
-##### `batchInsert()` SQL shape changed to `INSERT INTO ... SELECT FROM SYS.DUAL UNION ALL`
-
-`yii\db\oci\QueryBuilder::batchInsert()` now emits
-`INSERT INTO "<t>" (cols) SELECT v1 FROM SYS.DUAL UNION ALL SELECT v2 FROM SYS.DUAL` instead of the legacy
-`INSERT ALL  INTO "<t>" (cols) VALUES (...) INTO ... SELECT 1 FROM SYS.DUAL`. This fixes two long-standing issues:
-
-- `ORA-00001` on `IDENTITY`-backed tables: the legacy shape evaluated `IDENTITY` `DEFAULT` once per source row, so
-  multiple `INTO` branches sharing one `SELECT 1 FROM DUAL` source received the same generated PK.
-- `ORA-03050` for `batchInsert($table, [], $rows)`: the legacy shape emitted a malformed `INTO "<t>" () VALUES`.
-
-Code that string-matched the previous SQL shape must be updated.
-
-##### Pagination now uses `OFFSET ... FETCH` (`12.1+`)
-
-`yii\db\oci\QueryBuilder::buildOrderByAndLimit()` now emits SQL using Oracle's native row-limiting clause:
-
-- `OFFSET <n> ROWS` is emitted only when an offset is set.
-- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`. Oracle accepts
-  `FETCH NEXT 0 ROWS ONLY` as valid syntax that returns zero rows, so `limit(0)` keeps the same semantics as in
-  MySQL/PostgreSQL/SQLite.
-- No synthetic `ORDER BY (SELECT NULL)` is added when the user did not specify an `ORDER BY`.
-
-The previous legacy `ROWNUM`/CTE pagination SQL has been removed. Oracle versions earlier than `12.1` are no longer
-supported for Yii-generated pagination SQL in the OCI QueryBuilder.
-
-If you rely on paginated results without specifying `orderBy()`, note that Oracle returns rows in an unspecified order,
-so `OFFSET`/`FETCH` results may vary between executions. Always specify `orderBy()` when you need deterministic
-pagination.
-
-> [!NOTE]
-> **Lifecycle:** Oracle Database `12.1` introduced the standard `OFFSET ... FETCH NEXT` row-limiting clause. Premier
-> support for `12.1` ended on July 31, `2018`; extended support ended on July 31, `2022`. Oracle Database `19c` remains
-> a supported LTS release (premier support through December 31, `2029`, extended through December 31, `2032`); Oracle
-> AI Database `26ai` (released January `2026` on-premises) is the newest LTS, with premier support through December
-> 31, `2031`. The `12.1+` floor matches the earliest release with native row-limiting syntax.
-
-#### PostgreSQL
-
-##### Dead code removal (minimum `13+`)
-
-The minimum supported PostgreSQL version is now **`13+`**. Every legacy version branch in the PostgreSQL driver
-collapses under this floor, and the following dead code has been removed:
-
-- `yii\db\pgsql\QueryBuilder::oldUpsert()` CTE-based upsert workaround for PostgreSQL `< 9.5`. The `ON CONFLICT`
-  syntax (available since PostgreSQL `9.5`) is now used unconditionally.
-- `yii\db\pgsql\QueryBuilder::newUpsert()` removed; its logic is now inlined into `upsert()`.
-- The `version_compare(..., '9.5', '<')` check in `QueryBuilder::upsert()`.
-- The `version_compare(..., '12.0', '>=')` branch in `Schema::findColumns()` for identity column detection
-  (`attidentity != ''`). The identity column clause is now always emitted in the catalogue query.
-
-If your application extends `\yii\db\pgsql\QueryBuilder` and overrides or calls `oldUpsert()` or `newUpsert()`, remove
-those references. The upsert logic now lives directly in `upsert()` using the `ON CONFLICT` syntax.
-
-##### Pagination now uses `OFFSET ... FETCH` (`13+`)
-
-`yii\db\pgsql\QueryBuilder::buildLimit()` now emits SQL using PostgreSQL's standard row-limiting clause:
-
-- `OFFSET <n> ROWS` is emitted only when an offset is set.
-- `FETCH NEXT <n> ROWS ONLY` is emitted whenever a limit is set, including `limit(0)`.
-- Raw `Expression` values are wrapped in parentheses, for example `FETCH NEXT (1 + 1) ROWS ONLY`.
-- No synthetic `ORDER BY` is added when the user did not specify an `ORDER BY`.
-
-If your tests assert exact SQL strings for PostgreSQL paginated queries, replace expected `LIMIT` / `OFFSET` clauses
-with `OFFSET ... ROWS` / `FETCH NEXT ... ROWS ONLY`.
-
-If you rely on paginated results without specifying `orderBy()`, note that PostgreSQL returns rows in an unspecified
-order, so `OFFSET` / `FETCH` results may vary between executions. Always specify `orderBy()` when you need
-deterministic pagination.
-
-> [!NOTE]
-> **Lifecycle:** PostgreSQL releases one major version per year, each supported for five years. PostgreSQL `13` was
-> released on September 24, `2020` and reached community EOL on November 13, `2025`. Supported majors include
-> PostgreSQL `14` (through November 12, `2026`), `15` (through November 11, `2027`), `16` (through November 9, `2028`),
-> `17` (through November 8, `2029`), and `18` (released September 25, `2025`; through November 14, `2030`).
-> PostgreSQL `12` reached community EOL on November 14, `2024` and is no longer covered by Yii. The `13+` floor lets
-> Yii use `ON CONFLICT` upsert (`9.5+`) and `GENERATED AS IDENTITY` columns (`12+`) unconditionally, without runtime
-> version branching.
-
-#### SQLite
-
-##### SQLite `3.35+` is required
-
-The minimum supported SQLite version is now **`3.35+`**. This allows
-`yii\db\sqlite\QueryBuilder::upsert()` to use a single native `INSERT ... ON CONFLICT` statement with a targetless
-`DO UPDATE` clause. The native statement is atomic and handles conflicts from any applicable uniqueness constraint.
-
-The previous implementation emitted `UPDATE; INSERT OR IGNORE;`. Besides requiring two statements, `OR IGNORE`
-silently discarded `NOT NULL` and other applicable constraint violations. Native UPSERT only handles uniqueness
-conflicts; other constraint violations now raise an error.
-
-`INSERT ... SELECT` upserts wrap the source query in a derived table with a neutral `WHERE TRUE` condition to avoid
-SQLite's documented ambiguity between a join's `ON` clause and the UPSERT `ON CONFLICT` clause.
-
-There is no runtime fallback for SQLite `< 3.35`.
-
-##### `batchInsert()` fallback removed
-
-`yii\db\sqlite\QueryBuilder::batchInsert()` override was removed; the base `QueryBuilder::batchInsert()` is used
-unconditionally.
-
-##### Offset-only pagination now uses `LIMIT -1 OFFSET`
-
-`yii\db\sqlite\QueryBuilder::buildLimit()` continues to emit SQLite's documented `LIMIT` / `OFFSET` syntax. SQLite does
-not support the SQL-standard `OFFSET ... FETCH` row-limiting clause.
-
-Offset-only queries now emit:
+`yii\web\DbSession` uses `varbinary(max)` instead of `nvarchar(max)` for the MSSQL `data` column. Existing installations
+must alter the configured session table before the new code handles requests:
 
 ```sql
-LIMIT -1 OFFSET <n>
+ALTER TABLE [dbo].[session] ALTER COLUMN [data] VARBINARY(MAX) NULL;
 ```
 
-instead of:
+Replace the schema and table name as needed. Because session rows are temporary, consider clearing existing sessions in
+the maintenance window rather than preserving payloads through the type conversion.
+
+#### RBAC foreign-key cascades
+
+`yii\rbac\DbManager` no longer uses MSSQL `INSTEAD OF` triggers. Native foreign-key actions are used for every relation
+except `auth_item_child.child`, which remains `NO ACTION` because SQL Server rejects the second cascading path to
+`auth_item.name`. Yii handles that direction in PHP.
+
+Before serving traffic with Yii `22.0`:
+
+1. Drop the legacy `trigger_update_auth_item_child`, `trigger_delete_auth_item_child`, and
+   `trigger_auth_item_child` triggers if present.
+2. Recreate the `auth_item_child.parent` and `auth_assignment.item_name` foreign keys with
+   `ON DELETE CASCADE ON UPDATE CASCADE`.
+3. Recreate the `auth_item.rule_name` foreign key with `ON DELETE SET NULL ON UPDATE CASCADE`.
+4. Keep the `auth_item_child.child` foreign key without cascading actions and re-trust it if an older trigger left it
+   untrusted.
+
+First discover the actual constraint names; SQL Server-generated names vary between installations:
 
 ```sql
-LIMIT 9223372036854775807 OFFSET <n>
-```
-
-SQLite treats a negative `LIMIT` expression as no upper bound, so the generated SQL remains equivalent while matching
-the documented SQLite behavior. If your tests assert exact SQL strings for SQLite offset-only queries, update the
-expected SQL.
-
-SQLite `LIMIT` and `OFFSET` clauses also accept scalar expressions, so raw `Expression` values such as `1 + 1` remain
-supported in Yii-generated pagination SQL.
-
-### HHVM support removed
-
-All HHVM-specific code has been removed from the framework. Yii `22.x` targets PHP `8.3+` on the Zend engine only.
-
-- `yii\base\ErrorException::E_HHVM_FATAL_ERROR` constant has been removed.
-- `yii\base\ErrorHandler::handleHhvmError()` method has been removed.
-- `yii\base\ErrorHandler` no longer registers a HHVM-specific error handler when `HHVM_VERSION` is defined.
-- HHVM-specific test skips and workarounds have been removed.
-
-If your application references `ErrorException::E_HHVM_FATAL_ERROR` or `ErrorHandler::handleHhvmError()`, remove those
-references when upgrading.
-
-### jQuery client scripts moved to `yiisoft/yii2-jquery`
-
-Every `*JqueryClientScript` class previously shipped under `framework/jquery/` has moved to the `yiisoft/yii2-jquery`
-extension. FQCNs and behaviour are identical, so application code that referenced them keeps working as long as the
-extension is installed:
-
-```bash
-composer require yiisoft/yii2-jquery
-```
-
-Then register the extension's Bootstrap in your application config:
-
-```php
-// config/web.php
-'bootstrap' => [\yii\jquery\Bootstrap::class],
-```
-
-The Bootstrap registers DI container defaults so that `$clientScript` is automatically populated on every supported
-widget and validator; `ActiveForm`, `GridView`, `CheckboxColumn`, `Captcha`, `CaptchaValidator`, `BooleanValidator`,
-`CompareValidator`, `EmailValidator`, `FileValidator`, `FilterValidator`, `ImageValidator`, `IpValidator`,
-`NumberValidator`, `RangeValidator`, `RegularExpressionValidator`, `RequiredValidator`, `StringValidator`,
-`TrimValidator`, `UrlValidator` without any manual wiring.
-
-Asset bundles (`yii\web\JqueryAsset`, `yii\web\YiiAsset`, `yii\widgets\ActiveFormAsset`,
-`yii\widgets\MaskedInputAsset`, `yii\widgets\PjaxAsset`, `yii\grid\GridViewAsset`, `yii\validators\ValidationAsset`,
-`yii\captcha\CaptchaAsset`), JavaScript files (`yii.js`, `yii.activeForm.js`, `yii.validation.js`, `yii.gridView.js`,
-`yii.captcha.js`) and the `MaskedInput` / `Pjax` widgets **remain in the framework** in this release to preserve
-backwards compatibility with downstream extensions that depend on those public FQCNs. A later 22.x release will
-complete the extraction.
-
-The `$useJquery` property on `yii\web\Application`, `yii\console\Application` and `yii\web\View` has been removed.
-Activation of jQuery client scripts is now controlled entirely by whether `yiisoft/yii2-jquery` is installed and its
-`Bootstrap` is registered. Applications that do not install the extension get a jQuery-agnostic framework: widgets
-render HTML without client-side behaviour and validators perform server-side validation only.
-
-#### New interfaces
-
-Two interfaces allow replacing the jQuery implementation with any alternative:
-
-- `yii\web\client\ClientScriptInterface` strategy for widgets and components (`ActiveForm`, `GridView`,
-  `CheckboxColumn`, `Captcha`).
-- `yii\validators\client\ClientValidatorScriptInterface` strategy for validators and `CaptchaValidator`.
-
-#### New `clientScript` property
-
-All 13 built-in validators that support client-side validation, the CAPTCHA widget / validator, and the widgets listed
-below expose a `clientScript` property that accepts an array config or an object implementing the matching interface:
-
-- `yii\widgets\ActiveForm` and `yii\widgets\ActiveField`
-- `yii\grid\GridView` and `yii\grid\CheckboxColumn`
-- `yii\captcha\Captcha` and `yii\captcha\CaptchaValidator`
-- `BooleanValidator`, `CompareValidator`, `EmailValidator`, `FileValidator`, `ImageValidator`, `IpValidator`,
-  `NumberValidator`, `RangeValidator`, `RegularExpressionValidator`, `RequiredValidator`, `StringValidator`,
-  `TrimValidator`, `UrlValidator`
-
-#### New method
-
-`Validator::getFormattedClientMessage(string $message, array $params): string` public wrapper around the protected
-`formatMessage()`, used by extracted jQuery client script classes when composing error messages.
-
-#### Agnostic behaviour (no extension installed)
-
-When `yiisoft/yii2-jquery` is **not** installed and no custom `clientScript` strategy is configured:
-
-- `clientValidateAttribute()` returns `null` on all built-in validators.
-- `getClientOptions()` returns `[]` on all built-in validators.
-- `ActiveForm`, `GridView`, `CheckboxColumn` and `Captcha` do not register any client-side script.
-
-#### Custom client script strategy
-
-```php
-// Custom validator client script
-public function rules(): array
-{
-    return [
-        ['username', 'required', 'clientScript' => ['class' => MyRequiredClientScript::class]],
-    ];
-}
-
-// Custom form client script
-ActiveForm::begin(
-    [
-        'clientScript' => ['class' => MyFormClientScript::class],
-    ],
+SELECT
+    fk.name AS constraint_name,
+    OBJECT_SCHEMA_NAME(fk.parent_object_id) AS schema_name,
+    OBJECT_NAME(fk.parent_object_id) AS table_name,
+    COL_NAME(fkc.parent_object_id, fkc.parent_column_id) AS column_name
+FROM sys.foreign_keys AS fk
+JOIN sys.foreign_key_columns AS fkc ON fkc.constraint_object_id = fk.object_id
+WHERE fk.parent_object_id IN (
+    OBJECT_ID(N'dbo.auth_item'),
+    OBJECT_ID(N'dbo.auth_item_child'),
+    OBJECT_ID(N'dbo.auth_assignment')
 );
 ```
 
-#### BC impact on subclasses
+Apply the changes in an application migration using the discovered names. Do not add cascading actions to the
+`auth_item_child.child` foreign key; SQL Server rejects it with error `1785`.
 
-If you extend any of the following classes and override client-side script generation methods, review your code for
-compatibility:
-
-- `yii\widgets\ActiveForm::getClientOptions()`
-- `yii\widgets\ActiveField::getClientOptions()`
-- `yii\validators\Validator::clientValidateAttribute()`
-- `yii\captcha\Captcha::registerClientScript()` and `yii\captcha\Captcha::getClientOptions()` (now `public`).
-- `yii\captcha\CaptchaValidator::clientValidateAttribute()`
-
-The default implementations now delegate to the configured `$clientScript` handler. Subclasses that call
-`parent::clientValidateAttribute()` or `parent::getClientOptions()` are not affected.
-
-### RBAC `DbManager` MSSQL cascade
-
-`yii\rbac\DbManager` no longer installs the `INSTEAD OF` triggers for MSSQL. The schema now declares native FK
-`ON DELETE` / `ON UPDATE CASCADE` for every FK except `auth_item_child.child`, which stays at `NO ACTION` because MSSQL
-rejects the second cascading FK on the same target as a multi-path violation. The `child` direction is handled in PHP
-through the new `protected function requiresSoftCascade(): bool` hook.
-
-The `m200409_110543_rbac_update_mssql_trigger` migration file has been removed.
-
-#### What you must do
-
-**MSSQL applications upgrading from `2.0.x`:** run the following statements once, on a maintenance window, before
-the new framework code starts handling requests. The new cascade code relies on the FK actions and will fail on
-`removeItem`, `removeAllItems`, `updateItem` (rename), and `updateRule` (rename) while the old `NO ACTION` FKs are
-still in place.
+The removed `m200409_110543_rbac_update_mssql_trigger` migration may remain recorded in the application's `migration`
+table. This does not affect `migrate/up`. If the application must support `migrate/down --all`, remove that migration row
+after the triggers have been removed:
 
 ```sql
--- 1. Drop the legacy INSTEAD OF triggers.
-IF (OBJECT_ID(N'dbo.trigger_update_auth_item_child') IS NOT NULL)
-    DROP TRIGGER dbo.trigger_update_auth_item_child;
-IF (OBJECT_ID(N'dbo.trigger_delete_auth_item_child') IS NOT NULL)
-    DROP TRIGGER dbo.trigger_delete_auth_item_child;
-IF (OBJECT_ID(N'dbo.trigger_auth_item_child') IS NOT NULL)
-    DROP TRIGGER dbo.trigger_auth_item_child;
-
--- 2. Replace the FK actions to match the new schema. Substitute the actual constraint names if they differ.
-ALTER TABLE auth_item_child DROP CONSTRAINT FK__auth_item__parent;
-ALTER TABLE auth_item_child
-    ADD CONSTRAINT FK__auth_item__parent FOREIGN KEY (parent) REFERENCES auth_item(name)
-        ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE auth_assignment DROP CONSTRAINT FK__auth_assignment__item_name;
-ALTER TABLE auth_assignment
-    ADD CONSTRAINT FK__auth_assignment__item_name FOREIGN KEY (item_name) REFERENCES auth_item(name)
-        ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE auth_item DROP CONSTRAINT FK__auth_item__rule_name;
-ALTER TABLE auth_item
-    ADD CONSTRAINT FK__auth_item__rule_name FOREIGN KEY (rule_name) REFERENCES auth_rule(name)
-        ON DELETE SET NULL ON UPDATE CASCADE;
-
--- 3. Re-trust the remaining NO ACTION FK used by the PHP soft-cascade path. The legacy `INSTEAD OF UPDATE` trigger
--- toggled this constraint with `NOCHECK CONSTRAINT` / `CHECK CONSTRAINT`, leaving it in `is_not_trusted = 1` and
--- preventing the query optimizer from using it for join elimination. Substitute the actual constraint name if it
--- differs.
-ALTER TABLE auth_item_child WITH CHECK CHECK CONSTRAINT FK__auth_item__child;
+DELETE FROM [migration]
+WHERE [version] = 'm200409_110543_rbac_update_mssql_trigger';
 ```
 
-The `auth_item_child.child` FK is intentionally left without actions; do not add `ON DELETE CASCADE` or
-`ON UPDATE CASCADE` to it (MSSQL will reject the constraint with error 1785).
+### Oracle
 
-The orphan row in your `migration` table for `m200409_110543_rbac_update_mssql_trigger` is harmless for `migrate/up`,
-but `migrate/down --all` will fail trying to load the missing class. If you need full rollback, remove the row:
+New `TYPE_PK`, `TYPE_UPK`, `TYPE_BIGPK`, and `TYPE_UBIGPK` columns use
+`GENERATED BY DEFAULT ON NULL AS IDENTITY`. The invalid `UNSIGNED` keyword has been removed from unsigned primary-key
+types. Existing sequence-and-trigger primary keys continue to work; this change affects newly generated DDL.
 
-```sql
-DELETE FROM migration WHERE version = 'm200409_110543_rbac_update_mssql_trigger';
-```
+`batchInsert()` now generates `INSERT INTO ... SELECT ... FROM SYS.DUAL UNION ALL` instead of `INSERT ALL`. Update exact
+SQL assertions. This also makes empty-column batch inserts valid and allows each row to receive its own identity value.
 
-**Subclasses of `yii\rbac\DbManager`:** the class now declares `strict_types=1`. Override signatures must match the
-parameter and return types declared by the parent. The new `protected function requiresSoftCascade(): bool` hook
-returns `true` for `mssql` / `sqlsrv` / `dblib`; override only when adding a custom MSSQL-like driver. Per-strategy
-extension points (`removeItemSoftCascade()`, `removeItemManualCascade()`, `updateItemSoftCascade()`,
-`updateItemManualCascade()`, `removeAllItemsSoftCascade()`, `removeAllItemsManualCascade()`,
-`updateRuleManualCascade()`, `removeRuleManualCascade()`, `removeAllRulesManualCascade()`) are available for finer
-overrides.
+Oracle BLOB inserts, updates, and upserts now use native PDO_OCI LOB locators. Applications that subclass Oracle
+`Command` or `QueryBuilder` and customize parameter binding should review the new `LobValue` path.
 
-### Standalone actions
+### PostgreSQL
 
-Standalone-action dispatch (`Module::$actionMap`, `Module::$actionNamespace`, and `yii\web\Action`) is an additive
-feature. The notes below cover the incidental BC it introduces and a resolution-scope caveat to be aware of.
+`pgsql\QueryBuilder::oldUpsert()` and `newUpsert()` have been removed. `upsert()` now uses `ON CONFLICT` directly. Remove
+calls or overrides of those protected methods.
 
-#### Incidental BC
+Reflected `bytea` values may now be returned as strings where Yii previously exposed a stream, including values read by
+`DbCache`. Code that deliberately handled the old stream representation should accept the normalized string value.
 
-Two incidental changes can break code that relied on prior behavior:
+### SQLite
 
-- `yii\base\Action::$controller` is now nullable. Subclass overrides and any code that read `$action->controller`
-  unchecked must add a `null` check.
-- `yii\filters\AccessRule::matchController()` accepts `null` and a rule with a non-empty `controllers` constraint
-  no longer matches when the action runs standalone. To preserve the previous behavior of always matching, leave
-  `controllers` empty on the rule.
+`sqlite\QueryBuilder::upsert()` now emits a single native `INSERT ... ON CONFLICT` statement. The old implementation
+generated `UPDATE; INSERT OR IGNORE;`.
 
-#### `actionMap` resolution scope
+This changes failure behavior: native upsert handles uniqueness conflicts but does not silently ignore unrelated
+`NOT NULL`, check, or foreign-key violations. Those violations now raise an error.
 
-`yii\base\Module::$actionMap` is consulted only by the module whose `runAction()` handles the route (typically the
-application). Unlike `Module::$controllerMap`, it is not resolved recursively across sub-modules during nested-route
-dispatch: `$parent->runAction('child/ping')` does not match `child.actionMap['ping']`. To expose a standalone action
-under a sub-module, use convention-based discovery through `yii\base\Module::$actionNamespace` (which is resolved
-recursively), or register the action in the dispatching module's `actionMap`.
+The SQLite-specific `batchInsert()` override has been removed; the base query-builder implementation is used.
 
-### View no longer assumes jQuery (`View::registerJs()`)
+SQLite cannot change `PRAGMA foreign_keys` while a transaction or savepoint is active. Executing
+`Command::checkIntegrity()` in that state now throws `yii\db\Exception` instead of silently doing nothing. Move the call
+before `BEGIN`/`SAVEPOINT` or after `COMMIT`/`ROLLBACK`.
 
-`yii\web\View::registerJs()` no longer calls `JqueryAsset::register($this)` automatically when the script position is
-`POS_READY` or `POS_LOAD`, and `View::wrapReadyScript()` / `wrapLoadScript()` now emit vanilla JavaScript event
-listeners instead of jQuery wrappers:
+### Reflected column defaults and typecasting
 
-| Position    | Old wrapper                                       | New wrapper                                                                |
-| ----------- | ------------------------------------------------- | -------------------------------------------------------------------------- |
-| `POS_READY` | `jQuery(function ($) { ... });`                   | `document.addEventListener('DOMContentLoaded', function (event) { ... });` |
-| `POS_LOAD`  | `jQuery(window).on('load', function () { ... });` | `window.addEventListener('load', function (event) { ... });`               |
+Column-schema default parsing and typecasting were consolidated across drivers. Among other corrections, Yii now
+preserves MySQL `CURRENT_TIMESTAMP(0)`, recognizes Oracle `CURRENT_TIMESTAMP`, handles PostgreSQL native booleans, and
+parses SQLite `DEFAULT NULL` and escaped string literals consistently. Update schema snapshots or metadata assertions
+that encoded the previous values.
 
-This is a behaviour change for applications that passed JavaScript fragments relying on `$` being bound inside the
-wrapper, for example:
+## Removed platform support
 
-```php
-$this->registerJs("$('#foo').click(function () { ... });");
-```
+### HHVM
 
-In 22.0 that code runs inside a `DOMContentLoaded` listener where `$` is **not** in scope. Two migration options:
+HHVM support has been removed. Yii `22.0` runs on the Zend PHP engine only.
 
-1. Wrap your own code explicitly, letting the jQuery plugin define `$`:
+The following HHVM-specific APIs were removed:
 
-    ```php
-    $this->registerJs("jQuery(function ($) { $('#foo').click(function () { ... }); });");
-    ```
+- `yii\base\ErrorException::E_HHVM_FATAL_ERROR`;
+- `yii\base\ErrorHandler::handleHhvmError()`;
+- HHVM-specific error-handler registration and test workarounds.
 
-2. Replace the jQuery call with vanilla DOM APIs:
+## Post-upgrade checklist
 
-    ```php
-    $this->registerJs("document.getElementById('foo').addEventListener('click', function () { ... });");
-    ```
-
-Option 1 keeps working transparently as long as `yiisoft/yii2-jquery` is installed and `JqueryAsset` (or any asset
-bundle that depends on it) has been registered somewhere in the request.
-
-Because `registerJs()` no longer auto-registers `JqueryAsset`, applications that only used inline `registerJs()` calls
-and never explicitly depended on any asset bundle will no longer pull in jQuery. If you still want jQuery on every page,
-register `JqueryAsset` (from `yiisoft/yii2-jquery`) in a layout-level asset bundle:
-
-```php
-class AppAsset extends \yii\web\AssetBundle
-{
-    public $depends = [\yii\web\JqueryAsset::class];
-}
-```
-
-### Yii runtime autoloader removed
-
-The framework no longer registers its own SPL autoloader. The following public API has been removed:
-
-- `Yii::autoload()` (and `yii\BaseYii::autoload()`).
-- `Yii::$classMap` (and `yii\BaseYii::$classMap`).
-- `framework/classes.php` (the prebuilt framework class map).
-- The `build classmap` console command (`build/controllers/ClassmapController.php`).
-
-All framework classes are now loaded exclusively by Composer:
-
-- `autoload.psr-4` maps the `yii\` namespace.
-- `autoload.classmap` covers the global `Yii` class (which lives outside any namespace).
-
-#### What you must do
-
-1. Remove any code that writes to `Yii::$classMap` or calls `Yii::autoload()`. Both no longer exist and will produce a
-   fatal error.
-2. Make sure every class your application uses is reachable through Composer autoload. Declare it under one of:
-    - `autoload.psr-4` namespace mapping (preferred for application code).
-    - `autoload.classmap` explicit class-to-file mapping (use for non-PSR-4 files or vendor overrides).
-    - `autoload.exclude-from-classmap` paired with `classmap` when overriding a vendor class.
-    - `autoload-dev` development and test-only classes.
-3. Regenerate the autoload files after editing `composer.json`:
-
-    ```bash
-    composer dump-autoload -o
-    ```
-
-    Use `-o` (or `--classmap-authoritative`) in production for the same performance benefit that
-    `framework/classes.php` used to provide.
-
-#### Migration example: registering a new class
-
-Before (runtime mapping in the entry script):
-
-```php
-Yii::$classMap['app\\helpers\\MyHelper'] = '@app/helpers/MyHelper.php';
-```
-
-After (in the application's `composer.json`):
-
-```json
-{
-    "autoload": {
-        "psr-4": {
-            "app\\": "src/"
-        }
-    }
-}
-```
-
-Place the class at `src/helpers/MyHelper.php` with `namespace app\helpers;` and run `composer dump-autoload`. No runtime
-registration is required.
-
-#### Migration example: overriding a framework class
-
-The most common reason for writing to `Yii::$classMap` was to _replace_ a framework class with a custom implementation,
-for example swapping `yii\web\Request`. The Composer equivalent uses `classmap` together with `exclude-from-classmap`.
-
-Before (runtime override via `$classMap`, no longer supported):
-
-```php
-// entry script
-Yii::$classMap['yii\\web\\Request'] = '@app/components/Request.php';
-```
-
-After (in the application's `composer.json`):
-
-```json
-{
-    "autoload": {
-        "psr-4": {
-            "app\\": "src/"
-        },
-        "classmap": ["src/overrides/Request.php"],
-        "exclude-from-classmap": ["vendor/yiisoft/yii2/web/Request.php"]
-    }
-}
-```
-
-```php
-// src/overrides/Request.php
-<?php
-
-declare(strict_types=1);
-
-namespace yii\web;
-
-class Request
-{
-    // full reimplementation of yii\web\Request, with your custom behavior
-}
-```
-
-Then run `composer dump-autoload -o`. Composer loads the override from `src/overrides/Request.php` and
-skips the vendor file thanks to `exclude-from-classmap`. The override survives optimized and
-authoritative classmaps because it is resolved at autoload-generation time, not at runtime.
-
-> Important: because the original `yii\web\Request` file is excluded from the classmap, the FQCN `yii\web\Request` is
-> now defined exclusively by your override file. You **cannot** write `class Request extends \yii\web\Request` inside
-> `namespace yii\web;` that would be self-inheritance and PHP will reject it. You must reimplement the full public
-> surface of the original class.
->
-> If you only need to _extend_ the framework class, do **not** use `exclude-from-classmap`. Instead, declare a subclass
-> under a different FQCN (for example `app\components\Request extends \yii\web\Request`) and point the `request`
-> application component at the new class via the application configuration:
->
-> ```php
-> 'components' => [
->     'request' => ['class' => \app\components\Request::class],
-> ],
-> ```
-
-#### Installing Yii from an archive file (non-Composer install)
-
-Yii 2 can still be installed from a downloadable archive file as documented in the [installation guide](../docs/guide/start-installation.md).
-The archive published at `yiiframework.com/download/` ships a prebuilt `vendor/` directory generated with
-`composer install`, so it already contains `vendor/autoload.php`. The standard application templates (`basic`, `advanced`)
-require `vendor/autoload.php` from their entry scripts (`web/index.php`, `yii`) before any framework class is referenced,
-so the archive-install path keeps working unchanged with this release.
-
-What is **no longer supported** is bootstrapping the framework by requiring `framework/Yii.php` (or the legacy
-`framework/classes.php`) _without_ having Composer's autoloader active. There is no runtime fallback anymore:
-`vendor/autoload.php` MUST be loaded first. If you maintain a custom entry script that historically skipped Composer's
-autoloader, add `require __DIR__ . '/vendor/autoload.php';` before any reference to `Yii` or `yii\…` classes.
-
-#### Adding test-only classes
-
-For classes used only by tests, declare them under `autoload-dev` instead of `autoload`:
-
-```json
-{
-    "autoload-dev": {
-        "psr-4": {
-            "tests\\": "tests/"
-        }
-    }
-}
-```
-
-This keeps test code out of production autoload maps.
+- Run `composer dump-autoload` and verify that no code references `Yii::$classMap` or `Yii::autoload()`.
+- Search the application and its local extensions for every removed API listed above.
+- Verify that all custom framework subclasses have compatible native signatures.
+- Confirm that registered asset bundles resolve their NPM files and that no required bundle still uses `@bower`.
+- Test forms, grids, validators, CAPTCHA, PJAX, and inline `registerJs()` calls with and without the jQuery extension as
+  appropriate for the application.
+- Visually verify widgets after restoring any CSS classes that were previously provided by Yii defaults.
+- Run migrations and integration tests against every supported database used by the application.
+- On MSSQL, verify the session column type and RBAC foreign-key trust/cascade configuration.
+- Update tests that compare generated SQL, reflected column defaults, HTML classes, icons, or JavaScript wrappers.
+- Clear application caches and restart long-running workers after deployment.
