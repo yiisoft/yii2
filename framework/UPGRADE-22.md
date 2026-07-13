@@ -339,7 +339,7 @@ actions. If a custom inline-action class called these hooks manually, remove the
 Yii `22.0` adds standalone action discovery through `Module::$actionMap`, `Module::$actionNamespace`, and
 `yii\web\Action`. Most of this feature is additive, but it introduces the following compatibility considerations:
 
-- `yii\base\Action::$controller` may be `null`; code reading it must perform a null check.
+- `yii\base\Action::$controller` may be `null`. Code that reads this property must perform a `null` check.
 - `yii\filters\AccessRule::matchController()` accepts `null`. A rule with a non-empty `controllers` constraint does not
   match a standalone action.
 - `Module::$actionMap` is consulted by the module whose `runAction()` handles the route. It is not recursively resolved
