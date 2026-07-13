@@ -10,17 +10,23 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\pgsql;
 
+use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ArrayExpression;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
 use yii\db\JsonExpression;
+use yii\db\pgsql\Schema;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\pgsql\providers\CommandProvider;
+use yiiunit\support\DbHelper;
 
+use function array_diff;
 use function array_keys;
+use function count;
 
 /**
  * Unit tests for {@see \yii\db\Command} functionality for the PostgreSQL driver.
@@ -147,6 +153,220 @@ class CommandTest extends BaseCommand
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
+    }
+
+    public function testThrowIntegrityExceptionWhenCheckIntegrityEnablesTriggersWithoutChangingNativePrepares(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+        $pdo = $db->getMasterPdo();
+
+        $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
+        try {
+            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $command->checkIntegrity(false, '', 'item')->execute();
+
+            self::assertFalse(
+                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+                'Disabling integrity checks must not enable emulated prepares.',
+            );
+            self::assertSame(
+                1,
+                $command->insert(
+                    'item',
+                    ['name' => 'invalid category while disabled', 'category_id' => -1],
+                )->execute(),
+                'Disabling integrity checks must disable the foreign key trigger.',
+            );
+
+            $command->checkIntegrity(true, '', 'item')->execute();
+
+            self::assertFalse(
+                $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+                'Enabling integrity checks must preserve native prepares.',
+            );
+
+            $this->expectException(IntegrityException::class);
+            $this->expectExceptionMessage(
+                'insert or update on table "item" violates foreign key constraint "item_category_id_fkey"',
+            );
+
+            $command->insert(
+                'item',
+                ['name' => 'invalid category while enabled', 'category_id' => -2],
+            )->execute();
+        } finally {
+            $command->checkIntegrity(true, '', 'item')->execute();
+            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+        }
+    }
+
+    public function testCheckIntegrityPreservesEmulatedPrepares(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = $db->getMasterPdo();
+
+        $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, true);
+        $command = $db->createCommand()->checkIntegrity(true, 'schema1', 'profile');
+
+        self::assertTrue(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Building the command must preserve emulated prepares.',
+        );
+
+        $command->execute();
+
+        self::assertTrue(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Executing the command must preserve emulated prepares.',
+        );
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+    }
+
+    public function testThrowExceptionWhenCheckIntegrityTargetsMissingTableWithoutChangingNativePrepares(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = $db->getMasterPdo();
+
+        $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
+        try {
+            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $command = $db->createCommand()->checkIntegrity(false, '', 'missing_check_integrity_table');
+
+            $this->expectException(Exception::class);
+            $this->expectExceptionMessage(
+                'relation "public.missing_check_integrity_table" does not exist',
+            );
+
+            $command->execute();
+        } finally {
+            $emulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
+            $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+
+            self::assertFalse(
+                $emulatePrepares,
+                'A failed command must preserve native prepares.',
+            );
+        }
+    }
+
+    public function testCheckIntegritySupportsMultipleTablesWithNativePrepares(): void
+    {
+        $db = $this->getConnection();
+
+        $schema = $db->getSchema();
+
+        self::assertInstanceOf(
+            Schema::class,
+            $schema,
+            'The connection must return a PostgreSQL schema instance.',
+        );
+
+        $viewNames = $schema->getViewNames('public');
+
+        $tableNames = array_diff($schema->getTableNames('public'), $viewNames);
+
+        $pdo = $db->getMasterPdo();
+        $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
+        self::assertGreaterThan(
+            1,
+            count($tableNames),
+            'The fixture must contain multiple tables.',
+        );
+        self::assertContains(
+            'animal_view',
+            $viewNames,
+            'The fixture must contain a view to exclude.',
+        );
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $command = $db->createCommand()->checkIntegrity(true, 'public');
+
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Building a schema-wide command must preserve native prepares.',
+        );
+
+        $command->prepare();
+
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Preparing a schema-wide command must preserve native prepares.',
+        );
+
+        $command->execute();
+
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Executing a schema-wide command must preserve native prepares.',
+        );
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+    }
+
+    public function testBuildingCheckIntegrityDoesNotChangeNativePrepares(): void
+    {
+        $db = $this->getConnection();
+
+        $pdo = $db->getMasterPdo();
+        $originalEmulatePrepares = $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES);
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        $db->createCommand()->checkIntegrity(false, '', 'item');
+
+        self::assertFalse(
+            $pdo->getAttribute(PDO::ATTR_EMULATE_PREPARES),
+            'Building the command must not change the PDO attribute.',
+        );
+
+        $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+    }
+
+    public function testCheckIntegrityReturnsEmptyCommandWhenTableIsView(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand()->checkIntegrity(true, 'public', 'animal_view');
+
+        self::assertSame(
+            '',
+            $command->getSql(),
+            'A view must not produce an integrity-check statement.',
+        );
+        self::assertSame(
+            0,
+            $command->execute(),
+            'Executing an empty integrity-check command must be a no-op.',
+        );
+    }
+
+    public function testCheckIntegrityExecutesWhenTableNameContainsDollarQuoteDelimiter(): void
+    {
+        $db = $this->getConnection();
+
+        $tableName = 'check_integrity_$yii$_table';
+
+        $command = $db->createCommand()->createTable($tableName, ['id' => 'pk']);
+
+        $command->execute();
+
+        self::assertSame(
+            0,
+            $command->checkIntegrity(true, 'public', $tableName)->execute(),
+            'Integrity checks must execute when a table name contains the initial dollar-quote delimiter.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
     }
 
     public function testBooleanValuesInsert(): void
