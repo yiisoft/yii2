@@ -22,10 +22,12 @@ use yii\db\Query;
 use yii\db\PdoValue;
 use yii\helpers\StringHelper;
 
+use function array_diff;
 use function array_map;
 use function count;
 use function implode;
 use function is_bool;
+use function str_contains;
 use function usort;
 
 /**
@@ -263,32 +265,55 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables.
-     * @param string $table the table name.
-     * @return string the SQL statement for checking integrity
+     * Builds a SQL statement for enabling or disabling integrity checks.
+     *
+     * @param bool $check Whether to enable or disable integrity checks.
+     * @param string $schema The schema containing the tables.
+     * @param string $table The table name. An empty string applies the operation to all tables in the schema.
+     *
+     * @return string The SQL statement for changing the integrity-check state.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         /** @var Schema $dbSchema */
         $dbSchema = $this->db->getSchema();
-        $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ?: $dbSchema->defaultSchema;
-        $tableNames = $table ? [$table] : $dbSchema->getTableNames($schema);
+
+        $action = $check ? 'ENABLE' : 'DISABLE';
+        $schema = $schema === '' ? $dbSchema->defaultSchema : $schema;
+
+        $tableNames = $table === '' ? $dbSchema->getTableNames($schema) : [$table];
         $viewNames = $dbSchema->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
-        $command = '';
+
+        $commands = [];
 
         foreach ($tableNames as $tableName) {
             $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
-            $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
+
+            $commands[] = "ALTER TABLE {$tableName} {$action} TRIGGER ALL;";
         }
 
-        // enable to have ability to alter several tables
-        $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
+        if ($commands === []) {
+            return '';
+        }
 
-        return $command;
+        $command = implode("\n", $commands);
+
+        $tag = 'yii';
+        $delimiter = "\$$tag\$";
+
+        while (str_contains($command, $delimiter)) {
+            $tag .= '_';
+            $delimiter = "\$$tag\$";
+        }
+
+        return <<<SQL
+        DO $delimiter
+        BEGIN
+        $command
+        END;
+        $delimiter;
+        SQL;
     }
 
     /**
