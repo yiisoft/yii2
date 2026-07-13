@@ -845,12 +845,18 @@ final class CommandTest extends BaseCommand
     {
         $db = $this->getConnection();
 
-        $command = $db->createCommand();
+        /** @var Schema $schema */
         $schema = $db->getSchema();
+
+        $originalColumnType = $schema
+            ->getTableSchema('foo1', true)
+            ->getColumn('bar')
+            ->dbType;
+
         $transaction = $db->beginTransaction();
 
         try {
-            $command->alterColumn(
+            $db->createCommand()->alterColumn(
                 'foo1',
                 'bar',
                 $schema->createColumnSchemaBuilder(Schema::TYPE_STRING, 64),
@@ -867,11 +873,9 @@ final class CommandTest extends BaseCommand
             );
             self::assertSame(
                 'nvarchar(64)',
-                $db->getTableSchema('foo1', true)->getColumn('bar')->dbType,
+                $schema->getTableSchema('foo1', true)->getColumn('bar')->dbType,
                 'Alter column must be visible inside the existing transaction.',
             );
-
-            $transaction->rollBack();
         } finally {
             if ($transaction->isActive) {
                 $transaction->rollBack();
@@ -882,10 +886,145 @@ final class CommandTest extends BaseCommand
             $db->getTransaction(),
             'No transaction should remain active after the external rollback.',
         );
+        self::assertFalse(
+            $db->getMasterPdo()->inTransaction(),
+            'PDO must not retain the external transaction after rollback.',
+        );
         self::assertSame(
-            'varchar(32)',
-            $db->getTableSchema('foo1', true)->getColumn('bar')->dbType,
+            $originalColumnType,
+            $schema->getTableSchema('foo1', true)->getColumn('bar')->dbType,
             'Rolling back the external transaction must restore the original column type.',
+        );
+    }
+
+    public function testFailedAlterColumnDoesNotRollBackExternalTransaction(): void
+    {
+        $db = $this->getConnection();
+
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        $db->createCommand()->alterColumn(
+            'foo1',
+            'bar',
+            $schema
+                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+                ->defaultValue('fallback')
+                ->check('LEN(bar) > 0')
+                ->unique(),
+        )->execute();
+        $db->createCommand()->insert(
+            'foo1',
+            ['bar' => 'not numeric'],
+        )->execute();
+
+        $originalColumnType = $schema
+            ->getTableSchema('foo1', true)
+            ->getColumn('bar')
+            ->dbType;
+
+        $originalDefaults = $schema->getTableDefaultValues('foo1', true);
+        $originalChecks = $schema->getTableChecks('foo1', true);
+        $originalUniques = $schema->getTableUniques('foo1', true);
+
+        self::assertCount(
+            1,
+            $originalDefaults,
+            'The test column must have one default constraint.',
+        );
+        self::assertCount(
+            1,
+            $originalChecks,
+            'The test column must have one check constraint.',
+        );
+        self::assertCount(
+            1,
+            $originalUniques,
+            'The test column must have one unique constraint.',
+        );
+
+        $transaction = $db->beginTransaction();
+
+        try {
+            $exception = null;
+
+            try {
+                $db->createCommand()->alterColumn(
+                    'foo1',
+                    'bar',
+                    $schema->createColumnSchemaBuilder(Schema::TYPE_INTEGER),
+                )->execute();
+            } catch (Exception $e) {
+                $exception = $e;
+            }
+
+            self::assertInstanceOf(
+                Exception::class,
+                $exception,
+                'Converting a non-numeric value to INTEGER must fail with a database exception.',
+            );
+            self::assertSame(
+                $transaction,
+                $db->getTransaction(),
+                'A failed alter column must preserve the existing transaction.',
+            );
+            self::assertTrue(
+                $transaction->isActive,
+                'A failed alter column must leave rollback responsibility to the caller.',
+            );
+        } finally {
+            if ($transaction->isActive) {
+                $transaction->rollBack();
+            }
+        }
+
+        self::assertNull(
+            $db->getTransaction(),
+            'No transaction should remain active after the external rollback.',
+        );
+        self::assertFalse(
+            $db->getMasterPdo()->inTransaction(),
+            'PDO must not retain the external transaction after rollback.',
+        );
+        self::assertSame(
+            $originalColumnType,
+            $schema->getTableSchema('foo1', true)->getColumn('bar')->dbType,
+            'The external rollback must restore the original column type.',
+        );
+
+        $defaults = $schema->getTableDefaultValues('foo1', true);
+        $checks = $schema->getTableChecks('foo1', true);
+        $uniques = $schema->getTableUniques('foo1', true);
+
+        self::assertCount(
+            1,
+            $defaults,
+            'The external rollback must restore the original default constraint.',
+        );
+        self::assertSame(
+            $originalDefaults[0]->name,
+            $defaults[0]->name,
+            'The restored default constraint must preserve its original name.',
+        );
+        self::assertCount(
+            1,
+            $checks,
+            'The external rollback must restore the original check constraint.',
+        );
+        self::assertSame(
+            $originalChecks[0]->name,
+            $checks[0]->name,
+            'The restored check constraint must preserve its original name.',
+        );
+        self::assertCount(
+            1,
+            $uniques,
+            'The external rollback must restore the original unique constraint.',
+        );
+        self::assertSame(
+            $originalUniques[0]->name,
+            $uniques[0]->name,
+            'The restored unique constraint must preserve its original name.',
         );
     }
 
