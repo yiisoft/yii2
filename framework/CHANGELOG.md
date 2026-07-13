@@ -125,6 +125,7 @@ Yii Framework 2 Change Log
 - Bug #20996: Fix `yii\db\pgsql\QueryBuilder::upsert()` with empty update columns (terabytesoftw)
 - Bug #20100: Fix `yii\db\pgsql\QueryBuilder::upsert()` generating an invalid conflict target when multiple unique constraints match (terabytesoftw)
 - Bug #20101: Fix SQLite `checkIntegrity()` to reject foreign-key enforcement changes inside active transactions (terabytesoftw)
+- Bug #20102: Make MSSQL `alterColumn()` roll back dropped constraints when the column alteration fails (terabytesoftw)
 
 2.0.56 under development
 ------------------------
