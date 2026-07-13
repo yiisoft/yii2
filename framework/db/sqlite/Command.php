@@ -8,6 +8,7 @@
 
 namespace yii\db\sqlite;
 
+use yii\db\Exception;
 use yii\db\SqlToken;
 use yii\helpers\StringHelper;
 
@@ -21,6 +22,38 @@ use yii\helpers\StringHelper;
  */
 class Command extends \yii\db\Command
 {
+    /**
+     * Whether the command is an integrity check command.
+     */
+    private bool $_isIntegrityCheck = false;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function checkIntegrity($check = true, $schema = '', $table = '')
+    {
+        parent::checkIntegrity($check, $schema, $table);
+
+        $this->_isIntegrityCheck = true;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare($forRead = null)
+    {
+        if ($this->_isIntegrityCheck && $this->db->getMasterPdo()->inTransaction()) {
+            throw new Exception(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.'
+            );
+        }
+
+        parent::prepare($forRead);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -92,6 +125,15 @@ class Command extends \yii\db\Command
             $statements[] = [$statement->getSql(), $this->extractUsedParams($statement, $params)];
         }
         return $statements;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function reset()
+    {
+        parent::reset();
+        $this->_isIntegrityCheck = false;
     }
 
     /**
