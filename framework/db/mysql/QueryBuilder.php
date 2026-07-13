@@ -85,29 +85,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for renaming a column.
-     *
-     * @param string $table The table whose column is to be renamed. The name will be properly quoted by the method.
-     * @param string $oldName The old name of the column. The name will be properly quoted by the method.
-     * @param string $newName The new name of the column. The name will be properly quoted by the method.
-     *
-     * @throws Exception if the table does not exist or does not contain the column.
-     *
-     * @return string The SQL statement for renaming a DB column.
-     */
-    public function renameColumn($table, $oldName, $newName)
-    {
-        $quotedTable = $this->db->quoteTableName($table);
-        $definition = $this->getColumnDefinition($table, $oldName);
-        $oldNameQuoted = $this->db->quoteColumnName($oldName);
-        $newNameQuoted = $this->db->quoteColumnName($newName);
-
-        return <<<SQL
-        ALTER TABLE {$quotedTable} CHANGE {$oldNameQuoted} {$newNameQuoted} {$definition}
-        SQL;
-    }
-
-    /**
      * Builds a SQL statement for creating a new index.
      *
      * MySQL emits `ALTER TABLE ... ADD [UNIQUE] INDEX` instead of `CREATE INDEX`.

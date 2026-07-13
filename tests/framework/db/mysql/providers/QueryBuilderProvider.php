@@ -385,7 +385,7 @@ final class QueryBuilderProvider
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `qb_rename_comment` CHANGE `old_col` `new_col` varchar(255) NOT NULL COMMENT 'Keep me.'
+                ALTER TABLE `qb_rename_comment` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
             'column with default' => [
@@ -398,7 +398,7 @@ final class QueryBuilderProvider
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `qb_rename_default` CHANGE `old_col` `new_col` varchar(255) DEFAULT 'something'
+                ALTER TABLE `qb_rename_default` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
             'database-qualified table name' => [
@@ -411,7 +411,7 @@ final class QueryBuilderProvider
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `yiitest`.`qb_rename_qualified` CHANGE `old_col` `new_col` varchar(255) NOT NULL
+                ALTER TABLE `yiitest`.`qb_rename_qualified` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
             'not null column' => [
@@ -424,7 +424,7 @@ final class QueryBuilderProvider
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `qb_rename_notnull` CHANGE `old_col` `new_col` varchar(255) NOT NULL
+                ALTER TABLE `qb_rename_notnull` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
             'simple column' => [
@@ -437,7 +437,7 @@ final class QueryBuilderProvider
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
                 SQL,
                 <<<SQL
-                ALTER TABLE `qb_rename_simple` CHANGE `old_col` `new_col` varchar(255) DEFAULT NULL
+                ALTER TABLE `qb_rename_simple` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
         ];

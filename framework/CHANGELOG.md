@@ -127,6 +127,7 @@ Yii Framework 2 Change Log
 - Bug #20101: Fix SQLite `checkIntegrity()` to reject foreign-key enforcement changes inside active transactions (terabytesoftw)
 - Bug #20102: Make MSSQL `alterColumn()` roll back dropped constraints when the column alteration fails (terabytesoftw)
 - Bug #21004: Fix PostgreSQL `yii\db\pgsql\QueryBuilder::checkIntegrity()` changing the connection-wide PDO emulate-prepares setting (terabytesoftw)
+- Bug #21005: Fix `yii\db\mysql\QueryBuilder::renameColumn()` to use the native `ALTER TABLE ... RENAME COLUMN` statement instead of parsing `SHOW CREATE TABLE` output (terabytesoftw)
 
 2.0.56 under development
 ------------------------
