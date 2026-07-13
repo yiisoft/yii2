@@ -13,14 +13,20 @@ namespace yii\db\pgsql;
 use yii\base\InvalidArgumentException;
 use yii\db\ArrayExpression;
 use yii\db\conditions\LikeCondition;
+use yii\db\Constraint;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
+use yii\db\IndexConstraint;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yii\db\PdoValue;
 use yii\helpers\StringHelper;
 
+use function array_map;
+use function count;
+use function implode;
 use function is_bool;
+use function usort;
 
 /**
  * QueryBuilder is the query builder for PostgreSQL databases (version 13 and above).
@@ -381,6 +387,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $table,
             $insertColumns,
             $updateColumns,
+            $constraints,
         );
 
         if ($uniqueNames === []) {
@@ -401,7 +408,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             static fn(string $quotedName): string => "EXCLUDED.{$quotedName}",
         );
 
-        $conflictTarget = implode(', ', $uniqueNames);
+        $conflictTarget = $this->resolveUpsertConflictTarget($constraints);
         $updateSql = implode(', ', $updates);
 
         return <<<SQL
@@ -496,5 +503,39 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+    }
+
+    /**
+     * Resolves the `ON CONFLICT` target from the uniqueness constraints matching the inserted columns.
+     *
+     * @param Constraint[] $constraints the matched uniqueness constraints. Must contain at least one entry.
+     * @return string the comma-separated, quoted column list of the selected arbiter constraint.
+     *
+     * @since 22.0
+     */
+    private function resolveUpsertConflictTarget(array $constraints): string
+    {
+        usort(
+            $constraints,
+            static fn(Constraint $a, Constraint $b): int => [
+                !($a instanceof IndexConstraint && $a->isPrimary),
+                $a instanceof IndexConstraint,
+                count($a->columnNames),
+                $a->name,
+            ] <=> [
+                !($b instanceof IndexConstraint && $b->isPrimary),
+                $b instanceof IndexConstraint,
+                count($b->columnNames),
+                $b->name,
+            ],
+        );
+
+        return implode(
+            ', ',
+            array_map(
+                [$this->db, 'quoteColumnName'],
+                $constraints[0]->columnNames,
+            ),
+        );
     }
 }

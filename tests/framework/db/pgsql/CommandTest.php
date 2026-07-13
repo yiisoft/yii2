@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
+use yii\db\IntegrityException;
 use yii\db\JsonExpression;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
@@ -89,6 +90,54 @@ class CommandTest extends BaseCommand
                 ->one($db),
             'Conflict must apply the update behavior.',
         );
+    }
+
+    public function testThrowIntegrityExceptionWhenConflictMatchesNonArbiterConstraint(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->upsert(
+            'T_upsert_2',
+            ['a' => 1, 'b' => 1, 'c' => 'first'],
+            true,
+        )->execute();
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessage(
+            'duplicate key value violates unique constraint "T_upsert_2_b_key"',
+        );
+
+        $command->upsert(
+            'T_upsert_2',
+            ['a' => 2, 'b' => 1, 'c' => 'second'],
+            true,
+        )->execute();
+    }
+
+    public function testThrowIntegrityExceptionWhenUniqueConflictMissesPrimaryKeyArbiter(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->upsert(
+            'T_upsert',
+            ['id' => 1, 'email' => 'unique@example.com', 'address' => 'first'],
+            true,
+        )->execute();
+
+        $this->expectException(IntegrityException::class);
+        $this->expectExceptionMessage(
+            'duplicate key value violates unique constraint "T_upsert_email_key"',
+        );
+
+        $command->upsert(
+            'T_upsert',
+            ['id' => 2, 'email' => 'unique@example.com', 'address' => 'second'],
+            true,
+        )->execute();
     }
 
     public function testAutoQuoting(): void

@@ -36,12 +36,87 @@ final class CommandProvider
     public static function upsert(): array
     {
         return [
+            'composite unique constraint conflict' => [
+                'T_upsert_3',
+                [
+                    'a' => 1,
+                    'b' => 1,
+                    'c' => 'first',
+                ],
+                [
+                    'a' => 1,
+                    'b' => 1,
+                    'c' => 'second',
+                ],
+                true,
+                [
+                    'a' => 1,
+                    'b' => 1,
+                    'c' => 'second',
+                ],
+            ],
+            'independent unique constraints conflict on arbiter' => [
+                'T_upsert_2',
+                [
+                    'a' => 1,
+                    'b' => 1,
+                    'c' => 'first',
+                ],
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => 'second',
+                ],
+                true,
+                [
+                    'a' => 1,
+                    'b' => 1,
+                    'c' => 'second',
+                ],
+            ],
+            'multiple matching constraints without update part' => [
+                'T_upsert',
+                [
+                    'id' => 1,
+                    'email' => 'a@example.com',
+                ],
+                [
+                    'id' => 1,
+                    'email' => 'b@example.com',
+                ],
+                false,
+                [
+                    'id' => 1,
+                    'email' => 'a@example.com',
+                ],
+            ],
             'no columns to update' => [
                 'T_upsert_1',
                 ['a' => 1],
                 ['a' => 1],
                 true,
                 ['a' => 1],
+            ],
+            'primary key and separate unique constraint' => [
+                'T_upsert',
+                [
+                    'id' => 1,
+                    'email' => 'a@example.com',
+                    'address' => 'first address',
+                ],
+                [
+                    'id' => 1,
+                    'email' => 'b@example.com',
+                    'address' => 'second address',
+                ],
+                [
+                    'address' => 'updated address',
+                ],
+                [
+                    'id' => 1,
+                    'email' => 'a@example.com',
+                    'address' => 'updated address',
+                ],
             ],
             'query' => [
                 'T_upsert',

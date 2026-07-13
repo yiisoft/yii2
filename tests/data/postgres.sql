@@ -36,6 +36,8 @@ DROP TABLE IF EXISTS "T_constraints_1";
 DROP TABLE IF EXISTS "fk_to_schema2" CASCADE;
 DROP TABLE IF EXISTS "T_upsert";
 DROP TABLE IF EXISTS "T_upsert_1";
+DROP TABLE IF EXISTS "T_upsert_2";
+DROP TABLE IF EXISTS "T_upsert_3";
 DROP TABLE IF EXISTS "generated" CASCADE;
 DROP TABLE IF EXISTS "item_12" CASCADE;
 DROP TABLE IF EXISTS "partitioned" CASCADE;
@@ -427,6 +429,23 @@ CREATE TABLE "T_upsert"
 CREATE TABLE "T_upsert_1"
 (
     "a" INT NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE "T_upsert_2"
+(
+    "a" INT NOT NULL UNIQUE,
+    "b" INT NOT NULL UNIQUE,
+    "c" VARCHAR(32) NULL
+);
+
+CREATE TABLE "T_upsert_3"
+(
+    "id" SERIAL NOT NULL PRIMARY KEY,
+    "a" INT NOT NULL,
+    "b" INT NOT NULL,
+    "c" VARCHAR(32) NULL,
+    "z" INT NULL UNIQUE,
+    UNIQUE ("a", "b")
 );
 
 CREATE TABLE "generated" (
