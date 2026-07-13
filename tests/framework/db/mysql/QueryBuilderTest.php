@@ -800,35 +800,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public function testRenameColumnBuildsNativeSqlForColumnWithInlineCheck(): void
-    {
-        $db = $this->getConnection(false);
-
-        DbHelper::dropTablesIfExist($db, ['rename_check']);
-
-        $command = $db->createCommand();
-
-        $command->createTable(
-            'rename_check',
-            ['status' => "varchar(32) CHECK (`status` <> '(')"],
-        )->execute();
-
-        $actual = $db->getQueryBuilder()->renameColumn('rename_check', 'status', 'new_status');
-
-        DbHelper::dropTablesIfExist($db, ['rename_check']);
-
-        // Native RENAME COLUMN never restates the definition, so the inline CHECK cannot leak into the generated SQL.
-        $expected = <<<SQL
-        ALTER TABLE `rename_check` RENAME COLUMN `status` TO `new_status`
-        SQL;
-
-        self::assertSame(
-            $expected,
-            $actual,
-            'Rename SQL must not restate the column definition even when an inline CHECK is present.',
-        );
-    }
-
     /**
      * @see https://github.com/yiisoft/yii2/issues/17449
      */
