@@ -727,14 +727,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
         string $table,
         string $oldName,
         string $newName,
-        string $createSql,
-        string $expected
+        string $expected,
     ): void {
-        $db = $this->getConnection(false);
-
-        DbHelper::dropTablesIfExist($db, [$table]);
-
-        $db->createCommand($createSql)->execute();
+        $db = $this->getConnection(false, false);
 
         self::assertSame(
             $expected,
@@ -745,8 +740,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
             ),
             'Generated SQL must match the expected RENAME COLUMN statement.',
         );
-
-        DbHelper::dropTablesIfExist($db, [$table]);
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'createIndex')]
