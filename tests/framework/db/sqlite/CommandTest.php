@@ -217,19 +217,20 @@ class CommandTest extends BaseCommand
         }
     }
 
-    public function testCheckIntegrityCommandBuiltBeforeTransactionFailsWhenExecutedInsideIt(): void
+    public function testCheckIntegrityExplicitPrepareInsideTransactionThrows(): void
     {
         $db = $this->getConnection(false);
 
         $this->setForeignKeys($db, true);
 
-        $command = $db->createCommand()->checkIntegrity(false);
         $transaction = $db->beginTransaction();
+        $command = $db->createCommand()->checkIntegrity(false);
 
         try {
-            $command->execute();
+            $command->prepare();
+
             self::fail(
-                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+                'Expected an exception when preparing a SQLite integrity-check command inside a transaction.',
             );
         } catch (Exception $e) {
             self::assertSame(
@@ -244,7 +245,88 @@ class CommandTest extends BaseCommand
                     PRAGMA foreign_keys
                     SQL,
                 )->queryScalar(),
-                "Foreign keys must remain enabled after 'checkIntegrity(false)' inside a transaction.",
+                'Foreign keys must remain enabled after preparation fails inside a transaction.',
+            );
+        } finally {
+            $transaction->rollBack();
+        }
+    }
+
+    public function testCheckIntegrityCommandPreparedBeforeTransactionFailsWhenExecutedInsideIt(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $command = $db->createCommand()->checkIntegrity(false);
+        $command->prepare();
+
+        self::assertSame(
+            0,
+            (int) $db->createCommand(
+                <<<SQL
+                PRAGMA foreign_keys
+                SQL,
+            )->queryScalar(),
+            'Preparing the command outside a transaction must apply the PRAGMA.',
+        );
+
+        $transaction = $db->beginTransaction();
+
+        try {
+            $command->execute();
+            self::fail(
+                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                0,
+                (int) $db->createCommand(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                'Foreign keys must retain the value applied during preparation.',
+            );
+        } finally {
+            $transaction->rollBack();
+        }
+    }
+
+    public function testCheckIntegrityQueryMethodInsideTransactionThrows(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $transaction = $db->beginTransaction();
+        $command = $db->createCommand()->checkIntegrity(false);
+
+        try {
+            $command->queryScalar();
+
+            self::fail(
+                'Expected an exception when querying with a SQLite integrity-check command inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                1,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                'Foreign keys must remain enabled when a query method is rejected inside a transaction.',
             );
         } finally {
             $transaction->rollBack();

@@ -42,7 +42,7 @@ class Command extends \yii\db\Command
     /**
      * {@inheritdoc}
      */
-    public function execute()
+    public function prepare($forRead = null)
     {
         if ($this->_isIntegrityCheck && $this->db->getMasterPdo()->inTransaction()) {
             throw new Exception(
@@ -51,28 +51,28 @@ class Command extends \yii\db\Command
             );
         }
 
+        parent::prepare($forRead);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function execute()
+    {
         $sql = $this->getSql();
-
         $params = $this->params;
-
         $statements = $this->splitStatements($sql, $params);
-
         if ($statements === false) {
             return parent::execute();
         }
 
         $result = null;
-
         foreach ($statements as $statement) {
-            [$statementSql, $statementParams] = $statement;
-
+            list($statementSql, $statementParams) = $statement;
             $this->setSql($statementSql)->bindValues($statementParams);
-
             $result = parent::execute();
         }
-
         $this->setSql($sql)->bindValues($params);
-
         return $result;
     }
 
