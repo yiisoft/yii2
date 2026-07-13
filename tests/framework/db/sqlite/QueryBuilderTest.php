@@ -297,6 +297,24 @@ final class QueryBuilderTest extends BaseQueryBuilder
         $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
     }
 
+    public function testCheckIntegrity(): void
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        self::assertSame(
+            <<<SQL
+            PRAGMA foreign_keys=0
+            SQL,
+            $queryBuilder->checkIntegrity(false)
+        );
+        self::assertSame(
+            <<<SQL
+            PRAGMA foreign_keys=1
+            SQL,
+            $queryBuilder->checkIntegrity(true)
+        );
+    }
+
     public function testResetSequence(): void
     {
         $qb = $this->getQueryBuilder(true, true);

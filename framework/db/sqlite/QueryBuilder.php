@@ -174,15 +174,22 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Enables or disables integrity check.
-     * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Meaningless for SQLite.
-     * @param string $table the table name. Meaningless for SQLite.
-     * @return string the SQL statement for checking integrity
-     * @throws NotSupportedException this is not supported by SQLite
+     *
+     * @param bool $check Whether to turn on or off the integrity check.
+     * @param string $schema The schema of the tables. Meaningless for SQLite.
+     * @param string $table The table name. Meaningless for SQLite.
+     *
+     * @throws NotSupportedException this is not supported by SQLite.
+     *
+     * @return string The SQL statement for checking integrity.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys=' . (int) $check;
+        $check = (int) $check;
+
+        return <<<SQL
+        PRAGMA foreign_keys={$check}
+        SQL;
     }
 
     /**

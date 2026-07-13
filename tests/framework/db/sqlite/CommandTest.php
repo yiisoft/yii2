@@ -14,6 +14,8 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\db\Connection;
+use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
 use yii\db\Query;
@@ -101,6 +103,303 @@ class CommandTest extends BaseCommand
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
+    }
+
+    public function testCheckIntegrityDisablesForeignKeysOutsideTransaction(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $command = $db->createCommand();
+
+        $command->checkIntegrity(false)->execute();
+
+        self::assertSame(
+            0,
+            (int) $command->setSql(
+                <<<SQL
+                PRAGMA foreign_keys
+                SQL,
+            )->queryScalar(),
+            "Foreign keys must be disabled after 'checkIntegrity(false)' outside a transaction.",
+        );
+    }
+
+    public function testCheckIntegrityEnablesForeignKeysOutsideTransaction(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, false);
+
+        $command = $db->createCommand();
+
+        $command->checkIntegrity(true)->execute();
+
+        self::assertSame(
+            1,
+            (int) $command->setSql(
+                <<<SQL
+                PRAGMA foreign_keys
+                SQL,
+            )->queryScalar(),
+            "Foreign keys must be enabled after 'checkIntegrity(true)' outside a transaction.",
+        );
+    }
+
+    public function testCheckIntegrityCannotDisableForeignKeysInsideYiiTransaction(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $transaction = $db->beginTransaction();
+        $command = $db->createCommand();
+
+        try {
+            $command->checkIntegrity(false)->execute();
+
+            self::fail(
+                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                1,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                "Foreign keys must remain enabled after 'checkIntegrity(false)' inside a transaction.",
+            );
+        } finally {
+            $transaction->rollBack();
+        }
+    }
+
+    public function testCheckIntegrityCannotEnableForeignKeysInsideYiiTransaction(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, false);
+
+        $transaction = $db->beginTransaction();
+        $command = $db->createCommand();
+
+        try {
+            $command->checkIntegrity(true)->execute();
+
+            self::fail(
+                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                0,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                "Foreign keys must remain disabled after 'checkIntegrity(true)' inside a transaction.",
+            );
+        } finally {
+            $transaction->rollBack();
+        }
+    }
+
+    public function testCheckIntegrityCommandBuiltBeforeTransactionFailsWhenExecutedInsideIt(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $command = $db->createCommand()->checkIntegrity(false);
+        $transaction = $db->beginTransaction();
+
+        try {
+            $command->execute();
+            self::fail(
+                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                1,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                "Foreign keys must remain enabled after 'checkIntegrity(false)' inside a transaction.",
+            );
+        } finally {
+            $transaction->rollBack();
+        }
+    }
+
+    public function testCheckIntegrityCommandBuiltInsideTransactionSucceedsAfterRollback(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $transaction = $db->beginTransaction();
+
+        try {
+            $command = $db->createCommand()->checkIntegrity(false);
+        } finally {
+            $transaction->rollBack();
+        }
+
+        $command->execute();
+
+        self::assertSame(
+            0,
+            (int) $command->setSql(
+                <<<SQL
+                PRAGMA foreign_keys
+                SQL,
+            )->queryScalar(),
+            "Foreign keys must be disabled after 'checkIntegrity(false)' outside a transaction.",
+        );
+    }
+
+    public function testCheckIntegrityDetectsTransactionStartedDirectlyThroughPdo(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $pdo = $db->getMasterPdo();
+
+        $command = $db->createCommand();
+        $pdo->beginTransaction();
+
+        try {
+            self::assertNull(
+                $db->getTransaction(),
+                'PDO transaction started directly through the PDO connection must not be visible to the Yii Connection.',
+            );
+
+            $command->checkIntegrity(false)->execute();
+
+            self::fail(
+                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                1,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                "Foreign keys must remain enabled after 'checkIntegrity(false)' inside a transaction.",
+            );
+        } finally {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+        }
+    }
+
+    public function testCheckIntegrityDetectsPendingRawSavepointWhenSupportedByPdo(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $command = $db->createCommand();
+        $pdo = $db->getMasterPdo();
+
+        $pdo->exec('SAVEPOINT check_integrity_test');
+
+        try {
+            if (!$pdo->inTransaction()) {
+                $this->markTestSkipped(
+                    'This PDO SQLite version does not expose transactions started through raw SQL.',
+                );
+            }
+
+            self::assertNull(
+                $db->getTransaction(),
+                'PDO savepoint started directly through the PDO connection must not be visible to the Yii Connection.',
+            );
+
+            $command->checkIntegrity(false)->execute();
+
+            self::fail(
+                'Expected an exception when changing SQLite foreign-key enforcement inside a transaction.',
+            );
+        } catch (Exception $e) {
+            self::assertSame(
+                'SQLite cannot change foreign-key enforcement inside a transaction. '
+                . 'Execute this operation before BEGIN/SAVEPOINT or after COMMIT/ROLLBACK.',
+                $e->getMessage(),
+            );
+            self::assertSame(
+                1,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                "Foreign keys must remain enabled after 'checkIntegrity(false)' inside a transaction.",
+            );
+        } finally {
+            $pdo->exec('ROLLBACK');
+        }
+    }
+
+    public function testCheckIntegrityStateDoesNotLeakWhenCommandSqlChanges(): void
+    {
+        $db = $this->getConnection(false);
+
+        $this->setForeignKeys($db, true);
+
+        $command = $db->createCommand()->checkIntegrity(false);
+        $transaction = $db->beginTransaction();
+
+        try {
+            self::assertSame(
+                0,
+                $command->setSql(
+                    <<<SQL
+                    SELECT 1; SELECT 2
+                    SQL,
+                )->execute(),
+            );
+            self::assertSame(
+                1,
+                (int) $command->setSql(
+                    <<<SQL
+                    PRAGMA foreign_keys
+                    SQL,
+                )->queryScalar(),
+                'Foreign keys must remain enabled after the integrity-check command SQL changes.',
+            );
+        } finally {
+            $transaction->rollBack();
+        }
     }
 
     public function testUpsertUsesAnyUniqueConstraint(): void
@@ -487,5 +786,27 @@ class CommandTest extends BaseCommand
                 $e->getMessage(),
             );
         }
+    }
+
+    private function setForeignKeys(Connection $db, bool $enabled): void
+    {
+        $command = $db->createCommand();
+        $enabled = (int) $enabled;
+
+        $command->setSql(
+            <<<SQL
+            PRAGMA foreign_keys={$enabled}
+            SQL,
+        )->execute();
+
+        self::assertSame(
+            $enabled,
+            (int) $command->setSql(
+                <<<SQL
+                PRAGMA foreign_keys
+                SQL,
+            )->queryScalar(),
+            "Foreign-key enforcement must be explicitly initialized to '{$enabled}'.",
+        );
     }
 }
