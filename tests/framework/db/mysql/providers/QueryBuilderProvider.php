@@ -407,6 +407,14 @@ final class QueryBuilderProvider
                 ALTER TABLE `qb_rename'table` RENAME COLUMN `old'col` TO `new'col`
                 SQL,
             ],
+            'names with spaces' => [
+                'qb rename table',
+                'old col',
+                'new col',
+                <<<SQL
+                ALTER TABLE `qb rename table` RENAME COLUMN `old col` TO `new col`
+                SQL,
+            ],
             'names with unicode characters' => [
                 'qb_rename_unicode',
                 'old_ñ_表',
