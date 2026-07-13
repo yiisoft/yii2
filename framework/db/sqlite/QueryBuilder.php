@@ -179,8 +179,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $schema The schema of the tables. Meaningless for SQLite.
      * @param string $table The table name. Meaningless for SQLite.
      *
-     * @throws NotSupportedException this is not supported by SQLite.
-     *
      * @return string The SQL statement for checking integrity.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
