@@ -22,6 +22,7 @@ use yii\db\pgsql\Schema;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\pgsql\providers\CommandProvider;
+use yiiunit\support\DbHelper;
 
 use function array_diff;
 use function array_keys;
@@ -329,6 +330,43 @@ class CommandTest extends BaseCommand
         );
 
         $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $originalEmulatePrepares);
+    }
+
+    public function testCheckIntegrityReturnsEmptyCommandWhenTableIsView(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand()->checkIntegrity(true, 'public', 'animal_view');
+
+        self::assertSame(
+            '',
+            $command->getSql(),
+            'A view must not produce an integrity-check statement.',
+        );
+        self::assertSame(
+            0,
+            $command->execute(),
+            'Executing an empty integrity-check command must be a no-op.',
+        );
+    }
+
+    public function testCheckIntegrityExecutesWhenTableNameContainsDollarQuoteDelimiter(): void
+    {
+        $db = $this->getConnection();
+
+        $tableName = 'check_integrity_$yii$_table';
+
+        $command = $db->createCommand()->createTable($tableName, ['id' => 'pk']);
+
+        $command->execute();
+
+        self::assertSame(
+            0,
+            $command->checkIntegrity(true, 'public', $tableName)->execute(),
+            'Integrity checks must execute when a table name contains the initial dollar-quote delimiter.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
     }
 
     public function testBooleanValuesInsert(): void
