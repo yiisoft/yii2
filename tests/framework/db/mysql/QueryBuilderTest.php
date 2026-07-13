@@ -727,14 +727,9 @@ final class QueryBuilderTest extends BaseQueryBuilder
         string $table,
         string $oldName,
         string $newName,
-        string $createSql,
-        string $expected
+        string $expected,
     ): void {
-        $db = $this->getConnection(false);
-
-        DbHelper::dropTablesIfExist($db, [$table]);
-
-        $db->createCommand($createSql)->execute();
+        $db = $this->getConnection(false, false);
 
         self::assertSame(
             $expected,
@@ -743,10 +738,8 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 $oldName,
                 $newName,
             ),
-            'Renamed column DDL must restate the preserved definition.',
+            'Generated SQL must match the expected RENAME COLUMN statement.',
         );
-
-        DbHelper::dropTablesIfExist($db, [$table]);
     }
 
     #[DataProviderExternal(QueryBuilderProvider::class, 'createIndex')]
@@ -804,41 +797,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
                 $table,
             ),
             'Generated SQL must match the expected ALTER TABLE statement.',
-        );
-    }
-
-    public function testRenameColumnRetainsInlineCheckInGeneratedDefinition(): void
-    {
-        $db = $this->getConnection(false);
-
-        /** @var QueryBuilder $qb */
-        $qb = $db->getQueryBuilder();
-
-        DbHelper::dropTablesIfExist($db, ['rename_check']);
-
-        $db->createCommand(
-            <<<SQL
-            CREATE TABLE `rename_check` (`status` varchar(32) CHECK (`status` <> '('))
-            SQL,
-        )->execute();
-
-        $actual = $qb->renameColumn('rename_check', 'status', 'new_status');
-
-        DbHelper::dropTablesIfExist($db, ['rename_check']);
-
-        // MariaDB keeps the inline CHECK on the column line; MySQL 8.0+ promotes it to a table-level constraint.
-        $expected = $qb->isMariaDb()
-            ? <<<SQL
-            ALTER TABLE `rename_check` CHANGE `status` `new_status` varchar(32) DEFAULT NULL CHECK (`status` <> '(')
-            SQL
-            : <<<SQL
-            ALTER TABLE `rename_check` CHANGE `status` `new_status` varchar(32) DEFAULT NULL
-            SQL;
-
-        self::assertSame(
-            $expected,
-            $actual,
-            'Inline CHECK must be restated on MariaDB but absent on MySQL (promoted to table level).',
         );
     }
 

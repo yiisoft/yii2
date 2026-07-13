@@ -370,35 +370,25 @@ final class QueryBuilderProvider
     }
 
     /**
-     * @return array<string, array{string, string, string, string, string}>
+     * @return array<string, array{string, string, string, string}>
      */
     public static function renameColumn(): array
     {
         return [
-            'column preserves comment' => [
-                'qb_rename_comment',
-                'old_col',
-                'new_col',
+            'already quoted names' => [
+                '`qb_rename_quoted`',
+                '`old_col`',
+                '`new_col`',
                 <<<SQL
-                CREATE TABLE `qb_rename_comment` (
-                  `old_col` varchar(255) NOT NULL COMMENT 'Keep me.'
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-                SQL,
-                <<<SQL
-                ALTER TABLE `qb_rename_comment` CHANGE `old_col` `new_col` varchar(255) NOT NULL COMMENT 'Keep me.'
+                ALTER TABLE `qb_rename_quoted` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
-            'column with default' => [
-                'qb_rename_default',
-                'old_col',
-                'new_col',
+            'curly brace table and square bracket column placeholders' => [
+                '{{qb_rename_placeholder}}',
+                '[[old_col]]',
+                '[[new_col]]',
                 <<<SQL
-                CREATE TABLE `qb_rename_default` (
-                  `old_col` varchar(255) DEFAULT 'something'
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-                SQL,
-                <<<SQL
-                ALTER TABLE `qb_rename_default` CHANGE `old_col` `new_col` varchar(255) DEFAULT 'something'
+                ALTER TABLE {{qb_rename_placeholder}} RENAME COLUMN [[old_col]] TO [[new_col]]
                 SQL,
             ],
             'database-qualified table name' => [
@@ -406,38 +396,47 @@ final class QueryBuilderProvider
                 'old_col',
                 'new_col',
                 <<<SQL
-                CREATE TABLE `yiitest`.`qb_rename_qualified` (
-                  `old_col` varchar(255) NOT NULL
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-                SQL,
-                <<<SQL
-                ALTER TABLE `yiitest`.`qb_rename_qualified` CHANGE `old_col` `new_col` varchar(255) NOT NULL
+                ALTER TABLE `yiitest`.`qb_rename_qualified` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
-            'not null column' => [
-                'qb_rename_notnull',
-                'old_col',
-                'new_col',
+            'names with single quotes' => [
+                "qb_rename'table",
+                "old'col",
+                "new'col",
                 <<<SQL
-                CREATE TABLE `qb_rename_notnull` (
-                  `old_col` varchar(255) NOT NULL
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-                SQL,
-                <<<SQL
-                ALTER TABLE `qb_rename_notnull` CHANGE `old_col` `new_col` varchar(255) NOT NULL
+                ALTER TABLE `qb_rename'table` RENAME COLUMN `old'col` TO `new'col`
                 SQL,
             ],
-            'simple column' => [
+            'names with spaces' => [
+                'qb rename table',
+                'old col',
+                'new col',
+                <<<SQL
+                ALTER TABLE `qb rename table` RENAME COLUMN `old col` TO `new col`
+                SQL,
+            ],
+            'names with unicode characters' => [
+                'qb_rename_unicode',
+                'old_ñ_表',
+                'new_ñ_表',
+                <<<SQL
+                ALTER TABLE `qb_rename_unicode` RENAME COLUMN `old_ñ_表` TO `new_ñ_表`
+                SQL,
+            ],
+            'simple names' => [
                 'qb_rename_simple',
                 'old_col',
                 'new_col',
                 <<<SQL
-                CREATE TABLE `qb_rename_simple` (
-                  `old_col` varchar(255)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+                ALTER TABLE `qb_rename_simple` RENAME COLUMN `old_col` TO `new_col`
                 SQL,
+            ],
+            'table prefix placeholder' => [
+                '{{%qb_rename_prefixed}}',
+                'old_col',
+                'new_col',
                 <<<SQL
-                ALTER TABLE `qb_rename_simple` CHANGE `old_col` `new_col` varchar(255) DEFAULT NULL
+                ALTER TABLE {{%qb_rename_prefixed}} RENAME COLUMN `old_col` TO `new_col`
                 SQL,
             ],
         ];
