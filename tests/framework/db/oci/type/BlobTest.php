@@ -197,6 +197,59 @@ final class BlobTest extends DatabaseTestCase
         );
     }
 
+    public function testThrowNotSupportedExceptionWhenBlobUpdateConditionIsNotHash(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->delete('type')->execute();
+        $command->addPrimaryKey(
+            'PK_type_blob_shape',
+            'type',
+            'int_col',
+        )->execute();
+
+        $seed = $this->createPayload(1_024);
+
+        $command->insert(
+            'type',
+            $this->rowValues(1, $seed),
+        )->execute();
+
+        $conditions = [
+            'raw SQL string' => '"int_col" = 1',
+            'empty condition' => [],
+            'operator format' => ['or', ['int_col' => 1], ['int_col' => 2]],
+        ];
+
+        foreach ($conditions as $shape => $condition) {
+            try {
+                $command->update(
+                    'type',
+                    ['blob_col' => $this->createPayload(4_096)],
+                    $condition,
+                );
+
+                self::fail(
+                    "Shape '{$shape}' must be rejected.",
+                );
+            } catch (NotSupportedException $e) {
+                self::assertSame(
+                    'Oracle BLOB updates require non-null scalar equality values covering a primary key or unique key.',
+                    $e->getMessage(),
+                    "Shape '{$shape}' must state the unique-key equality contract.",
+                );
+            }
+        }
+
+        self::assertSame(
+            $seed,
+            $this->readBlob(1),
+            'Non-hash conditions must leave the BLOB intact.',
+        );
+    }
+
     public function testPdoValueStringAndStreamRoundTrip(): void
     {
         $db = $this->getConnection();
