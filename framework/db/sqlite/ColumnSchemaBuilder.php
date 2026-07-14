@@ -29,7 +29,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString(): string
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:

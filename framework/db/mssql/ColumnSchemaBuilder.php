@@ -28,7 +28,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      * Builds the full string for the column's schema.
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->getTypeCategory() === self::CATEGORY_PK) {
             $format = '{type}{check}{comment}{append}';
@@ -67,13 +67,5 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     public function getCheckValue()
     {
         return $this->check !== null ? (string) $this->check : null;
-    }
-
-    /**
-     * @return bool whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
-     */
-    public function isUnique()
-    {
-        return $this->isUnique;
     }
 }

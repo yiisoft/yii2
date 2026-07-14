@@ -28,7 +28,7 @@ use function str_replace;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
- * (version 13.0 and above).
+ * (version 14.0 and above).
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0

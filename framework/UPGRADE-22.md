@@ -31,7 +31,7 @@ The supported database versions are:
 | MariaDB              |          `10.6` | Pagination uses `OFFSET ... FETCH`.                                                         |
 | Microsoft SQL Server |          `2019` | Pagination and schema operations use modern SQL Server syntax and catalog views.            |
 | Oracle Database      |          `12.1` | New auto-increment columns use native identity columns; pagination uses `OFFSET ... FETCH`. |
-| PostgreSQL           |            `13` | Legacy upsert and identity-detection branches have been removed.                            |
+| PostgreSQL           |            `14` | Legacy upsert and identity-detection branches have been removed.                            |
 | SQLite               |          `3.35` | Upserts use native `INSERT ... ON CONFLICT`.                                                |
 
 CUBRID support has been removed. Applications using CUBRID must migrate to another database engine before upgrading.
@@ -505,6 +505,71 @@ calls or overrides of those protected methods.
 
 Reflected `bytea` values may now be returned as strings where Yii previously exposed a stream, including values read by
 `DbCache`. Code that deliberately handled the old stream representation should accept the normalized string value.
+
+`pgsql\QueryBuilder::alterColumn()` no longer parses `DEFAULT`, `NULL`, `CHECK`, or `UNIQUE` from compound strings. This
+avoids generating incorrect SQL for valid PostgreSQL expressions.
+
+A string containing only a type changes the column type while preserving its default and nullability:
+
+```php
+$this->alterColumn('foo1', 'bar', 'string');
+```
+
+Compound definitions must use a `ColumnSchemaBuilder`. In migrations, type helpers such as `$this->string()` create the
+builder:
+
+```php
+$this->alterColumn(
+    'foo1',
+    'bar',
+    $this->string()->notNull()->defaultValue('hello world')
+);
+```
+
+A builder without additional options also changes only the type:
+
+```php
+$this->alterColumn('foo1', 'bar', $this->string());
+```
+
+Outside migrations, create the builder through the database schema:
+
+```php
+$db = Yii::$app->db;
+
+$type = $db->getSchema()
+    ->createColumnSchemaBuilder(\yii\db\Schema::TYPE_STRING)
+    ->notNull()
+    ->defaultValue('hello world');
+
+$db->createCommand()
+    ->alterColumn('foo1', 'bar', $type)
+    ->execute();
+```
+
+PostgreSQL-specific actions beginning with `SET ...`, `DROP ...`, `RESET (...)`, `RESTART [WITH n]`, or
+`ADD GENERATED ...` can still be passed directly:
+
+```php
+$this->alterColumn('foo1', 'bar', "SET DEFAULT 'hello world'");
+$this->alterColumn('foo1', 'bar', 'DROP DEFAULT');
+$this->alterColumn('foo1', 'bar', 'SET NOT NULL');
+$this->alterColumn('foo1', 'bar', 'DROP NOT NULL');
+```
+
+These keywords cover the complete PostgreSQL `ALTER COLUMN` action grammar, and their contents are never parsed; complex
+defaults work through `SET DEFAULT ...` or `defaultExpression()`.
+
+The following compound string is no longer supported:
+
+```php
+$this->alterColumn('foo1', 'bar', "string NOT NULL DEFAULT 'hello world'");
+```
+
+`defaultValue(null)` does not remove an existing default. Use the explicit `'DROP DEFAULT'` action instead.
+`yii\db\ColumnSchemaBuilder` adds public getters for the column definition state used by query builders.
+Builder-path `CHECK` and `UNIQUE` constraints are created under stable names (`{table}_{column}_check`,
+`{table}_{column}_key`) and replace an existing constraint with the same name, so repeated migrations are idempotent.
 
 ### SQLite
 

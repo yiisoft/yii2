@@ -10,10 +10,12 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\pgsql;
 
+use Closure;
 use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ArrayExpression;
+use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
@@ -25,8 +27,10 @@ use yiiunit\framework\db\pgsql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
 
 use function array_diff;
+use function array_key_exists;
 use function array_keys;
 use function count;
+use function str_contains;
 
 /**
  * Unit tests for {@see \yii\db\Command} functionality for the PostgreSQL driver.
@@ -524,5 +528,166 @@ PGSQL
 
 
         $this->assertSame(1, $db->createCommand()->delete('array_and_json_types')->execute());
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'alterColumn')]
+    public function testAlterColumn(string $startColumn, array $setupSql, string|Closure $type, array $expected): void
+    {
+        $db = $this->getConnection();
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+
+        foreach ($setupSql as $sql) {
+            $db->createCommand($sql)->execute();
+        }
+
+        $command = $db->createCommand();
+
+        $command->createTable(
+            'alter_column',
+            ['id' => 'pk', 'bar' => $startColumn],
+        )->execute();
+
+        if ($type instanceof Closure) {
+            $type = $type($db);
+        }
+
+        $result = $command->alterColumn(
+            'alter_column',
+            'bar',
+            $type,
+        )->execute();
+
+        self::assertSame(
+            0,
+            $result,
+            'DDL must report zero affected rows.',
+        );
+
+        if (!empty($expected['repeatable'])) {
+            $command->alterColumn(
+                'alter_column',
+                'bar',
+                $type,
+            )->execute();
+        }
+
+        $this->assertAlterColumnExpectations($db, $expected);
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'alterColumnFailing')]
+    public function testThrowExceptionForAlterColumnTypeStringThatIsNotAnAction(string $type, string $exceptionMessage): void
+    {
+        $db = $this->getConnection();
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+
+        $command = $db->createCommand();
+
+        $command->createTable(
+            'alter_column',
+            ['id' => 'pk', 'bar' => 'varchar(100)'],
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            $exceptionMessage,
+        );
+
+        $command->alterColumn(
+            'alter_column',
+            'bar',
+            $type,
+        )->execute();
+    }
+
+    /**
+     * Asserts the reflected schema state of the altered `bar` column against the expectation map.
+     *
+     * @param Connection $db Active connection whose refreshed schema is inspected.
+     * @param array $expected Expectation map; {@see CommandProvider::alterColumn()} describes the supported keys.
+     */
+    private function assertAlterColumnExpectations(Connection $db, array $expected): void
+    {
+        $column = $db->getTableSchema('alter_column', true)->getColumn('bar');
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
+
+        if (isset($expected['type'])) {
+            self::assertSame(
+                $expected['type'],
+                $column->type,
+                'Abstract type must match.',
+            );
+        }
+
+        if (isset($expected['dbType'])) {
+            self::assertSame(
+                $expected['dbType'],
+                $column->dbType,
+                'Physical type must match.',
+            );
+        }
+
+        if (isset($expected['allowNull'])) {
+            self::assertSame(
+                $expected['allowNull'],
+                $column->allowNull,
+                'Nullability must match.',
+            );
+        }
+
+        if (array_key_exists('defaultValue', $expected)) {
+            self::assertSame(
+                $expected['defaultValue'],
+                $column->defaultValue,
+                $expected['defaultValue'] === null ? 'Default must be cleared.' : 'Default must match.',
+            );
+        }
+
+        if (isset($expected['defaultValueContains'])) {
+            self::assertNotNull(
+                $column->defaultValue,
+                'Default must be present.',
+            );
+            self::assertStringContainsString(
+                $expected['defaultValueContains'],
+                (string) $column->defaultValue,
+                'Default expression must be preserved.',
+            );
+        }
+
+        if (isset($expected['checkContains'])) {
+            $found = false;
+
+            foreach ($schema->getTableChecks('alter_column', true) as $check) {
+                if (str_contains($check->expression, $expected['checkContains'])) {
+                    $found = true;
+                }
+            }
+
+            self::assertTrue(
+                $found,
+                'Check constraint must exist.',
+            );
+        }
+
+        if (isset($expected['uniqueColumns'])) {
+            $matches = 0;
+
+            foreach ($schema->getTableUniques('alter_column', true) as $unique) {
+                if ($unique->columnNames === $expected['uniqueColumns']) {
+                    ++$matches;
+                }
+            }
+
+            self::assertSame(
+                1,
+                $matches,
+                'Exactly one unique constraint must cover the column.',
+            );
+        }
     }
 }

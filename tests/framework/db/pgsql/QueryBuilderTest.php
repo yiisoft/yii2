@@ -348,53 +348,20 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public function testAlterColumn(): void
+    #[DataProviderExternal(QueryBuilderProvider::class, 'alterColumn')]
+    public function testAlterColumn(string|Closure $type, string $expected): void
     {
-        $qb = $this->getQueryBuilder();
+        $db = $this->getConnection(false, false);
 
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" DROP NOT NULL';
-        $sql = $qb->alterColumn('foo1', 'bar', 'varchar(255)');
-        $this->assertEquals($expected, $sql);
+        if ($type instanceof Closure) {
+            $type = $type($this->getDb());
+        }
 
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" SET NOT null';
-        $sql = $qb->alterColumn('foo1', 'bar', 'SET NOT null');
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" drop default';
-        $sql = $qb->alterColumn('foo1', 'bar', 'drop default');
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" reset xyz';
-        $sql = $qb->alterColumn('foo1', 'bar', 'reset xyz');
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" DROP NOT NULL';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->string(255));
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" SET NOT NULL';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->notNull());
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" DROP NOT NULL, ADD CONSTRAINT foo1_bar_check CHECK (char_length(bar) > 5)';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->check('char_length(bar) > 5'));
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT \'\', ALTER COLUMN "bar" DROP NOT NULL';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue(''));
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT \'AbCdE\', ALTER COLUMN "bar" DROP NOT NULL';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->string(255)->defaultValue('AbCdE'));
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE timestamp(0), ALTER COLUMN "bar" SET DEFAULT CURRENT_TIMESTAMP, ALTER COLUMN "bar" DROP NOT NULL';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'));
-        $this->assertEquals($expected, $sql);
-
-        $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(30), ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" DROP NOT NULL, ADD UNIQUE ("bar")';
-        $sql = $qb->alterColumn('foo1', 'bar', $this->string(30)->unique());
-        $this->assertEquals($expected, $sql);
+        self::assertSame(
+            $expected,
+            $db->getQueryBuilder()->alterColumn('foo1', 'bar', $type),
+            'Generated SQL must match the expected statement.',
+        );
     }
 
     public static function indexesProvider(): array
