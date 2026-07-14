@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\mssql;
 
+use Closure;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Exception;
@@ -22,6 +23,7 @@ use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\mssql\providers\CommandProvider;
 use yiiunit\support\DbHelper;
 
+use function array_key_exists;
 use function array_keys;
 use function json_encode;
 
@@ -675,48 +677,161 @@ final class CommandTest extends BaseCommand
         $db->createCommand()->dropTable($rawTableName)->execute();
     }
 
-    public function testAlterColumn(): void
+    #[DataProviderExternal(CommandProvider::class, 'alterColumn')]
+    public function testAlterColumn(string $startColumn, array $setupSql, string|Closure $type, array $expected): void
     {
         $db = $this->getConnection();
 
-        $db->createCommand()->alterColumn(
-            'foo1',
-            'bar',
-            'varchar(255)',
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+
+        foreach ($setupSql as $sql) {
+            $db->createCommand($sql)->execute();
+        }
+
+        $command = $db->createCommand();
+
+        $command->createTable(
+            'alter_column',
+            ['id' => 'pk', 'bar' => $startColumn],
         )->execute();
 
-        $tableSchema = $db->getTableSchema('foo1', true);
+        if ($type instanceof Closure) {
+            $type = $type($db);
+        }
 
-        self::assertSame(
-            'varchar(255)',
-            $tableSchema->getColumn('bar')->dbType,
-            'Column type must reflect the new definition.',
-        );
-        self::assertTrue(
-            $tableSchema->getColumn('bar')->allowNull,
-            'Column must stay nullable.',
-        );
-
-        $db->createCommand()->alterColumn(
-            'foo1',
+        $result = $command->alterColumn(
+            'alter_column',
             'bar',
-            $db
-                ->getSchema()
-                ->createColumnSchemaBuilder(Schema::TYPE_STRING, 128)
-                ->notNull(),
+            $type,
         )->execute();
 
-        $tableSchema = $db->getTableSchema('foo1', true);
-
         self::assertSame(
-            'nvarchar(128)',
-            $tableSchema->getColumn('bar')->dbType,
-            'Column type must reflect the new definition.',
+            0,
+            $result,
+            'DDL must report zero affected rows.',
         );
-        self::assertFalse(
-            $tableSchema->getColumn('bar')->allowNull,
-            'Column must be NOT NULL after the change.',
+
+        if (($expected['repeatable'] ?? false) === true) {
+            $command->alterColumn(
+                'alter_column',
+                'bar',
+                $type,
+            )->execute();
+        }
+
+        if (isset($expected['type'])) {
+            DbHelper::assertColumnType(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['type'],
+            );
+        }
+
+        if (isset($expected['dbType'])) {
+            DbHelper::assertColumnDbType(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['dbType'],
+            );
+        }
+
+        if (isset($expected['allowNull'])) {
+            DbHelper::assertColumnAllowNull(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['allowNull'],
+            );
+        }
+
+        if (isset($expected['checkContains'])) {
+            DbHelper::assertCheckConstraintContains(
+                $db,
+                'alter_column',
+                $expected['checkContains'],
+            );
+        }
+
+        if (isset($expected['uniqueColumns'])) {
+            DbHelper::assertSingleUniqueConstraintCovers(
+                $db,
+                'alter_column',
+                $expected['uniqueColumns'],
+            );
+        }
+
+        if (isset($expected['defaultExpressionContains'])) {
+            DbHelper::assertDefaultConstraintContains(
+                $db,
+                'alter_column',
+                $expected['defaultExpressionContains'],
+            );
+        }
+
+        if (array_key_exists('defaultValue', $expected)) {
+            DbHelper::assertColumnDefaultValue(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['defaultValue'],
+            );
+        }
+
+        if (array_key_exists('checkCount', $expected)) {
+            DbHelper::assertCheckConstraintCount(
+                $db,
+                'alter_column',
+                $expected['checkCount'],
+            );
+        }
+
+        if (array_key_exists('defaultCount', $expected)) {
+            DbHelper::assertDefaultConstraintCount(
+                $db,
+                'alter_column',
+                $expected['defaultCount'],
+            );
+        }
+
+        if (array_key_exists('uniqueCount', $expected)) {
+            DbHelper::assertUniqueConstraintCount(
+                $db,
+                'alter_column',
+                $expected['uniqueCount'],
+            );
+        }
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'alterColumnFailing')]
+    public function testThrowExceptionForAlterColumnTypeStringWithConstraintClause(
+        string $type,
+        string $exceptionMessage,
+    ): void {
+        $db = $this->getConnection();
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+
+        $command = $db->createCommand();
+
+        $command->createTable(
+            'alter_column',
+            ['id' => 'pk', 'bar' => 'varchar(100)'],
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            $exceptionMessage,
         );
+
+        $command->alterColumn(
+            'alter_column',
+            'bar',
+            $type,
+        )->execute();
     }
 
     public function testAlterColumnRollsBackDroppedConstraintsWhenAlterationFails(): void

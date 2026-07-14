@@ -10,8 +10,12 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\mssql\providers;
 
+use Closure;
+use yii\db\ColumnSchemaBuilder;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\Schema;
 
 /**
  * Data provider for {@see \yiiunit\framework\db\mssql\CommandTest} test cases.
@@ -266,6 +270,178 @@ final class CommandProvider
                 'integer',
                 null,
                 '/^.*NULL.*$/i',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, array<int, string>, Closure|string, array<string, mixed>}>
+     */
+    public static function alterColumn(): array
+    {
+        return [
+            'abstract type string' => [
+                'varchar(100)',
+                [],
+                'string',
+                ['type' => 'string', 'dbType' => 'nvarchar(255)'],
+            ],
+            'abstract type string not null passthrough' => [
+                'varchar(100)',
+                [],
+                'string NOT NULL',
+                ['allowNull' => false],
+            ],
+            'builder check' => [
+                'varchar(100) CHECK (LEN(bar) > 1)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->check('LEN(bar) > 5'),
+                ['checkContains' => 'len', 'repeatable' => true],
+            ],
+            'builder default expression function' => [
+                'datetime',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_DATETIME)
+                    ->defaultExpression('GETDATE()'),
+                ['defaultExpressionContains' => 'getdate'],
+            ],
+            'builder default expression with comma' => [
+                'datetime',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_DATETIME)
+                    ->defaultExpression('DATEADD(day, 1, GETDATE())'),
+                ['defaultExpressionContains' => 'dateadd'],
+            ],
+            'builder float default' => [
+                'double',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_DOUBLE)
+                    ->defaultValue(1.5),
+                ['defaultValue' => 1.5],
+            ],
+            'builder integer default' => [
+                'integer',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                    ->defaultValue(42),
+                ['defaultValue' => 42],
+            ],
+            'builder not null' => [
+                'varchar(100)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->notNull(),
+                ['allowNull' => false],
+            ],
+            'builder not null with default' => [
+                'varchar(100)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->notNull()
+                    ->defaultValue('hello world'),
+                ['allowNull' => false, 'defaultValue' => 'hello world'],
+            ],
+            'builder null' => [
+                'varchar(100) NOT NULL',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->null(),
+                ['allowNull' => true],
+            ],
+            'builder null default' => [
+                "varchar(100) NOT NULL DEFAULT 'x'",
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->defaultValue(null),
+                // MSSQL drops the old default and re-adds `DEFAULT NULL`, so the reflected default is `null`
+                // (PostgreSQL keeps the pre-existing literal because it never re-adds a default).
+                ['allowNull' => true, 'defaultValue' => null],
+            ],
+            'builder scalar default' => [
+                'varchar(100)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->defaultValue('hello world'),
+                ['defaultValue' => 'hello world'],
+            ],
+            'builder type only' => [
+                'varchar(100)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255),
+                ['type' => 'string', 'dbType' => 'nvarchar(255)'],
+            ],
+            'builder unique' => [
+                'varchar(100)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 30)
+                    ->unique(),
+                ['uniqueColumns' => ['bar'], 'repeatable' => true],
+            ],
+            'native type string' => [
+                'varchar(100)',
+                [],
+                'varchar(255)',
+                ['type' => 'string', 'dbType' => 'varchar(255)'],
+            ],
+            'string type drops existing check' => [
+                'varchar(100) CHECK (LEN(bar) > 1)',
+                [],
+                'varchar(255)',
+                ['checkCount' => 0],
+            ],
+            'string type drops existing default' => [
+                "varchar(100) DEFAULT 'x'",
+                [],
+                'varchar(255)',
+                ['defaultValue' => null, 'defaultCount' => 0],
+            ],
+            'string unique start dropped' => [
+                'varchar(100) UNIQUE',
+                [],
+                'varchar(255)',
+                ['uniqueCount' => 0],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function alterColumnFailing(): array
+    {
+        return [
+            'inline CHECK clause' => [
+                'varchar(255) CHECK (LEN(bar) > 1)',
+                "Incorrect syntax near the keyword 'CHECK'.",
+            ],
+            'inline DEFAULT clause' => [
+                "varchar(255) DEFAULT 'x'",
+                "Incorrect syntax near the keyword 'DEFAULT'.",
+            ],
+            'inline UNIQUE clause' => [
+                'varchar(255) UNIQUE',
+                "Incorrect syntax near the keyword 'UNIQUE'.",
+            ],
+            'PostgreSQL DROP DEFAULT action' => [
+                'DROP DEFAULT',
+                "Incorrect syntax near the keyword 'DEFAULT'.",
+            ],
+            'PostgreSQL SET NOT NULL action' => [
+                'SET NOT NULL',
+                "Incorrect syntax near the keyword 'SET'.",
             ],
         ];
     }
