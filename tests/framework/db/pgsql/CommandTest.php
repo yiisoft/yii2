@@ -15,7 +15,6 @@ use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ArrayExpression;
-use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
@@ -30,7 +29,6 @@ use function array_diff;
 use function array_key_exists;
 use function array_keys;
 use function count;
-use function str_contains;
 
 /**
  * Unit tests for {@see \yii\db\Command} functionality for the PostgreSQL driver.
@@ -572,14 +570,75 @@ PGSQL
             )->execute();
         }
 
-        $this->assertAlterColumnExpectations($db, $expected);
+        if (isset($expected['type'])) {
+            DbHelper::assertColumnType(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['type'],
+            );
+        }
+
+        if (isset($expected['dbType'])) {
+            DbHelper::assertColumnDbType(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['dbType'],
+            );
+        }
+
+        if (isset($expected['allowNull'])) {
+            DbHelper::assertColumnAllowNull(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['allowNull'],
+            );
+        }
+
+        if (array_key_exists('defaultValue', $expected)) {
+            DbHelper::assertColumnDefaultValue(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['defaultValue'],
+            );
+        }
+
+        if (isset($expected['defaultValueContains'])) {
+            DbHelper::assertColumnDefaultValueContains(
+                $db,
+                'alter_column',
+                'bar',
+                $expected['defaultValueContains'],
+            );
+        }
+
+        if (isset($expected['checkContains'])) {
+            DbHelper::assertCheckConstraintContains(
+                $db,
+                'alter_column',
+                $expected['checkContains'],
+            );
+        }
+
+        if (isset($expected['uniqueColumns'])) {
+            DbHelper::assertSingleUniqueConstraintCovers(
+                $db,
+                'alter_column',
+                $expected['uniqueColumns'],
+            );
+        }
 
         DbHelper::dropTablesIfExist($db, ['alter_column']);
     }
 
     #[DataProviderExternal(CommandProvider::class, 'alterColumnFailing')]
-    public function testThrowExceptionForAlterColumnTypeStringThatIsNotAnAction(string $type, string $exceptionMessage): void
-    {
+    public function testThrowExceptionForAlterColumnTypeStringThatIsNotAnAction(
+        string $type,
+        string $exceptionMessage,
+    ): void {
         $db = $this->getConnection();
 
         DbHelper::dropTablesIfExist($db, ['alter_column']);
@@ -601,93 +660,5 @@ PGSQL
             'bar',
             $type,
         )->execute();
-    }
-
-    /**
-     * Asserts the reflected schema state of the altered `bar` column against the expectation map.
-     *
-     * @param Connection $db Active connection whose refreshed schema is inspected.
-     * @param array $expected Expectation map; {@see CommandProvider::alterColumn()} describes the supported keys.
-     */
-    private function assertAlterColumnExpectations(Connection $db, array $expected): void
-    {
-        $column = $db->getTableSchema('alter_column', true)->getColumn('bar');
-        /** @var Schema $schema */
-        $schema = $db->getSchema();
-
-        if (isset($expected['type'])) {
-            self::assertSame(
-                $expected['type'],
-                $column->type,
-                'Abstract type must match.',
-            );
-        }
-
-        if (isset($expected['dbType'])) {
-            self::assertSame(
-                $expected['dbType'],
-                $column->dbType,
-                'Physical type must match.',
-            );
-        }
-
-        if (isset($expected['allowNull'])) {
-            self::assertSame(
-                $expected['allowNull'],
-                $column->allowNull,
-                'Nullability must match.',
-            );
-        }
-
-        if (array_key_exists('defaultValue', $expected)) {
-            self::assertSame(
-                $expected['defaultValue'],
-                $column->defaultValue,
-                $expected['defaultValue'] === null ? 'Default must be cleared.' : 'Default must match.',
-            );
-        }
-
-        if (isset($expected['defaultValueContains'])) {
-            self::assertNotNull(
-                $column->defaultValue,
-                'Default must be present.',
-            );
-            self::assertStringContainsString(
-                $expected['defaultValueContains'],
-                (string) $column->defaultValue,
-                'Default expression must be preserved.',
-            );
-        }
-
-        if (isset($expected['checkContains'])) {
-            $found = false;
-
-            foreach ($schema->getTableChecks('alter_column', true) as $check) {
-                if (str_contains($check->expression, $expected['checkContains'])) {
-                    $found = true;
-                }
-            }
-
-            self::assertTrue(
-                $found,
-                'Check constraint must exist.',
-            );
-        }
-
-        if (isset($expected['uniqueColumns'])) {
-            $matches = 0;
-
-            foreach ($schema->getTableUniques('alter_column', true) as $unique) {
-                if ($unique->columnNames === $expected['uniqueColumns']) {
-                    ++$matches;
-                }
-            }
-
-            self::assertSame(
-                1,
-                $matches,
-                'Exactly one unique constraint must cover the column.',
-            );
-        }
     }
 }
