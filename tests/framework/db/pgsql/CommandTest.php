@@ -541,6 +541,8 @@ PGSQL
         }
 
         $command = $db->createCommand();
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
 
         $command->createTable(
             'alter_column',
@@ -612,7 +614,7 @@ PGSQL
         if (isset($expected['checkContains'])) {
             $found = false;
 
-            foreach ($db->getSchema()->getTableChecks('alter_column', true) as $check) {
+            foreach ($schema->getTableChecks('alter_column', true) as $check) {
                 if (str_contains($check->expression, $expected['checkContains'])) {
                     $found = true;
                 }
@@ -627,7 +629,7 @@ PGSQL
         if (isset($expected['uniqueColumns'])) {
             $found = false;
 
-            foreach ($db->getSchema()->getTableUniques('alter_column', true) as $unique) {
+            foreach ($schema->getTableUniques('alter_column', true) as $unique) {
                 if ($unique->columnNames === $expected['uniqueColumns']) {
                     $found = true;
                 }
