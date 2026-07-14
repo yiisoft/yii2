@@ -568,6 +568,8 @@ $this->alterColumn('foo1', 'bar', "string NOT NULL DEFAULT 'hello world'");
 
 `defaultValue(null)` does not remove an existing default. Use the explicit `'DROP DEFAULT'` action instead.
 `yii\db\ColumnSchemaBuilder` adds public getters for the column definition state used by query builders.
+Builder-path `CHECK` and `UNIQUE` constraints are created under stable names (`{table}_{column}_check`,
+`{table}_{column}_key`) and replace an existing constraint with the same name, so repeated migrations are idempotent.
 
 ### SQLite
 

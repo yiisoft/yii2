@@ -28,7 +28,7 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
      * Builds the full string for the column's schema.
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if ($this->getTypeCategory() === self::CATEGORY_PK) {
             $format = '{type}{check}{comment}{append}';

@@ -352,7 +352,7 @@ class ColumnSchemaBuilder extends BaseObject implements Stringable
      * Builds the full string for the column's schema.
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:

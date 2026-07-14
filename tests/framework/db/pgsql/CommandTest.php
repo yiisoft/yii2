@@ -15,6 +15,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\ArrayExpression;
+use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
@@ -541,8 +542,6 @@ PGSQL
         }
 
         $command = $db->createCommand();
-        /** @var Schema $schema */
-        $schema = $db->getSchema();
 
         $command->createTable(
             'alter_column',
@@ -565,7 +564,56 @@ PGSQL
             'DDL must report zero affected rows.',
         );
 
+        if (!empty($expected['repeatable'])) {
+            $command->alterColumn(
+                'alter_column',
+                'bar',
+                $type,
+            )->execute();
+        }
+
+        $this->assertAlterColumnExpectations($db, $expected);
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+    }
+
+    #[DataProviderExternal(CommandProvider::class, 'alterColumnFailing')]
+    public function testThrowExceptionForAlterColumnTypeStringThatIsNotAnAction(string $type, string $exceptionMessage): void
+    {
+        $db = $this->getConnection();
+
+        DbHelper::dropTablesIfExist($db, ['alter_column']);
+
+        $command = $db->createCommand();
+
+        $command->createTable(
+            'alter_column',
+            ['id' => 'pk', 'bar' => 'varchar(100)'],
+        )->execute();
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage(
+            $exceptionMessage,
+        );
+
+        $command->alterColumn(
+            'alter_column',
+            'bar',
+            $type,
+        )->execute();
+    }
+
+    /**
+     * Asserts the reflected schema state of the altered `bar` column against the expectation map.
+     *
+     * @param Connection $db Active connection whose refreshed schema is inspected.
+     * @param array $expected Expectation map; {@see CommandProvider::alterColumn()} describes the supported keys.
+     */
+    private function assertAlterColumnExpectations(Connection $db, array $expected): void
+    {
         $column = $db->getTableSchema('alter_column', true)->getColumn('bar');
+        /** @var Schema $schema */
+        $schema = $db->getSchema();
 
         if (isset($expected['type'])) {
             self::assertSame(
@@ -627,46 +675,19 @@ PGSQL
         }
 
         if (isset($expected['uniqueColumns'])) {
-            $found = false;
+            $matches = 0;
 
             foreach ($schema->getTableUniques('alter_column', true) as $unique) {
                 if ($unique->columnNames === $expected['uniqueColumns']) {
-                    $found = true;
+                    ++$matches;
                 }
             }
 
-            self::assertTrue(
-                $found,
-                'Unique constraint must exist.',
+            self::assertSame(
+                1,
+                $matches,
+                'Exactly one unique constraint must cover the column.',
             );
         }
-
-        DbHelper::dropTablesIfExist($db, ['alter_column']);
-    }
-
-    #[DataProviderExternal(CommandProvider::class, 'alterColumnFailing')]
-    public function testThrowExceptionForAlterColumnTypeStringThatIsNotAnAction(string $type, string $exceptionMessage): void
-    {
-        $db = $this->getConnection();
-
-        DbHelper::dropTablesIfExist($db, ['alter_column']);
-
-        $command = $db->createCommand();
-
-        $command->createTable(
-            'alter_column',
-            ['id' => 'pk', 'bar' => 'varchar(100)'],
-        )->execute();
-
-        $this->expectException(Exception::class);
-        $this->expectExceptionMessage(
-            $exceptionMessage,
-        );
-
-        $command->alterColumn(
-            'alter_column',
-            'bar',
-            $type,
-        )->execute();
     }
 }

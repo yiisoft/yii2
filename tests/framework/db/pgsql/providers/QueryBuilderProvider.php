@@ -407,7 +407,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
                     ->check('char_length(bar) > 5'),
                 <<<SQL
-                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ADD CONSTRAINT foo1_bar_check CHECK (char_length(bar) > 5)
+                ALTER TABLE "foo1" DROP CONSTRAINT IF EXISTS foo1_bar_check, ALTER COLUMN "bar" TYPE varchar(255), ADD CONSTRAINT foo1_bar_check CHECK (char_length(bar) > 5)
                 SQL,
             ],
             'builder default expression function' => [
@@ -503,7 +503,7 @@ final class QueryBuilderProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 30)
                     ->unique(),
                 <<<SQL
-                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(30), ADD UNIQUE ("bar")
+                ALTER TABLE "foo1" DROP CONSTRAINT IF EXISTS foo1_bar_key, ALTER COLUMN "bar" TYPE varchar(30), ADD CONSTRAINT foo1_bar_key UNIQUE ("bar")
                 SQL,
             ],
             'compound definition string is not parsed' => [

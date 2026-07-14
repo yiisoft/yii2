@@ -349,7 +349,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * Supports three input modes for `$type`.
      * - A {@see ColumnSchemaBuilder} produces a structured, multi-action `ALTER TABLE` statement that changes the
-     *   column type and applies any nullability, default, `CHECK`, and `UNIQUE` state carried by the builder.
+     *   column type and applies any nullability, default, `CHECK`, and `UNIQUE` state carried by the builder; `CHECK`
+     *   and `UNIQUE` constraints are recreated under stable names derived from the table and column, replacing
+     *   same-named constraints.
      * - A string starting with a PostgreSQL per-column action keyword; `SET ...`, `DROP ...`, `RESET (...)`,
      *   `RESTART [WITH n]`, or `ADD GENERATED ...`, is emitted verbatim as a single action; PostgreSQL parses its
      *   contents.
@@ -549,13 +551,35 @@ class QueryBuilder extends \yii\db\QueryBuilder
         string $column,
         ColumnSchemaBuilder $type,
     ): string {
+        $constraintPrefix = null;
+
         $default = $type->getDefault();
+        $check = $type->getCheck();
+        $isUnique = $type->isUnique();
+
+        if ($check !== null || $isUnique) {
+            $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', "{$table}_$column");
+        }
+
         $actions = [];
 
         // Drop the existing default first so an incompatible old default cannot fail the TYPE change.
         if ($default !== null) {
             $actions[] = <<<SQL
             ALTER COLUMN {$columnName} DROP DEFAULT
+            SQL;
+        }
+
+        // Drop stale same-named constraints first so they cannot fail the TYPE change.
+        if ($check !== null) {
+            $actions[] = <<<SQL
+            DROP CONSTRAINT IF EXISTS {$constraintPrefix}_check
+            SQL;
+        }
+
+        if ($isUnique) {
+            $actions[] = <<<SQL
+            DROP CONSTRAINT IF EXISTS {$constraintPrefix}_key
             SQL;
         }
 
@@ -593,19 +617,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
             SQL;
         }
 
-        $check = $type->getCheck();
-
         if ($check !== null) {
-            $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', "{$table}_$column");
-
             $actions[] = <<<SQL
             ADD CONSTRAINT {$constraintPrefix}_check CHECK ({$check})
             SQL;
         }
 
-        if ($type->isUnique()) {
+        if ($isUnique) {
             $actions[] = <<<SQL
-            ADD UNIQUE ({$columnName})
+            ADD CONSTRAINT {$constraintPrefix}_key UNIQUE ({$columnName})
             SQL;
         }
 

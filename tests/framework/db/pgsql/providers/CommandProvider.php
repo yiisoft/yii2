@@ -300,12 +300,12 @@ final class CommandProvider
                 [],
             ],
             'builder check' => [
-                'varchar(100)',
+                'varchar(100) CHECK (char_length(bar) > 1)',
                 [],
                 static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
                     ->check('char_length(bar) > 5'),
-                ['checkContains' => 'char_length'],
+                ['checkContains' => 'char_length', 'repeatable' => true],
             ],
             'builder default expression function' => [
                 'timestamp',
@@ -399,12 +399,12 @@ final class CommandProvider
                 ['type' => 'string'],
             ],
             'builder unique' => [
-                'varchar(100)',
+                'varchar(100) UNIQUE',
                 [],
                 static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 30)
                     ->unique(),
-                ['uniqueColumns' => ['bar']],
+                ['uniqueColumns' => ['bar'], 'repeatable' => true],
             ],
             'DROP DEFAULT action' => [
                 "varchar(100) DEFAULT 'x'",
