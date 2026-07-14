@@ -30,6 +30,7 @@ use function array_keys;
 use function count;
 use function is_array;
 use function is_float;
+use function is_scalar;
 use function is_string;
 use function strlen;
 use function substr;
@@ -269,12 +270,23 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      *
-     * The locator protocol supports only a single-row `BLOB` update.
+     * Oracle BLOB updates require a condition that guarantees at most one matched row.
+     *
+     * @throws NotSupportedException if the condition does not cover a unique key using non-null scalar values.
      */
     public function update($table, $columns, $condition, &$params)
     {
-        return parent::update($table, $columns, $condition, $params)
-            . $this->lobReturningClause($this->getLobReturning($params));
+        $sql = parent::update($table, $columns, $condition, $params);
+
+        $lobReturning = $this->getLobReturning($params);
+
+        if ($lobReturning !== [] && $this->conditionTargetsSingleRow($table, $condition) === false) {
+            throw new NotSupportedException(
+                'Oracle BLOB updates require non-null scalar equality values covering a primary key or unique key.',
+            );
+        }
+
+        return $sql . $this->lobReturningClause($lobReturning);
     }
 
     /**
@@ -647,6 +659,33 @@ class QueryBuilder extends \yii\db\QueryBuilder
         );
 
         return $placeholder;
+    }
+
+    /**
+     * Checks whether the condition guarantees at most one matched row.
+     *
+     * @param string $table Target table, passed to the schema exactly as received.
+     * @param mixed $condition The update condition to inspect.
+     *
+     * @return bool `true` when the condition is a safe single-row equality hash; `false` otherwise.
+     */
+    private function conditionTargetsSingleRow(string $table, mixed $condition): bool
+    {
+        if (!is_array($condition) || $condition === [] || isset($condition[0])) {
+            return false;
+        }
+
+        foreach ($condition as $value) {
+            if (!is_scalar($value) || $value === '') {
+                return false;
+            }
+        }
+
+        $constraints = [];
+
+        $this->prepareUpsertColumns($table, $condition, false, $constraints);
+
+        return $constraints !== [];
     }
 
     private function getIdentityGenerationClause(TableSchema $tableSchema): string

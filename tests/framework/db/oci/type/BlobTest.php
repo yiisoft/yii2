@@ -75,6 +75,11 @@ final class BlobTest extends DatabaseTestCase
         $command = $db->createCommand();
 
         $command->delete('type')->execute();
+        $command->addPrimaryKey(
+            'PK_type_blob_update',
+            'type',
+            'int_col',
+        )->execute();
         $command->insert(
             'type',
             $this->rowValues(1, 'initial'),
@@ -98,46 +103,97 @@ final class BlobTest extends DatabaseTestCase
         }
     }
 
-    /**
-     * Documented limitation: Oracle `RETURNING lob INTO :p` binds one scalar locator, so a multi-row UPDATE fills
-     * only one matched row. Multi-row BLOB UPDATE is unsupported and is deliberately not split into N statements.
-     */
-    public function testMultiRowBlobUpdateFillsOnlyOneMatchedRow(): void
+    public function testThrowNotSupportedExceptionWhenBlobUpdateMatchesMultipleRows(): void
     {
         $db = $this->getConnection();
 
         $command = $db->createCommand();
 
         $command->delete('type')->execute();
+        $command->addPrimaryKey(
+            'PK_type_blob_multi',
+            'type',
+            'int_col',
+        )->execute();
+
+        $first = $this->createPayload(1_024);
+
+        $second = strrev($this->createPayload(2_048));
+
         $command->insert(
             'type',
-            $this->rowValues(1, 'first'),
+            $this->rowValues(1, $first),
         )->execute();
         $command->insert(
             'type',
-            $this->rowValues(2, 'second'),
+            $this->rowValues(2, $second),
         )->execute();
 
-        $payload = $this->createPayload(65_536);
+        try {
+            $command->update(
+                'type',
+                ['blob_col' => $this->createPayload(65_536)],
+                ['int_col' => [1, 2]],
+            );
 
-        $command->update(
-            'type',
-            ['blob_col' => $payload],
-            ['int_col' => [1, 2]],
-        )->execute();
-
-        $filled = 0;
-
-        foreach ([1, 2] as $id) {
-            if ($this->readBlob($id) === $payload) {
-                $filled++;
-            }
+            self::fail(
+                'Multi-row BLOB update must be rejected before execution.',
+            );
+        } catch (NotSupportedException $e) {
+            self::assertSame(
+                'Oracle BLOB updates require non-null scalar equality values covering a primary key or unique key.',
+                $e->getMessage(),
+                'Rejection must state the unique-key equality contract.',
+            );
         }
 
-        self::assertLessThan(
-            2,
-            $filled,
-            'Multi-row BLOB update must not fill every matched row.',
+        self::assertSame(
+            $first,
+            $this->readBlob(1),
+            'Row `1` BLOB must survive intact.',
+        );
+        self::assertSame(
+            $second,
+            $this->readBlob(2),
+            'Row `2` BLOB must survive intact.',
+        );
+    }
+
+    public function testThrowNotSupportedExceptionWhenBlobUpdateTargetsNonUniqueColumn(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+
+        $command->delete('type')->execute();
+
+        $seed = $this->createPayload(1_024);
+
+        $command->insert(
+            'type',
+            $this->rowValues(1, $seed),
+        )->execute();
+
+        try {
+            $command->update(
+                'type',
+                ['blob_col' => $this->createPayload(4_096)],
+                ['int_col' => 1],
+            );
+
+            self::fail('A non-unique equality must be rejected.');
+        } catch (NotSupportedException $e) {
+            self::assertSame(
+                'Oracle BLOB updates require non-null scalar equality values covering a primary key or unique key.',
+                $e->getMessage(),
+                'Rejection must state the unique-key equality contract.',
+            );
+        }
+
+        self::assertSame(
+            $seed,
+            $this->readBlob(1),
+            'BLOB must stay untouched without a unique key.',
         );
     }
 
@@ -880,7 +936,7 @@ final class BlobTest extends DatabaseTestCase
         );
     }
 
-    public function testInsertRoundTripsMultipleBlobColumns(): void
+    public function testMultipleBlobColumnsRoundTripOnInsertAndSingleRowUpdate(): void
     {
         $db = $this->getConnection();
 
@@ -890,7 +946,7 @@ final class BlobTest extends DatabaseTestCase
 
         $command->createTable(
             'blob_multi',
-            ['id' => 'integer', 'blob_a' => 'binary', 'blob_b' => 'binary'],
+            ['id' => 'integer PRIMARY KEY', 'blob_a' => 'binary', 'blob_b' => 'binary'],
         )->execute();
 
         $payloadA = $this->createPayload(65_536);
@@ -918,6 +974,7 @@ final class BlobTest extends DatabaseTestCase
                 'blob_multi',
                 ['id' => 1, 'blob_a' => $payloadA, 'blob_b' => $payloadB],
             )->execute(),
+            'Exactly one row must be inserted.',
         );
 
         $selectBlob = static fn(string $column): mixed => (new Query())
@@ -936,6 +993,30 @@ final class BlobTest extends DatabaseTestCase
             $payloadB,
             $selectBlob('blob_b'),
             'Second BLOB column must round-trip.',
+        );
+
+        $updatedA = $this->createPayload(16_384);
+
+        $updatedB = strrev($this->createPayload(8_192));
+
+        self::assertSame(
+            1,
+            $command->update(
+                'blob_multi',
+                ['blob_a' => $updatedA, 'blob_b' => $updatedB],
+                ['id' => 1],
+            )->execute(),
+            'Exactly one row must be updated.',
+        );
+        self::assertSame(
+            $updatedA,
+            $selectBlob('blob_a'),
+            'First BLOB column must round-trip after the update.',
+        );
+        self::assertSame(
+            $updatedB,
+            $selectBlob('blob_b'),
+            'Second BLOB column must round-trip after the update.',
         );
 
         DbHelper::dropTablesIfExist($db, ['blob_multi']);
