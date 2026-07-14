@@ -129,6 +129,7 @@ Yii Framework 2 Change Log
 - Bug #21004: Fix PostgreSQL `yii\db\pgsql\QueryBuilder::checkIntegrity()` changing the connection-wide PDO emulate-prepares setting (terabytesoftw)
 - Bug #21005: Fix `yii\db\mysql\QueryBuilder::renameColumn()` to use the native `ALTER TABLE ... RENAME COLUMN` statement instead of parsing `SHOW CREATE TABLE` output (terabytesoftw)
 - Bug #19929: Fix `yii\db\pgsql\QueryBuilder::alterColumn()` corrupting compound column definitions by removing string parsing (terabytesoftw)
+- Bug #21008: Fix `yii\db\oci\QueryBuilder::update()` to reject a `BLOB` update unless the condition covers a primary key or unique key, preventing multi-row data loss (terabytesoftw)
 
 2.0.56 under development
 ------------------------
