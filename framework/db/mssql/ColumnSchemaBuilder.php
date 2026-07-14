@@ -68,12 +68,4 @@ class ColumnSchemaBuilder extends AbstractColumnSchemaBuilder
     {
         return $this->check !== null ? (string) $this->check : null;
     }
-
-    /**
-     * @return bool whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
-     */
-    public function isUnique()
-    {
-        return $this->isUnique;
-    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,6 +10,7 @@
 
 namespace yii\db;
 
+use Stringable;
 use yii\base\BaseObject;
 use yii\helpers\StringHelper;
 
@@ -21,7 +24,7 @@ use yii\helpers\StringHelper;
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
-class ColumnSchemaBuilder extends BaseObject
+class ColumnSchemaBuilder extends BaseObject implements Stringable
 {
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
@@ -78,8 +81,6 @@ class ColumnSchemaBuilder extends BaseObject
      * @since 2.0.8
      */
     protected $isFirst;
-
-
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.43
@@ -271,6 +272,80 @@ class ColumnSchemaBuilder extends BaseObject
     {
         $this->append = $sql;
         return $this;
+    }
+
+    /**
+     * Returns the abstract type together with its length or precision, without any constraint keywords.
+     *
+     * The result is intended for {@see QueryBuilder::getColumnType()} to resolve the physical column type.
+     *
+     * @return string abstract type plus optional length, for example `string(255)`.
+     *
+     * @since 22.0
+     */
+    public function getTypeDefinition(): string
+    {
+        return $this->type . $this->buildLengthString();
+    }
+
+    /**
+     * Returns the raw default value of the column.
+     *
+     * @return mixed scalar value, an {@see Expression} when {@see defaultExpression()} was used, or `null` when unset.
+     *
+     * @since 22.0
+     */
+    public function getDefault(): mixed
+    {
+        return $this->default;
+    }
+
+    /**
+     * Returns the nullability state of the column as a tri-state value.
+     *
+     * @return bool|null `true` for `NOT NULL`, `false` for `NULL`, or `null` when the nullability is unspecified.
+     *
+     * @since 22.0
+     */
+    public function isNotNull(): bool|null
+    {
+        return $this->isNotNull;
+    }
+
+    /**
+     * Returns whether the column carries a `UNIQUE` constraint.
+     *
+     * @return bool `true` when a `UNIQUE` constraint is set; `false` otherwise.
+     *
+     * @since 22.0
+     */
+    public function isUnique(): bool
+    {
+        return $this->isUnique;
+    }
+
+    /**
+     * Returns the raw `CHECK` constraint expression of the column.
+     *
+     * @return string|null `CHECK` expression, or `null` when no constraint is set.
+     *
+     * @since 22.0
+     */
+    public function getCheck(): string|null
+    {
+        return $this->check;
+    }
+
+    /**
+     * Returns the raw SQL fragment appended to the column definition.
+     *
+     * @return string|null appended SQL fragment, or `null` when none is set.
+     *
+     * @since 22.0
+     */
+    public function getAppend(): string|null
+    {
+        return $this->append;
     }
 
     /**

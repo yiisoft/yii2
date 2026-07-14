@@ -12,6 +12,7 @@ namespace yii\db\pgsql;
 
 use yii\base\InvalidArgumentException;
 use yii\db\ArrayExpression;
+use yii\db\ColumnSchemaBuilder;
 use yii\db\conditions\LikeCondition;
 use yii\db\Constraint;
 use yii\db\Expression;
@@ -25,19 +26,35 @@ use yii\helpers\StringHelper;
 use function array_diff;
 use function array_map;
 use function count;
+use function gettype;
 use function implode;
 use function is_bool;
+use function is_string;
+use function preg_match;
+use function preg_replace;
 use function str_contains;
 use function usort;
 
 /**
- * QueryBuilder is the query builder for PostgreSQL databases (version 13 and above).
+ * QueryBuilder is the query builder for PostgreSQL databases (version 14 and above).
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
 class QueryBuilder extends \yii\db\QueryBuilder
 {
+    /**
+     * Anchored dispatch pattern for standalone PostgreSQL `ALTER COLUMN` action strings emitted verbatim.
+     */
+    private const string ALTER_COLUMN_ACTION_REGEX = <<<REGEX
+    /^(?:
+        SET (?: \s+ | \s*\( )
+      | DROP \s+
+      | RESET \s*\(
+      | RESTART (?: \s+ | $ )
+      | ADD \s+ GENERATED \s+
+    )/ix
+    REGEX;
     /**
      * Defines a UNIQUE index for [[createIndex()]].
      * @since 2.0.6
@@ -123,7 +140,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param int|ExpressionInterface|null $limit the LIMIT value. `null` or a negative value means no limit; `0` is
      * valid and emits `FETCH NEXT 0 ROWS ONLY`.
      * @param int|ExpressionInterface|null $offset the OFFSET value. `null` or `0` means no offset.
-     * @return string the LIMIT and OFFSET clauses built for PostgreSQL `13+`.
+     * @return string the LIMIT and OFFSET clauses built for PostgreSQL `14+`.
      */
     public function buildLimit($limit, $offset)
     {
@@ -329,62 +346,46 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for changing the definition of a column.
-     * @param string $table the table whose column is to be changed. The table name will be properly quoted by the method.
-     * @param string $column the name of the column to be changed. The name will be properly quoted by the method.
-     * @param string $type the new column type. The [[getColumnType()]] method will be invoked to convert abstract
-     * column type (if any) into the physical one. Anything that is not recognized as abstract type will be kept
-     * in the generated SQL. For example, 'string' will be turned into 'varchar(255)', while 'string not null'
-     * will become 'varchar(255) not null'. You can also use PostgreSQL-specific syntax such as `SET NOT NULL`.
-     * @return string the SQL statement for changing the definition of a column.
+     *
+     * Supports three input modes for `$type`.
+     * - A {@see ColumnSchemaBuilder} produces a structured, multi-action `ALTER TABLE` statement that changes the
+     *   column type and applies any nullability, default, `CHECK`, and `UNIQUE` state carried by the builder.
+     * - A string starting with a PostgreSQL per-column action keyword; `SET ...`, `DROP ...`, `RESET (...)`,
+     *   `RESTART [WITH n]`, or `ADD GENERATED ...`, is emitted verbatim as a single action; PostgreSQL parses its
+     *   contents.
+     * - Any other string changes only the column type and no longer implicitly drops `DEFAULT` or `NOT NULL`.
+     *
+     * @param string $table The table whose column is to be changed. The table name will be properly quoted by the
+     * method.
+     * @param string $column The name of the column to be changed. The name will be properly quoted by the method.
+     * @param ColumnSchemaBuilder|string $type The new column definition. A {@see ColumnSchemaBuilder} carries the
+     * structured column state; a string is resolved through {@see getColumnType()} to the physical column type unless
+     * it is a `SET`/`DROP`/`RESET`/`RESTART`/`ADD GENERATED` action, which is emitted verbatim.
+     *
+     * @return string The SQL statement for changing the definition of a column.
      */
     public function alterColumn($table, $column, $type)
     {
-        $columnName = $this->db->quoteColumnName($column);
         $tableName = $this->db->quoteTableName($table);
+        $columnName = $this->db->quoteColumnName($column);
 
         // https://github.com/yiisoft/yii2/issues/4492
         // https://www.postgresql.org/docs/current/sql-altertable.html
-        if (is_string($type) && preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
-            return "ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$type}";
+        if (is_string($type) && preg_match(self::ALTER_COLUMN_ACTION_REGEX, $type)) {
+            return <<<SQL
+            ALTER TABLE {$tableName} ALTER COLUMN {$columnName} {$type}
+            SQL;
         }
 
-        $type = 'TYPE ' . $this->getColumnType($type);
-
-        $multiAlterStatement = [];
-        $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', $table . '_' . $column);
-
-        if (preg_match('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', $type, $matches)) {
-            $type = preg_replace('/\s+DEFAULT\s+(["\']?\w*["\']?)/i', '', $type);
-            $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET DEFAULT {$matches[1]}";
-        } else {
-            // safe to drop default even if there was none in the first place
-            $multiAlterStatement[] = "ALTER COLUMN {$columnName} DROP DEFAULT";
+        if ($type instanceof ColumnSchemaBuilder) {
+            return $this->buildAlterColumnFromBuilder($tableName, $columnName, $table, $column, $type);
         }
 
-        $type = preg_replace('/\s+NOT\s+NULL/i', '', $type, -1, $count);
-        if ($count) {
-            $multiAlterStatement[] = "ALTER COLUMN {$columnName} SET NOT NULL";
-        } else {
-            // remove additional null if any
-            $type = preg_replace('/\s+NULL/i', '', $type);
-            // safe to drop not null even if there was none in the first place
-            $multiAlterStatement[] = "ALTER COLUMN {$columnName} DROP NOT NULL";
-        }
+        $columnType = $this->getColumnType($type);
 
-        if (preg_match('/\s+CHECK\s+\((.+)\)/i', $type, $matches)) {
-            $type = preg_replace('/\s+CHECK\s+\((.+)\)/i', '', $type);
-            $multiAlterStatement[] = "ADD CONSTRAINT {$constraintPrefix}_check CHECK ({$matches[1]})";
-        }
-
-        $type = preg_replace('/\s+UNIQUE/i', '', $type, -1, $count);
-        if ($count) {
-            $multiAlterStatement[] = "ADD UNIQUE ({$columnName})";
-        }
-
-        // add what's left at the beginning
-        array_unshift($multiAlterStatement, "ALTER COLUMN {$columnName} {$type}");
-
-        return 'ALTER TABLE ' . $tableName . ' ' . implode(', ', $multiAlterStatement);
+        return <<<SQL
+        ALTER TABLE {$tableName} ALTER COLUMN {$columnName} TYPE {$columnType}
+        SQL;
     }
 
     /**
@@ -528,6 +529,112 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+    }
+
+    /**
+     * Builds the multi-action `ALTER TABLE` statement for a {@see ColumnSchemaBuilder} column definition.
+     *
+     * @param string $tableName The quoted table name.
+     * @param string $columnName The quoted column name.
+     * @param string $table The unquoted table name.
+     * @param string $column The unquoted column name.
+     * @param ColumnSchemaBuilder $type The column definition builder.
+     *
+     * @return string The SQL statement for changing the definition of a column.
+     */
+    private function buildAlterColumnFromBuilder(
+        string $tableName,
+        string $columnName,
+        string $table,
+        string $column,
+        ColumnSchemaBuilder $type,
+    ): string {
+        $default = $type->getDefault();
+        $actions = [];
+
+        // Drop the existing default first so an incompatible old default cannot fail the TYPE change.
+        if ($default !== null) {
+            $actions[] = <<<SQL
+            ALTER COLUMN {$columnName} DROP DEFAULT
+            SQL;
+        }
+
+        $columnType = $this->getColumnType($type->getTypeDefinition());
+
+        $typeAction = <<<SQL
+        ALTER COLUMN {$columnName} TYPE {$columnType}
+        SQL;
+
+        $append = $type->getAppend();
+
+        if ($append !== null && $append !== '') {
+            $typeAction .= " {$append}";
+        }
+
+        $actions[] = $typeAction;
+
+        $notNull = $type->isNotNull();
+
+        if ($notNull === true) {
+            $actions[] = <<<SQL
+            ALTER COLUMN {$columnName} SET NOT NULL
+            SQL;
+        } elseif ($notNull === false) {
+            $actions[] = <<<SQL
+            ALTER COLUMN {$columnName} DROP NOT NULL
+            SQL;
+        }
+
+        if ($default !== null) {
+            $defaultValue = $this->buildAlterColumnDefault($default);
+
+            $actions[] = <<<SQL
+            ALTER COLUMN {$columnName} SET DEFAULT {$defaultValue}
+            SQL;
+        }
+
+        $check = $type->getCheck();
+
+        if ($check !== null) {
+            $constraintPrefix = preg_replace('/[^a-z0-9_]/i', '', "{$table}_$column");
+
+            $actions[] = <<<SQL
+            ADD CONSTRAINT {$constraintPrefix}_check CHECK ({$check})
+            SQL;
+        }
+
+        if ($type->isUnique()) {
+            $actions[] = <<<SQL
+            ADD UNIQUE ({$columnName})
+            SQL;
+        }
+
+        $actionsSql = implode(', ', $actions);
+
+        return <<<SQL
+        ALTER TABLE {$tableName} {$actionsSql}
+        SQL;
+    }
+
+    /**
+     * Renders a {@see ColumnSchemaBuilder} default value as a literal SQL fragment for `SET DEFAULT`.
+     *
+     * @param mixed $default The default value to render.
+     *
+     * @return string The SQL fragment for the default value.
+     */
+    private function buildAlterColumnDefault(mixed $default): string
+    {
+        if ($default instanceof Expression) {
+            return (string) $default;
+        }
+
+        return match (gettype($default)) {
+            'boolean' => $default ? 'TRUE' : 'FALSE',
+            'integer' => (string) $default,
+            'double' => StringHelper::floatToString($default),
+            default => $this->db->quoteValue((string) $default),
+        };
     }
 
     /**

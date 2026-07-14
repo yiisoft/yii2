@@ -10,8 +10,12 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\db\pgsql\providers;
 
+use Closure;
+use yii\db\ColumnSchemaBuilder;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\Schema;
 
 /**
  * Data provider for {@see \yiiunit\framework\db\pgsql\QueryBuilderTest} test cases.
@@ -22,7 +26,10 @@ use yii\db\Query;
 final class QueryBuilderProvider
 {
     /**
-     * @return array<string, array{string, array<string, mixed>|Query, array<string, mixed>|bool, string, array<string, mixed>}>
+     * @return array<
+     *   string,
+     *   array{string, array<string, mixed>|Query, array<string, mixed>|bool, string, array<string, mixed>}
+     * >
      */
     public static function upsert(): array
     {
@@ -369,6 +376,285 @@ final class QueryBuilderProvider
                 [
                     ':qp0' => 'dynamic@example.com',
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * Data provider for {@see \yiiunit\framework\db\pgsql\QueryBuilderTest::testAlterColumn()} test cases.
+     *
+     * Provides representative input/output pairs for the `ALTER COLUMN` statement.
+     *
+     * @return array<string, array{Closure|string, string}>
+     */
+    public static function alterColumn(): array
+    {
+        return [
+            'abstract type string' => [
+                'string',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255)
+                SQL,
+            ],
+            'ADD GENERATED identity action' => [
+                'ADD GENERATED ALWAYS AS IDENTITY',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" ADD GENERATED ALWAYS AS IDENTITY
+                SQL,
+            ],
+            'builder check' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->check('char_length(bar) > 5'),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ADD CONSTRAINT foo1_bar_check CHECK (char_length(bar) > 5)
+                SQL,
+            ],
+            'builder default expression function' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP)
+                    ->defaultExpression('NOW()'),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE timestamp(0), ALTER COLUMN "bar" SET DEFAULT NOW()
+                SQL,
+            ],
+            'builder default expression nextval' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                    ->defaultExpression("nextval('public.sequence'::regclass)"),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE integer, ALTER COLUMN "bar" SET DEFAULT nextval('public.sequence'::regclass)
+                SQL,
+            ],
+            'builder default expression with cast' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP)
+                    ->defaultExpression("'now'::timestamp"),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE timestamp(0), ALTER COLUMN "bar" SET DEFAULT 'now'::timestamp
+                SQL,
+            ],
+            'builder default expression with comma' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP)
+                    ->defaultExpression("date_trunc('day', CURRENT_TIMESTAMP)"),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE timestamp(0), ALTER COLUMN "bar" SET DEFAULT date_trunc('day', CURRENT_TIMESTAMP)
+                SQL,
+            ],
+            'builder not null' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->notNull(),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET NOT NULL
+                SQL,
+            ],
+            'builder not null with default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->notNull()
+                    ->defaultValue('hello world'),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET NOT NULL, ALTER COLUMN "bar" SET DEFAULT 'hello world'
+                SQL,
+            ],
+            'builder null' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->null(),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP NOT NULL
+                SQL,
+            ],
+            'builder null default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->defaultValue(null),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" DROP NOT NULL
+                SQL,
+            ],
+            'builder scalar default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
+                    ->defaultValue('hello world'),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT 'hello world'
+                SQL,
+            ],
+            'builder scalar default with quote' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING)
+                    ->defaultValue("O'Reilly"),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE varchar(255), ALTER COLUMN "bar" SET DEFAULT 'O''Reilly'
+                SQL,
+            ],
+            'builder type only' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255)
+                SQL,
+            ],
+            'builder unique' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_STRING, 30)
+                    ->unique(),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(30), ADD UNIQUE ("bar")
+                SQL,
+            ],
+            'compound definition string is not parsed' => [
+                'timestamp NOT NULL DEFAULT NOW()',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE timestamp(0) NOT NULL DEFAULT NOW()
+                SQL,
+            ],
+            'DROP DEFAULT action' => [
+                'DROP DEFAULT',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT
+                SQL,
+            ],
+            'DROP IDENTITY action' => [
+                'DROP IDENTITY IF EXISTS',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP IDENTITY IF EXISTS
+                SQL,
+            ],
+            'DROP NOT NULL action' => [
+                'DROP NOT NULL',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP NOT NULL
+                SQL,
+            ],
+            'lowercase action passthrough' => [
+                'drop default',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" drop default
+                SQL,
+            ],
+            'lowercase ADD GENERATED action' => [
+                'add generated by default as identity',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" add generated by default as identity
+                SQL,
+            ],
+            'lowercase RESTART action' => [
+                'restart with 100',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" restart with 100
+                SQL,
+            ],
+            'native type string' => [
+                'varchar(255)',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255)
+                SQL,
+            ],
+            'native multi-word type string' => [
+                'timestamp with time zone',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE timestamp(0) with time zone
+                SQL,
+            ],
+            'RESET attribute option action' => [
+                'RESET (n_distinct)',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" RESET (n_distinct)
+                SQL,
+            ],
+            'RESET attribute option without space action' => [
+                'RESET(n_distinct)',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" RESET(n_distinct)
+                SQL,
+            ],
+            'SET attribute option without space action' => [
+                'SET(n_distinct=4)',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET(n_distinct=4)
+                SQL,
+            ],
+            'SET COMPRESSION action' => [
+                'SET COMPRESSION lz4',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET COMPRESSION lz4
+                SQL,
+            ],
+            'SET DEFAULT expression action' => [
+                'SET DEFAULT NOW()',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET DEFAULT NOW()
+                SQL,
+            ],
+            'SET DEFAULT nextval action' => [
+                "SET DEFAULT nextval('foo_seq'::regclass)",
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET DEFAULT nextval('foo_seq'::regclass)
+                SQL,
+            ],
+            'SET DEFAULT parenthesized expression action' => [
+                "SET DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')",
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
+                SQL,
+            ],
+            'SET DEFAULT string literal action' => [
+                "SET DEFAULT 'hello world'",
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET DEFAULT 'hello world'
+                SQL,
+            ],
+            'SET GENERATED action' => [
+                'SET GENERATED BY DEFAULT',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET GENERATED BY DEFAULT
+                SQL,
+            ],
+            'SET NOT NULL action' => [
+                'SET NOT NULL',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET NOT NULL
+                SQL,
+            ],
+            'SET STATISTICS action' => [
+                'SET STATISTICS 1000',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET STATISTICS 1000
+                SQL,
+            ],
+            'SET STORAGE action' => [
+                'SET STORAGE EXTENDED',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" SET STORAGE EXTENDED
+                SQL,
+            ],
+            'type with USING conversion' => [
+                'uuid USING bar::uuid',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE uuid USING bar::uuid
+                SQL,
+            ],
+            'RESTART bare action' => [
+                'RESTART',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" RESTART
+                SQL,
+            ],
+            'RESTART WITH action' => [
+                'RESTART WITH 100',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" RESTART WITH 100
+                SQL,
+            ],
+            'unsupported ADD action treated as type string' => [
+                'ADD UNIQUE',
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE ADD UNIQUE
+                SQL,
             ],
         ];
     }
