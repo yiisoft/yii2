@@ -562,7 +562,7 @@ PGSQL
             'DDL must report zero affected rows.',
         );
 
-        if (!empty($expected['repeatable'])) {
+        if (($expected['repeatable'] ?? false) === true) {
             $command->alterColumn(
                 'alter_column',
                 'bar',
