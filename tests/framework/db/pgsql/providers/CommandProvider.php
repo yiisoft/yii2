@@ -299,6 +299,30 @@ final class CommandProvider
                 'ADD GENERATED ALWAYS AS IDENTITY',
                 [],
             ],
+            'builder append with USING conversion' => [
+                'varchar(36)',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder('uuid')
+                    ->append('USING bar::uuid'),
+                ['dbType' => 'uuid'],
+            ],
+            'builder boolean false default' => [
+                'boolean',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN)
+                    ->defaultValue(false),
+                ['defaultValue' => false],
+            ],
+            'builder boolean true default' => [
+                'boolean',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN)
+                    ->defaultValue(true),
+                ['defaultValue' => true],
+            ],
             'builder check' => [
                 'varchar(100) CHECK (char_length(bar) > 1)',
                 [],
@@ -340,6 +364,22 @@ final class CommandProvider
                     ->createColumnSchemaBuilder(Schema::TYPE_TIMESTAMP)
                     ->defaultExpression("date_trunc('day', CURRENT_TIMESTAMP)"),
                 ['defaultValueContains' => 'date_trunc'],
+            ],
+            'builder float default' => [
+                'double',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_DOUBLE)
+                    ->defaultValue(1.5),
+                ['defaultValue' => 1.5],
+            ],
+            'builder integer default' => [
+                'integer',
+                [],
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                    ->defaultValue(42),
+                ['defaultValue' => 42],
             ],
             'builder not null' => [
                 'varchar(100)',

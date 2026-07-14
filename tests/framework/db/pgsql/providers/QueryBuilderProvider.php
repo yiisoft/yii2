@@ -402,6 +402,30 @@ final class QueryBuilderProvider
                 ALTER TABLE "foo1" ALTER COLUMN "bar" ADD GENERATED ALWAYS AS IDENTITY
                 SQL,
             ],
+            'builder append with USING conversion' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder('uuid')
+                    ->append('USING bar::uuid'),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE uuid USING bar::uuid
+                SQL,
+            ],
+            'builder boolean false default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN)
+                    ->defaultValue(false),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE boolean, ALTER COLUMN "bar" SET DEFAULT FALSE
+                SQL,
+            ],
+            'builder boolean true default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_BOOLEAN)
+                    ->defaultValue(true),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE boolean, ALTER COLUMN "bar" SET DEFAULT TRUE
+                SQL,
+            ],
             'builder check' => [
                 static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING, 255)
@@ -440,6 +464,22 @@ final class QueryBuilderProvider
                     ->defaultExpression("date_trunc('day', CURRENT_TIMESTAMP)"),
                 <<<SQL
                 ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE timestamp(0), ALTER COLUMN "bar" SET DEFAULT date_trunc('day', CURRENT_TIMESTAMP)
+                SQL,
+            ],
+            'builder float default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_DOUBLE)
+                    ->defaultValue(1.5),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE double precision, ALTER COLUMN "bar" SET DEFAULT 1.5
+                SQL,
+            ],
+            'builder integer default' => [
+                static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
+                    ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                    ->defaultValue(42),
+                <<<SQL
+                ALTER TABLE "foo1" ALTER COLUMN "bar" DROP DEFAULT, ALTER COLUMN "bar" TYPE integer, ALTER COLUMN "bar" SET DEFAULT 42
                 SQL,
             ],
             'builder not null' => [
