@@ -38,6 +38,7 @@ jobs:
   phpstan:
     uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
     with:
+      command-options: analyse
       configuration: phpstan.dist.neon
       concurrency-group: phpstan-${{ github.ref }}
       extensions: apcu, curl, dom, imagick, intl, mbstring, mcrypt, memcached
@@ -46,6 +47,7 @@ jobs:
   phpstan-7x:
     uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
     with:
+      command-options: analyse
       configuration: phpstan-7x.dist.neon
       concurrency-group: phpstan7x-${{ github.ref }}
       extensions: apc, curl, dom, imagick, intl, mbstring, mcrypt, memcached
