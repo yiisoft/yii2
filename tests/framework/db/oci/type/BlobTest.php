@@ -1234,6 +1234,67 @@ final class BlobTest extends DatabaseTestCase
         return $payload;
     }
 
+    public function testBlobUpdateCommandCanBeExecutedTwice(): void
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->delete('type')->execute();
+        $db->createCommand()->addPrimaryKey(
+            'PK_type_blob_command_reuse',
+            'type',
+            'int_col',
+        )->execute();
+        $db->createCommand()->insert(
+            'type',
+            $this->rowValues(1, 'initial'),
+        )->execute();
+
+        $payload = $this->createPayload(65_536);
+
+        // It is essential to reuse this exact Command instance.
+        $updateCommand = $db->createCommand()->update(
+            'type',
+            ['blob_col' => $payload],
+            ['int_col' => 1],
+        );
+
+        self::assertSame(
+            1,
+            $updateCommand->execute(),
+            'First execution must update exactly one row.',
+        );
+        self::assertSame(
+            $payload,
+            $this->readBlob(1),
+            'First execution must write the complete BLOB.',
+        );
+
+        // Change the stored value without modifying or rebuilding $updateCommand.
+        $db->createCommand(
+            <<<SQL
+            UPDATE "type"
+            SET "blob_col" = EMPTY_BLOB()
+            WHERE "int_col" = 1
+            SQL,
+        )->execute();
+
+        self::assertSame(
+            '',
+            $this->readBlob(1),
+            'The BLOB must be empty before executing the prepared command again.',
+        );
+        self::assertSame(
+            1,
+            $updateCommand->execute(),
+            'Second execution of the same command must update exactly one row.',
+        );
+        self::assertSame(
+            $payload,
+            $this->readBlob(1),
+            'Second execution must write the complete BLOB again.',
+        );
+    }
+
     /**
      * @return array<string, mixed> Complete values for an Oracle `type` fixture row.
      */

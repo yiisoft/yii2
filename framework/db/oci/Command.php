@@ -44,13 +44,11 @@ class Command extends \yii\db\Command
      */
     public function execute()
     {
-        try {
-            $result = parent::execute();
+        $this->rewindOwnedLobStreams();
 
-            return $this->_upsertAffected !== null ? (int) $this->_upsertAffected : $result;
-        } finally {
-            $this->closeOwnedLobStreams();
-        }
+        $result = parent::execute();
+
+        return $this->_upsertAffected !== null ? (int) $this->_upsertAffected : $result;
     }
 
     /**
@@ -153,6 +151,18 @@ class Command extends \yii\db\Command
         return is_string($name)
             && str_starts_with($name, QueryBuilder::UPSERT_AFFECTED_PARAM_PREFIX)
             && ($type & PDO::PARAM_INPUT_OUTPUT) === PDO::PARAM_INPUT_OUTPUT;
+    }
+
+    /**
+     * Rewinds temporary streams owned by this command before reusing the prepared statement.
+     */
+    private function rewindOwnedLobStreams(): void
+    {
+        foreach ($this->_ownedLobStreams as $stream) {
+            if (!is_resource($stream) || rewind($stream) === false) {
+                throw new RuntimeException('Unable to rewind an Oracle LOB stream.');
+            }
+        }
     }
 
     /**
