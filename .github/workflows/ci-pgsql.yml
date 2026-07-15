@@ -2,7 +2,6 @@ name: ci-pgsql
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   pull_request: &ignore-paths
@@ -37,7 +36,7 @@ on:
 jobs:
   tests:
     name: PostgreSQL tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       concurrency-group: pgsql-${{ github.ref }}
       coverage-driver: xdebug
@@ -56,7 +55,7 @@ jobs:
 
   tests-dev:
     name: PostgreSQL tests
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       concurrency-group: pgsql-dev-${{ github.ref }}
       coverage-driver: none
