@@ -448,7 +448,33 @@ class MigrateControllerTest extends TestCase
         $this->runMigrateControllerAction('history');
 
         $column = Yii::$app->db->getTableSchema('migration', true)->getColumn('apply_time');
+
         $this->assertSame(Schema::TYPE_BIGINT, $column->type);
+    }
+
+    public function testExistingIntegerMigrationHistoryTableRemainsSupported(): void
+    {
+        Yii::$app->db->createCommand()->createTable(
+            'migration',
+            [
+                'version' => 'varchar(180) NOT NULL PRIMARY KEY',
+                'apply_time' => 'integer',
+            ],
+        )->execute();
+        Yii::$app->db->createCommand()->insert(
+            'migration',
+            [
+                'version' => 'm000000_000000_base',
+                'apply_time' => time(),
+            ],
+        )->execute();
+
+        $this->runMigrateControllerAction('history');
+
+        $column = Yii::$app->db->getTableSchema('migration', true)->getColumn('apply_time');
+
+        $this->assertSame(ExitCode::OK, $this->getExitCode());
+        $this->assertSame(Schema::TYPE_INTEGER, $column->type);
     }
 
     public function testCreateLongNamedMigration(): void

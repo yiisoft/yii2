@@ -18,7 +18,7 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
 - Bug #20889: Remove unreachable PHP < 7 cookie deserialization fallback in `yii\web\Request::loadCookies()` (terabytesoftw)
 - Enh #20890: Harden `yii\i18n\PhpMessageSource` category path handling to reject `..` segments, absolute paths, and stream-wrapper categories (terabytesoftw)
-- Bug #20908: Use `bigint` for `apply_time` in the migration history table to avoid the year 2038 overflow (WarLikeLaux)
+- Bug #20527: Use `bigint` for `apply_time` in newly created migration history tables to avoid the year `2038` overflow (WarLikeLaux)
 - Enh #20888: Preserve the modification time of a log file when it is rotated by copy in `yii\log\FileTarget` (WarLikeLaux)
 - Bug #20978: Fix `AssetManager::appendTimestamp` triggering `filemtime()` stat warnings for timestamped asset URLs (terabytesoftw)
 - Bug #20986: Fix `@return` annotation for `yii\base\Component::behaviors()` (mspirkov)
