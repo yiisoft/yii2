@@ -25,6 +25,9 @@ use function implode;
 use function is_array;
 use function ltrim;
 use function preg_replace;
+use function str_starts_with;
+use function strlen;
+use function substr;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -78,10 +81,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
     {
-        // Preserve limit(0) → zero rows semantics across drivers; SQL Server rejects FETCH NEXT `0`,
-        // so wrap with WHERE 1=0 (the optimizer constant-folds this into an empty scan).
+        // SQL Server requires `FETCH` to be greater than zero. Use `TOP (0)` on the original `SELECT` to avoid
+        // derived-table column-name requirements for unnamed or duplicate expressions.
         if ((string) $limit === '0') {
-            return "SELECT * FROM ({$sql}) sub WHERE 1=0";
+            $select = str_starts_with($sql, 'SELECT DISTINCT')
+                ? 'SELECT DISTINCT'
+                : 'SELECT';
+
+            $restSql = substr($sql, strlen($select));
+
+            return <<<SQL
+            {$select} TOP (0){$restSql}
+            SQL;
         }
 
         $orderBy = $this->buildOrderBy($orderBy);

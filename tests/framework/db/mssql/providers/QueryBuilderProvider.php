@@ -28,6 +28,97 @@ use yiiunit\base\db\BaseQueryBuilder;
 final class QueryBuilderProvider
 {
     /**
+     * @return array<string, array{Closure, string, array<string, mixed>}>
+     */
+    public static function zeroLimitQueries(): array
+    {
+        return [
+            'normal SELECT with parameters' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('customer')
+                    ->where(['status' => 2])
+                    ->limit(0),
+                <<<SQL
+                SELECT TOP (0) [id] FROM [customer] WHERE [status]=:qp0
+                SQL,
+                [':qp0' => 2],
+            ],
+            'SELECT with offset' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('customer')
+                    ->limit(0)
+                    ->offset(5),
+                <<<SQL
+                SELECT TOP (0) [id] FROM [customer]
+                SQL,
+                [],
+            ],
+            'SELECT DISTINCT' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->distinct()
+                    ->from('customer')
+                    ->limit(0),
+                <<<SQL
+                SELECT DISTINCT TOP (0) [id] FROM [customer]
+                SQL,
+                [],
+            ],
+            'unnamed expression' => [
+                static fn (): Query => (new Query())
+                    ->select(new Expression('1 + 1'))
+                    ->limit(0),
+                <<<SQL
+                SELECT TOP (0) 1 + 1
+                SQL,
+                [],
+            ],
+            'unnamed aggregate' => [
+                static fn (): Query => (new Query())
+                    ->select(new Expression('COUNT(*)'))
+                    ->from('customer')
+                    ->limit(0),
+                <<<SQL
+                SELECT TOP (0) COUNT(*) FROM [customer]
+                SQL,
+                [],
+            ],
+            'self-join with duplicate column names' => [
+                static fn (): Query => (new Query())
+                    ->select(['c1.id', 'c2.id'])
+                    ->from(['c1' => 'customer'])
+                    ->innerJoin(
+                        ['c2' => 'customer'],
+                        ['c1.id' => new Expression('[c2].[id]')],
+                    )
+                    ->limit(0),
+                <<<SQL
+                SELECT TOP (0) [c1].[id], [c2].[id] FROM [customer] [c1] INNER JOIN [customer] [c2] ON [c1].[id]=[c2].[id]
+                SQL,
+                [],
+            ],
+            'outer SELECT with CTE' => [
+                static fn (): Query => (new Query())
+                    ->withQuery(
+                        (new Query())
+                            ->select('id')
+                            ->from('customer'),
+                        'customers',
+                    )
+                    ->select('id')
+                    ->from('customers')
+                    ->limit(0),
+                <<<SQL
+                WITH customers AS (SELECT [id] FROM [customer]) SELECT TOP (0) [id] FROM [customers]
+                SQL,
+                [],
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, array{string, Closure}>
      */
     public static function defaultValuesProvider(): array

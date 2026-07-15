@@ -201,56 +201,43 @@ final class QueryBuilderTest extends BaseQueryBuilder
         );
     }
 
-    public function testBuildOrderByAndLimitWithZeroLimit(): void
-    {
-        $db = $this->getConnection(false, false);
-
-        $query = new Query();
-
-        $query
-            ->select('id')
-            ->from('example')
-            ->limit(0);
-
-        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
+    #[DataProviderExternal(QueryBuilderProvider::class, 'zeroLimitQueries')]
+    public function testBuildOrderByAndLimitWithZeroLimit(
+        Closure $queryFactory,
+        string $expectedSql,
+        array $expectedParams,
+    ): void {
+        [$actualSql, $actualParams] = $this->getQueryBuilder()->build($queryFactory());
 
         self::assertSame(
-            <<<SQL
-            SELECT * FROM (SELECT [id] FROM [example]) sub WHERE 1=0
-            SQL,
-            $actualQuerySql,
-            "Limit '0' must wrap the query with WHERE 1=0 to return zero rows (portable semantics).",
+            $expectedSql,
+            $actualSql,
+            "Limit '0' query generated unexpected SQL.",
         );
-        self::assertEmpty(
-            $actualQueryParams,
-            "Limit '0' query should have no bound parameters.",
-        );
-    }
-
-    public function testBuildOrderByAndLimitWithZeroLimitAndOffset(): void
-    {
-        $db = $this->getConnection(false, false);
-
-        $query = new Query();
-
-        $query
-            ->select('id')
-            ->from('example')
-            ->limit(0)
-            ->offset(5);
-
-        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
-
         self::assertSame(
-            <<<SQL
-            SELECT * FROM (SELECT [id] FROM [example]) sub WHERE 1=0
-            SQL,
-            $actualQuerySql,
-            "Limit '0' with offset must still return zero rows (offset is irrelevant on empty result).",
+            $expectedParams,
+            $actualParams,
+            "Limit '0' query generated unexpected parameters.",
         );
-        self::assertEmpty(
-            $actualQueryParams,
-            "Limit '0' with offset query should have no bound parameters.",
+        self::assertStringNotContainsString(
+            'SELECT * FROM (',
+            $actualSql,
+            "Limit '0' must not wrap the original SELECT in a derived table.",
+        );
+        self::assertStringNotContainsString(
+            'WHERE 1=0',
+            $actualSql,
+            "Limit '0' must not use a false WHERE condition.",
+        );
+        self::assertStringNotContainsString(
+            'OFFSET',
+            $actualSql,
+            "Limit '0' must not emit OFFSET.",
+        );
+        self::assertStringNotContainsString(
+            'FETCH',
+            $actualSql,
+            "Limit '0' must not emit FETCH.",
         );
     }
 
@@ -333,33 +320,6 @@ final class QueryBuilderTest extends BaseQueryBuilder
         self::assertEmpty(
             $actualQueryParams,
             'DISTINCT with OFFSET only should have no bound parameters.',
-        );
-    }
-
-    public function testBuildOrderByAndLimitWithDistinctZeroLimit(): void
-    {
-        $db = $this->getConnection(false, false);
-
-        $query = new Query();
-
-        $query
-            ->select('id')
-            ->distinct()
-            ->from('example')
-            ->limit(0);
-
-        [$actualQuerySql, $actualQueryParams] = $db->getQueryBuilder()->build($query);
-
-        self::assertSame(
-            <<<SQL
-            SELECT * FROM (SELECT DISTINCT [id] FROM [example]) sub WHERE 1=0
-            SQL,
-            $actualQuerySql,
-            "DISTINCT with LIMIT '0' must wrap with WHERE 1=0 to return zero rows.",
-        );
-        self::assertEmpty(
-            $actualQueryParams,
-            "DISTINCT with LIMIT '0' should have no bound parameters.",
         );
     }
 

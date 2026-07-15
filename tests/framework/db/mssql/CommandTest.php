@@ -78,6 +78,22 @@ final class CommandTest extends BaseCommand
         );
     }
 
+    #[DataProviderExternal(CommandProvider::class, 'zeroLimitQueries')]
+    public function testZeroLimitQueriesReturnNoRows(Closure $query): void
+    {
+        $db = $this->getConnection();
+
+        $result = $query()
+            ->createCommand($db)
+            ->queryAll();
+
+        self::assertSame(
+            [],
+            $result,
+            "Limit '0' query must return no rows.",
+        );
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
     public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
     {

@@ -26,6 +26,69 @@ use yii\db\Schema;
 final class CommandProvider
 {
     /**
+     * @return array<string, array{Closure}>
+     */
+    public static function zeroLimitQueries(): array
+    {
+        return [
+            'normal SELECT with parameters' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('customer')
+                    ->where(['status' => 2])
+                    ->limit(0),
+            ],
+            'SELECT with offset' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('customer')
+                    ->limit(0)
+                    ->offset(5),
+            ],
+            'SELECT DISTINCT' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->distinct()
+                    ->from('customer')
+                    ->limit(0),
+            ],
+            'unnamed expression' => [
+                static fn (): Query => (new Query())
+                    ->select(new Expression('1 + 1'))
+                    ->limit(0),
+            ],
+            'unnamed aggregate' => [
+                static fn (): Query => (new Query())
+                    ->select(new Expression('COUNT(*)'))
+                    ->from('customer')
+                    ->limit(0),
+            ],
+            'self-join with duplicate column names' => [
+                static fn (): Query => (new Query())
+                    ->select(['c1.id', 'c2.id'])
+                    ->from(['c1' => 'customer'])
+                    ->innerJoin(
+                        ['c2' => 'customer'],
+                        ['c1.id' => new Expression('[c2].[id]')],
+                    )
+                    ->limit(0),
+            ],
+            'outer SELECT with CTE' => [
+                static fn (): Query => (new Query())
+                    ->withQuery(
+                        (new Query())
+                            ->select('id')
+                            ->from('customer'),
+                        'customers',
+                    )
+                    ->select('id')
+                    ->from('customers')
+                    ->limit(0),
+            ],
+        ];
+    }
+
+    /**
      * @return array<
      *   string,
      *   array{
