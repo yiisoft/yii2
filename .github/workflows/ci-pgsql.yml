@@ -36,7 +36,7 @@ on:
 jobs:
   tests:
     name: PostgreSQL tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       concurrency-group: pgsql-${{ github.ref }}
       coverage-driver: xdebug
@@ -55,7 +55,7 @@ jobs:
 
   tests-dev:
     name: PostgreSQL tests
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       concurrency-group: pgsql-dev-${{ github.ref }}
       coverage-driver: none
