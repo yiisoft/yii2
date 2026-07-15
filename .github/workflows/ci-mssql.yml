@@ -36,7 +36,7 @@ on:
 jobs:
   tests:
     name: MSSQL tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
     with:
       concurrency-group: mssql-${{ github.ref }}
       coverage-driver: xdebug
@@ -58,7 +58,7 @@ jobs:
 
   tests-dev:
     name: MSSQL tests
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
     with:
       concurrency-group: mssql-dev-${{ github.ref }}
       coverage-driver: none
