@@ -6,7 +6,6 @@ on:
       - master
       - main
       - '22.0'
-    paths:
     paths: &paths
       - '.github/**.yml'
       - '.github/**.yaml'
