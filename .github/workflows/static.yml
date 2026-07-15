@@ -2,7 +2,6 @@ name: static analysis
 
 permissions:
   contents: read
-  pull-requests: write
 
 on:
   pull_request: &ignore-paths
@@ -37,6 +36,9 @@ on:
 jobs:
   phpstan:
     uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
+    permissions:
+      contents: read
+      pull-requests: write
     with:
       command-options: analyse
       configuration: phpstan.dist.neon
@@ -46,6 +48,9 @@ jobs:
 
   phpstan-7x:
     uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
+    permissions:
+      contents: read
+      pull-requests: write
     with:
       command-options: analyse
       configuration: phpstan-7x.dist.neon
