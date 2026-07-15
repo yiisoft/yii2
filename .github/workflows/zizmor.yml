@@ -6,13 +6,11 @@ on:
       - master
       - main
       - '22.0'
-    paths:
+    paths: &paths
       - '.github/**.yml'
       - '.github/**.yaml'
   pull_request:
-    paths:
-      - '.github/**.yml'
-      - '.github/**.yaml'
+    paths: *paths
 
 permissions:
   actions: read # Required by zizmor when reading workflow metadata through the API.
@@ -20,4 +18,4 @@ permissions:
 
 jobs:
   zizmor:
-    uses: yiisoft/actions/.github/workflows/zizmor.yml@b5ae289e9c8ace77fb2791ad5716f90f748608bc
+    uses: yiisoft/yii2-actions/.github/workflows/zizmor.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master

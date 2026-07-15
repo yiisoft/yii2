@@ -228,11 +228,12 @@ CODE;
     public function testCreate(): void
     {
         $migrationName = 'test_migration';
-        $this->runMigrateControllerAction('create', [$migrationName]);
+        $output = $this->runMigrateControllerAction('create', [$migrationName]);
         $this->assertSame(ExitCode::OK, $this->getExitCode());
         $files = FileHelper::findFiles($this->migrationPath);
         $this->assertCount(1, $files, 'Unable to create new migration!');
-        $this->assertStringContainsString($migrationName, basename((string) $files[0]), 'Wrong migration name!');
+        $this->assertStringContainsString($migrationName, basename($files[0]), 'Wrong migration name!');
+        $this->assertStringContainsString(basename($files[0]), $output);
     }
 
     public function testUp(): void

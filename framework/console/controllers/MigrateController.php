@@ -37,7 +37,7 @@ use yii\helpers\Inflector;
  * ```
  * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
- *     apply_time integer
+ *     apply_time bigint
  * )
  * ```
  *
@@ -277,7 +277,7 @@ class MigrateController extends BaseMigrateController
         $this->stdout("Creating migration history table \"$tableName\"...", Console::FG_YELLOW);
         $this->db->createCommand()->createTable($this->migrationTable, [
             'version' => 'varchar(' . static::MAX_NAME_LENGTH . ') NOT NULL PRIMARY KEY',
-            'apply_time' => 'integer',
+            'apply_time' => 'bigint',
         ])->execute();
         $this->db->createCommand()->insert($this->migrationTable, [
             'version' => self::BASE_MIGRATION,
