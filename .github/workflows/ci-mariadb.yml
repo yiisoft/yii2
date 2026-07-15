@@ -37,7 +37,7 @@ on:
 jobs:
   tests:
     name: MariaDB tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       concurrency-group: mariadb-${{ github.ref }}
       coverage-driver: pcov
@@ -56,7 +56,7 @@ jobs:
 
   tests-dev:
     name: MariaDB tests
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/database.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       concurrency-group: mariadb-dev-${{ github.ref }}
       coverage-driver: none

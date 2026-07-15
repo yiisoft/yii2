@@ -36,7 +36,7 @@ on:
 
 jobs:
   phpstan:
-    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@161a59a5e7d9c5b650c4a132f6e9292bacfcb5cc
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       configuration: phpstan.dist.neon
       concurrency-group: phpstan-${{ github.ref }}
