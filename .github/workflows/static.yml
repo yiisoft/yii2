@@ -35,7 +35,7 @@ on:
 
 jobs:
   phpstan:
-    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       configuration: phpstan.dist.neon
       concurrency-group: phpstan-${{ github.ref }}
@@ -43,7 +43,7 @@ jobs:
       php-version: '["8.5"]'
 
   phpstan-7x:
-    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@def75f00ad24c3d66a827d2b2eb5e0baa1638871 # master
+    uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
     with:
       configuration: phpstan-7x.dist.neon
       concurrency-group: phpstan7x-${{ github.ref }}
