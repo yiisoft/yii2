@@ -18,7 +18,7 @@ use yii\db\Expression;
 final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchemaProvider
 {
     /**
-     * @return array<string, array{string, string, string, mixed, mixed}>
+     * @return array<string, array{string, string, string, mixed, mixed, 5?: bool}>
      */
     public static function defaultPhpTypecast(): array
     {
@@ -127,6 +127,38 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'string',
                 'CURRENT_TIMESTAMP(6)',
                 new Expression('CURRENT_TIMESTAMP(6)'),
+            ],
+            'generated CURRENT_TIMESTAMP remains normalized' => [
+                'timestamp',
+                'timestamp',
+                'string',
+                'current_timestamp()',
+                new Expression('CURRENT_TIMESTAMP'),
+                true,
+            ],
+            'generated date expression remains an expression' => [
+                'date',
+                'date',
+                'string',
+                '(CURRENT_DATE + INTERVAL 2 YEAR)',
+                new Expression('(CURRENT_DATE + INTERVAL 2 YEAR)'),
+                true,
+            ],
+            'generated text literal remains an expression' => [
+                'text',
+                'text',
+                'string',
+                "_utf8mb4\\'abc\\'",
+                new Expression("_utf8mb4'abc'"),
+                true,
+            ],
+            'generated JSON default bypasses JSON decoding' => [
+                'json',
+                'json',
+                'array',
+                '(json_array())',
+                new Expression('(json_array())'),
+                true,
             ],
             'decimal default kept as string' => [
                 'decimal',

@@ -49,12 +49,14 @@ final class ColumnSchemaTest extends BaseColumnSchema
         string $phpType,
         mixed $value,
         mixed $expected,
+        bool $isDefaultExpression = false,
     ): void {
         $column = new ColumnSchema();
 
         $column->type = $type;
         $column->dbType = $dbType;
         $column->phpType = $phpType;
+        $column->isDefaultExpression = $isDefaultExpression;
 
         $result = $column->defaultPhpTypecast($value);
 
