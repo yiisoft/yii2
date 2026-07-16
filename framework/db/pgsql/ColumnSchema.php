@@ -173,7 +173,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
             return null;
         }
 
-        if (preg_match("/^B'([01]*)'::/", $value, $matches)) {
+        if (preg_match("/^B'([01]*)'::" . self::CAST_SUFFIX . '$/', $value, $matches)) {
             return bindec($matches[1]);
         }
 

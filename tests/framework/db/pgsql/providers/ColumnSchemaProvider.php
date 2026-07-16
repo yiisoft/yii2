@@ -68,6 +68,13 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "B'10101'::bit(5)",
                 21,
             ],
+            'bit concatenation becomes an Expression' => [
+                'integer',
+                'bit',
+                'integer',
+                "B'1'::bit(1) || B'0'::bit(1)",
+                new Expression("B'1'::bit(1) || B'0'::bit(1)"),
+            ],
             'boolean false bare' => [
                 'boolean',
                 'bool',
