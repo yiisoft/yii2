@@ -18,6 +18,7 @@ use yii\db\TableSchema;
 use yii\db\mysql\ColumnSchema;
 use yii\db\mysql\Schema;
 use yiiunit\base\db\BaseSchema;
+use yiiunit\support\DbHelper;
 
 /**
  * Unit test for {@see \yii\db\mysql\Schema} schema reflection and metadata retrieval for the MySQL driver.
@@ -100,32 +101,46 @@ final class SchemaTest extends BaseSchema
 
     public function testLoadBitDefaultColumn(): void
     {
-        $sql = <<<SQL
-        CREATE TABLE IF NOT EXISTS `bit_default_test` (
-            `bit1` bit(1) NOT NULL DEFAULT b'1',
-            `bit5` bit(5) NOT NULL DEFAULT b'10101',
-            `bit8` bit(8) NOT NULL DEFAULT b'10000010'
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8
-        SQL;
+        $db = $this->getConnection();
 
-        $this->getConnection()->createCommand($sql)->execute();
+        DbHelper::dropTablesIfExist($db, ['bit_default_test']);
 
-        $schema = $this->getConnection()->getTableSchema('bit_default_test');
+        $db->createCommand()->createTable(
+            'bit_default_test',
+            [
+                'nullable_bit1' => 'bit(1) NULL DEFAULT NULL',
+                'nullable_bit8' => 'bit(8) NULL DEFAULT NULL',
+                'bit1' => "bit(1) NOT NULL DEFAULT b'1'",
+                'bit5' => "bit(5) NOT NULL DEFAULT b'10101'",
+                'bit8' => "bit(8) NOT NULL DEFAULT b'10000010'",
+            ],
+            'ENGINE=InnoDB DEFAULT CHARSET=utf8',
+        )->execute();
 
+        $schema = $db->getTableSchema('bit_default_test', true);
+
+        self::assertNull(
+            $schema->columns['nullable_bit1']->defaultValue,
+            "Nullable 'bit(1) DEFAULT NULL' must remain 'null'.",
+        );
+        self::assertNull(
+            $schema->columns['nullable_bit8']->defaultValue,
+            "Nullable 'bit(8) DEFAULT NULL' must remain 'null'.",
+        );
         self::assertSame(
             1,
             $schema->columns['bit1']->defaultValue,
-            "bit(1) `b\'1\'` must decode to '1'.",
+            "'bit(1)' must decode to '1'.",
         );
         self::assertSame(
             21,
             $schema->columns['bit5']->defaultValue,
-            "bit(5) `b\'10101\'` must decode to '21'.",
+            "'bit(5)' must decode to '21'.",
         );
         self::assertSame(
             130,
             $schema->columns['bit8']->defaultValue,
-            "bit(8) `b\'10000010\'` must decode to '130'.",
+            "'bit(8)' must decode to '130'.",
         );
     }
 
