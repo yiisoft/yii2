@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace yiiunit\base\db;
 
+use yii\db\Expression;
 use yii\db\Query;
 use yiiunit\framework\db\DatabaseTestCase;
 
@@ -61,6 +62,67 @@ abstract class BaseQueryBuilderUnion extends DatabaseTestCase
         self::assertEmpty(
             $queryParams,
             'UNION query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildUnionWithGlobalOrderBy(): void
+    {
+        $db = $this->getConnection(true, false);
+
+        $query = (new Query())
+            ->select('id')
+            ->from('table1')
+            ->union((new Query())->select('id')->from('table2'))
+            ->unionOrderBy(['id' => SORT_DESC]);
+
+        $expectedQuerySql = $this->driverName === 'sqlite'
+            ? <<<SQL
+            SELECT [[id]] FROM [[table1]]
+            UNION  SELECT [[id]] FROM [[table2]]
+            ORDER BY [[id]] DESC
+            SQL
+            : <<<SQL
+            (SELECT [[id]] FROM [[table1]])
+            UNION ( SELECT [[id]] FROM [[table2]] )
+            ORDER BY [[id]] DESC
+            SQL;
+
+        [$actualQuerySql, $queryParams] = $db->getQueryBuilder()->build($query);
+
+        self::assertSame(
+            str_replace("\n", ' ', static::replaceQuotes($expectedQuerySql)),
+            $actualQuerySql,
+            'Explicit UNION ordering must be built after the complete UNION expression.',
+        );
+        self::assertEmpty(
+            $queryParams,
+            'UNION query should have no bound parameters.',
+        );
+    }
+
+    public function testBuildUnionWithGlobalOrderByExpression(): void
+    {
+        $db = $this->getConnection(true, false);
+
+        $query = (new Query())
+            ->select('id')
+            ->from('table1')
+            ->union((new Query())->select('id')->from('table2'))
+            ->unionOrderBy([new Expression('CASE WHEN id = :id THEN 0 ELSE 1 END', [':id' => 1])]);
+
+        [$actualQuerySql, $queryParams] = $db->getQueryBuilder()->build($query);
+
+        self::assertStringEndsWith(
+            <<<SQL
+            ORDER BY CASE WHEN id = :id THEN 0 ELSE 1 END
+            SQL,
+            $actualQuerySql,
+            'Ordering expression must be built after the complete UNION expression.',
+        );
+        self::assertSame(
+            [':id' => 1],
+            $queryParams,
+            'Expression parameters must be collected into the bound parameters.',
         );
     }
 

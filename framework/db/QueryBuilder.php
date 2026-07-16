@@ -102,7 +102,6 @@ class QueryBuilder extends \yii\base\BaseObject
      */
     protected $expressionBuilders = [];
 
-
     /**
      * Constructor.
      * @param Connection $connection the database connection.
@@ -224,6 +223,8 @@ class QueryBuilder extends \yii\base\BaseObject
     {
         $query = $query->prepare($this);
 
+        $query = $this->prepareSelectQuery($query);
+
         $params = empty($params) ? $query->params : array_merge($params, $query->params);
 
         $clauses = [
@@ -255,7 +256,20 @@ class QueryBuilder extends \yii\base\BaseObject
 
         $union = $this->buildUnion($query->union, $params);
         if ($union !== '') {
-            $sql = "($sql){$this->separator}$union";
+            $sql = $this->concatUnionSql($sql, $union);
+
+            $sql = $this->buildUnionOrderByAndLimit(
+                $sql,
+                $query->unionOrderBy,
+                $query->unionLimit,
+                $query->unionOffset,
+            );
+
+            foreach ($query->unionOrderBy ?? [] as $expression) {
+                if ($expression instanceof ExpressionInterface) {
+                    $this->buildExpression($expression, $params);
+                }
+            }
         }
 
         $with = $this->buildWithQueries($query->withQueries, $params);
@@ -1455,6 +1469,27 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * Builds the global ORDER BY and LIMIT/OFFSET clauses for a UNION query.
+     *
+     * @param string $sql The complete UNION SQL without global ORDER BY/LIMIT/OFFSET clauses.
+     * @param array<int|string, int|ExpressionInterface>|null $orderBy The global order by columns.
+     * @param int|ExpressionInterface|null $limit The global limit.
+     * @param int|ExpressionInterface|null $offset The global offset.
+     *
+     * @return string The completed UNION SQL.
+     *
+     * @since 22.0
+     */
+    public function buildUnionOrderByAndLimit(
+        string $sql,
+        array|null $orderBy,
+        int|ExpressionInterface|null $limit,
+        int|ExpressionInterface|null $offset,
+    ): string {
+        return $this->buildOrderByAndLimit($sql, $orderBy, $limit, $offset);
+    }
+
+    /**
      * @param array $columns
      * @return string the ORDER BY clause built from [[Query::$orderBy]].
      */
@@ -1680,6 +1715,21 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
+     * Concatenates the first `SELECT` statement with the UNION clauses built by {@see buildUnion()}.
+     *
+     * @param string $sql The SQL of the first `SELECT` statement.
+     * @param string $union The UNION clauses.
+     *
+     * @return string The compound SQL with the first statement parenthesized.
+     *
+     * @since 22.0
+     */
+    protected function concatUnionSql(string $sql, string $union): string
+    {
+        return "($sql){$this->separator}$union";
+    }
+
+    /**
      * Extracts table alias if there is one or returns false
      * @param $table
      * @return bool|array
@@ -1692,5 +1742,21 @@ class QueryBuilder extends \yii\base\BaseObject
         }
 
         return false;
+    }
+
+    /**
+     * Performs driver-specific preparation after [[Query::prepare()]].
+     *
+     * Implementations must not modify the given query; they must return a modified clone instead.
+     *
+     * @param Query $query The prepared query.
+     *
+     * @return Query The query to build.
+     *
+     * @since 22.0
+     */
+    protected function prepareSelectQuery(Query $query): Query
+    {
+        return $query;
     }
 }

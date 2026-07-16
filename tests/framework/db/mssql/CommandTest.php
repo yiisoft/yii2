@@ -94,6 +94,22 @@ final class CommandTest extends BaseCommand
         );
     }
 
+    #[DataProviderExternal(CommandProvider::class, 'rawUnionLimitZero')]
+    public function testRawUnionLimitZeroReturnsNoRows(Closure $query): void
+    {
+        $db = $this->getConnection();
+
+        $result = $query()
+            ->createCommand($db)
+            ->queryAll();
+
+        self::assertSame(
+            [],
+            $result,
+            'Zero-limited UNION must return no rows.',
+        );
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
     public function testAddUpdateDropCommentOnColumn(string $tableName, string $commentTarget, string $columnName): void
     {

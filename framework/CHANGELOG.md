@@ -132,6 +132,7 @@ Yii Framework 2 Change Log
 - Bug #21008: Fix `yii\db\oci\QueryBuilder::update()` to reject a `BLOB` update unless the condition covers a primary key or unique key, preventing multi-row data loss (terabytesoftw)
 - Bug #21109: Fix MSSQL `limit(0)` queries to use `TOP (0)` without derived-table column-name errors (terabytesoftw)
 - Bug #21013: Fix repeated execution of an Oracle `BLOB` command failing after its temporary LOB stream was closed (terabytesoftw)
+- Bug #20239: Add explicit `unionOrderBy()`, `addUnionOrderBy()`, `unionLimit()`, and `unionOffset()` query methods, and apply `ActiveDataProvider` sorting and pagination to the complete `UNION` result (terabytesoftw)
 
 2.0.56 under development
 ------------------------

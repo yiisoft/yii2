@@ -112,6 +112,30 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $union;
     /**
+     * How to sort the complete UNION result.
+     *
+     * @var array<int|string, int|ExpressionInterface>|null
+     *
+     * @see unionOrderBy()
+     * @see addUnionOrderBy()
+     * @since 22.0
+     */
+    public array|null $unionOrderBy = null;
+    /**
+     * Number of records to return from the complete UNION result.
+     *
+     * @see unionLimit()
+     * @since 22.0
+     */
+    public int|ExpressionInterface|null $unionLimit = null;
+    /**
+     * Zero-based offset for the complete UNION result.
+     *
+     * @see unionOffset()
+     * @since 22.0
+     */
+    public int|ExpressionInterface|null $unionOffset = null;
+    /**
      * @var array|null this is used to construct the WITH section in a SQL query.
      * Each array element is an array of the following structure:
      *
@@ -142,7 +166,6 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      * @since 2.0.14
      */
     public $queryCacheDependency;
-
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -498,9 +521,15 @@ class Query extends Component implements QueryInterface, ExpressionInterface
             return $command->queryScalar();
         }
 
+        $query = clone $this;
+
+        $query->unionOrderBy = null;
+        $query->unionLimit = null;
+        $query->unionOffset = null;
+
         $command = (new self())
             ->select([$selectExpression])
-            ->from(['c' => $this])
+            ->from(['c' => $query])
             ->createCommand($db);
         $this->setCommandCache($command);
 
@@ -1201,7 +1230,81 @@ PATTERN;
     }
 
     /**
+     * Sets the ORDER BY part of the complete UNION result.
+     *
+     * @param array<int|string, int|ExpressionInterface>|string|ExpressionInterface|null $columns The columns (and the
+     * directions) to be ordered by.
+     *
+     * @return static The query object itself.
+     *
+     * @see addUnionOrderBy()
+     * @since 22.0
+     */
+    public function unionOrderBy(array|string|ExpressionInterface|null $columns): static
+    {
+        $this->unionOrderBy = $this->normalizeOrderBy($columns);
+
+        return $this;
+    }
+
+    /**
+     * Adds ORDER BY columns to the complete UNION result.
+     *
+     * @param array<int|string, int|ExpressionInterface>|string|ExpressionInterface|null $columns The columns (and the
+     * directions) to be ordered by.
+     *
+     * @return static The query object itself.
+     *
+     * @see unionOrderBy()
+     * @since 22.0
+     */
+    public function addUnionOrderBy(array|string|ExpressionInterface|null $columns): static
+    {
+        $columns = $this->normalizeOrderBy($columns);
+
+        $this->unionOrderBy = $this->unionOrderBy === null ? $columns : [...$this->unionOrderBy, ...$columns];
+
+        return $this;
+    }
+
+    /**
+     * Sets the LIMIT part of the complete UNION result.
+     *
+     * @param int|ExpressionInterface|null $limit The limit. Use `null` or a negative value to disable it.
+     *
+     * @return static The query object itself.
+     *
+     * @since 22.0
+     */
+    public function unionLimit(int|ExpressionInterface|null $limit): static
+    {
+        $this->unionLimit = $limit;
+
+        return $this;
+    }
+
+    /**
+     * Sets the OFFSET part of the complete UNION result.
+     *
+     * @param int|ExpressionInterface|null $offset The offset. Use null or a negative value to disable it.
+     *
+     * @return static The query object itself.
+     *
+     * @since 22.0
+     */
+    public function unionOffset(int|ExpressionInterface|null $offset): static
+    {
+        $this->unionOffset = $offset;
+
+        return $this;
+    }
+
+    /**
      * Appends a SQL statement using UNION operator.
+     *
+     * [[orderBy()]], [[limit()]], and [[offset()]] configure the first SELECT statement. Use [[unionOrderBy()]],
+     * [[unionLimit()]], and [[unionOffset()]] to configure the complete UNION result.
+     *
      * @param string|Query $sql the SQL statement to be appended using UNION
      * @param bool $all TRUE if using UNION ALL and FALSE if using UNION
      * @return $this the query object itself
@@ -1333,6 +1436,9 @@ PATTERN;
             'join' => $from->join,
             'having' => $from->having,
             'union' => $from->union,
+            'unionOrderBy' => $from->unionOrderBy,
+            'unionLimit' => $from->unionLimit,
+            'unionOffset' => $from->unionOffset,
             'params' => $from->params,
             'withQueries' => $from->withQueries,
         ]);

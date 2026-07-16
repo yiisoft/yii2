@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
+use yii\db\Query;
 use yii\db\QueryInterface;
 use yii\di\Instance;
 
@@ -79,7 +80,6 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $db;
 
-
     /**
      * Initializes the DB connection component.
      * This method will initialize the [[db]] property (when set) to make sure it refers to a valid DB connection.
@@ -102,15 +102,26 @@ class ActiveDataProvider extends BaseDataProvider
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
         $query = clone $this->query;
+
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
             if ($pagination->totalCount === 0) {
                 return [];
             }
-            $query->limit($pagination->getLimit())->offset($pagination->getOffset());
+
+            if ($this->isUnionQuery($query)) {
+                $query->unionLimit($pagination->getLimit())->unionOffset($pagination->getOffset());
+            } else {
+                $query->limit($pagination->getLimit())->offset($pagination->getOffset());
+            }
         }
+
         if (($sort = $this->getSort()) !== false) {
-            $query->addOrderBy($sort->getOrders());
+            if ($this->isUnionQuery($query)) {
+                $query->addUnionOrderBy($sort->getOrders());
+            } else {
+                $query->addOrderBy($sort->getOrders());
+            }
         }
 
         return $query->all($this->db);
@@ -165,7 +176,15 @@ class ActiveDataProvider extends BaseDataProvider
         if (!$this->query instanceof QueryInterface) {
             throw new InvalidConfigException('The "query" property must be an instance of a class that implements the QueryInterface e.g. yii\db\Query or its subclasses.');
         }
+
         $query = clone $this->query;
+
+        if ($this->isUnionQuery($query)) {
+            // Aggregation already ignores the UNION result modifiers, while the first operand's own `limit`,
+            // `offset`, and `orderBy` are part of the UNION semantics and must be preserved.
+            return (int) $query->count('*', $this->db);
+        }
+
         return (int) $query->limit(-1)->offset(-1)->orderBy([])->count('*', $this->db);
     }
 
@@ -200,5 +219,19 @@ class ActiveDataProvider extends BaseDataProvider
         }
 
         parent::__clone();
+    }
+
+    /**
+     * Returns whether the query is a {@see Query} with UNION clauses, requiring the UNION result modifiers.
+     *
+     * @param QueryInterface $query The prepared query.
+     *
+     * @return bool Whether the UNION result modifiers apply.
+     *
+     * @phpstan-assert-if-true Query $query
+     */
+    private function isUnionQuery(QueryInterface $query): bool
+    {
+        return $query instanceof Query && $query->union !== null && $query->union !== [];
     }
 }

@@ -15,7 +15,6 @@ use yii\base\NotSupportedException;
 use yii\db\conditions\InCondition;
 use yii\db\conditions\LikeCondition;
 use yii\db\Connection;
-use yii\db\ExpressionInterface;
 use yii\db\Query;
 
 use function ltrim;
@@ -439,55 +438,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * {@inheritdoc}
      */
-    public function build($query, $params = [])
-    {
-        $query = $query->prepare($this);
-
-        $params = empty($params) ? $query->params : array_merge($params, $query->params);
-
-        $clauses = [
-            $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
-            $this->buildJoin($query->join, $params),
-            $this->buildWhere($query->where, $params),
-            $this->buildGroupBy($query->groupBy),
-            $this->buildHaving($query->having, $params),
-        ];
-
-        $sql = implode($this->separator, array_filter($clauses));
-        $sql = $this->buildOrderByAndLimit($sql, $query->orderBy, $query->limit, $query->offset);
-
-        if (!empty($query->orderBy)) {
-            foreach ($query->orderBy as $expression) {
-                if ($expression instanceof ExpressionInterface) {
-                    $this->buildExpression($expression, $params);
-                }
-            }
-        }
-        if (!empty($query->groupBy)) {
-            foreach ($query->groupBy as $expression) {
-                if ($expression instanceof ExpressionInterface) {
-                    $this->buildExpression($expression, $params);
-                }
-            }
-        }
-
-        $union = $this->buildUnion($query->union, $params);
-        if ($union !== '') {
-            $sql = "$sql{$this->separator}$union";
-        }
-
-        $with = $this->buildWithQueries($query->withQueries, $params);
-        if ($with !== '') {
-            $sql = "$with{$this->separator}$sql";
-        }
-
-        return [$sql, $params];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function buildUnion($unions, &$params)
     {
         if (empty($unions)) {
@@ -524,5 +474,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
             . $this->db->quoteTableName(($schema ? $schema . '.' : '') . $name) . ' ON '
             . $this->db->quoteTableName($table)
             . ' (' . $this->buildColumns($columns) . ')';
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * SQLite does not support parenthesized UNION operands, so the first `SELECT` statement is left unwrapped.
+     */
+    protected function concatUnionSql(string $sql, string $union): string
+    {
+        return "$sql{$this->separator}$union";
     }
 }

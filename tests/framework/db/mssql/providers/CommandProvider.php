@@ -89,6 +89,71 @@ final class CommandProvider
     }
 
     /**
+     * @return array<string, array{Closure}>
+     */
+    public static function rawUnionLimitZero(): array
+    {
+        return [
+            'ALL preserved' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT ALL id FROM category')
+                    ->unionLimit(0),
+            ],
+            'DISTINCT preserved' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT DISTINCT id FROM category')
+                    ->unionLimit(0),
+            ],
+            'existing TOP replaced' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT TOP (5) id FROM category')
+                    ->unionLimit(0),
+            ],
+            'legacy numeric TOP replaced' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT TOP 10 id FROM category')
+                    ->unionLimit(0),
+            ],
+            'nested parentheses in TOP replaced' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT TOP ((5)) id FROM category')
+                    ->unionLimit(0),
+            ],
+            'plain SELECT' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT id FROM category')
+                    ->unionLimit(0),
+            ],
+            'TOP PERCENT preserved' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT DISTINCT TOP ((5)) PERCENT id FROM category')
+                    ->unionLimit(0),
+            ],
+            'TOP with expression replaced' => [
+                static fn (): Query => (new Query())
+                    ->select('id')
+                    ->from('item')
+                    ->union('SELECT TOP (ABS(5)) id FROM category')
+                    ->unionLimit(0),
+            ],
+        ];
+    }
+
+    /**
      * @return array<
      *   string,
      *   array{
