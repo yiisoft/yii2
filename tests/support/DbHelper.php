@@ -13,6 +13,7 @@ namespace yiiunit\support;
 use PHPUnit\Framework\Assert;
 use yii\db\Connection;
 use yii\db\ConstraintFinderInterface;
+use yii\db\Expression;
 
 use function str_contains;
 
@@ -120,6 +121,34 @@ final class DbHelper
             $needle,
             (string) $defaultValue,
             'Default expression must be preserved.',
+        );
+    }
+
+    /**
+     * Asserts the refreshed default value of the given column is an {@see Expression} with the given SQL text.
+     *
+     * @param Connection $db Database connection.
+     * @param string $table Table name.
+     * @param string $column Column name.
+     * @param string $expression Expected default expression SQL.
+     */
+    public static function assertColumnDefaultExpression(
+        Connection $db,
+        string $table,
+        string $column,
+        string $expression,
+    ): void {
+        $defaultValue = $db->getTableSchema($table, true)->getColumn($column)->defaultValue;
+
+        Assert::assertInstanceOf(
+            Expression::class,
+            $defaultValue,
+            'Default must be an Expression.',
+        );
+        Assert::assertSame(
+            $expression,
+            (string) $defaultValue,
+            'Default expression SQL must match.',
         );
     }
 

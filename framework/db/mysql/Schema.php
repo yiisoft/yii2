@@ -24,6 +24,7 @@ use yii\db\Schema as BaseSchema;
 
 use function explode;
 use function str_replace;
+use function stripos;
 
 /**
  * Schema is the class for retrieving metadata from a MySQL database (version 8.0 and later).
@@ -272,6 +273,7 @@ SQL;
         $column->allowNull = $info['null'] === 'YES';
         $column->isPrimaryKey = strpos($info['key'], 'PRI') !== false;
         $column->autoIncrement = stripos($info['extra'], 'auto_increment') !== false;
+        $column->isDefaultExpression = stripos($info['extra'], 'DEFAULT_GENERATED') !== false;
         $column->comment = $info['comment'];
 
         $column->dbType = $info['type'];

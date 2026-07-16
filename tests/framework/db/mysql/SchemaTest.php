@@ -16,6 +16,7 @@ use yii\db\ConstraintFinderInterface;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\mysql\ColumnSchema;
+use yii\db\mysql\QueryBuilder;
 use yii\db\mysql\Schema;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\support\DbHelper;
@@ -97,6 +98,79 @@ final class SchemaTest extends BaseSchema
             (string) $ts->defaultValue,
             "Expression must normalize to 'CURRENT_TIMESTAMP(3)'.",
         );
+    }
+
+    public function testLoadDefaultExpressionColumn(): void
+    {
+        $db = $this->getConnection();
+
+        $command = $db->createCommand();
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['default_expression_test']);
+
+        $command->createTable(
+            'default_expression_test',
+            [
+                'date_expression' => 'date NOT NULL DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR)',
+                'text_expression' => "text NOT NULL DEFAULT ('abc')",
+                'json_expression' => 'json NOT NULL DEFAULT (JSON_ARRAY())',
+                'literal' => "date NOT NULL DEFAULT '2011-11-11'",
+            ],
+            'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
+        )->execute();
+
+        if ($qb->isMariaDb()) {
+            // MariaDB reports no `DEFAULT_GENERATED` metadata: `text`/`json` defaults reflect in expression form,
+            // while expression defaults on other column types reflect as plain strings.
+            DbHelper::assertColumnDefaultValue(
+                $db,
+                'default_expression_test',
+                'date_expression',
+                '(curdate() + interval 2 year)',
+            );
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                'default_expression_test',
+                'text_expression',
+                "'abc'",
+            );
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                'default_expression_test',
+                'json_expression',
+                'json_array()',
+            );
+        } else {
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                'default_expression_test',
+                'date_expression',
+                '(curdate() + interval 2 year)',
+            );
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                'default_expression_test',
+                'text_expression',
+                "_utf8mb4'abc'",
+            );
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                'default_expression_test',
+                'json_expression',
+                'json_array()',
+            );
+        }
+
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'literal',
+            '2011-11-11',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['default_expression_test']);
     }
 
     public function testLoadBitDefaultColumn(): void

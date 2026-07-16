@@ -94,6 +94,71 @@ final class CommandTest extends BaseCommand
         );
     }
 
+    public function testInsertReflectedExpressionDefaults(): void
+    {
+        $db = $this->getConnection(false);
+
+        $command = $db->createCommand();
+        /** @var QueryBuilder $qb */
+        $qb = $db->getQueryBuilder();
+
+        DbHelper::dropTablesIfExist($db, ['expression_default_command_test']);
+
+        $command->createTable(
+            'expression_default_command_test',
+            [
+                'date_expression' => 'date NOT NULL DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR)',
+                'text_expression' => "text NOT NULL DEFAULT ('abc')",
+                'json_expression' => 'json NOT NULL DEFAULT (JSON_ARRAY())',
+                'literal' => "date NOT NULL DEFAULT '2011-11-11'",
+            ],
+            'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
+        )->execute();
+
+        $columns = $db->getTableSchema('expression_default_command_test', true)->columns;
+
+        if ($qb->isMariaDb()) {
+            // MariaDB reflects the date expression default as a plain string that cannot round-trip through an
+            // insert: omit it and let the engine apply the stored default.
+            $insert = [
+                'text_expression' => $columns['text_expression']->defaultValue,
+                'json_expression' => $columns['json_expression']->defaultValue,
+                'literal' => $columns['literal']->defaultValue,
+            ];
+        } else {
+            $insert = [
+                'date_expression' => $columns['date_expression']->defaultValue,
+                'text_expression' => $columns['text_expression']->defaultValue,
+                'json_expression' => $columns['json_expression']->defaultValue,
+                'literal' => $columns['literal']->defaultValue,
+            ];
+        }
+
+        $command->insert(
+            'expression_default_command_test',
+            $insert,
+        )->execute();
+
+        self::assertSame(
+            [
+                'date_expression' => $command->setSql(
+                    <<<SQL
+                    SELECT CURRENT_DATE + INTERVAL 2 YEAR
+                    SQL
+                )->queryScalar(),
+                'text_expression' => 'abc',
+                'json_expression' => '[]',
+                'literal' => '2011-11-11',
+            ],
+            (new Query())
+                ->from('expression_default_command_test')
+                ->one($db),
+            'Row must match the engine-applied defaults.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['expression_default_command_test']);
+    }
+
     #[DataProviderExternal(CommandProvider::class, 'addCommentOnColumn')]
     public function testAddUpdateDropCommentOnColumn(string $table, string $commentTarget, string $columnName): void
     {
