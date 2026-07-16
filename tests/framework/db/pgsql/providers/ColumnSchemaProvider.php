@@ -18,11 +18,35 @@ use yii\db\Expression;
 final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchemaProvider
 {
     /**
-     * @return array<string, array{string, string, string, mixed, mixed}>
+     * @return array<string, array{string, string, string, mixed, mixed, 5?: int}>
      */
     public static function defaultPhpTypecast(): array
     {
         return [
+            'array constructor becomes an Expression' => [
+                'integer',
+                'int4',
+                'integer',
+                'ARRAY[]::integer[]',
+                new Expression('ARRAY[]::integer[]'),
+                1,
+            ],
+            'array literal parses to typed array' => [
+                'integer',
+                'int4',
+                'integer',
+                "'{1,2}'::integer[]",
+                [1, 2],
+                1,
+            ],
+            'array literal with escaped quote parses to array' => [
+                'text',
+                'text',
+                'string',
+                "'{a''s,b}'::text[]",
+                ["a's", 'b'],
+                1,
+            ],
             'bare integer cast to int' => [
                 'integer',
                 'int4',
@@ -37,19 +61,19 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 '0',
                 0,
             ],
-            'bare string kept verbatim' => [
-                'string',
-                'varchar',
-                'string',
-                'hello',
-                'hello',
-            ],
             'binary bit B\'10101\' on bit(5)' => [
                 'integer',
                 'bit',
                 'integer',
                 "B'10101'::bit(5)",
                 21,
+            ],
+            'bit concatenation becomes an Expression' => [
+                'integer',
+                'bit',
+                'integer',
+                "B'1'::bit(1) || B'0'::bit(1)",
+                new Expression("B'1'::bit(1) || B'0'::bit(1)"),
             ],
             'boolean false bare' => [
                 'boolean',
@@ -100,6 +124,20 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "'hello'::character varying",
                 'hello',
             ],
+            'cast notation string with typmod' => [
+                'string',
+                'varchar',
+                'string',
+                "'xy'::character varying(10)",
+                'xy',
+            ],
+            'cast of cast NULL becomes an Expression' => [
+                'string',
+                'varchar',
+                'string',
+                '(NULL::text)::character varying',
+                new Expression('(NULL::text)::character varying'),
+            ],
             'complex timezone literal expression' => [
                 'timestamp',
                 'timestamp',
@@ -128,6 +166,34 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'CURRENT_TIMESTAMP',
                 new Expression('CURRENT_TIMESTAMP'),
             ],
+            'integer expression becomes an Expression' => [
+                'integer',
+                'int4',
+                'integer',
+                '(1 + 2)',
+                new Expression('(1 + 2)'),
+            ],
+            'jsonb expression becomes an Expression' => [
+                'json',
+                'jsonb',
+                'array',
+                'jsonb_build_array()',
+                new Expression('jsonb_build_array()'),
+            ],
+            'jsonb literal decodes to array' => [
+                'json',
+                'jsonb',
+                'array',
+                '\'{"a": 1}\'::jsonb',
+                ['a' => 1],
+            ],
+            'nextval sequence becomes an Expression' => [
+                'integer',
+                'int4',
+                'integer',
+                "nextval('t_seq'::regclass)",
+                new Expression("nextval('t_seq'::regclass)"),
+            ],
             'now() lowercase preserves original casing' => [
                 'timestamp',
                 'timestamp',
@@ -147,6 +213,13 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'timestamp',
                 'string',
                 null,
+                null,
+            ],
+            'NULL cast notation returns null' => [
+                'string',
+                'varchar',
+                'string',
+                'NULL::character varying',
                 null,
             ],
             'parenthesized NULL returns null' => [
@@ -176,6 +249,20 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'integer',
                 '\'101\'::"bit"',
                 5,
+            ],
+            'quoted literal unescapes doubled quotes' => [
+                'string',
+                'varchar',
+                'string',
+                "'O''Reilly'::character varying",
+                "O'Reilly",
+            ],
+            'text expression becomes an Expression' => [
+                'text',
+                'text',
+                'string',
+                "upper('abc'::text)",
+                new Expression("upper('abc'::text)"),
             ],
             'timestamp literal not wrapped in expression' => [
                 'timestamp',

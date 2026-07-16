@@ -19,6 +19,7 @@ use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
 use yii\db\JsonExpression;
+use yii\db\pgsql\ColumnSchema;
 use yii\db\pgsql\Schema;
 use yii\db\Query;
 use yiiunit\base\db\BaseCommand;
@@ -28,6 +29,7 @@ use yiiunit\support\DbHelper;
 use function array_diff;
 use function array_key_exists;
 use function array_keys;
+use function array_map;
 use function count;
 
 /**
@@ -98,6 +100,53 @@ class CommandTest extends BaseCommand
                 ->one($db),
             'Conflict must apply the update behavior.',
         );
+    }
+
+    public function testInsertReflectedExpressionDefaults(): void
+    {
+        $db = $this->getConnection(false);
+
+        $command = $db->createCommand();
+
+        DbHelper::dropTablesIfExist($db, ['expression_default_command_test']);
+
+        $command->createTable(
+            'expression_default_command_test',
+            [
+                'int_expression' => 'integer NOT NULL DEFAULT (1 + 2)',
+                'text_expression' => "text NOT NULL DEFAULT upper('abc'::text)",
+                'jsonb_expression' => 'jsonb NOT NULL DEFAULT jsonb_build_array()',
+                'int_literal' => 'integer NOT NULL DEFAULT 42',
+                'text_literal' => "varchar(100) NOT NULL DEFAULT 'abc'",
+                'jsonb_literal' => 'jsonb NOT NULL DEFAULT \'{"a":1}\'',
+                'serial_col' => 'serial',
+            ],
+        )->execute();
+
+        $columns = $db->getTableSchema('expression_default_command_test', true)->columns;
+
+        $command->insert(
+            'expression_default_command_test',
+            array_map(static fn (ColumnSchema $column): mixed => $column->defaultValue, $columns),
+        )->execute();
+
+        self::assertSame(
+            [
+                'int_expression' => 3,
+                'text_expression' => 'ABC',
+                'jsonb_expression' => '[]',
+                'int_literal' => 42,
+                'text_literal' => 'abc',
+                'jsonb_literal' => '{"a": 1}',
+                'serial_col' => 1,
+            ],
+            (new Query())
+                ->from('expression_default_command_test')
+                ->one($db),
+            'Row must match the engine-applied defaults.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['expression_default_command_test']);
     }
 
     public function testThrowIntegrityExceptionWhenConflictMatchesNonArbiterConstraint(): void

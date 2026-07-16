@@ -155,8 +155,9 @@ final class ColumnSchemaTest extends BaseColumnSchema
         string $phpType,
         mixed $value,
         mixed $expected,
+        int $dimension = 0,
     ): void {
-        $column = $this->createColumn($type, $dbType, $phpType);
+        $column = $this->createColumn($type, $dbType, $phpType, $dimension);
 
         $result = $column->defaultPhpTypecast($value);
 

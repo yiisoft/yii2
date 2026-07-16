@@ -428,8 +428,8 @@ final class CommandProvider
                 static fn (Connection $db): ColumnSchemaBuilder => $db->getSchema()
                     ->createColumnSchemaBuilder(Schema::TYPE_STRING)
                     ->defaultValue("O'Reilly"),
-                // Reflected metadata keeps the SQL-escaped doubled quote; inserted rows receive the plain value.
-                ['defaultValue' => "O''Reilly"],
+                // Reflected metadata unescapes the SQL doubled quote back to the plain value.
+                ['defaultValue' => "O'Reilly"],
             ],
             'builder type only' => [
                 'varchar(100)',

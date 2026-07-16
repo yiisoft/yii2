@@ -94,9 +94,9 @@ class ColumnSchema extends BaseObject
     /**
      * Converts a raw column default value from the database metadata to its PHP representation.
      *
-     * The base implementation delegates to {@see phpTypecast()}. Driver-specific subclasses (MySQL, MSSQL, Oracle)
-     * override this method to normalize vendor-specific default formats such as `CURRENT_TIMESTAMP`, bit literals, or
-     * quote-wrapped expressions before delegating to `phpTypecast()`.
+     * The base implementation delegates to {@see phpTypecast()}. Driver-specific subclasses override this method to
+     * return a PHP literal for recognized literal defaults, or an {@see Expression} for defaults the engine reports
+     * as expression SQL, such as `CURRENT_TIMESTAMP` or `nextval(...)`.
      *
      * @param mixed $value Raw default value from the database schema metadata.
      *

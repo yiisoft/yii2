@@ -23,10 +23,9 @@ use function is_bool;
 use function is_resource;
 use function json_decode;
 use function preg_match;
+use function str_replace;
 use function stream_get_contents;
-use function strpos;
 use function strtolower;
-use function strtoupper;
 
 /**
  * Represents the metadata of a column in a PostgreSQL database table.
@@ -36,6 +35,13 @@ use function strtoupper;
  */
 class ColumnSchema extends \yii\db\ColumnSchema
 {
+    /**
+     * Pattern fragment matching the type suffix of a `pg_get_expr()` cast, such as `character varying(10)`, `"bit"`,
+     * `numeric(5,2)`, or `text[]`. Shared by every literal branch of {@see defaultPhpTypecast()} so the cast grammar
+     * cannot drift between them.
+     */
+    private const string CAST_SUFFIX = '[\w" .\[\](),]+';
+
     /**
      * @var int the dimension of array. Defaults to 0, means this column is not an array.
      */
@@ -135,16 +141,21 @@ class ColumnSchema extends \yii\db\ColumnSchema
     /**
      * Converts a PostgreSQL column default value to its PHP representation.
      *
-     * Handles PostgreSQL-specific default value formats:
-     * - `null` to `null`.
-     * - Temporal columns (`timestamp`, `date`, `time`) defaulting to `NOW()`, `CURRENT_TIMESTAMP`, `CURRENT_DATE`,
-     *   `CURRENT_TIME`, or any function-call expression (containing `(`) to an {@see Expression}.
-     * - Binary bit literals (`B'...'::`) to their integer value via `bindec()`.
-     * - Quoted bit literals (`'...'::"bit"`) to their integer value via `bindec()`.
-     * - Cast notation (`'value'::type`) to the unwrapped literal, delegated to {@see phpTypecast()}.
-     * - `boolean` columns: `'true'` to `true`, anything else to `false`.
-     * - Parenthesized values (`(value)::type`) to the unwrapped literal, with `NULL` detection, delegated to
+     * Recognizes the literal formats produced by `pg_get_expr()` and typecasts only those:
+     * - `NULL` or `(NULL)`, optionally followed by a direct type cast, to `null`.
+     * - Binary bit literals (`B'...'::`) to their integer value via `bindec()`; kept for backward compatibility,
+     *   `pg_get_expr()` reports bit defaults in the quoted form.
+     * - Quoted bit literals (`'...'::"bit"`) to their integer value via `bindec()`; `bit varying` defaults carry the
+     *   same `"bit"` cast label.
+     * - Quoted literals with a cast (`'value'::type`, including type modifiers such as `character varying(10)`) to
+     *   the unquoted value with doubled quotes unescaped, delegated to {@see phpTypecast()}.
+     * - Numeric literals, optionally parenthesized and optionally cast (`42`, `1.5`, `(0)::numeric`), delegated to
      *   {@see phpTypecast()}.
+     * - Bare `true`/`false` to booleans.
+     *
+     * Everything else — operator expressions, function calls, `nextval(...)`, `CURRENT_*` keywords — becomes an
+     * executable {@see Expression}. Branch order is significant: the bit branches must precede the generic
+     * quoted-literal branch, or bit strings would be typecast as plain integers.
      *
      * @param mixed $value Raw default value in PostgreSQL schema metadata format.
      *
@@ -158,40 +169,31 @@ class ColumnSchema extends \yii\db\ColumnSchema
             return null;
         }
 
-        if (
-            in_array($this->type, [Schema::TYPE_TIMESTAMP, Schema::TYPE_DATE, Schema::TYPE_TIME], true)
-            && (
-                in_array(strtoupper($value), ['NOW()', 'CURRENT_TIMESTAMP', 'CURRENT_DATE', 'CURRENT_TIME'], true)
-                || strpos($value, '(') !== false
-            )
-        ) {
-            return new Expression($value);
-        }
-
-        if (preg_match("/^B'(.*?)'::/", $value, $matches)) {
-            return bindec($matches[1]);
-        }
-
-        if (preg_match("/^'(\d+)'::\"bit\"$/", $value, $matches)) {
-            return bindec($matches[1]);
-        }
-
-        if (preg_match("/^'(.*?)'::/", $value, $matches)) {
-            return $this->phpTypecast($matches[1]);
-        }
-
-        if ($this->type === Schema::TYPE_BOOLEAN) {
-            return $value === 'true';
-        }
-
-        // matches bare values, parenthesized values, and cast notation.
-        preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $value, $matches);
-
-        if ($matches[2] === 'NULL') {
+        if (preg_match('/^(?:NULL|\(NULL\))(?:::' . self::CAST_SUFFIX . ')?$/i', $value)) {
             return null;
         }
 
-        return $this->phpTypecast($matches[2]);
+        if (preg_match("/^B'([01]*)'::" . self::CAST_SUFFIX . '$/', $value, $matches)) {
+            return bindec($matches[1]);
+        }
+
+        if (preg_match("/^'([01]+)'::\"bit\"$/", $value, $matches)) {
+            return bindec($matches[1]);
+        }
+
+        if (preg_match("/^'((?:[^']|'')*)'::" . self::CAST_SUFFIX . '$/s', $value, $matches)) {
+            return $this->phpTypecast(str_replace("''", "'", $matches[1]));
+        }
+
+        if (preg_match('/^(\()?(-?\d+(?:\.\d+)?)(?(1)\))(?:::' . self::CAST_SUFFIX . ')?$/', $value, $matches)) {
+            return $this->phpTypecast($matches[2]);
+        }
+
+        if ($value === 'true' || $value === 'false') {
+            return $value === 'true';
+        }
+
+        return new Expression($value);
     }
 
     /**
