@@ -133,7 +133,7 @@ Yii Framework 2 Change Log
 - Bug #21109: Fix MSSQL `limit(0)` queries to use `TOP (0)` without derived-table column-name errors (terabytesoftw)
 - Bug #21013: Fix repeated execution of an Oracle `BLOB` command failing after its temporary LOB stream was closed (terabytesoftw)
 - Bug #20239: Add explicit `unionOrderBy()`, `addUnionOrderBy()`, `unionLimit()`, and `unionOffset()` query methods, and apply `ActiveDataProvider` sorting and pagination to the complete `UNION` result (terabytesoftw)
-- Bug #19747: Load MySQL expression-based column defaults (`DEFAULT_GENERATED`) as executable `yii\db\Expression` instead of raw strings (terabytesoftw)
+- Bug #19747: Load MySQL expression-based column defaults (`DEFAULT_GENERATED`) as executable `yii\db\Expression` instead of raw strings, and expose MariaDB expression-form `TEXT`/`JSON` defaults as `yii\db\Expression` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

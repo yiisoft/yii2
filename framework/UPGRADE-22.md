@@ -620,7 +620,9 @@ On MySQL `8.0.13+`, expression-based column defaults reported as `DEFAULT_GENERA
 `yii\db\Expression` through `ColumnSchema::$defaultValue` instead of the raw string. This includes parenthesized literal
 defaults required by types such as `TEXT` and `JSON`. Review strict type checks, schema snapshots, and code that calls
 `ActiveRecord::loadDefaultValues()` for models containing these columns. MariaDB does not report the
-`DEFAULT_GENERATED` metadata, so its expression defaults still reflect as plain strings.
+`DEFAULT_GENERATED` metadata; its `TEXT` and `JSON` defaults, which MariaDB stores in expression form, are exposed as
+a `yii\db\Expression` as well, and a `JSON` default that is valid JSON is returned decoded. Expression defaults on
+other MariaDB column types still reflect as plain strings.
 
 ## Removed platform support
 

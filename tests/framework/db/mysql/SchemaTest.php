@@ -122,25 +122,25 @@ final class SchemaTest extends BaseSchema
         )->execute();
 
         if ($qb->isMariaDb()) {
-            // MariaDB reports no `DEFAULT_GENERATED` metadata: expression defaults reflect as plain strings,
-            // parenthesized literals keep their quotes, and the JSON expression fails `json_decode()` to `null`.
+            // MariaDB reports no `DEFAULT_GENERATED` metadata: `text`/`json` defaults reflect in expression form,
+            // while expression defaults on other column types reflect as plain strings.
             DbHelper::assertColumnDefaultValue(
                 $db,
                 'default_expression_test',
                 'date_expression',
                 '(curdate() + interval 2 year)',
             );
-            DbHelper::assertColumnDefaultValue(
+            DbHelper::assertColumnDefaultExpression(
                 $db,
                 'default_expression_test',
                 'text_expression',
                 "'abc'",
             );
-            DbHelper::assertColumnDefaultValue(
+            DbHelper::assertColumnDefaultExpression(
                 $db,
                 'default_expression_test',
                 'json_expression',
-                null,
+                'json_array()',
             );
         } else {
             DbHelper::assertColumnDefaultExpression(

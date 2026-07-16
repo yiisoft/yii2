@@ -118,13 +118,13 @@ final class CommandTest extends BaseCommand
         $columns = $db->getTableSchema('expression_default_command_test', true)->columns;
 
         if ($qb->isMariaDb()) {
-            // MariaDB reflects expression defaults as plain strings that cannot round-trip through an insert:
-            // omit them so the engine applies the stored defaults, and expect the reflected quotes verbatim.
+            // MariaDB reflects the date expression default as a plain string that cannot round-trip through an
+            // insert: omit it and let the engine apply the stored default.
             $insert = [
                 'text_expression' => $columns['text_expression']->defaultValue,
+                'json_expression' => $columns['json_expression']->defaultValue,
                 'literal' => $columns['literal']->defaultValue,
             ];
-            $expectedText = "'abc'";
         } else {
             $insert = [
                 'date_expression' => $columns['date_expression']->defaultValue,
@@ -132,7 +132,6 @@ final class CommandTest extends BaseCommand
                 'json_expression' => $columns['json_expression']->defaultValue,
                 'literal' => $columns['literal']->defaultValue,
             ];
-            $expectedText = 'abc';
         }
 
         $command->insert(
@@ -147,7 +146,7 @@ final class CommandTest extends BaseCommand
                     SELECT CURRENT_DATE + INTERVAL 2 YEAR
                     SQL
                 )->queryScalar(),
-                'text_expression' => $expectedText,
+                'text_expression' => 'abc',
                 'json_expression' => '[]',
                 'literal' => '2011-11-11',
             ],

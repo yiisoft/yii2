@@ -160,6 +160,27 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 new Expression('(json_array())'),
                 true,
             ],
+            'MariaDB bare JSON expression becomes an Expression' => [
+                'json',
+                'json',
+                'array',
+                'json_array()',
+                new Expression('json_array()'),
+            ],
+            'MariaDB quoted JSON literal becomes an Expression' => [
+                'json',
+                'json',
+                'array',
+                '\'{"a":1}\'',
+                new Expression('\'{"a":1}\''),
+            ],
+            'MariaDB quoted text literal becomes an Expression' => [
+                'text',
+                'text',
+                'string',
+                "'abc'",
+                new Expression("'abc'"),
+            ],
             'decimal default kept as string' => [
                 'decimal',
                 'decimal(5,2)',
