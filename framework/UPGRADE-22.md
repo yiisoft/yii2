@@ -612,6 +612,10 @@ preserves MySQL `CURRENT_TIMESTAMP(0)`, recognizes Oracle `CURRENT_TIMESTAMP`, h
 parses SQLite `DEFAULT NULL` and escaped string literals consistently. Update schema snapshots or metadata assertions
 that encoded the previous values.
 
+MySQL `BIT` columns declared as nullable with `DEFAULT NULL` now expose `null` through
+`ColumnSchema::$defaultValue`; Yii `2.0.x` incorrectly reported `0`. Review code that compares reflected default values
+or calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
+
 ## Removed platform support
 
 ### HHVM
