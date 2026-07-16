@@ -624,6 +624,15 @@ defaults required by types such as `TEXT` and `JSON`. Review strict type checks,
 a `yii\db\Expression` as well, and a `JSON` default that is valid JSON is returned decoded. Expression defaults on
 other MariaDB column types still reflect as plain strings.
 
+On PostgreSQL, expression-based column defaults reported by `pg_get_expr()` — operator expressions, function calls,
+and the `nextval(...)` default of a non-primary-key `serial` column — now expose an executable `yii\db\Expression`
+through `ColumnSchema::$defaultValue`. Yii `2.0.x` mangled these values: `integer DEFAULT (1 + 2)` reflected as `1`,
+a `jsonb` expression default as `null`, and a non-primary-key `serial` default as a raw string. Reflected quoted
+string literals also unescape SQL-doubled quotes now (`'O''Reilly'` reflects as `O'Reilly`). Review strict type
+checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for models containing these
+columns; on a non-primary-key `serial` column, `loadDefaultValues()` now assigns an `Expression` that advances the
+sequence when the record is saved. Primary-key and identity column defaults keep their current behavior.
+
 ## Removed platform support
 
 ### HHVM

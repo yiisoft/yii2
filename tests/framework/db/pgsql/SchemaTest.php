@@ -22,6 +22,7 @@ use yiiunit\data\ar\EnumTypeInCustomSchema;
 use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\framework\db\pgsql\providers\SchemaProvider;
+use yiiunit\support\DbHelper;
 
 use function fclose;
 use function print_r;
@@ -554,13 +555,78 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testLoadDefaultExpressionColumn(): void
+    {
+        $db = $this->getConnection(false);
+
+        $command = $db->createCommand();
+
+        DbHelper::dropTablesIfExist($db, ['default_expression_test']);
+
+        $command->createTable(
+            'default_expression_test',
+            [
+                'int_expression' => 'integer NOT NULL DEFAULT (1 + 2)',
+                'text_expression' => "text NOT NULL DEFAULT upper('abc'::text)",
+                'jsonb_expression' => 'jsonb NOT NULL DEFAULT jsonb_build_array()',
+                'int_literal' => 'integer NOT NULL DEFAULT 42',
+                'text_literal' => "varchar(100) NOT NULL DEFAULT 'abc'",
+                'jsonb_literal' => 'jsonb NOT NULL DEFAULT \'{"a":1}\'',
+                'serial_col' => 'serial',
+            ],
+        )->execute();
+
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            'default_expression_test',
+            'int_expression',
+            '(1 + 2)',
+        );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            'default_expression_test',
+            'text_expression',
+            "upper('abc'::text)",
+        );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            'default_expression_test',
+            'jsonb_expression',
+            'jsonb_build_array()',
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'int_literal',
+            42,
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'text_literal',
+            'abc',
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'jsonb_literal',
+            ['a' => 1],
+        );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            'default_expression_test',
+            'serial_col',
+            "nextval('default_expression_test_serial_col_seq'::regclass)",
+        );
+
+        DbHelper::dropTablesIfExist($db, ['default_expression_test']);
+    }
+
     public function testNonPrimaryKeySequenceDefaultIsPreserved(): void
     {
         $db = $this->getConnection(false);
 
-        if ($db->schema->getTableSchema('test_default_nextval') !== null) {
-            $db->createCommand()->dropTable('test_default_nextval')->execute();
-        }
+        DbHelper::dropTablesIfExist($db, ['test_default_nextval']);
 
         $sql = <<<SQL
         CREATE TABLE {{test_default_nextval}} (id serial PRIMARY KEY, counter_col serial)
@@ -574,13 +640,14 @@ final class SchemaTest extends BaseSchema
             $column->autoIncrement,
             'Sequence-backed column must be flagged auto-increment.',
         );
-        self::assertIsString(
+        self::assertInstanceOf(
+            Expression::class,
             $column->defaultValue,
-            "Sequence default must be preserved, not typecast to '0'.",
+            'Default must be an Expression.',
         );
-        self::assertStringContainsString(
-            'nextval',
-            $column->defaultValue,
+        self::assertSame(
+            "nextval('test_default_nextval_counter_col_seq'::regclass)",
+            (string) $column->defaultValue,
             'Sequence expression must be preserved.',
         );
     }

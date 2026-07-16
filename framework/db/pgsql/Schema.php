@@ -532,7 +532,7 @@ SQL;
                     $table->sequenceName = $column->sequenceName;
                 }
                 $column->defaultValue = null;
-            } elseif ($column->defaultValue !== null && !$column->autoIncrement) {
+            } else {
                 $column->defaultValue = $column->defaultPhpTypecast($column->defaultValue);
             }
         }
