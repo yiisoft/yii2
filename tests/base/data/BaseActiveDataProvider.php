@@ -19,11 +19,10 @@ use yiiunit\framework\db\DatabaseTestCase;
 use yiiunit\framework\db\UnqueryableQueryMock;
 
 /**
+ * Base unit tests for [[\yii\data\ActiveDataProvider]].
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
- *
- * @group data
- * @group db
  */
 abstract class BaseActiveDataProvider extends DatabaseTestCase
 {
@@ -146,6 +145,105 @@ abstract class BaseActiveDataProvider extends DatabaseTestCase
         ]);
         $orders = $provider->getModels();
         $this->assertCount(2, $orders);
+    }
+
+    public function testUnionPaginationAndSort(): void
+    {
+        $query = Order::find()
+            ->where(['<=', 'id', 2])
+            ->union(Order::find()->where(['>=', 'id', 2]))
+            ->unionOrderBy(['id' => SORT_ASC])
+            ->unionLimit(1)
+            ->unionOffset(1);
+
+        $provider = new ActiveDataProvider(
+            [
+                'query' => $query,
+                'pagination' => ['pageSize' => 2],
+                'sort' => ['defaultOrder' => ['id' => SORT_DESC]],
+            ],
+        );
+
+        self::assertSame(
+            3,
+            $provider->getTotalCount(),
+            'Total count must be calculated for the complete UNION result.',
+        );
+
+        $orders = $provider->getModels();
+
+        self::assertCount(
+            2,
+            $orders,
+            'Pagination must limit the complete UNION result.',
+        );
+        self::assertContainsOnlyInstancesOf(
+            Order::class,
+            $orders,
+            'All items must be instances of Order.',
+        );
+        self::assertSame(
+            [3, 2],
+            array_map(static fn(Order $order): int => $order->id, $orders),
+            'Sorting must order the complete UNION result.',
+        );
+        self::assertSame(
+            ['id' => SORT_ASC],
+            $query->unionOrderBy,
+            'Sorting must be applied to the complete UNION result.',
+        );
+        self::assertSame(
+            1,
+            $query->unionLimit,
+            'Limit must be applied to the complete UNION result.',
+        );
+        self::assertSame(
+            1,
+            $query->unionOffset,
+            'Offset must be applied to the complete UNION result.',
+        );
+    }
+
+    public function testUnionPaginationAppliesToCompleteResult(): void
+    {
+        $query = Order::find()
+            ->where(['id' => 1])
+            ->union(Order::find()->where(['id' => 2]));
+
+        $provider = new ActiveDataProvider(
+            [
+                'query' => $query,
+                'pagination' => ['pageSize' => 1],
+                'sort' => false,
+            ],
+        );
+
+        self::assertSame(
+            2,
+            $provider->getTotalCount(),
+            'Total count must be calculated for the complete UNION result.',
+        );
+        self::assertCount(
+            1,
+            $provider->getModels(),
+            'Pagination must apply to the complete UNION result.',
+        );
+        self::assertNull(
+            $query->limit,
+            'Limit must not be applied to the complete UNION result.',
+        );
+        self::assertNull(
+            $query->offset,
+            'Offset must not be applied to the complete UNION result.',
+        );
+        self::assertNull(
+            $query->unionLimit,
+            'Union limit must not be applied to the complete UNION result.',
+        );
+        self::assertNull(
+            $query->unionOffset,
+            'Union offset must not be applied to the complete UNION result.',
+        );
     }
 
     public function testRefresh(): void

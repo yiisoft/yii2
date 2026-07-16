@@ -360,6 +360,84 @@ abstract class BaseQuery extends DatabaseTestCase
         $this->assertCount(4, $result);
     }
 
+    public function testUnionGlobalOrderByAndLimit(): void
+    {
+        $connection = $this->getConnection();
+
+        $query = (new Query())
+            ->select(['id', 'name'])
+            ->from('item')
+            ->union(
+                (new Query())
+                    ->select(['id', 'name'])
+                    ->from('category'),
+                true,
+            )
+            ->unionOrderBy(['id' => SORT_ASC])
+            ->addUnionOrderBy(['name' => SORT_ASC])
+            ->unionLimit(3)
+            ->unionOffset(1);
+
+        self::assertNull(
+            $query->orderBy,
+            "Explicit UNION ordering must be set via 'unionOrderBy()' and not 'orderBy()'.",
+        );
+        self::assertNull(
+            $query->limit,
+            "Explicit UNION limit must be set via 'unionLimit()' and not 'limit()'.",
+        );
+        self::assertNull(
+            $query->offset,
+            "Explicit UNION offset must be set via 'unionOffset()' and not 'offset()'.",
+        );
+        self::assertSame(
+            ['id' => SORT_ASC, 'name' => SORT_ASC],
+            $query->unionOrderBy,
+            "Explicit UNION ordering must be set via 'unionOrderBy()' and not 'orderBy()'.",
+        );
+        self::assertSame(
+            3,
+            $query->unionLimit,
+            "Explicit UNION limit must be set via 'unionLimit()' and not 'limit()'.",
+        );
+        self::assertSame(
+            1,
+            $query->unionOffset,
+            "Explicit UNION offset must be set via 'unionOffset()' and not 'offset()'.",
+        );
+        self::assertCount(
+            3,
+            $query->all($connection),
+            'Explicit UNION ordering and pagination must apply to the complete result.',
+        );
+        self::assertSame(
+            '7',
+            (string) $query->count('*', $connection),
+            'Aggregate queries must ignore global UNION ordering and pagination.',
+        );
+        self::assertSame(
+            [['id' => SORT_ASC, 'name' => SORT_ASC], 3, 1],
+            [$query->unionOrderBy, $query->unionLimit, $query->unionOffset],
+            'Aggregation must not mutate the UNION result modifiers.',
+        );
+    }
+
+    public function testUnionResultModifiersAreExplicit(): void
+    {
+        $query = (new Query())
+            ->union(new Query())
+            ->orderBy(['id' => SORT_DESC])
+            ->limit(2)
+            ->offset(1);
+
+        self::assertSame(['id' => SORT_DESC], $query->orderBy);
+        self::assertSame(2, $query->limit);
+        self::assertSame(1, $query->offset);
+        self::assertNull($query->unionOrderBy);
+        self::assertNull($query->unionLimit);
+        self::assertNull($query->unionOffset);
+    }
+
     public function testOne(): void
     {
         $db = $this->getConnection();
@@ -748,6 +826,9 @@ abstract class BaseQuery extends DatabaseTestCase
         $limit = 50;
         $offset = 2;
         $orderBy = ['name' => SORT_ASC];
+        $unionOrderBy = ['id' => SORT_DESC];
+        $unionLimit = 25;
+        $unionOffset = 1;
         $indexBy = 'id';
         $select = ['id' => 'id', 'name' => 'name', 'articles_count' => 'count(*)'];
         $selectOption = 'SQL_NO_CACHE';
@@ -781,6 +862,9 @@ abstract class BaseQuery extends DatabaseTestCase
             ->addParams($params)
             ->join($joinType, $joinTable, $joinOn)
             ->union($unionQuery)
+            ->unionOrderBy($unionOrderBy)
+            ->unionLimit($unionLimit)
+            ->unionOffset($unionOffset)
             ->withQuery($withQuery, $from);
 
         $newQuery = Query::create($sourceQuery);
@@ -799,6 +883,9 @@ abstract class BaseQuery extends DatabaseTestCase
         $this->assertEquals($params, $newQuery->params);
         $this->assertEquals([$join], $newQuery->join);
         $this->assertEquals([['query' => $unionQuery, 'all' => false]], $newQuery->union);
+        $this->assertEquals($unionOrderBy, $newQuery->unionOrderBy);
+        $this->assertEquals($unionLimit, $newQuery->unionLimit);
+        $this->assertEquals($unionOffset, $newQuery->unionOffset);
         $this->assertEquals(
             [['query' => $withQuery, 'alias' => $from, 'recursive' => false]],
             $newQuery->withQueries

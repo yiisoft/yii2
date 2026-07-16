@@ -16,6 +16,7 @@ use yii\db\conditions\InCondition;
 use yii\db\conditions\LikeCondition;
 use yii\db\Expression;
 use yii\db\ExpressionInterface;
+use yii\db\Query;
 
 use function array_flip;
 use function array_intersect_key;
@@ -26,8 +27,6 @@ use function is_array;
 use function ltrim;
 use function preg_replace;
 use function str_starts_with;
-use function strlen;
-use function substr;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2019 and above).
@@ -83,16 +82,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         // SQL Server requires `FETCH` to be greater than zero. Use `TOP (0)` on the original `SELECT` to avoid
         // derived-table column-name requirements for unnamed or duplicate expressions.
-        if ((string) $limit === '0') {
-            $select = str_starts_with($sql, 'SELECT DISTINCT')
-                ? 'SELECT DISTINCT'
-                : 'SELECT';
-
-            $restSql = substr($sql, strlen($select));
-
-            return <<<SQL
-            {$select} TOP (0){$restSql}
-            SQL;
+        if ($this->isZeroLimit($limit)) {
+            return $this->addTopZero($sql);
         }
 
         $orderBy = $this->buildOrderBy($orderBy);
@@ -119,6 +110,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildUnionOrderByAndLimit(
+        string $sql,
+        array|null $orderBy,
+        int|ExpressionInterface|null $limit,
+        int|ExpressionInterface|null $offset,
+    ): string {
+        if (($orderBy === null || $orderBy === []) && ($this->hasOffset($offset) || $this->hasLimit($limit))) {
+            // SQL Server requires ORDER BY for OFFSET/FETCH. Unlike a plain SELECT, a UNION only permits selected
+            // columns in ORDER BY, so use the first result column rather than `ORDER BY (SELECT NULL)`.
+            $orderBy = [new Expression('1')];
+        }
+
+        return parent::buildUnionOrderByAndLimit($sql, $orderBy, $limit, $offset);
     }
 
     /**
@@ -968,6 +977,76 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * {@inheritdoc}
+     *
+     * SQL Server rejects `FETCH NEXT 0` and wrapping a compound query requires every result column to have a unique
+     * name. Applying `TOP (0)` to every UNION operand preserves zero-row semantics without a derived table.
+     */
+    protected function prepareSelectQuery(Query $query): Query
+    {
+        if ($query->union === null || $query->union === [] || !$this->isZeroLimit($query->unionLimit)) {
+            return $query;
+        }
+
+        $query = clone $query;
+
+        $query->limit = 0;
+        $query->offset = null;
+        $query->unionOrderBy = null;
+        $query->unionLimit = null;
+        $query->unionOffset = null;
+
+        foreach ($query->union as $index => $union) {
+            if ($union['query'] instanceof Query) {
+                $unionQuery = clone $union['query'];
+
+                if ($unionQuery->union === null || $unionQuery->union === []) {
+                    $unionQuery->limit = 0;
+                    $unionQuery->offset = null;
+                } else {
+                    $unionQuery->unionLimit = 0;
+                }
+
+                $union['query'] = $unionQuery;
+            } else {
+                $union['query'] = $this->addTopZero($union['query']);
+            }
+
+            $query->union[$index] = $union;
+        }
+
+        return $query;
+    }
+
+    /**
+     * Rewrites a SELECT statement to return zero rows by forcing `TOP (0)`, replacing any existing `TOP` clause.
+     *
+     * @param string $sql SELECT SQL
+     *
+     * @return string SELECT SQL limited to zero rows
+     *
+     * @throws NotSupportedException if the SQL does not start with SELECT
+     */
+    private function addTopZero(string $sql): string
+    {
+        $sql = preg_replace(
+            '/^SELECT\b(\s+DISTINCT\b)?(?:\s+TOP\s*(?:\([^)]*\)|\d+))?/i',
+            'SELECT$1 TOP (0)',
+            ltrim($sql),
+            1,
+            $count,
+        );
+
+        if ($sql === null || $count === 0) {
+            throw new NotSupportedException(
+                'A MSSQL query limited to zero rows must start with SELECT.',
+            );
+        }
+
+        return $sql;
+    }
+
+    /**
      * Converts `rowversion` values in a hash condition to `binary(8)` literals via {@see ColumnSchema::dbTypecast()}.
      *
      * Operator-format and non-array conditions are returned unchanged.
@@ -997,5 +1076,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $condition;
+    }
+
+    /**
+     * Returns whether the limit restricts the result to exactly zero rows, matching both `0` and `Expression('0')`.
+     */
+    private function isZeroLimit(int|string|ExpressionInterface|null $limit): bool
+    {
+        return (string) $limit === '0';
     }
 }

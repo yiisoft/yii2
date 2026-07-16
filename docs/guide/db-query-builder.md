@@ -600,7 +600,21 @@ $query2 = (new \yii\db\Query())
 $query1->union($query2);
 ```
 
-You can call [[yii\db\Query::union()|union()]] multiple times to append more `UNION` fragments. 
+You can call [[yii\db\Query::union()|union()]] multiple times to append more `UNION` fragments.
+
+The regular `orderBy()`, `limit()`, and `offset()` methods configure the first query. To order or paginate the complete
+`UNION` result, use [[yii\db\Query::unionOrderBy()|unionOrderBy()]], [[yii\db\Query::unionLimit()|unionLimit()]], and
+[[yii\db\Query::unionOffset()|unionOffset()]] explicitly:
+
+```php
+$query1
+    ->union($query2)
+    ->unionOrderBy(['name' => SORT_ASC])
+    ->unionLimit(20)
+    ->unionOffset(10);
+```
+
+Use [[yii\db\Query::addUnionOrderBy()|addUnionOrderBy()]] to append columns to an existing `UNION` ordering.
 
 ### [[yii\db\Query::withQuery()|withQuery()]] <span id="with-query"></span>
 
