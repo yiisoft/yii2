@@ -24,6 +24,13 @@ final class QueryBuilderUnionProvider
     public static function rawUnionLimitZero(): array
     {
         return [
+            'ALL preserved' => [
+                'SELECT ALL id FROM table2',
+                <<<SQL
+                (SELECT TOP (0) [id] FROM [table1])
+                UNION ( SELECT ALL TOP (0) id FROM table2 )
+                SQL,
+            ],
             'DISTINCT preserved' => [
                 'SELECT DISTINCT id FROM table2',
                 <<<SQL
@@ -38,8 +45,36 @@ final class QueryBuilderUnionProvider
                 UNION ( SELECT TOP (0) id FROM table2 )
                 SQL,
             ],
+            'legacy numeric TOP replaced' => [
+                'SELECT TOP 10 id FROM table2',
+                <<<SQL
+                (SELECT TOP (0) [id] FROM [table1])
+                UNION ( SELECT TOP (0) id FROM table2 )
+                SQL,
+            ],
+            'nested parentheses in TOP replaced' => [
+                'SELECT TOP ((5)) id FROM table2',
+                <<<SQL
+                (SELECT TOP (0) [id] FROM [table1])
+                UNION ( SELECT TOP (0) id FROM table2 )
+                SQL,
+            ],
             'plain SELECT' => [
                 'SELECT id FROM table2',
+                <<<SQL
+                (SELECT TOP (0) [id] FROM [table1])
+                UNION ( SELECT TOP (0) id FROM table2 )
+                SQL,
+            ],
+            'TOP PERCENT preserved' => [
+                'SELECT DISTINCT TOP ((5)) PERCENT id FROM table2',
+                <<<SQL
+                (SELECT TOP (0) [id] FROM [table1])
+                UNION ( SELECT DISTINCT TOP (0) PERCENT id FROM table2 )
+                SQL,
+            ],
+            'TOP with expression replaced' => [
+                'SELECT TOP (ABS(5)) id FROM table2',
                 <<<SQL
                 (SELECT TOP (0) [id] FROM [table1])
                 UNION ( SELECT TOP (0) id FROM table2 )

@@ -1019,7 +1019,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Rewrites a SELECT statement to return zero rows by forcing `TOP (0)`, replacing any existing `TOP` clause.
+     * Rewrites a SELECT statement to return zero rows by forcing `TOP (0)`, replacing any existing `TOP` expression.
+     *
+     * Trailing keywords such as `PERCENT` are preserved: `TOP (0) PERCENT` also yields zero rows.
      *
      * @param string $sql SELECT SQL
      *
@@ -1030,7 +1032,18 @@ class QueryBuilder extends \yii\db\QueryBuilder
     private function addTopZero(string $sql): string
     {
         $sql = preg_replace(
-            '/^SELECT\b(\s+DISTINCT\b)?(?:\s+TOP\s*(?:\([^)]*\)|\d+))?/i',
+            <<<REGEX
+            ~^SELECT\b
+            (\s+(?:ALL|DISTINCT)\b)?
+            (?:
+                \s+TOP\s*
+                (?:
+                    (?<parentheses>\((?:[^()]++|(?&parentheses))*\))
+                    |\d+
+                )
+            )?
+            ~ix
+            REGEX,
             'SELECT$1 TOP (0)',
             ltrim($sql),
             1,
