@@ -13,10 +13,10 @@ namespace yii\db\sqlite;
 use yii\db\Expression;
 
 use function is_string;
+use function preg_match;
 use function str_replace;
 use function strcasecmp;
-use function strlen;
-use function substr;
+use function strtoupper;
 use function trim;
 
 /**
@@ -31,11 +31,18 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Converts a SQLite column default value to its PHP representation.
      *
      * Handles SQLite-specific default formats reported by `PRAGMA table_info`:
-     * - `null`, empty string, or the `NULL` literal (any case) to `null`.
-     * - `CURRENT_TIMESTAMP` (any case) on `timestamp` columns to {@see Expression}.
-     * - single/double-quote-wrapped string defaults (`'value'`, `"value"`) to the unwrapped literal, resolving doubled
-     *   quotes (`''` to `'`, `""` to `"`).
-     * - non-string values and everything else delegate to {@see \yii\db\ColumnSchema::defaultPhpTypecast()}.
+     * - `null`, empty strings, and bare or parenthesized `NULL` to `null`.
+     * - `CURRENT_DATE`, `CURRENT_TIME`, and `CURRENT_TIMESTAMP` to {@see Expression}.
+     * - single, double, backtick, or bracket-quoted string literals to their unquoted PHP value.
+     * - signed decimal and scientific numeric literals through {@see \yii\db\ColumnSchema::phpTypecast()}.
+     * - `TRUE` and `FALSE` through {@see \yii\db\ColumnSchema::phpTypecast()} as `1` and `0` respectively.
+     * - bareword defaults to their literal text value, matching SQLite's non-parenthesized `DEFAULT word` behavior.
+     * - everything else to an executable {@see Expression}, including functions, operators, BLOB literals, and
+     *   hexadecimal integers whose meaning is only preserved when parsed as SQL text.
+     *
+     * Branch order is significant: `CURRENT_*` and `TRUE`/`FALSE` must precede the bareword fallthrough, or they would
+     * reflect as string literals. `PRAGMA table_info` strips one outer parenthesis level; paren-tolerant branches exist
+     * only for literals that are also legal inside a parenthesized default expression.
      *
      * @link https://www.sqlite.org/lang_createtable.html#the_default_clause
      *
@@ -50,19 +57,34 @@ class ColumnSchema extends \yii\db\ColumnSchema
         if (is_string($value)) {
             $value = trim($value);
 
-            if ($value === '' || strcasecmp($value, 'NULL') === 0) {
+            if ($value === '' || preg_match('/^\(*\s*NULL\s*\)*$/i', $value) === 1) {
                 return null;
             }
 
-            // `CURRENT_TIMESTAMP` is a case-independent keyword (consistency with all driver).
-            if ($this->type === Schema::TYPE_TIMESTAMP && strcasecmp($value, 'CURRENT_TIMESTAMP') === 0) {
-                return new Expression('CURRENT_TIMESTAMP');
+            if (preg_match('/^\(*\s*(CURRENT_DATE|CURRENT_TIME|CURRENT_TIMESTAMP)\s*\)*$/i', $value, $matches) === 1) {
+                return new Expression(strtoupper($matches[1]));
             }
 
-            // quote-wrapped defaults: 'value' / "value" -> unwrapped, resolving doubled quotes ('' -> ', "" -> ").
-            if (strlen($value) > 1 && ($value[0] === "'" || $value[0] === '"') && $value[-1] === $value[0]) {
-                $quote = $value[0];
-                $value = str_replace($quote . $quote, $quote, substr($value, 1, -1));
+            if (preg_match("/^\(*\s*'((?:''|[^'])*)'\s*\)*$/", $value, $matches) === 1) {
+                $value = str_replace("''", "'", $matches[1]);
+            } elseif (preg_match('/^\(*\s*"((?:""|[^"])*)"\s*\)*$/', $value, $matches) === 1) {
+                $value = str_replace('""', '"', $matches[1]);
+            } elseif (preg_match('/^`((?:``|[^`])*)`$/', $value, $matches) === 1) {
+                $value = str_replace('``', '`', $matches[1]);
+            } elseif (preg_match('/^\[([^]]*)]$/', $value, $matches) === 1) {
+                $value = $matches[1];
+            } elseif (
+                preg_match(
+                    '/^\(*\s*([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)\s*\)*$/i',
+                    $value,
+                    $matches,
+                ) === 1
+            ) {
+                $value = $matches[1];
+            } elseif (preg_match('/^\(*\s*(TRUE|FALSE)\s*\)*$/i', $value, $matches) === 1) {
+                $value = strcasecmp($matches[1], 'TRUE') === 0 ? 1 : 0;
+            } elseif (preg_match('/^[\p{L}_$][\p{L}\p{N}_$]*$/u', $value) !== 1) {
+                return new Expression($value);
             }
         }
 

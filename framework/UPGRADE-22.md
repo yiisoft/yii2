@@ -647,6 +647,14 @@ discarded as `null`. Regular and national quoted strings and numeric literals re
 literals reflect as `null`. Review strict type checks, schema snapshots, and code that calls
 `ActiveRecord::loadDefaultValues()` for models containing these columns. Identity defaults remain `null`.
 
+On SQLite, expression-based column defaults reported by `PRAGMA table_info` — operator expressions, function calls,
+`CURRENT_DATE`, `CURRENT_TIME`, and `CURRENT_TIMESTAMP` — now expose an executable `yii\db\Expression` through
+`ColumnSchema::$defaultValue`. SQLite BLOB literals and hexadecimal integer literals are also exposed as expressions
+because their values are only preserved when parsed as SQL. Previously Yii2 mangled `integer DEFAULT (1 + 2)` to
+`1`, `integer DEFAULT 0x10` to `0`, and reflected function calls and BLOB literals as plain strings. Quoted,
+decimal, boolean, and SQLite bareword defaults remain PHP values. Review strict type checks, schema snapshots, and code
+that calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
+
 ## Removed platform support
 
 ### HHVM
