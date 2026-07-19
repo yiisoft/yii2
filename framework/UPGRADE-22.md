@@ -1,27 +1,27 @@
-# Upgrading from Yii 2.0 to Yii 22.0
+# Upgrading from Yii2 2.0 to Yii2 22.0
 
-This file documents the backward-incompatible changes between Yii `2.0.x` and Yii `22.0` and explains how to update an
+This file documents the backward-incompatible changes between Yii2 `2.0.x` and Yii2 `22.0` and explains how to update an
 existing application. Non-breaking enhancements and bug fixes are listed in [`CHANGELOG.md`](CHANGELOG.md).
 
-Before following this guide, update the application to the latest Yii `2.0.x` release and apply every relevant section
+Before following this guide, update the application to the latest Yii2 `2.0.x` release and apply every relevant section
 of [`UPGRADE.md`](UPGRADE.md). This keeps the `22.0` migration focused on changes introduced by the new major release.
 
 ## Recommended upgrade process
 
-1. Update the application to the latest Yii `2.0.x` release.
+1. Update the application to the latest Yii2 `2.0.x` release.
 2. Upgrade the runtime and CI environments to PHP `8.3` or later.
-3. Remove the deprecated APIs listed in this guide while the application still runs on Yii `2.0.x`, where possible.
-4. Check that every installed Yii extension supports Yii `22.0` and PHP `8.3`.
+3. Remove the deprecated APIs listed in this guide while the application still runs on Yii2 `2.0.x`, where possible.
+4. Check that every installed Yii2 extension supports Yii2 `22.0` and PHP `8.3`.
 5. Review the front-end asset and optional jQuery changes before running Composer.
 6. Verify that the database server meets the new minimum version and apply any required schema migrations.
-7. Upgrade Yii, regenerate Composer's autoloader, clear runtime caches, and run the full test suite.
+7. Upgrade Yii2, regenerate Composer's autoloader, clear runtime caches, and run the full test suite.
 
 > [!IMPORTANT]
 > Back up the database before applying the MSSQL session or RBAC schema changes described below.
 
 ## Runtime and database requirements
 
-Yii `22.0` requires PHP `8.3` or later.
+Yii2 `22.0` requires PHP `8.3` or later.
 
 The supported database versions are:
 
@@ -38,7 +38,7 @@ CUBRID support has been removed. Applications using CUBRID must migrate to anoth
 
 ## Composer is now the only class autoloader
 
-Yii no longer registers its own SPL autoloader. The following APIs and files have been removed:
+Yii2 no longer registers its own SPL autoloader. The following APIs and files have been removed:
 
 - `Yii::autoload()` and `yii\BaseYii::autoload()`;
 - `Yii::$classMap` and `yii\BaseYii::$classMap`;
@@ -101,7 +101,7 @@ namespace and configure the corresponding application component to use it.
 
 ### Archive installations
 
-The official Yii archive includes a Composer-generated `vendor/` directory. Custom entry scripts must load
+The official Yii2 archive includes a Composer-generated `vendor/` directory. Custom entry scripts must load
 `vendor/autoload.php` before referencing `Yii` or any `yii\...` class. Requiring `framework/Yii.php` directly without an
 active Composer autoloader is no longer supported.
 
@@ -114,7 +114,7 @@ packages instead.
 
 The default asset aliases have changed:
 
-| Yii 2.0                                 | Yii 22.0                                           |
+| Yii2 2.0                                | Yii2 22.0                                          |
 | --------------------------------------- | -------------------------------------------------- |
 | `@bower` points to `<vendorPath>/bower` | `@bower` is no longer registered by the framework. |
 | `@npm` points to `<vendorPath>/npm`     | `@npm` points to `<basePath>/node_modules`.        |
@@ -130,7 +130,7 @@ alias.
 ### jQuery integration moved to `yiisoft/yii2-jquery`
 
 jQuery-backed client-script strategies are now provided by the `yiisoft/yii2-jquery` extension. Applications that need
-the Yii `2.0.x` client-side behavior must install and bootstrap it:
+the Yii2 `2.0.x` client-side behavior must install and bootstrap it:
 
 ```bash
 composer require yiisoft/yii2-jquery
@@ -190,7 +190,7 @@ the configured strategy.
 `yii\web\View::registerJs()` no longer registers `JqueryAsset` automatically for `POS_READY` or `POS_LOAD`. Its wrappers
 now use native DOM events:
 
-| Position    | Yii 2.0 wrapper                                   | Yii 22.0 wrapper                                                           |
+| Position    | Yii2 2.0 wrapper                                  | Yii2 22.0 wrapper                                                          |
 | ----------- | ------------------------------------------------- | -------------------------------------------------------------------------- |
 | `POS_READY` | `jQuery(function ($) { ... });`                   | `document.addEventListener('DOMContentLoaded', function (event) { ... });` |
 | `POS_LOAD`  | `jQuery(window).on('load', function () { ... });` | `window.addEventListener('load', function (event) { ... });`               |
@@ -211,7 +211,7 @@ If jQuery is still required globally, register `yii\web\JqueryAsset` through the
 
 Core widgets no longer assume Bootstrap CSS. The following defaults changed:
 
-| Class and property                | Yii 2.0 default                                                 | Yii 22.0 default             |
+| Class and property                | Yii2 2.0 default                                                | Yii2 22.0 default            |
 | --------------------------------- | --------------------------------------------------------------- | ---------------------------- |
 | `ActiveField::$options`           | `['class' => 'form-group']`                                     | `[]`                         |
 | `ActiveField::$inputOptions`      | `['class' => 'form-control']`                                   | `[]`                         |
@@ -270,7 +270,7 @@ as APCu, Redis, Memcached, the filesystem, or a database cache.
 ## Removed core APIs
 
 The following table lists removed APIs that may still appear in applications or custom framework subclasses. It is more
-precise than assuming that every API marked deprecated in Yii `2.0.x` was removed; some deprecated APIs remain in
+precise than assuming that every API marked deprecated in Yii2 `2.0.x` was removed; some deprecated APIs remain in
 `22.0`.
 
 | Removed API                                                                        | Migration                                                                                                      |
@@ -336,7 +336,7 @@ actions. If a custom inline-action class called these hooks manually, remove the
 
 ### Standalone actions
 
-Yii `22.0` adds standalone action discovery through `Module::$actionMap`, `Module::$actionNamespace`, and
+Yii2 `22.0` adds standalone action discovery through `Module::$actionMap`, `Module::$actionNamespace`, and
 `yii\web\Action`. Most of this feature is additive, but it introduces the following compatibility considerations:
 
 - `yii\base\Action::$controller` may be `null`. Code that reads this property must perform a `null` check.
@@ -356,10 +356,10 @@ value. Its constructor and getters use native union types.
 Composite conditions are expanded into boolean expressions so that `NULL` values use `IS NULL` or `IS NOT NULL`.
 
 ```sql
--- Yii 2.0
+-- Yii2 2.0
 ([[id]], [[name]]) IN ((:p0, NULL))
 
--- Yii 22.0
+-- Yii2 22.0
 (([[id]] = :p0 AND [[name]] IS NULL))
 ```
 
@@ -404,7 +404,7 @@ be configured directly, consistently with the existing query properties.
 
 Generated pagination SQL changed for every supported database except MySQL:
 
-| Database   | Yii 22.0 behavior                                                                                         |
+| Database   | Yii2 22.0 behavior                                                                                        |
 | ---------- | --------------------------------------------------------------------------------------------------------- |
 | MariaDB    | Uses `OFFSET ... ROWS` and `FETCH NEXT ... ROWS ONLY`.                                                    |
 | MSSQL      | Uses `ORDER BY ... OFFSET ... ROWS FETCH NEXT ... ROWS ONLY`; the legacy `ROW_NUMBER()` path was removed. |
@@ -423,7 +423,7 @@ SQL generated by the query builders.
 
 MySQL integer display widths are no longer generated:
 
-| Yii 2.0               | Yii 22.0          |
+| Yii2 2.0              | Yii2 22.0         |
 | --------------------- | ----------------- |
 | `int(11)`             | `int`             |
 | `int(10) UNSIGNED`    | `int UNSIGNED`    |
@@ -465,9 +465,9 @@ the maintenance window rather than preserving payloads through the type conversi
 
 `yii\rbac\DbManager` no longer uses MSSQL `INSTEAD OF` triggers. Native foreign-key actions are used for every relation
 except `auth_item_child.child`, which remains `NO ACTION` because SQL Server rejects the second cascading path to
-`auth_item.name`. Yii handles that direction in PHP.
+`auth_item.name`. Yii2 handles that direction in PHP.
 
-Before serving traffic with Yii `22.0`:
+Before serving traffic with Yii2 `22.0`:
 
 1. Drop the legacy `trigger_update_auth_item_child`, `trigger_delete_auth_item_child`, and
    `trigger_auth_item_child` triggers if present.
@@ -523,7 +523,7 @@ Oracle BLOB inserts, updates, and upserts now use native PDO_OCI LOB locators. A
 `pgsql\QueryBuilder::oldUpsert()` and `newUpsert()` have been removed. `upsert()` now uses `ON CONFLICT` directly. Remove
 calls or overrides of those protected methods.
 
-Reflected `bytea` values may now be returned as strings where Yii previously exposed a stream, including values read by
+Reflected `bytea` values may now be returned as strings where Yii2 previously exposed a stream, including values read by
 `DbCache`. Code that deliberately handled the old stream representation should accept the normalized string value.
 
 `pgsql\QueryBuilder::alterColumn()` no longer parses `DEFAULT`, `NULL`, `CHECK`, or `UNIQUE` from compound strings. This
@@ -607,13 +607,13 @@ before `BEGIN`/`SAVEPOINT` or after `COMMIT`/`ROLLBACK`.
 
 ### Reflected column defaults and typecasting
 
-Column-schema default parsing and typecasting were consolidated across drivers. Among other corrections, Yii now
+Column-schema default parsing and typecasting were consolidated across drivers. Among other corrections, Yii2 now
 preserves MySQL `CURRENT_TIMESTAMP(0)`, recognizes Oracle `CURRENT_TIMESTAMP`, handles PostgreSQL native booleans, and
 parses SQLite `DEFAULT NULL` and escaped string literals consistently. Update schema snapshots or metadata assertions
 that encoded the previous values.
 
 MySQL `BIT` columns declared as nullable with `DEFAULT NULL` now expose `null` through
-`ColumnSchema::$defaultValue`; Yii `2.0.x` incorrectly reported `0`. Review code that compares reflected default values
+`ColumnSchema::$defaultValue`; Yii2 `2.0.x` incorrectly reported `0`. Review code that compares reflected default values
 or calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
 
 On MySQL `8.0.13+`, expression-based column defaults reported as `DEFAULT_GENERATED` now expose a
@@ -626,7 +626,7 @@ other MariaDB column types still reflect as plain strings.
 
 On PostgreSQL, expression-based column defaults reported by `pg_get_expr()` — operator expressions, function calls,
 and the `nextval(...)` default of a non-primary-key `serial` column — now expose an executable `yii\db\Expression`
-through `ColumnSchema::$defaultValue`. Yii `2.0.x` mangled these values: `integer DEFAULT (1 + 2)` reflected as `1`,
+through `ColumnSchema::$defaultValue`. Yii2 `2.0.x` mangled these values: `integer DEFAULT (1 + 2)` reflected as `1`,
 a `jsonb` expression default as `null`, and a non-primary-key `serial` default as a raw string. Reflected quoted
 string literals also unescape SQL-doubled quotes now (`'O''Reilly'` reflects as `O'Reilly`). Review strict type
 checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for models containing these
@@ -643,7 +643,7 @@ checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()
 
 ### HHVM
 
-HHVM support has been removed. Yii `22.0` runs on the Zend PHP engine only.
+HHVM support has been removed. Yii2 `22.0` runs on the Zend PHP engine only.
 
 The following HHVM-specific APIs were removed:
 
@@ -659,7 +659,7 @@ The following HHVM-specific APIs were removed:
 - Confirm that registered asset bundles resolve their NPM files and that no required bundle still uses `@bower`.
 - Test forms, grids, validators, CAPTCHA, PJAX, and inline `registerJs()` calls with and without the jQuery extension as
   appropriate for the application.
-- Visually verify widgets after restoring any CSS classes that were previously provided by Yii defaults.
+- Visually verify widgets after restoring any CSS classes that were previously provided by Yii2 defaults.
 - Run migrations and integration tests against every supported database used by the application.
 - On MSSQL, verify the session column type and RBAC foreign-key trust/cascade configuration.
 - Update tests that compare generated SQL, reflected column defaults, HTML classes, icons, or JavaScript wrappers.
