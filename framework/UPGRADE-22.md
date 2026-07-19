@@ -633,6 +633,12 @@ checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()
 columns; on a non-primary-key `serial` column, `loadDefaultValues()` now assigns an `Expression` that advances the
 sequence when the record is saved. Primary-key and identity column defaults keep their current behavior.
 
+On MSSQL, expression-based column defaults reported by `sys.default_constraints` — such as `(getdate())`, `(newid())`,
+or `(NEXT VALUE FOR ...)` — now expose an executable `yii\db\Expression` through `ColumnSchema::$defaultValue` instead
+of `null`. Note that SQL Server normalizes the stored definition (`CURRENT_TIMESTAMP` reflects as `(getdate())`, and
+`(1 + 2)` as `((1)+(2))`). Binary literal defaults (`(0x...)`) now decode to their byte string. Review strict type
+checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
+
 ## Removed platform support
 
 ### HHVM

@@ -94,10 +94,27 @@ final class ColumnSchemaTest extends BaseColumnSchema
             default => 'string',
         };
 
+        $result = $column->defaultPhpTypecast($value);
+
+        if (!$expected instanceof Expression) {
+            self::assertSame(
+                $expected,
+                $result,
+                'Converted default must match.',
+            );
+
+            return;
+        }
+
+        self::assertInstanceOf(
+            Expression::class,
+            $result,
+            'Default must yield an Expression.',
+        );
         self::assertSame(
-            $expected,
-            $column->defaultPhpTypecast($value),
-            'Converted default must match.',
+            $expected->expression,
+            $result->expression,
+            'Expression SQL must match.',
         );
     }
 

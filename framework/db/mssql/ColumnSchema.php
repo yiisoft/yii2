@@ -15,6 +15,7 @@ use yii\db\ExpressionInterface;
 use yii\db\PdoValue;
 
 use function bin2hex;
+use function hex2bin;
 use function in_array;
 use function get_resource_type;
 use function is_resource;
@@ -110,12 +111,17 @@ class ColumnSchema extends \yii\db\ColumnSchema
     /**
      * Converts a MSSQL column default value to its PHP representation.
      *
-     * Handles MSSQL-specific default formats:
-     * - `null` or `(NULL)` to `null`.
-     * - `CURRENT_TIMESTAMP` on `timestamp` columns to `null` (server-managed value).
-     * - `('value')` / `(N'value')` string wrappers to the unwrapped literal with escaped quotes resolved.
-     * - `((number))` numeric wrapper to the unwrapped numeric string.
-     * - expression defaults such as `(getdate())` or `(newid())` to `null` (server-computed, not a literal).
+     * Recognizes the literal formats stored in `sys.default_constraints.definition` and typecasts only those:
+     * - `NULL` or any parenthesized form such as `(NULL)` to `null`.
+     * - Quoted strings (`('value')` / `(N'value')`, any parenthesis depth) to the unquoted value with doubled quotes
+     *   unescaped, delegated to {@see phpTypecast()}.
+     * - Parenthesized signed, decimal, or scientific numerics (`((0))`, `((-5))`, `((1.0e+005))`) delegated to
+     *   {@see phpTypecast()}.
+     * - Binary literals (`(0x...)`) to their byte string via `hex2bin()`.
+     *
+     * Everything else; function calls such as `(getdate())`, operator expressions such as `((1)+(2))`, or
+     * `(NEXT VALUE FOR ...)` sequences; becomes an executable {@see Expression}: the definition is SQL expression text
+     * and MSSQL exposes no literal-versus-expression metadata.
      *
      * @param mixed $value Default value in MSSQL `column_default` format.
      *
@@ -125,24 +131,23 @@ class ColumnSchema extends \yii\db\ColumnSchema
      */
     public function defaultPhpTypecast($value)
     {
-        if ($value === null || $value === '(NULL)') {
-            return null;
-        }
-
-        if ($this->type === Schema::TYPE_TIMESTAMP && $value === 'CURRENT_TIMESTAMP') {
+        if ($value === null) {
             return null;
         }
 
         if (is_string($value)) {
-            // String defaults: ('value') or unicode (N'value'); unwrap and resolve escaped single quotes.
-            if (preg_match("/^\(N?'(.*)'\)$/s", $value, $matches) === 1) {
-                $value = str_replace("''", "'", $matches[1]);
-            } elseif (preg_match('/^\(\((.+)\)\)$/s', $value, $matches) === 1) {
-                // Numeric defaults: ((`0`)), ((`42`)), ((`3.14`)).
-                $value = $matches[1];
-            } else {
-                // Expression defaults: (`getdate()`), (`newid()`); not representable as a PHP literal.
+            if (preg_match('/^(?:NULL|\(+NULL\)+)$/i', $value) === 1) {
                 return null;
+            }
+
+            if (preg_match("/^\(+N?'((?:''|[^'])*)'\)+$/is", $value, $matches) === 1) {
+                $value = str_replace("''", "'", $matches[1]);
+            } elseif (preg_match('/^\(+([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)\)+$/i', $value, $matches) === 1) {
+                $value = $matches[1];
+            } elseif (preg_match('/^\(+0x((?:[0-9a-f]{2})*)\)+$/i', $value, $matches) === 1) {
+                $value = hex2bin($matches[1]);
+            } else {
+                return new Expression($value);
             }
         }
 

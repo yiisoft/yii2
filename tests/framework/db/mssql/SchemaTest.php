@@ -21,6 +21,7 @@ use yii\db\mssql\Schema;
 use yii\db\mssql\TableSchema;
 use yiiunit\base\db\BaseSchema;
 use yiiunit\framework\db\mssql\providers\SchemaProvider;
+use yiiunit\support\DbHelper;
 
 use function array_diff;
 use function array_map;
@@ -483,9 +484,7 @@ final class SchemaTest extends BaseSchema
     {
         $db = $this->getConnection();
 
-        if ($db->getSchema()->getTableSchema('column_default') !== null) {
-            $db->createCommand()->dropTable('column_default')->execute();
-        }
+        DbHelper::dropTablesIfExist($db, ['column_default']);
 
         $db->createCommand()->createTable(
             'column_default',
@@ -494,6 +493,8 @@ final class SchemaTest extends BaseSchema
                 'created_getdate' => 'datetime DEFAULT GETDATE()',
                 'created_cts' => 'datetime DEFAULT CURRENT_TIMESTAMP',
                 'uuid' => 'uniqueidentifier DEFAULT NEWID()',
+                'number_expression' => 'int DEFAULT (1 + 2)',
+                'text_expression' => "varchar(32) DEFAULT ('a' + 'b')",
                 'status' => 'int DEFAULT 5',
                 'label' => "varchar(32) DEFAULT 'pending'",
                 'note' => "nvarchar(32) DEFAULT N'it''s'",
@@ -502,18 +503,23 @@ final class SchemaTest extends BaseSchema
 
         $table = $db->getSchema()->getTableSchema('column_default', true);
 
-        self::assertNull(
-            $table->getColumn('created_getdate')->defaultValue,
-            "Default must resolve to 'null'.",
-        );
-        self::assertNull(
-            $table->getColumn('created_cts')->defaultValue,
-            "Default must resolve to 'null'.",
-        );
-        self::assertNull(
-            $table->getColumn('uuid')->defaultValue,
-            "Default must resolve to 'null'.",
-        );
+        $expressionDefaults = [
+            'created_getdate' => '(getdate())',
+            'created_cts' => '(getdate())',
+            'uuid' => '(newid())',
+            'number_expression' => '((1)+(2))',
+            'text_expression' => "('a'+'b')",
+        ];
+
+        foreach ($expressionDefaults as $name => $expression) {
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                'column_default',
+                $name,
+                $expression,
+            );
+        }
+
         self::assertSame(
             5,
             $table->getColumn('status')->defaultValue,
@@ -530,7 +536,7 @@ final class SchemaTest extends BaseSchema
             'Escaped unicode default must unwrap.',
         );
 
-        $db->createCommand()->dropTable('column_default')->execute();
+        DbHelper::dropTablesIfExist($db, ['column_default']);
     }
 
     public function testInsertWithCompositePrimaryKey(): void

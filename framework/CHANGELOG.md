@@ -135,6 +135,7 @@ Yii Framework 2 Change Log
 - Bug #20239: Add explicit `unionOrderBy()`, `addUnionOrderBy()`, `unionLimit()`, and `unionOffset()` query methods, and apply `ActiveDataProvider` sorting and pagination to the complete `UNION` result (terabytesoftw)
 - Bug #19747: Load MySQL expression-based column defaults (`DEFAULT_GENERATED`) as executable `yii\db\Expression` instead of raw strings, and expose MariaDB expression-form `TEXT`/`JSON` defaults as `yii\db\Expression` (terabytesoftw)
 - Bug #19747: Load PostgreSQL expression-based column defaults, including non-primary-key `serial` sequences, as executable `yii\db\Expression` (terabytesoftw)
+- Bug #19747: Load MSSQL expression-based column defaults, including sequence-backed `NEXT VALUE FOR` defaults, as executable `yii\db\Expression` instead of `null` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

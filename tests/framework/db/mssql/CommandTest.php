@@ -13,6 +13,7 @@ namespace yiiunit\framework\db\mssql;
 use Closure;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
+use yii\db\ColumnSchema;
 use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\IntegrityException;
@@ -25,6 +26,7 @@ use yiiunit\support\DbHelper;
 
 use function array_key_exists;
 use function array_keys;
+use function array_map;
 use function json_encode;
 
 /**
@@ -46,6 +48,65 @@ final class CommandTest extends BaseCommand
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
+    }
+
+    public function testInsertReflectedExpressionDefaults(): void
+    {
+        $db = $this->getConnection(false);
+
+        $command = $db->createCommand();
+
+        $tableName = 'expression_default_command_test';
+        $sequenceName = 'expression_default_command_sequence';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $command->setSql(
+            <<<SQL
+            DROP SEQUENCE IF EXISTS [dbo].[{$sequenceName}]
+            SQL,
+        )->execute();
+        $command->setSql(
+            <<<SQL
+            CREATE SEQUENCE [dbo].[{$sequenceName}] AS bigint START WITH 1 INCREMENT BY 1
+            SQL,
+        )->execute();
+
+        $command->createTable(
+            $tableName,
+            [
+                'date_expression' => "date NOT NULL DEFAULT DATEADD(day, 2, CONVERT(date, '2011-11-11'))",
+                'text_expression' => "varchar(16) NOT NULL DEFAULT UPPER('abc')",
+                'int_expression' => 'int NOT NULL DEFAULT (1 + 2)',
+                'literal' => "nvarchar(32) NOT NULL DEFAULT N'O''Reilly'",
+                'serial_col' => "bigint NOT NULL DEFAULT NEXT VALUE FOR [dbo].[{$sequenceName}]",
+            ],
+        )->execute();
+
+        $columns = $db->getTableSchema($tableName, true)->columns;
+
+        $command->insert(
+            $tableName,
+            array_map(static fn (ColumnSchema $column): mixed => $column->defaultValue, $columns),
+        )->execute();
+
+        self::assertSame(
+            [
+                'date_expression' => '2011-11-13',
+                'text_expression' => 'ABC',
+                'int_expression' => '3',
+                'literal' => "O'Reilly",
+                'serial_col' => '1',
+            ],
+            (new Query())
+                ->from($tableName)
+                ->one($db),
+            'Row must match the engine-applied defaults.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $command->setSql("DROP SEQUENCE IF EXISTS [dbo].[{$sequenceName}]")->execute();
     }
 
     public function testSelectExistsReturnsScalarExistenceFlag(): void
