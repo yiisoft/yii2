@@ -137,6 +137,7 @@ Yii Framework 2 Change Log
 - Bug #19747: Load PostgreSQL expression-based column defaults, including non-primary-key `serial` sequences, as executable `yii\db\Expression` (terabytesoftw)
 - Bug #19747: Load MSSQL expression-based column defaults, including sequence-backed `NEXT VALUE FOR` defaults, as executable `yii\db\Expression` instead of `null` (terabytesoftw)
 - Bug #19747: Load Oracle expression-based column defaults, including non-identity sequence `NEXTVAL` defaults, as executable `yii\db\Expression` instead of raw strings or `null` (terabytesoftw)
+- Bug #19747: Load SQLite expression-based column defaults as executable `yii\db\Expression` instead of mangled or raw values (terabytesoftw)
 
 2.0.56 under development
 ------------------------

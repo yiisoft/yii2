@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -25,6 +26,7 @@ use yiiunit\framework\db\sqlite\providers\CommandProvider;
 use yiiunit\support\DbHelper;
 
 use function array_keys;
+use function array_map;
 
 /**
  * Unit tests for {@see \yii\db\sqlite\Command} functionality for the SQLite driver.
@@ -103,6 +105,58 @@ class CommandTest extends BaseCommand
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
+    }
+
+    public function testInsertReflectedExpressionDefaults(): void
+    {
+        $db = $this->getConnection(false);
+
+        $command = $db->createCommand();
+        $tableName = 'expression_default_command_test';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $command->createTable(
+            $tableName,
+            [
+                'int_expression' => 'integer NOT NULL DEFAULT (1 + 2)',
+                'text_expression' => "text NOT NULL DEFAULT (upper('abc'))",
+                'date_expression' => "text NOT NULL DEFAULT (date('2011-11-11', '+2 days'))",
+                'blob_expression' => "blob NOT NULL DEFAULT x'414243'",
+                'hex_expression' => 'integer NOT NULL DEFAULT 0x10',
+                'int_literal' => 'integer NOT NULL DEFAULT 42',
+                'text_literal' => "text NOT NULL DEFAULT 'O''Reilly'",
+                'bool_literal' => 'boolean NOT NULL DEFAULT TRUE',
+                'bareword_literal' => 'text NOT NULL DEFAULT pending',
+            ],
+        )->execute();
+
+        $columns = $db->getTableSchema($tableName, true)->columns;
+
+        $command->insert(
+            $tableName,
+            array_map(static fn (ColumnSchema $column): mixed => $column->defaultValue, $columns),
+        )->execute();
+
+        self::assertSame(
+            [
+                'int_expression' => '3',
+                'text_expression' => 'ABC',
+                'date_expression' => '2011-11-13',
+                'blob_expression' => 'ABC',
+                'hex_expression' => '16',
+                'int_literal' => '42',
+                'text_literal' => "O'Reilly",
+                'bool_literal' => '1',
+                'bareword_literal' => 'pending',
+            ],
+            (new Query())
+                ->from($tableName)
+                ->one($db),
+            'Row must match the engine-applied defaults.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
     }
 
     public function testCheckIntegrityDisablesForeignKeysOutsideTransaction(): void

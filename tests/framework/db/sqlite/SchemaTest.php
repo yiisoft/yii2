@@ -17,6 +17,7 @@ use yii\db\Expression;
 use yii\db\Transaction;
 use yii\db\sqlite\Schema;
 use yiiunit\base\db\BaseSchema;
+use yiiunit\support\DbHelper;
 
 /**
  * Unit tests for {@see \yii\db\sqlite\Schema} schema reflection and metadata retrieval for the SQLite driver.
@@ -205,31 +206,85 @@ final class SchemaTest extends BaseSchema
         );
     }
 
-    public function testExpressionDefaultValueIsPreservedAsString(): void
+    public function testLoadDefaultExpressionColumn(): void
     {
         $db = $this->getConnection(false);
 
-        if ($db->schema->getTableSchema('test_default_expression') !== null) {
-            $db->createCommand()->dropTable('test_default_expression')->execute();
-        }
+        $tableName = 'default_expression_test';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
 
         $db->createCommand()->createTable(
-            'test_default_expression',
+            $tableName,
             [
-                'id' => 'pk',
-                'expr_col' => "text DEFAULT (datetime('now'))",
+                'int_expression' => 'integer NOT NULL DEFAULT (1 + 2)',
+                'text_expression' => "text NOT NULL DEFAULT (upper('abc'))",
+                'date_expression' => "text NOT NULL DEFAULT (date('2011-11-11', '+2 days'))",
+                'blob_expression' => "blob NOT NULL DEFAULT x'414243'",
+                'hex_expression' => 'integer NOT NULL DEFAULT 0x10',
+                'int_literal' => 'integer NOT NULL DEFAULT 42',
+                'text_literal' => "text NOT NULL DEFAULT 'O''Reilly'",
+                'bool_literal' => 'boolean NOT NULL DEFAULT TRUE',
+                'bareword_literal' => 'text NOT NULL DEFAULT pending',
             ],
         )->execute();
 
-        $db->schema->refreshTableSchema('test_default_expression');
-
-        $tableSchema = $db->schema->getTableSchema('test_default_expression');
-
-        self::assertSame(
-            "datetime('now')",
-            $tableSchema->getColumn('expr_col')->defaultValue,
-            'Expression default must be preserved verbatim.',
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            $tableName,
+            'int_expression',
+            '1 + 2',
         );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            $tableName,
+            'text_expression',
+            "upper('abc')",
+        );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            $tableName,
+            'date_expression',
+            "date('2011-11-11', '+2 days')",
+        );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            $tableName,
+            'blob_expression',
+            "x'414243'",
+        );
+        DbHelper::assertColumnDefaultExpression(
+            $db,
+            $tableName,
+            'hex_expression',
+            '0x10',
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            $tableName,
+            'int_literal',
+            42,
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            $tableName,
+            'text_literal',
+            "O'Reilly",
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            $tableName,
+            'bool_literal',
+            true,
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            $tableName,
+            'bareword_literal',
+            'pending',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
     }
 
     public function testPrimaryKeyDefaultValueIsNull(): void

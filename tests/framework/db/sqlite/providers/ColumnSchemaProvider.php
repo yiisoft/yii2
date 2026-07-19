@@ -44,12 +44,33 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 42,
                 42,
             ],
-            'blob literal passes through raw' => [
+            'arithmetic expression returns Expression' => [
+                'integer',
+                'integer',
+                'integer',
+                '1 + 2',
+                new Expression('1 + 2'),
+            ],
+            'backtick-quoted string resolves doubled quotes' => [
+                'string',
+                'varchar(32)',
+                'string',
+                '`do``uble`',
+                'do`uble',
+            ],
+            'bareword default remains a string literal' => [
+                'string',
+                'text',
+                'string',
+                'pending',
+                'pending',
+            ],
+            'blob literal remains an expression' => [
                 'binary',
                 'blob',
                 'resource',
                 "x'414243'",
-                "x'414243'",
+                new Expression("x'414243'"),
             ],
             'boolean keyword FALSE returns false' => [
                 'boolean',
@@ -79,19 +100,26 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 '0',
                 false,
             ],
-            'CURRENT_DATE on date column passes through as string' => [
-                'date',
-                'date',
+            'bracket-quoted string is unwrapped' => [
                 'string',
-                'CURRENT_DATE',
-                'CURRENT_DATE',
+                'varchar(32)',
+                'string',
+                '[hello world]',
+                'hello world',
             ],
-            'CURRENT_TIME on time column passes through as string' => [
+            'CURRENT_DATE on date column returns Expression' => [
+                'date',
+                'date',
+                'string',
+                'CURRENT_DATE',
+                new Expression('CURRENT_DATE'),
+            ],
+            'CURRENT_TIME on time column returns Expression' => [
                 'time',
                 'time',
                 'string',
                 'CURRENT_TIME',
-                'CURRENT_TIME',
+                new Expression('CURRENT_TIME'),
             ],
             'CURRENT_TIMESTAMP lowercase on timestamp column returns Expression' => [
                 'timestamp',
@@ -107,19 +135,19 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'Current_Timestamp',
                 new Expression('CURRENT_TIMESTAMP'),
             ],
-            'CURRENT_TIMESTAMP on datetime column passes through as string' => [
+            'CURRENT_TIMESTAMP on datetime column returns Expression' => [
                 'datetime',
                 'datetime',
                 'string',
                 'CURRENT_TIMESTAMP',
-                'CURRENT_TIMESTAMP',
+                new Expression('CURRENT_TIMESTAMP'),
             ],
-            'CURRENT_TIMESTAMP on string column passes through as string' => [
+            'CURRENT_TIMESTAMP on string column returns Expression' => [
                 'string',
                 'varchar',
                 'string',
                 'CURRENT_TIMESTAMP',
-                'CURRENT_TIMESTAMP',
+                new Expression('CURRENT_TIMESTAMP'),
             ],
             'CURRENT_TIMESTAMP on timestamp column returns Expression' => [
                 'timestamp',
@@ -170,6 +198,13 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 '',
                 null,
             ],
+            'expression default returns Expression' => [
+                'text',
+                'text',
+                'string',
+                "datetime('now')",
+                new Expression("datetime('now')"),
+            ],
             'Expression object passes through without string coercion' => [
                 'integer',
                 'integer',
@@ -177,12 +212,12 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 new Expression('1 + 2'),
                 new Expression('1 + 2'),
             ],
-            'expression default passes through as string' => [
-                'text',
-                'text',
-                'string',
-                "datetime('now')",
-                "datetime('now')",
+            'hexadecimal integer remains an expression' => [
+                'integer',
+                'integer',
+                'integer',
+                '0x10',
+                new Expression('0x10'),
             ],
             'integer default' => [
                 'integer',
@@ -233,6 +268,34 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 null,
                 null,
             ],
+            'parenthesized blob literal remains an expression' => [
+                'binary',
+                'blob',
+                'resource',
+                "(x'414243')",
+                new Expression("(x'414243')"),
+            ],
+            'parenthesized integer default is unwrapped and cast' => [
+                'integer',
+                'integer',
+                'integer',
+                '(42)',
+                42,
+            ],
+            'parenthesized NULL literal returns null' => [
+                'string',
+                'varchar(32)',
+                'string',
+                '(NULL)',
+                null,
+            ],
+            'parenthesized string default is unwrapped' => [
+                'string',
+                'varchar(32)',
+                'string',
+                "('hello')",
+                'hello',
+            ],
             'plus-signed integer default' => [
                 'integer',
                 'integer',
@@ -261,6 +324,13 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "'-123'",
                 -123,
             ],
+            'scientific numeric default is cast' => [
+                'double',
+                'double',
+                'double',
+                '1.25e2',
+                125.0,
+            ],
             'single-quoted string default is unwrapped' => [
                 'string',
                 'varchar(32)',
@@ -274,6 +344,13 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'string',
                 "'it''s'",
                 "it's",
+            ],
+            'string concatenation returns Expression' => [
+                'text',
+                'text',
+                'string',
+                "'a' || 'b'",
+                new Expression("'a' || 'b'"),
             ],
             'timestamp literal default is unwrapped' => [
                 'timestamp',
