@@ -18,10 +18,6 @@ use function is_resource;
 use function is_string;
 use function preg_match;
 use function str_replace;
-use function strcasecmp;
-use function stripos;
-use function strlen;
-use function substr;
 use function trim;
 
 /**
@@ -62,13 +58,13 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * Converts an Oracle column default value to its PHP representation.
      *
      * Handles Oracle-specific default formats:
-     * - `null`, empty/whitespace string, or the `NULL` literal (any case) to `null`.
-     * - `CURRENT_TIMESTAMP[(precision)]` on `timestamp` columns to {@see Expression}, preserving precision.
-     * - server-managed timestamp defaults (`SYSTIMESTAMP`, `LOCALTIMESTAMP`, `TIMESTAMP 'literal'`,
-     *   `to_timestamp(...)`) on `timestamp` columns to `null`.
-     * - single-quote-wrapped string defaults (`'value'`) to the unwrapped literal, resolving doubled single quotes
-     *   (`''` to `'`).
-     * - everything else delegates to {@see \yii\db\ColumnSchema::defaultPhpTypecast()}.
+     * - `null`, empty/whitespace strings, and bare or parenthesized `NULL` to `null`.
+     * - regular and national string literals (`'value'` / `N'value'`) to their unquoted value, resolving doubled
+     *   single quotes (`''` to `'`). Oracle treats an empty string literal as `null`.
+     * - signed, decimal, scientific, `BINARY_FLOAT`, and `BINARY_DOUBLE` numeric literals through
+     *   {@see \yii\db\ColumnSchema::phpTypecast()}.
+     * - everything else to an executable {@see Expression}, including datetime literals, function calls, operator
+     *   expressions, alternative-quoted strings, and sequence `NEXTVAL` defaults.
      *
      * @param mixed $value Default value in Oracle `DATA_DEFAULT` format.
      *
@@ -82,30 +78,24 @@ class ColumnSchema extends \yii\db\ColumnSchema
             return null;
         }
 
-        $value = trim((string) $value);
+        if (is_string($value)) {
+            $value = trim($value);
 
-        if ($value === '' || strcasecmp($value, 'NULL') === 0) {
-            return null;
-        }
+            if ($value === '' || preg_match('/^(?:NULL|\(NULL\))$/i', $value) === 1) {
+                return null;
+            }
 
-        // `CURRENT_TIMESTAMP[(precision)]` on timestamp columns -> Expression (consistency with MySQL driver).
-        if (
-            $this->type === Schema::TYPE_TIMESTAMP
-            && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $value, $matches) === 1
-        ) {
-            $precision = $matches[1] ?? '';
+            if (preg_match("/^N?'((?:''|[^'])*)'$/is", $value, $matches) === 1) {
+                $value = str_replace("''", "'", $matches[1]);
 
-            return new Expression('CURRENT_TIMESTAMP' . ($precision !== '' ? "({$precision})" : ''));
-        }
-
-        // server-managed timestamp defaults: `SYSTIMESTAMP`, `LOCALTIMESTAMP`, `TIMESTAMP` 'literal', to_timestamp(...).
-        if ($this->type === Schema::TYPE_TIMESTAMP && stripos($value, 'timestamp') !== false) {
-            return null;
-        }
-
-        // single-quote-wrapped string defaults: 'value' -> value, resolving doubled quotes ('' -> ').
-        if (strlen($value) > 2 && $value[0] === "'" && $value[-1] === "'") {
-            $value = str_replace("''", "'", substr($value, 1, -1));
+                if ($value === '') {
+                    return null;
+                }
+            } elseif (preg_match('/^([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)[fd]?$/i', $value, $matches) === 1) {
+                $value = $matches[1];
+            } else {
+                return new Expression($value);
+            }
         }
 
         return parent::defaultPhpTypecast($value);

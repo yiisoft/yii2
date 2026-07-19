@@ -58,12 +58,26 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
     public static function defaultPhpTypecast(): array
     {
         return [
-            'CURRENT_TIMESTAMP on non-timestamp column stays a literal' => [
+            'alternative-quoted string remains an expression' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                "q'[O'Reilly]'",
+                new Expression("q'[O'Reilly]'"),
+            ],
+            'binary double suffix is removed before typecasting' => [
+                'double',
+                'BINARY_DOUBLE',
+                'double',
+                '1.25D',
+                1.25,
+            ],
+            'CURRENT_TIMESTAMP on non-timestamp column remains an expression' => [
                 'string',
                 'VARCHAR2',
                 'string',
                 'CURRENT_TIMESTAMP',
-                'CURRENT_TIMESTAMP',
+                new Expression('CURRENT_TIMESTAMP'),
             ],
             'CURRENT_TIMESTAMP on timestamp column returns Expression' => [
                 'timestamp',
@@ -107,19 +121,19 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 '33.22',
                 '33.22',
             ],
-            'doubled single quotes inside string are collapsed' => [
-                'string',
-                'VARCHAR2',
-                'string',
-                "'it''s'",
-                "it's",
-            ],
             'double default cast to float' => [
                 'double',
                 'FLOAT',
                 'double',
                 '1.23',
                 1.23,
+            ],
+            'doubled single quotes inside string are collapsed' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                "'it''s'",
+                "it's",
             ],
             'empty string returns null' => [
                 'string',
@@ -135,47 +149,19 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "''''",
                 "'",
             ],
-            'LOCALTIMESTAMP on timestamp column returns null' => [
+            'LOCALTIMESTAMP on timestamp column remains an expression' => [
                 'timestamp',
                 'TIMESTAMP(6)',
                 'string',
                 'LOCALTIMESTAMP',
-                null,
+                new Expression('LOCALTIMESTAMP'),
             ],
             'lowercase current_timestamp on timestamp column returns Expression' => [
                 'timestamp',
                 'TIMESTAMP(6)',
                 'string',
                 'current_timestamp',
-                new Expression('CURRENT_TIMESTAMP'),
-            ],
-            'negative decimal default kept as string' => [
-                'decimal',
-                'NUMBER',
-                'string',
-                '-33.22',
-                '-33.22',
-            ],
-            'negative integer default cast to int' => [
-                'integer',
-                'NUMBER',
-                'integer',
-                '-123',
-                -123,
-            ],
-            'null value returns null' => [
-                'timestamp',
-                'TIMESTAMP(6)',
-                'string',
-                null,
-                null,
-            ],
-            'NULL literal returns null' => [
-                'string',
-                'VARCHAR2',
-                'string',
-                'NULL',
-                null,
+                new Expression('current_timestamp'),
             ],
             'lowercase null literal returns null' => [
                 'string',
@@ -191,12 +177,40 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'Null',
                 null,
             ],
-            'quoted null string literal is preserved' => [
+            'national string default is unwrapped' => [
+                'string',
+                'NVARCHAR2',
+                'string',
+                "N'O''Reilly'",
+                "O'Reilly",
+            ],
+            'negative decimal default kept as string' => [
+                'decimal',
+                'NUMBER',
+                'string',
+                '-33.22',
+                '-33.22',
+            ],
+            'negative integer default cast to int' => [
+                'integer',
+                'NUMBER',
+                'integer',
+                '-123',
+                -123,
+            ],
+            'NULL literal returns null' => [
                 'string',
                 'VARCHAR2',
                 'string',
-                "'null'",
-                'null',
+                'NULL',
+                null,
+            ],
+            'null value returns null' => [
+                'timestamp',
+                'TIMESTAMP(6)',
+                'string',
+                null,
+                null,
             ],
             'numeric char default kept as string' => [
                 'string',
@@ -204,6 +218,34 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'string',
                 '130',
                 '130',
+            ],
+            'operator expression remains an expression' => [
+                'integer',
+                'NUMBER',
+                'integer',
+                '(1 + 2)',
+                new Expression('(1 + 2)'),
+            ],
+            'parenthesized NULL literal returns null' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                '(NULL)',
+                null,
+            ],
+            'quoted empty string returns null' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                "''",
+                null,
+            ],
+            'quoted null string literal is preserved' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                "'null'",
+                'null',
             ],
             'quoted string containing timestamp keyword is preserved' => [
                 'string',
@@ -219,6 +261,20 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 '42',
                 42,
             ],
+            'scientific numeric default is typecast' => [
+                'double',
+                'FLOAT',
+                'double',
+                '1.25e2',
+                125.0,
+            ],
+            'sequence NEXTVAL remains an expression' => [
+                'integer',
+                'NUMBER',
+                'integer',
+                'test_sequence.NEXTVAL',
+                new Expression('test_sequence.NEXTVAL'),
+            ],
             'single-quoted char default is unwrapped' => [
                 'string',
                 'CHAR',
@@ -233,33 +289,47 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "'something'",
                 'something',
             ],
-            'SYSTIMESTAMP on timestamp column returns null' => [
+            'string concatenation is not mistaken for a quoted literal' => [
+                'string',
+                'VARCHAR2',
+                'string',
+                "'a' || 'b'",
+                new Expression("'a' || 'b'"),
+            ],
+            'SYSDATE on date column remains an expression' => [
+                'string',
+                'DATE',
+                'string',
+                'SYSDATE',
+                new Expression('SYSDATE'),
+            ],
+            'SYSTIMESTAMP on timestamp column remains an expression' => [
                 'timestamp',
                 'TIMESTAMP(6)',
                 'string',
                 'SYSTIMESTAMP',
-                null,
+                new Expression('SYSTIMESTAMP'),
             ],
-            'TIMESTAMP literal on timestamp column returns null' => [
+            'TIMESTAMP literal on timestamp column remains an expression' => [
                 'timestamp',
                 'TIMESTAMP(6)',
                 'string',
                 "TIMESTAMP '2002-01-01 00:00:00'",
-                null,
+                new Expression("TIMESTAMP '2002-01-01 00:00:00'"),
             ],
-            'to_timestamp expression on timestamp column returns null' => [
+            'to_timestamp expression on timestamp column remains an expression' => [
                 'timestamp',
                 'TIMESTAMP(6)',
                 'string',
                 "to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss')",
-                null,
+                new Expression("to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss')"),
             ],
-            'unquoted string default kept verbatim' => [
+            'unquoted string default remains an expression' => [
                 'string',
                 'VARCHAR2',
                 'string',
                 'hello',
-                'hello',
+                new Expression('hello'),
             ],
             'whitespace-only string returns null' => [
                 'string',
@@ -327,7 +397,9 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         $columns['time']['dbType'] = 'TIMESTAMP(6)';
         $columns['time']['size'] = 11;
         $columns['time']['scale'] = 6;
-        $columns['time']['defaultValue'] = null;
+        $columns['time']['defaultValue'] = new Expression(
+            "to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss')",
+        );
         $columns['bool_col']['type'] = 'string';
         $columns['bool_col']['phpType'] = 'string';
         $columns['bool_col']['dbType'] = 'CHAR';
