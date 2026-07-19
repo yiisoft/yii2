@@ -639,6 +639,14 @@ of `null`. Note that SQL Server normalizes the stored definition (`CURRENT_TIMES
 `(1 + 2)` as `((1)+(2))`). Binary literal defaults (`(0x...)`) now decode to their byte string. Review strict type
 checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
 
+On Oracle, expression-based column defaults reported by `ALL_TAB_COLUMNS.DATA_DEFAULT` — datetime literals and
+keywords, function calls, operator expressions, and sequence `NEXTVAL` defaults on non-identity columns — now expose
+an executable `yii\db\Expression` through `ColumnSchema::$defaultValue`. Previously most reflected as raw strings,
+while `timestamp` column defaults containing `TIMESTAMP`, such as `SYSTIMESTAMP` or `TO_TIMESTAMP(...)`, were
+discarded as `null`. Regular and national quoted strings and numeric literals remain PHP values; Oracle empty-string
+literals reflect as `null`. Review strict type checks, schema snapshots, and code that calls
+`ActiveRecord::loadDefaultValues()` for models containing these columns. Identity defaults remain `null`.
+
 ## Removed platform support
 
 ### HHVM

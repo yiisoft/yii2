@@ -14,6 +14,7 @@ use PHPUnit\Framework\Attributes\Group;
 use yii\db\ConstraintFinderInterface;
 use yii\db\TableSchema;
 use yiiunit\base\db\BaseSchema;
+use yiiunit\support\DbHelper;
 
 use function array_filter;
 use function array_values;
@@ -27,6 +28,58 @@ use function array_values;
 final class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
+
+    public function testExpressionAndLiteralColumnDefaultValues(): void
+    {
+        $db = $this->getConnection(false);
+
+        $tableName = 'column_default';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                'date_expression' => "DATE DEFAULT (DATE '2011-11-11' + 2)",
+                'text_expression' => "VARCHAR2(16) DEFAULT UPPER('abc')",
+                'number_expression' => 'NUMBER(10, 0) DEFAULT (1 + 2)',
+                'timestamp_expression' => "TIMESTAMP DEFAULT TIMESTAMP '2011-11-11 12:34:56'",
+                'number_literal' => 'NUMBER(10, 0) DEFAULT 42',
+                'text_literal' => "VARCHAR2(32) DEFAULT 'O''Reilly'",
+            ],
+        )->execute();
+
+        $expressionDefaults = [
+            'date_expression' => "(DATE '2011-11-11' + 2)",
+            'text_expression' => "UPPER('abc')",
+            'number_expression' => '(1 + 2)',
+            'timestamp_expression' => "TIMESTAMP '2011-11-11 12:34:56'",
+        ];
+
+        foreach ($expressionDefaults as $column => $expression) {
+            DbHelper::assertColumnDefaultExpression(
+                $db,
+                $tableName,
+                $column,
+                $expression,
+            );
+        }
+
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            $tableName,
+            'number_literal',
+            42,
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            $tableName,
+            'text_literal',
+            "O'Reilly",
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
 
     public function testGetTableSequenceNameResolvesIdentityColumnForModernTable(): void
     {

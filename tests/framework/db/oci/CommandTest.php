@@ -15,14 +15,17 @@ use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use Throwable;
 use yii\caching\ArrayCache;
+use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
 use yii\db\Schema;
 use yiiunit\base\db\BaseCommand;
 use yiiunit\framework\db\oci\providers\CommandProvider;
+use yiiunit\support\DbHelper;
 
 use function array_keys;
+use function array_map;
 use function count;
 
 /**
@@ -102,6 +105,88 @@ class CommandTest extends BaseCommand
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
+    }
+
+    public function testInsertReflectedExpressionDefaults(): void
+    {
+        $db = $this->getConnection(false);
+
+        $command = $db->createCommand();
+
+        $tableName = 'expression_default_command_test';
+        $sequenceName = 'expression_default_command_sequence';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $command->setSql(
+            <<<SQL
+            BEGIN
+                EXECUTE IMMEDIATE 'DROP SEQUENCE "{$sequenceName}"';
+            EXCEPTION
+                WHEN OTHERS THEN
+                    IF SQLCODE != -2289 THEN
+                        RAISE;
+                    END IF;
+            END;
+            SQL,
+        )->execute();
+        $command->setSql(
+            <<<SQL
+            CREATE SEQUENCE "{$sequenceName}" START WITH 1 INCREMENT BY 1
+            SQL,
+        )->execute();
+
+        $command->createTable(
+            $tableName,
+            [
+                'date_expression' => "DATE DEFAULT (DATE '2011-11-11' + 2) NOT NULL",
+                'text_expression' => "VARCHAR2(16) DEFAULT UPPER('abc') NOT NULL",
+                'int_expression' => 'NUMBER(10, 0) DEFAULT (1 + 2) NOT NULL',
+                'timestamp_expression' => "TIMESTAMP DEFAULT TIMESTAMP '2011-11-11 12:34:56' NOT NULL",
+                'literal' => "VARCHAR2(32) DEFAULT 'O''Reilly' NOT NULL",
+                'serial_col' => "NUMBER(10, 0) DEFAULT \"{$sequenceName}\".NEXTVAL NOT NULL",
+            ],
+        )->execute();
+
+        $columns = $db->getTableSchema($tableName, true)->columns;
+
+        $command->insert(
+            $tableName,
+            array_map(static fn (ColumnSchema $column): mixed => $column->defaultValue, $columns),
+        )->execute();
+
+        self::assertSame(
+            [
+                'date_expression' => '2011-11-13',
+                'text_expression' => 'ABC',
+                'int_expression' => '3',
+                'timestamp_expression' => '2011-11-11 12:34:56',
+                'literal' => "O'Reilly",
+                'serial_col' => '1',
+            ],
+            (new Query())
+                ->select(
+                    [
+                        'date_expression' => new Expression(
+                            "TO_CHAR([[date_expression]], 'YYYY-MM-DD')",
+                        ),
+                        'text_expression',
+                        'int_expression',
+                        'timestamp_expression' => new Expression(
+                            "TO_CHAR([[timestamp_expression]], 'YYYY-MM-DD HH24:MI:SS')",
+                        ),
+                        'literal',
+                        'serial_col',
+                    ],
+                )
+                ->from($tableName)
+                ->one($db),
+            'Row must match the engine-applied defaults.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $command->setSql("DROP SEQUENCE \"{$sequenceName}\"")->execute();
     }
 
     public function testBlobUpsertAffectedPrefixInStringLiteralDoesNotEnableOutputBinding(): void

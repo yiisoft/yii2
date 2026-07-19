@@ -8,7 +8,9 @@
 
 namespace yiiunit\framework\db\oci;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\ActiveQuery;
+use yii\db\Expression;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\DefaultPk;
 use yiiunit\data\ar\DefaultMultiplePk;
@@ -17,9 +19,13 @@ use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseActiveRecord;
 
 /**
- * @group db
- * @group oci
+ * Unit tests for {@see \yii\db\ActiveRecord} functionality for the Oracle driver.
+ *
+ * {@see CommandProvider} for test case data providers.
  */
+#[Group('db')]
+#[Group('oci')]
+#[Group('active-record')]
 class ActiveRecordTest extends BaseActiveRecord
 {
     protected $driverName = 'oci';
@@ -58,26 +64,78 @@ class ActiveRecordTest extends BaseActiveRecord
     public function testDefaultValues(): void
     {
         $model = new Type();
-        $model->loadDefaultValues();
-        $this->assertEquals(1, $model->int_col2);
-        $this->assertEquals('something', $model->char_col2);
-        $this->assertEquals(1.23, $model->float_col2);
-        $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertEquals('1', $model->bool_col2);
 
-        // not testing $model->time, because oci\Schema can't read default value
+        $model->loadDefaultValues();
+
+        self::assertEquals(
+            1,
+            $model->int_col2,
+            'Integer default must be applied.',
+        );
+        self::assertEquals(
+            'something',
+            $model->char_col2,
+            'String default must be applied.',
+        );
+        self::assertEquals(
+            1.23,
+            $model->float_col2,
+            'Float default must be applied.',
+        );
+        self::assertEquals(
+            33.22,
+            $model->numeric_col,
+            'Numeric default must be applied.',
+        );
+        self::assertEquals(
+            '1',
+            $model->bool_col2,
+            'Boolean-like default must be applied.',
+        );
+        self::assertInstanceOf(
+            Expression::class,
+            $model->time,
+            'Default must be an Expression.',
+        );
+        self::assertSame(
+            "to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss')",
+            (string) $model->time,
+            'Default expression SQL must match.',
+        );
+        self::assertInstanceOf(
+            Expression::class,
+            $model->ts_default,
+            'Default must be an Expression.',
+        );
+        self::assertSame(
+            'CURRENT_TIMESTAMP',
+            (string) $model->ts_default,
+            'Default expression SQL must match.',
+        );
 
         $model = new Type();
+
         $model->char_col2 = 'not something';
 
         $model->loadDefaultValues();
-        $this->assertEquals('not something', $model->char_col2);
+
+        self::assertEquals(
+            'not something',
+            $model->char_col2,
+            'Assigned value must not be overwritten.',
+        );
 
         $model = new Type();
+
         $model->char_col2 = 'not something';
 
         $model->loadDefaultValues(false);
-        $this->assertEquals('something', $model->char_col2);
+
+        self::assertEquals(
+            'something',
+            $model->char_col2,
+            'Default must overwrite the assigned value.',
+        );
     }
 
     public function testFindAsArray(): void
