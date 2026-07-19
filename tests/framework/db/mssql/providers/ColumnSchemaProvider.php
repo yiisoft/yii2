@@ -119,30 +119,35 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
     public static function defaultPhpTypecast(): array
     {
         return [
-            'CURRENT_TIMESTAMP on timestamp column returns null' => [
-                Schema::TYPE_TIMESTAMP,
+            'bare token remains an expression' => [
+                Schema::TYPE_DATETIME,
                 'CURRENT_TIMESTAMP',
-                null,
+                new Expression('CURRENT_TIMESTAMP'),
+            ],
+            'binary literal is decoded' => [
+                Schema::TYPE_BINARY,
+                '(0x737472696E67)',
+                'string',
             ],
             'decimal default value unwrapped' => [
                 Schema::TYPE_DECIMAL,
                 '((3.14))',
                 '3.14',
             ],
-            'expression default getdate returns null' => [
+            'expression default getdate remains an expression' => [
                 Schema::TYPE_STRING,
                 '(getdate())',
-                null,
+                new Expression('(getdate())'),
             ],
-            'expression default newid returns null' => [
+            'expression default newid remains an expression' => [
                 Schema::TYPE_STRING,
                 '(newid())',
-                null,
+                new Expression('(newid())'),
             ],
-            'expression default sysdatetime returns null' => [
+            'expression default sysdatetime remains an expression' => [
                 Schema::TYPE_STRING,
                 '(sysdatetime())',
-                null,
+                new Expression('(sysdatetime())'),
             ],
             'integer default value unwrapped' => [
                 Schema::TYPE_INTEGER,
@@ -158,6 +163,31 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 Schema::TYPE_STRING,
                 null,
                 null,
+            ],
+            'numeric expression remains an expression' => [
+                Schema::TYPE_INTEGER,
+                '((1)+(2))',
+                new Expression('((1)+(2))'),
+            ],
+            'parenthesized null returns null' => [
+                Schema::TYPE_STRING,
+                '((NULL))',
+                null,
+            ],
+            'parenthesized unicode string with escaped single quotes' => [
+                Schema::TYPE_STRING,
+                "((N'O''Reilly'))",
+                "O'Reilly",
+            ],
+            'sequence default remains an expression' => [
+                Schema::TYPE_BIGINT,
+                '(NEXT VALUE FOR [dbo].[test_sequence])',
+                new Expression('(NEXT VALUE FOR [dbo].[test_sequence])'),
+            ],
+            'string concatenation remains an expression' => [
+                Schema::TYPE_STRING,
+                "('a'+'b')",
+                new Expression("('a'+'b')"),
             ],
             'string default value unwrapped' => [
                 Schema::TYPE_STRING,
