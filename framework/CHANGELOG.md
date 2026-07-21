@@ -139,6 +139,7 @@ Yii Framework 2 Change Log
 - Bug #19747: Load Oracle expression-based column defaults, including non-identity sequence `NEXTVAL` defaults, as executable `yii\db\Expression` instead of raw strings or `null` (terabytesoftw)
 - Bug #19747: Load SQLite expression-based column defaults as executable `yii\db\Expression` instead of mangled or raw values (terabytesoftw)
 - Bug #16265: Fix slow MySQL/MariaDB constraint metadata loading by replacing the `information_schema` `UNION` query with a single `STATISTICS` query and a dedicated foreign key query (terabytesoftw)
+- Bug #16545: Use `utf8mb4` by default for MySQL/MariaDB connections, add `yii\db\Connection::getEffectiveCharset()`, and make built-in migrations follow the effective connection charset (terabytesoftw)
 
 2.0.56 under development
 ------------------------

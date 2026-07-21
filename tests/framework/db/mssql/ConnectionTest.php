@@ -8,15 +8,29 @@
 
 namespace yiiunit\framework\db\mssql;
 
+use PHPUnit\Framework\Attributes\Group;
+use yii\db\Connection;
 use yiiunit\base\db\BaseConnection;
 
 /**
- * @group db
- * @group mssql
+ * Unit tests for {@see \yii\db\mssql\Connection} functionality for the MSSQL driver.
  */
+#[Group('db')]
+#[Group('mssql')]
+#[Group('connection')]
 class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'sqlsrv';
+
+    public function testGetEffectiveCharsetReturnsNull(): void
+    {
+        $db = new Connection(['dsn' => 'sqlsrv:Server=127.0.0.1,1433;Database=yiitest;Encrypt=no']);
+
+        self::assertNull(
+            $db->effectiveCharset,
+            "No charset source means 'null'.",
+        );
+    }
 
     public function testQuoteValue(): void
     {

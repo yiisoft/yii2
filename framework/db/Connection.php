@@ -15,6 +15,12 @@ use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\caching\CacheInterface;
 
+use function constant;
+use function in_array;
+use function preg_match;
+use function str_contains;
+use function strtolower;
+
 /**
  * Connection represents a connection to a database via [PDO](https://www.php.net/manual/en/book.pdo.php).
  *
@@ -106,13 +112,15 @@ use yii\caching\CacheInterface;
  *         'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
  *         'username' => 'root',
  *         'password' => '',
- *         'charset' => 'utf8',
+ *         'charset' => 'utf8mb4',
  *     ],
  * ],
  * ```
  *
  * @property string|null $driverName Name of the DB driver. Note that the type of this property differs in
  * getter and setter. See [[getDriverName()]] and [[setDriverName()]] for details.
+ * @property-read string|null $effectiveCharset The charset the connection effectively uses, or `null` when the
+ * connection relies on the database server defaults.
  * @property-read bool $isActive Whether the DB connection is established.
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
  * the sequence object.
@@ -240,15 +248,15 @@ class Connection extends Component
      */
     public $queryCache = 'cache';
     /**
-     * @var string|null the charset used for database connection. The property is only used
-     * for MySQL and PostgreSQL databases. Defaults to null, meaning using default charset
-     * as configured by the database.
+     * @var string|null the charset used for database connection. The property is only used for MySQL and PostgreSQL
+     * databases. Defaults to `null`. MySQL and MariaDB connections use `utf8mb4` when neither this property nor the
+     * [[dsn]] specifies a charset. PostgreSQL connections use the default charset configured by the database.
      *
-     * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending `;charset=UTF-8`
-     * to the DSN string.
+     * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending
+     * `;charset=UTF-8` to the DSN string.
      *
-     * The same applies for if you're using GBK or BIG5 charset with MySQL, then it's highly recommended to
-     * specify charset via [[dsn]] like `'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'`.
+     * The same applies for if you're using GBK or BIG5 charset with MySQL, then it's highly recommended to specify
+     * charset via [[dsn]] like `'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'`.
      */
     public $charset;
     /**
@@ -718,28 +726,38 @@ class Connection extends Component
      * Initializes the DB connection.
      * This method is invoked right after the DB connection is established.
      * The default implementation turns on `PDO::ATTR_EMULATE_PREPARES`
-     * if [[emulatePrepare]] is true, and sets the database [[charset]] if it is not empty.
+     * if [[emulatePrepare]] is true, and sets the database [[charset]] if it is not empty. MySQL and MariaDB
+     * connections fall back to `utf8mb4` when neither [[charset]] nor the [[dsn]] specifies a charset.
      * It then triggers an [[EVENT_AFTER_OPEN]] event.
      */
     protected function initConnection()
     {
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $driverName = $this->getDriverName();
+
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
-            if ($this->driverName !== 'sqlsrv') {
+            if ($driverName !== 'sqlsrv') {
                 $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
             }
         }
 
-        if (in_array($this->getDriverName(), ['sqlite', 'oci'], true)) {
+        if (in_array($driverName, ['sqlite', 'oci'], true)) {
             $this->pdo->setAttribute(PDO::ATTR_STRINGIFY_FETCHES, true);
         }
 
-        if (!$this->isSybase && in_array($this->getDriverName(), ['mssql', 'dblib'], true)) {
+        if (!$this->isSybase && in_array($driverName, ['mssql', 'dblib'], true)) {
             $this->pdo->exec('SET ANSI_NULL_DFLT_ON ON');
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli'], true)) {
+
+        if ($this->charset !== null && in_array($driverName, ['pgsql', 'mysql', 'mysqli'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
+        } elseif (
+            in_array($driverName, ['mysql', 'mysqli'], true)
+            && !str_contains(strtolower((string) $this->dsn), 'charset=')
+        ) {
+            $this->pdo->exec('SET NAMES ' . $this->pdo->quote('utf8mb4'));
         }
+
         $this->trigger(self::EVENT_AFTER_OPEN);
     }
 
@@ -1017,6 +1035,34 @@ class Connection extends Component
     public function setDriverName($driverName)
     {
         $this->_driverName = strtolower($driverName);
+    }
+
+    /**
+     * Returns the charset the connection effectively uses.
+     *
+     * Resolution order: [[charset]] when set, then a `charset` element in the [[dsn]], then `utf8mb4` for MySQL and
+     * MariaDB. The value derives from the configuration only, so it is available before the connection is opened.
+     *
+     * @return string|null The effective connection charset, or `null` when the connection relies on the database server
+     * defaults.
+     *
+     * @since 22.0
+     */
+    public function getEffectiveCharset(): string|null
+    {
+        if ($this->charset !== null) {
+            return $this->charset;
+        }
+
+        if (preg_match('/charset=([^;]+)/i', (string) $this->dsn, $matches) === 1) {
+            return $matches[1];
+        }
+
+        if (in_array($this->getDriverName(), ['mysql', 'mysqli'], true)) {
+            return 'utf8mb4';
+        }
+
+        return null;
     }
 
     /**

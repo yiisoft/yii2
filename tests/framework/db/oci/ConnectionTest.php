@@ -8,17 +8,39 @@
 
 namespace yiiunit\framework\db\oci;
 
+use PHPUnit\Framework\Attributes\Group;
 use yii\db\Connection;
 use yii\db\Transaction;
 use yiiunit\base\db\BaseConnection;
 
 /**
- * @group db
- * @group oci
+ * Unit tests for {@see \yii\db\oci\Connection} functionality for the OCI driver.
  */
+#[Group('db')]
+#[Group('oci')]
+#[Group('connection')]
 class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'oci';
+
+    public function testGetEffectiveCharsetReadsDsnCharset(): void
+    {
+        $db = new Connection(['dsn' => 'oci:dbname=localhost/FREE;charset=AL32UTF8;']);
+
+        self::assertSame(
+            'AL32UTF8',
+            $db->effectiveCharset,
+            'DSN charset must be extracted.',
+        );
+
+        $db = new Connection(['dsn' => 'oci:dbname=localhost/FREE;charset=AL32UTF8;', 'charset' => 'UTF8']);
+
+        self::assertSame(
+            'UTF8',
+            $db->effectiveCharset,
+            'Explicit charset must win over the DSN.',
+        );
+    }
 
     public function testSerialize(): void
     {
