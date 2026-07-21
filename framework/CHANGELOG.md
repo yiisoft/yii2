@@ -138,6 +138,7 @@ Yii Framework 2 Change Log
 - Bug #19747: Load MSSQL expression-based column defaults, including sequence-backed `NEXT VALUE FOR` defaults, as executable `yii\db\Expression` instead of `null` (terabytesoftw)
 - Bug #19747: Load Oracle expression-based column defaults, including non-identity sequence `NEXTVAL` defaults, as executable `yii\db\Expression` instead of raw strings or `null` (terabytesoftw)
 - Bug #19747: Load SQLite expression-based column defaults as executable `yii\db\Expression` instead of mangled or raw values (terabytesoftw)
+- Bug #16265: Fix slow MySQL/MariaDB constraint metadata loading by replacing the `information_schema` `UNION` query with a single `STATISTICS` query and a dedicated foreign key query (terabytesoftw)
 
 2.0.56 under development
 ------------------------
