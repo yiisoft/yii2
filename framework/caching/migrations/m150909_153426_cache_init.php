@@ -41,7 +41,7 @@ class m150909_153426_cache_init extends Migration
         $this->db = $cache->db;
 
         $tableOptions = null;
-        if ($this->db->driverName === 'mysql') {
+        if (in_array($this->db->driverName, ['mysql', 'mysqli'], true)) {
             $tableOptions = sprintf('CHARACTER SET %s ENGINE=InnoDB', $this->db->effectiveCharset);
         }
 

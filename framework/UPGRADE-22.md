@@ -438,19 +438,20 @@ MySQL integer display widths are no longer generated:
 MySQL and MariaDB connections now use `utf8mb4` when neither `Connection::$charset` nor the DSN specifies a charset.
 The charset a connection effectively uses is exposed through `Connection::getEffectiveCharset()`. The built-in cache,
 i18n, log, RBAC, and session migrations no longer force `utf8` and `utf8_unicode_ci`; their tables use the effective
-connection character set — the collation follows the server default collation for that character set — while
+connection character set; the collation follows the server default collation for that character set; while
 continuing to use the `InnoDB` storage engine.
 
 These migrations run once, so tables created before this change keep the explicit `utf8` character set and
 `utf8_unicode_ci` collation. To align such a table with the connection defaults, convert it manually using the
-character set and collation reported by `SELECT @@character_set_connection, @@collation_connection`:
+effective connection character set; see `Connection::getEffectiveCharset()`; the server applies that character
+set's default collation:
 
 ```sql
-ALTER TABLE `session` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+ALTER TABLE `session` CONVERT TO CHARACTER SET utf8mb4;
 ```
 
-Replace the table name, character set, and collation as needed. Review string column and index sizes first; the
-conversion rewrites every character column to the new character set.
+Replace the table name and character set as needed. Review string column and index sizes first; the conversion
+rewrites every character column to the new character set.
 
 The following legacy extension points were removed:
 

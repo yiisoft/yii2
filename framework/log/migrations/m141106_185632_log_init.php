@@ -65,7 +65,7 @@ class m141106_185632_log_init extends Migration
             $this->db = $target->db;
 
             $tableOptions = null;
-            if ($this->db->driverName === 'mysql') {
+            if (in_array($this->db->driverName, ['mysql', 'mysqli'], true)) {
                 $tableOptions = sprintf('CHARACTER SET %s ENGINE=InnoDB', $this->db->effectiveCharset);
             }
 

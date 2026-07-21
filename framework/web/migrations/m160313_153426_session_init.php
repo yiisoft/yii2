@@ -23,7 +23,7 @@ class m160313_153426_session_init extends Migration
     {
         $tableOptions = null;
 
-        if ($this->db->driverName === 'mysql') {
+        if (in_array($this->db->driverName, ['mysql', 'mysqli'], true)) {
             $tableOptions = sprintf('CHARACTER SET %s ENGINE=InnoDB', $this->db->effectiveCharset);
         }
 

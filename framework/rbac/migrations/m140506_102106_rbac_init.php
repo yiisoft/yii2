@@ -56,7 +56,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
 
         $tableOptions = null;
 
-        if ($this->db->driverName === 'mysql') {
+        if (in_array($this->db->driverName, ['mysql', 'mysqli'], true)) {
             $tableOptions = sprintf('CHARACTER SET %s ENGINE=InnoDB', $this->db->effectiveCharset);
         }
 

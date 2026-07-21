@@ -21,7 +21,7 @@ class m150207_210500_i18n_init extends Migration
     public function up()
     {
         $tableOptions = null;
-        if ($this->db->driverName === 'mysql') {
+        if (in_array($this->db->driverName, ['mysql', 'mysqli'], true)) {
             $tableOptions = sprintf('CHARACTER SET %s ENGINE=InnoDB', $this->db->effectiveCharset);
         }
 
