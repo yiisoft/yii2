@@ -3,6 +3,8 @@
  * The database setup in config.php is required to perform then relevant tests:
  */
 
+CREATE DATABASE IF NOT EXISTS `yiitest_cross`;
+
 DROP TABLE IF EXISTS `composite_fk` CASCADE;
 DROP TABLE IF EXISTS `order_item` CASCADE;
 DROP TABLE IF EXISTS `order_item_with_null_fk` CASCADE;
@@ -27,6 +29,10 @@ DROP TABLE IF EXISTS `storage`;
 DROP TABLE IF EXISTS `alpha`;
 DROP TABLE IF EXISTS `beta`;
 DROP VIEW IF EXISTS `animal_view`;
+DROP TABLE IF EXISTS `T_constraints_cross_ref` CASCADE;
+DROP TABLE IF EXISTS `yiitest_cross`.`T_constraints_cross_ref` CASCADE;
+DROP TABLE IF EXISTS `yiitest_cross`.`T_constraints_3` CASCADE;
+DROP TABLE IF EXISTS `yiitest_cross`.`T_constraints_2` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_4` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_3` CASCADE;
 DROP TABLE IF EXISTS `T_constraints_2` CASCADE;
@@ -385,6 +391,43 @@ CREATE TABLE `T_constraints_4`
     `C_col_1` INT NULL,
     `C_col_2` INT NOT NULL,
     CONSTRAINT `CN_constraints_4` UNIQUE (`C_col_1`, `C_col_2`)
+)
+ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `yiitest_cross`.`T_constraints_2`
+(
+    `C_cross_id` INT NOT NULL,
+    `C_cross_unique` INT NOT NULL,
+    `C_cross_index` INT NULL,
+    CONSTRAINT `CN_cross_unique` UNIQUE (`C_cross_unique`),
+    CONSTRAINT `CN_pk` PRIMARY KEY (`C_cross_id`)
+)
+ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE INDEX `CN_cross_single` ON `yiitest_cross`.`T_constraints_2` (`C_cross_index`);
+
+CREATE TABLE `yiitest_cross`.`T_constraints_3`
+(
+    `C_id` INT NOT NULL,
+    `C_fk_id` INT NOT NULL,
+    CONSTRAINT `CN_cross_constraints_3` FOREIGN KEY (`C_fk_id`) REFERENCES `yiitest_cross`.`T_constraints_2` (`C_cross_id`) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `T_constraints_cross_ref`
+(
+    `C_id` INT NOT NULL,
+    `C_cross_fk_id` INT NOT NULL,
+    CONSTRAINT `CN_constraints_cross_ref` FOREIGN KEY (`C_cross_fk_id`) REFERENCES `yiitest_cross`.`T_constraints_2` (`C_cross_id`) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
+
+CREATE TABLE `yiitest_cross`.`T_constraints_cross_ref`
+(
+    `C_id` INT NOT NULL,
+    `C_fk_id_1` INT NOT NULL,
+    `C_fk_id_2` INT NOT NULL,
+    CONSTRAINT `CN_cross_constraints_cross_ref` FOREIGN KEY (`C_fk_id_1`, `C_fk_id_2`) REFERENCES `yiitest`.`T_constraints_2` (`C_id_1`, `C_id_2`) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE = 'InnoDB' DEFAULT CHARSET = 'utf8';
 

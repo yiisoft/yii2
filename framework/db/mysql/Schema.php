@@ -150,7 +150,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function loadTablePrimaryKey($tableName)
     {
-        return $this->loadTableConstraints($tableName, 'primaryKey');
+        return $this->loadTableIndexMetadata($tableName, 'primaryKey');
     }
 
     /**
@@ -158,40 +158,61 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function loadTableForeignKeys($tableName)
     {
-        return $this->loadTableConstraints($tableName, 'foreignKeys');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function loadTableIndexes($tableName)
-    {
-        static $sql = <<<'SQL'
-SELECT
-    `s`.`INDEX_NAME` AS `name`,
-    `s`.`COLUMN_NAME` AS `column_name`,
-    `s`.`NON_UNIQUE` ^ 1 AS `index_is_unique`,
-    `s`.`INDEX_NAME` = 'PRIMARY' AS `index_is_primary`
-FROM `information_schema`.`STATISTICS` AS `s`
-WHERE `s`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE()) AND `s`.`INDEX_SCHEMA` = `s`.`TABLE_SCHEMA` AND `s`.`TABLE_NAME` = :tableName
-ORDER BY `s`.`SEQ_IN_INDEX` ASC
-SQL;
+        $sql = <<<SQL
+        SELECT
+            `kcu`.`CONSTRAINT_NAME` AS `name`,
+            `kcu`.`COLUMN_NAME` AS `column_name`,
+            CASE
+                WHEN :schemaName IS NULL AND `kcu`.`REFERENCED_TABLE_SCHEMA` = DATABASE() THEN NULL
+                ELSE `kcu`.`REFERENCED_TABLE_SCHEMA`
+            END AS `foreign_table_schema`,
+            `kcu`.`REFERENCED_TABLE_NAME` AS `foreign_table_name`,
+            `kcu`.`REFERENCED_COLUMN_NAME` AS `foreign_column_name`,
+            `rc`.`UPDATE_RULE` AS `on_update`,
+            `rc`.`DELETE_RULE` AS `on_delete`
+        FROM `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`
+        INNER JOIN `information_schema`.`REFERENTIAL_CONSTRAINTS` AS `rc` ON
+            `rc`.`CONSTRAINT_SCHEMA` = COALESCE(:schemaName2, DATABASE())
+            AND `rc`.`TABLE_NAME` = :tableName1
+            AND `rc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
+        WHERE
+            `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName1, DATABASE())
+            AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA`
+            AND `kcu`.`TABLE_NAME` = :tableName
+        ORDER BY `kcu`.`ORDINAL_POSITION` ASC
+        SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
-        $indexes = $this->db->createCommand($sql, [
-            ':schemaName' => $resolvedName->schemaName,
-            ':tableName' => $resolvedName->name,
-        ])->queryAll();
-        $indexes = $this->normalizePdoRowKeyCase($indexes, true);
-        $indexes = ArrayHelper::index($indexes, null, 'name');
+
+        $constraints = $this->db->createCommand(
+            $sql,
+            [
+                ':schemaName' => $resolvedName->schemaName,
+                ':schemaName1' => $resolvedName->schemaName,
+                ':schemaName2' => $resolvedName->schemaName,
+                ':tableName' => $resolvedName->name,
+                ':tableName1' => $resolvedName->name,
+            ],
+        )->queryAll();
+
+        $constraints = $this->normalizePdoRowKeyCase($constraints, true);
+
+        $constraints = ArrayHelper::index($constraints, null, 'name');
+
         $result = [];
-        foreach ($indexes as $name => $index) {
-            $result[] = new IndexConstraint([
-                'isPrimary' => (bool) $index[0]['index_is_primary'],
-                'isUnique' => (bool) $index[0]['index_is_unique'],
-                'name' => $name !== 'PRIMARY' ? $name : null,
-                'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
-            ]);
+
+        foreach ($constraints as $name => $constraint) {
+            $result[] = new ForeignKeyConstraint(
+                [
+                    'name' => $name,
+                    'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                    'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                    'foreignTableName' => $constraint[0]['foreign_table_name'],
+                    'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
+                    'onDelete' => $constraint[0]['on_delete'],
+                    'onUpdate' => $constraint[0]['on_update'],
+                ],
+            );
         }
 
         return $result;
@@ -200,9 +221,17 @@ SQL;
     /**
      * {@inheritdoc}
      */
+    protected function loadTableIndexes($tableName)
+    {
+        return $this->loadTableIndexMetadata($tableName, 'indexes');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function loadTableUniques($tableName)
     {
-        return $this->loadTableConstraints($tableName, 'uniques');
+        return $this->loadTableIndexMetadata($tableName, 'uniques');
     }
 
     /**
@@ -477,104 +506,84 @@ SQL;
     }
 
     /**
-     * Loads multiple types of constraints and returns the specified ones.
-     * @param string $tableName table name.
-     * @param string $returnType return type:
-     * - primaryKey
-     * - foreignKeys
-     * - uniques
-     * @return mixed constraints.
+     * Loads primary key, index, and unique constraint metadata from a single `information_schema.STATISTICS` query
+     * and returns the requested type.
+     *
+     * All three metadata types are cached via {@see setTableMetadata()}, so a cold load of any one of them resolves
+     * the other two without additional queries.
+     *
+     * @param string $tableName Table name, optionally schema-qualified as `schema.table`.
+     * @param string $returnType Metadata type to return: `primaryKey`, `indexes`, or `uniques`.
+     *
+     * @return Constraint|Constraint[]|IndexConstraint[]|null Primary key constraint or `null` for `primaryKey`, index
+     * constraints for `indexes`, or unique constraints for `uniques`.
+     *
+     * @phpstan-return (
+     *   $returnType is 'primaryKey' ? Constraint|null : ($returnType is 'indexes' ? IndexConstraint[] : Constraint[])
+     * )
      */
-    private function loadTableConstraints($tableName, $returnType)
+    private function loadTableIndexMetadata(string $tableName, string $returnType): mixed
     {
-        static $sql = <<<'SQL'
-SELECT
-    `kcu`.`CONSTRAINT_NAME` AS `name`,
-    `kcu`.`COLUMN_NAME` AS `column_name`,
-    `tc`.`CONSTRAINT_TYPE` AS `type`,
-    CASE
-        WHEN :schemaName IS NULL AND `kcu`.`REFERENCED_TABLE_SCHEMA` = DATABASE() THEN NULL
-        ELSE `kcu`.`REFERENCED_TABLE_SCHEMA`
-    END AS `foreign_table_schema`,
-    `kcu`.`REFERENCED_TABLE_NAME` AS `foreign_table_name`,
-    `kcu`.`REFERENCED_COLUMN_NAME` AS `foreign_column_name`,
-    `rc`.`UPDATE_RULE` AS `on_update`,
-    `rc`.`DELETE_RULE` AS `on_delete`,
-    `kcu`.`ORDINAL_POSITION` AS `position`
-FROM
-    `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`,
-    `information_schema`.`REFERENTIAL_CONSTRAINTS` AS `rc`,
-    `information_schema`.`TABLE_CONSTRAINTS` AS `tc`
-WHERE
-    `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName1, DATABASE()) AND `kcu`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `kcu`.`TABLE_NAME` = :tableName
-    AND `rc`.`CONSTRAINT_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `rc`.`TABLE_NAME` = :tableName1 AND `rc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME`
-    AND `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`TABLE_NAME` = :tableName2 AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME` AND `tc`.`CONSTRAINT_TYPE` = 'FOREIGN KEY'
-UNION
-SELECT
-    `kcu`.`CONSTRAINT_NAME` AS `name`,
-    `kcu`.`COLUMN_NAME` AS `column_name`,
-    `tc`.`CONSTRAINT_TYPE` AS `type`,
-    NULL AS `foreign_table_schema`,
-    NULL AS `foreign_table_name`,
-    NULL AS `foreign_column_name`,
-    NULL AS `on_update`,
-    NULL AS `on_delete`,
-    `kcu`.`ORDINAL_POSITION` AS `position`
-FROM
-    `information_schema`.`KEY_COLUMN_USAGE` AS `kcu`,
-    `information_schema`.`TABLE_CONSTRAINTS` AS `tc`
-WHERE
-    `kcu`.`TABLE_SCHEMA` = COALESCE(:schemaName2, DATABASE()) AND `kcu`.`TABLE_NAME` = :tableName3
-    AND `tc`.`TABLE_SCHEMA` = `kcu`.`TABLE_SCHEMA` AND `tc`.`TABLE_NAME` = :tableName4 AND `tc`.`CONSTRAINT_NAME` = `kcu`.`CONSTRAINT_NAME` AND `tc`.`CONSTRAINT_TYPE` IN ('PRIMARY KEY', 'UNIQUE')
-ORDER BY `position` ASC
-SQL;
+        $sql = <<<SQL
+        SELECT
+            `s`.`INDEX_NAME` AS `name`,
+            `s`.`COLUMN_NAME` AS `column_name`,
+            `s`.`NON_UNIQUE` ^ 1 AS `index_is_unique`,
+            `s`.`INDEX_NAME` = 'PRIMARY' AS `index_is_primary`
+        FROM `information_schema`.`STATISTICS` AS `s`
+        WHERE `s`.`TABLE_SCHEMA` = COALESCE(:schemaName, DATABASE()) AND `s`.`INDEX_SCHEMA` = `s`.`TABLE_SCHEMA` AND `s`.`TABLE_NAME` = :tableName
+        ORDER BY `s`.`SEQ_IN_INDEX` ASC
+        SQL;
 
         $resolvedName = $this->resolveTableName($tableName);
-        $constraints = $this->db->createCommand($sql, [
-            ':schemaName' => $resolvedName->schemaName,
-            ':schemaName1' => $resolvedName->schemaName,
-            ':schemaName2' => $resolvedName->schemaName,
-            ':tableName' => $resolvedName->name,
-            ':tableName1' => $resolvedName->name,
-            ':tableName2' => $resolvedName->name,
-            ':tableName3' => $resolvedName->name,
-            ':tableName4' => $resolvedName->name
-        ])->queryAll();
-        $constraints = $this->normalizePdoRowKeyCase($constraints, true);
-        $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
+
+        $indexes = $this->db->createCommand(
+            $sql,
+            [
+                ':schemaName' => $resolvedName->schemaName,
+                ':tableName' => $resolvedName->name,
+            ],
+        )->queryAll();
+
+        $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+
+        $indexes = ArrayHelper::index($indexes, null, 'name');
+
         $result = [
             'primaryKey' => null,
-            'foreignKeys' => [],
+            'indexes' => [],
             'uniques' => [],
         ];
-        foreach ($constraints as $type => $names) {
-            foreach ($names as $name => $constraint) {
-                switch ($type) {
-                    case 'PRIMARY KEY':
-                        $result['primaryKey'] = new Constraint([
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        ]);
-                        break;
-                    case 'FOREIGN KEY':
-                        $result['foreignKeys'][] = new ForeignKeyConstraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
-                            'foreignTableName' => $constraint[0]['foreign_table_name'],
-                            'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
-                            'onDelete' => $constraint[0]['on_delete'],
-                            'onUpdate' => $constraint[0]['on_update'],
-                        ]);
-                        break;
-                    case 'UNIQUE':
-                        $result['uniques'][] = new Constraint([
-                            'name' => $name,
-                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                        ]);
-                        break;
-                }
+
+        foreach ($indexes as $name => $index) {
+            $columnNames = ArrayHelper::getColumn($index, 'column_name');
+
+            $isPrimary = (bool) $index[0]['index_is_primary'];
+            $isUnique = (bool) $index[0]['index_is_unique'];
+
+            $result['indexes'][] = new IndexConstraint(
+                [
+                    'isPrimary' => $isPrimary,
+                    'isUnique' => $isUnique,
+                    'name' => $name !== 'PRIMARY' ? $name : null,
+                    'columnNames' => $columnNames,
+                ],
+            );
+
+            if ($isPrimary) {
+                $result['primaryKey'] = new Constraint(
+                    ['columnNames' => $columnNames],
+                );
+            } elseif ($isUnique) {
+                $result['uniques'][] = new Constraint(
+                    [
+                        'name' => $name,
+                        'columnNames' => $columnNames,
+                    ],
+                );
             }
         }
+
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
