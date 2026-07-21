@@ -8,21 +8,34 @@
 
 namespace yiiunit\framework\db\sqlite;
 
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Transaction;
+use yiiunit\base\db\BaseConnection;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
-use yiiunit\base\db\BaseConnection;
 
 /**
- * @group db
- * @group sqlite
+ * Unit tests for {@see \yii\db\sqlite\Connection} functionality for the SQLite driver.
  */
+#[Group('db')]
+#[Group('sqlite')]
+#[Group('connection')]
 class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'sqlite';
+
+    public function testGetEffectiveCharsetReturnsNull(): void
+    {
+        $db = new Connection(['dsn' => 'sqlite::memory:']);
+
+        self::assertNull(
+            $db->effectiveCharset,
+            "No charset source means 'null'.",
+        );
+    }
 
     public function testConstruct(): void
     {

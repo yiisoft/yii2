@@ -65,9 +65,8 @@ class m141106_185632_log_init extends Migration
             $this->db = $target->db;
 
             $tableOptions = null;
-            if ($this->db->driverName === 'mysql') {
-                // https://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
-                $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
+            if (in_array($this->db->driverName, ['mysql', 'mysqli'], true)) {
+                $tableOptions = sprintf('CHARACTER SET %s ENGINE=InnoDB', $this->db->effectiveCharset);
             }
 
             $this->createTable($target->logTable, [

@@ -8,16 +8,38 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use PHPUnit\Framework\Attributes\Group;
+use yii\db\Connection;
 use yii\db\Transaction;
 use yiiunit\base\db\BaseConnection;
 
 /**
- * @group db
- * @group pgsql
+ * Unit tests for {@see \yii\db\pgsql\Connection} functionality for the PostgreSQL driver.
  */
+#[Group('db')]
+#[Group('pgsql')]
+#[Group('connection')]
 class ConnectionTest extends BaseConnection
 {
     protected $driverName = 'pgsql';
+
+    public function testGetEffectiveCharsetReturnsConfiguredCharsetOrNull(): void
+    {
+        $db = new Connection(['dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;', 'charset' => 'utf8']);
+
+        self::assertSame(
+            'utf8',
+            $db->effectiveCharset,
+            'Configured charset must be returned.',
+        );
+
+        $db = new Connection(['dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;']);
+
+        self::assertNull(
+            $db->effectiveCharset,
+            "No charset source means 'null'.",
+        );
+    }
 
     public function testConnection(): void
     {
