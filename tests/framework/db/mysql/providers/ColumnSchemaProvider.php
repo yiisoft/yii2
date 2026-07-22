@@ -168,6 +168,14 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "a\\'b",
                 true,
             ],
+            'generated text literal decodes control escapes' => [
+                'text',
+                'text',
+                'string',
+                "_utf8mb4\\'a\\\\nb\tc\\'",
+                "a\nb\tc",
+                true,
+            ],
             'generated varchar literal becomes a PHP string' => [
                 'string',
                 'varchar(50)',
@@ -250,6 +258,13 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 'string',
                 "'a\\\\\\'b'",
                 "a\\'b",
+            ],
+            'MariaDB quoted text literal decodes control escapes' => [
+                'text',
+                'text',
+                'string',
+                "'a\\nb\\tc'",
+                "a\nb\tc",
             ],
             'MariaDB quoted blob literal becomes a PHP string' => [
                 'binary',

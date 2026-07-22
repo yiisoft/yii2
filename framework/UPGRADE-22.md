@@ -638,12 +638,12 @@ On MySQL `8.0.13+`, executable expression-based column defaults reported as `DEF
 `yii\db\Expression` through `ColumnSchema::$defaultValue` instead of the raw string. Quoted string literals in
 expression form (the only default syntax MySQL accepts for `TEXT` and `BLOB` columns, also reported for
 `DEFAULT ('...')` on other string types) decode to their PHP string value: the character-set introducer is discarded
-and backslash-escaped quotes and backslashes are resolved. `JSON` defaults are exempt and remain `yii\db\Expression`
-instances. Review strict type checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for
-models containing these columns. MariaDB reports no `DEFAULT_GENERATED` metadata: its quoted `TEXT` and `BLOB`
-literal defaults decode the same way, remaining `TEXT` expressions are exposed as `yii\db\Expression`, and a `JSON`
-default decodes when it is valid JSON and reflects as `yii\db\Expression` otherwise. Expression defaults on other
-MariaDB column types still reflect as plain strings.
+and backslash escape sequences (quotes, backslashes, and control characters such as `\n`) are resolved. `JSON`
+defaults are exempt and remain `yii\db\Expression` instances. Review strict type checks, schema snapshots, and code
+that calls `ActiveRecord::loadDefaultValues()` for models containing these columns. MariaDB reports no
+`DEFAULT_GENERATED` metadata: its quoted `TEXT` and `BLOB` literal defaults decode the same way, remaining `TEXT`
+expressions are exposed as `yii\db\Expression`, and a `JSON` default decodes when it is valid JSON and reflects as
+`yii\db\Expression` otherwise. Expression defaults on other MariaDB column types still reflect as plain strings.
 
 On PostgreSQL, expression-based column defaults reported by `pg_get_expr()` (operator expressions, function calls,
 and the `nextval(...)` default of a non-primary-key `serial` column) now expose an executable `yii\db\Expression`

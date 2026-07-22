@@ -28,6 +28,23 @@ use function strtr;
 class ColumnSchema extends \yii\db\ColumnSchema
 {
     /**
+     * Escape sequences MySQL and MariaDB emit inside quoted default literals, mapped to their byte values.
+     *
+     * MySQL prints `\0`, `\n`, `\r`, and `\Z` and passes other control characters through as raw bytes; MariaDB
+     * additionally prints `\b` and `\t`. Both escape `\'` and `\\`.
+     */
+    private const DEFAULT_LITERAL_ESCAPES = [
+        '\\0' => "\0",
+        '\\b' => "\x08",
+        '\\n' => "\n",
+        '\\r' => "\r",
+        '\\t' => "\t",
+        '\\Z' => "\x1a",
+        "\\'" => "'",
+        '\\\\' => '\\',
+    ];
+
+    /**
      * @var bool whether MySQL reports the column default as an expression (`DEFAULT_GENERATED`).
      *
      * @since 22.0
@@ -79,7 +96,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
      *   {@see Expression}, preserving any declared fractional-seconds precision such as `CURRENT_TIMESTAMP(3)`.
      * - quoted string literals on `text` and `blob` columns, and on any column flagged through
      *   {@see $isDefaultExpression}, to their PHP value: the character-set introducer MySQL prepends is discarded and
-     *   backslash-escaped quotes and backslashes are resolved. `json` columns are exempt.
+     *   the escape sequences in {@see DEFAULT_LITERAL_ESCAPES} are resolved. `json` columns are exempt.
      * - remaining expression defaults flagged through {@see $isDefaultExpression} to an {@see Expression}.
      * - `json` defaults without the flag to their decoded value when the string is valid JSON, or to an
      *   {@see Expression} otherwise; MariaDB reports expression-form defaults without metadata.
@@ -123,7 +140,7 @@ class ColumnSchema extends \yii\db\ColumnSchema
                 && ($this->isDefaultExpression || in_array($this->type, [Schema::TYPE_TEXT, Schema::TYPE_BINARY], true))
                 && preg_match("/^(?:_[a-z0-9]+)?'((?:\\\\.|[^'\\\\])*)'$/i", $expression, $matches) === 1
             ) {
-                return $this->phpTypecast(strtr($matches[1], ['\\\\' => '\\', "\\'" => "'"]));
+                return $this->phpTypecast(strtr($matches[1], self::DEFAULT_LITERAL_ESCAPES));
             }
 
             if ($this->isDefaultExpression) {
