@@ -8,9 +8,12 @@
 
 namespace yiiunit\framework\db\mysql;
 
+use yii\db\mysql\QueryBuilder;
+use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Storage;
 use yiiunit\data\ar\Type;
 use yiiunit\base\db\BaseActiveRecord;
+use yiiunit\support\DbHelper;
 
 /**
  * @group db
@@ -20,6 +23,44 @@ class ActiveRecordTest extends BaseActiveRecord
 {
     public $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20275
+     */
+    public function testLoadEmptyTextDefaultValue(): void
+    {
+        $db = $this->getConnection();
+
+        DbHelper::dropTablesIfExist($db, ['empty_text_default_test']);
+
+        /** @var QueryBuilder $queryBuilder */
+        $queryBuilder = $db->getQueryBuilder();
+
+        $default = $queryBuilder->isMariaDb() ? "''" : "('')";
+
+        $db->createCommand()->createTable(
+            'empty_text_default_test',
+            ['key' => "tinytext NOT NULL DEFAULT {$default}"],
+            'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
+        )->execute();
+
+        $model = new class extends ActiveRecord {
+            public static function tableName()
+            {
+                return 'empty_text_default_test';
+            }
+        };
+
+        $model->loadDefaultValues();
+
+        self::assertSame(
+            '',
+            $model->getAttribute('key'),
+            'An empty text default must load as an empty PHP string.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['empty_text_default_test']);
+    }
 
     public function testCastValues(): void
     {
