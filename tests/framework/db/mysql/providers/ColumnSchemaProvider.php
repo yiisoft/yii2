@@ -168,7 +168,7 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
                 "a\\'b",
                 true,
             ],
-            'generated text literal decodes control escapes' => [
+            'generated text literal decodes control escapes and keeps raw tab bytes' => [
                 'text',
                 'text',
                 'string',
