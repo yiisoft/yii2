@@ -254,6 +254,18 @@ class EmailValidatorTest extends TestCase
         $this->assertTrue($validator->validate('User@Example.Com'));
     }
 
+    public function testSingleLetterTldIsRejected(): void
+    {
+        $validator = new EmailValidator();
+
+        $this->assertFalse($validator->validate('user@example.a'));
+        $this->assertFalse($validator->validate('user@a.b'));
+        $this->assertFalse($validator->validate('a@b.c'));
+        $this->assertTrue($validator->validate('user@a.example.com'));
+        $this->assertTrue($validator->validate('test@example.com'));
+        $this->assertTrue($validator->validate('test@example.co'));
+    }
+
     public function testDefaultMessageIsSet(): void
     {
         $this->mockApplication();

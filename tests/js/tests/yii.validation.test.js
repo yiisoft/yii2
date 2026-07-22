@@ -837,10 +837,10 @@ describe('yii.validation', function () {
 
     describe('email validator', function () {
         var pattern = "^[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9]" +
-            "(?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$";
+            "(?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])$";
         pattern = new RegExp(pattern);
         var fullPattern = "^[^@]*<[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~-]+)*@" +
-            "(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?>$";
+            "(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])>$";
         fullPattern = new RegExp(fullPattern);
         var defaultOptions = {
             pattern: pattern,
@@ -867,6 +867,9 @@ describe('yii.validation', function () {
                 'special symbols in local-part': ['!#$%&\'*+-/=?^_`.{|}~@example.com', true],
                 'domain only': ['rmcreative.ru', false],
                 'double dot': ['ex..ample@example.com', false],
+                'single-letter TLD': ['user@example.a', false],
+                'single-letter domain and TLD': ['user@a.b', false],
+                'single-letter subdomain, valid TLD': ['user@a.example.com', true],
                 'unicode in domain': ['example@äüößìà.de', false],
                 'unicode (russian characters) in domain': ['sam@рмкреатиф.ru', false],
                 'ASCII in domain': ['example@xn--zcack7ayc9a.de', true],
