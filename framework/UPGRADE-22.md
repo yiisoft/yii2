@@ -634,16 +634,19 @@ MySQL `BIT` columns declared as nullable with `DEFAULT NULL` now expose `null` t
 `ColumnSchema::$defaultValue`; Yii2 `2.0.x` incorrectly reported `0`. Review code that compares reflected default values
 or calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
 
-On MySQL `8.0.13+`, expression-based column defaults reported as `DEFAULT_GENERATED` now expose a
-`yii\db\Expression` through `ColumnSchema::$defaultValue` instead of the raw string. This includes parenthesized literal
-defaults required by types such as `TEXT` and `JSON`. Review strict type checks, schema snapshots, and code that calls
-`ActiveRecord::loadDefaultValues()` for models containing these columns. MariaDB does not report the
-`DEFAULT_GENERATED` metadata; its `TEXT` and `JSON` defaults, which MariaDB stores in expression form, are exposed as
-a `yii\db\Expression` as well, and a `JSON` default that is valid JSON is returned decoded. Expression defaults on
-other MariaDB column types still reflect as plain strings.
+On MySQL `8.0.13+`, executable expression-based column defaults reported as `DEFAULT_GENERATED` now expose a
+`yii\db\Expression` through `ColumnSchema::$defaultValue` instead of the raw string. Quoted string literals in
+expression form (the only default syntax MySQL accepts for `TEXT` and `BLOB` columns, also reported for
+`DEFAULT ('...')` on other string types) decode to their PHP string value: the character-set introducer is discarded
+and backslash-escaped quotes and backslashes are resolved. `JSON` defaults are exempt and remain `yii\db\Expression`
+instances. Review strict type checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for
+models containing these columns. MariaDB reports no `DEFAULT_GENERATED` metadata: its quoted `TEXT` and `BLOB`
+literal defaults decode the same way, remaining `TEXT` expressions are exposed as `yii\db\Expression`, and a `JSON`
+default decodes when it is valid JSON and reflects as `yii\db\Expression` otherwise. Expression defaults on other
+MariaDB column types still reflect as plain strings.
 
-On PostgreSQL, expression-based column defaults reported by `pg_get_expr()` — operator expressions, function calls,
-and the `nextval(...)` default of a non-primary-key `serial` column — now expose an executable `yii\db\Expression`
+On PostgreSQL, expression-based column defaults reported by `pg_get_expr()` (operator expressions, function calls,
+and the `nextval(...)` default of a non-primary-key `serial` column) now expose an executable `yii\db\Expression`
 through `ColumnSchema::$defaultValue`. Yii2 `2.0.x` mangled these values: `integer DEFAULT (1 + 2)` reflected as `1`,
 a `jsonb` expression default as `null`, and a non-primary-key `serial` default as a raw string. Reflected quoted
 string literals also unescape SQL-doubled quotes now (`'O''Reilly'` reflects as `O'Reilly`). Review strict type
@@ -651,22 +654,22 @@ checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()
 columns; on a non-primary-key `serial` column, `loadDefaultValues()` now assigns an `Expression` that advances the
 sequence when the record is saved. Primary-key and identity column defaults keep their current behavior.
 
-On MSSQL, expression-based column defaults reported by `sys.default_constraints` — such as `(getdate())`, `(newid())`,
-or `(NEXT VALUE FOR ...)` — now expose an executable `yii\db\Expression` through `ColumnSchema::$defaultValue` instead
+On MSSQL, expression-based column defaults reported by `sys.default_constraints` (such as `(getdate())`, `(newid())`,
+or `(NEXT VALUE FOR ...)`) now expose an executable `yii\db\Expression` through `ColumnSchema::$defaultValue` instead
 of `null`. Note that SQL Server normalizes the stored definition (`CURRENT_TIMESTAMP` reflects as `(getdate())`, and
 `(1 + 2)` as `((1)+(2))`). Binary literal defaults (`(0x...)`) now decode to their byte string. Review strict type
 checks, schema snapshots, and code that calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
 
-On Oracle, expression-based column defaults reported by `ALL_TAB_COLUMNS.DATA_DEFAULT` — datetime literals and
-keywords, function calls, operator expressions, and sequence `NEXTVAL` defaults on non-identity columns — now expose
+On Oracle, expression-based column defaults reported by `ALL_TAB_COLUMNS.DATA_DEFAULT` (datetime literals and
+keywords, function calls, operator expressions, and sequence `NEXTVAL` defaults on non-identity columns) now expose
 an executable `yii\db\Expression` through `ColumnSchema::$defaultValue`. Previously most reflected as raw strings,
 while `timestamp` column defaults containing `TIMESTAMP`, such as `SYSTIMESTAMP` or `TO_TIMESTAMP(...)`, were
 discarded as `null`. Regular and national quoted strings and numeric literals remain PHP values; Oracle empty-string
 literals reflect as `null`. Review strict type checks, schema snapshots, and code that calls
 `ActiveRecord::loadDefaultValues()` for models containing these columns. Identity defaults remain `null`.
 
-On SQLite, expression-based column defaults reported by `PRAGMA table_info` — operator expressions, function calls,
-`CURRENT_DATE`, `CURRENT_TIME`, and `CURRENT_TIMESTAMP` — now expose an executable `yii\db\Expression` through
+On SQLite, expression-based column defaults reported by `PRAGMA table_info` (operator expressions, function calls,
+`CURRENT_DATE`, `CURRENT_TIME`, and `CURRENT_TIMESTAMP`) now expose an executable `yii\db\Expression` through
 `ColumnSchema::$defaultValue`. SQLite BLOB literals and hexadecimal integer literals are also exposed as expressions
 because their values are only preserved when parsed as SQL. Previously Yii2 mangled `integer DEFAULT (1 + 2)` to
 `1`, `integer DEFAULT 0x10` to `0`, and reflected function calls and BLOB literals as plain strings. Quoted,

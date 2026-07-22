@@ -113,28 +113,26 @@ final class SchemaTest extends BaseSchema
         $command->createTable(
             'default_expression_test',
             [
+                'blob_literal' => "blob DEFAULT ('abc')",
                 'date_expression' => 'date NOT NULL DEFAULT (CURRENT_DATE + INTERVAL 2 YEAR)',
-                'text_expression' => "text NOT NULL DEFAULT ('abc')",
                 'json_expression' => 'json NOT NULL DEFAULT (JSON_ARRAY())',
                 'literal' => "date NOT NULL DEFAULT '2011-11-11'",
+                'text_escaped' => "text NOT NULL DEFAULT ('a\\\\''b')",
+                'text_expression' => "text NOT NULL DEFAULT ('abc')",
+                'varchar_literal' => "varchar(50) NOT NULL DEFAULT ('abc')",
             ],
             'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4',
         )->execute();
 
         if ($qb->isMariaDb()) {
-            // MariaDB reports no `DEFAULT_GENERATED` metadata: `text`/`json` defaults reflect in expression form,
-            // while expression defaults on other column types reflect as plain strings.
+            // MariaDB reports no `DEFAULT_GENERATED` metadata: JSON defaults reflect in expression form, while
+            // expression defaults on other column types reflect as plain strings. Quoted literals reflect in
+            // expression form on both engines and decode identically; asserted below, outside this branch.
             DbHelper::assertColumnDefaultValue(
                 $db,
                 'default_expression_test',
                 'date_expression',
                 '(curdate() + interval 2 year)',
-            );
-            DbHelper::assertColumnDefaultExpression(
-                $db,
-                'default_expression_test',
-                'text_expression',
-                "'abc'",
             );
             DbHelper::assertColumnDefaultExpression(
                 $db,
@@ -152,17 +150,35 @@ final class SchemaTest extends BaseSchema
             DbHelper::assertColumnDefaultExpression(
                 $db,
                 'default_expression_test',
-                'text_expression',
-                "_utf8mb4'abc'",
-            );
-            DbHelper::assertColumnDefaultExpression(
-                $db,
-                'default_expression_test',
                 'json_expression',
                 'json_array()',
             );
         }
 
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'text_expression',
+            'abc',
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'text_escaped',
+            "a\\'b",
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'varchar_literal',
+            'abc',
+        );
+        DbHelper::assertColumnDefaultValue(
+            $db,
+            'default_expression_test',
+            'blob_literal',
+            'abc',
+        );
         DbHelper::assertColumnDefaultValue(
             $db,
             'default_expression_test',

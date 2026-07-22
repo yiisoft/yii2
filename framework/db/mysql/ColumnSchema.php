@@ -16,6 +16,7 @@ use yii\db\JsonExpression;
 
 use function in_array;
 use function is_string;
+use function preg_match;
 use function strtr;
 
 /**
@@ -76,15 +77,19 @@ class ColumnSchema extends \yii\db\ColumnSchema
      * - `null` to `null`.
      * - `CURRENT_TIMESTAMP` / `current_timestamp()` on temporal columns (`timestamp`, `datetime`, `date`, `time`) to an
      *   {@see Expression}, preserving any declared fractional-seconds precision such as `CURRENT_TIMESTAMP(3)`.
-     * - expression defaults flagged through {@see $isDefaultExpression} to an {@see Expression}.
+     * - quoted string literals on `text` and `blob` columns, and on any column flagged through
+     *   {@see $isDefaultExpression}, to their PHP value: the character-set introducer MySQL prepends is discarded and
+     *   backslash-escaped quotes and backslashes are resolved. `json` columns are exempt.
+     * - remaining expression defaults flagged through {@see $isDefaultExpression} to an {@see Expression}.
      * - `json` defaults without the flag to their decoded value when the string is valid JSON, or to an
-     *   {@see Expression} otherwise — MariaDB reports expression-form defaults without metadata.
-     * - `text` defaults without the flag to an {@see Expression}, preserving MariaDB's expression-form SQL.
+     *   {@see Expression} otherwise; MariaDB reports expression-form defaults without metadata.
+     * - remaining `text` defaults without the flag to an {@see Expression}, preserving MariaDB's expression-form SQL.
      * - bit defaults (`b'...'`) when `$dbType` starts with `bit` to their integer value via `bindec()`.
      * - everything else delegates to {@see phpTypecast()}.
      *
      * Branch order is significant: MySQL also flags plain `CURRENT_TIMESTAMP` defaults as `DEFAULT_GENERATED`, so the
-     * normalization above must win over the generic expression wrapping.
+     * normalization above must win over the generic expression wrapping. Flagged defaults carry an extra metadata
+     * escape layer (`\'`, `\\`) that is removed before literal parsing; MariaDB reports the expression verbatim.
      *
      * @param mixed $value default value in the format reported by `SHOW FULL COLUMNS`.
      *
@@ -101,15 +106,29 @@ class ColumnSchema extends \yii\db\ColumnSchema
         if (
             is_string($value)
             && in_array($this->type, ['timestamp', 'datetime', 'date', 'time'], true)
-            && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $value, $matches)
+            && preg_match('/^current_timestamp(?:\(([0-9]*)\))?$/i', $value, $matches) === 1
         ) {
             $precision = $matches[1] ?? '';
 
             return new Expression('CURRENT_TIMESTAMP' . ($precision !== '' ? "({$precision})" : ''));
         }
 
-        if ($this->isDefaultExpression && is_string($value)) {
-            return new Expression(strtr($value, ['\\\\' => '\\', "\\'" => "'"]));
+        if (is_string($value)) {
+            $expression = $this->isDefaultExpression
+                ? strtr($value, ['\\\\' => '\\', "\\'" => "'"])
+                : $value;
+
+            if (
+                $this->type !== Schema::TYPE_JSON
+                && ($this->isDefaultExpression || in_array($this->type, [Schema::TYPE_TEXT, Schema::TYPE_BINARY], true))
+                && preg_match("/^(?:_[a-z0-9]+)?'((?:\\\\.|[^'\\\\])*)'$/i", $expression, $matches) === 1
+            ) {
+                return $this->phpTypecast(strtr($matches[1], ['\\\\' => '\\', "\\'" => "'"]));
+            }
+
+            if ($this->isDefaultExpression) {
+                return new Expression($expression);
+            }
         }
 
         if ($this->type === Schema::TYPE_JSON && is_string($value)) {
