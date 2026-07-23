@@ -141,6 +141,7 @@ Yii Framework 2 Change Log
 - Bug #16265: Fix slow MySQL/MariaDB constraint metadata loading by replacing the `information_schema` `UNION` query with a single `STATISTICS` query and a dedicated foreign key query (terabytesoftw)
 - Bug #16545: Use `utf8mb4` by default for MySQL/MariaDB connections, add `yii\db\Connection::getEffectiveCharset()`, and make built-in migrations follow the effective connection charset (terabytesoftw)
 - Bug #20275: Decode quoted MySQL/MariaDB column default literals (`text`/`blob` and any non-JSON `DEFAULT_GENERATED` string default) to their PHP value instead of an `Expression` or raw quoted string (terabytesoftw)
+- Bug #11191: Enable session `autocommit` on the migration connection when the MySQL/MariaDB server default disables it, so migration history stays complete and transactional migrations can start (terabytesoftw)
 
 2.0.56 under development
 ------------------------
