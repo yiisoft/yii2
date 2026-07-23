@@ -216,6 +216,8 @@ class MigrateController extends BaseMigrateController
      */
     protected function getMigrationHistory($limit)
     {
+        $this->ensureMysqlAutocommit();
+
         if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
@@ -362,6 +364,26 @@ class MigrateController extends BaseMigrateController
         $command->delete($this->migrationTable, [
             'version' => $version,
         ])->execute();
+    }
+
+    /**
+     * Enables session autocommit for the migration connection when the MySQL/MariaDB server default disables it.
+     *
+     * Without it, the trailing migration history entry is rolled back when the connection closes, and starting a
+     * migration transaction fails on PHP >= 8.0 because any table read leaves the session inside an implicit
+     * transaction.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/11191
+     */
+    private function ensureMysqlAutocommit(): void
+    {
+        if ($this->db->getDriverName() === 'mysql' && $this->db->getTransaction() === null) {
+            $this->db->useMaster(static function (Connection $db): void {
+                if (!$db->createCommand('SELECT @@SESSION.autocommit')->queryScalar()) {
+                    $db->createCommand('SET SESSION autocommit = 1')->execute();
+                }
+            });
+        }
     }
 
     private $_migrationNameLimit;
