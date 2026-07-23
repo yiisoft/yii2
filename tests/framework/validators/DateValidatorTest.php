@@ -126,6 +126,61 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($val->validate('2009-02-15 15:16:17'));
     }
 
+    public function testInitWithTimeType(): void
+    {
+        $this->mockApplication([
+            'components' => [
+                'formatter' => [
+                    'timeFormat' => 'php:H:i:s',
+                ],
+            ],
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_TIME]);
+        $this->assertEquals('php:H:i:s', $val->format);
+        $this->assertTrue($val->validate('15:16:17'));
+    }
+
+    public function testIntlValidationWithTimeType(): void
+    {
+        $val = new DateValidator(['type' => DateValidator::TYPE_TIME, 'format' => 'short', 'locale' => 'de-DE']);
+        $this->assertTrue($val->validate('12:00'));
+    }
+
+    public function testInitWithInvalidType(): void
+    {
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Unknown validation type');
+        new DateValidator(['type' => 'invalid']);
+    }
+
+    public function testIntlInitWithInvalidType(): void
+    {
+        $val = new DateValidator();
+        $val->type = 'invalid';
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Unknown validation type');
+        $method = new \ReflectionMethod($val, 'getIntlDateFormatter');
+        $method->setAccessible(true);
+        $method->invoke($val, 'short');
+    }
+
+    public function testInitWithInvalidMinMax(): void
+    {
+        try {
+            new DateValidator(['format' => 'php:Y-m-d', 'min' => 'invalid']);
+            $this->fail('Exception not thrown for invalid min date');
+        } catch (\yii\base\InvalidConfigException $e) {
+            $this->assertStringContainsString('Invalid min date value', $e->getMessage());
+        }
+
+        try {
+            new DateValidator(['format' => 'php:Y-m-d', 'max' => 'invalid']);
+            $this->fail('Exception not thrown for invalid max date');
+        } catch (\yii\base\InvalidConfigException $e) {
+            $this->assertStringContainsString('Invalid max date value', $e->getMessage());
+        }
+    }
+
     /**
      * @dataProvider provideTimezones
      * @param string $timezone
