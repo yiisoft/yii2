@@ -232,6 +232,10 @@
                     $form.on('mouseup.yiiActiveForm keyup.yiiActiveForm', ':submit', function () {
                         $form.data('yiiActiveForm').submitObject = $(this);
                     });
+
+                    $('[data-form=' + $form.attr('id') + ']:submit').on('mouseup.yiiActiveForm keyup.yiiActiveForm', function () {
+                        $form.data('yiiActiveForm').submitObject = $(this);
+                    });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
                 var event = $.Event(events.afterInit);
