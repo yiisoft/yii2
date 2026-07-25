@@ -342,10 +342,15 @@ final class SchemaTest extends BaseSchema
             $table->columns,
             'Reflected column name must preserve its backtick.',
         );
+        self::assertArrayHasKey(
+            $jsonColumn,
+            $table->columns,
+            'JSON column name must preserve its backtick.',
+        );
         self::assertSame(
             Schema::TYPE_JSON,
             $table->columns[$jsonColumn]->type,
-            'JSON reflection must preserve a backtick in the column name.',
+            'JSON detection must survive a backtick in the column name.',
         );
         self::assertSame(
             [$parentTable, $foreignColumn => $parentColumn],
