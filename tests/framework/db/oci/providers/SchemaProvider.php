@@ -15,14 +15,4 @@ namespace yiiunit\framework\db\oci\providers;
  */
 final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
 {
-    /**
-     * @return list<array{string, string}>
-     */
-    public static function quoteSimpleTableName(): array
-    {
-        return [
-            ...parent::quoteSimpleTableName(),
-            ['a"b', 'a"b'],
-        ];
-    }
 }

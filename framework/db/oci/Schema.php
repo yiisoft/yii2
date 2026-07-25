@@ -273,14 +273,6 @@ SQL;
     /**
      * {@inheritdoc}
      */
-    public function quoteSimpleTableName($name)
-    {
-        return strpos($name, '"') !== false ? $name : '"' . $name . '"';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function createQueryBuilder()
     {
         return Yii::createObject(QueryBuilder::class, [$this->db]);

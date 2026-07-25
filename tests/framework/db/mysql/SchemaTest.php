@@ -288,6 +288,90 @@ final class SchemaTest extends BaseSchema
     }
 
     /**
+     * Regression test for https://github.com/yiisoft/yii2/issues/8765.
+     */
+    public function testSchemaMetadataWithBackticksInIdentifiers(): void
+    {
+        $db = $this->getConnection(false);
+        $schema = $db->getSchema();
+
+        $parentTable = 'yii2_issue_8765`parent';
+        $childTable = 'yii2_issue_8765`child';
+        $parentColumn = 'c"d';
+        $foreignColumn = 'parent`id';
+        $jsonColumn = 'json`data';
+        $uniqueIndex = 'unique`json';
+        $foreignKey = 'fk`parent';
+
+        DbHelper::dropTablesIfExist($db, [$childTable, $parentTable]);
+
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_issue_8765``parent` (
+                `c"d` int NOT NULL,
+                PRIMARY KEY (`c"d`)
+            )
+            SQL,
+        )->execute();
+        $db->createCommand(
+            <<<SQL
+            CREATE TABLE `yii2_issue_8765``child` (
+                `parent``id` int NOT NULL,
+                `json``data` json,
+                UNIQUE KEY `unique``json` (`parent``id`),
+                CONSTRAINT `fk``parent`
+                    FOREIGN KEY (`parent``id`) REFERENCES `yii2_issue_8765``parent` (`c"d`)
+            )
+            SQL,
+        )->execute();
+
+        $table = $schema->getTableSchema($childTable, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table schema must load when the table name contains a backtick.',
+        );
+        self::assertSame(
+            $childTable,
+            $table->name,
+            'Reflected table name must preserve its backtick.',
+        );
+        self::assertArrayHasKey(
+            $foreignColumn,
+            $table->columns,
+            'Reflected column name must preserve its backtick.',
+        );
+        self::assertSame(
+            Schema::TYPE_JSON,
+            $table->columns[$jsonColumn]->type,
+            'JSON reflection must preserve a backtick in the column name.',
+        );
+        self::assertSame(
+            [$parentTable, $foreignColumn => $parentColumn],
+            $table->foreignKeys[$foreignKey],
+            'Foreign key metadata must preserve backticks in all identifiers.',
+        );
+        self::assertSame(
+            [$uniqueIndex => [$foreignColumn]],
+            $schema->findUniqueIndexes($table),
+            'Unique index metadata must preserve backticks in index and column names.',
+        );
+
+        $db->createCommand()
+            ->addCommentOnColumn($childTable, $foreignColumn, 'Issue #8765')
+            ->execute();
+
+        self::assertSame(
+            'Issue #8765',
+            $schema->getTableSchema($childTable, true)->columns[$foreignColumn]->comment,
+            'Column definition lookup must decode doubled backticks.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$childTable, $parentTable]);
+    }
+
+    /**
      * When displayed in the INFORMATION_SCHEMA.COLUMNS table, a default CURRENT TIMESTAMP is displayed
      * as CURRENT_TIMESTAMP up until MariaDB 10.2.2, and as current_timestamp() from MariaDB 10.2.3.
      *

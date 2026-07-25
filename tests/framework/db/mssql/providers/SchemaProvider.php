@@ -92,7 +92,7 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
     {
         return [
             ...parent::quoteSimpleTableName(),
-            ['a[b', 'a[b'],
+            ['a[b', '[a[b]'],
         ];
     }
 

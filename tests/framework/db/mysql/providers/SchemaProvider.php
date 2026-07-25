@@ -25,15 +25,4 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
             ["It's interesting", "'It\\'s interesting'"],
         ];
     }
-
-    /**
-     * @return list<array{string, string}>
-     */
-    public static function quoteSimpleTableName(): array
-    {
-        return [
-            ...parent::quoteSimpleTableName(),
-            ['a`b', 'a`b'],
-        ];
-    }
 }

@@ -31,18 +31,4 @@ final class SchemaProvider extends \yiiunit\base\db\providers\SchemaProvider
             [-9_223_372_036_854_775_808.0],
         ];
     }
-
-    /**
-     * Extends the shared cases with a name embedding a double quote (the driver's own quote character), passed through
-     * unchanged.
-     *
-     * @return list<array{string, string}>
-     */
-    public static function quoteSimpleTableName(): array
-    {
-        return [
-            ...parent::quoteSimpleTableName(),
-            ['a"b', 'a"b'],
-        ];
-    }
 }

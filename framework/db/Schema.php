@@ -26,6 +26,7 @@ use function implode;
 use function is_string;
 use function mb_stripos;
 use function str_contains;
+use function str_ends_with;
 use function str_replace;
 use function str_starts_with;
 use function strlen;
@@ -519,7 +520,8 @@ abstract class Schema extends BaseObject
      * Quotes a table name for use in a query.
      *
      * If the table name contains schema prefix, the prefix will also be properly quoted.
-     * If the table name is already quoted or contains '(' or '{{', then this method will do nothing.
+     * If the table name is already fully enclosed in the quote characters, or contains '(' or '{{', then this method
+     * will do nothing.
      *
      * @param string $name Table name.
      * @return string The properly quoted table name.
@@ -538,6 +540,10 @@ abstract class Schema extends BaseObject
 
         if (!str_contains($name, '.')) {
             return $this->quoteSimpleTableName($name);
+        }
+
+        if ($this->isFullyQuoted($name, $this->tableQuoteCharacter)) {
+            return $name;
         }
 
         return implode('.', array_map([$this, 'quoteSimpleTableName'], $this->getTableNameParts($name)));
@@ -561,7 +567,8 @@ abstract class Schema extends BaseObject
      * Quotes a column name for use in a query.
      *
      * If the column name contains prefix, the prefix will also be properly quoted.
-     * If the column name is already quoted or contains '(', '[[' or '{{', then this method will do nothing.
+     * If the column name is already fully enclosed in the quote characters, or contains '(', '[[' or '{{', then this
+     * method will do nothing.
      *
      * @param string $name Column name.
      *
@@ -580,6 +587,10 @@ abstract class Schema extends BaseObject
         }
 
         if (($pos = strrpos($name, '.')) !== false) {
+            if ($this->isFullyQuoted($name, $this->columnQuoteCharacter)) {
+                return $name;
+            }
+
             $prefix = $this->quoteTableName(substr($name, 0, $pos)) . '.';
 
             $name = substr($name, $pos + 1);
@@ -598,7 +609,8 @@ abstract class Schema extends BaseObject
      * Quotes a simple table name for use in a query.
      *
      * A simple table name should contain the table name only without any schema prefix.
-     * If the table name is already quoted, this method will do nothing.
+     * A name already fully enclosed in the quote characters is returned as is; otherwise the name is enclosed and any
+     * embedded ending quote character is escaped by doubling it.
      *
      * @param string $name Table name.
      *
@@ -606,22 +618,15 @@ abstract class Schema extends BaseObject
      */
     public function quoteSimpleTableName($name)
     {
-        if (is_string($this->tableQuoteCharacter)) {
-            $startingCharacter = $endingCharacter = $this->tableQuoteCharacter;
-        } else {
-            [$startingCharacter, $endingCharacter] = $this->tableQuoteCharacter;
-        }
-
-        return str_contains($name, $startingCharacter)
-            ? $name
-            : "{$startingCharacter}{$name}{$endingCharacter}";
+        return $this->quoteSimpleName($name, $this->tableQuoteCharacter);
     }
 
     /**
      * Quotes a simple column name for use in a query.
      *
      * A simple column name should contain the column name only without any prefix.
-     * If the column name is already quoted or is the asterisk character '*', this method will do nothing.
+     * The asterisk character '*' and a name already fully enclosed in the quote characters are returned as is;
+     * otherwise the name is enclosed and any embedded ending quote character is escaped by doubling it.
      *
      * @param string $name Column name.
      *
@@ -629,22 +634,19 @@ abstract class Schema extends BaseObject
      */
     public function quoteSimpleColumnName($name)
     {
-        if (is_string($this->columnQuoteCharacter)) {
-            $startingCharacter = $endingCharacter = $this->columnQuoteCharacter;
-        } else {
-            [$startingCharacter, $endingCharacter] = $this->columnQuoteCharacter;
+        if ($name === '*') {
+            return $name;
         }
 
-        return $name === '*' || str_contains($name, $startingCharacter)
-            ? $name
-            : "{$startingCharacter}{$name}{$endingCharacter}";
+        return $this->quoteSimpleName($name, $this->columnQuoteCharacter);
     }
 
     /**
      * Unquotes a simple table name.
      *
      * A simple table name should contain the table name only without any schema prefix.
-     * If the table name is not quoted, this method will do nothing.
+     * Only a name fully enclosed in the quote characters is unquoted: the enclosure is stripped and doubled ending
+     * quote characters are collapsed to a single one.
      *
      * @param string $name Table name.
      *
@@ -654,22 +656,15 @@ abstract class Schema extends BaseObject
      */
     public function unquoteSimpleTableName($name)
     {
-        if (is_string($this->tableQuoteCharacter)) {
-            $startingCharacter = $this->tableQuoteCharacter;
-        } else {
-            $startingCharacter = $this->tableQuoteCharacter[0];
-        }
-
-        return !str_contains($name, $startingCharacter)
-            ? $name
-            : substr($name, 1, -1);
+        return $this->unquoteSimpleName($name, $this->tableQuoteCharacter);
     }
 
     /**
      * Unquotes a simple column name.
      *
      * A simple column name should contain the column name only without any prefix.
-     * If the column name is not quoted or is the asterisk character '*', this method will do nothing.
+     * Only a name fully enclosed in the quote characters is unquoted: the enclosure is stripped and doubled ending
+     * quote characters are collapsed to a single one.
      *
      * @param string $name Column name.
      *
@@ -679,15 +674,86 @@ abstract class Schema extends BaseObject
      */
     public function unquoteSimpleColumnName($name)
     {
-        if (is_string($this->columnQuoteCharacter)) {
-            $startingCharacter = $this->columnQuoteCharacter;
-        } else {
-            $startingCharacter = $this->columnQuoteCharacter[0];
+        return $this->unquoteSimpleName($name, $this->columnQuoteCharacter);
+    }
+
+    /**
+     * Returns the starting and ending quote characters for the given quote character definition.
+     *
+     * @param string|array{string, string} $quoteCharacter Single quote character used on both sides, or a pair of
+     * starting and ending quote characters.
+     *
+     * @return array{string, string} Starting and ending quote characters.
+     */
+    private function resolveQuoteCharacter(string|array $quoteCharacter): array
+    {
+        return is_string($quoteCharacter) ? [$quoteCharacter, $quoteCharacter] : $quoteCharacter;
+    }
+
+    /**
+     * Returns whether the given name is fully enclosed in the given quote characters.
+     *
+     * @param string $name Name to check.
+     * @param string|array{string, string} $quoteCharacter Single quote character used on both sides, or a pair of
+     * starting and ending quote characters.
+     *
+     * @return bool Whether the name starts with the starting quote character and ends with the ending one.
+     */
+    private function isFullyQuoted(string $name, string|array $quoteCharacter): bool
+    {
+        [$startingCharacter, $endingCharacter] = $this->resolveQuoteCharacter($quoteCharacter);
+
+        return str_starts_with($name, $startingCharacter) && str_ends_with($name, $endingCharacter);
+    }
+
+    /**
+     * Encloses a simple name in the given quote characters.
+     *
+     * A name already fully enclosed in the quote characters is returned as is; otherwise embedded ending quote
+     * characters are escaped by doubling them.
+     *
+     * @param string $name Simple name to quote.
+     * @param string|array{string, string} $quoteCharacter Single quote character used on both sides, or a pair of
+     * starting and ending quote characters.
+     *
+     * @return string The properly quoted name.
+     */
+    private function quoteSimpleName(string $name, string|array $quoteCharacter): string
+    {
+        if ($this->isFullyQuoted($name, $quoteCharacter)) {
+            return $name;
         }
 
-        return !str_contains($name, $startingCharacter)
-            ? $name
-            : substr($name, 1, -1);
+        [$startingCharacter, $endingCharacter] = $this->resolveQuoteCharacter($quoteCharacter);
+
+        return $startingCharacter
+            . str_replace($endingCharacter, $endingCharacter . $endingCharacter, $name)
+            . $endingCharacter;
+    }
+
+    /**
+     * Removes the given quote characters from a simple name.
+     *
+     * Only a name fully enclosed in the quote characters is unquoted; doubled ending quote characters are collapsed
+     * to a single one.
+     *
+     * @param string $name Simple name to unquote.
+     * @param string|array{string, string} $quoteCharacter Single quote character used on both sides, or a pair of
+     * starting and ending quote characters.
+     *
+     * @return string Unquoted name.
+     */
+    private function unquoteSimpleName(string $name, string|array $quoteCharacter): string
+    {
+        if (!$this->isFullyQuoted($name, $quoteCharacter)) {
+            return $name;
+        }
+
+        [$startingCharacter, $endingCharacter] = $this->resolveQuoteCharacter($quoteCharacter);
+
+        $name = substr($name, strlen($startingCharacter), -strlen($endingCharacter));
+
+        return str_replace($endingCharacter . $endingCharacter, $endingCharacter, $name);
     }
 
     /**

@@ -29,12 +29,6 @@ final class SchemaQuoteTest extends BaseSchemaQuote
     protected $driverName = 'mysql';
     protected static string $driverNameStatic = 'mysql';
 
-    #[DataProviderExternal(SchemaProvider::class, 'quoteSimpleTableName')]
-    public function testQuoteSimpleTableName(string $name, string $expectedName): void
-    {
-        parent::testQuoteSimpleTableName($name, $expectedName);
-    }
-
     #[DataProviderExternal(SchemaProvider::class, 'quoteValue')]
     public function testQuoteValueQuotesString(string $value, string $expectedValue): void
     {
