@@ -22,7 +22,10 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function array_map;
 use function explode;
+use function in_array;
+use function preg_match_all;
 use function str_replace;
 use function stripos;
 
@@ -100,7 +103,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function resolveTableName($name)
     {
-        $parts = explode('.', str_replace('`', '', $name));
+        $parts = array_map([$this, 'unquoteSimpleTableName'], explode('.', $name));
 
         $hasSchemaName = isset($parts[1]);
 
@@ -377,7 +380,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
                 $info = array_change_key_case($info, CASE_LOWER);
             }
 
-            if (\in_array($info['field'], $jsonColumns, true)) {
+            if (in_array($info['field'], $jsonColumns, true)) {
                 $info['type'] = static::TYPE_JSON;
             }
 
@@ -482,16 +485,10 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     public function findUniqueIndexes($table)
     {
-        $sql = $this->getCreateTableSql($table);
         $uniqueIndexes = [];
 
-        $regexp = '/UNIQUE KEY\s+[`"](.+)[`"]\s*\(([`"].+[`"])+\)/mi';
-        if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $indexName = $match[1];
-                $indexColumns = array_map('trim', preg_split('/[`"],[`"]/', trim($match[2], '`"')));
-                $uniqueIndexes[$indexName] = $indexColumns;
-            }
+        foreach ($this->getTableUniques($table->fullName, true) as $constraint) {
+            $uniqueIndexes[$constraint->name] = $constraint->columnNames;
         }
 
         return $uniqueIndexes;
@@ -596,11 +593,13 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         $sql = $this->getCreateTableSql($table);
         $result = [];
 
-        $regexp = '/json_valid\([\`"](.+)[\`"]\s*\)/mi';
+        $regexp = '/json_valid\(\s*(?:`((?:``|[^`])+)`|"((?:""|[^"])+)")\s*\)/mi';
 
-        if (\preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
-                $result[] = $match[1];
+                $result[] = $match[1] !== ''
+                    ? str_replace('``', '`', $match[1])
+                    : str_replace('""', '"', $match[2]);
             }
         }
 

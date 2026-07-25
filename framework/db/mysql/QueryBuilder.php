@@ -21,6 +21,7 @@ use function preg_match;
 use function preg_match_all;
 use function preg_replace;
 use function reset;
+use function str_replace;
 use function strlen;
 use function substr_replace;
 use function trim;
@@ -473,10 +474,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $createTable = $row['Create Table'] ?? array_values($row)[1];
 
-        if (preg_match_all('/^\s*[`"](.*?)[`"]\s+(.*?),?$/m', $createTable, $matches)) {
-            foreach ($matches[1] as $i => $c) {
-                if ($c === $column) {
-                    return $matches[2][$i];
+        $regexp = '/^\s*(?:`((?:``|[^`])+)`|"((?:""|[^"])+)")\s+(.*?),?$/m';
+
+        if (preg_match_all($regexp, $createTable, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $columnName = $match[1] !== ''
+                    ? str_replace('``', '`', $match[1])
+                    : str_replace('""', '"', $match[2]);
+
+                if ($columnName === $column) {
+                    return $match[3];
                 }
             }
         }

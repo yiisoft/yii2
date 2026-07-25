@@ -53,6 +53,7 @@ class SchemaProvider
             ['test.[[test]].test', '[[test]].[[test]].[[test]]'],
             ['test.test', '[[test]].[[test]]'],
             ['test.test.test', '[[test]].[[test]].[[test]]'],
+            ['[[a.b]]', '[[a.b]]'],
         ];
     }
 
@@ -78,6 +79,7 @@ class SchemaProvider
             ['[[table]].[[column]]', '[[table]].[[column]]'],
             ['schema.table.column', '[[schema]].[[table]].[[column]]'],
             ['{{table}}.column', '{{table}}.[[column]]'],
+            ['[[a.b]]', '[[a.b]]'],
         ];
     }
 
@@ -93,6 +95,8 @@ class SchemaProvider
             ['(test)', '[[(test)]]'],
             ['current-table-name', '[[current-table-name]]'],
             ["te'st", "[[te'st]]"],
+            ['a]]b', '[[a]]]]b]]'],
+            ['[[a]]]]b]]', '[[a]]]]b]]'],
         ];
     }
 
@@ -105,6 +109,8 @@ class SchemaProvider
             ['*', '*'],
             ['[[column]]', '[[column]]'],
             ['column', '[[column]]'],
+            ['a]]b', '[[a]]]]b]]'],
+            ['[[a]]]]b]]', '[[a]]]]b]]'],
         ];
     }
 
@@ -116,6 +122,8 @@ class SchemaProvider
         return [
             ['[[test]]', 'test'],
             ['test', 'test'],
+            ['a]]b', 'a]]b'],
+            ['[[a]]]]b]]', 'a]]b'],
         ];
     }
 
@@ -128,6 +136,8 @@ class SchemaProvider
             ['*', '*'],
             ['[[column]]', 'column'],
             ['column', 'column'],
+            ['a]]b', 'a]]b'],
+            ['[[a]]]]b]]', 'a]]b'],
         ];
     }
 

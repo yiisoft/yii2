@@ -180,11 +180,11 @@ abstract class BaseQueryBuilder extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_CHAR . ' CHECK (value LIKE "test%")',
-                $this->char()->check('value LIKE "test%"'),
+                Schema::TYPE_CHAR . " CHECK (value LIKE 'test%')",
+                $this->char()->check("value LIKE 'test%'"),
                 [
-                    'mysql' => 'char(1) CHECK (value LIKE "test%")',
-                    'sqlite' => 'char(1) CHECK (value LIKE "test%")',
+                    'mysql' => "char(1) CHECK (value LIKE 'test%')",
+                    'sqlite' => "char(1) CHECK (value LIKE 'test%')",
                 ],
             ],
             [
@@ -198,11 +198,11 @@ abstract class BaseQueryBuilder extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_CHAR . '(6) CHECK (value LIKE "test%")',
-                $this->char(6)->check('value LIKE "test%"'),
+                Schema::TYPE_CHAR . "(6) CHECK (value LIKE 'test%')",
+                $this->char(6)->check("value LIKE 'test%'"),
                 [
-                    'mysql' => 'char(6) CHECK (value LIKE "test%")',
-                    'sqlite' => 'char(6) CHECK (value LIKE "test%")',
+                    'mysql' => "char(6) CHECK (value LIKE 'test%')",
+                    'sqlite' => "char(6) CHECK (value LIKE 'test%')",
                 ],
             ],
             [
