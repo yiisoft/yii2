@@ -212,12 +212,14 @@ final class SchemaTest extends BaseSchema
     {
         $schema = $this->getConnection()->getSchema();
 
+        $schemaName = $schema->defaultSchema;
+
         self::assertNull(
             $schema->getTableSchema('pro"file', true),
             'A stray quote inside the table name must not resolve to another existing table.',
         );
         self::assertNull(
-            $schema->getTableSchema('SYS"TEM.profile', true),
+            $schema->getTableSchema($schemaName . '".profile', true),
             'A stray quote inside the schema name must not resolve to another existing table.',
         );
     }
