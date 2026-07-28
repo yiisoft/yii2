@@ -183,6 +183,47 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testGetTableSchemaWithQuotedSchemaAndTableName(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $schemaName = $schema->defaultSchema;
+
+        $tableSchema = $schema->getTableSchema('"' . $schemaName . '"."profile"', true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table schema should be loadable with a quoted schema and table name.',
+        );
+        self::assertSame(
+            'profile',
+            $tableSchema->name,
+            'Loaded table name should not keep quote characters.',
+        );
+        self::assertSame(
+            $schemaName,
+            $tableSchema->schemaName,
+            'Loaded schema name should not keep quote characters.',
+        );
+    }
+
+    public function testGetTableSchemaWithStrayQuoteInName(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $schemaName = $schema->defaultSchema;
+
+        self::assertNull(
+            $schema->getTableSchema('pro"file', true),
+            'A stray quote inside the table name must not resolve to another existing table.',
+        );
+        self::assertNull(
+            $schema->getTableSchema($schemaName . '".profile', true),
+            'A stray quote inside the schema name must not resolve to another existing table.',
+        );
+    }
+
     public function testIntegerDataTypeColumn(): void
     {
         $table = $this->getConnection()->getSchema()->getTableSchema('employee');
