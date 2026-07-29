@@ -12,7 +12,9 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\validators\client\ClientValidatorScriptInterface;
 use yii\validators\Validator;
+use yii\web\Application;
 use yii\web\Controller;
+use yii\web\IdentityInterface;
 
 /**
  * CaptchaValidator validates that the attribute value is the same as the verification code displayed in the CAPTCHA.
@@ -85,7 +87,7 @@ class CaptchaValidator extends Validator
     {
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
-            /** @var Controller $controller */
+            /** @var Controller<Application<IdentityInterface>> $controller */
             list($controller, $actionID) = $ca;
             /** @var CaptchaAction|null $action */
             $action = $controller->createAction($actionID);
