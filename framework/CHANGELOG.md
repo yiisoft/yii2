@@ -144,6 +144,7 @@ Yii Framework 2 Change Log
 - Bug #11191: Enable session `autocommit` on the migration connection when the MySQL/MariaDB server default disables it, so migration history stays complete and transactional migrations can start (terabytesoftw)
 - Bug #8765: Escape quote characters inside DB identifiers when quoting and preserve them during schema reflection (terabytesoftw)
 - Bug #8765: Preserve quote characters during Oracle table name resolution so a name containing a stray double quote no longer resolves to a different existing object (terabytesoftw)
+- Bug #8765: Preserve quote characters during PostgreSQL table name resolution so a name containing a stray double quote no longer resolves to a different existing object (terabytesoftw)
 
 2.0.56 under development
 ------------------------

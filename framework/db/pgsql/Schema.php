@@ -23,8 +23,8 @@ use yii\db\ViewFinderTrait;
 use yii\helpers\ArrayHelper;
 use yii\db\Schema as BaseSchema;
 
+use function array_map;
 use function explode;
-use function str_replace;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -144,10 +144,12 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function resolveTableName($name)
     {
-        $parts = explode('.', str_replace('"', '', $name));
+        $parts = array_map([$this, 'unquoteSimpleTableName'], explode('.', $name));
 
-        $tableName = $parts[1] ?? $parts[0];
-        $schemaName = isset($parts[1]) ? $parts[0] : $this->defaultSchema;
+        $hasSchemaName = isset($parts[1]);
+
+        $tableName = $hasSchemaName ? $parts[1] : $parts[0];
+        $schemaName = $hasSchemaName ? $parts[0] : $this->defaultSchema;
         $fullName = $schemaName !== $this->defaultSchema ? "{$schemaName}.{$tableName}" : $tableName;
 
         $resolvedName = new TableSchema();

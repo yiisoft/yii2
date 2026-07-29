@@ -215,6 +215,84 @@ final class SchemaTest extends BaseSchema
         }
     }
 
+    public function testSchemaMetadataWithDoubleQuotesInIdentifiers(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        $tableName = 'yii2_issue_8765"table';
+        $columnName = 'column"name';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $db->createCommand()->createTable(
+            $tableName,
+            [
+                $columnName => 'integer',
+            ],
+        )->execute();
+
+        foreach ([$tableName, $schema->quoteTableName($tableName)] as $lookupName) {
+            $table = $schema->getTableSchema($lookupName, true);
+
+            self::assertInstanceOf(
+                TableSchema::class,
+                $table,
+                'Table schema must load when the table name contains a double quote.',
+            );
+            self::assertSame(
+                $tableName,
+                $table->name,
+                'Reflected table name must preserve its double quote.',
+            );
+            self::assertArrayHasKey(
+                $columnName,
+                $table->columns,
+                'Reflected column name must preserve its double quote.',
+            );
+        }
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
+
+    public function testGetTableSchemaWithQuotedSchemaAndTableName(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $tableSchema = $schema->getTableSchema('"public"."profile"', true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $tableSchema,
+            'Table schema should be loadable with a quoted schema and table name.',
+        );
+        self::assertSame(
+            'profile',
+            $tableSchema->name,
+            'Loaded table name should not keep quote characters.',
+        );
+        self::assertSame(
+            'public',
+            $tableSchema->schemaName,
+            'Loaded schema name should not keep quote characters.',
+        );
+    }
+
+    public function testGetTableSchemaWithStrayQuoteInName(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        self::assertNull(
+            $schema->getTableSchema('pro"file', true),
+            'A stray quote inside the table name must not resolve to another existing table.',
+        );
+        self::assertNull(
+            $schema->getTableSchema('public".profile', true),
+            'A stray quote inside the schema name must not resolve to another existing table.',
+        );
+    }
+
     /**
      * @param int|float $bigint Bigint value to test.
      */
