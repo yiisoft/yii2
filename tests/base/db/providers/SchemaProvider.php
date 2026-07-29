@@ -54,6 +54,7 @@ class SchemaProvider
             ['test.test', '[[test]].[[test]]'],
             ['test.test.test', '[[test]].[[test]].[[test]]'],
             ['[[a.b]]', '[[a.b]]'],
+            ['schema.[[a.b]]', '[[schema]].[[a.b]]'],
         ];
     }
 

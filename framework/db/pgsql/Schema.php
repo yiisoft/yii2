@@ -144,7 +144,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function resolveTableName($name)
     {
-        $parts = array_map([$this, 'unquoteSimpleTableName'], explode('.', $name));
+        $parts = array_map([$this, 'unquoteSimpleTableName'], $this->getTableNameParts($name));
 
         $hasSchemaName = isset($parts[1]);
 

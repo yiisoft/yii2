@@ -560,7 +560,36 @@ abstract class Schema extends BaseObject
      */
     protected function getTableNameParts($name)
     {
-        return explode('.', $name);
+        [$startChar, $endChar] = $this->resolveQuoteCharacter($this->tableQuoteCharacter);
+
+        if (!str_contains($name, $startChar)) {
+            return explode('.', $name);
+        }
+
+        $parts = [];
+        $current = '';
+        $inQuotes = false;
+
+        for ($i = 0, $len = strlen($name); $i < $len; $i++) {
+            $c = $name[$i];
+
+            if (!$inQuotes && $c === $startChar) {
+                $inQuotes = true;
+                $current .= $c;
+            } elseif ($inQuotes && $c === $endChar) {
+                $inQuotes = false;
+                $current .= $c;
+            } elseif (!$inQuotes && $c === '.') {
+                $parts[] = $current;
+                $current = '';
+            } else {
+                $current .= $c;
+            }
+        }
+
+        $parts[] = $current;
+
+        return $parts;
     }
 
     /**

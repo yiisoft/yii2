@@ -293,6 +293,52 @@ final class SchemaTest extends BaseSchema
         );
     }
 
+    public function testGetTableSchemaWithDotInsideQuotedTableName(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        $tableName = 'yii2_table.with.dot';
+        $quotedTableName = '"yii2_table.with.dot"';
+
+        DbHelper::dropTablesIfExist($db, [$quotedTableName]);
+
+        $db->createCommand()->createTable(
+            $quotedTableName,
+            ['x' => 'integer'],
+        )->execute();
+
+        $defaultSchema = $schema->defaultSchema;
+
+        foreach ([$quotedTableName, '"' . $defaultSchema . '"."yii2_table.with.dot"'] as $lookupName) {
+            $table = $schema->getTableSchema($lookupName, true);
+
+            self::assertInstanceOf(
+                TableSchema::class,
+                $table,
+                'Table schema must load when the table name contains a dot.',
+            );
+            self::assertSame(
+                $tableName,
+                $table->name,
+                'Reflected table name must keep every dot.',
+            );
+            self::assertSame(
+                $defaultSchema,
+                $table->schemaName,
+                'Schema name must not be taken from the dotted table name.',
+            );
+            self::assertArrayHasKey(
+                'x',
+                $table->columns,
+                'Reflected columns must come from the dotted table.',
+            );
+        }
+
+        DbHelper::dropTablesIfExist($db, [$quotedTableName]);
+    }
+
     /**
      * @param int|float $bigint Bigint value to test.
      */
