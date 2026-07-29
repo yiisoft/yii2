@@ -145,6 +145,7 @@ Yii Framework 2 Change Log
 - Bug #8765: Escape quote characters inside DB identifiers when quoting and preserve them during schema reflection (terabytesoftw)
 - Bug #8765: Preserve quote characters during Oracle table name resolution so a name containing a stray double quote no longer resolves to a different existing object (terabytesoftw)
 - Bug #8765: Preserve quote characters during PostgreSQL table name resolution so a name containing a stray double quote no longer resolves to a different existing object (terabytesoftw)
+- Bug #8765: Split dotted table names only on periods outside quoted identifier pairs so a name such as `"schema"."table.with.dot"` resolves correctly in all drivers (terabytesoftw)
 
 2.0.56 under development
 ------------------------

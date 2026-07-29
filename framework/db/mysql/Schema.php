@@ -103,7 +103,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function resolveTableName($name)
     {
-        $parts = array_map([$this, 'unquoteSimpleTableName'], explode('.', $name));
+        $parts = array_map([$this, 'unquoteSimpleTableName'], $this->getTableNameParts($name));
 
         $hasSchemaName = isset($parts[1]);
 
@@ -359,16 +359,25 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findColumns($table)
     {
-        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteTableName($table->fullName);
+        $quotedRef = $table->schemaName !== null
+            ? $this->quoteSimpleTableName($table->schemaName) . '.' . $this->quoteSimpleTableName($table->name)
+            : $this->quoteSimpleTableName($table->name);
+
+        $sql = <<<SQL
+        SHOW FULL COLUMNS FROM {$quotedRef}
+        SQL;
+
         try {
             $columns = $this->db->createCommand($sql)->queryAll();
         } catch (\Exception $e) {
             $previous = $e->getPrevious();
+
             if ($previous instanceof \PDOException && strpos($previous->getMessage(), 'SQLSTATE[42S02') !== false) {
                 // table does not exist
                 // https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html#error_er_bad_table_error
                 return false;
             }
+
             throw $e;
         }
 
@@ -391,6 +400,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
                     $table->sequenceName = '';
                 }
             }
+
             $column->defaultValue = $column->isPrimaryKey
                 ? null
                 : $column->defaultPhpTypecast($column->defaultValue);
@@ -407,7 +417,16 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function getCreateTableSql($table)
     {
-        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->quoteTableName($table->fullName))->queryOne();
+        $quotedRef = $table->schemaName !== null
+            ? $this->quoteSimpleTableName($table->schemaName) . '.' . $this->quoteSimpleTableName($table->name)
+            : $this->quoteSimpleTableName($table->name);
+
+        $sql = <<<SQL
+        SHOW CREATE TABLE {$quotedRef}
+        SQL;
+
+        $row = $this->db->createCommand($sql)->queryOne();
+
         if (isset($row['Create Table'])) {
             $sql = $row['Create Table'];
         } else {
@@ -487,7 +506,10 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
     {
         $uniqueIndexes = [];
 
-        foreach ($this->getTableUniques($table->fullName, true) as $constraint) {
+        $quotedRef = $table->schemaName !== null
+            ? $this->quoteSimpleTableName($table->schemaName) . '.' . $this->quoteSimpleTableName($table->name)
+            : $this->quoteSimpleTableName($table->name);
+        foreach ($this->getTableUniques($quotedRef, true) as $constraint) {
             $uniqueIndexes[$constraint->name] = $constraint->columnNames;
         }
 

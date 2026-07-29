@@ -376,6 +376,47 @@ final class SchemaTest extends BaseSchema
         DbHelper::dropTablesIfExist($db, [$childTable, $parentTable]);
     }
 
+    public function testGetTableSchemaWithDotInsideQuotedTableName(): void
+    {
+        $db = $this->getConnection(false);
+
+        $schema = $db->getSchema();
+
+        $tableName = 'yii2_table.with.dot';
+        $quotedTableName = '`yii2_table.with.dot`';
+
+        DbHelper::dropTablesIfExist($db, [$quotedTableName]);
+
+        $db->createCommand()->createTable(
+            $quotedTableName,
+            ['x' => 'integer'],
+        )->execute();
+
+        $table = $schema->getTableSchema($quotedTableName, true);
+
+        self::assertInstanceOf(
+            TableSchema::class,
+            $table,
+            'Table schema must load when the table name contains a dot.',
+        );
+        self::assertSame(
+            $tableName,
+            $table->name,
+            'Reflected table name must keep every dot.',
+        );
+        self::assertNull(
+            $table->schemaName,
+            'Schema name must be `null` for a simple table reference.',
+        );
+        self::assertArrayHasKey(
+            'x',
+            $table->columns,
+            'Reflected columns must come from the dotted table.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$quotedTableName]);
+    }
+
     /**
      * When displayed in the INFORMATION_SCHEMA.COLUMNS table, a default CURRENT TIMESTAMP is displayed
      * as CURRENT_TIMESTAMP up until MariaDB 10.2.2, and as current_timestamp() from MariaDB 10.2.3.
