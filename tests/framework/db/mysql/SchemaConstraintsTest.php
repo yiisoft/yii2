@@ -241,6 +241,30 @@ final class SchemaConstraintsTest extends BaseSchemaConstraints
         );
     }
 
+    /**
+     * Regression test for https://github.com/yiisoft/yii2/issues/13631.
+     *
+     * @param array<string, string> $expectedColumns Expected child-to-parent column map.
+     */
+    #[DataProviderExternal(ConstraintsProvider::class, 'crossSchemaTableSchemaForeignKeys')]
+    public function testCrossSchemaTableSchemaForeignKeys(
+        string $tableName,
+        string $expectedName,
+        string $expectedForeignTableName,
+        array $expectedColumns,
+    ): void {
+        /** @var Schema $schema */
+        $schema = $this->getConnection()->getSchema();
+
+        $table = $schema->getTableSchema($tableName, true);
+
+        self::assertSame(
+            [$expectedForeignTableName, ...$expectedColumns],
+            $table->foreignKeys[$expectedName],
+            'Table schema foreign keys must preserve cross-schema references.',
+        );
+    }
+
     public function testSchemaQualifiedTableMetadataIsolation(): void
     {
         /** @var Schema $schema */

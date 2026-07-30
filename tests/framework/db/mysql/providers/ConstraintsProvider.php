@@ -119,6 +119,27 @@ final class ConstraintsProvider extends \yiiunit\base\db\providers\ConstraintsPr
         ];
     }
 
+    /**
+     * @return array<string, array{string, string, string, array<string, string>}>
+     */
+    public static function crossSchemaTableSchemaForeignKeys(): array
+    {
+        return [
+            'current database referencing cross database' => [
+                'T_constraints_cross_ref',
+                'CN_constraints_cross_ref',
+                'yiitest_cross.T_constraints_2',
+                ['C_cross_fk_id' => 'C_cross_id'],
+            ],
+            'cross database referencing current database' => [
+                'yiitest_cross.T_constraints_cross_ref',
+                'CN_cross_constraints_cross_ref',
+                'yiitest.T_constraints_2',
+                ['C_fk_id_1' => 'C_id_1', 'C_fk_id_2' => 'C_id_2'],
+            ],
+        ];
+    }
+
     public static function prepareConstraintsExpected(
         bool $isMariaDb,
         string $tableName,
