@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\oci;
 
 use Exception;
+use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use Throwable;
@@ -1080,8 +1081,47 @@ class CommandTest extends BaseCommand
 
     public function testColumnCase(): void
     {
-        $this->markTestSkipped(
-            "'pdo_oci' does not honor 'PDO::ATTR_CASE'; column names always keep their natural case.",
+        $db = $this->getConnection();
+
+        $pdo = $db->getSlavePdo(true);
+
+        self::assertSame(
+            PDO::CASE_NATURAL,
+            $pdo->getAttribute(PDO::ATTR_CASE),
+            'Default attribute must be `PDO::CASE_NATURAL`.',
+        );
+
+        // "order" fixture columns are quoted lowercase; the unquoted alias is natural uppercase in Oracle.
+        $sql = <<<SQL
+        SELECT [[customer_id]], [[total]], 1 AS NATURAL_UPPER FROM {{order}}
+        SQL;
+
+        $rows = $db->createCommand($sql)->queryAll();
+
+        self::assertSame(
+            ['customer_id', 'total', 'NATURAL_UPPER'],
+            array_keys($rows[0]),
+            'Natural case must be preserved.',
+        );
+
+        $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $rows = $db->createCommand($sql)->queryAll();
+
+        self::assertSame(
+            ['customer_id', 'total', 'natural_upper'],
+            array_keys($rows[0]),
+            'Keys must fold to lowercase.',
+        );
+
+        // PDO core folds only when the requested case differs from the driver native case; 'pdo_oci' reports
+        // uppercase as native, so 'PDO::CASE_UPPER' performs no folding and lowercase names keep their case.
+        $pdo->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $rows = $db->createCommand($sql)->queryAll();
+
+        self::assertSame(
+            ['customer_id', 'total', 'NATURAL_UPPER'],
+            array_keys($rows[0]),
+            "'PDO::CASE_UPPER' must perform no folding.",
         );
     }
 }

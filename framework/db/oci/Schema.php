@@ -509,7 +509,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
-     * Each array element is of the following structure:.
+     * Each array element is of the following structure:
      *
      * ```
      * [
@@ -518,31 +518,36 @@ SQL;
      * ]
      * ```
      *
-     * @param TableSchema $table the table metadata
-     * @return array all unique indexes for the given table.
+     * @param TableSchema $table The table metadata.
+     *
+     * @return array All unique indexes for the given table.
      * @since 2.0.4
      */
     public function findUniqueIndexes($table)
     {
-        $query = <<<'SQL'
-SELECT
-    DIC.INDEX_NAME,
-    DIC.COLUMN_NAME
-FROM ALL_INDEXES DI
-    INNER JOIN ALL_IND_COLUMNS DIC ON DI.TABLE_NAME = DIC.TABLE_NAME AND DI.INDEX_NAME = DIC.INDEX_NAME
-WHERE
-    DI.UNIQUENESS = 'UNIQUE'
-    AND DIC.TABLE_OWNER = :schemaName
-    AND DIC.TABLE_NAME = :tableName
-ORDER BY DIC.TABLE_NAME, DIC.INDEX_NAME, DIC.COLUMN_POSITION
-SQL;
-        $result = [];
-        $command = $this->db->createCommand($query, [
+        $query = <<<SQL
+        SELECT
+            DIC.INDEX_NAME AS "index_name",
+            DIC.COLUMN_NAME AS "column_name"
+        FROM ALL_INDEXES DI
+            INNER JOIN ALL_IND_COLUMNS DIC ON DI.TABLE_NAME = DIC.TABLE_NAME AND DI.INDEX_NAME = DIC.INDEX_NAME
+        WHERE
+            DI.UNIQUENESS = 'UNIQUE'
+            AND DIC.TABLE_OWNER = :schemaName
+            AND DIC.TABLE_NAME = :tableName
+        ORDER BY DIC.TABLE_NAME, DIC.INDEX_NAME, DIC.COLUMN_POSITION
+        SQL;
+
+        $rows = $this->db->createCommand($query, [
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
-        ]);
-        foreach ($command->queryAll() as $row) {
-            $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
+        ])->queryAll();
+        $rows = $this->normalizePdoRowKeyCase($rows, true);
+
+        $result = [];
+
+        foreach ($rows as $row) {
+            $result[$row['index_name']][] = $row['column_name'];
         }
 
         return $result;
