@@ -444,46 +444,26 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      */
     protected function findConstraints($table)
     {
-        $sql = <<<SQL
-        SELECT
-            `kcu`.`CONSTRAINT_NAME` AS `constraint_name`,
-            `kcu`.`COLUMN_NAME` AS `column_name`,
-            `kcu`.`REFERENCED_TABLE_NAME` AS `referenced_table_name`,
-            `kcu`.`REFERENCED_COLUMN_NAME` AS `referenced_column_name`
-        FROM `information_schema`.`REFERENTIAL_CONSTRAINTS` AS `rc`
-        JOIN `information_schema`.`KEY_COLUMN_USAGE` AS `kcu` ON
-            (
-                `kcu`.`CONSTRAINT_CATALOG` = `rc`.`CONSTRAINT_CATALOG` OR
-                (`kcu`.`CONSTRAINT_CATALOG` IS NULL AND `rc`.`CONSTRAINT_CATALOG` IS NULL)
-            ) AND
-            `kcu`.`CONSTRAINT_SCHEMA` = `rc`.`CONSTRAINT_SCHEMA` AND
-            `kcu`.`CONSTRAINT_NAME` = `rc`.`CONSTRAINT_NAME`
-        WHERE `rc`.`CONSTRAINT_SCHEMA` = database() AND `kcu`.`TABLE_SCHEMA` = database()
-        AND `rc`.`TABLE_NAME` = :tableName AND `kcu`.`TABLE_NAME` = :tableName1
-        SQL;
+        $tableName = $this->quoteSimpleTableName($table->name);
 
-        $rows = $this->db->createCommand(
-            $sql,
-            [
-                ':tableName' => $table->name,
-                ':tableName1' => $table->name,
-            ],
-        )->queryAll();
-
-        $constraints = [];
-
-        foreach ($rows as $row) {
-            $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
-            $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
+        if ($table->schemaName !== null) {
+            $tableName = $this->quoteSimpleTableName($table->schemaName) . '.' . $tableName;
         }
 
         $table->foreignKeys = [];
 
-        foreach ($constraints as $name => $constraint) {
-            $table->foreignKeys[$name] = [
-                $constraint['referenced_table_name'],
-                ...$constraint['columns']
-            ];
+        foreach ($this->loadTableForeignKeys($tableName) as $foreignKey) {
+            $foreignTableName = $foreignKey->foreignSchemaName !== null
+                ? $foreignKey->foreignSchemaName . '.' . $foreignKey->foreignTableName
+                : $foreignKey->foreignTableName;
+
+            $columns = [];
+
+            foreach ($foreignKey->columnNames as $index => $columnName) {
+                $columns[$columnName] = $foreignKey->foreignColumnNames[$index];
+            }
+
+            $table->foreignKeys[$foreignKey->name] = [$foreignTableName, ...$columns];
         }
     }
 
