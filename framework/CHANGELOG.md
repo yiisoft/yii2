@@ -148,6 +148,7 @@ Yii Framework 2 Change Log
 - Bug #8765: Split dotted table names only on periods outside quoted identifier pairs so a name such as `"schema"."table.with.dot"` resolves correctly in all drivers (terabytesoftw)
 - Bug #16631: Fix `yii\db\oci\Schema::findConstraints()` to index table foreign keys by constraint name so all foreign keys are reflected instead of only the last one (terabytesoftw)
 - Bug #16447: Fix `yii\db\oci\Schema::findUniqueIndexes()` to respect the connection `PDO::ATTR_CASE` attribute when reading unique index metadata (terabytesoftw)
+- Bug #7843: Preserve defaults on non-auto-incrementing primary key columns in MySQL/MariaDB, PostgreSQL, SQLite, and MSSQL schema metadata, matching the existing Oracle driver behavior (terabytesoftw)
 
 2.0.56 under development
 ------------------------

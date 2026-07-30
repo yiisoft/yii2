@@ -523,7 +523,7 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
                 $table->sequenceName = '';
             }
 
-            $column->defaultValue = $column->isPrimaryKey
+            $column->defaultValue = $column->isPrimaryKey && $column->autoIncrement
                 ? null
                 : $column->defaultPhpTypecast($column->defaultValue);
             $table->columns[$column->name] = $column;
