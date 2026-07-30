@@ -533,10 +533,10 @@ SQL;
                 if ($table->sequenceName === null) {
                     $table->sequenceName = $column->sequenceName;
                 }
-                $column->defaultValue = null;
-            } else {
-                $column->defaultValue = $column->defaultPhpTypecast($column->defaultValue);
             }
+            $column->defaultValue = $column->isPrimaryKey && $column->autoIncrement
+                ? null
+                : $column->defaultPhpTypecast($column->defaultValue);
         }
 
         return true;

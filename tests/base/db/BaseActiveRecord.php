@@ -42,6 +42,7 @@ use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
 use yiiunit\data\ar\CroppedType;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
+use yiiunit\support\DbHelper;
 
 abstract class BaseActiveRecord extends DatabaseTestCase
 {
@@ -1319,6 +1320,39 @@ abstract class BaseActiveRecord extends DatabaseTestCase
         $model = new CroppedType();
         $model->loadDefaultValues();
         $this->assertEquals(['int_col2' => 1], $model->toArray());
+    }
+
+    public function testLoadDefaultValuesForCompositePrimaryKey(): void
+    {
+        $db = $this->getConnection(false);
+
+        DbHelper::dropTablesIfExist($db, ['default_composite_pk']);
+
+        $db->createCommand()->createTable(
+            'default_composite_pk',
+            [
+                'filter_id' => 'integer NOT NULL',
+                'language_id' => 'smallint DEFAULT 1 NOT NULL',
+                'PRIMARY KEY ([[filter_id]], [[language_id]])',
+            ],
+        )->execute();
+
+        $model = new class extends ActiveRecord {
+            public static function tableName()
+            {
+                return 'default_composite_pk';
+            }
+        };
+
+        $model->loadDefaultValues();
+
+        self::assertSame(
+            1,
+            $model->getAttribute('language_id'),
+            'Non-identity PK default must be loaded.',
+        );
+
+        DbHelper::dropTablesIfExist($db, ['default_composite_pk']);
     }
 
     public function testUnlinkAllViaTable(): void

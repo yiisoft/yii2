@@ -251,6 +251,11 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
             $table->sequenceName = '';
             $table->columns[$table->primaryKey[0]]->autoIncrement = true;
         }
+        foreach ($table->columns as $column) {
+            $column->defaultValue = $column->isPrimaryKey && $column->autoIncrement
+                ? null
+                : $column->defaultPhpTypecast($column->defaultValue);
+        }
 
         return true;
     }
@@ -351,9 +356,8 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
         }
         $column->phpType = $this->getColumnPhpType($column);
 
-        $column->defaultValue = $column->isPrimaryKey
-            ? null
-            : $column->defaultPhpTypecast($info['dflt_value']);
+        // Store raw default for deferred resolution in `findColumns()`, where autoIncrement is known.
+        $column->defaultValue = $info['dflt_value'];
 
         return $column;
     }
