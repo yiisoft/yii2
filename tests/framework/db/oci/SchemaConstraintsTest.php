@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\framework\db\oci;
 
 use Exception;
+use PDO;
 use PHPUnit\Framework\Attributes\DataProviderExternal;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Constraint;
@@ -157,6 +158,33 @@ final class SchemaConstraintsTest extends BaseSchemaConstraints
             ],
             $uniqueIndexes,
             "Unique indexes do not match after creating unique index on 'someCol3'.",
+        );
+
+        // Regression test for https://github.com/yiisoft/yii2/issues/16447.
+        $db->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+
+        self::assertEquals(
+            [
+                'somecolUnique' => ['somecol'],
+                'someCol2Unique' => ['someCol2'],
+                'another unique index' => ['someCol3'],
+            ],
+            $uniqueIndexes,
+            "Unique indexes do not match with 'PDO::ATTR_CASE' set to 'PDO::CASE_LOWER'.",
+        );
+
+        $db->getSlavePdo(true)->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+
+        self::assertEquals(
+            [
+                'somecolUnique' => ['somecol'],
+                'someCol2Unique' => ['someCol2'],
+                'another unique index' => ['someCol3'],
+            ],
+            $uniqueIndexes,
+            "Unique indexes do not match with 'PDO::ATTR_CASE' set to 'PDO::CASE_UPPER'.",
         );
     }
 
