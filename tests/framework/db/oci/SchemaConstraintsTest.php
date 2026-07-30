@@ -17,6 +17,9 @@ use yii\db\Constraint;
 use yiiunit\base\db\BaseSchemaConstraints;
 use yiiunit\framework\db\oci\providers\ConstraintsProvider;
 
+use function array_values;
+use function usort;
+
 /**
  * Unit tests for {@see \yii\db\oci\Schema} constraint and index metadata retrieval for the Oracle driver.
  *
@@ -35,7 +38,7 @@ final class SchemaConstraintsTest extends BaseSchemaConstraints
 
         $table = $schema->getTableSchema('composite_fk');
 
-        $foreignKey = 'tableName';
+        $foreignKey = 'FK_COMPOSITE_FK_ORDER_ITEM';
 
         self::assertCount(
             1,
@@ -60,6 +63,36 @@ final class SchemaConstraintsTest extends BaseSchemaConstraints
             'item_id',
             $table->foreignKeys[$foreignKey]['item_id'],
             "Referenced column name for foreign key '{$foreignKey}' does not match the expected value.",
+        );
+    }
+
+    /**
+     * Regression test for https://github.com/yiisoft/yii2/issues/16631.
+     */
+    public function testMultipleForeignKeys(): void
+    {
+        $schema = $this->getConnection()->getSchema();
+
+        $table = $schema->getTableSchema('order_item');
+
+        self::assertCount(
+            2,
+            $table->foreignKeys,
+            'Number of foreign keys does not match the expected count.',
+        );
+
+        // FK names are system generated (`SYS_C...`), so sort by referenced table for a deterministic comparison.
+        $foreignKeys = array_values($table->foreignKeys);
+
+        usort($foreignKeys, static fn (array $a, array $b): int => $a[0] <=> $b[0]);
+
+        self::assertSame(
+            [
+                ['item', 'item_id' => 'id'],
+                ['order', 'order_id' => 'id'],
+            ],
+            $foreignKeys,
+            'Foreign key definitions do not match the expected values.',
         );
     }
 
