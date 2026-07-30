@@ -502,10 +502,8 @@ SQL;
             $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
 
-        foreach ($constraints as $constraint) {
-            $name = current(array_keys($constraint));
-
-            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
+        foreach ($constraints as $name => $constraint) {
+            $table->foreignKeys[$name] = [$constraint['tableName'], ...$constraint['columns']];
         }
     }
 
