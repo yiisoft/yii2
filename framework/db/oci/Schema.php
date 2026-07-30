@@ -503,7 +503,7 @@ SQL;
         }
 
         foreach ($constraints as $name => $constraint) {
-            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
+            $table->foreignKeys[$name] = [$constraint['tableName'], ...$constraint['columns']];
         }
     }
 
