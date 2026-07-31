@@ -37,6 +37,12 @@ parameters:
 			path: framework/captcha/CaptchaAction.php
 
 		-
+			message: '#^PHPDoc tag @var with type yii\\web\\Controller is not subtype of native type yii\\base\\Controller\<yii\\console\\Application\>\|yii\\base\\Controller\<yii\\web\\Application\<yii\\web\\IdentityInterface\>\>\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: framework/captcha/CaptchaValidator.php
+
+		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$args$#'
 			identifier: parameter.notFound
 			count: 2
@@ -47,6 +53,18 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: framework/console/controllers/BaseMigrateController.php
+
+		-
+			message: '#^PHPDoc tag @var with type yii\\console\\Controller\<yii\\base\\Application\> is not subtype of native type \(yii\\base\\Controller\<yii\\console\\Application\>&yii\\console\\Controller\)\|\(yii\\base\\Controller\<yii\\web\\Application\<yii\\web\\IdentityInterface\>\>&yii\\console\\Controller\)\.$#'
+			identifier: varTag.nativeType
+			count: 3
+			path: framework/console/controllers/HelpController.php
+
+		-
+			message: '#^PHPDoc tag @var with type yii\\console\\Controller\<yii\\base\\Application\> is not subtype of native type yii\\base\\Controller\<yii\\console\\Application\>\|yii\\base\\Controller\<yii\\web\\Application\<yii\\web\\IdentityInterface\>\>\.$#'
+			identifier: varTag.nativeType
+			count: 4
+			path: framework/console/controllers/HelpController.php
 
 		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
