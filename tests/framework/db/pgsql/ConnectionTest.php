@@ -10,6 +10,7 @@ namespace yiiunit\framework\db\pgsql;
 
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\db\Transaction;
 use yiiunit\base\db\BaseConnection;
 
@@ -103,28 +104,89 @@ class ConnectionTest extends BaseConnection
 
     public function testTransactionIsolation(): void
     {
-        $connection = $this->getConnection(true);
+        $connection = $this->getConnection(false, false);
 
-        $transaction = $connection->beginTransaction();
-        $transaction->setIsolationLevel(Transaction::READ_UNCOMMITTED);
+        $levels = [
+            Transaction::READ_UNCOMMITTED => 'read uncommitted',
+            Transaction::READ_COMMITTED => 'read committed',
+            Transaction::REPEATABLE_READ => 'repeatable read',
+            Transaction::SERIALIZABLE => 'serializable',
+        ];
+
+        foreach ($levels as $isolationLevel => $expected) {
+            $transaction = $connection->beginTransaction($isolationLevel);
+
+            self::assertSame(
+                $expected,
+                $connection->createCommand(
+                    <<<SQL
+                    SHOW transaction_isolation
+                    SQL,
+                )->queryScalar(),
+                'Requested level must be active inside the transaction.',
+            );
+
+            $transaction->commit();
+        }
+
+        $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE . ' READ ONLY DEFERRABLE');
+
+        self::assertSame(
+            'serializable',
+            $connection->createCommand('SHOW transaction_isolation')->queryScalar(),
+            'Compound level string must keep the level active.',
+        );
+        self::assertSame(
+            'on',
+            $connection->createCommand('SHOW transaction_read_only')->queryScalar(),
+            'Read-only mode must be active.',
+        );
+        self::assertSame(
+            'on',
+            $connection->createCommand('SHOW transaction_deferrable')->queryScalar(),
+            'Deferrable mode must be active.',
+        );
+
         $transaction->commit();
+    }
+
+    public function testSetTransactionIsolation(): void
+    {
+        $connection = $this->getConnection(false, false);
 
         $transaction = $connection->beginTransaction();
-        $transaction->setIsolationLevel(Transaction::READ_COMMITTED);
-        $transaction->commit();
 
-        $transaction = $connection->beginTransaction();
         $transaction->setIsolationLevel(Transaction::REPEATABLE_READ);
-        $transaction->commit();
 
-        $transaction = $connection->beginTransaction();
-        $transaction->setIsolationLevel(Transaction::SERIALIZABLE);
-        $transaction->commit();
+        self::assertSame(
+            'repeatable read',
+            $connection->createCommand('SHOW transaction_isolation')->queryScalar(),
+            'Level set mid-transaction must be active.',
+        );
 
-        $transaction = $connection->beginTransaction();
-        $transaction->setIsolationLevel(Transaction::SERIALIZABLE . ' READ ONLY DEFERRABLE');
         $transaction->commit();
+    }
 
-        $this->assertTrue(true); // No error occurred – assert passed.
+    public function testThrowExceptionWhenBeginTransactionIsolationLevelIsInvalid(): void
+    {
+        $connection = $this->getConnection(false, false);
+
+        try {
+            $connection->beginTransaction('INVALID LEVEL');
+
+            self::fail(
+                'Unknown isolation level must be rejected.',
+            );
+        } catch (Exception) {
+            // Expected: PostgreSQL rejects the unknown isolation level.
+        }
+
+        self::assertFalse(
+            $connection->pdo->inTransaction(),
+            'Failed begin must leave no open transaction.',
+        );
+
+        $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
+        $transaction->commit();
     }
 }

@@ -17,6 +17,7 @@ use yii\caching\CacheInterface;
 
 use function constant;
 use function in_array;
+use function is_array;
 use function preg_match;
 use function str_contains;
 use function strtolower;
@@ -320,6 +321,30 @@ class Connection extends Component
         'oci' => 'yii\db\oci\Command', // Oracle driver
         'mssql' => 'yii\db\mssql\Command', // older MSSQL driver on MS Windows hosts
         'dblib' => 'yii\db\mssql\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
+    ];
+    /**
+     * @var array<string, class-string<Transaction>|array<string, mixed>> mapping between PDO driver names and
+     * {@see Transaction} classes or configurations.
+     *
+     * The keys of the array are PDO driver names while the values are either the corresponding transaction class names
+     * or configurations. Please refer to {@see Yii::createObject()} for details on how to specify a configuration.
+     *
+     * This property is mainly used by {@see beginTransaction()} to start new database {@see Transaction} objects.
+     *
+     * You normally do not need to set this property unless you want to use your own {@see Transaction} class or support
+     * DBMS that is not supported by Yii.
+     * @since 22.0
+     */
+    public $transactionMap = [
+        'pgsql' => \yii\db\pgsql\Transaction::class, // PostgreSQL
+        'mysqli' => \yii\db\Transaction::class, // MySQL
+        'mysql' => \yii\db\Transaction::class, // MySQL
+        'sqlite' => \yii\db\Transaction::class, // sqlite 3
+        'sqlite2' => \yii\db\Transaction::class, // sqlite 2
+        'sqlsrv' => \yii\db\Transaction::class, // newer MSSQL driver on MS Windows hosts
+        'oci' => \yii\db\Transaction::class, // Oracle driver
+        'mssql' => \yii\db\Transaction::class, // older MSSQL driver on MS Windows hosts
+        'dblib' => \yii\db\Transaction::class, // dblib drivers on GNU/Linux (and maybe other OSes) hosts
     ];
     /**
      * @var bool whether to enable [savepoint](https://en.wikipedia.org/wiki/Savepoint).
@@ -801,8 +826,22 @@ class Connection extends Component
         $this->open();
 
         if (($transaction = $this->getTransaction()) === null) {
-            $transaction = $this->_transaction = new Transaction(['db' => $this]);
+            $driver = $this->getDriverName();
+
+            $config = ['class' => \yii\db\Transaction::class];
+
+            if (isset($this->transactionMap[$driver])) {
+                $config = !is_array($this->transactionMap[$driver])
+                    ? ['class' => $this->transactionMap[$driver]]
+                    : $this->transactionMap[$driver];
+            }
+
+            $config['db'] = $this;
+
+            /** @var Transaction $transaction */
+            $transaction = $this->_transaction = Yii::createObject($config);
         }
+
         $transaction->begin($isolationLevel);
 
         return $transaction;
