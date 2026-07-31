@@ -411,7 +411,7 @@ class PhpDocController extends ConsoleController
                     }
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
                     $docLine = $this->fixParamTypes($docLine);
-                } elseif (preg_match('/^(~~~|```)/', $docLine)) {
+                } elseif (strpos('```', $docLine) !== false) {
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
                 } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
