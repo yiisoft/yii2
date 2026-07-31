@@ -323,7 +323,8 @@ class Connection extends Component
         'dblib' => 'yii\db\mssql\Command', // dblib drivers on GNU/Linux (and maybe other OSes) hosts
     ];
     /**
-     * @var array<string, class-string> mapping between PDO driver names and {@see Transaction} classes.
+     * @var array<string, class-string<Transaction>|array<string, mixed>> mapping between PDO driver names and
+     * {@see Transaction} classes or configurations.
      *
      * The keys of the array are PDO driver names while the values are either the corresponding transaction class names
      * or configurations. Please refer to {@see Yii::createObject()} for details on how to specify a configuration.
