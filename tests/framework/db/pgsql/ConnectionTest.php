@@ -118,9 +118,10 @@ class ConnectionTest extends BaseConnection
 
             self::assertSame(
                 $expected,
-                $connection->createCommand(<<<SQL
-                SHOW transaction_isolation
-                SQL,
+                $connection->createCommand(
+                    <<<SQL
+                    SHOW transaction_isolation
+                    SQL,
                 )->queryScalar(),
                 'Requested level must be active inside the transaction.',
             );
