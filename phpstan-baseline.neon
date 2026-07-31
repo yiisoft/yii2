@@ -49,6 +49,12 @@ parameters:
 			path: framework/console/controllers/BaseMigrateController.php
 
 		-
+			message: '#^PHPDoc tag @var with type yii\\console\\Controller\<yii\\base\\Application\> is not subtype of native type yii\\base\\Controller\<yii\\console\\Application\>\|yii\\base\\Controller\<yii\\web\\Application\<yii\\web\\IdentityInterface\>\>\.$#'
+			identifier: varTag.nativeType
+			count: 2
+			path: framework/console/controllers/HelpController.php
+
+		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$modelClass\.$#'
 			identifier: property.notFound
 			count: 2
