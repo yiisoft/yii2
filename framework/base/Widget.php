@@ -190,7 +190,7 @@ class Widget extends Component implements ViewContextInterface
         $this->_id = $value;
     }
 
-    /** @var \yii\web\View */
+    /** @var \yii\web\View|null */
     private $_view;
 
     /**

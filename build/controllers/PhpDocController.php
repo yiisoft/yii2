@@ -833,7 +833,7 @@ class PhpDocController extends ConsoleController
                     continue;
                 }
 
-                $acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
+                $acr['comment'] = trim(preg_replace('#(^|\n)\h+\*\h?#', '$1 * ', $acr['comment']));
                 $props[$acr['name']][$acr['kind']] = [
                     'type' => $acr['type'],
                     'comment' => $this->fixSentence($acr['comment']),
@@ -926,7 +926,10 @@ class PhpDocController extends ConsoleController
             return '';
         }
 
-        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[\strlen($str) - 1] !== '.' ? '.' : '');
+        $endsWithCodeFence = substr($str, -3) === '```';
+        $suffix = !$endsWithCodeFence && $str[\strlen($str) - 1] !== '.' ? '.' : '';
+
+        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . $suffix;
     }
 
     protected function getPropParam($prop, $param)
@@ -942,13 +945,49 @@ class PhpDocController extends ConsoleController
     ): string {
         $docLine = " * @property{$annotationSuffix} {$type} \${$propName} ";
 
+        $isExample = false;
         $commentLines = [];
+        $exampleLines = [];
         $rawCommentLines = explode("\n", $comment);
-        foreach ($rawCommentLines as $line) {
-            $commentLines[] = ltrim(rtrim($line), '* ');
+
+        foreach ($rawCommentLines as $lineIndex => $line) {
+            $isCodeFence = strpos($line, '* ```') !== false;
+            $formattedLine = ltrim(rtrim($line), '* ');
+
+            if ($isCodeFence) {
+                if (!$isExample) {
+                    $isExample = true;
+                    $exampleLines[] = "\n * {$formattedLine}";
+                    continue;
+                }
+
+                $exampleLines[] = " * {$formattedLine}";
+                $example = implode("\n", $exampleLines);
+
+                foreach (array_slice($rawCommentLines, $lineIndex + 1) as $remainingLine) {
+                    if (ltrim(rtrim($remainingLine), '* ') !== '') {
+                        $example .= "\n *";
+                        break;
+                    }
+                }
+
+                $commentLines[] = $example;
+                $exampleLines = [];
+                $isExample = false;
+                continue;
+            }
+
+            if ($isExample) {
+                $exampleLines[] = rtrim($line);
+            } elseif ($formattedLine !== '') {
+                $commentLines[] = $formattedLine;
+            }
         }
 
-        return wordwrap($docLine . implode(' ', $commentLines), 110, "\n * ") . "\n";
+        $propertyDoc = wordwrap($docLine . implode(' ', $commentLines), 110, "\n * ");
+        $propertyDoc = preg_replace('/\h+\n/', "\n", $propertyDoc) ?? $propertyDoc;
+
+        return $propertyDoc . "\n";
     }
 
     /**

@@ -35,7 +35,11 @@ use yii\di\ServiceLocator;
  * @property-read string $version The version of this module.
  * @property-write string|callable|null $version The version of this module. Version can be specified as a PHP
  * callback, which can accept module instance as an argument and should return the actual version. For example:
- * ``` function (Module $module) { //return string } ```.
+ * ```
+ * function (Module $module) {
+ *     //return string
+ * }
+ * ```
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

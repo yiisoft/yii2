@@ -59,7 +59,10 @@ use yii\rbac\CheckAccessInterface;
  * @property-write string|array $returnUrl The URL that the user should be redirected to after login. If an
  * array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL. The first element
  * of the array should be the route, and the rest of the name-value pairs are GET parameters used to construct
- * the URL. For example, ``` ['admin/index', 'ref' => 1] ```.
+ * the URL. For example,
+ * ```
+ * ['admin/index', 'ref' => 1]
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

@@ -23,8 +23,8 @@ use yii\base\InvalidArgumentException;
  * @property array $models The list of data models in the current page.
  * @property-read Pagination|false $pagination The pagination object. If this is false, it means the
  * pagination is disabled.
- * @property-write array|Pagination|bool $pagination The pagination to be used by this data provider. This can
- * be one of the following: - a configuration array for creating the pagination object. The "class" element
+ * @property-write array|Pagination|false $pagination The pagination to be used by this data provider. This
+ * can be one of the following: - a configuration array for creating the pagination object. The "class" element
  * defaults to 'yii\data\Pagination' - an instance of [[Pagination]] or its subclass - false, if pagination needs
  * to be disabled.
  * @property-read Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled.
@@ -205,7 +205,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the pagination for this data provider.
-     * @param array|Pagination|bool $value the pagination to be used by this data provider.
+     * @param array|Pagination|false $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
      * - a configuration array for creating the pagination object. The "class" element defaults
