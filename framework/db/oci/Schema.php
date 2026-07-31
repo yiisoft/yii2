@@ -303,7 +303,11 @@ SQL;
             A.DATA_PRECISION,
             A.DATA_SCALE,
             (
-            CASE A.CHAR_USED WHEN 'C' THEN A.CHAR_LENGTH
+            CASE
+                WHEN A.DATA_TYPE = 'DATE'
+                    OR A.DATA_TYPE LIKE 'TIMESTAMP%'
+                    OR A.DATA_TYPE LIKE 'INTERVAL%' THEN NULL
+                WHEN A.CHAR_USED = 'C' THEN A.CHAR_LENGTH
                 ELSE A.DATA_LENGTH
             END
             ) AS DATA_LENGTH,

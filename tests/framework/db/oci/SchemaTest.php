@@ -17,6 +17,7 @@ use yiiunit\base\db\BaseSchema;
 use yiiunit\support\DbHelper;
 
 use function array_filter;
+use function array_keys;
 use function array_values;
 
 /**
@@ -28,6 +29,49 @@ use function array_values;
 final class SchemaTest extends BaseSchema
 {
     public $driverName = 'oci';
+
+    public function testDateTimeAndIntervalColumnSizesDoNotExposeInternalStorageLength(): void
+    {
+        $db = $this->getConnection(false);
+
+        $tableName = 'datetime_column_length';
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+
+        $columns = [
+            'date_value' => 'DATE',
+            'timestamp_value' => 'TIMESTAMP',
+            'timestamp_precise' => 'TIMESTAMP(9)',
+            'timestamp_tz' => 'TIMESTAMP WITH TIME ZONE',
+            'timestamp_ltz' => 'TIMESTAMP WITH LOCAL TIME ZONE',
+            'interval_ym' => 'INTERVAL YEAR TO MONTH',
+            'interval_ds' => 'INTERVAL DAY(5) TO SECOND(4)',
+        ];
+
+        $db->createCommand()->createTable($tableName, $columns)->execute();
+
+        $tableSchema = $db->getTableSchema($tableName, true);
+
+        foreach (array_keys($columns) as $columnName) {
+            self::assertNull(
+                $tableSchema->columns[$columnName]->size,
+                "Storage length must stay hidden for '{$columnName}'.",
+            );
+        }
+
+        self::assertSame(
+            'DATE',
+            $tableSchema->columns['date_value']->dbType,
+            'Type reflection must not drift.',
+        );
+        self::assertSame(
+            9,
+            $tableSchema->columns['timestamp_precise']->scale,
+            'Fractional seconds precision must survive.',
+        );
+
+        DbHelper::dropTablesIfExist($db, [$tableName]);
+    }
 
     public function testExpressionAndLiteralColumnDefaultValues(): void
     {

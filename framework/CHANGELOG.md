@@ -151,6 +151,7 @@ Yii Framework 2 Change Log
 - Bug #7843: Preserve defaults on non-auto-incrementing primary key columns in MySQL/MariaDB, PostgreSQL, SQLite, and MSSQL schema metadata, matching the existing Oracle driver behavior (terabytesoftw)
 - Bug #13631: Preserve referenced schema names in MySQL/MariaDB table foreign key metadata for cross-schema relations (terabytesoftw)
 - Bug #17545: Apply PostgreSQL transaction isolation levels after starting the transaction, via the new `yii\db\pgsql\Transaction` class resolved through `yii\db\Connection::$transactionMap` (terabytesoftw)
+- Bug #16043: Fix `yii\db\oci\Schema::findColumns()` to report `null` size for `DATE`, `TIMESTAMP` and `INTERVAL` columns instead of their internal storage byte length (terabytesoftw)
 
 2.0.56 under development
 ------------------------

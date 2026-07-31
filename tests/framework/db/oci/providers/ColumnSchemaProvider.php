@@ -395,7 +395,6 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         $columns['numeric_col']['dbType'] = 'NUMBER';
         $columns['numeric_col']['size'] = 22;
         $columns['time']['dbType'] = 'TIMESTAMP(6)';
-        $columns['time']['size'] = 11;
         $columns['time']['scale'] = 6;
         $columns['time']['defaultValue'] = new Expression(
             "to_timestamp('2002-01-01 00:00:00', 'yyyy-mm-dd hh24:mi:ss')",
@@ -415,7 +414,6 @@ final class ColumnSchemaProvider extends \yiiunit\base\db\providers\ColumnSchema
         $columns['ts_default']['phpType'] = 'string';
         $columns['ts_default']['dbType'] = 'TIMESTAMP(6)';
         $columns['ts_default']['scale'] = 6;
-        $columns['ts_default']['size'] = 11;
         $columns['bit_col']['type'] = 'string';
         $columns['bit_col']['phpType'] = 'string';
         $columns['bit_col']['dbType'] = 'CHAR';
