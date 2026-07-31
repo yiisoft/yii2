@@ -847,7 +847,7 @@ class PhpDocController extends ConsoleController
             ksort($props);
 
             foreach ($props as $propName => &$prop) {
-                $annotation = '';
+                $annotationSuffix = '';
                 if (isset($prop['get'], $prop['set'])) {
                     if ($prop['get']['type'] !== $prop['set']['type']) {
                         $phpdoc .= $this->generatePropertyDocLine(
@@ -866,18 +866,18 @@ class PhpDocController extends ConsoleController
                     }
                 } elseif (isset($prop['get'])) {
                     if (!$this->hasSetterInParents($className, $propName)) {
-                        $annotation = '-read';
+                        $annotationSuffix = '-read';
                     }
                 } elseif (isset($prop['set'])) {
                     if (!$this->hasGetterInParents($className, $propName)) {
-                        $annotation = '-write';
+                        $annotationSuffix = '-write';
                     }
                 } else {
                     continue;
                 }
 
                 $phpdoc .= $this->generatePropertyDocLine(
-                    $annotation,
+                    $annotationSuffix,
                     $propName,
                     $this->getPropParam($prop, 'type'),
                     $this->getPropParam($prop, 'comment')
