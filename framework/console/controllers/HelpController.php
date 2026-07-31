@@ -86,7 +86,6 @@ class HelpController extends Controller
     {
         foreach ($this->getCommandDescriptions() as $command => $description) {
             $result = Yii::$app->createController($command);
-            /** @var Controller<Application> $controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             $prefix = $controller->getUniqueId();
@@ -114,7 +113,6 @@ class HelpController extends Controller
             return;
         }
 
-        /** @var Controller<Application> $controller */
         list($controller, $actionID) = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -147,7 +145,6 @@ class HelpController extends Controller
             return;
         }
 
-        /** @var Controller<Application> $controller */
         list($controller, $actionID) = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
@@ -185,7 +182,6 @@ class HelpController extends Controller
             if ($result === false || !$result[0] instanceof Controller) {
                 return false;
             }
-            /** @var Controller<Application> $controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             return $actions !== [];
@@ -310,7 +306,6 @@ class HelpController extends Controller
         $maxLength = 0;
         foreach ($commands as $command => $description) {
             $result = Yii::$app->createController($command);
-            /** @var Controller<Application> $controller */
             list($controller, $actionID) = $result;
             $actions = $this->getActions($controller);
             $prefix = $controller->getUniqueId();
