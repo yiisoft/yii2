@@ -18,7 +18,7 @@ use Yii;
  *
  * @property-read string|null $id ID of the widget.
  * @property-write string $id Id of the widget.
- * @property View $view The view object that can be used to render views or view files.
+ * @property \yii\web\View $view The view object that can be used to render views or view files.
  * @property-read string $viewPath The directory containing the view files for this widget.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -190,6 +190,7 @@ class Widget extends Component implements ViewContextInterface
         $this->_id = $value;
     }
 
+    /** @var \yii\web\View */
     private $_view;
 
     /**
@@ -197,12 +198,14 @@ class Widget extends Component implements ViewContextInterface
      * The [[render()]] and [[renderFile()]] methods will use
      * this view object to implement the actual view rendering.
      * If not set, it will default to the "view" application component.
-     * @return View the view object that can be used to render views or view files.
+     * @return \yii\web\View the view object that can be used to render views or view files.
      */
     public function getView()
     {
         if ($this->_view === null) {
-            $this->_view = Yii::$app->getView();
+            /** @var \yii\web\View $view */
+            $view = Yii::$app->getView();
+            $this->_view = $view;
         }
 
         return $this->_view;
@@ -210,7 +213,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Sets the view object to be used by this widget.
-     * @param View $view the view object that can be used to render views or view files.
+     * @param \yii\web\View $view the view object that can be used to render views or view files.
      */
     public function setView($view)
     {
