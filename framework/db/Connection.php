@@ -119,9 +119,10 @@ use yii\caching\CacheInterface;
  * @property-read Connection|null $master The currently active master connection. `null` is returned if there
  * is no master available.
  * @property-read PDO $masterPdo The PDO instance for the currently active master connection.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type of
- * this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for details.
- * @property-read Schema $schema The schema information for the database opened by this connection.
+ * @property TQueryBuilder $queryBuilder The query builder for the current DB connection. Note that the type
+ * of this property differs in getter and setter. See [[getQueryBuilder()]] and [[setQueryBuilder()]] for
+ * details.
+ * @property-read TSchema $schema The schema information for the database opened by this connection.
  * @property-read string $serverVersion Server version as a string.
  * @property-read Connection|null $slave The currently active slave connection. `null` is returned if there is
  * no slave available and `$fallbackToMaster` is false.

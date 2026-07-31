@@ -24,7 +24,7 @@ use yii\caching\TagDependency;
  *
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
  * the sequence object.
- * @property-read QueryBuilder $queryBuilder The query builder for this connection.
+ * @property-read TQueryBuilder $queryBuilder The query builder for this connection.
  * @property-read string[] $schemaNames All schema names in the database, except system schemas.
  * @property-read string $serverVersion Server version as a string.
  * @property-read string[] $tableNames All table names in the database.
