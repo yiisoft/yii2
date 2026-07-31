@@ -11,8 +11,10 @@ namespace yiiunit\framework\db\pgsql;
 use PHPUnit\Framework\Attributes\Group;
 use yii\db\Connection;
 use yii\db\Exception;
+use yii\db\pgsql\Schema;
 use yii\db\Transaction;
 use yiiunit\base\db\BaseConnection;
+use yiiunit\support\DbHelper;
 
 /**
  * Unit tests for {@see \yii\db\pgsql\Connection} functionality for the PostgreSQL driver.
@@ -45,6 +47,58 @@ class ConnectionTest extends BaseConnection
     public function testConnection(): void
     {
         $this->assertIsObject($this->getConnection(true));
+    }
+
+    public function testConfiguredDefaultSchemaIsAppliedToSession(): void
+    {
+        $connection = $this->getConnection(true);
+
+        self::assertSame(
+            'public',
+            $connection->createCommand(
+                <<<SQL
+                SELECT current_schema()
+                SQL,
+            )->queryScalar(),
+            'Default schemaMap must leave the server search path untouched.',
+        );
+
+        $connection->close();
+
+        $connection->schemaMap['pgsql'] = [
+            'class' => Schema::class,
+            'defaultSchema' => 'schema1',
+        ];
+
+        $connection->open();
+
+        self::assertSame(
+            'schema1',
+            $connection->createCommand(
+                <<<SQL
+                SELECT current_schema()
+                SQL,
+            )->queryScalar(),
+            'The configured default schema must be the PostgreSQL current schema.',
+        );
+
+        DbHelper::dropTablesIfExist($connection, ['yii2_issue_12763']);
+
+        $connection->createCommand()->createTable('yii2_issue_12763', ['id' => Schema::TYPE_PK])->execute();
+
+        $tableSchema = $connection->getTableSchema('yii2_issue_12763');
+
+        self::assertNotNull(
+            $tableSchema,
+            'Metadata for the unqualified table name must resolve.',
+        );
+        self::assertSame(
+            'schema1',
+            $tableSchema->schemaName,
+            'Table must be created in the configured schema.',
+        );
+
+        DbHelper::dropTablesIfExist($connection, ['yii2_issue_12763']);
     }
 
     public function testQuoteValue(): void

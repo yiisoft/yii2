@@ -67,6 +67,29 @@ for more details. Below are some examples:
 * MS SQL Server (via mssql driver): `mssql:host=localhost;dbname=mydatabase`
 * Oracle: `oci:dbname=//localhost:1521/mydatabase`
 
+To use a non-`public` PostgreSQL schema as the default for unqualified table names, configure it explicitly in
+[[yii\db\Connection::schemaMap|schemaMap]]:
+
+```php
+'db' => [
+    'class' => 'yii\db\Connection',
+    'dsn' => 'pgsql:host=localhost;dbname=mydatabase',
+    'username' => 'user',
+    'password' => 'password',
+    'schemaMap' => [
+        'pgsql' => [
+            'class' => 'yii\db\pgsql\Schema',
+            'defaultSchema' => 'myschema',
+        ],
+    ],
+],
+```
+
+Yii applies an explicitly configured `defaultSchema` as PostgreSQL's session `search_path` when the connection opens.
+This keeps schema metadata lookup, migrations, queries, and unqualified SQL on the same schema; objects in other
+schemas, including `public`, must then be referenced with schema-qualified names. The PostgreSQL server configuration
+remains unchanged when `defaultSchema` is not explicitly configured.
+
 Note that if you are connecting with a database via ODBC, you should configure the [[yii\db\Connection::driverName]]
 property so that Yii can know the actual database type. For example,
 

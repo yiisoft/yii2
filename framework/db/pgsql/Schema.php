@@ -43,7 +43,10 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
 
     public const TYPE_JSONB = 'jsonb';
     /**
-     * @var string the default schema used for the current session.
+     * @var string the schema used for unqualified table metadata lookups. When explicitly configured through
+     * {@see \yii\db\Connection::$schemaMap} before the connection opens, it is also applied as the PostgreSQL session
+     * `search_path`.
+     * @see https://www.postgresql.org/docs/current/ddl-schemas.html#DDL-SCHEMAS-PATH
      */
     public $defaultSchema = 'public';
     /**

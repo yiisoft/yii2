@@ -152,6 +152,7 @@ Yii Framework 2 Change Log
 - Bug #13631: Preserve referenced schema names in MySQL/MariaDB table foreign key metadata for cross-schema relations (terabytesoftw)
 - Bug #17545: Apply PostgreSQL transaction isolation levels after starting the transaction, via the new `yii\db\pgsql\Transaction` class resolved through `yii\db\Connection::$transactionMap` (terabytesoftw)
 - Bug #16043: Fix `yii\db\oci\Schema::findColumns()` to report `null` size for `DATE`, `TIMESTAMP` and `INTERVAL` columns instead of their internal storage byte length (terabytesoftw)
+- Bug #12763: Apply an explicitly configured PostgreSQL `defaultSchema` as the session `search_path` when opening the connection (terabytesoftw)
 
 2.0.56 under development
 ------------------------
