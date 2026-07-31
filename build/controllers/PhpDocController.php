@@ -847,33 +847,41 @@ class PhpDocController extends ConsoleController
             ksort($props);
 
             foreach ($props as $propName => &$prop) {
-                $docLine = ' * @property';
-                $note = '';
+                $annotation = '';
                 if (isset($prop['get'], $prop['set'])) {
                     if ($prop['get']['type'] !== $prop['set']['type']) {
-                        $note = ' Note that the type of this property differs in getter and setter.'
-                            . ' See [[get' . ucfirst($propName) . '()]]'
-                            . ' and [[set' . ucfirst($propName) . '()]] for details.';
+                        $phpdoc .= $this->generatePropertyDocLine(
+                            '-read',
+                            $propName,
+                            $prop['get']['type'],
+                            $prop['get']['comment']
+                        );
+                        $phpdoc .= $this->generatePropertyDocLine(
+                            '-write',
+                            $propName,
+                            $prop['set']['type'],
+                            $prop['set']['comment']
+                        );
+                        continue;
                     }
                 } elseif (isset($prop['get'])) {
                     if (!$this->hasSetterInParents($className, $propName)) {
-                        $docLine .= '-read';
+                        $annotation = '-read';
                     }
                 } elseif (isset($prop['set'])) {
                     if (!$this->hasGetterInParents($className, $propName)) {
-                        $docLine .= '-write';
+                        $annotation = '-write';
                     }
                 } else {
                     continue;
                 }
-                $docLine .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
-                $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
-                foreach ($comment as &$cline) {
-                    $cline = ltrim(rtrim($cline), '* ');
-                }
-                $docLine = wordwrap($docLine . implode(' ', $comment), 110, "\n * ") . "\n";
 
-                $phpdoc .= $docLine;
+                $phpdoc .= $this->generatePropertyDocLine(
+                    $annotation,
+                    $propName,
+                    $this->getPropParam($prop, 'type'),
+                    $this->getPropParam($prop, 'comment')
+                );
             }
         }
 
@@ -924,6 +932,23 @@ class PhpDocController extends ConsoleController
     protected function getPropParam($prop, $param)
     {
         return isset($prop['property']) ? $prop['property'][$param] : (isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param]);
+    }
+
+    private function generatePropertyDocLine(
+        string $annotationSuffix,
+        string $propName,
+        string $type,
+        string $comment
+    ): string {
+        $docLine = " * @property{$annotationSuffix} {$type} \${$propName} ";
+
+        $commentLines = [];
+        $rawCommentLines = explode("\n", $comment);
+        foreach ($rawCommentLines as $line) {
+            $commentLines[] = ltrim(rtrim($line), '* ');
+        }
+
+        return wordwrap($docLine . implode(' ', $commentLines), 110, "\n * ") . "\n";
     }
 
     /**
