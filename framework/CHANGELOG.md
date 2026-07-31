@@ -25,7 +25,7 @@ Yii Framework 2 Change Log
 - Bug #20986: Fix `@return` annotation for `yii\base\Component::behaviors()` (mspirkov)
 - Bug #20986: Fix `@param` annotation for `$behavior` in `yii\base\Component::attachBehavior()` (mspirkov)
 - Bug #20987: Fix `@var` annotations for `TimestampBehavior` properties (mspirkov)
-- Enh #20988: Add generics to `yii\db\Connection` and `yii\db\Schema` so `getSchema()` and `getQueryBuilder()` infer driver-specific types (terabytesoftw)
+- Enh #20988, #21040: Add generics to `yii\db\Connection` and `yii\db\Schema` so `getSchema()` and `getQueryBuilder()` infer driver-specific types (terabytesoftw, mspirkov)
 - Bug #20994: Fix `@var` annotations for `BlameableBehavior` properties (mspirkov)
 - Enh #20990: Show created migration file path on migrate create CLI command (flaviovs)
 
