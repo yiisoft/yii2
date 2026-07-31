@@ -417,10 +417,6 @@ At the time of this writing, only MSSQL and SQLite are affected by this limitati
 > Note: SQLite only supports two isolation levels, so you can only use `READ UNCOMMITTED` and `SERIALIZABLE`.
 Usage of other levels will result in an exception being thrown.
 
-> Note: PostgreSQL does not allow setting the isolation level before the transaction starts so you can not
-specify the isolation level directly when starting the transaction.
-You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
-
 [isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
