@@ -702,9 +702,14 @@ class PhpDocController extends ConsoleController
         foreach ($lines as $i => $line) {
             $line = trim($line);
             if (strncmp($line, '* @property', 11) === 0) {
+                if ($propertyPosition === false) {
+                    $propertyPosition = $i - 1;
+                }
                 $propertyPart = true;
             } elseif ($propertyPart && $line === '*') {
                 $propertyPosition = $i;
+                $propertyPart = false;
+            } elseif ($propertyPart && $line === '*/') {
                 $propertyPart = false;
             }
             if (strncmp($line, '* @author ', 10) === 0 && $propertyPosition === false) {
