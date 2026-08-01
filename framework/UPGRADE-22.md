@@ -538,6 +538,13 @@ Oracle BLOB inserts, updates, and upserts now use native PDO_OCI LOB locators. A
 
 ### PostgreSQL
 
+An explicitly configured `pgsql\Schema::$defaultSchema` in `Connection::$schemaMap` is now applied as the PostgreSQL
+session `search_path` when the connection opens. Unqualified migration, query-builder, Active Record, and raw SQL table
+names therefore use the configured schema. Remove an `afterOpen` handler that only issued the same `SET search_path`
+statement; configurations that do not explicitly set `defaultSchema` keep the server-provided search path unchanged.
+Pooled master and slave connections apply the `search_path` only when `masterConfig`/`slaveConfig` includes the same
+`schemaMap` entry, matching the existing pool configuration contract.
+
 `pgsql\QueryBuilder::oldUpsert()` and `newUpsert()` have been removed. `upsert()` now uses `ON CONFLICT` directly. Remove
 calls or overrides of those protected methods.
 

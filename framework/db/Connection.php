@@ -753,6 +753,7 @@ class Connection extends Component
      * The default implementation turns on `PDO::ATTR_EMULATE_PREPARES`
      * if [[emulatePrepare]] is true, and sets the database [[charset]] if it is not empty. MySQL and MariaDB
      * connections fall back to `utf8mb4` when neither [[charset]] nor the [[dsn]] specifies a charset.
+     * For PostgreSQL, an explicitly configured `Schema::$defaultSchema` is applied as the session `search_path`.
      * It then triggers an [[EVENT_AFTER_OPEN]] event.
      */
     protected function initConnection()
@@ -781,6 +782,12 @@ class Connection extends Component
             && !str_contains(strtolower((string) $this->dsn), 'charset=')
         ) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote('utf8mb4'));
+        }
+
+        if ($driverName === 'pgsql' && isset($this->schemaMap['pgsql']['defaultSchema'])) {
+            $schema = $this->getSchema();
+
+            $this->pdo->exec('SET search_path TO ' . $schema->quoteSimpleTableName($schema->defaultSchema));
         }
 
         $this->trigger(self::EVENT_AFTER_OPEN);
