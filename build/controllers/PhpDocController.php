@@ -676,7 +676,7 @@ class PhpDocController extends ConsoleController
         $n = \count($lines);
         for ($i = 0; $i < $n; $i++) {
             $lines[$i] = rtrim($lines[$i]);
-            if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
+            if (trim($lines[$i]) == '*' && isset($lines[$i + 1]) && trim($lines[$i + 1]) == '*') {
                 unset($lines[$i]);
             }
         }
