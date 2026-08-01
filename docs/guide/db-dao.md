@@ -90,6 +90,11 @@ This keeps schema metadata lookup, migrations, queries, and unqualified SQL on t
 schemas, including `public`, must then be referenced with schema-qualified names. The PostgreSQL server configuration
 remains unchanged when `defaultSchema` is not explicitly configured.
 
+When the connection uses [[yii\db\Connection::masters|masters]] or [[yii\db\Connection::slaves|slaves]], include the
+same `schemaMap` entry in [[yii\db\Connection::masterConfig|masterConfig]] or
+[[yii\db\Connection::slaveConfig|slaveConfig]]: pooled connections only apply their own configuration, matching how
+`charset` and `attributes` work for server pools.
+
 Note that if you are connecting with a database via ODBC, you should configure the [[yii\db\Connection::driverName]]
 property so that Yii can know the actual database type. For example,
 
