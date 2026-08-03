@@ -104,8 +104,8 @@ class View extends \yii\base\View
      */
     public const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
     /**
-     * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
-     * are the registered [[AssetBundle]] objects.
+     * @var array<string, AssetBundle|bool> list of the registered asset bundles. The keys are the
+     * bundle names, and the values are the registered [[AssetBundle]] objects.
      * @see registerAssetBundle()
      */
     public $assetBundles = [];
@@ -528,7 +528,7 @@ class View extends \yii\base\View
 
         if (empty($depends)) {
             // register directly without AssetManager
-            if ($appendTimestamp && Url::isRelative($url)) {
+            if ($appendTimestamp && Url::isRelative($url) && strpbrk($url, '?#') === false) {
                 $prefix = Yii::getAlias('@web');
                 $prefixLength = strlen($prefix);
                 $trimmedUrl = ltrim((substr($url, 0, $prefixLength) === $prefix) ? substr($url, $prefixLength) : $url, '/');

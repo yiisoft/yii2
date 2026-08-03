@@ -10,17 +10,12 @@ namespace yii\build\controllers;
 
 use Yii;
 use yii\base\Model;
-use yii\base\Module;
 use yii\console\Application;
 use yii\console\Controller as ConsoleController;
-use yii\db\QueryBuilder;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
-use yii\log\Dispatcher;
-use yii\log\Target;
 use yii\web\Controller as WebController;
-use yii\web\Request as WebRequest;
 
 /**
  * PhpDocController is there to help to maintain PHPDoc annotation in class files.
@@ -51,22 +46,6 @@ class PhpDocController extends ConsoleController
         ],
         Model::class => [
             'errors',
-        ],
-        Module::class => [
-            'aliases',
-        ],
-        Dispatcher::class => [
-            'flushInterval',
-            'logger',
-        ],
-        Target::class => [
-            'enabled',
-        ],
-        WebRequest::class => [
-            'hostInfo',
-        ],
-        QueryBuilder::class => [
-            'conditionClasses',
         ],
     ];
 
@@ -411,7 +390,7 @@ class PhpDocController extends ConsoleController
                     }
                     $docLine = preg_replace('/\s+/', ' ', $docLine);
                     $docLine = $this->fixParamTypes($docLine);
-                } elseif (preg_match('/^(~~~|```)/', $docLine)) {
+                } elseif (strpos($docLine, '```') !== false) {
                     $codeBlock = !$codeBlock;
                     $listIndent = '';
                 } elseif (preg_match('/^(\s*)([0-9]+\.|-|\*|\+) /', $docLine, $matches)) {
@@ -676,7 +655,7 @@ class PhpDocController extends ConsoleController
         $n = \count($lines);
         for ($i = 0; $i < $n; $i++) {
             $lines[$i] = rtrim($lines[$i]);
-            if (trim($lines[$i]) == '*' && trim($lines[$i + 1]) == '*') {
+            if (trim($lines[$i]) == '*' && isset($lines[$i + 1]) && trim($lines[$i + 1]) == '*') {
                 unset($lines[$i]);
             }
         }
@@ -702,9 +681,14 @@ class PhpDocController extends ConsoleController
         foreach ($lines as $i => $line) {
             $line = trim($line);
             if (strncmp($line, '* @property', 11) === 0) {
+                if ($propertyPosition === false) {
+                    $propertyPosition = $i - 1;
+                }
                 $propertyPart = true;
             } elseif ($propertyPart && $line === '*') {
                 $propertyPosition = $i;
+                $propertyPart = false;
+            } elseif ($propertyPart && $line === '*/') {
                 $propertyPart = false;
             }
             if (strncmp($line, '* @author ', 10) === 0 && $propertyPosition === false) {
@@ -833,7 +817,7 @@ class PhpDocController extends ConsoleController
                     continue;
                 }
 
-                $acr['comment'] = trim(preg_replace('#(^|\n)\s+\*\s?#', '$1 * ', $acr['comment']));
+                $acr['comment'] = trim(preg_replace('#(^|\n)\h+\*\h?#', '$1 * ', $acr['comment']));
                 $props[$acr['name']][$acr['kind']] = [
                     'type' => $acr['type'],
                     'comment' => $this->fixSentence($acr['comment']),
@@ -847,33 +831,41 @@ class PhpDocController extends ConsoleController
             ksort($props);
 
             foreach ($props as $propName => &$prop) {
-                $docLine = ' * @property';
-                $note = '';
+                $annotationSuffix = '';
                 if (isset($prop['get'], $prop['set'])) {
                     if ($prop['get']['type'] !== $prop['set']['type']) {
-                        $note = ' Note that the type of this property differs in getter and setter.'
-                            . ' See [[get' . ucfirst($propName) . '()]]'
-                            . ' and [[set' . ucfirst($propName) . '()]] for details.';
+                        $phpdoc .= $this->generatePropertyDocLine(
+                            '-read',
+                            $propName,
+                            $prop['get']['type'],
+                            $prop['get']['comment']
+                        );
+                        $phpdoc .= $this->generatePropertyDocLine(
+                            '-write',
+                            $propName,
+                            $prop['set']['type'],
+                            $prop['set']['comment']
+                        );
+                        continue;
                     }
                 } elseif (isset($prop['get'])) {
                     if (!$this->hasSetterInParents($className, $propName)) {
-                        $docLine .= '-read';
+                        $annotationSuffix = '-read';
                     }
                 } elseif (isset($prop['set'])) {
                     if (!$this->hasGetterInParents($className, $propName)) {
-                        $docLine .= '-write';
+                        $annotationSuffix = '-write';
                     }
                 } else {
                     continue;
                 }
-                $docLine .= ' ' . $this->getPropParam($prop, 'type') . " $$propName ";
-                $comment = explode("\n", $this->getPropParam($prop, 'comment') . $note);
-                foreach ($comment as &$cline) {
-                    $cline = ltrim(rtrim($cline), '* ');
-                }
-                $docLine = wordwrap($docLine . implode(' ', $comment), 110, "\n * ") . "\n";
 
-                $phpdoc .= $docLine;
+                $phpdoc .= $this->generatePropertyDocLine(
+                    $annotationSuffix,
+                    $propName,
+                    $this->getPropParam($prop, 'type'),
+                    $this->getPropParam($prop, 'comment')
+                );
             }
         }
 
@@ -918,12 +910,68 @@ class PhpDocController extends ConsoleController
             return '';
         }
 
-        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[\strlen($str) - 1] !== '.' ? '.' : '');
+        $endsWithCodeFence = substr($str, -3) === '```';
+        $suffix = !$endsWithCodeFence && $str[\strlen($str) - 1] !== '.' ? '.' : '';
+
+        return strtoupper(substr($str, 0, 1)) . substr($str, 1) . $suffix;
     }
 
     protected function getPropParam($prop, $param)
     {
         return isset($prop['property']) ? $prop['property'][$param] : (isset($prop['get']) ? $prop['get'][$param] : $prop['set'][$param]);
+    }
+
+    private function generatePropertyDocLine(
+        string $annotationSuffix,
+        string $propName,
+        string $type,
+        string $comment
+    ): string {
+        $docLine = " * @property{$annotationSuffix} {$type} \${$propName} ";
+
+        $isExample = false;
+        $commentLines = [];
+        $exampleLines = [];
+        $rawCommentLines = explode("\n", $comment);
+
+        foreach ($rawCommentLines as $lineIndex => $line) {
+            $isCodeFence = strpos($line, '* ```') !== false;
+            $formattedLine = ltrim(rtrim($line), '* ');
+
+            if ($isCodeFence) {
+                if (!$isExample) {
+                    $isExample = true;
+                    $exampleLines[] = "\n * {$formattedLine}";
+                    continue;
+                }
+
+                $exampleLines[] = " * {$formattedLine}";
+                $example = implode("\n", $exampleLines);
+
+                foreach (array_slice($rawCommentLines, $lineIndex + 1) as $remainingLine) {
+                    if (ltrim(rtrim($remainingLine), '* ') !== '') {
+                        $example .= "\n *";
+                        break;
+                    }
+                }
+
+                $commentLines[] = $example;
+                $exampleLines = [];
+                $isExample = false;
+                continue;
+            }
+
+            if ($isExample) {
+                $exampleLines[] = rtrim($line);
+            } elseif ($formattedLine !== '') {
+                $commentLines[] = $formattedLine;
+            }
+        }
+
+        $propertyDoc = wordwrap($docLine . implode(' ', $commentLines), 110, "\n * ");
+        $propertyDoc = preg_replace('/\h+\n/', "\n", $propertyDoc) ?? $propertyDoc;
+
+        return $propertyDoc . "\n";
     }
 
     /**

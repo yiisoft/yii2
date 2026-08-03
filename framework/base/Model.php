@@ -55,8 +55,7 @@ use yii\validators\Validator;
  *
  * Empty array if no errors.
  * @property-read Validator[] $activeValidators The validators applicable to the current [[scenario]].
- * @property array<string, mixed> $attributes Attribute values (name => value). Note that the type of this
- * property differs in getter and setter. See [[getAttributes()]] and [[setAttributes()]] for details.
+ * @property array<string, mixed> $attributes Attribute values (name => value).
  * @property-read array<string, string> $firstErrors The first errors. The array keys are the attribute names,
  * and the array values are the corresponding error messages. An empty array will be returned if there is no
  * error.
@@ -744,7 +743,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Sets the attribute values in a massive way.
-     * @param array $values attribute values (name => value) to be assigned to the model.
+     * @param array<string, mixed> $values attribute values (name => value) to be assigned to the model.
      * @param bool $safeOnly whether the assignments should only be done to the safe attributes.
      * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
      * @see safeAttributes()

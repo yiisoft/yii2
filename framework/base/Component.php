@@ -464,7 +464,7 @@ class Component extends BaseObject
      *
      * Behaviors declared in this method will be attached to the component automatically (on demand).
      *
-     * @return array<array-key, class-string|array{class: class-string, ...}> the behavior configurations.
+     * @return array<array-key, class-string|array{class: class-string, ...}|Behavior> the behavior configurations.
      */
     public function behaviors()
     {
@@ -691,7 +691,7 @@ class Component extends BaseObject
      * configuration. After that, the behavior object will be attached to
      * this component by calling the [[Behavior::attach()]] method.
      * @param string $name the name of the behavior.
-     * @param string|array|Behavior<static> $behavior the behavior configuration. This can be one of the following:
+     * @param string|array|Behavior $behavior the behavior configuration. This can be one of the following:
      *
      *  - a [[Behavior]] object
      *  - a string specifying the behavior class
@@ -699,9 +699,6 @@ class Component extends BaseObject
      *
      * @return Behavior<static> the behavior object
      * @see detachBehavior()
-     *
-     * @phpstan-param string|array|Behavior<static> $behavior
-     * @psalm-param string|array|Behavior<self> $behavior
      *
      * @phpstan-return Behavior<static>
      * @psalm-return Behavior<self>
@@ -778,7 +775,7 @@ class Component extends BaseObject
      * @param string|int $name the name of the behavior. If this is an integer, it means the behavior
      * is an anonymous one. Otherwise, the behavior is a named one and any existing behavior with the same name
      * will be detached first.
-     * @param string|array|Behavior<static> $behavior the behavior to be attached
+     * @param string|array|Behavior $behavior the behavior to be attached
      * @return Behavior<static> the attached behavior.
      */
     private function attachBehaviorInternal($name, $behavior)

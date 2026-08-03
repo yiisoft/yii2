@@ -541,6 +541,58 @@ EOF;
         Yii::setAlias('@web', $originalAlias);
     }
 
+    /**
+     * @dataProvider sourceAssetWithTimestampDataProvider
+     *
+     * @see https://github.com/yiisoft/yii2/issues/20978
+     *
+     * @param string $assetClass Asset bundle class registered to produce timestamped URLs.
+     */
+    public function testSourceAssetWithTimestampDoesNotStatTimestampedUrl(string $assetClass): void
+    {
+        $view = $this->getView(['appendTimestamp' => true]);
+
+        $errors = [];
+
+        set_error_handler(
+            static function ($errno, $errstr) use (&$errors) {
+                if (strpos($errstr, 'filemtime(): stat failed') !== false) {
+                    $errors[] = $errstr;
+
+                    return true;
+                }
+
+                return false;
+            }
+        );
+
+        try {
+            $assetClass::register($view);
+            $html = $view->renderFile('@yiiunit/data/views/rawlayout.php');
+        } finally {
+            restore_error_handler();
+        }
+
+        $this->assertSame(
+            [],
+            $errors,
+            "No 'filemtime' stat warnings expected.",
+        );
+        $this->assertSame(
+            2,
+            substr_count($html, '?v='),
+            'Both asset URLs must keep their timestamp.',
+        );
+    }
+
+    public static function sourceAssetWithTimestampDataProvider(): array
+    {
+        return [
+            'array assets' => [TestSourceAssetWithPerFileOptions::class],
+            'string assets' => [TestSourceAsset::class],
+        ];
+    }
+
     public function testCustomFilePublishWithTimestamp(): void
     {
         $path = Yii::getAlias('@webroot');
@@ -593,6 +645,17 @@ class TestSourceAsset extends AssetBundle
     ];
     public $css = [
         'css/stub.css',
+    ];
+}
+
+class TestSourceAssetWithPerFileOptions extends AssetBundle
+{
+    public $sourcePath = '@testSourcePath';
+    public $js = [
+        ['js/jquery.js', 'defer' => true],
+    ];
+    public $css = [
+        ['css/stub.css', 'media' => 'print'],
     ];
 }
 

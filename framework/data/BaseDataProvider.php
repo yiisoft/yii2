@@ -21,11 +21,17 @@ use yii\base\InvalidArgumentException;
  * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
  * uniquely identified by the corresponding key value in this array.
  * @property array $models The list of data models in the current page.
- * @property Pagination|false $pagination The pagination object. If this is false, it means the pagination is
- * disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
- * [[setPagination()]] for details.
- * @property Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled. Note that
- * the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
+ * @property-read Pagination|false $pagination The pagination object. If this is false, it means the
+ * pagination is disabled.
+ * @property-write array|Pagination|false $pagination The pagination to be used by this data provider. This
+ * can be one of the following: - a configuration array for creating the pagination object. The "class" element
+ * defaults to 'yii\data\Pagination' - an instance of [[Pagination]] or its subclass - false, if pagination needs
+ * to be disabled.
+ * @property-read Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled.
+ * @property-write array|Sort|bool $sort The sort definition to be used by this data provider. This can be one
+ * of the following: - a configuration array for creating the sort definition object. The "class" element
+ * defaults to 'yii\data\Sort' - an instance of [[Sort]] or its subclass - false, if sorting needs to be
+ * disabled.
  * @property int $totalCount Total number of possible data models.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -199,7 +205,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the pagination for this data provider.
-     * @param array|Pagination|bool $value the pagination to be used by this data provider.
+     * @param array|Pagination|false $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
      * - a configuration array for creating the pagination object. The "class" element defaults
