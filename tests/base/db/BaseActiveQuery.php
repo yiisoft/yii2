@@ -15,6 +15,7 @@ use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\QueryBuilder;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\AlternativeConnectionRecord;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
@@ -313,5 +314,184 @@ abstract class BaseActiveQuery extends DatabaseTestCase
         $this->assertEquals(1, count($orders));
         $this->assertInstanceOf(Order::class, $orders[0]);
         $this->assertEquals(2, $orders[0]->id);
+    }
+
+    public function testExplicitConnectionIsUsedToPopulateModels(): void
+    {
+        $db = $this->createAlternativeConnection();
+
+        /** @var ActiveQuery<AlternativeConnectionRecord> $query */
+        $query = new ActiveQuery(AlternativeConnectionRecord::class);
+
+        $models = $query
+            ->orderBy(['id' => SORT_ASC])
+            ->all($db);
+
+        self::assertCount(
+            2,
+            $models,
+            'Record count mismatch.',
+        );
+        self::assertSame(
+            1,
+            $models[0]->id,
+            "First record id must be '1'.",
+        );
+        self::assertSame(
+            2,
+            $models[1]->id,
+            "Second record id must be '2'.",
+        );
+        self::assertSame(
+            'first',
+            $models[0]->name,
+            'First record name must match.',
+        );
+        self::assertSame(
+            'second',
+            $models[1]->name,
+            'Second record name must match.',
+        );
+        self::assertTrue(
+            $models[0]->populated,
+            "First record populated flag must be 'true'.",
+        );
+        self::assertTrue(
+            $models[1]->populated,
+            "Second record populated flag must be 'true'.",
+        );
+    }
+
+    public function testExplicitConnectionIsUsedToPopulateOneModel(): void
+    {
+        $db = $this->createAlternativeConnection();
+
+        /** @var ActiveQuery<AlternativeConnectionRecord> $query */
+        $query = new ActiveQuery(AlternativeConnectionRecord::class);
+
+        $model = $query
+            ->where(['id' => 2])
+            ->one($db);
+
+        self::assertInstanceOf(
+            AlternativeConnectionRecord::class,
+            $model,
+            'Model type mismatch.',
+        );
+        self::assertSame(
+            2,
+            $model->id,
+            "Model id must be '2'.",
+        );
+        self::assertSame(
+            'second',
+            $model->name,
+            'Model name must match.',
+        );
+        self::assertTrue(
+            $model->populated,
+            "Populated flag must be 'true'.",
+        );
+    }
+
+    public function testExplicitConnectionIsUsedToPopulateBatches(): void
+    {
+        $db = $this->createAlternativeConnection();
+
+        /** @var ActiveQuery<AlternativeConnectionRecord> $query */
+        $query = new ActiveQuery(AlternativeConnectionRecord::class);
+
+        $batches = iterator_to_array(
+            $query
+                ->orderBy(['id' => SORT_ASC])
+                ->batch(1, $db),
+                false,
+            );
+
+        self::assertCount(
+            2,
+            $batches,
+            'Batch count mismatch.',
+        );
+        self::assertSame(
+            1,
+            $batches[0][0]->id,
+            "First batch model id must be '1'.",
+        );
+        self::assertSame(
+            2,
+            $batches[1][0]->id,
+            "Second batch model id must be '2'.",
+        );
+        self::assertTrue(
+            $batches[0][0]->populated,
+            "First batch populated flag must be 'true'.",
+        );
+        self::assertTrue(
+            $batches[1][0]->populated,
+            "Second batch populated flag must be 'true'.",
+        );
+    }
+
+    public function testExplicitConnectionIsUsedToPopulateEachModel(): void
+    {
+        $db = $this->createAlternativeConnection();
+
+        /** @var ActiveQuery<AlternativeConnectionRecord> $query */
+        $query = new ActiveQuery(AlternativeConnectionRecord::class);
+
+        $models = iterator_to_array(
+            $query
+                ->orderBy(['id' => SORT_ASC])
+                ->each(1, $db),
+                false,
+            );
+
+        self::assertCount(
+            2,
+            $models,
+            'Model count mismatch.',
+        );
+        self::assertSame(
+            1,
+            $models[0]->id,
+            "First model id must be '1'.",
+        );
+        self::assertSame(
+            2,
+            $models[1]->id,
+            "Second model id must be '2'.",
+        );
+        self::assertTrue(
+            $models[0]->populated,
+            "First model populated flag must be 'true'.",
+        );
+        self::assertTrue(
+            $models[1]->populated,
+            "Second model populated flag must be 'true'.",
+        );
+    }
+
+    private function createAlternativeConnection(): Connection
+    {
+        $db = new Connection(['dsn' => 'sqlite::memory:']);
+
+        $db->open();
+        $db->createCommand(
+            <<<'SQL'
+            CREATE TABLE alternative_connection_record (
+                id INTEGER PRIMARY KEY,
+                name TEXT NOT NULL
+            )
+            SQL,
+        )->execute();
+        $db->createCommand(
+            <<<'SQL'
+            INSERT INTO alternative_connection_record (id, name)
+            VALUES (1, 'first'), (2, 'second')
+            SQL,
+        )->execute();
+
+        return $db;
     }
 }

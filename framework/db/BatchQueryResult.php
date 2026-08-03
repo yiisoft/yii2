@@ -172,7 +172,7 @@ class BatchQueryResult extends Component implements \Iterator
 
         $rows = $this->getRows();
 
-        return $this->query->populate($rows);
+        return $this->query->populate($rows, $this->db);
     }
 
     /**

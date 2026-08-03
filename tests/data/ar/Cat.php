@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace yiiunit\data\ar;
 
 use Exception;
+use yii\db\Connection;
 
 /**
  * Class Cat.
@@ -23,10 +24,11 @@ class Cat extends Animal
     /**
      * @param self $record
      * @param array $row
+     * @param Connection|null $db
      */
-    public static function populateRecord($record, $row): void
+    public static function populateRecord($record, $row, $db = null): void
     {
-        parent::populateRecord($record, $row);
+        parent::populateRecord($record, $row, $db);
 
         $record->does = 'meow';
     }

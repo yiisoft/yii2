@@ -10,6 +10,8 @@ declare(strict_types=1);
 
 namespace yiiunit\data\ar;
 
+use yii\db\Connection;
+
 /**
  * Class Dog.
  *
@@ -21,10 +23,11 @@ class Dog extends Animal
     /**
      * @param self $record
      * @param array $row
+     * @param Connection|null $db
      */
-    public static function populateRecord($record, $row): void
+    public static function populateRecord($record, $row, $db = null): void
     {
-        parent::populateRecord($record, $row);
+        parent::populateRecord($record, $row, $db);
 
         $record->does = 'bark';
     }
