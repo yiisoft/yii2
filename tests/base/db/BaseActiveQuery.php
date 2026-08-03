@@ -11,6 +11,7 @@ namespace yiiunit\base\db;
 use yiiunit\framework\db\DatabaseTestCase;
 use yiiunit\framework\db\GetTablesAliasTestTrait;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\Connection;
 use yii\db\QueryBuilder;
@@ -19,6 +20,7 @@ use yiiunit\data\ar\AlternativeConnectionRecord;
 use yiiunit\data\ar\BaseOnlyRecord;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\DefaultSchemaRecord;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Profile;
 
@@ -546,6 +548,20 @@ abstract class BaseActiveQuery extends DatabaseTestCase
             $model->populated,
             "Populated flag must be 'true'.",
         );
+    }
+
+    public function testThrowInvalidConfigExceptionWhenModelReliesOnDefaultSchemaReflection(): void
+    {
+        $db = $this->createAlternativeConnection();
+
+        $query = new ActiveQuery(DefaultSchemaRecord::class);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage(
+            'The table does not exist: alternative_connection_record',
+        );
+
+        $query->all($db);
     }
 
     private function createAlternativeConnection(): Connection
