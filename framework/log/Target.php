@@ -28,10 +28,16 @@ use yii\web\User;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property-read bool $enabled Indicates whether this log target is enabled. Defaults to true. Note that the type
- * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
- * @property-write bool|callable $enabled A boolean value or a callable to obtain the value from. Note that the type
- * of this property differs in getter and setter. See [[getEnabled()]] and [[setEnabled()]] for details.
+ * @property-read bool $enabled A value indicating whether this log target is enabled.
+ * @property-write bool|callable $enabled A boolean value or a callable to obtain the value from. The callable
+ * value is available since version 2.0.13. A callable may be used to determine whether the log target should be
+ * enabled in a dynamic way. For example, to only enable a log if the current user is logged in you can configure
+ * the target as follows:
+ * ```
+ * 'enabled' => function() {
+ *     return !Yii::$app->user->isGuest;
+ * }
+ * ```
  * @property-read int $levels The message levels that this target is interested in. This is a bitmap of level
  * values. Defaults to 0, meaning all available levels.
  * @property-write array|int $levels Message levels that this target is interested in.
