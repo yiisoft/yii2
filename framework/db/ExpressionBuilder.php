@@ -53,7 +53,16 @@ class ExpressionBuilder implements ExpressionBuilderInterface
                 || array_key_exists($newKeyWithoutColon, $newParams)
             );
             $newParams[$newKey] = $newParams[$duplicateKey];
-            $newSql = preg_replace('/' . preg_quote($duplicateKeyWithColon, '/') . '\b/', $newKey, $newSql);
+            $pattern = '~'
+                . "('(?:''|\\\\'|[^'])*'"        // single-quoted string
+                . '|"(?:""|\\\\"|[^"])*"'       // double-quoted string / identifier
+                . '|`(?:``|[^`])*`'             // backtick identifier
+                . '|--[^\r\n]*'                 // line comment
+                . '|/\*.*?\*/'                  // block comment
+                . ')(*SKIP)(*F)'
+                . '|(?<!:)' . preg_quote($duplicateKeyWithColon, '~') . '(?![A-Za-z0-9_])'
+                . '~s';
+            $newSql = preg_replace($pattern, $newKey, $newSql);
             unset($newParams[$duplicateKey]);
         }
         $params = array_merge($params, $newParams);

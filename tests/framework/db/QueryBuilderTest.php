@@ -1288,6 +1288,35 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '(a = :a) AND (a = :a2) AND (a = :a3)',
                 ['a' => 1, 'a2' => 2, ':a3' => 3],
             ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression("a = :a AND b = ':a'", ['a' => 2])],
+                "(a = :a) AND (a = :a1 AND b = ':a')",
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = ":a"', ['a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = ":a")',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a /* :a */', ['a' => 2])],
+                '(a = :a) AND (a = :a1 /* :a */)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a
+-- :a
+', ['a' => 2])],
+                '(a = :a) AND (a = :a1
+-- :a
+)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = `:a`', ['a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = `:a`)',
+                [':a' => 1, ':a1' => 2],
+            ],
         ];
     }
 
