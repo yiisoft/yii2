@@ -64,7 +64,7 @@ use yii\base\ErrorHandler;
 class Dispatcher extends Component
 {
     /**
-     * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
+     * @var array the log targets. Each array element represents a single [[Target|log target]] instance
      * or the configuration for creating the log target instance.
      */
     public $targets = [];

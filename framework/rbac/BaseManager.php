@@ -19,8 +19,8 @@ use yii\base\InvalidValueException;
  * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
  *
  * @property-read Role[] $defaultRoleInstances Default roles. The array is indexed by the role names.
- * @property string[] $defaultRoles Default roles. Note that the type of this property differs in getter and
- * setter. See [[getDefaultRoles()]] and [[setDefaultRoles()]] for details.
+ * @property-read string[] $defaultRoles Default roles.
+ * @property-write string[]|\Closure $defaultRoles Either array of roles or a callable returning it.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

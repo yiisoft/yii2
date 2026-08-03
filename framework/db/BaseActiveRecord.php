@@ -26,8 +26,9 @@ use yii\helpers\ArrayHelper;
  *
  * @property-read array $dirtyAttributes The changed attribute values (name-value pairs).
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
- * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
- * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
+ * @property-read array $oldAttributes The old attribute values (name-value pairs).
+ * @property-write array|null $oldAttributes Old attribute values to be set. If set to `null` this record is
+ * considered to be [[isNewRecord|new]].
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite or `$asArray` is `true`. A string is returned otherwise (null will be
  * returned if the key value is null).

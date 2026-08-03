@@ -7,5 +7,22 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
     ignore:
       - dependency-name: "yiisoft/*"
+
+  # Maintain dependencies for Composer
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    cooldown:
+      default-days: 7
+    groups:
+      composer-dependencies:
+        patterns:
+          - "*"
+    versioning-strategy: increase-if-necessary

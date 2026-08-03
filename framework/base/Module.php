@@ -32,8 +32,14 @@ use yii\di\ServiceLocator;
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property-read string $uniqueId The unique ID of the module.
- * @property string $version The version of this module. Note that the type of this property differs in getter
- * and setter. See [[getVersion()]] and [[setVersion()]] for details.
+ * @property-read string $version The version of this module.
+ * @property-write string|callable|null $version The version of this module. Version can be specified as a PHP
+ * callback, which can accept module instance as an argument and should return the actual version. For example:
+ * ```
+ * function (Module $module) {
+ *     //return string
+ * }
+ * ```
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
