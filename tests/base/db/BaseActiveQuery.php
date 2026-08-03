@@ -473,6 +473,39 @@ abstract class BaseActiveQuery extends DatabaseTestCase
         );
     }
 
+    public function testExplicitConnectionIsUsedToDeduplicateJoinedModels(): void
+    {
+        $db = $this->createAlternativeConnection();
+
+        /** @var ActiveQuery<AlternativeConnectionRecord> $query */
+        $query = new ActiveQuery(AlternativeConnectionRecord::class);
+
+        $models = $query
+            ->join(
+                'LEFT JOIN',
+                ['dup' => 'alternative_connection_record'],
+                '{{dup}}.[[id]] >= {{alternative_connection_record}}.[[id]]',
+            )
+            ->orderBy(['alternative_connection_record.id' => SORT_ASC])
+            ->all($db);
+
+        self::assertCount(
+            2,
+            $models,
+            'Join duplicates must be removed.',
+        );
+        self::assertSame(
+            1,
+            $models[0]->id,
+            "First model id must be '1'.",
+        );
+        self::assertSame(
+            2,
+            $models[1]->id,
+            "Second model id must be '2'.",
+        );
+    }
+
     public function testPopulateWithExplicitConnectionSupportsBaseActiveRecordModels(): void
     {
         $db = new Connection(['dsn' => 'sqlite::memory:']);

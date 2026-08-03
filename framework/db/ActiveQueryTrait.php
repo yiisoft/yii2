@@ -8,8 +8,6 @@
 
 namespace yii\db;
 
-use function get_class;
-
 /**
  * ActiveQueryTrait implements the common methods and properties for active record query classes.
  *
@@ -112,8 +110,8 @@ trait ActiveQueryTrait
      * @param array $rows The rows to be converted into model instances. Each array element represents a row of data.
      * @param Connection|null $db The database connection used to retrieve the rows.
      *
-     * @return array|ActiveRecord[] The model instances created from the rows. If [[asArray]] is true, the rows will be
-     * returned as is.
+     * @return array|BaseActiveRecord[] The model instances created from the rows. If [[asArray]] is true, the rows
+     * will be returned as is.
      * @since 2.0.11
      */
     protected function createModels($rows, $db = null)
@@ -122,17 +120,16 @@ trait ActiveQueryTrait
             return $rows;
         } else {
             $models = [];
-            /** @var ActiveRecord $class */
+            /** @var class-string<BaseActiveRecord> $class */
             $class = $this->modelClass;
 
             foreach ($rows as $row) {
                 $model = $class::instantiate($row);
-                $modelClass = get_class($model);
 
                 if ($model instanceof ActiveRecord) {
-                    $modelClass::populateRecord($model, $row, $db);
+                    $model::populateRecord($model, $row, $db);
                 } else {
-                    $modelClass::populateRecord($model, $row);
+                    $model::populateRecord($model, $row);
                 }
 
                 $models[] = $model;

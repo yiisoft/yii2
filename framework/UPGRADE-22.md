@@ -370,7 +370,8 @@ public static function populateRecord($record, $row, $db = null): void
 
 The attribute list still comes from `attributes()`, which reflects the schema through `getDb()` by default. A model
 whose table is only reachable through another connection must define that connection on the model by overriding
-`getDb()`, or declare its attribute list explicitly by overriding `attributes()`.
+`getDb()`, or declare its attribute list explicitly by overriding `attributes()`. The same applies to `primaryKey()`,
+which join deduplication and other primary-key dependent features resolve through the default schema.
 
 ### Composite `IN` and `NOT IN` conditions
 

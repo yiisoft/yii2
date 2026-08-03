@@ -31,6 +31,11 @@ class AlternativeConnectionRecord extends ActiveRecord
         return 'alternative_connection_record';
     }
 
+    public static function primaryKey()
+    {
+        return ['id'];
+    }
+
     public function attributes()
     {
         return ['id', 'name'];
