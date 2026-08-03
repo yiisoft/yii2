@@ -10,6 +10,8 @@ namespace yii\db;
 
 use yii\base\InvalidConfigException;
 
+use function reset;
+
 /**
  * ActiveQuery represents a DB query associated with an Active Record class.
  *
@@ -220,16 +222,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * {@inheritdoc}
      */
-    public function populate($rows)
+    public function populate($rows, $db = null)
     {
         if (empty($rows)) {
             return [];
         }
 
-        $models = $this->createModels($rows);
+        $models = $this->createModels($rows, $db);
+
         if (!empty($this->join) && $this->indexBy === null) {
             $models = $this->removeDuplicatedModels($models);
         }
+
         if (!empty($this->with)) {
             $this->findWith($this->with, $models);
         }
@@ -244,7 +248,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
 
-        return parent::populate($models);
+        return parent::populate($models, $db);
     }
 
     /**
@@ -303,17 +307,20 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Executes query and returns a single row of result.
-     * @param Connection|null $db the DB connection used to create the DB command.
-     * If `null`, the DB connection returned by [[modelClass]] will be used.
-     * @return T|null a single row of query result. Depending on the setting of [[asArray]],
-     * the query result may be either an array or an ActiveRecord object. `null` will be returned
-     * if the query results in nothing.
+     *
+     * @param Connection|null $db the DB connection used to create the DB command. If `null`, the DB connection returned
+     * by [[modelClass]] will be used.
+     *
+     * @return T|null a single row of query result. Depending on the setting of [[asArray]], the query result may be
+     * either an array or an ActiveRecord object. `null` will be returned if the query results in nothing.
      */
     public function one($db = null)
     {
         $row = parent::one($db);
+
         if ($row !== false) {
-            $models = $this->populate([$row]);
+            $models = $this->populate([$row], $db);
+
             return reset($models) ?: null;
         }
 

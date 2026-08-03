@@ -106,24 +106,35 @@ trait ActiveQueryTrait
 
     /**
      * Converts found rows into model instances.
-     * @param array $rows
-     * @return array|ActiveRecord[]
+     *
+     * @param array $rows The rows to be converted into model instances. Each array element represents a row of data.
+     * @param Connection|null $db The database connection used to retrieve the rows.
+     *
+     * @return array|BaseActiveRecord[] The model instances created from the rows. If [[asArray]] is true, the rows
+     * will be returned as is.
      * @since 2.0.11
      */
-    protected function createModels($rows)
+    protected function createModels($rows, $db = null)
     {
         if ($this->asArray) {
             return $rows;
         } else {
             $models = [];
-            /** @var ActiveRecord $class */
+            /** @var class-string<BaseActiveRecord> $class */
             $class = $this->modelClass;
+
             foreach ($rows as $row) {
                 $model = $class::instantiate($row);
-                $modelClass = get_class($model);
-                $modelClass::populateRecord($model, $row);
+
+                if ($model instanceof ActiveRecord) {
+                    $model::populateRecord($model, $row, $db);
+                } else {
+                    $model::populateRecord($model, $row);
+                }
+
                 $models[] = $model;
             }
+
             return $models;
         }
     }

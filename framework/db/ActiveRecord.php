@@ -425,12 +425,19 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * Returns the schema information of the DB table associated with this AR class.
-     * @return TableSchema the schema information of the DB table associated with this AR class.
+     *
+     * @param Connection|null $db The database connection used to retrieve the schema. If `null`, the connection
+     * returned by [[getDb()]] will be used.
+     *
      * @throws InvalidConfigException if the table for the AR class does not exist.
+     *
+     * @return TableSchema The schema information of the DB table associated with this AR class.
      */
-    public static function getTableSchema()
+    public static function getTableSchema($db = null)
     {
-        $tableSchema = static::getDb()
+        $db = $db ?? static::getDb();
+
+        $tableSchema = $db
             ->getSchema()
             ->getTableSchema(static::tableName());
 
@@ -503,15 +510,19 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * {@inheritdoc}
+     *
+     * @param Connection|null $db The database connection used to retrieve the row and its schema.
      */
-    public static function populateRecord($record, $row)
+    public static function populateRecord($record, $row, $db = null)
     {
-        $columns = static::getTableSchema()->columns;
+        $columns = static::getTableSchema($db)->columns;
+
         foreach ($row as $name => $value) {
             if (isset($columns[$name])) {
                 $row[$name] = $columns[$name]->phpTypecast($value);
             }
         }
+
         parent::populateRecord($record, $row);
     }
 
