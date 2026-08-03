@@ -16,6 +16,7 @@ use yii\db\Connection;
 use yii\db\QueryBuilder;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\AlternativeConnectionRecord;
+use yiiunit\data\ar\BaseOnlyRecord;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
@@ -469,6 +470,48 @@ abstract class BaseActiveQuery extends DatabaseTestCase
         self::assertTrue(
             $models[1]->populated,
             "Second model populated flag must be 'true'.",
+        );
+    }
+
+    public function testPopulateWithExplicitConnectionSupportsBaseActiveRecordModels(): void
+    {
+        $db = new Connection(['dsn' => 'sqlite::memory:']);
+
+        $query = new ActiveQuery(BaseOnlyRecord::class);
+
+        $models = $query->populate(
+            [
+                ['id' => 1, 'name' => 'first'],
+            ],
+            $db,
+        );
+
+        self::assertCount(
+            1,
+            $models,
+            'Record count mismatch.',
+        );
+
+        $model = $models[0];
+
+        self::assertInstanceOf(
+            BaseOnlyRecord::class,
+            $model,
+            'Model type mismatch.',
+        );
+        self::assertSame(
+            1,
+            $model->id,
+            "Model id must be '1'.",
+        );
+        self::assertSame(
+            'first',
+            $model->name,
+            'Model name must match.',
+        );
+        self::assertTrue(
+            $model->populated,
+            "Populated flag must be 'true'.",
         );
     }
 
