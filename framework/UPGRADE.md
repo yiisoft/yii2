@@ -56,6 +56,10 @@ Upgrade from Yii 2.0.55
 
 * When using multiple `\yii\db\Expression`s with the same parameter names in a query, the parameters are renamed to avoid clashes.
   If your code relies on inspecting the SQL created by the query builder, you might need to change it.
+* Client-side validation in `ActiveForm` triggered by a change, by the input losing focus, or by a manual
+  `yiiActiveForm('validateAttribute', ...)` call is no longer delayed by 200 milliseconds. It is still scheduled
+  asynchronously, but with a zero-millisecond delay. `validationDelay` keeps applying while the user is typing,
+  which is the only case it is documented for.
 
 Upgrade from Yii 2.0.53
 -----------------------

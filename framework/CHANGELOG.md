@@ -34,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #21042, #21046: Separate the `@property` annotations in case of different types in getters and setters (mspirkov)
 - Bug #21042: Separate the `@property` annotations in case of different types in getters and setters (mspirkov)
 - Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
+- Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 
 
 2.0.55 May 09, 2026
