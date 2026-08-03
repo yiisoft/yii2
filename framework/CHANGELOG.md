@@ -30,7 +30,9 @@ Yii Framework 2 Change Log
 - Bug #20994: Fix `@var` annotations for `BlameableBehavior` properties (mspirkov)
 - Enh #20990: Show created migration file path on migrate create CLI command (flaviovs)
 - Bug #21045: Fix union types in PHPDoc annotations (mspirkov)
+- Bug #21042, #21046: Separate the `@property` annotations in case of different types in getters and setters (mspirkov)
 - Bug #21042: Separate the `@property` annotations in case of different types in getters and setters (mspirkov)
+- Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 
 
 2.0.55 May 09, 2026

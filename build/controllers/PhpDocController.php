@@ -10,17 +10,12 @@ namespace yii\build\controllers;
 
 use Yii;
 use yii\base\Model;
-use yii\base\Module;
 use yii\console\Application;
 use yii\console\Controller as ConsoleController;
-use yii\db\QueryBuilder;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
-use yii\log\Dispatcher;
-use yii\log\Target;
 use yii\web\Controller as WebController;
-use yii\web\Request as WebRequest;
 
 /**
  * PhpDocController is there to help to maintain PHPDoc annotation in class files.
@@ -51,22 +46,6 @@ class PhpDocController extends ConsoleController
         ],
         Model::class => [
             'errors',
-        ],
-        Module::class => [
-            'aliases',
-        ],
-        Dispatcher::class => [
-            'flushInterval',
-            'logger',
-        ],
-        Target::class => [
-            'enabled',
-        ],
-        WebRequest::class => [
-            'hostInfo',
-        ],
-        QueryBuilder::class => [
-            'conditionClasses',
         ],
     ];
 

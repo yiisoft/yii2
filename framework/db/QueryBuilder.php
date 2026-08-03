@@ -24,7 +24,6 @@ use yii\helpers\StringHelper;
  * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
  *
  * @property-write string[] $conditionClasses Map of condition aliases to condition classes. For example:
- *
  * ```
  * ['LIKE' => yii\db\condition\LikeCondition::class]
  * ```
