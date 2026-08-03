@@ -405,8 +405,8 @@ abstract class BaseActiveQuery extends DatabaseTestCase
             $query
                 ->orderBy(['id' => SORT_ASC])
                 ->batch(1, $db),
-                false,
-            );
+            false,
+        );
 
         self::assertCount(
             2,
@@ -444,8 +444,8 @@ abstract class BaseActiveQuery extends DatabaseTestCase
             $query
                 ->orderBy(['id' => SORT_ASC])
                 ->each(1, $db),
-                false,
-            );
+            false,
+        );
 
         self::assertCount(
             2,
