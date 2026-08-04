@@ -25,8 +25,11 @@ class ExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $newParams = $expression->params;
         $newSql = $expression->__toString();
+        if ($expression->params === []) {
+            return $newSql;
+        }
+        $newParams = $expression->params;
         $duplicateKeys = array_filter(
             $newParams,
             static function ($key) use ($params) {
