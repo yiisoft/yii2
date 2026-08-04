@@ -685,7 +685,7 @@ abstract class BaseMigrateController extends Controller
 
             FileHelper::changeOwnership($file, $this->newFileOwnership, $this->newFileMode);
 
-            $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
+            $this->stdout("New migration created successfully: $file\n", Console::FG_GREEN);
         }
 
         return ExitCode::OK;

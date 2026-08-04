@@ -637,7 +637,6 @@ abstract class ManagerTestCase extends TestCase
     {
         $this->expectException('yii\base\InvalidValueException');
         $this->expectExceptionMessage('Default roles closure must return an array');
-        // @phpstan-ignore assign.propertyType (We intentionally use incorrect data here to test its processing)
         $this->auth->defaultRoles = function () {
             return 'test';
         };
