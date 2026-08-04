@@ -157,6 +157,7 @@ Yii Framework 2 Change Log
 2.0.56 under development
 ------------------------
 
+- Bug #21020: Fix duplicate `@return` annotation for `yii\db\ActiveRecord::hasOne()` (nazard)
 - Bug #20873: Fix PHPDoc annotations for the `yii\log\Target::$enabled` (mspirkov)
 - Enh #20875: Clarify the type of the `yii\base\Model::$errors` (mspirkov)
 - Bug #20875: Fix `@return` annotation for `yii\base\Model::getErrors()` (mspirkov)
@@ -171,15 +172,19 @@ Yii Framework 2 Change Log
 - Bug #20891: Fix `@property` annotation for `Request::$bodyParams` (mspirkov)
 - Bug #20889: Remove unreachable PHP < 7 cookie deserialization fallback in `yii\web\Request::loadCookies()` (terabytesoftw)
 - Enh #20890: Harden `yii\i18n\PhpMessageSource` category path handling to reject `..` segments, absolute paths, and stream-wrapper categories (terabytesoftw)
+- Bug #20902: Honor raw SQL of a `findBySql()` query used as a subquery in a condition (WarLikeLaux)
 - Bug #20527: Use `bigint` for `apply_time` in newly created migration history tables to avoid the year `2038` overflow (WarLikeLaux)
 - Enh #20888: Preserve the modification time of a log file when it is rotated by copy in `yii\log\FileTarget` (WarLikeLaux)
 - Bug #20978: Fix `AssetManager::appendTimestamp` triggering `filemtime()` stat warnings for timestamped asset URLs (terabytesoftw)
 - Bug #20986: Fix `@return` annotation for `yii\base\Component::behaviors()` (mspirkov)
 - Bug #20986: Fix `@param` annotation for `$behavior` in `yii\base\Component::attachBehavior()` (mspirkov)
 - Bug #20987: Fix `@var` annotations for `TimestampBehavior` properties (mspirkov)
-- Enh #20988: Add generics to `yii\db\Connection` and `yii\db\Schema` so `getSchema()` and `getQueryBuilder()` infer driver-specific types (terabytesoftw)
+- Enh #20988, #21040: Add generics to `yii\db\Connection` and `yii\db\Schema` so `getSchema()` and `getQueryBuilder()` infer driver-specific types (terabytesoftw, mspirkov)
 - Bug #20994: Fix `@var` annotations for `BlameableBehavior` properties (mspirkov)
 - Enh #20990: Show created migration file path on migrate create CLI command (flaviovs)
+- Bug #21045: Fix union types in PHPDoc annotations (mspirkov)
+- Bug #21042, #21046: Separate the `@property` annotations in case of different types in getters and setters (mspirkov)
+- Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 
 
 2.0.55 May 09, 2026

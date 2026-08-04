@@ -121,12 +121,6 @@ parameters:
 			path: framework/db/ActiveQuery.php
 
 		-
-			message: '#^Parameter &\$models by\-ref type of method yii\\db\\ActiveQuery\:\:findWith\(\) expects array\<yii\\db\\ActiveRecord\>, array given\.$#'
-			identifier: parameterByRef.type
-			count: 1
-			path: framework/db/ActiveQuery.php
-
-		-
 			message: '#^Access to an undefined property yii\\db\\ActiveQueryInterface\:\:\$indexBy\.$#'
 			identifier: property.notFound
 			count: 1
@@ -655,13 +649,7 @@ parameters:
 			path: tests/framework/log/TargetTest.php
 
 		-
-			message: '#^Property yii\\rbac\\BaseManager\:\:\$defaultRoles \(array\<string\>\) does not accept Closure\.$#'
-			identifier: assign.propertyType
-			count: 2
-			path: tests/framework/rbac/ManagerTestCase.php
-
-		-
-			message: '#^Property yii\\rbac\\BaseManager\:\:\$defaultRoles \(array\<string\>\) does not accept string\.$#'
+			message: '#^Property yii\\rbac\\BaseManager\:\:\$defaultRoles \(array\<string\>\|Closure\) does not accept ''test''\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: tests/framework/rbac/ManagerTestCase.php
