@@ -143,7 +143,7 @@ trait ActiveQueryTrait
      * Finds records corresponding to one or multiple relations and populates them into the primary models.
      * @param array $with a list of relations that this query should be performed with. Please
      * refer to [[with()]] for details about specifying this parameter.
-     * @param array|ActiveRecord[] $models the primary models (can be either AR instances or arrays)
+     * @param array $models the primary models (can be either AR instances or arrays)
      */
     public function findWith($with, &$models)
     {

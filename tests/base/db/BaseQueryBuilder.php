@@ -28,6 +28,7 @@ use yii\db\QueryBuilder;
 use yii\db\Schema;
 use yii\db\SchemaBuilderTrait;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
+use yiiunit\data\ar\Customer;
 
 /**
  * Base tests for query building across all database drivers.
@@ -1203,6 +1204,30 @@ abstract class BaseQueryBuilder extends DatabaseTestCase
         [$sql, $params] = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . static::replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
+    }
+
+    public function testBuildWhereWithRawSqlSubQuery(): void
+    {
+        $subQuery = Customer::findBySql('SELECT id FROM customer WHERE status = 2');
+        $query = (new Query())->from('customer')->where(['id' => $subQuery]);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame(
+            $this->replaceQuotes('SELECT * FROM [[customer]] WHERE [[id]] IN (SELECT id FROM customer WHERE status = 2)'),
+            $sql
+        );
+        $this->assertSame([], $params);
+    }
+
+    public function testBuildWhereWithRawSqlSubQueryAndParams(): void
+    {
+        $subQuery = Customer::findBySql('SELECT id FROM customer WHERE status = :status', [':status' => 2]);
+        $query = (new Query())->from('customer')->where(['type' => 1])->andWhere(['id' => $subQuery]);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame(
+            $this->replaceQuotes('SELECT * FROM [[customer]] WHERE ([[type]]=:qp0) AND ([[id]] IN (SELECT id FROM customer WHERE status = :status))'),
+            $sql
+        );
+        $this->assertSame([':qp0' => 1, ':status' => 2], $params);
     }
 
     public static function primaryKeysProvider(): array

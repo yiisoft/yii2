@@ -86,16 +86,18 @@ class CaptchaValidator extends Validator
     public function createCaptchaAction()
     {
         $ca = Yii::$app->createController($this->captchaAction);
+
         if ($ca !== false) {
-            /** @var Controller<Application<IdentityInterface>> $controller */
-            list($controller, $actionID) = $ca;
+            [$controller, $actionID] = $ca;
             /** @var CaptchaAction|null $action */
             $action = $controller->createAction($actionID);
+
             if ($action !== null) {
                 return $action;
             }
         }
-        throw new InvalidConfigException('Invalid CAPTCHA action ID: ' . $this->captchaAction);
+
+        throw new InvalidConfigException("Invalid CAPTCHA action ID: {$this->captchaAction}");
     }
 
     /**
