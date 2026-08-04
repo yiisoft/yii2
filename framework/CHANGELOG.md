@@ -153,6 +153,7 @@ Yii Framework 2 Change Log
 - Bug #17545: Apply PostgreSQL transaction isolation levels after starting the transaction, via the new `yii\db\pgsql\Transaction` class resolved through `yii\db\Connection::$transactionMap` (terabytesoftw)
 - Bug #16043: Fix `yii\db\oci\Schema::findColumns()` to report `null` size for `DATE`, `TIMESTAMP` and `INTERVAL` columns instead of their internal storage byte length (terabytesoftw)
 - Bug #12763: Apply an explicitly configured PostgreSQL `defaultSchema` as the session `search_path` when opening the connection (terabytesoftw)
+- Bug #19852: Use the connection passed to `ActiveQuery` result methods for schema reflection and typecasting while populating records (terabytesoftw)
 
 2.0.56 under development
 ------------------------

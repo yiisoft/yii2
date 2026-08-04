@@ -317,6 +317,9 @@ Notable changes include:
   types; `getRawValuesFromTraversableObject()` was removed.
 - MSSQL `PDO`, `DBLibPDO`, and `SqlsrvPDO` overrides now declare native PDO-compatible parameter and return types.
 - `yii\rbac\DbManager` and its new cascade extension points declare native parameter and return types.
+- The database connection used to fetch query results is now passed through `Query::populate()`,
+  `ActiveQueryTrait::createModels()`, `ActiveRecord::populateRecord()`, and `ActiveRecord::getTableSchema()`. Overrides
+  of these methods must accept the new optional `$db` parameter and forward it when calling the parent implementation.
 
 Run the application's static analysis and test suite after upgrading. Pay particular attention to classes extending
 `Action`, `InlineAction`, `InConditionBuilder`, a database query builder, a database schema class, an MSSQL PDO wrapper,
@@ -347,6 +350,28 @@ Yii2 `22.0` adds standalone action discovery through `Module::$actionMap`, `Modu
   `actionMap`.
 
 ## Database abstraction layer
+
+### Active Record population uses the query connection
+
+Passing a connection to `ActiveQuery::all()`, `one()`, `batch()`, or `each()` now uses the same connection for schema
+reflection and column typecasting. Previously, the rows were fetched from the supplied connection but
+`ActiveRecord::populateRecord()` reflected the schema through `ActiveRecord::getDb()`.
+
+Custom overrides of `populateRecord()` must accept and forward the connection:
+
+```php
+public static function populateRecord($record, $row, $db = null): void
+{
+    parent::populateRecord($record, $row, $db);
+
+    // Custom population logic.
+}
+```
+
+The attribute list still comes from `attributes()`, which reflects the schema through `getDb()` by default. A model
+whose table is only reachable through another connection must define that connection on the model by overriding
+`getDb()`, or declare its attribute list explicitly by overriding `attributes()`. The same applies to `primaryKey()`,
+which join deduplication and other primary-key dependent features resolve through the default schema.
 
 ### Composite `IN` and `NOT IN` conditions
 

@@ -272,22 +272,28 @@ class Query extends Component implements QueryInterface, ExpressionInterface
 
         $rows = $this->createCommand($db)->queryAll();
 
-        return $this->populate($rows);
+        return $this->populate($rows, $db);
     }
 
     /**
      * Converts the raw query results into the format as specified by this query.
-     * This method is internally used to convert the data fetched from database
-     * into the format as required by this query.
-     * @param array $rows the raw query result from database
-     * @return array the converted query result
+     *
+     * This method is internally used to convert the data fetched from database into the format as required by this
+     * query.
+     *
+     * @param array $rows The raw query result from database.
+     * @param Connection|null $db The database connection used to retrieve the rows.
+     *
+     * @return array The converted query result.
      */
-    public function populate($rows)
+    public function populate($rows, $db = null)
     {
         if ($this->indexBy === null) {
             return $rows;
         }
+
         $result = [];
+
         foreach ($rows as $row) {
             $result[ArrayHelper::getValue($row, $this->indexBy)] = $row;
         }
