@@ -57,11 +57,12 @@ class ExpressionBuilder implements ExpressionBuilderInterface
             );
             $newParams[$newKey] = $newParams[$duplicateKey];
             $pattern = '~'
-                . "('(?:''|\\\\'|[^'])*'"        // single-quoted string
-                . '|"(?:""|\\\\"|[^"])*"'       // double-quoted string / identifier
-                . '|`(?:``|[^`])*`'             // backtick identifier
-                . '|--[^\r\n]*'                 // line comment
-                . '|/\*.*?\*/'                  // block comment
+                . "('(?:''|\\\\'|[^'])*'"                                    // single-quoted string
+                . '|"(?:""|\\\\"|[^"])*"'                                    // double-quoted string / identifier
+                . '|`(?:``|[^`])*`'                                          // backtick identifier
+                . '|(?<dollar>\$(?:[A-Za-z_][A-Za-z0-9_]*)?\$).*?\k<dollar>' // PostgreSQL dollar-quoted string
+                . '|--[^\r\n]*'                                              // line comment
+                . '|/\*.*?\*/'                                               // block comment
                 . ')(*SKIP)(*F)'
                 . '|(?<!:)' . preg_quote($duplicateKeyWithColon, '~') . '(?![A-Za-z0-9_])'
                 . '~s';

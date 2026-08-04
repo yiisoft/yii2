@@ -1317,6 +1317,16 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '(a = :a) AND (a = :a1 AND b = `:a`)',
                 [':a' => 1, ':a1' => 2],
             ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = $$:a$$', [':a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = $$:a$$)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = $tag$:a$tag$', [':a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = $tag$:a$tag$)',
+                [':a' => 1, ':a1' => 2],
+            ],
         ];
     }
 
