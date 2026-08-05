@@ -1318,6 +1318,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 '(a = :a) AND (a = :a1 AND b = `:a`)',
                 [':a' => 1, ':a1' => 2],
             ],
+            'duplicate expression parameter matching part of a bracket-quoted identifier' => [
+                [
+                    'and',
+                    new Expression('[metadata:status] = :status', [':status' => 'active']),
+                    new Expression('[metadata:status] = :status', [':status' => 'pending']),
+                ],
+                '([metadata:status] = :status) AND ([metadata:status] = :status1)',
+                [':status' => 'active', ':status1' => 'pending'],
+            ],
             [
                 ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = $$:a$$', [':a' => 2])],
                 '(a = :a) AND (a = :a1 AND b = $$:a$$)',
