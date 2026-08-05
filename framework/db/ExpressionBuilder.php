@@ -60,6 +60,7 @@ class ExpressionBuilder implements ExpressionBuilderInterface
                 . "('(?:''|\\\\'|[^'])*'"                                    // single-quoted string
                 . '|"(?:""|\\\\"|[^"])*"'                                    // double-quoted string / identifier
                 . '|`(?:``|[^`])*`'                                          // backtick identifier
+                . '|\[(?:\]\]|[^\]])*\]'                                 // bracket-quoted identifier
                 . '|(?<dollar>\$(?:[A-Za-z_][A-Za-z0-9_]*)?\$).*?\k<dollar>' // PostgreSQL dollar-quoted string
                 . '|--[^\r\n]*'                                              // line comment
                 . '|/\*.*?\*/'                                               // block comment
