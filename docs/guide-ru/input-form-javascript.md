@@ -135,6 +135,28 @@ function (event, jqXHR, textStatus)
 - `jqXHR`: объект `jqXHR`
 - `textStatus`: статус запроса ("success", "notmodified", "error", "timeout", "abort", или "parsererror")
 
+### `afterInit`
+
+`afterInit` событие запускается после инициализации JavaScript плагина ActiveForm.
+
+Сигнатура обработчика события должна быть:
+
+```javascript
+function (event)
+```
+
+где событие является объектом `Event`.
+
+Обратите внимание, что плагин инициализируется самим виджетом, поэтому обработчик необходимо назначить до того, как это произойдёт.
+Регистрируйте свой код в позиции, которая выполняется раньше, чем [[yii\web\View::POS_READY|POS_READY]], например:
+
+```php
+$this->registerJs(
+    "jQuery('#contact-form').on('afterInit', function () { /* ... */ });",
+    \yii\web\View::POS_END
+);
+```
+
 ## Отправка формы через AJAX
 
 Хотя проверка может быть выполнена на стороне клиента или с помощью AJAX-запроса, сама отправка формы, по умолчанию, выполняется как обычный запрос.
