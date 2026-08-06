@@ -287,12 +287,23 @@ class AttributeTypecastBehavior extends Behavior
 
     /**
      * Composes default value for [[attributeTypes]] from the owner validation rules.
+     *
+     * Validators that have a [[\yii\validators\Validator::$when|when]] condition are ignored: the detection
+     * result is composed once per owner class, while such a condition can only be resolved against a particular
+     * model instance at validation time. Type-casting an attribute whose rule may not even be applied would
+     * convert a value that has never been validated, so attributes covered by conditional rules only are left
+     * out of the map. Specify [[attributeTypes]] explicitly if you need them to be type-casted.
+     *
      * @return array attribute type map.
      */
     protected function detectAttributeTypes()
     {
         $attributeTypes = [];
         foreach ($this->owner->getValidators() as $validator) {
+            if ($validator->when !== null) {
+                continue;
+            }
+
             $type = null;
             if ($validator instanceof BooleanValidator) {
                 $type = self::TYPE_BOOLEAN;

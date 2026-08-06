@@ -60,6 +60,11 @@ Upgrade from Yii 2.0.55
   `yiiActiveForm('validateAttribute', ...)` call is no longer delayed by 200 milliseconds. It is still scheduled
   asynchronously, but with a zero-millisecond delay. `validationDelay` keeps applying while the user is typing,
   which is the only case it is documented for.
+* `yii\behaviors\AttributeTypecastBehavior` no longer takes validators that have a
+  `yii\validators\Validator::$when` condition into account while detecting `attributeTypes` automatically.
+  The detection result is composed once per owner class, so such a condition can not be resolved there, and an
+  attribute covered by conditional rules only is now left out of the map instead of being type-casted according
+  to the first matching rule. Set `attributeTypes` explicitly if you rely on those attributes being type-casted.
 
 Upgrade from Yii 2.0.53
 -----------------------

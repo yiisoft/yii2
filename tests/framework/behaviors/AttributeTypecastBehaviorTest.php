@@ -305,6 +305,36 @@ class AttributeTypecastBehaviorTest extends TestCase
     }
 
     /**
+     * @depends testAutoDetectAttributeTypes
+     *
+     * @see https://github.com/yiisoft/yii2/issues/19865
+     */
+    public function testAutoDetectAttributeTypesSkipsConditionalRules(): void
+    {
+        $condition = function () {
+            return true;
+        };
+
+        $model = (new DynamicModel(['name' => null, 'amount' => null, 'price' => null]))
+            ->addRule('name', 'string')
+            ->addRule('amount', 'integer', ['when' => $condition])
+            ->addRule('amount', 'string', ['when' => $condition])
+            ->addRule('price', 'number', ['when' => $condition])
+            ->addRule('price', 'string');
+
+        $behavior = new AttributeTypecastBehavior();
+
+        $behavior->attach($model);
+
+        $expectedAttributeTypes = [
+            'name' => AttributeTypecastBehavior::TYPE_STRING,
+            // 'amount' is covered by conditional rules only, so its type can not be detected
+            'price' => AttributeTypecastBehavior::TYPE_STRING,
+        ];
+        $this->assertEquals($expectedAttributeTypes, $behavior->attributeTypes);
+    }
+
+    /**
      * @depends testSkipNull
      *
      * @see https://github.com/yiisoft/yii2/issues/12880
