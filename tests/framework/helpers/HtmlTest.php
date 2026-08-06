@@ -2137,6 +2137,55 @@ EOD;
         $this->assertSame($expected, $actual);
     }
 
+    /**
+     * Bracket style delimiters are closed by the matching bracket, so an unrelated occurrence of the opening
+     * one must not be treated as the end of the pattern.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/20456
+     *
+     * @dataProvider dataEscapeJsRegularExpressionBracketStyleDelimiters
+     */
+    public function testEscapeJsRegularExpressionBracketStyleDelimiters(string $expected, string $regexp): void
+    {
+        $this->assertSame($expected, Html::escapeJsRegularExpression($regexp));
+    }
+
+    public static function dataEscapeJsRegularExpressionBracketStyleDelimiters(): array
+    {
+        return [
+            ['/^\d{3}$/', '{^\d{3}$}'],
+            ['/^(\d+)(\.\d+)?$/', '(^(\d+)(\.\d+)?$)'],
+            ['/^[a-z]+$/i', '<^[a-z]+$>i'],
+            ['/^[a-z]+$/', '[^[a-z]+$]'],
+            ['/^a\/b$/', '{^a/b$}'],
+        ];
+    }
+
+    /**
+     * A JavaScript `\u` escape takes exactly four hex digits, so the PCRE ones have to be padded.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/20322
+     *
+     * @dataProvider dataEscapeJsRegularExpressionHexEscapes
+     */
+    public function testEscapeJsRegularExpressionHexEscapes(string $expected, string $regexp): void
+    {
+        $this->assertSame($expected, Html::escapeJsRegularExpression($regexp));
+    }
+
+    public static function dataEscapeJsRegularExpressionHexEscapes(): array
+    {
+        return [
+            ['/^[\u0000-\u00FF]{8,72}$/', '/^[\x00-\xFF]{8,72}$/'],
+            ['/^[\u00A1-\u00FE]{2}$/u', '/^[\x{A1}-\x{FE}]{2}$/u'],
+            ['/\u0000\u000A/', '/\x{0}\x{a}/'],
+            // without braces PCRE reads at most two hex digits, the rest stays literal
+            ['/\u0041abc/', '/\x41abc/'],
+            // code points above the BMP can only be expressed with the `\u{...}` form
+            ['/[\u{1F600}-\u{1F64F}]/u', '/[\x{1F600}-\x{1F64F}]/u'],
+        ];
+    }
+
     public function testActiveDropDownList(): void
     {
         $expected = <<<'HTML'
