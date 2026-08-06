@@ -25,7 +25,52 @@ class ExpressionBuilder implements ExpressionBuilderInterface
      */
     public function build(ExpressionInterface $expression, array &$params = [])
     {
-        $params = array_merge($params, $expression->params);
-        return $expression->__toString();
+        $newSql = $expression->__toString();
+        if ($expression->params === []) {
+            return $newSql;
+        }
+        $newParams = $expression->params;
+        $duplicateKeys = array_filter(
+            $newParams,
+            static function ($key) use ($params) {
+                $keyWithoutColon = ltrim((string)$key, ':');
+                $keyWithColon = ':' . $keyWithoutColon;
+                // the key could already exist with or without the leading colon, so look for both
+                return (array_key_exists($keyWithoutColon, $params))
+                    || (array_key_exists($keyWithColon, $params));
+            },
+            ARRAY_FILTER_USE_KEY
+        );
+        foreach (array_keys($duplicateKeys) as $duplicateKey) {
+            $duplicateKeyWithoutColon = ltrim((string)$duplicateKey, ':');
+            $duplicateKeyWithColon = ':' . $duplicateKeyWithoutColon;
+            // use an arbitrary key to avoid clashing
+            $suffix = count($params);
+            do {
+                $newKeyWithoutColon = $duplicateKeyWithoutColon . $suffix++;
+                $newKey = ':' . $newKeyWithoutColon;
+            } while (
+                array_key_exists($newKey, $params)
+                || array_key_exists($newKey, $newParams)
+                || array_key_exists($newKeyWithoutColon, $params)
+                || array_key_exists($newKeyWithoutColon, $newParams)
+            );
+            $newParams[$newKey] = $newParams[$duplicateKey];
+            $pattern = '~'
+                . "('(?:''|\\\\'|[^'])*'"                                    // single-quoted string
+                . '|"(?:""|\\\\"|[^"])*"'                                    // double-quoted string / identifier
+                . '|`(?:``|[^`])*`'                                          // backtick identifier
+                . '|\[(?:\]\]|[^\]])*\]'                                 // bracket-quoted identifier
+                . '|(?<dollar>\$(?:[A-Za-z_][A-Za-z0-9_]*)?\$).*?\k<dollar>' // PostgreSQL dollar-quoted string
+                . '|--[^\r\n]*'                                              // line comment
+                . '|/\*.*?\*/'                                               // block comment
+                . ')(*SKIP)(*F)'
+                . '|(?<!:)' . preg_quote($duplicateKeyWithColon, '~') . '(?![A-Za-z0-9_])'
+                . '~s';
+            $newSql = preg_replace($pattern, $newKey, $newSql);
+            unset($newParams[$duplicateKey]);
+        }
+        $params = array_merge($params, $newParams);
+        return $newSql;
     }
 }
