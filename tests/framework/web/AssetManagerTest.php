@@ -376,6 +376,10 @@ class AssetManagerTest extends TestCase
     {
         Yii::$app->errorHandler->register();
 
+        // PHPUnit masks every level it handles itself, so `E_WARNING` must be re-enabled for the Yii error handler to
+        // convert the failed `symlink()` call into an `ErrorException`.
+        $errorReporting = error_reporting(E_ALL);
+
         try {
             $am = $this->createManager(['linkAssets' => true]);
             $filePath = Yii::getAlias('@webroot') . '/data.txt';
@@ -392,6 +396,7 @@ class AssetManagerTest extends TestCase
             $this->expectException(\yii\base\ErrorException::class);
             $am->publish($filePath);
         } finally {
+            error_reporting($errorReporting);
             restore_error_handler();
             restore_exception_handler();
         }
@@ -400,6 +405,10 @@ class AssetManagerTest extends TestCase
     public function testPublishDirectoryWithLinkAssetsRethrowsOnSymlinkFailure(): void
     {
         Yii::$app->errorHandler->register();
+
+        // PHPUnit masks every level it handles itself, so `E_WARNING` must be re-enabled for the Yii error handler to
+        // convert the failed `symlink()` call into an `ErrorException`.
+        $errorReporting = error_reporting(E_ALL);
 
         try {
             $am = $this->createManager(['linkAssets' => true]);
@@ -415,6 +424,7 @@ class AssetManagerTest extends TestCase
             $this->expectException(\yii\base\ErrorException::class);
             $am->publish($dirPath);
         } finally {
+            error_reporting($errorReporting);
             restore_error_handler();
             restore_exception_handler();
         }
