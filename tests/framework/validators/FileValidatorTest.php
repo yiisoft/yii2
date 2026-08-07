@@ -31,7 +31,7 @@ class FileValidatorTest extends TestCase
     public function testAssureMessagesSetOnInit(): void
     {
         $val = new FileValidator();
-        foreach (['message', 'uploadRequired', 'tooMany', 'wrongExtension', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
+        foreach (['message', 'uploadRequired', 'tooMany', 'wrongExtension', 'tooBig', 'tooSmall', 'wrongMimeType', 'mimeTypeMismatch'] as $attr) {
             $this->assertIsString($val->$attr);
         }
     }
