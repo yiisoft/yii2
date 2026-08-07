@@ -36,6 +36,7 @@ use yii\base\Model;
  * @property mixed $attrD
  * @property mixed $attr_image
  * @property mixed $attr_images
+ * @property mixed $attr_range
  */
 class FakedValidationModel extends Model
 {

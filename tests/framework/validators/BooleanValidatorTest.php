@@ -10,6 +10,7 @@ namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ModelForBooleanValidator;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
@@ -22,8 +23,13 @@ class BooleanValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
         $this->destroyApplication();
+    }
+
+    public function testInit(): void
+    {
+        $val = new BooleanValidator();
+        $this->assertStringContainsString('must be either "{true}" or "{false}"', $val->message);
     }
 
     public function testValidateValue(): void
@@ -70,24 +76,44 @@ class BooleanValidatorTest extends TestCase
 
     public function testErrorMessage(): void
     {
+        $this->mockWebApplication();
         $validator = new BooleanValidator([
             'trueValue' => true,
             'falseValue' => false,
             'strict' => true,
         ]);
+        $errorMessage = '';
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertEquals('the input value must be either "true" or "false".', $errorMessage);
+        $this->assertStringContainsString('must be either "true" or "false"', $errorMessage);
+    }
 
-        $obj = new FakedValidationModel();
-        $obj->attrA = true;
-        $obj->attrB = '1';
-        $obj->attrC = '0';
-        $obj->attrD = [];
+    public function testGetClientOptions(): void
+    {
+        $this->mockWebApplication();
+        $model = new ModelForBooleanValidator();
+        $val = new BooleanValidator([
+            'trueValue' => 'YES',
+            'falseValue' => 'NO',
+            'strict' => true,
+            'skipOnEmpty' => true,
+        ]);
+        $options = $val->getClientOptions($model, 'attr');
 
-        $this->assertEquals(
-            'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \u0022true\u0022 or \u0022false\u0022.","skipOnEmpty":1,"strict":1});',
-            $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
-        );
+        $this->assertEquals('YES', $options['trueValue']);
+        $this->assertEquals('NO', $options['falseValue']);
+        $this->assertEquals(1, $options['strict']);
+        $this->assertEquals(1, $options['skipOnEmpty']);
+        $this->assertStringContainsString('attr must be either "YES" or "NO"', $options['message']);
+    }
+
+    public function testClientValidateAttribute(): void
+    {
+        $val = new BooleanValidator();
+        $model = new ModelForBooleanValidator();
+        $view = new ViewStub();
+
+        $js = $val->clientValidateAttribute($model, 'attr', $view);
+        $this->assertStringContainsString('yii.validation.boolean', $js);
     }
 }

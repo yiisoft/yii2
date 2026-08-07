@@ -8,13 +8,14 @@
 
 namespace yiiunit\framework\validators\stubs;
 
-use yii\web\AssetBundle;
-use yii\web\View;
+use yii\base\Model;
 
-class ViewStub extends View
+class ModelForBooleanValidator extends Model
 {
-    public function registerAssetBundle($name, $position = null)
+    public $attr;
+
+    public function attributeLabels()
     {
-        return new AssetBundle();
+        return ['attr' => 'attr'];
     }
 }
