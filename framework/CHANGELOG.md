@@ -154,6 +154,7 @@ Yii Framework 2 Change Log
 - Bug #16043: Fix `yii\db\oci\Schema::findColumns()` to report `null` size for `DATE`, `TIMESTAMP` and `INTERVAL` columns instead of their internal storage byte length (terabytesoftw)
 - Bug #12763: Apply an explicitly configured PostgreSQL `defaultSchema` as the session `search_path` when opening the connection (terabytesoftw)
 - Bug #19852: Use the connection passed to `ActiveQuery` result methods for schema reflection and typecasting while populating records (terabytesoftw)
+- Bug #21110: Fix `ActiveField::checkbox()`/`radio()` dropping label for extensions with `enclosedByLabel=false` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

@@ -1028,6 +1028,28 @@ class ActiveFieldTest extends TestCase
         );
     }
 
+    public function testRadioEnclosedByLabelFalseWithoutLabelOption(): void
+    {
+        $this->activeField->radio([], false);
+
+        self::assertArrayNotHasKey(
+            '{label}',
+            $this->activeField->parts,
+            'Label part must remain unset so render() generates it from the model.',
+        );
+    }
+
+    public function testCheckboxEnclosedByLabelFalseWithoutLabelOption(): void
+    {
+        $this->activeField->checkbox([], false);
+
+        self::assertArrayNotHasKey(
+            '{label}',
+            $this->activeField->parts,
+            'Label part must remain unset so render() generates it from the model.',
+        );
+    }
+
     public function testRadioEnclosedByLabelFalsePreservesExistingLabel(): void
     {
         $this->activeField->label('Existing Label');
