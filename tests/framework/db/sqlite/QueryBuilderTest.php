@@ -227,6 +227,25 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
+    /**
+     * Every attached database keeps its own `sqlite_sequence` table, so the one of the table's schema has to be
+     * updated rather than the one of `main`, which holds an unrelated `item` table.
+     */
+    public function testResetSequenceForAttachedSchema(): void
+    {
+        $qb = $this->getQueryBuilder(true, true);
+        $db = $qb->db;
+
+        $db->createCommand("ATTACH DATABASE ':memory:' AS `second_schema`")->execute();
+        $db->createCommand(
+            'CREATE TABLE second_schema.item (id INTEGER PRIMARY KEY AUTOINCREMENT, name varchar(64) NOT NULL)'
+        )->execute();
+
+        $expected = "UPDATE `second_schema`.sqlite_sequence SET seq='3' WHERE name='item'";
+        $sql = $qb->resetSequence('second_schema.item', 4);
+        $this->assertEquals($expected, $sql);
+    }
+
     public static function upsertProvider(): array
     {
         $concreteData = [
