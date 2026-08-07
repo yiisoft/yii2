@@ -613,24 +613,32 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($validator->validate($file));
     }
 
-    public function mislabelledFiles(): array
+    public function casesForCheckExtensionByMimeType(): array
     {
         return [
-            ['jpgLabelledTxt.txt'],
-            ['odtLabelledJpg.jpg'],
+            ['jpgLabelledTxt.txt', null, false],
+            ['odtLabelledJpg.jpg', null, false],
+            ['test.txt', null, true],
+            ['test.jpg', null, true],
+            ['jpgLabelledTxt.txt', ['txt', 'odt'], false],
+            ['odtLabelledJpg.jpg', 'jpg, gif, odt', false],
+            ['test.txt', 'txt, odt', true],
+            ['test.jpg', ['jpg', 'gif', 'odt'], true],
         ];
     }
 
     /**
-     * @param $fileName
+     * @param string $fileName
+     * @param array|string|null $allowedExtensions
+     * @param bool $expectTrue
      * @return void
-     * @dataProvider mislabelledFiles
+     * @dataProvider casesForCheckExtensionByMimeType
      */
-    public function testCheckExtensionByMimeTypeWithoutExtensionsInvalid($fileName): void
+    public function testCheckExtensionByMimeType($fileName, $allowedExtensions, $expectTrue): void
     {
-        $validator = new FileValidator(['extensions' => null, 'checkExtensionByMimeType' => true]);
+        $validator = new FileValidator(['extensions' => $allowedExtensions, 'checkExtensionByMimeType' => true]);
         $file = $this->getRealTestFile($fileName);
-        $this->assertFalse($validator->validate($file));
+        $this->assertEquals($validator->validate($file), $expectTrue);
     }
 
     protected function createModelForAttributeTest()
