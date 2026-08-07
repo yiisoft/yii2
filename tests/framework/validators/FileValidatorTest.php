@@ -616,29 +616,43 @@ class FileValidatorTest extends TestCase
     public function casesForCheckExtensionByMimeType(): array
     {
         return [
-            ['jpgLabelledTxt.txt', null, false],
-            ['odtLabelledJpg.jpg', null, false],
-            ['test.txt', null, true],
-            ['test.jpg', null, true],
-            ['jpgLabelledTxt.txt', ['txt', 'odt'], false],
-            ['odtLabelledJpg.jpg', 'jpg, gif, odt', false],
-            ['test.txt', 'txt, odt', true],
-            ['test.jpg', ['jpg', 'gif', 'odt'], true],
+            ['jpgLabelledTxt.txt', null, true],
+            ['odtLabelledJpg.jpg', null, true],
+            ['test.txt', null, false],
+            ['test.jpg', null, false],
+            ['jpgLabelledTxt.txt', ['txt', 'odt'], true],
+            ['odtLabelledJpg.jpg', 'jpg, gif, odt', true],
+            ['test.txt', 'txt, odt', false],
+            ['test.jpg', ['jpg', 'gif', 'odt'], false],
         ];
     }
 
     /**
      * @param string $fileName
      * @param array|string|null $allowedExtensions
-     * @param bool $expectTrue
+     * @param bool $expectFailure
      * @return void
      * @dataProvider casesForCheckExtensionByMimeType
      */
-    public function testCheckExtensionByMimeType($fileName, $allowedExtensions, $expectTrue): void
+    public function testCheckExtensionByMimeType($fileName, $allowedExtensions, $expectFailure): void
     {
+        $m = FakedValidationModel::createWithAttributes(
+            [
+                'attr_files' => [$this->getRealTestFile($fileName)],
+            ]
+        );
         $validator = new FileValidator(['extensions' => $allowedExtensions, 'checkExtensionByMimeType' => true]);
-        $file = $this->getRealTestFile($fileName);
-        $this->assertEquals($validator->validate($file), $expectTrue);
+        $validator->validateAttribute($m, 'attr_files');
+        $this->assertEquals($expectFailure, $m->hasErrors('attr_files'));
+        if ($expectFailure) {
+            $expectedErrorMessage = $allowedExtensions !== null ? $validator->wrongExtension : $validator->mimeTypeMismatch;
+            $expectedErrorMessage = str_replace(
+                ['{file}', '{extensions}'],
+                [$fileName, is_array($allowedExtensions) ? implode(', ', $allowedExtensions) : $allowedExtensions],
+                $expectedErrorMessage
+            );
+            $this->assertSame($expectedErrorMessage, current($m->getErrors('attr_files')));
+        }
     }
 
     protected function createModelForAttributeTest()
