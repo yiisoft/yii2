@@ -38,10 +38,11 @@ class FileValidator extends Validator
      */
     public $extensions;
     /**
-     * @var bool whether to check file type (extension) with mime-type. If extension produced by
+     * @var bool|null whether to check file type (extension) with mime-type. If extension produced by
      * file mime-type check differs from uploaded file extension, the file will be considered as invalid.
+     * By default, this is set to true if [[extensions]] is set to a non-empty value, and set to false if not.
      */
-    public $checkExtensionByMimeType = true;
+    public $checkExtensionByMimeType = null;
     /**
      * @var array|string|null a list of file MIME types that are allowed to be uploaded.
      * This can be either an array or a string consisting of file MIME types
@@ -201,6 +202,9 @@ class FileValidator extends Validator
         } else {
             $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
         }
+        if ($this->checkExtensionByMimeType === null) {
+            $this->checkExtensionByMimeType = !empty($this->extensions);
+        }
     }
 
     /**
@@ -278,7 +282,7 @@ class FileValidator extends Validator
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
                         ],
                     ];
-                } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
+                } elseif ((!empty($this->extensions) || $this->checkExtensionByMimeType) && !$this->validateExtension($value)) {
                     return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
                 } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
                     return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];

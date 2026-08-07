@@ -613,6 +613,26 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($validator->validate($file));
     }
 
+    public function mislabelledFiles(): array
+    {
+        return [
+            ['jpgLabelledTxt.txt'],
+            ['odtLabelledJpg.jpg'],
+        ];
+    }
+
+    /**
+     * @param $fileName
+     * @return void
+     * @dataProvider mislabelledFiles
+     */
+    public function testCheckExtensionByMimeTypeWithoutExtensionsInvalid($fileName): void
+    {
+        $validator = new FileValidator(['extensions' => null, 'checkExtensionByMimeType' => true]);
+        $file = $this->getRealTestFile($fileName);
+        $this->assertFalse($validator->validate($file));
+    }
+
     protected function createModelForAttributeTest()
     {
         return FakedValidationModel::createWithAttributes(
