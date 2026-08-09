@@ -31,12 +31,6 @@ parameters:
 			path: framework/caching/WinCache.php
 
 		-
-			message: '#^Method yii\\captcha\\CaptchaAction\:\:generateValidationHash\(\) should return string but returns int\.$#'
-			identifier: return.type
-			count: 1
-			path: framework/captcha/CaptchaAction.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$args$#'
 			identifier: parameter.notFound
 			count: 2
@@ -473,6 +467,12 @@ parameters:
 			identifier: property.notFound
 			count: 4
 			path: tests/framework/captcha/CaptchaTest.php
+
+		-
+			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
+			identifier: property.notFound
+			count: 3
+			path: tests/framework/captcha/CaptchaValidatorTest.php
 
 		-
 			message: '#^Return type \(void\) of method yiiunit\\framework\\console\\controllers\\FixtureConsoledController\:\:stdout\(\) should be compatible with return type \(bool\|int\) of method yii\\console\\Controller\<yii\\console\\Application\>\:\:stdout\(\)$#'

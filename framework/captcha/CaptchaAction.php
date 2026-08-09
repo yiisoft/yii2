@@ -149,7 +149,7 @@ class CaptchaAction extends Action
     /**
      * Generates a hash code that can be used for client-side validation.
      * @param string $code the CAPTCHA code
-     * @return string a hash code generated from the CAPTCHA code
+     * @return int a hash code generated from the CAPTCHA code
      */
     public function generateValidationHash($code)
     {

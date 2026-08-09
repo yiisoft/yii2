@@ -181,9 +181,9 @@ ActiveForm::begin([
 ```
 
 If a subclass overrides `ActiveForm::getClientOptions()`, `ActiveField::getClientOptions()`,
-`Validator::clientValidateAttribute()`, `Captcha::registerClientScript()`, `Captcha::getClientOptions()`, or
-`CaptchaValidator::clientValidateAttribute()`, review the override because the default implementation now delegates to
-the configured strategy.
+`Validator::clientValidateAttribute()`, `Captcha::registerClientScript()`, `Captcha::getClientOptions()`,
+`CaptchaValidator::clientValidateAttribute()`, or `CaptchaValidator::getClientOptions()`, review the override because
+the default implementation now delegates to the configured strategy.
 
 ### `View::registerJs()` no longer assumes jQuery
 
