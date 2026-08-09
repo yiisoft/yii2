@@ -51,7 +51,6 @@ class CaptchaValidator extends Validator
      */
     public array|ClientValidatorScriptInterface|null $clientScript = null;
 
-
     /**
      * {@inheritdoc}
      */
@@ -117,21 +116,10 @@ class CaptchaValidator extends Validator
      */
     public function getClientOptions($model, $attribute)
     {
-        $captcha = $this->createCaptchaAction();
-        $code = $captcha->getVerifyCode(false);
-        $hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
-        $options = [
-            'hash' => $hash,
-            'hashKey' => 'yiiCaptcha/' . $captcha->getUniqueId(),
-            'caseSensitive' => $this->caseSensitive,
-            'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
+        if ($this->clientScript instanceof ClientValidatorScriptInterface) {
+            return $this->clientScript->getClientOptions($this, $model, $attribute);
         }
 
-        return $options;
+        return [];
     }
 }
