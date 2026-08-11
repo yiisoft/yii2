@@ -633,6 +633,104 @@ abstract class ManagerTestCase extends TestCase
         $this->assertInstanceOf(ActionRule::class, $rule);
     }
 
+    public function testAddChildThrowsExceptionWhenAddingItemToItself(): void
+    {
+        $role = $this->auth->createRole('reader');
+        $this->auth->add($role);
+
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage("Cannot add 'reader' as a child of itself.");
+
+        $this->auth->addChild($role, $role);
+    }
+
+    public function testAddChildThrowsExceptionWhenAddingRoleToPermission(): void
+    {
+        $permission = $this->auth->createPermission('editPost');
+        $role = $this->auth->createRole('reader');
+        $this->auth->add($permission);
+        $this->auth->add($role);
+
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Cannot add a role as a child of a permission.');
+
+        $this->auth->addChild($permission, $role);
+    }
+
+    public function testAddChildThrowsExceptionWhenLoopDetected(): void
+    {
+        $author = $this->auth->createRole('author');
+        $reader = $this->auth->createRole('reader');
+        $this->auth->add($author);
+        $this->auth->add($reader);
+        $this->auth->addChild($author, $reader);
+
+        $this->expectException('yii\base\InvalidCallException');
+        $this->expectExceptionMessage("Cannot add 'author' as a child of 'reader'. A loop has been detected.");
+
+        $this->auth->addChild($reader, $author);
+    }
+
+    public function testRemoveChildReturnsExpectedState(): void
+    {
+        $author = $this->auth->createRole('author');
+        $reader = $this->auth->createRole('reader');
+        $this->auth->add($author);
+        $this->auth->add($reader);
+        $this->auth->addChild($author, $reader);
+
+        $this->assertTrue($this->auth->hasChild($author, $reader));
+        $this->assertTrue($this->auth->removeChild($author, $reader));
+        $this->assertFalse($this->auth->hasChild($author, $reader));
+        $this->assertFalse($this->auth->removeChild($author, $reader));
+    }
+
+    public function testRemoveChildrenReturnsExpectedState(): void
+    {
+        $author = $this->auth->createRole('author');
+        $reader = $this->auth->createRole('reader');
+        $editor = $this->auth->createRole('editor');
+        $this->auth->add($author);
+        $this->auth->add($reader);
+        $this->auth->add($editor);
+        $this->auth->addChild($author, $reader);
+        $this->auth->addChild($author, $editor);
+
+        $this->assertTrue($this->auth->removeChildren($author));
+        $this->assertEmpty($this->auth->getChildren('author'));
+        $this->assertFalse($this->auth->removeChildren($author));
+    }
+
+    public function testRemoveAllRolesAndPermissionsDoNothingWhenItemsAreMissing(): void
+    {
+        $this->auth->removeAllRoles();
+        $this->auth->removeAllPermissions();
+
+        $this->assertSame([], $this->auth->getRoles());
+        $this->assertSame([], $this->auth->getPermissions());
+    }
+
+    public function testGetAssignmentReturnsNullWhenAssignmentDoesNotExist(): void
+    {
+        $this->assertNull($this->auth->getAssignment('missing', 7));
+    }
+
+    public function testGetPermissionsByRoleReturnsEmptyArrayWhenRoleHasNoChildren(): void
+    {
+        $role = $this->auth->createRole('reader');
+        $this->auth->add($role);
+
+        $this->assertSame([], $this->auth->getPermissionsByRole('reader'));
+    }
+
+    public function testGetChildRolesThrowsExceptionForUnknownRole(): void
+    {
+        $this->expectException('yii\base\InvalidArgumentException');
+        $this->expectExceptionMessage('Role "ghost" not found.');
+
+        $this->auth->getChildRoles('ghost');
+    }
+
     public function testDefaultRolesWithClosureReturningNonArrayValue(): void
     {
         $this->expectException('yii\base\InvalidValueException');
