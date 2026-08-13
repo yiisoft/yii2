@@ -708,6 +708,32 @@ because their values are only preserved when parsed as SQL. Previously Yii2 mang
 decimal, boolean, and SQLite bareword defaults remain PHP values. Review strict type checks, schema snapshots, and code
 that calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
 
+## Logging
+
+### PSR-3 interoperability included in the framework
+
+Yii2 now requires `psr/log:^3.0` and provides bidirectional PSR-3 adapters in the framework:
+
+- `yii\log\PsrLogger` implements `Psr\Log\LoggerInterface` and routes PSR-3 messages to Yii;
+- `yii\log\PsrTarget` routes Yii messages to an external `Psr\Log\LoggerInterface` implementation.
+
+Applications can remove `yiisoft/yii2-psr-log-source` and replace `yii\psr\Logger` or `yii\psr\DynamicLogger` with
+`yii\log\PsrLogger`. The core adapter defaults to the Yii category `application`; pass `category: 'app'` to retain the
+extension's default category.
+
+Applications can remove `samdark/yii2-psr-log-target` and replace `samdark\log\PsrTarget` with
+`yii\log\PsrTarget`. Exact PSR-3 filters now use the `psrLevels` property, while `levels` retains the standard Yii
+level-filter contract. Replace direct `samdark\log\PsrMessage` construction with calls through
+`yii\log\PsrLogger` so the original PSR-3 level and context are retained automatically.
+
+### DbTarget batch export
+
+`yii\log\DbTarget` now exports log messages with chunked multi-row `INSERT` statements (100 rows per statement)
+instead of executing one query per message. On Oracle, rows are still inserted individually with bound parameters
+because inlined SQL string literals are limited to 4000 bytes. A message that can not be stored now fails its whole
+chunk with `yii\db\Exception` instead of failing only its own row; `LogRuntimeException` is still thrown when the
+number of inserted rows does not match the number of messages.
+
 ## Removed platform support
 
 ### HHVM

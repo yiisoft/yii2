@@ -67,7 +67,11 @@
         "ext-mbstring": "*",
         "yiisoft/yii2-composer": "~2.0.4",
         "ezyang/htmlpurifier": "^4.19",
-        "cebe/markdown": "~1.2.0"
+        "cebe/markdown": "~1.2.0",
+        "psr/log": "^3.0"
+    },
+    "provide": {
+        "psr/log-implementation": "3.0"
     },
     "suggest": {
         "yiisoft/yii2-jquery": "Provides the jQuery implementation of the client-side script layer (ActiveForm, GridView, CheckboxColumn, Captcha, all built-in validators)."

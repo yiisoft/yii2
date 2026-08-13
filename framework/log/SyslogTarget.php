@@ -8,8 +8,6 @@
 
 namespace yii\log;
 
-use yii\helpers\VarDumper;
-
 /**
  * SyslogTarget writes log to syslog.
  *
@@ -80,18 +78,13 @@ class SyslogTarget extends Target
      */
     public function formatMessage($message)
     {
-        list($text, $level, $category, $timestamp) = $message;
-        $level = Logger::getLevelName($level);
-        if (!is_string($text)) {
-            // exceptions may not be serializable if in the call stack somewhere is a Closure
-            if ($text instanceof \Exception || $text instanceof \Throwable) {
-                $text = (string) $text;
-            } else {
-                $text = VarDumper::export($text);
-            }
-        }
+        [$text, $level, $category, $timestamp] = $message;
 
+        $level = Logger::getLevelName($level);
+
+        $text = $this->formatMessageText($text);
         $prefix = $this->getMessagePrefix($message);
+
         return "{$prefix}[$level][$category] $text";
     }
 }

@@ -312,16 +312,13 @@ abstract class Target extends Component
     public function formatMessage($message)
     {
         [$text, $level, $category, $timestamp] = $message;
+
         $level = Logger::getLevelName($level);
-        if (!is_string($text)) {
-            // exceptions may not be serializable if in the call stack somewhere is a Closure
-            if ($text instanceof \Exception || $text instanceof \Throwable) {
-                $text = (string) $text;
-            } else {
-                $text = VarDumper::export($text);
-            }
-        }
+
+        $text = $this->formatMessageText($text);
+
         $traces = [];
+
         if (isset($message[4])) {
             foreach ($message[4] as $trace) {
                 $traces[] = "in {$trace['file']}:{$trace['line']}";
@@ -329,8 +326,32 @@ abstract class Target extends Component
         }
 
         $prefix = $this->getMessagePrefix($message);
-        return $this->getTime($timestamp) . " {$prefix}[$level][$category] $text"
-            . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
+
+        return $this->getTime($timestamp)
+            . " {$prefix}[$level][$category] $text"
+            . (empty($traces) ? '' : "\n    "
+            . implode("\n    ", $traces));
+    }
+
+    /**
+     * Converts a log message value to text.
+     *
+     * @param mixed $text log message value.
+     * @return string formatted message value.
+     * @since 22.0
+     */
+    protected function formatMessageText($text)
+    {
+        if ($text instanceof PsrMessage || is_string($text)) {
+            return (string) $text;
+        }
+
+        // exceptions may not be serializable if in the call stack somewhere is a Closure
+        if ($text instanceof \Exception || $text instanceof \Throwable) {
+            return (string) $text;
+        }
+
+        return VarDumper::export($text);
     }
 
     /**
