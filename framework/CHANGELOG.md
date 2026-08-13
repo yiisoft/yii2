@@ -156,7 +156,7 @@ Yii Framework 2 Change Log
 - Bug #19852: Use the connection passed to `ActiveQuery` result methods for schema reflection and typecasting while populating records (terabytesoftw)
 - Bug #21057: Fix `ActiveField::checkbox()`/`radio()` dropping label for extensions with `enclosedByLabel=false` (terabytesoftw)
 - Chg #21059: Delegate `CaptchaValidator::getClientOptions()` to `clientScript`; fix `generateValidationHash()` `@return` to `int` (terabytesoftw)
-- Enh #21060: Add PSR-3 logging interoperability with `yii\log\PsrLogger` and `yii\log\PsrTarget`, and export log messages in `yii\log\DbTarget` with chunked multi-row `INSERT` statements instead of one query per message (terabytesoftw)
+- Enh #21060: Add PSR-3 logging interoperability with `yii\log\PsrLogger` and `yii\log\PsrTarget` (terabytesoftw)
 
 2.0.56 under development
 ------------------------

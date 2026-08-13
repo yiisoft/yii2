@@ -381,7 +381,7 @@ Yii::$container->setSingleton(LoggerInterface::class, static fn () => new PsrLog
 $logger = Yii::$container->get(LoggerInterface::class);
 
 $logger->info(
-    'User {id} signed in.', 
+    'User {id} signed in.',
     [
         'id' => 42,
         'category' => 'app.auth',
@@ -443,17 +443,6 @@ use Psr\Log\LogLevel;
 
 Do not use [[yii\log\PsrLogger]] as the destination of [[yii\log\PsrTarget]], because that would route exported
 messages back into Yii. This direct recursive configuration is rejected.
-
-### Migrating from the PSR-3 Extensions
-
-Applications using `yiisoft/yii2-psr-log-source` can replace `yii\psr\Logger` and `yii\psr\DynamicLogger` with
-[[yii\log\PsrLogger]]. Constructing it without a Yii logger provides the dynamic behavior. Pass `category: 'app'` if
-the previous adapter's default `app` category must be retained.
-
-Applications using `samdark/yii2-psr-log-target` can replace `samdark\log\PsrTarget` with
-[[yii\log\PsrTarget]]. Move PSR-specific values previously configured in `levels` to `psrLevels`; the inherited
-`levels` property continues to filter Yii levels. Use [[yii\log\PsrLogger]] instead of manually constructing the
-extension's `PsrMessage` value object.
 
 ## Performance Profiling <span id="performance-profiling"></span>
 

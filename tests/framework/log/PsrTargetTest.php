@@ -188,6 +188,36 @@ final class PsrTargetTest extends TestCase
         );
     }
 
+    public function testPreservesNullPsrMessageContextMetadata(): void
+    {
+        $context = [
+            'trace' => null,
+            'memory' => null,
+            'category' => null,
+            'timestamp' => null,
+        ];
+
+        $this->target->addTimestampToContext = true;
+        $this->target->messages = [
+            [
+                new PsrMessage('Message', $context, LogLevel::INFO),
+                Logger::LEVEL_INFO,
+                'app.category',
+                10.25,
+                ['yii trace'],
+                1024,
+            ],
+        ];
+
+        $this->target->export();
+
+        self::assertSame(
+            $context,
+            $this->logger->records[0]['context'],
+            'Explicit null context values must take precedence over Yii metadata.',
+        );
+    }
+
     public function testExportsThrowableAsExceptionContext(): void
     {
         $exception = new RuntimeException('Failure');

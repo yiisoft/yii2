@@ -16,6 +16,7 @@ use Throwable;
 use yii\base\InvalidConfigException;
 use yii\helpers\VarDumper;
 
+use function array_key_exists;
 use function is_int;
 use function is_string;
 
@@ -151,19 +152,23 @@ class PsrTarget extends Target
                 $text = $text->getMessage();
             }
 
-            if (!isset($context['trace']) && isset($message[4]) && $message[4] !== []) {
+            if (!array_key_exists('trace', $context) && isset($message[4]) && $message[4] !== []) {
                 $context['trace'] = $message[4];
             }
 
-            if (!isset($context['memory']) && isset($message[5])) {
+            if (!array_key_exists('memory', $context) && isset($message[5])) {
                 $context['memory'] = $message[5];
             }
 
-            if (!isset($context['category']) && isset($message[2])) {
+            if (!array_key_exists('category', $context) && isset($message[2])) {
                 $context['category'] = $message[2];
             }
 
-            if ($this->addTimestampToContext && !isset($context['timestamp']) && isset($message[3])) {
+            if (
+                $this->addTimestampToContext
+                && !array_key_exists('timestamp', $context)
+                && isset($message[3])
+            ) {
                 $context['timestamp'] = $message[3];
             }
 
