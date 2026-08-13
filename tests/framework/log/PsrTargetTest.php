@@ -356,6 +356,25 @@ final class PsrTargetTest extends TestCase
         );
     }
 
+    public function testEmptyPsrLevelsEnableAllLevels(): void
+    {
+        $this->target->setPsrLevels([LogLevel::CRITICAL]);
+        $this->target->setPsrLevels([]);
+
+        self::assertNull(
+            $this->target->getPsrLevels(),
+            'An empty PSR-3 level filter must enable all levels.',
+        );
+
+        $this->target->setPsrLevels([LogLevel::CRITICAL]);
+        $this->target->setPsrLevels(null);
+
+        self::assertNull(
+            $this->target->getPsrLevels(),
+            'A null PSR-3 level filter must enable all levels.',
+        );
+    }
+
     public function testThrowInvalidConfigExceptionForUnknownPsrFilterLevel(): void
     {
         $this->expectException(InvalidConfigException::class);

@@ -1,307 +1,255 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yii\log {
-    function openlog()
-    {
-        return \yiiunit\framework\log\SyslogTargetTest::openlog(func_get_args());
-    }
+namespace yiiunit\framework\log;
 
-    function syslog()
-    {
-        return \yiiunit\framework\log\SyslogTargetTest::syslog(func_get_args());
-    }
+use Exception;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
+use stdClass;
+use Xepozz\InternalMocker\MockerState;
+use yii\helpers\VarDumper;
+use yii\log\Logger;
+use yii\log\LogRuntimeException;
+use yii\log\SyslogTarget;
+use yiiunit\TestCase;
 
-    function closelog()
-    {
-        return \yiiunit\framework\log\SyslogTargetTest::closelog(func_get_args());
-    }
-}
+use function array_column;
+use function array_keys;
+use function array_map;
 
-namespace yiiunit\framework\log {
-    use PHPUnit\Framework\MockObject\MockObject;
-    use yii\helpers\VarDumper;
-    use yii\log\Logger;
-    use yii\log\SyslogTarget;
-    use yiiunit\TestCase;
+/**
+ * Unit tests for {@see SyslogTarget}.
+ */
+#[Group('log')]
+final class SyslogTargetTest extends TestCase
+{
+    private SyslogTarget&MockObject $syslogTarget;
 
     /**
-     * Class SyslogTargetTest.
-     *
-     * @group log
-     *
-     * @method static mixed openlog($arguments)
-     * @method static mixed syslog($arguments)
-     * @method static mixed closelog($arguments)
+     * Set up syslogTarget as the mock object.
      */
-    class SyslogTargetTest extends TestCase
+    protected function setUp(): void
     {
-        /**
-         * Array of static functions.
-         *
-         * @var array
-         */
-        public static $functions = [];
+        parent::setUp();
 
-        /**
-         * @var SyslogTarget&MockObject
-         */
-        protected $syslogTarget;
+        $this->syslogTarget = $this->createPartialMock(SyslogTarget::class, ['getMessagePrefix']);
+    }
 
-        /**
-         * Set up syslogTarget as the mock object.
-         */
-        protected function setUp(): void
-        {
-            $this->syslogTarget = $this->createPartialMock(SyslogTarget::class, ['getMessagePrefix']);
+    public function testDefaultOptions(): void
+    {
+        $target = new SyslogTarget();
+
+        self::assertSame(
+            LOG_ODELAY | LOG_PID,
+            $target->options,
+            'Default syslog options must delay opening and include the process ID.',
+        );
+    }
+
+    public function testExport(): void
+    {
+        $identity = 'identity string';
+        $options = LOG_ODELAY | LOG_PID;
+        $facility = LOG_USER;
+        $messages = [
+            ['info message', Logger::LEVEL_INFO],
+            ['error message', Logger::LEVEL_ERROR],
+            ['warning message', Logger::LEVEL_WARNING],
+            ['trace message', Logger::LEVEL_TRACE],
+            ['profile message', Logger::LEVEL_PROFILE],
+            ['profile begin message', Logger::LEVEL_PROFILE_BEGIN],
+            ['profile end message', Logger::LEVEL_PROFILE_END],
+        ];
+
+        /** @var SyslogTarget&MockObject $syslogTarget */
+        $syslogTarget = $this->getMockBuilder(SyslogTarget::class)
+            ->onlyMethods(['formatMessage'])
+            ->getMock();
+
+        $syslogTarget->identity = $identity;
+        $syslogTarget->options = $options;
+        $syslogTarget->facility = $facility;
+        $syslogTarget->messages = $messages;
+
+        $formatMatcher = $this->exactly(7);
+
+        $syslogTarget
+            ->expects($formatMatcher)
+            ->method('formatMessage')
+            ->willReturnCallback(
+                function (...$parameters) use ($formatMatcher, $messages): string {
+                    $invocation = $formatMatcher->numberOfInvocations();
+
+                    self::assertSame(
+                        $messages[$invocation - 1],
+                        $parameters[0],
+                        'Formatter must receive the expected message.',
+                    );
+
+                    return 'formatted message ' . $invocation;
+                }
+            );
+
+        $priorities = [LOG_INFO, LOG_ERR, LOG_WARNING, LOG_DEBUG, LOG_DEBUG, LOG_DEBUG, LOG_DEBUG];
+
+        MockerState::addCondition(
+            'yii\log',
+            'openlog',
+            [$identity, $options, $facility],
+            true,
+        );
+
+        foreach ($priorities as $index => $priority) {
+            MockerState::addCondition(
+                'yii\log',
+                'syslog',
+                [$priority, 'formatted message ' . ($index + 1)],
+                true,
+            );
         }
 
-        /**
-         * @covers \yii\log\SyslogTarget::export()
-         */
-        public function testExport(): void
-        {
-            $identity = 'identity string';
-            $options = LOG_ODELAY | LOG_PID;
-            $facility = LOG_USER;
-            $messages = [
-                ['info message', Logger::LEVEL_INFO],
-                ['error message', Logger::LEVEL_ERROR],
-                ['warning message', Logger::LEVEL_WARNING],
-                ['trace message', Logger::LEVEL_TRACE],
-                ['profile message', Logger::LEVEL_PROFILE],
-                ['profile begin message', Logger::LEVEL_PROFILE_BEGIN],
-                ['profile end message', Logger::LEVEL_PROFILE_END],
-            ];
+        MockerState::addCondition(
+            'yii\log',
+            'closelog',
+            [],
+            true,
+        );
 
-            /** @var SyslogTargetStub&MockObject $syslogTarget */
-            $syslogTarget = $this->getMockBuilder(SyslogTargetStub::class)
-                ->onlyMethods(['openlog', 'syslog', 'closelog', 'formatMessage'])
-                ->getMock();
+        $syslogTarget->export();
 
-            $syslogTarget->identity = $identity;
-            $syslogTarget->options = $options;
-            $syslogTarget->facility = $facility;
-            $syslogTarget->messages = $messages;
-
-            $syslogTarget->expects($this->once())
-                ->method('openlog')
-                ->with(
-                    $this->equalTo($identity),
-                    $this->equalTo($options),
-                    $this->equalTo($facility)
-                );
-
-            $formatMatcher = $this->exactly(7);
-            $syslogTarget
-                ->expects($formatMatcher)
-                ->method('formatMessage')
-                ->willReturnCallback(
-                    function (...$parameters) use ($formatMatcher, $messages): string {
-                        $invocation = $formatMatcher->numberOfInvocations();
-
-                        $this->assertEquals($messages[$invocation - 1], $parameters[0]);
-
-                        return 'formatted message ' . $invocation;
-                    }
-                );
-
-            /**
-             * @link https://github.com/sebastianbergmann/phpunit/issues/5063
-             */
-            $matcher = $this->exactly(7);
-            $syslogTarget
-                ->expects($matcher)
-                ->method('syslog')
-                ->willReturnCallback(
-                    function (...$parameters) use ($matcher): void {
-                        if ($matcher->numberOfInvocations() === 1) {
-                            $this->assertEquals(LOG_INFO, $parameters[0]);
-                            $this->assertEquals('formatted message 1', $parameters[1]);
-                        }
-
-                        if ($matcher->numberOfInvocations() === 2) {
-                            $this->assertEquals(LOG_ERR, $parameters[0]);
-                            $this->assertEquals('formatted message 2', $parameters[1]);
-                        }
-
-                        if ($matcher->numberOfInvocations() === 3) {
-                            $this->assertEquals(LOG_WARNING, $parameters[0]);
-                            $this->assertEquals('formatted message 3', $parameters[1]);
-                        }
-
-                        if ($matcher->numberOfInvocations() === 4) {
-                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
-                            $this->assertEquals('formatted message 4', $parameters[1]);
-                        }
-
-                        if ($matcher->numberOfInvocations() === 5) {
-                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
-                            $this->assertEquals('formatted message 5', $parameters[1]);
-                        }
-
-                        if ($matcher->numberOfInvocations() === 6) {
-                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
-                            $this->assertEquals('formatted message 6', $parameters[1]);
-                        }
-
-                        if ($matcher->numberOfInvocations() === 7) {
-                            $this->assertEquals(LOG_DEBUG, $parameters[0]);
-                            $this->assertEquals('formatted message 7', $parameters[1]);
-                        }
-                    }
-                );
-
-            $syslogTarget->expects($this->once())->method('closelog');
-
-            static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
-                $this->assertCount(3, $arguments);
-                [$identity, $option, $facility] = $arguments;
-                return $syslogTarget->openlog($identity, $option, $facility);
-            };
-            static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
-                $this->assertCount(2, $arguments);
-                [$priority, $message] = $arguments;
-                return $syslogTarget->syslog($priority, $message);
-            };
-            static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
-                $this->assertCount(0, $arguments);
-                return $syslogTarget->closelog();
-            };
-
-            $syslogTarget->export();
-        }
-
-        /**
-         * @covers \yii\log\SyslogTarget::export()
-         *
-         * See https://github.com/yiisoft/yii2/issues/14296
-         */
-        public function testFailedExport(): void
-        {
-            /** @var SyslogTargetStub&MockObject $syslogTarget */
-            $syslogTarget = $this->getMockBuilder(SyslogTargetStub::class)
-                ->onlyMethods(['openlog', 'syslog', 'closelog', 'formatMessage'])
-                ->getMock();
-
-            $syslogTarget->method('syslog')->willReturn(false);
-
-            $syslogTarget->identity = 'identity string';
-            $syslogTarget->options = LOG_ODELAY | LOG_PID;
-            $syslogTarget->facility = LOG_USER;
-            $syslogTarget->messages = [
-                ['test', Logger::LEVEL_INFO],
-            ];
-
-            static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
-                $this->assertCount(3, $arguments);
-                [$identity, $option, $facility] = $arguments;
-                return $syslogTarget->openlog($identity, $option, $facility);
-            };
-            static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
-                $this->assertCount(2, $arguments);
-                [$priority, $message] = $arguments;
-                return $syslogTarget->syslog($priority, $message);
-            };
-            static::$functions['closelog'] = function ($arguments) use ($syslogTarget) {
-                $this->assertCount(0, $arguments);
-                return $syslogTarget->closelog();
-            };
-
-            $this->expectException('yii\log\LogRuntimeException');
-            $syslogTarget->export();
-        }
-
-        /**
-         * @param $name
-         * @param $arguments
-         * @return mixed
-         */
-        public static function __callStatic($name, $arguments)
-        {
-            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = $arguments[0] ?? $arguments;
-                return forward_static_call(static::$functions[$name], $arguments);
-            }
-            static::fail("Function '$name' has not implemented yet!");
-        }
-
-        /**
-         * @covers \yii\log\SyslogTarget::formatMessage()
-         */
-        public function testFormatMessageWhereTextIsString(): void
-        {
-            $message = ['text', Logger::LEVEL_INFO, 'category', 'timestamp'];
-
-            $this->syslogTarget
-                ->expects($this->once())
-                ->method('getMessagePrefix')
-                ->with($this->equalTo($message))
-                ->willReturn('some prefix');
-
-            $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[info][category] text', $result);
-        }
-
-        /**
-         * @covers \yii\log\SyslogTarget::formatMessage()
-         */
-        public function testFormatMessageWhereTextIsException(): void
-        {
-            $exception = new \Exception('exception text');
-            $message = [$exception, Logger::LEVEL_INFO, 'category', 'timestamp'];
-
-            $this->syslogTarget
-                ->expects($this->once())
-                ->method('getMessagePrefix')
-                ->with($this->equalTo($message))
-                ->willReturn('some prefix');
-
-            $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[info][category] ' . (string) $exception, $result);
-        }
-
-        /**
-         * @covers \yii\log\SyslogTarget::formatMessage()
-         */
-        public function testFormatMessageWhereTextIsNotStringAndNotThrowable(): void
-        {
-            $text = new \stdClass();
-            $text->var = 'some text';
-            $message = [$text, Logger::LEVEL_ERROR, 'category', 'timestamp'];
-
-            $this->syslogTarget
-                ->expects($this->once())
-                ->method('getMessagePrefix')
-                ->with($this->equalTo($message))
-                ->willReturn('some prefix');
-
-            $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[error][category] ' . VarDumper::export($text), $result);
-        }
+        self::assertSame(
+            [[$identity, $options, $facility]],
+            array_column(MockerState::getTraces('yii\log', 'openlog'), 'arguments'),
+            'Syslog connection must be opened with the configured values.',
+        );
+        self::assertSame(
+            array_map(
+                static fn(int $priority, int $index): array => [
+                    $priority,
+                    'formatted message ' . ($index + 1),
+                ],
+                $priorities,
+                array_keys($priorities),
+            ),
+            array_column(MockerState::getTraces('yii\log', 'syslog'), 'arguments'),
+            'Every message must be written with its mapped syslog priority.',
+        );
+        self::assertCount(
+            1,
+            MockerState::getTraces('yii\log', 'closelog'),
+            'Syslog connection must be closed after exporting messages.',
+        );
     }
 
     /**
-     * Stub subclass that declares native syslog wrappers as instance methods so PHPUnit mocks
-     * can set expectations on them without using the deprecated MockBuilder::addMethods().
+     * @see https://github.com/yiisoft/yii2/issues/14296
      */
-    class SyslogTargetStub extends SyslogTarget
+    public function testFailedExport(): void
     {
-        public function openlog($identity, $options, $facility)
-        {
-        }
+        /** @var SyslogTarget&MockObject $syslogTarget */
+        $syslogTarget = $this
+            ->getMockBuilder(SyslogTarget::class)
+            ->onlyMethods(['formatMessage'])
+            ->getMock();
 
-        public function syslog($priority, $message)
-        {
-        }
+        $syslogTarget->method('formatMessage')->willReturn('test');
 
-        public function closelog()
-        {
-        }
+        $syslogTarget->identity = 'identity string';
+        $syslogTarget->options = LOG_ODELAY | LOG_PID;
+        $syslogTarget->facility = LOG_USER;
+        $syslogTarget->messages = [
+            ['test', Logger::LEVEL_INFO],
+        ];
+
+        MockerState::addCondition(
+            'yii\log',
+            'openlog',
+            [$syslogTarget->identity, $syslogTarget->options, $syslogTarget->facility],
+            true,
+        );
+        MockerState::addCondition(
+            'yii\log',
+            'syslog',
+            [LOG_INFO, 'test'],
+            false,
+        );
+
+        $this->expectException(LogRuntimeException::class);
+        $this->expectExceptionMessage(
+            'Unable to export log through system log!',
+        );
+
+        $syslogTarget->export();
+    }
+
+    public function testFormatMessageWhereTextIsString(): void
+    {
+        $message = ['text', Logger::LEVEL_INFO, 'category', 'timestamp'];
+
+        $this->syslogTarget
+            ->expects($this->once())
+            ->method('getMessagePrefix')
+            ->with($this->equalTo($message))
+            ->willReturn('some prefix');
+
+        $result = $this->syslogTarget->formatMessage($message);
+
+        self::assertSame(
+            'some prefix[info][category] text',
+            $result,
+            'String message must be formatted for syslog.',
+        );
+    }
+
+    public function testFormatMessageWhereTextIsException(): void
+    {
+        $exception = new Exception('exception text');
+
+        $message = [$exception, Logger::LEVEL_INFO, 'category', 'timestamp'];
+
+        $this->syslogTarget
+            ->expects($this->once())
+            ->method('getMessagePrefix')
+            ->with($this->equalTo($message))
+            ->willReturn('some prefix');
+
+        $result = $this->syslogTarget->formatMessage($message);
+
+        self::assertSame(
+            'some prefix[info][category] ' . (string) $exception,
+            $result,
+            'Exception message must be formatted for syslog.',
+        );
+    }
+
+    public function testFormatMessageWhereTextIsNotStringAndNotThrowable(): void
+    {
+        $text = new stdClass();
+
+        $text->var = 'some text';
+
+        $message = [$text, Logger::LEVEL_ERROR, 'category', 'timestamp'];
+
+        $this->syslogTarget
+            ->expects($this->once())
+            ->method('getMessagePrefix')
+            ->with($this->equalTo($message))
+            ->willReturn('some prefix');
+
+        $result = $this->syslogTarget->formatMessage($message);
+
+        self::assertSame(
+            'some prefix[error][category] ' . VarDumper::export($text),
+            $result,
+            'Complex message must be formatted for syslog.',
+        );
     }
 }
