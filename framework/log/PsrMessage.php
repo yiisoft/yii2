@@ -23,7 +23,7 @@ use Throwable;
  */
 final readonly class PsrMessage implements Stringable
 {
-    private string $message;
+    private string $_message;
 
     /**
      * @param string|Stringable $message The PSR-3 message, cast to `string` eagerly so a throwing {@see Stringable}
@@ -36,7 +36,7 @@ final readonly class PsrMessage implements Stringable
         private array $context,
         private string $level,
     ) {
-        $this->message = (string) $message;
+        $this->_message = (string) $message;
     }
 
     /**
@@ -44,7 +44,7 @@ final readonly class PsrMessage implements Stringable
      */
     public function getMessage(): string
     {
-        return $this->message;
+        return $this->_message;
     }
 
     /**
@@ -89,6 +89,6 @@ final readonly class PsrMessage implements Stringable
             }
         }
 
-        return strtr($this->message, $replace);
+        return strtr($this->_message, $replace);
     }
 }
