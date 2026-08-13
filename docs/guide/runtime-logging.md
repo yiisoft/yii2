@@ -361,9 +361,88 @@ sending the content of the [[yii\log\Target::messages]] array to a designated me
 [[yii\log\Target::formatMessage()]] method to format each message. For more details, you may refer to any of the
 log target classes included in the Yii release.
 
-> Tip: Instead of creating your own loggers you may try any PSR-3 compatible logger such
-  as [Monolog](https://github.com/Seldaek/monolog) by using
-  [PSR log target extension](https://github.com/samdark/yii2-psr-log-target).
+## PSR-3 Interoperability <span id="psr-3-interoperability"></span>
+
+Yii supports [PSR-3](https://www.php-fig.org/psr/psr-3/) in both directions without replacing its category-based
+logging system.
+
+### Sending PSR-3 Messages to Yii
+
+[[yii\log\PsrLogger]] implements `Psr\Log\LoggerInterface` and forwards messages to a Yii logger. When constructed
+without an explicit Yii logger, it resolves `Yii::getLogger()` for every call so that [[Yii::setLogger()]] replacements
+are respected:
+
+```php
+use Psr\Log\LoggerInterface;
+use yii\log\PsrLogger;
+
+Yii::$container->setSingleton(LoggerInterface::class, static fn () => new PsrLogger());
+
+$logger = Yii::$container->get(LoggerInterface::class);
+
+$logger->info(
+    'User {id} signed in.',
+    [
+        'id' => 42,
+        'category' => 'app.auth',
+    ],
+);
+```
+
+A string `category` context value selects the Yii category for that call. Otherwise, the adapter uses its configured
+default category, which is `application`.
+
+PSR-3 levels are mapped to Yii levels as follows:
+
+| PSR-3 levels | Yii level |
+| --- | --- |
+| `emergency`, `alert`, `critical`, `error` | `error` |
+| `warning`, `notice` | `warning` |
+| `info` | `info` |
+| `debug` | `trace` |
+
+The original PSR-3 level and context are retained. Built-in Yii targets interpolate scalar and stringable context
+values used as `{placeholder}` tokens. A [[yii\log\PsrTarget]] can forward the original level and context without
+losing information.
+
+### Sending Yii Messages to a PSR-3 Logger
+
+[[yii\log\PsrTarget]] forwards Yii messages to any `Psr\Log\LoggerInterface` implementation, such as
+[Monolog](https://github.com/Seldaek/monolog):
+
+```php
+use yii\log\PsrTarget;
+
+// $psrLogger must implement Psr\Log\LoggerInterface.
+return [
+    'bootstrap' => ['log'],
+    'components' => [
+        'log' => [
+            'targets' => [
+                [
+                    'class' => PsrTarget::class,
+                    'logger' => $psrLogger,
+                    'levels' => ['error', 'warning'],
+                    'addTimestampToContext' => true,
+                ],
+            ],
+        ],
+    ],
+];
+```
+
+The target adds the Yii `category`, `trace`, and `memory` metadata to the PSR-3 context. When
+`addTimestampToContext` is enabled, it also adds the original buffered-message `timestamp`. Set `psrLevels` when an
+exact PSR-3 level filter is needed after normal Yii level and category filtering:
+
+```php
+use Psr\Log\LogLevel;
+
+'psrLevels' => [LogLevel::CRITICAL, LogLevel::ALERT],
+```
+
+Do not use [[yii\log\PsrLogger]] as the destination of [[yii\log\PsrTarget]], because that would route exported
+messages back into Yii. This direct recursive configuration is rejected.
 
 ## Performance Profiling <span id="performance-profiling"></span>
 

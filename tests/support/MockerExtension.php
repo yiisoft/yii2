@@ -68,6 +68,18 @@ final class MockerExtension implements Extension
                 'namespace' => 'yii\rbac',
                 'name' => 'time',
             ],
+            [
+                'namespace' => 'yii\log',
+                'name' => 'openlog',
+            ],
+            [
+                'namespace' => 'yii\log',
+                'name' => 'syslog',
+            ],
+            [
+                'namespace' => 'yii\log',
+                'name' => 'closelog',
+            ],
         ];
 
         $mocker = new Mocker();

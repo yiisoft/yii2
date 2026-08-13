@@ -12,7 +12,6 @@ use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\di\Instance;
-use yii\helpers\VarDumper;
 
 /**
  * DbTarget stores log messages in a database table.
@@ -44,7 +43,6 @@ class DbTarget extends Target
      */
     public $logTable = '{{%log}}';
 
-
     /**
      * Initializes the DbTarget component.
      * This method will initialize the [[db]] property to make sure it refers to a valid DB connection.
@@ -71,31 +69,34 @@ class DbTarget extends Target
         }
 
         $tableName = $this->db->quoteTableName($this->logTable);
-        $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
-                VALUES (:level, :category, :log_time, :prefix, :message)";
+
+        // bind variable names must avoid Oracle reserved words such as LEVEL (ORA-01745)
+        $sql = <<<SQL
+        INSERT INTO {$tableName} ([[level]], [[category]], [[log_time]], [[prefix]], [[message]]) VALUES (:log_level, :log_category, :log_time, :log_prefix, :log_message)
+        SQL;
+
         $command = $this->db->createCommand($sql);
+
         foreach ($this->messages as $message) {
-            list($text, $level, $category, $timestamp) = $message;
-            if (!is_string($text)) {
-                // exceptions may not be serializable if in the call stack somewhere is a Closure
-                if ($text instanceof \Exception || $text instanceof \Throwable) {
-                    $text = (string) $text;
-                } else {
-                    $text = VarDumper::export($text);
-                }
-            }
+            [$text, $level, $category, $timestamp] = $message;
+
             if (
-                $command->bindValues([
-                    ':level' => $level,
-                    ':category' => $category,
-                    ':log_time' => $timestamp,
-                    ':prefix' => $this->getMessagePrefix($message),
-                    ':message' => $text,
-                ])->execute() > 0
+                $command->bindValues(
+                    [
+                        ':log_level' => $level,
+                        ':log_category' => $category,
+                        ':log_time' => $timestamp,
+                        ':log_prefix' => $this->getMessagePrefix($message),
+                        ':log_message' => $this->formatMessageText($text),
+                    ],
+                )->execute() > 0
             ) {
                 continue;
             }
-            throw new LogRuntimeException('Unable to export log through database!');
+
+            throw new LogRuntimeException(
+                'Unable to export log through database!',
+            );
         }
     }
 }

@@ -708,6 +708,15 @@ because their values are only preserved when parsed as SQL. Previously Yii2 mang
 decimal, boolean, and SQLite bareword defaults remain PHP values. Review strict type checks, schema snapshots, and code
 that calls `ActiveRecord::loadDefaultValues()` for models containing these columns.
 
+## Logging
+
+### PSR-3 interoperability included in the framework
+
+Yii2 now requires `psr/log:^3.0` and provides bidirectional PSR-3 adapters in the framework:
+
+- `yii\log\PsrLogger` implements `Psr\Log\LoggerInterface` and routes PSR-3 messages to Yii;
+- `yii\log\PsrTarget` routes Yii messages to an external `Psr\Log\LoggerInterface` implementation.
+
 ## Removed platform support
 
 ### HHVM
