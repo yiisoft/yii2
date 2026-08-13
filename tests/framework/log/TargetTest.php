@@ -201,17 +201,17 @@ class TargetTest extends TestCase
 
         self::assertTrue(
             $target->enabled,
-            'Target must be enabled after assigning `true`.',
+            "Target must be enabled after assigning 'true'.",
         );
 
         $target->enabled = false;
 
         self::assertFalse(
             $target->enabled,
-            'Target must be disabled after assigning `false`.',
+            "Target must be disabled after assigning 'false'.",
         );
 
-        $target->enabled = fn($target) => empty($target->messages);
+        $target->enabled = fn($target) => $target->messages === [];
 
         self::assertTrue(
             $target->enabled,
