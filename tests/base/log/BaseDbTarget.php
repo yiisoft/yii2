@@ -180,7 +180,7 @@ abstract class BaseDbTarget extends DatabaseTestCase
         $target = new DbTarget(
             [
                 'logTable' => self::LOG_TABLE,
-                'prefix' => static fn(array $message): string => 'test-prefix',
+                'prefix' => static fn(): string => 'test-prefix',
             ],
         );
 
@@ -246,6 +246,42 @@ abstract class BaseDbTarget extends DatabaseTestCase
             'batch message three',
             self::toStringValue($rows[2]['message']),
             'Message: third row.',
+        );
+    }
+
+    public function testExportSpansMultipleInsertChunks(): void
+    {
+        $target = new DbTarget(['logTable' => self::LOG_TABLE]);
+
+        // one message more than the 100-row INSERT chunk size, so the export needs a second statement
+        for ($i = 1; $i <= 101; $i++) {
+            $target->messages[] = ["chunk message {$i}", Logger::LEVEL_INFO, 'chunk', (float) $i];
+        }
+
+        $target->export();
+
+        $count = (new Query())
+            ->from(self::LOG_TABLE)
+            ->where(['category' => 'chunk'])
+            ->count('*', Yii::$app->getDb());
+
+        self::assertEquals(
+            101,
+            $count,
+            'All rows across chunks must be inserted.',
+        );
+
+        $lastMessage = (new Query())
+            ->select('message')
+            ->from(self::LOG_TABLE)
+            ->where(['category' => 'chunk', 'log_time' => 101])
+            ->createCommand(Yii::$app->getDb())
+            ->queryScalar();
+
+        self::assertSame(
+            'chunk message 101',
+            self::toStringValue($lastMessage),
+            'Last row past the chunk boundary must round-trip.',
         );
     }
 

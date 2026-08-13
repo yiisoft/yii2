@@ -730,7 +730,7 @@ level-filter contract. Replace direct `samdark\log\PsrMessage` construction with
 
 `yii\log\DbTarget` now exports log messages with chunked multi-row `INSERT` statements (100 rows per statement)
 instead of executing one query per message. On Oracle, rows are still inserted individually with bound parameters
-because inlined SQL string literals are limited to 4000 bytes. A message that can not be stored now fails its whole
+because inlined SQL string literals are limited to 4000 bytes. A message that cannot be stored now fails its whole
 chunk with `yii\db\Exception` instead of failing only its own row; `LogRuntimeException` is still thrown when the
 number of inserted rows does not match the number of messages.
 

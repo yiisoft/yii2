@@ -151,7 +151,7 @@ class PsrTarget extends Target
                 $text = $text->getMessage();
             }
 
-            if (!isset($context['trace']) && !empty($message[4])) {
+            if (!isset($context['trace']) && isset($message[4]) && $message[4] !== []) {
                 $context['trace'] = $message[4];
             }
 

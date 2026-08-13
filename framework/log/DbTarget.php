@@ -120,7 +120,7 @@ class DbTarget extends Target
      * Stores log messages to DB one row at a time using bound parameters.
      *
      * Oracle limits inlined SQL string literals to 4000 bytes, so the multi-row INSERT statements built by
-     * [[\yii\db\QueryBuilder::batchInsert()]] can not carry long log messages there.
+     * [[\yii\db\QueryBuilder::batchInsert()]] cannot carry long log messages there.
      *
      * @throws Exception
      * @throws LogRuntimeException

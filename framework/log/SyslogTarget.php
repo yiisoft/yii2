@@ -78,7 +78,7 @@ class SyslogTarget extends Target
      */
     public function formatMessage($message)
     {
-        [$text, $level, $category, $timestamp] = $message;
+        [$text, $level, $category] = $message;
 
         $level = Logger::getLevelName($level);
 
