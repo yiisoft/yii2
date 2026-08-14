@@ -1,7 +1,8 @@
 var assert = require('chai').assert;
 var sinon;
-var withData = require('leche').withData;
-var jsdom = require('mocha-jsdom');
+var testUtils = require('../test-utils');
+var useJsdom = testUtils.useJsdom;
+var withData = testUtils.withData;
 
 var fs = require('fs');
 var vm = require('vm');
@@ -28,7 +29,7 @@ describe('yii.captcha', function () {
         '<img id="captcha-2" class="captcha" src="/site/captcha/">';
     var html = '<!doctype html><html><head><meta charset="utf-8"></head><body>' + imgHtml + '</body></html>';
 
-    jsdom({
+    useJsdom({
         html: html,
         src: fs.readFileSync(jQueryPath, 'utf-8'),
         url: "http://foo.bar"

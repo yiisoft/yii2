@@ -1,7 +1,8 @@
 var assert = require('chai').assert;
 var sinon;
-var withData = require('leche').withData;
-var jsdom = require('mocha-jsdom');
+var testUtils = require('../test-utils');
+var useJsdom = testUtils.useJsdom;
+var withData = testUtils.withData;
 
 var fs = require('fs');
 var vm = require('vm');
@@ -23,6 +24,7 @@ describe('yii', function () {
     var jQueryPath = 'node_modules/jquery/dist/jquery.js';
     var pjaxPath = 'node_modules/yii2-pjax/jquery.pjax.js';
     var sandbox;
+    var sandboxWindow;
     var $;
     var yii;
     var yiiGetBaseCurrentUrlStub;
@@ -41,7 +43,19 @@ describe('yii', function () {
 
         var code = fs.readFileSync(yiiPath);
         var script = new vm.Script(code);
-        sandbox = {window: window, document: window.document, XMLHttpRequest: window.XMLHttpRequest};
+        sandboxWindow = {
+            confirm: function () {
+                return window.confirm.apply(window, arguments);
+            },
+            jQuery: $,
+            location: {
+                assign: window.location.assign.bind(window.location),
+                host: window.location.host,
+                href: window.location.href,
+                protocol: window.location.protocol
+            }
+        };
+        sandbox = {window: sandboxWindow, document: window.document, XMLHttpRequest: window.XMLHttpRequest};
         var context = new vm.createContext(sandbox);
 
         script.runInContext(context);
@@ -72,13 +86,13 @@ describe('yii', function () {
         });
     }
 
-    jsdom({
+    useJsdom({
         html: fs.readFileSync('tests/js/data/yii.html', 'utf-8'),
         src: fs.readFileSync(jQueryPath, 'utf-8'),
         url: "http://foo.bar"
     });
 
-    before(function () {
+    before(function (done) {
         $ = window.$;
         registerTestableCode();
         sinon = require('sinon');
@@ -89,6 +103,7 @@ describe('yii', function () {
         yiiGetCurrentUrlStub = sinon.stub(yii, 'getCurrentUrl', function () {
             return 'http://foo.bar/';
         });
+        setImmediate(done);
     });
 
     after(function () {
@@ -267,7 +282,7 @@ describe('yii', function () {
         var $savedSubmittedForm;
 
         beforeEach(function () {
-            windowLocationAssignStub = sinon.stub(window.location, 'assign');
+            windowLocationAssignStub = sinon.stub(sandboxWindow.location, 'assign');
             pjaxClickStub = sinon.stub($.pjax, 'click');
             pjaxSubmitStub = sinon.stub($.pjax, 'submit');
             initialFormsCount = $('form').length;
@@ -926,7 +941,7 @@ describe('yii', function () {
         var windowLocationAssignStub;
 
         beforeEach(function () {
-            windowLocationAssignStub = sinon.stub(window.location, 'assign');
+            windowLocationAssignStub = sinon.stub(sandboxWindow.location, 'assign');
         });
 
         afterEach(function () {

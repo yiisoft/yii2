@@ -1,6 +1,6 @@
 var assert = require('chai').assert;
 var sinon;
-var jsdom = require('mocha-jsdom');
+var useJsdom = require('../test-utils').useJsdom;
 
 var fs = require('fs');
 var vm = require('vm');
@@ -15,7 +15,7 @@ describe('yii.activeForm', function () {
     function registerYii() {
         var code = fs.readFileSync(yiiPath);
         var script = new vm.Script(code);
-        var sandbox = {window: window, jQuery: $};
+        var sandbox = {window: window, document: window.document, jQuery: $};
         var context = new vm.createContext(sandbox);
         script.runInContext(context);
         return sandbox.window.yii;
@@ -47,16 +47,17 @@ describe('yii.activeForm', function () {
     var activeFormHtml = fs.readFileSync('tests/js/data/yii.activeForm.html', 'utf-8');
     var html = '<!doctype html><html><head><meta charset="utf-8"></head><body>' + activeFormHtml + '</body></html>';
 
-    jsdom({
+    useJsdom({
         html: html,
         src: fs.readFileSync(jQueryPath, 'utf-8'),
         url: "http://foo.bar"
     });
 
-    before(function () {
+    before(function (done) {
         $ = window.$;
         registerTestableCode();
         sinon = require('sinon');
+        setImmediate(done);
     });
 
     describe('validate method', function () {
@@ -158,6 +159,9 @@ describe('yii.activeForm', function () {
                             jqXHR: {
                                 abort: function () {
                                     request.aborted = true;
+                                },
+                                getResponseHeader: function () {
+                                    return null;
                                 }
                             },
                             aborted: false,

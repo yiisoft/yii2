@@ -1,7 +1,8 @@
 var assert = require('chai').assert;
 var sinon;
-var withData = require('leche').withData;
-var jsdom = require('mocha-jsdom');
+var testUtils = require('../test-utils');
+var useJsdom = testUtils.useJsdom;
+var withData = testUtils.withData;
 
 var fs = require('fs');
 var vm = require('vm');
@@ -32,7 +33,7 @@ describe('yii.gridView', function () {
     function registerYii() {
         var code = fs.readFileSync(yiiPath);
         var script = new vm.Script(code);
-        var sandbox = {window: window, jQuery: $};
+        var sandbox = {window: window, document: window.document, jQuery: $};
         var context = new vm.createContext(sandbox);
         script.runInContext(context);
         return sandbox.window.yii;
@@ -49,16 +50,17 @@ describe('yii.gridView', function () {
     var gridViewHtml = fs.readFileSync('tests/js/data/yii.gridView.html', 'utf-8');
     var html = '<!doctype html><html><head><meta charset="utf-8"></head><body>' + gridViewHtml + '</body></html>';
 
-    jsdom({
+    useJsdom({
         html: html,
         src: fs.readFileSync(jQueryPath, 'utf-8'),
         url: "http://foo.bar"
     });
 
-    before(function () {
+    before(function (done) {
         $ = window.$;
         registerTestableCode();
         sinon = require('sinon');
+        setImmediate(done);
     });
 
     beforeEach(function () {
