@@ -139,11 +139,15 @@ jobs:
       - name: Setup PHP with Composer.
         uses: ./.github/actions/php-setup
         with:
+          composer-command: install
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           extensions: ${{ env.PHP_EXTENSIONS }}
           ignore-platform-reqs: ${{ env.IGNORE_PLATFORM_REQS }}
           ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
           php-version: ${{ matrix.php }}
+
+      - name: Audit locked Composer dependencies.
+        run: composer audit --locked --no-interaction
 
       - name: Run PHPUnit tests with production-mode bootstrap.
         uses: ./.github/actions/phpunit

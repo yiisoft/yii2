@@ -9,7 +9,9 @@ assert.isDeferred = function (object) {
 };
 
 var sinon;
-var withData = require('leche').withData;
+var testUtils = require('../test-utils');
+var useJsdom = testUtils.useJsdom;
+var withData = testUtils.withData;
 
 var StringUtils = {
     repeatString: function (value, times) {
@@ -17,7 +19,6 @@ var StringUtils = {
     }
 };
 
-var jsdom = require('mocha-jsdom');
 var punycode = require('../../../node_modules/punycode/punycode');
 
 var fs = require('fs');
@@ -75,7 +76,7 @@ describe('yii.validation', function () {
         yii = sandbox.yii;
     }
 
-    jsdom({
+    useJsdom({
         src: fs.readFileSync('node_modules/jquery/dist/jquery.js', 'utf-8'),
         url: "http://foo.bar"
     });

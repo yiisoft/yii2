@@ -42,9 +42,14 @@ concurrency:
 
 jobs:
   test:
-    name: NPM 10 on ubuntu-latest
+    name: Node.js ${{ matrix.node-version }} on ubuntu-latest
 
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
 
     steps:
 
@@ -60,10 +65,12 @@ jobs:
       - name: Install node.js.
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
-          node-version: 20
+          cache: npm
+          node-version: ${{ matrix.node-version }}
 
       - name: Tests.
         run: |
-          npm install
+          npm ci
+          npm audit
           npm run lint
           npm test
