@@ -61,6 +61,7 @@ use yii\validators\IpValidator;
  * @property-read bool $isPjax Whether this is a PJAX request.
  * @property-read bool $isPost Whether this is a POST request.
  * @property-read bool $isPut Whether this is a PUT request.
+ * @property-read bool $isQuery Whether this is a QUERY request.
  * @property-read bool $isSecureConnection If the request is sent via secure channel (https).
  * @property-read string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value
  * returned is turned into upper case.
@@ -133,7 +134,7 @@ class Request extends \yii\base\Request
      * This property is used only when [[enableCsrfValidation]] is true.
      * @see https://datatracker.ietf.org/doc/html/rfc9110#name-safe-methods
      */
-    public $csrfTokenSafeMethods = ['GET', 'HEAD', 'OPTIONS'];
+    public $csrfTokenSafeMethods = ['GET', 'HEAD', 'OPTIONS', 'QUERY'];
     /**
      * @var array "unsafe" methods not triggered a CORS-preflight request
      * This property is used only when both [[enableCsrfValidation]] and [[validateCsrfHeaderOnly]] are true.
@@ -436,8 +437,8 @@ class Request extends \yii\base\Request
         if (
             isset($_POST[$this->methodParam])
             // Never allow to downgrade request from WRITE methods (POST, PATCH, DELETE, etc)
-            // to read methods (GET, HEAD, OPTIONS) for security reasons.
-            && !in_array(strtoupper($_POST[$this->methodParam]), ['GET', 'HEAD', 'OPTIONS'], true)
+            // to read methods (GET, HEAD, OPTIONS, QUERY) for security reasons.
+            && !in_array(strtoupper($_POST[$this->methodParam]), ['GET', 'HEAD', 'OPTIONS', 'QUERY'], true)
         ) {
             return strtoupper($_POST[$this->methodParam]);
         }
@@ -514,6 +515,16 @@ class Request extends \yii\base\Request
     public function getIsPatch()
     {
         return $this->getMethod() === 'PATCH';
+    }
+
+    /**
+     * Returns whether this is a QUERY request.
+     * @return bool whether this is a QUERY request.
+     * @since 2.0.56
+     */
+    public function getIsQuery()
+    {
+        return $this->getMethod() === 'QUERY';
     }
 
     /**
@@ -1879,7 +1890,7 @@ class Request extends \yii\base\Request
      * This method is mainly called in [[Controller::beforeAction()]].
      *
      * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
-     * is among GET, HEAD or OPTIONS.
+     * is among [[csrfTokenSafeMethods]].
      *
      * @param string|null $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.

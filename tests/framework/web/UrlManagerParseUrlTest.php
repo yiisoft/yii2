@@ -296,6 +296,30 @@ class UrlManagerParseUrlTest extends TestCase
 
     // TODO implement with hostinfo
 
+    public function testParseQueryMethodRequest(): void
+    {
+        $request = new Request();
+
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
+            'showScriptName' => false,
+            'cache' => null,
+            'rules' => [
+                'QUERY posts' => 'post/search',
+            ],
+        ]);
+
+        $_SERVER['REQUEST_METHOD'] = 'QUERY';
+        $request->pathInfo = 'posts';
+        $this->assertEquals(['post/search', []], $manager->parseRequest($request));
+
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $this->assertFalse($manager->parseRequest($request));
+
+        unset($_SERVER['REQUEST_METHOD']);
+    }
+
     public function testParseRESTRequest(): void
     {
         $request = new Request();

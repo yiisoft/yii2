@@ -81,7 +81,7 @@ class UrlManager extends Component
      * For example, `'PUT post/<id:\d+>' => 'post/update'`.
      * You may specify multiple verbs by separating them with comma
      * like this: `'POST,PUT post/index' => 'post/create'`.
-     * The supported verbs in the shortcut format are: GET, HEAD, POST, PUT, PATCH and DELETE.
+     * The supported verbs in the shortcut format are: GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS and QUERY.
      * Note that [[UrlRule::mode|mode]] will be set to PARSING_ONLY when specifying verb in this way
      * so you normally would not specify a verb for normal GET request.
      *
@@ -233,7 +233,7 @@ class UrlManager extends Component
         }
 
         $builtRules = [];
-        $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+        $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY';
         foreach ($ruleDeclarations as $key => $rule) {
             if (is_string($rule)) {
                 $rule = ['route' => $rule];
