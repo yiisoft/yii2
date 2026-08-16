@@ -68,8 +68,10 @@ Upgrade from Yii 2.0.55
 * The HTTP `QUERY` method (RFC 10008) is now treated as safe: it is part of `yii\web\Request::$csrfTokenSafeMethods`,
   so a `QUERY` request no longer requires a CSRF token, and `yii\filters\HttpCache` handles it like `GET` and `HEAD`.
   It is also routed to the `index` action by `yii\rest\UrlRule`, allowed there by `yii\rest\ActiveController::verbs()`,
-  and listed in the default `Access-Control-Request-Method` of `yii\filters\Cors`. Remove `QUERY` from
-  `csrfTokenSafeMethods`, from `verbs()`, or from the `Cors` configuration, if your application must keep rejecting it.
+  and listed in the default `Access-Control-Request-Method` of `yii\filters\Cors`. Being a safe method, `QUERY` is
+  no longer accepted through `yii\web\Request::$methodParam` either, the same way `GET`, `HEAD` and `OPTIONS` are
+  already refused there: a `POST` carrying `_method=QUERY` stays a `POST`. Remove `QUERY` from `csrfTokenSafeMethods`,
+  from `verbs()`, or from the `Cors` configuration, if your application must keep rejecting it.
 
 Upgrade from Yii 2.0.53
 -----------------------
