@@ -233,7 +233,7 @@ class UrlManager extends Component
         }
 
         $builtRules = [];
-        $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+        $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY';
         foreach ($ruleDeclarations as $key => $rule) {
             if (is_string($rule)) {
                 $rule = ['route' => $rule];

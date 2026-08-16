@@ -31,7 +31,7 @@ For example, the above code is roughly equivalent to the following rules:
     'DELETE users/<id>' => 'user/delete',
     'GET,HEAD users/<id>' => 'user/view',
     'POST users' => 'user/create',
-    'GET,HEAD users' => 'user/index',
+    'GET,HEAD,QUERY users' => 'user/index',
     'users/<id>' => 'user/options',
     'users' => 'user/options',
 ]
@@ -41,6 +41,7 @@ And the following API endpoints are supported by this rule:
 
 * `GET /users`: list all users page by page;
 * `HEAD /users`: show the overview information of user listing;
+* `QUERY /users`: list all users page by page, with the filter parameters sent in the request body;
 * `POST /users`: create a new user;
 * `GET /users/123`: return the details of the user 123;
 * `HEAD /users/123`: show the overview information of user 123;

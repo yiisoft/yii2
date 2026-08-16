@@ -91,7 +91,7 @@ class GroupUrlRule extends CompositeUrlRule
         $rules = [];
         foreach ($this->rules as $key => $rule) {
             if (!is_array($rule)) {
-                $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
+                $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|QUERY';
                 $verb = null;
                 if (preg_match("/^((?:(?:$verbs),)*(?:$verbs))\\s+(.*)$/", $key, $matches)) {
                     $verb = explode(',', $matches[1]);

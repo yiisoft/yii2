@@ -116,7 +116,7 @@ class ActiveController extends Controller
     protected function verbs()
     {
         return [
-            'index' => ['GET', 'HEAD'],
+            'index' => ['GET', 'HEAD', 'QUERY'],
             'view' => ['GET', 'HEAD'],
             'create' => ['POST'],
             'update' => ['PUT', 'PATCH'],
