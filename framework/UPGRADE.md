@@ -70,8 +70,10 @@ Upgrade from Yii 2.0.55
   It is also routed to the `index` action by `yii\rest\UrlRule`, allowed there by `yii\rest\ActiveController::verbs()`,
   and listed in the default `Access-Control-Request-Method` of `yii\filters\Cors`. Being a safe method, `QUERY` is
   no longer accepted through `yii\web\Request::$methodParam` either, the same way `GET`, `HEAD` and `OPTIONS` are
-  already refused there: a `POST` carrying `_method=QUERY` stays a `POST`. Remove `QUERY` from `csrfTokenSafeMethods`,
-  from `verbs()`, or from the `Cors` configuration, if your application must keep rejecting it.
+  already refused there: a `POST` carrying `_method=QUERY` stays a `POST`. The three defaults are separate switches:
+  removing `QUERY` from `csrfTokenSafeMethods` brings CSRF validation back for it, removing it from `verbs()` makes
+  `yii\filters\VerbFilter` answer `405`, and removing it from the `Cors` configuration only withholds cross-origin
+  authorization from browsers instead of rejecting the verb.
 
 Upgrade from Yii 2.0.53
 -----------------------
