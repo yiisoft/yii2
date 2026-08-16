@@ -67,8 +67,9 @@ Upgrade from Yii 2.0.55
   to the first matching rule. Set `attributeTypes` explicitly if you rely on those attributes being type-casted.
 * The HTTP `QUERY` method (RFC 10008) is now treated as safe: it is part of `yii\web\Request::$csrfTokenSafeMethods`,
   so a `QUERY` request no longer requires a CSRF token, and `yii\filters\HttpCache` handles it like `GET` and `HEAD`.
-  It is also routed to the `index` action by `yii\rest\UrlRule` and allowed there by `yii\rest\ActiveController::verbs()`.
-  Remove `QUERY` from `csrfTokenSafeMethods`, or from `verbs()`, if your application must keep rejecting it.
+  It is also routed to the `index` action by `yii\rest\UrlRule`, allowed there by `yii\rest\ActiveController::verbs()`,
+  and listed in the default `Access-Control-Request-Method` of `yii\filters\Cors`. Remove `QUERY` from
+  `csrfTokenSafeMethods`, from `verbs()`, or from the `Cors` configuration, if your application must keep rejecting it.
 
 Upgrade from Yii 2.0.53
 -----------------------
