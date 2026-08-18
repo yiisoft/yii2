@@ -10,6 +10,7 @@
 
 namespace yiiunit\framework\i18n {
     use yiiunit\TestCase;
+    use yii\i18n\Formatter;
 
     class IntlTestHelper
     {
@@ -37,6 +38,31 @@ namespace yiiunit\framework\i18n {
         public static function resetIntlStatus(): void
         {
             static::$enableIntl = null;
+        }
+
+        public static function applyIntlStatusToFormatter(Formatter $formatter): void
+        {
+            if (static::$enableIntl === null) {
+                return;
+            }
+
+            $setIntlLoaded = \Closure::bind(
+                static function (Formatter $formatter, bool $enableIntl): void {
+                    $formatter->_intlLoaded = $enableIntl;
+                },
+                null,
+                Formatter::class
+            );
+            $setIntlLoaded($formatter, static::$enableIntl);
+
+            if (!static::$enableIntl) {
+                if ($formatter->decimalSeparator === null) {
+                    $formatter->decimalSeparator = '.';
+                }
+                if ($formatter->thousandSeparator === null) {
+                    $formatter->thousandSeparator = ',';
+                }
+            }
         }
     }
 }
