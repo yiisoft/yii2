@@ -28,6 +28,8 @@ use function count;
 
 /**
  * Unit tests for {@see yii\log\Target}.
+ *
+ * @phpstan-import-type LogMessage from Logger
  */
 #[Group('log')]
 final class TargetTest extends TestCase
@@ -219,6 +221,9 @@ final class TargetTest extends TestCase
         );
     }
 
+    /**
+     * @param LogMessage $message
+     */
     #[DataProviderExternal(TargetProvider::class, 'formatMessage')]
     public function testFormatMessage(array $message, bool $microtime, string $expected): void
     {
@@ -247,7 +252,9 @@ final class TargetTest extends TestCase
 
         self::assertSame(
             'custom-prefix',
-            $target->getMessagePrefix(['custom-prefix']),
+            $target->getMessagePrefix(
+                ['custom-prefix', Logger::LEVEL_INFO, 'application', 10.25, []],
+            ),
             'Configured prefix callable must receive the message.',
         );
     }
@@ -276,7 +283,9 @@ final class TargetTest extends TestCase
 
         self::assertSame(
             '[-][42][-]',
-            $target->getMessagePrefix([]),
+            $target->getMessagePrefix(
+                ['message', Logger::LEVEL_INFO, 'application', 10.25, []],
+            ),
             'Prefix must include the authenticated user ID.',
         );
     }
@@ -289,7 +298,9 @@ final class TargetTest extends TestCase
 
         self::assertSame(
             '[-][-][-]',
-            $target->getMessagePrefix([]),
+            $target->getMessagePrefix(
+                ['message', Logger::LEVEL_INFO, 'application', 10.25, []],
+            ),
             'Prefix must use placeholders when request, user, and session values are unavailable.',
         );
     }

@@ -70,7 +70,7 @@ jobs:
       matrix:
         php: [8.3, 8.4, 8.5]
 
-    steps: &build-steps
+    steps:
       - name: Checkout.
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -111,7 +111,31 @@ jobs:
       matrix:
         php: [8.6]
 
-    steps: *build-steps
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Generate french locale.
+        run: sudo locale-gen fr_FR.UTF-8
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
+        with:
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ignore-platform-reqs: ${{ env.IGNORE_PLATFORM_REQS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}, session.save_path="${{ runner.temp }}"
+          php-version: ${{ matrix.php }}
+
+      - name: Run PHPUnit tests.
+        continue-on-error: true
+        uses: ./.github/actions/phpunit
+        with:
+          coverage-driver: ${{ env.COVERAGE_DRIVER }}
+          coverage-token: ${{ secrets.CODECOV_TOKEN }}
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
   phpunit-prod:
     name: PHP ${{ matrix.php }}-prod

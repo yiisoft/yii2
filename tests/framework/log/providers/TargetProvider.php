@@ -19,6 +19,8 @@ use yii\log\Logger;
  *
  * @author Wilmer Arambula <terabytesoftw@gmail.com>
  * @since 22.0
+ *
+ * @phpstan-import-type LogMessage from Logger
  */
 final class TargetProvider
 {
@@ -61,7 +63,7 @@ final class TargetProvider
     }
 
     /**
-     * @return array<string, array{array, bool, string}>
+     * @return array<string, array{LogMessage, bool, string}>
      */
     public static function formatMessage(): array
     {
@@ -69,12 +71,12 @@ final class TargetProvider
 
         return [
             'complex message' => [
-                [['key' => 'value'], Logger::LEVEL_INFO, 'application', 1_508_160_390],
+                [['key' => 'value'], Logger::LEVEL_INFO, 'application', 1_508_160_390.0, []],
                 false,
                 '2017-10-16 13:26:30 [info][application] ' . VarDumper::export(['key' => 'value']),
             ],
-            'integer timestamp with microseconds' => [
-                ['message', Logger::LEVEL_INFO, 'application', 1_508_160_390],
+            'whole-second timestamp with microseconds' => [
+                ['message', Logger::LEVEL_INFO, 'application', 1_508_160_390.0, []],
                 true,
                 '2017-10-16 13:26:30.000000 [info][application] message',
             ],
@@ -83,24 +85,24 @@ final class TargetProvider
                     'message',
                     Logger::LEVEL_INFO,
                     'application',
-                    1_508_160_390,
+                    1_508_160_390.0,
                     [['file' => 'index.php', 'line' => 42]],
                 ],
                 false,
                 "2017-10-16 13:26:30 [info][application] message\n    in index.php:42",
             ],
             'throwable message' => [
-                [$exception, Logger::LEVEL_ERROR, 'application', 1_508_160_390],
+                [$exception, Logger::LEVEL_ERROR, 'application', 1_508_160_390.0, []],
                 false,
                 '2017-10-16 13:26:30 [error][application] ' . (string) $exception,
             ],
             'timestamp with microseconds' => [
-                ['message', Logger::LEVEL_INFO, 'application', 1_508_160_390.6083],
+                ['message', Logger::LEVEL_INFO, 'application', 1_508_160_390.6083, []],
                 true,
                 '2017-10-16 13:26:30.608300 [info][application] message',
             ],
             'without microseconds' => [
-                ['message', Logger::LEVEL_INFO, 'application', 1_508_160_390.6083],
+                ['message', Logger::LEVEL_INFO, 'application', 1_508_160_390.6083, []],
                 false,
                 '2017-10-16 13:26:30 [info][application] message',
             ],

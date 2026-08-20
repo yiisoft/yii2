@@ -192,7 +192,7 @@ final class SyslogTargetTest extends TestCase
 
     public function testFormatMessageWhereTextIsString(): void
     {
-        $message = ['text', Logger::LEVEL_INFO, 'category', 'timestamp'];
+        $message = ['text', Logger::LEVEL_INFO, 'category', 10.25, []];
 
         $this->syslogTarget
             ->expects($this->once())
@@ -213,7 +213,7 @@ final class SyslogTargetTest extends TestCase
     {
         $exception = new Exception('exception text');
 
-        $message = [$exception, Logger::LEVEL_INFO, 'category', 'timestamp'];
+        $message = [$exception, Logger::LEVEL_INFO, 'category', 10.25, []];
 
         $this->syslogTarget
             ->expects($this->once())
@@ -236,7 +236,7 @@ final class SyslogTargetTest extends TestCase
 
         $text->var = 'some text';
 
-        $message = [$text, Logger::LEVEL_ERROR, 'category', 'timestamp'];
+        $message = [$text, Logger::LEVEL_ERROR, 'category', 10.25, []];
 
         $this->syslogTarget
             ->expects($this->once())

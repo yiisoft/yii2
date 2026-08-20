@@ -22,6 +22,8 @@ use yiiunit\TestCase;
 
 /**
  * Unit tests for {@see Logger}.
+ *
+ * @phpstan-import-type ProfilingTiming from Logger
  */
 #[Group('log')]
 final class LoggerTest extends TestCase
@@ -300,9 +302,9 @@ final class LoggerTest extends TestCase
     public function testGetDbProfiling(): void
     {
         $timings = [
-            ['duration' => 5],
-            ['duration' => 15],
-            ['duration' => 30],
+            self::profilingTiming('query-1', 'yii\db\Command::query', 5.0),
+            self::profilingTiming('query-2', 'yii\db\Command::query', 15.0),
+            self::profilingTiming('execute', 'yii\db\Command::execute', 30.0),
         ];
 
         $logger = $this->createPartialMock(Logger::class, ['getProfiling']);
@@ -315,7 +317,7 @@ final class LoggerTest extends TestCase
             ->with($this->equalTo(['yii\db\Command::query', 'yii\db\Command::execute']));
 
         self::assertSame(
-            [3, 50],
+            [3, 50.0],
             $logger->getDbProfiling(),
             'Database profiling must return query count and total time.',
         );
@@ -332,13 +334,14 @@ final class LoggerTest extends TestCase
 
     public function testCalculateTimingsWithProfileNotBeginOrEnd(): void
     {
+        $trace = [['file' => '/app/index.php', 'line' => 42]];
         $messages = [
-            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1_048_576],
-            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace', 1_048_576],
-            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace', 1_048_576],
-            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace', 1_048_576],
-            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace', 1_048_576],
-            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1_048_576],
+            ['message0', Logger::LEVEL_ERROR, 'category', 10.0, $trace, 1_048_576],
+            ['message1', Logger::LEVEL_INFO, 'category', 10.0, $trace, 1_048_576],
+            ['message2', Logger::LEVEL_PROFILE, 'category', 10.0, $trace, 1_048_576],
+            ['message3', Logger::LEVEL_TRACE, 'category', 10.0, $trace, 1_048_576],
+            ['message4', Logger::LEVEL_WARNING, 'category', 10.0, $trace, 1_048_576],
+            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 10.0, $trace, 1_048_576],
         ];
 
         self::assertSame(
@@ -353,9 +356,10 @@ final class LoggerTest extends TestCase
      */
     public function testCalculateTimingsWithProfileBeginEnd(): void
     {
+        $trace = [['file' => '/app/index.php', 'line' => 42]];
         $messages = [
-            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1_048_576],
-            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2_097_152],
+            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, $trace, 1_048_576],
+            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15.0, $trace, 2_097_152],
         ];
 
         self::assertSame(
@@ -363,10 +367,10 @@ final class LoggerTest extends TestCase
                 [
                     'info' => 'token',
                     'category' => 'category',
-                    'timestamp' => 10,
-                    'trace' => 'trace',
+                    'timestamp' => 10.0,
+                    'trace' => $trace,
                     'level' => 0,
-                    'duration' => 5,
+                    'duration' => 5.0,
                     'memory' => 2097152,
                     'memoryDiff' => 1048576,
                 ],
@@ -376,8 +380,8 @@ final class LoggerTest extends TestCase
         );
 
         $messages = [
-            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1_048_576],
-            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2_097_152],
+            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, $trace, 1_048_576],
+            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15.0, $trace, 2_097_152],
         ];
 
         self::assertSame(
@@ -385,10 +389,10 @@ final class LoggerTest extends TestCase
                 [
                     'info' => ['a', 'b'],
                     'category' => 'category',
-                    'timestamp' => 10,
-                    'trace' => 'trace',
+                    'timestamp' => 10.0,
+                    'trace' => $trace,
                     'level' => 0,
-                    'duration' => 5,
+                    'duration' => 5.0,
                     'memory' => 2097152,
                     'memoryDiff' => 1048576,
                 ],
@@ -400,11 +404,13 @@ final class LoggerTest extends TestCase
 
     public function testCalculateTimingsWithProfileBeginEndAndNestedLevels(): void
     {
+        $firstTrace = [['file' => '/app/first.php', 'line' => 10]];
+        $secondTrace = [['file' => '/app/second.php', 'line' => 20]];
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1_048_576],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2_097_152],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3_145_728],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4_194_304],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10.0, $firstTrace, 1_048_576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15.0, $secondTrace, 2_097_152],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55.0, $secondTrace, 3_145_728],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80.0, $firstTrace, 4_194_304],
         ];
 
         self::assertSame(
@@ -412,20 +418,20 @@ final class LoggerTest extends TestCase
                 [
                     'info' => 'firstLevel',
                     'category' => 'firstLevelCategory',
-                    'timestamp' => 10,
-                    'trace' => 'firstTrace',
+                    'timestamp' => 10.0,
+                    'trace' => $firstTrace,
                     'level' => 0,
-                    'duration' => 70,
+                    'duration' => 70.0,
                     'memory' => 4194304,
                     'memoryDiff' => 3145728,
                 ],
                 [
                     'info' => 'secondLevel',
                     'category' => 'secondLevelCategory',
-                    'timestamp' => 15,
-                    'trace' => 'secondTrace',
+                    'timestamp' => 15.0,
+                    'trace' => $secondTrace,
                     'level' => 1,
-                    'duration' => 40,
+                    'duration' => 40.0,
                     'memory' => 3145728,
                     'memoryDiff' => 1048576,
                 ],
@@ -440,11 +446,13 @@ final class LoggerTest extends TestCase
      */
     public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels(): void
     {
+        $firstTrace = [['file' => '/app/first.php', 'line' => 10]];
+        $secondTrace = [['file' => '/app/second.php', 'line' => 20]];
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1_048_576],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2_097_152],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4_194_304],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3_145_728],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10.0, $firstTrace, 1_048_576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15.0, $secondTrace, 2_097_152],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80.0, $firstTrace, 4_194_304],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55.0, $secondTrace, 3_145_728],
         ];
 
         self::assertSame(
@@ -452,20 +460,20 @@ final class LoggerTest extends TestCase
                 [
                     'info' => 'firstLevel',
                     'category' => 'firstLevelCategory',
-                    'timestamp' => 10,
-                    'trace' => 'firstTrace',
+                    'timestamp' => 10.0,
+                    'trace' => $firstTrace,
                     'level' => 1,
-                    'duration' => 70,
+                    'duration' => 70.0,
                     'memory' => 4194304,
                     'memoryDiff' => 3145728,
                 ],
                 [
                     'info' => 'secondLevel',
                     'category' => 'secondLevelCategory',
-                    'timestamp' => 15,
-                    'trace' => 'secondTrace',
+                    'timestamp' => 15.0,
+                    'trace' => $secondTrace,
                     'level' => 0,
-                    'duration' => 40,
+                    'duration' => 40.0,
                     'memory' => 3145728,
                     'memoryDiff' => 1048576,
                 ],
@@ -513,7 +521,7 @@ final class LoggerTest extends TestCase
     {
         $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
 
-        $returnValue = 'return value';
+        $returnValue = [self::profilingTiming('token', 'category')];
 
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
@@ -538,16 +546,7 @@ final class LoggerTest extends TestCase
     {
         $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
 
-        $returnValue = [
-            [
-                'info' => 'token',
-                'category' => 'category',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ],
-        ];
+        $returnValue = [self::profilingTiming('token', 'category')];
 
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
@@ -572,24 +571,10 @@ final class LoggerTest extends TestCase
     {
         $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
 
-        $matchedByCategoryName = [
-            'info' => 'token',
-            'category' => 'category',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $secondCategory = [
-            'info' => 'secondToken',
-            'category' => 'category2',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
+        $matchedByCategoryName = self::profilingTiming('token', 'category');
+        $secondCategory = self::profilingTiming('secondToken', 'category2');
         $returnValue = [
-            'anyKey' => $matchedByCategoryName,
+            $matchedByCategoryName,
             $secondCategory,
         ];
         /*
@@ -639,33 +624,12 @@ final class LoggerTest extends TestCase
     {
         $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
 
-        $firstCategory = [
-            'info' => 'firstToken',
-            'category' => 'cat',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $secondCategory = [
-            'info' => 'secondToken',
-            'category' => 'category2',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
+        $firstCategory = self::profilingTiming('firstToken', 'cat');
+        $secondCategory = self::profilingTiming('secondToken', 'category2');
         $returnValue = [
             $firstCategory,
             $secondCategory,
-            [
-                'info' => 'anotherToken',
-                'category' => 'category3',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ],
+            self::profilingTiming('anotherToken', 'category3'),
         ];
 
         /*
@@ -791,5 +755,22 @@ final class LoggerTest extends TestCase
             $logger->messages,
             'Logger must retain both profiling messages.',
         );
+    }
+
+    /**
+     * @return ProfilingTiming
+     */
+    private static function profilingTiming(string $info, string $category, float $duration = 5.0): array
+    {
+        return [
+            'info' => $info,
+            'category' => $category,
+            'timestamp' => 10.0,
+            'trace' => [['file' => '/app/index.php', 'line' => 42]],
+            'level' => 0,
+            'duration' => $duration,
+            'memory' => 2_097_152,
+            'memoryDiff' => 1_048_576,
+        ];
     }
 }
