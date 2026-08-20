@@ -170,7 +170,7 @@ final class LoggerTest extends TestCase
         $memory = memory_get_usage();
 
         $this->logger->traceLevel = 3;
-        $expectedLine = __LINE__ + 1;
+        $expectedLine = __LINE__ + 2;
 
         $this->logger->log('test3', Logger::LEVEL_INFO);
 
