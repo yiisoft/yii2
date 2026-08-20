@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -8,22 +10,28 @@
 
 namespace yiiunit\framework\log;
 
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use stdClass;
+use Xepozz\InternalMocker\MockerState;
 use yii\log\Dispatcher;
 use yii\log\Logger;
+use yiiunit\framework\log\providers\LoggerProvider;
 use yiiunit\TestCase;
 
 /**
- * @group log
+ * Unit tests for {@see Logger}.
+ *
+ * @phpstan-import-type ProfilingTiming from Logger
  */
-class LoggerTest extends TestCase
+#[Group('log')]
+final class LoggerTest extends TestCase
 {
     /**
      * @var Logger
      */
     protected $logger;
-
     /**
      * @var Dispatcher&MockObject
      */
@@ -31,59 +39,186 @@ class LoggerTest extends TestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->logger = new Logger();
+
         $this->dispatcher = $this->createPartialMock(Dispatcher::class, ['dispatch']);
     }
 
-    /**
-     * @covers \yii\log\Logger::Log()
-     */
+    public function testRegisterShutdownFlushesMessagesAndSchedulesFinalFlush(): void
+    {
+        MockerState::resetState();
+
+        $logger = new Logger();
+
+        $logger->messages = [
+            ['message', Logger::LEVEL_INFO, 'application', 10.25, []],
+        ];
+
+        $traces = MockerState::getTraces(
+            'yii\log',
+            'register_shutdown_function',
+        );
+
+        self::assertCount(
+            1,
+            $traces,
+            'Logger initialization must register the first shutdown callback.',
+        );
+
+        $traces[0]['arguments'][0]();
+
+        $traces = MockerState::getTraces(
+            'yii\log',
+            'register_shutdown_function',
+        );
+
+        self::assertSame(
+            [],
+            $logger->messages,
+            'The first shutdown callback must flush queued messages.',
+        );
+        self::assertCount(
+            2,
+            $traces,
+            'The first shutdown callback must schedule the final flush.',
+        );
+        self::assertSame(
+            [$logger, 'flush'],
+            $traces[1]['arguments'][0],
+            'The final shutdown callback must invoke Logger::flush().',
+        );
+        self::assertSame(
+            [true],
+            $traces[1]['arguments'][1],
+            'The final shutdown callback must flush with the final flag.',
+        );
+    }
+
     public function testLog(): void
     {
         $memory = memory_get_usage();
+
         $this->logger->log('test1', Logger::LEVEL_INFO);
-        $this->assertCount(1, $this->logger->messages);
-        $this->assertEquals('test1', $this->logger->messages[0][0]);
-        $this->assertEquals(Logger::LEVEL_INFO, $this->logger->messages[0][1]);
-        $this->assertEquals('application', $this->logger->messages[0][2]);
-        $this->assertEquals([], $this->logger->messages[0][4]);
-        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
+
+        self::assertCount(
+            1,
+            $this->logger->messages,
+            'Logger must collect the first message.',
+        );
+        self::assertSame(
+            'test1',
+            $this->logger->messages[0][0],
+            'Logger must preserve the message text.',
+        );
+        self::assertSame(
+            Logger::LEVEL_INFO,
+            $this->logger->messages[0][1],
+            'Logger must preserve the info level.',
+        );
+        self::assertSame(
+            'application',
+            $this->logger->messages[0][2],
+            'Logger must use the default category.',
+        );
+        self::assertSame(
+            [],
+            $this->logger->messages[0][4],
+            'Logger must omit traces when traceLevel is zero.',
+        );
+        self::assertGreaterThanOrEqual(
+            $memory,
+            $this->logger->messages[0][5],
+            'Logger must capture current memory usage.',
+        );
 
         $this->logger->log('test2', Logger::LEVEL_ERROR, 'category');
-        $this->assertCount(2, $this->logger->messages);
-        $this->assertEquals('test2', $this->logger->messages[1][0]);
-        $this->assertEquals(Logger::LEVEL_ERROR, $this->logger->messages[1][1]);
-        $this->assertEquals('category', $this->logger->messages[1][2]);
-        $this->assertEquals([], $this->logger->messages[1][4]);
-        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[1][5]);
+
+        self::assertCount(
+            2,
+            $this->logger->messages,
+            'Logger must append the second message.',
+        );
+        self::assertSame(
+            'test2',
+            $this->logger->messages[1][0],
+            'Logger must preserve the second message text.',
+        );
+        self::assertSame(
+            Logger::LEVEL_ERROR,
+            $this->logger->messages[1][1],
+            'Logger must preserve the error level.',
+        );
+        self::assertSame(
+            'category',
+            $this->logger->messages[1][2],
+            'Logger must preserve the explicit category.',
+        );
+        self::assertSame(
+            [],
+            $this->logger->messages[1][4],
+            'Logger must omit traces when traceLevel is zero.',
+        );
+        self::assertGreaterThanOrEqual(
+            $memory,
+            $this->logger->messages[1][5],
+            'Logger must capture current memory usage for the second message.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::Log()
-     */
     public function testLogWithTraceLevel(): void
     {
         $memory = memory_get_usage();
+
         $this->logger->traceLevel = 3;
+        $expectedLine = __LINE__ + 2;
+
         $this->logger->log('test3', Logger::LEVEL_INFO);
-        $this->assertCount(1, $this->logger->messages);
-        $this->assertEquals('test3', $this->logger->messages[0][0]);
-        $this->assertEquals(Logger::LEVEL_INFO, $this->logger->messages[0][1]);
-        $this->assertEquals('application', $this->logger->messages[0][2]);
-        $this->assertEquals([
-            'file' => __FILE__,
-            'line' => 68,
-            'function' => 'log',
-            'class' => $this->logger::class,
-            'type' => '->',
-        ], $this->logger->messages[0][4][0]);
-        $this->assertCount(3, $this->logger->messages[0][4]);
-        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
+
+        self::assertCount(
+            1,
+            $this->logger->messages,
+            'Logger must collect the traced message.',
+        );
+        self::assertSame(
+            'test3',
+            $this->logger->messages[0][0],
+            'Logger must preserve the traced message text.',
+        );
+        self::assertSame(
+            Logger::LEVEL_INFO,
+            $this->logger->messages[0][1],
+            'Logger must preserve the traced level.',
+        );
+        self::assertSame(
+            'application',
+            $this->logger->messages[0][2],
+            'Logger must preserve the traced category.',
+        );
+        self::assertSame(
+            [
+                'file' => __FILE__,
+                'line' => $expectedLine,
+                'function' => 'log',
+                'class' => $this->logger::class,
+                'type' => '->',
+            ],
+            $this->logger->messages[0][4][0],
+            'The first trace frame must identify the log call.',
+        );
+        self::assertCount(
+            3,
+            $this->logger->messages[0][4],
+            'Logger must honor the configured trace level.',
+        );
+        self::assertGreaterThanOrEqual(
+            $memory,
+            $this->logger->messages[0][5],
+            'Logger must capture current memory usage for the traced message.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::Log()
-     */
     public function testLogWithFlush(): void
     {
         $logger = $this->createPartialMock(Logger::class, ['flush']);
@@ -94,317 +229,352 @@ class LoggerTest extends TestCase
         $logger->log('test1', Logger::LEVEL_INFO);
     }
 
-    /**
-     * @covers \yii\log\Logger::Flush()
-     */
     public function testFlushWithoutDispatcher(): void
     {
         $dispatcher = $this->createMock(stdClass::class);
-        $dispatcher->expects($this->never())->method($this->anything());
 
-        $this->logger->messages = ['anything'];
+        $dispatcher
+            ->expects($this->never())
+            ->method($this->anything());
+
+        $this->logger->messages = [
+            ['anything', Logger::LEVEL_INFO, 'application', 0.0, []],
+        ];
+
         // @phpstan-ignore assign.propertyType (We intentionally use an invalid value here to test its processing)
         $this->logger->dispatcher = $dispatcher;
+
         $this->logger->flush();
-        $this->assertEmpty($this->logger->messages);
+
+        self::assertSame(
+            [],
+            $this->logger->messages,
+            'Flush must clear messages without a valid dispatcher.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::Flush()
-     */
     public function testFlushWithDispatcherAndDefaultParam(): void
     {
-        $message = ['anything'];
-        $this->dispatcher->expects($this->once())
-            ->method('dispatch')->with($this->equalTo($message), $this->equalTo(false));
+        $message = [
+            ['anything', Logger::LEVEL_INFO, 'application', 0.0, []],
+        ];
+
+        $this->dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($this->equalTo($message), $this->equalTo(false));
 
         $this->logger->messages = $message;
         $this->logger->dispatcher = $this->dispatcher;
+
         $this->logger->flush();
-        $this->assertEmpty($this->logger->messages);
+
+        self::assertSame(
+            [],
+            $this->logger->messages,
+            'Flush must clear dispatched messages.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::Flush()
-     */
     public function testFlushWithDispatcherAndDefinedParam(): void
     {
-        $message = ['anything'];
-        $this->dispatcher->expects($this->once())
-            ->method('dispatch')->with($this->equalTo($message), $this->equalTo(true));
+        $message = [
+            ['anything', Logger::LEVEL_INFO, 'application', 0.0, []],
+        ];
+
+        $this->dispatcher
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($this->equalTo($message), $this->equalTo(true));
 
         $this->logger->messages = $message;
         $this->logger->dispatcher = $this->dispatcher;
+
         $this->logger->flush(true);
-        $this->assertEmpty($this->logger->messages);
+
+        self::assertSame(
+            [],
+            $this->logger->messages,
+            'Final flush must clear dispatched messages.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::getDbProfiling()
-     */
     public function testGetDbProfiling(): void
     {
         $timings = [
-            ['duration' => 5],
-            ['duration' => 15],
-            ['duration' => 30],
+            self::profilingTiming('query-1', 'yii\db\Command::query', 5.0),
+            self::profilingTiming('query-2', 'yii\db\Command::query', 15.0),
+            self::profilingTiming('execute', 'yii\db\Command::execute', 30.0),
         ];
 
         $logger = $this->createPartialMock(Logger::class, ['getProfiling']);
-        $logger->method('getProfiling')->willReturn($timings);
+
+        $logger
+            ->method('getProfiling')
+            ->willReturn($timings);
         $logger->expects($this->once())
             ->method('getProfiling')
             ->with($this->equalTo(['yii\db\Command::query', 'yii\db\Command::execute']));
 
-        $this->assertEquals([3, 50], $logger->getDbProfiling());
+        self::assertSame(
+            [3, 50.0],
+            $logger->getDbProfiling(),
+            'Database profiling must return query count and total time.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::calculateTimings()
-     */
     public function testCalculateTimingsWithEmptyMessages(): void
     {
-        $this->assertEmpty($this->logger->calculateTimings([]));
+        self::assertSame(
+            [],
+            $this->logger->calculateTimings([]),
+            'No messages must produce no profiling timings.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::calculateTimings()
-     */
     public function testCalculateTimingsWithProfileNotBeginOrEnd(): void
     {
+        $trace = [['file' => '/app/index.php', 'line' => 42]];
         $messages = [
-            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1_048_576],
-            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace', 1_048_576],
-            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace', 1_048_576],
-            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace', 1_048_576],
-            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace', 1_048_576],
-            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1_048_576],
+            ['message0', Logger::LEVEL_ERROR, 'category', 10.0, $trace, 1_048_576],
+            ['message1', Logger::LEVEL_INFO, 'category', 10.0, $trace, 1_048_576],
+            ['message2', Logger::LEVEL_PROFILE, 'category', 10.0, $trace, 1_048_576],
+            ['message3', Logger::LEVEL_TRACE, 'category', 10.0, $trace, 1_048_576],
+            ['message4', Logger::LEVEL_WARNING, 'category', 10.0, $trace, 1_048_576],
+            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 10.0, $trace, 1_048_576],
         ];
-        $this->assertEmpty($this->logger->calculateTimings($messages));
+
+        self::assertSame(
+            [],
+            $this->logger->calculateTimings($messages),
+            'Non-paired profiling levels must produce no timings.',
+        );
     }
 
     /**
-     * @covers \yii\log\Logger::calculateTimings()
-     *
-     * See https://github.com/yiisoft/yii2/issues/14264
+     * @see https://github.com/yiisoft/yii2/issues/14264
      */
     public function testCalculateTimingsWithProfileBeginEnd(): void
     {
+        $trace = [['file' => '/app/index.php', 'line' => 42]];
         $messages = [
-            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1_048_576],
-            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2_097_152],
+            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, $trace, 1_048_576],
+            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15.0, $trace, 2_097_152],
         ];
-        $this->assertEquals(
+
+        self::assertSame(
             [
                 [
                     'info' => 'token',
                     'category' => 'category',
-                    'timestamp' => 10,
-                    'trace' => 'trace',
+                    'timestamp' => 10.0,
+                    'trace' => $trace,
                     'level' => 0,
-                    'duration' => 5,
+                    'duration' => 5.0,
                     'memory' => 2097152,
                     'memoryDiff' => 1048576,
                 ],
             ],
-            $this->logger->calculateTimings($messages)
+            $this->logger->calculateTimings($messages),
+            'String profiling tokens must produce the expected timing.',
         );
 
         $messages = [
-            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1_048_576],
-            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2_097_152],
+            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10.0, $trace, 1_048_576],
+            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15.0, $trace, 2_097_152],
         ];
-        $this->assertEquals(
+
+        self::assertSame(
             [
                 [
                     'info' => ['a', 'b'],
                     'category' => 'category',
-                    'timestamp' => 10,
-                    'trace' => 'trace',
+                    'timestamp' => 10.0,
+                    'trace' => $trace,
                     'level' => 0,
-                    'duration' => 5,
+                    'duration' => 5.0,
                     'memory' => 2097152,
                     'memoryDiff' => 1048576,
                 ],
             ],
-            $this->logger->calculateTimings($messages)
+            $this->logger->calculateTimings($messages),
+            'Array profiling tokens must produce the expected timing.',
         );
     }
 
-    /**
-     * @covers \yii\log\Logger::calculateTimings()
-     */
     public function testCalculateTimingsWithProfileBeginEndAndNestedLevels(): void
     {
+        $firstTrace = [['file' => '/app/first.php', 'line' => 10]];
+        $secondTrace = [['file' => '/app/second.php', 'line' => 20]];
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1_048_576],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2_097_152],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3_145_728],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4_194_304],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10.0, $firstTrace, 1_048_576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15.0, $secondTrace, 2_097_152],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55.0, $secondTrace, 3_145_728],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80.0, $firstTrace, 4_194_304],
         ];
-        $this->assertEquals(
+
+        self::assertSame(
             [
                 [
                     'info' => 'firstLevel',
                     'category' => 'firstLevelCategory',
-                    'timestamp' => 10,
-                    'trace' => 'firstTrace',
+                    'timestamp' => 10.0,
+                    'trace' => $firstTrace,
                     'level' => 0,
-                    'duration' => 70,
+                    'duration' => 70.0,
                     'memory' => 4194304,
                     'memoryDiff' => 3145728,
                 ],
                 [
                     'info' => 'secondLevel',
                     'category' => 'secondLevelCategory',
-                    'timestamp' => 15,
-                    'trace' => 'secondTrace',
+                    'timestamp' => 15.0,
+                    'trace' => $secondTrace,
                     'level' => 1,
-                    'duration' => 40,
+                    'duration' => 40.0,
                     'memory' => 3145728,
                     'memoryDiff' => 1048576,
                 ],
             ],
-            $this->logger->calculateTimings($messages)
+            $this->logger->calculateTimings($messages),
+            'Nested profiling pairs must preserve their nesting levels.',
         );
     }
 
     /**
      * @see https://github.com/yiisoft/yii2/issues/14133
-     *
-     * @covers \yii\log\Logger::calculateTimings()
      */
     public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels(): void
     {
+        $firstTrace = [['file' => '/app/first.php', 'line' => 10]];
+        $secondTrace = [['file' => '/app/second.php', 'line' => 20]];
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1_048_576],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2_097_152],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4_194_304],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3_145_728],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10.0, $firstTrace, 1_048_576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15.0, $secondTrace, 2_097_152],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80.0, $firstTrace, 4_194_304],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55.0, $secondTrace, 3_145_728],
         ];
-        $this->assertEquals(
+
+        self::assertSame(
             [
                 [
                     'info' => 'firstLevel',
                     'category' => 'firstLevelCategory',
-                    'timestamp' => 10,
-                    'trace' => 'firstTrace',
+                    'timestamp' => 10.0,
+                    'trace' => $firstTrace,
                     'level' => 1,
-                    'duration' => 70,
+                    'duration' => 70.0,
                     'memory' => 4194304,
                     'memoryDiff' => 3145728,
                 ],
                 [
                     'info' => 'secondLevel',
                     'category' => 'secondLevelCategory',
-                    'timestamp' => 15,
-                    'trace' => 'secondTrace',
+                    'timestamp' => 15.0,
+                    'trace' => $secondTrace,
                     'level' => 0,
-                    'duration' => 40,
+                    'duration' => 40.0,
                     'memory' => 3145728,
                     'memoryDiff' => 1048576,
                 ],
             ],
-            $this->logger->calculateTimings($messages)
+            $this->logger->calculateTimings($messages),
+            'Mixed profiling pairs must preserve the calculated nesting levels.',
         );
     }
 
-    /**
-     * @covers \yii\log\Logger::getElapsedTime()
-     */
     public function testGetElapsedTime(): void
     {
         $timeBefore = \microtime(true) - YII_BEGIN_TIME;
+
         usleep(1);
+
         $actual = $this->logger->getElapsedTime();
+
         usleep(1);
+
         $timeAfter = \microtime(true) - YII_BEGIN_TIME;
 
-        $this->assertGreaterThan($timeBefore, $actual);
-        $this->assertLessThan($timeAfter, $actual);
+        self::assertGreaterThan(
+            $timeBefore,
+            $actual,
+            'Elapsed time must be later than the first measurement.',
+        );
+        self::assertLessThan(
+            $timeAfter,
+            $actual,
+            'Elapsed time must be earlier than the final measurement.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::getLevelName()
-     */
-    public function testGetLevelName(): void
+    #[DataProviderExternal(LoggerProvider::class, 'levelNames')]
+    public function testGetLevelName(int $level, string $expected): void
     {
-        $this->assertEquals('info', Logger::getLevelName(Logger::LEVEL_INFO));
-        $this->assertEquals('error', Logger::getLevelName(Logger::LEVEL_ERROR));
-        $this->assertEquals('warning', Logger::getLevelName(Logger::LEVEL_WARNING));
-        $this->assertEquals('trace', Logger::getLevelName(Logger::LEVEL_TRACE));
-        $this->assertEquals('profile', Logger::getLevelName(Logger::LEVEL_PROFILE));
-        $this->assertEquals('profile begin', Logger::getLevelName(Logger::LEVEL_PROFILE_BEGIN));
-        $this->assertEquals('profile end', Logger::getLevelName(Logger::LEVEL_PROFILE_END));
-        $this->assertEquals('unknown', Logger::getLevelName(0));
+        self::assertSame(
+            $expected,
+            Logger::getLevelName($level),
+            'Level name must match the configured level bitmap.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::getProfiling()
-     */
     public function testGetProfilingWithEmptyCategoriesAndExcludeCategories(): void
     {
-        $messages = ['anyData'];
-        $returnValue = 'return value';
+        $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
+
+        $returnValue = [self::profilingTiming('token', 'category')];
 
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
 
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($messages);
-        $this->assertEquals($returnValue, $logger->getProfiling());
+        $logger
+            ->method('calculateTimings')
+            ->willReturn($returnValue);
+        $logger
+            ->expects($this->once())
+            ->method('calculateTimings')
+            ->with($messages);
+
+        self::assertSame(
+            $returnValue,
+            $logger->getProfiling(),
+            'Unfiltered profiling must return all timings.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::getProfiling()
-     */
     public function testGetProfilingWithNotEmptyCategoriesAndNotMatched(): void
     {
-        $messages = ['anyData'];
-        $returnValue = [
-            [
-                'info' => 'token',
-                'category' => 'category',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ],
-        ];
+        $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
+
+        $returnValue = [self::profilingTiming('token', 'category')];
+
         $logger = $this->createPartialMock(Logger::class, ['calculateTimings']);
 
         $logger->messages = $messages;
 
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($messages);
-        $this->assertEquals([], $logger->getProfiling(['not-matched-category']));
+        $logger
+            ->method('calculateTimings')
+            ->willReturn($returnValue);
+        $logger
+            ->expects($this->once())
+            ->method('calculateTimings')
+            ->with($messages);
+
+        self::assertSame(
+            [],
+            $logger->getProfiling(['not-matched-category']),
+            'An unmatched category must filter out every timing.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::getProfiling()
-     */
     public function testGetProfilingWithNotEmptyCategoriesAndMatched(): void
     {
-        $messages = ['anyData'];
-        $matchedByCategoryName = [
-            'info' => 'token',
-            'category' => 'category',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $secondCategory = [
-            'info' => 'secondToken',
-            'category' => 'category2',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
+        $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
+
+        $matchedByCategoryName = self::profilingTiming('token', 'category');
+        $secondCategory = self::profilingTiming('secondToken', 'category2');
         $returnValue = [
-            'anyKey' => $matchedByCategoryName,
+            $matchedByCategoryName,
             $secondCategory,
         ];
         /*
@@ -414,9 +584,19 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
 
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($messages);
-        $this->assertEquals([$matchedByCategoryName], $logger->getProfiling(['category']));
+        $logger
+            ->method('calculateTimings')
+            ->willReturn($returnValue);
+        $logger
+            ->expects($this->once())
+            ->method('calculateTimings')
+            ->with($messages);
+
+        self::assertSame(
+            [$matchedByCategoryName],
+            $logger->getProfiling(['category']),
+            'An exact category must return only the matching timing.',
+        );
 
         /*
          * Matched by prefix
@@ -425,44 +605,31 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
 
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($messages);
-        $this->assertEquals([$matchedByCategoryName, $secondCategory], $logger->getProfiling(['category*']));
+        $logger
+            ->method('calculateTimings')
+            ->willReturn($returnValue);
+        $logger
+            ->expects($this->once())
+            ->method('calculateTimings')
+            ->with($messages);
+
+        self::assertSame(
+            [$matchedByCategoryName, $secondCategory],
+            $logger->getProfiling(['category*']),
+            'A wildcard category must return every matching prefix.',
+        );
     }
 
-    /**
-     * @covers \yii\log\Logger::getProfiling()
-     */
     public function testGetProfilingWithNotEmptyCategoriesMatchedAndExcludeCategories(): void
     {
-        $messages = ['anyData'];
-        $fistCategory = [
-            'info' => 'fistToken',
-            'category' => 'cat',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
-        $secondCategory = [
-            'info' => 'secondToken',
-            'category' => 'category2',
-            'timestamp' => 10,
-            'trace' => 'trace',
-            'level' => 0,
-            'duration' => 5,
-        ];
+        $messages = [['anyData', Logger::LEVEL_INFO, 'application', 0.0, []]];
+
+        $firstCategory = self::profilingTiming('firstToken', 'cat');
+        $secondCategory = self::profilingTiming('secondToken', 'category2');
         $returnValue = [
-            $fistCategory,
+            $firstCategory,
             $secondCategory,
-            [
-                'info' => 'anotherToken',
-                'category' => 'category3',
-                'timestamp' => 10,
-                'trace' => 'trace',
-                'level' => 0,
-                'duration' => 5,
-            ],
+            self::profilingTiming('anotherToken', 'category3'),
         ];
 
         /*
@@ -472,9 +639,19 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
 
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($messages);
-        $this->assertEquals([$fistCategory, $secondCategory], $logger->getProfiling(['cat*'], ['category3']));
+        $logger
+            ->method('calculateTimings')
+            ->willReturn($returnValue);
+        $logger
+            ->expects($this->once())
+            ->method('calculateTimings')
+            ->with($messages);
+
+        self::assertSame(
+            [$firstCategory, $secondCategory],
+            $logger->getProfiling(['cat*'], ['category3']),
+            'An exact exclusion must remove only the matching timing.',
+        );
 
         /*
          * Exclude by category prefix
@@ -483,49 +660,117 @@ class LoggerTest extends TestCase
 
         $logger->messages = $messages;
 
-        $logger->method('calculateTimings')->willReturn($returnValue);
-        $logger->expects($this->once())->method('calculateTimings')->with($messages);
-        $this->assertEquals([$fistCategory], $logger->getProfiling(['cat*'], ['category*']));
+        $logger
+            ->method('calculateTimings')
+            ->willReturn($returnValue);
+        $logger
+            ->expects($this->once())
+            ->method('calculateTimings')
+            ->with($messages);
+
+        self::assertSame(
+            [$firstCategory],
+            $logger->getProfiling(['cat*'], ['category*']),
+            'A wildcard exclusion must remove every matching prefix.',
+        );
     }
 
-    public static function providerForNonProfilingMessages(): array
-    {
-        return [
-            [Logger::LEVEL_ERROR],
-            [Logger::LEVEL_WARNING],
-            [Logger::LEVEL_INFO],
-            [Logger::LEVEL_TRACE],
-            [Logger::LEVEL_PROFILE],
-        ];
-    }
-
-    /**
-     * @dataProvider providerForNonProfilingMessages
-     */
+    #[DataProviderExternal(LoggerProvider::class, 'nonProfilingMessages')]
     public function testGatheringNonProfilingMessages(int $level): void
     {
         $logger = new Logger(['flushInterval' => 0]);
+
         $logger->log('aaa', $level);
         $logger->log('aaa', Logger::LEVEL_PROFILE_END);
-        $this->assertSame([], $logger->getProfiling());
-        $this->assertCount(2, $logger->messages);
+
+        self::assertSame(
+            [],
+            $logger->getProfiling(),
+            'Non-profiling levels must not produce profiling timings.',
+        );
+        self::assertCount(
+            2,
+            $logger->messages,
+            'Logger must retain both non-profiling messages.',
+        );
     }
 
     public function testGatheringProfilingMessages(): void
     {
         $logger = new Logger(['flushInterval' => 0]);
+
         $logger->log('aaa', Logger::LEVEL_PROFILE_BEGIN);
         $logger->log('aaa', Logger::LEVEL_PROFILE_END);
-        $this->assertCount(1, $logger->getProfiling());
+
+        self::assertCount(
+            1,
+            $logger->getProfiling(),
+            'A profiling pair must produce one timing.',
+        );
+
         $profiling = $logger->getProfiling()[0];
-        $this->assertSame('aaa', $profiling['info']);
-        $this->assertSame('application', $profiling['category']);
-        $this->assertSame(0, $profiling['level']);
-        $this->assertSame([], $profiling['trace']);
-        $this->assertArrayHasKey('timestamp', $profiling);
-        $this->assertArrayHasKey('duration', $profiling);
-        $this->assertArrayHasKey('memory', $profiling);
-        $this->assertArrayHasKey('memoryDiff', $profiling);
-        $this->assertCount(2, $logger->messages);
+
+        self::assertSame(
+            'aaa',
+            $profiling['info'],
+            'Profiling timing must preserve the token.',
+        );
+        self::assertSame(
+            'application',
+            $profiling['category'],
+            'Profiling timing must preserve the category.',
+        );
+        self::assertSame(
+            0,
+            $profiling['level'],
+            'Top-level profiling timing must have level zero.',
+        );
+        self::assertSame(
+            [],
+            $profiling['trace'],
+            'Profiling timing must preserve the empty trace.',
+        );
+        self::assertArrayHasKey(
+            'timestamp',
+            $profiling,
+            'Profiling timing must contain a timestamp.',
+        );
+        self::assertArrayHasKey(
+            'duration',
+            $profiling,
+            'Profiling timing must contain a duration.',
+        );
+        self::assertArrayHasKey(
+            'memory',
+            $profiling,
+            'Profiling timing must contain memory usage.',
+        );
+        self::assertArrayHasKey(
+            'memoryDiff',
+            $profiling,
+            'Profiling timing must contain a memory difference.',
+        );
+        self::assertCount(
+            2,
+            $logger->messages,
+            'Logger must retain both profiling messages.',
+        );
+    }
+
+    /**
+     * @return ProfilingTiming
+     */
+    private static function profilingTiming(string $info, string $category, float $duration = 5.0): array
+    {
+        return [
+            'info' => $info,
+            'category' => $category,
+            'timestamp' => 10.0,
+            'trace' => [['file' => '/app/index.php', 'line' => 42]],
+            'level' => 0,
+            'duration' => $duration,
+            'memory' => 2_097_152,
+            'memoryDiff' => 1_048_576,
+        ];
     }
 }

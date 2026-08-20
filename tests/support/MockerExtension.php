@@ -74,6 +74,10 @@ final class MockerExtension implements Extension
             ],
             [
                 'namespace' => 'yii\log',
+                'name' => 'register_shutdown_function',
+            ],
+            [
+                'namespace' => 'yii\log',
                 'name' => 'syslog',
             ],
             [

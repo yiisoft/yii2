@@ -46,18 +46,20 @@ use yii\web\User;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-import-type LogMessage from Logger
  */
 abstract class Target extends Component
 {
     /**
-     * @var array list of message categories that this target is interested in. Defaults to empty, meaning all categories.
+     * @var list<string> list of message categories that this target is interested in. Defaults to empty, meaning all categories.
      * You can use an asterisk at the end of a category so that the category may be used to
      * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
      * categories starting with 'yii\db\', such as 'yii\db\Connection'.
      */
     public $categories = [];
     /**
-     * @var array list of message categories that this target is NOT interested in. Defaults to empty, meaning no uninteresting messages.
+     * @var list<string> list of message categories that this target is NOT interested in. Defaults to empty, meaning no uninteresting messages.
      * If this property is not empty, then any category listed here will be excluded from [[categories]].
      * You can use an asterisk at the end of a category so that the category can be used to
      * match those categories sharing the same common prefix. For example, 'yii\db\*' will match
@@ -66,7 +68,7 @@ abstract class Target extends Component
      */
     public $except = [];
     /**
-     * @var array list of the PHP predefined variables that should be logged in a message.
+     * @var list<string> list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
      *
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
@@ -92,7 +94,7 @@ abstract class Target extends Component
         '_SERVER',
     ];
     /**
-     * @var array list of the PHP predefined variables that should NOT be logged "as is" and should always be replaced
+     * @var list<string> list of the PHP predefined variables that should NOT be logged "as is" and should always be replaced
      * with a mask `***` before logging, when exist.
      *
      * Defaults to `[ '_SERVER.HTTP_AUTHORIZATION', '_SERVER.PHP_AUTH_USER', '_SERVER.PHP_AUTH_PW']`
@@ -115,7 +117,7 @@ abstract class Target extends Component
         '_SERVER.PHP_AUTH_PW',
     ];
     /**
-     * @var callable|null a PHP callable that returns a string to be prefixed to every exported message.
+     * @var (callable(LogMessage): string)|null a PHP callable that returns a string to be prefixed to every exported message.
      *
      * If not set, [[getMessagePrefix()]] will be used, which prefixes the message with context information
      * such as user IP, user ID and session ID.
@@ -130,7 +132,7 @@ abstract class Target extends Component
      */
     public $exportInterval = 1000;
     /**
-     * @var array the messages that are retrieved from the logger so far by this log target.
+     * @var list<LogMessage> the messages that are retrieved from the logger so far by this log target.
      * Please refer to [[Logger::messages]] for the details about the message structure.
      */
     public $messages = [];
@@ -155,7 +157,7 @@ abstract class Target extends Component
      * Processes the given log messages.
      * This method will filter the given messages with [[levels]] and [[categories]].
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
-     * @param array $messages log messages to be processed. See [[Logger::messages]] for the structure
+     * @param array<int|string, LogMessage> $messages log messages to be processed. See [[Logger::messages]] for the structure
      * of each message.
      * @param bool $final whether this method is called at the end of the current application
      */
@@ -261,13 +263,14 @@ abstract class Target extends Component
 
     /**
      * Filters the given messages according to their categories and levels.
-     * @param array $messages messages to be filtered.
+     * @template TKey of array-key
+     * @param array<TKey, LogMessage> $messages messages to be filtered.
      * The message structure follows that in [[Logger::messages]].
      * @param int $levels the message levels to filter by. This is a bitmap of
      * level values. Value 0 means allowing all levels.
-     * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
-     * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
-     * @return array the filtered messages.
+     * @param list<string> $categories the message categories to filter by. If empty, it means all categories are allowed.
+     * @param list<string> $except the message categories to exclude. If empty, it means all categories are allowed.
+     * @return array<TKey, LogMessage> the filtered messages.
      */
     public static function filterMessages($messages, $levels = 0, $categories = [], $except = [])
     {
@@ -305,7 +308,7 @@ abstract class Target extends Component
 
     /**
      * Formats a log message for display as a string.
-     * @param array $message the log message to be formatted.
+     * @param LogMessage $message the log message to be formatted.
      * The message structure follows that in [[Logger::messages]].
      * @return string the formatted message
      */
@@ -358,7 +361,7 @@ abstract class Target extends Component
      * Returns a string to be prefixed to the given message.
      * If [[prefix]] is configured it will return the result of the callback.
      * The default implementation will return user IP, user ID and session ID as a prefix.
-     * @param array $message the message being exported.
+     * @param LogMessage $message the message being exported.
      * The message structure follows that in [[Logger::messages]].
      * @return string the prefix string
      */

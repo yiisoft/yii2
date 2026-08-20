@@ -47,7 +47,7 @@ final class DbTargetTest extends TestCase
         $target = new DbTarget(['db' => $db]);
 
         $target->messages = [
-            ['Message', Logger::LEVEL_ERROR, 'application', 10.25],
+            ['Message', Logger::LEVEL_ERROR, 'application', 10.25, []],
         ];
 
         $this->expectException(LogRuntimeException::class);

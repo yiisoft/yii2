@@ -60,13 +60,13 @@ final class SyslogTargetTest extends TestCase
         $options = LOG_ODELAY | LOG_PID;
         $facility = LOG_USER;
         $messages = [
-            ['info message', Logger::LEVEL_INFO],
-            ['error message', Logger::LEVEL_ERROR],
-            ['warning message', Logger::LEVEL_WARNING],
-            ['trace message', Logger::LEVEL_TRACE],
-            ['profile message', Logger::LEVEL_PROFILE],
-            ['profile begin message', Logger::LEVEL_PROFILE_BEGIN],
-            ['profile end message', Logger::LEVEL_PROFILE_END],
+            ['info message', Logger::LEVEL_INFO, 'application', 0.0, []],
+            ['error message', Logger::LEVEL_ERROR, 'application', 0.0, []],
+            ['warning message', Logger::LEVEL_WARNING, 'application', 0.0, []],
+            ['trace message', Logger::LEVEL_TRACE, 'application', 0.0, []],
+            ['profile message', Logger::LEVEL_PROFILE, 'application', 0.0, []],
+            ['profile begin message', Logger::LEVEL_PROFILE_BEGIN, 'application', 0.0, []],
+            ['profile end message', Logger::LEVEL_PROFILE_END, 'application', 0.0, []],
         ];
 
         /** @var SyslogTarget&MockObject $syslogTarget */
@@ -94,7 +94,7 @@ final class SyslogTargetTest extends TestCase
                         'Formatter must receive the expected message.',
                     );
 
-                    return 'formatted message ' . $invocation;
+                    return "formatted message {$invocation}";
                 }
             );
 
@@ -166,7 +166,7 @@ final class SyslogTargetTest extends TestCase
         $syslogTarget->options = LOG_ODELAY | LOG_PID;
         $syslogTarget->facility = LOG_USER;
         $syslogTarget->messages = [
-            ['test', Logger::LEVEL_INFO],
+            ['test', Logger::LEVEL_INFO, 'application', 0.0, []],
         ];
 
         MockerState::addCondition(
@@ -192,7 +192,7 @@ final class SyslogTargetTest extends TestCase
 
     public function testFormatMessageWhereTextIsString(): void
     {
-        $message = ['text', Logger::LEVEL_INFO, 'category', 'timestamp'];
+        $message = ['text', Logger::LEVEL_INFO, 'category', 10.25, []];
 
         $this->syslogTarget
             ->expects($this->once())
@@ -213,7 +213,7 @@ final class SyslogTargetTest extends TestCase
     {
         $exception = new Exception('exception text');
 
-        $message = [$exception, Logger::LEVEL_INFO, 'category', 'timestamp'];
+        $message = [$exception, Logger::LEVEL_INFO, 'category', 10.25, []];
 
         $this->syslogTarget
             ->expects($this->once())
@@ -236,7 +236,7 @@ final class SyslogTargetTest extends TestCase
 
         $text->var = 'some text';
 
-        $message = [$text, Logger::LEVEL_ERROR, 'category', 'timestamp'];
+        $message = [$text, Logger::LEVEL_ERROR, 'category', 10.25, []];
 
         $this->syslogTarget
             ->expects($this->once())
