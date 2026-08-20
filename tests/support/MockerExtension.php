@@ -84,10 +84,6 @@ final class MockerExtension implements Extension
                 'namespace' => 'yii\log',
                 'name' => 'closelog',
             ],
-            [
-                'namespace' => 'yii\log',
-                'name' => 'microtime',
-            ],
         ];
 
         $mocker = new Mocker();

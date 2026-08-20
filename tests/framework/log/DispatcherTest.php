@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace yiiunit\framework\log;
 
 use PHPUnit\Framework\Attributes\Group;
-use Xepozz\InternalMocker\MockerState;
 use Yii;
 use yii\base\UserException;
 use yii\log\Dispatcher;
@@ -27,6 +26,8 @@ use yiiunit\TestCase;
 #[Group('log')]
 final class DispatcherTest extends TestCase
 {
+    public static bool $microtimeIsMocked = false;
+
     private Dispatcher $dispatcher;
     private Logger $logger;
     private int $targetThrowFirstCount = 0;
@@ -39,6 +40,7 @@ final class DispatcherTest extends TestCase
     {
         parent::setUp();
 
+        self::$microtimeIsMocked = false;
         $this->dispatcher = new Dispatcher();
         $this->logger = new Logger();
     }
@@ -242,12 +244,9 @@ final class DispatcherTest extends TestCase
 
     public function testDispatchReportsTargetFailure(): void
     {
-        MockerState::addCondition(
-            'yii\log',
-            'microtime',
-            [true],
-            10.25,
-        );
+        require_once dirname(__DIR__, 2) . '/data/log/microtime.php';
+
+        self::$microtimeIsMocked = true;
 
         $messages = [
             ['message', Logger::LEVEL_INFO, 'application', 10.0, []],
@@ -334,7 +333,21 @@ final class DispatcherTest extends TestCase
             ],
         );
 
-        $dispatcher->dispatch($messages, true);
+        try {
+            $dispatcher->dispatch($messages, true);
+        } finally {
+            self::$microtimeIsMocked = false;
+        }
+    }
+
+    public static function microtime(bool $asFloat): float
+    {
+        self::assertTrue(
+            $asFloat,
+            "Dispatcher must request 'microtime' as a floating-point value.",
+        );
+
+        return 10.25;
     }
 
     public function testInitCreatesConfiguredTarget(): void
