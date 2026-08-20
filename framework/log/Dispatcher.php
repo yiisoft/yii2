@@ -63,6 +63,8 @@ use yii\base\ErrorHandler;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ *
+ * @phpstan-import-type LogMessage from Logger
  */
 class Dispatcher extends Component
 {
@@ -183,7 +185,7 @@ class Dispatcher extends Component
 
     /**
      * Dispatches the logged messages to [[targets]].
-     * @param array $messages the logged messages
+     * @param array<int|string, LogMessage> $messages the logged messages
      * @param bool $final whether this method is called at the end of the current application
      */
     public function dispatch($messages, $final)
@@ -198,9 +200,6 @@ class Dispatcher extends Component
             } catch (\Throwable $t) {
                 $target->enabled = false;
                 $targetErrors[] = $this->generateTargetFailErrorMessage($target, $t, __METHOD__);
-            } catch (\Exception $e) {
-                $target->enabled = false;
-                $targetErrors[] = $this->generateTargetFailErrorMessage($target, $e, __METHOD__);
             }
         }
 
@@ -215,7 +214,7 @@ class Dispatcher extends Component
      * @param Target $target log target object
      * @param \Throwable $throwable catched exception
      * @param string $method full method path
-     * @return array generated error message data
+     * @return LogMessage generated error message data
      * @since 2.0.32
      */
     protected function generateTargetFailErrorMessage($target, $throwable, $method)

@@ -1,335 +1,420 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * @link https://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license https://www.yiiframework.com/license/
  */
 
-namespace yii\log {
-    function microtime($get_as_float)
-    {
-        if (\yiiunit\framework\log\DispatcherTest::$microtimeIsMocked) {
-            return \yiiunit\framework\log\DispatcherTest::microtime(func_get_args());
-        }
+namespace yiiunit\framework\log;
 
-        return \microtime($get_as_float);
-    }
-}
+use PHPUnit\Framework\Attributes\Group;
+use Xepozz\InternalMocker\MockerState;
+use Yii;
+use yii\base\UserException;
+use yii\log\Dispatcher;
+use yii\log\Logger;
+use yii\log\SyslogTarget;
+use yii\log\Target;
+use yiiunit\framework\log\mocks\TargetMock;
+use yiiunit\TestCase;
 
-namespace yiiunit\framework\log {
-    use yiiunit\framework\log\mocks\TargetMock;
-    use Yii;
-    use yii\base\UserException;
-    use yii\log\Dispatcher;
-    use yii\log\Logger;
-    use yii\log\Target;
-    use yiiunit\TestCase;
-
+/**
+ * Unit tests for {@see Dispatcher}.
+ */
+#[Group('log')]
+final class DispatcherTest extends TestCase
+{
+    private Dispatcher $dispatcher;
+    private Logger $logger;
+    private int $targetThrowFirstCount = 0;
     /**
-     * @group log
-     *
-     * @method static mixed microtime($get_as_float)
+     * @var list<array>
      */
-    class DispatcherTest extends TestCase
+    private array $targetThrowSecondOutputs = [];
+
+    protected function setUp(): void
     {
-        /**
-         * @var Logger
-         */
-        protected $logger;
+        parent::setUp();
 
-        /**
-         * @var Dispatcher
-         */
-        protected $dispatcher;
+        $this->dispatcher = new Dispatcher();
+        $this->logger = new Logger();
+    }
 
-        /**
-         * @var bool
-         */
-        public static $microtimeIsMocked = false;
+    public function testConfigureLogger(): void
+    {
+        $dispatcher = new Dispatcher();
 
-        /**
-         * Array of static functions.
-         *
-         * @var array
-         */
-        public static $functions = [];
+        self::assertSame(
+            Yii::getLogger(),
+            $dispatcher->getLogger(),
+            'Dispatcher must use the global logger by default.',
+        );
 
-        protected function setUp(): void
-        {
-            static::$microtimeIsMocked = false;
-            $this->dispatcher = new Dispatcher();
-            $this->logger = new Logger();
-        }
-
-        public function testConfigureLogger(): void
-        {
-            $dispatcher = new Dispatcher();
-            $this->assertSame(Yii::getLogger(), $dispatcher->getLogger());
-
-
-            $logger = new Logger();
-            $dispatcher = new Dispatcher([
+        $logger = new Logger();
+        $dispatcher = new Dispatcher(
+            [
                 'logger' => $logger,
-            ]);
-            $this->assertSame($logger, $dispatcher->getLogger());
+            ],
+        );
 
+        self::assertSame(
+            $logger,
+            $dispatcher->getLogger(),
+            'Dispatcher must preserve a logger instance.',
+        );
 
-            $dispatcher = new Dispatcher([
-                'logger' => 'yii\log\Logger',
-            ]);
-            $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
-            $this->assertEquals(0, $dispatcher->getLogger()->traceLevel);
+        $dispatcher = new Dispatcher(
+            [
+                'logger' => Logger::class,
+            ],
+        );
 
+        self::assertInstanceOf(
+            Logger::class,
+            $dispatcher->getLogger(),
+            'Dispatcher must create a logger from a class name.',
+        );
+        self::assertSame(
+            0,
+            $dispatcher->getLogger()->traceLevel,
+            'Logger created from a class name must keep the default trace level.',
+        );
 
-            $dispatcher = new Dispatcher([
+        $dispatcher = new Dispatcher(
+            [
                 'logger' => [
-                    'class' => 'yii\log\Logger',
+                    'class' => Logger::class,
                     'traceLevel' => 42,
                 ],
-            ]);
-            $this->assertInstanceOf('yii\log\Logger', $dispatcher->getLogger());
-            $this->assertEquals(42, $dispatcher->getLogger()->traceLevel);
-        }
+            ],
+        );
 
-        /**
-         * @covers \yii\log\Dispatcher::setLogger()
-         */
-        public function testSetLogger(): void
-        {
-            $this->dispatcher->setLogger($this->logger);
-            $this->assertSame($this->logger, $this->dispatcher->getLogger());
+        self::assertInstanceOf(
+            Logger::class,
+            $dispatcher->getLogger(),
+            'Dispatcher must create a logger from configuration.',
+        );
+        self::assertSame(
+            42,
+            $dispatcher->getLogger()->traceLevel,
+            'Logger configuration must set the trace level.',
+        );
+    }
 
-            $this->dispatcher->setLogger('yii\log\Logger');
-            $this->assertInstanceOf('yii\log\Logger', $this->dispatcher->getLogger());
-            $this->assertEquals(0, $this->dispatcher->getLogger()->traceLevel);
+    public function testSetLogger(): void
+    {
+        $this->dispatcher->setLogger($this->logger);
 
-            $this->dispatcher->setLogger([
-                'class' => 'yii\log\Logger',
-                'traceLevel' => 42,
-            ]);
-            $this->assertInstanceOf('yii\log\Logger', $this->dispatcher->getLogger());
-            $this->assertEquals(42, $this->dispatcher->getLogger()->traceLevel);
-        }
+        self::assertSame(
+            $this->logger,
+            $this->dispatcher->getLogger(),
+            'setLogger() must preserve a logger instance.',
+        );
 
-        /**
-         * @covers \yii\log\Dispatcher::getTraceLevel()
-         */
-        public function testGetTraceLevel(): void
-        {
-            $this->logger->traceLevel = 123;
-            $this->dispatcher->setLogger($this->logger);
-            $this->assertEquals(123, $this->dispatcher->getTraceLevel());
-        }
+        $this->dispatcher->setLogger(Logger::class);
 
-        /**
-         * @covers \yii\log\Dispatcher::setTraceLevel()
-         */
-        public function testSetTraceLevel(): void
-        {
-            $this->dispatcher->setLogger($this->logger);
-            $this->dispatcher->setTraceLevel(123);
-            $this->assertEquals(123, $this->logger->traceLevel);
-        }
+        self::assertInstanceOf(
+            Logger::class,
+            $this->dispatcher->getLogger(),
+            'setLogger() must create a logger from a class name.',
+        );
+        self::assertSame(
+            0,
+            $this->dispatcher->getLogger()->traceLevel,
+            'Logger created by setLogger() must keep the default trace level.',
+        );
 
-        /**
-         * @covers \yii\log\Dispatcher::getFlushInterval()
-         */
-        public function testGetFlushInterval(): void
-        {
-            $this->logger->flushInterval = 99;
-            $this->dispatcher->setLogger($this->logger);
-            $this->assertEquals(99, $this->dispatcher->getFlushInterval());
-        }
+        $this->dispatcher->setLogger([
+            'class' => Logger::class,
+            'traceLevel' => 42,
+        ]);
 
-        /**
-         * @covers \yii\log\Dispatcher::setFlushInterval()
-         */
-        public function testSetFlushInterval(): void
-        {
-            $this->dispatcher->setLogger($this->logger);
-            $this->dispatcher->setFlushInterval(99);
-            $this->assertEquals(99, $this->logger->flushInterval);
-        }
+        self::assertInstanceOf(
+            Logger::class,
+            $this->dispatcher->getLogger(),
+            'setLogger() must create a logger from configuration.',
+        );
+        self::assertSame(
+            42,
+            $this->dispatcher->getLogger()->traceLevel,
+            'setLogger() configuration must set the trace level.',
+        );
+    }
 
-        /**
-         * @covers \yii\log\Dispatcher::dispatch()
-         */
-        public function testDispatchWithDisabledTarget(): void
-        {
-            $target = $this->createPartialMock(Target::class, ['collect', 'export']);
-            $target->expects($this->never())->method($this->anything());
+    public function testGetTraceLevel(): void
+    {
+        $this->logger->traceLevel = 123;
 
-            $target->enabled = false;
+        $this->dispatcher->setLogger($this->logger);
 
-            $dispatcher = new Dispatcher(['targets' => ['fakeTarget' => $target]]);
-            $dispatcher->dispatch('messages', true);
-        }
+        self::assertSame(
+            123,
+            $this->dispatcher->getTraceLevel(),
+            'Dispatcher must return the logger trace level.',
+        );
+    }
 
-        /**
-         * @covers \yii\log\Dispatcher::dispatch()
-         */
-        public function testDispatchWithSuccessTargetCollect(): void
-        {
-            $target = $this->createPartialMock(Target::class, ['collect', 'export']);
-            $target->expects($this->once())
-                ->method('collect')
-                ->with(
-                    $this->equalTo('messages'),
-                    $this->equalTo(true)
-                );
+    public function testSetTraceLevel(): void
+    {
+        $this->dispatcher->setLogger($this->logger);
+        $this->dispatcher->setTraceLevel(123);
 
-            $dispatcher = new Dispatcher(['targets' => ['fakeTarget' => $target]]);
-            $dispatcher->dispatch('messages', true);
-        }
+        self::assertSame(
+            123,
+            $this->logger->traceLevel,
+            'Dispatcher must update the logger trace level.',
+        );
+    }
 
-        /**
-         * @covers \yii\log\Dispatcher::dispatch()
-         */
-        public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect(): void
-        {
-            static::$microtimeIsMocked = true;
+    public function testGetFlushInterval(): void
+    {
+        $this->logger->flushInterval = 99;
 
-            $target1 = $this->createPartialMock(Target::class, ['collect', 'export']);
-            $target2 = $this->createPartialMock(Target::class, ['collect', 'export']);
+        $this->dispatcher->setLogger($this->logger);
 
-            /**
-             * @link https://github.com/sebastianbergmann/phpunit/issues/5063
-             */
-            $matcher = $this->exactly(2);
-            $target1
-                ->expects($matcher)
-                ->method('collect')
-                ->willReturnCallback(
-                    function (...$parameters) use ($matcher, $target1): void {
-                        if ($matcher->numberOfInvocations() === 1) {
-                            $this->assertEquals('messages', $parameters[0]);
-                            $this->assertTrue($parameters[1]);
-                        }
+        self::assertSame(
+            99,
+            $this->dispatcher->getFlushInterval(),
+            'Dispatcher must return the logger flush interval.',
+        );
+    }
 
-                        if ($matcher->numberOfInvocations() === 2) {
-                            $callback = function ($arg) use ($target1): bool {
-                                if (!isset($arg[0][0], $arg[0][1], $arg[0][2], $arg[0][3])) {
-                                    return false;
-                                }
+    public function testSetFlushInterval(): void
+    {
+        $this->dispatcher->setLogger($this->logger);
+        $this->dispatcher->setFlushInterval(99);
 
-                                if (
-                                    strpos(
-                                        (string) $arg[0][0],
-                                        'Unable to send log via ' .
-                                        get_class($target1) .
-                                        ': Exception (Exception) \'yii\base\UserException\' with message \'some error\''
-                                    ) !== 0
-                                ) {
-                                    return false;
-                                }
+        self::assertSame(
+            99,
+            $this->logger->flushInterval,
+            'Dispatcher must update the logger flush interval.',
+        );
+    }
 
-                                if ($arg[0][1] !== Logger::LEVEL_WARNING) {
-                                    return false;
-                                }
+    public function testDispatchWithDisabledTarget(): void
+    {
+        $target = $this->createPartialMock(Target::class, ['collect', 'export']);
 
-                                if ($arg[0][2] !== 'yii\log\Dispatcher::dispatch') {
-                                    return false;
-                                }
+        $target
+            ->expects($this->never())
+            ->method($this->anything());
 
-                                if ($arg[0][3] !== 'time data') {
-                                    return false;
-                                }
+        $target->enabled = false;
 
-                                if ($arg[0][4] !== []) {
-                                    return false;
-                                }
+        $dispatcher = new Dispatcher(
+            [
+                'targets' => ['fakeTarget' => $target],
+            ],
+        );
 
-                                return true;
-                            };
+        $dispatcher->dispatch(
+            [['message', Logger::LEVEL_INFO, 'application', 10.25, []]],
+            true,
+        );
+    }
 
-                            $this->assertTrue($callback($parameters[0]));
-                            $this->assertTrue($parameters[1]);
-                        }
-                    },
-                );
+    public function testDispatchWithSuccessTargetCollect(): void
+    {
+        $messages = [
+            ['message', Logger::LEVEL_INFO, 'application', 10.25, []],
+        ];
 
-            $target2->expects($this->once())
-                ->method('collect')
-                ->with(
-                    $this->equalTo('messages'),
-                    $this->equalTo(true)
-                )->will($this->throwException(new UserException('some error')));
+        $target = $this->createPartialMock(Target::class, ['collect', 'export']);
 
-            $dispatcher = new Dispatcher(['targets' => ['fakeTarget1' => $target1, 'fakeTarget2' => $target2]]);
-
-            static::$functions['microtime'] = function ($arguments) {
-                $this->assertEquals([true], $arguments);
-                return 'time data';
-            };
-
-            $dispatcher->dispatch('messages', true);
-        }
-
-        /**
-         * @covers \yii\log\Dispatcher::init()
-         */
-        public function testInitWithCreateTargetObject(): void
-        {
-            $dispatcher = new Dispatcher(
-                [
-                    'targets' => [
-                        'syslog' => [
-                            'class' => 'yii\log\SyslogTarget',
-                            ],
-                    ],
-                ]
+        $target->expects($this->once())
+            ->method('collect')
+            ->with(
+                $this->equalTo($messages),
+                $this->equalTo(true)
             );
 
-            $this->assertEquals($dispatcher->targets['syslog'], Yii::createObject('yii\log\SyslogTarget'));
-        }
+        $dispatcher = new Dispatcher(
+            [
+                'targets' => ['fakeTarget' => $target],
+            ],
+        );
 
-        /**
-         * @param $name
-         * @param $arguments
-         * @return mixed
-         */
-        public static function __callStatic($name, $arguments)
-        {
-            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = $arguments[0] ?? $arguments;
-                return forward_static_call(static::$functions[$name], $arguments);
-            }
-            static::fail("Function '$name' has not implemented yet!");
-        }
+        $dispatcher->dispatch($messages, true);
+    }
 
-        private ?int $targetThrowFirstCount = null;
-        private ?array $targetThrowSecondOutputs = null;
+    public function testDispatchReportsTargetFailure(): void
+    {
+        MockerState::addCondition(
+            'yii\log',
+            'microtime',
+            [true],
+            10.25,
+        );
 
-        public function testTargetThrow(): void
-        {
-            $this->targetThrowFirstCount = 0;
-            $this->targetThrowSecondOutputs = [];
-            $targetFirst = new TargetMock([
+        $messages = [
+            ['message', Logger::LEVEL_INFO, 'application', 10.0, []],
+        ];
+
+        $target1 = $this->createPartialMock(Target::class, ['collect', 'export']);
+        $target2 = $this->createPartialMock(Target::class, ['collect', 'export']);
+        $matcher = $this->exactly(2);
+
+        $target1
+            ->expects($matcher)
+            ->method('collect')
+            ->willReturnCallback(
+                function (...$parameters) use ($matcher, $messages, $target1): void {
+                    if ($matcher->numberOfInvocations() === 1) {
+                        self::assertSame(
+                            $messages,
+                            $parameters[0],
+                            'The first dispatch must contain the original messages.',
+                        );
+                        self::assertTrue(
+                            $parameters[1],
+                            'The first dispatch must preserve the final flag.',
+                        );
+
+                        return;
+                    }
+
+                    self::assertCount(
+                        1,
+                        $parameters[0],
+                        'The recursive dispatch must contain one target failure.',
+                    );
+
+                    $failure = $parameters[0][0];
+
+                    self::assertStringStartsWith(
+                        'Unable to send log via ' . $target1::class
+                            . ': Exception (Exception) \'yii\base\UserException\' with message \'some error\'',
+                        (string) $failure[0],
+                        'Target failure text must identify the failed target and exception.',
+                    );
+                    self::assertSame(
+                        Logger::LEVEL_WARNING,
+                        $failure[1],
+                        'Target failures must use the warning level.',
+                    );
+                    self::assertSame(
+                        'yii\log\Dispatcher::dispatch',
+                        $failure[2],
+                        'Target failure category must identify Dispatcher::dispatch().',
+                    );
+                    self::assertSame(
+                        10.25,
+                        $failure[3],
+                        'Target failure must preserve the mocked timestamp.',
+                    );
+                    self::assertSame(
+                        [],
+                        $failure[4],
+                        'Target failure must have an empty trace.',
+                    );
+                    self::assertTrue(
+                        $parameters[1],
+                        'The recursive dispatch must always be final.',
+                    );
+                },
+            );
+
+        $target2
+            ->expects($this->once())
+            ->method('collect')
+            ->with(
+                $this->equalTo($messages),
+                $this->equalTo(true)
+            )->willThrowException(new UserException('some error'));
+
+        $dispatcher = new Dispatcher(
+            [
+                'targets' => [
+                    'fakeTarget1' => $target1,
+                    'fakeTarget2' => $target2,
+                ],
+            ],
+        );
+
+        $dispatcher->dispatch($messages, true);
+    }
+
+    public function testInitCreatesConfiguredTarget(): void
+    {
+        $dispatcher = new Dispatcher(
+            [
+                'targets' => [
+                    'syslog' => ['class' => SyslogTarget::class],
+                ],
+            ],
+        );
+
+        self::assertInstanceOf(
+            SyslogTarget::class,
+            $dispatcher->targets['syslog'],
+            'Dispatcher initialization must create configured targets.',
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/20874
+     */
+    public function testDispatchContinuesAfterThrowable(): void
+    {
+        $this->targetThrowFirstCount = 0;
+        $this->targetThrowSecondOutputs = [];
+
+        $targetFirst = new TargetMock(
+            [
                 'collectOverride' => function (): void {
                     $this->targetThrowFirstCount++;
-                    require_once __DIR__ . DIRECTORY_SEPARATOR . 'mocks' . DIRECTORY_SEPARATOR . 'typed_error.php';
+                    require_once __DIR__ . '/mocks/typed_error.php';
                     typed_error_test_mock([]);
-                }
-            ]);
-            $targetSecond = new TargetMock([
-                'collectOverride' => function ($message, $final): void {
-                    $this->targetThrowSecondOutputs[] = array_pop($message);
-                }
-            ]);
-            $dispatcher = new Dispatcher([
+                },
+            ],
+        );
+        $targetSecond = new TargetMock(
+            [
+                'collectOverride' => function (array $messages): void {
+                    $this->targetThrowSecondOutputs[] = array_pop($messages);
+                },
+            ],
+        );
+        $dispatcher = new Dispatcher(
+            [
                 'logger' => new Logger(),
                 'targets' => [$targetFirst, $targetSecond],
-            ]);
-            $message = 'test' . time();
-            $dispatcher->dispatch([$message], false);
-            $this->assertSame(1, $this->targetThrowFirstCount);
-            $this->assertSame(2, count($this->targetThrowSecondOutputs));
-            $this->assertSame($message, array_shift($this->targetThrowSecondOutputs));
+            ],
+        );
 
-            $targetThrowSecondOutputs = array_shift($this->targetThrowSecondOutputs);
-            $this->assertIsArray($targetThrowSecondOutputs);
-            $this->assertStringStartsWith('Unable to send log via', $targetThrowSecondOutputs[0]);
-        }
+        $message = ['test' . time(), Logger::LEVEL_INFO, 'application', 10.25, []];
+
+        $dispatcher->dispatch([$message], false);
+
+        self::assertSame(
+            1,
+            $this->targetThrowFirstCount,
+            'The failing target must be called once.',
+        );
+        self::assertCount(
+            2,
+            $this->targetThrowSecondOutputs,
+            'The next target must receive the original message and the generated failure.',
+        );
+        self::assertSame(
+            $message,
+            array_shift($this->targetThrowSecondOutputs),
+            'The next target must receive the original message first.',
+        );
+
+        $failure = array_shift($this->targetThrowSecondOutputs);
+
+        self::assertIsArray(
+            $failure,
+            'The generated target failure must be a log message array.',
+        );
+        self::assertStringStartsWith(
+            'Unable to send log via',
+            (string) $failure[0],
+            'The generated target failure must describe the failed target.',
+        );
     }
 }

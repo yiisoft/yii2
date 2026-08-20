@@ -33,8 +33,8 @@ use function time;
  */
 abstract class BaseDbTarget extends DatabaseTestCase
 {
-    private const string LOG_TABLE = '{{%log}}';
     protected const string SQLITE_DATABASE_FILE = __DIR__ . '/../../runtime/sqlite-log-target.sq3';
+    private const string LOG_TABLE = '{{%log}}';
 
     protected function setUp(): void
     {
@@ -180,7 +180,13 @@ abstract class BaseDbTarget extends DatabaseTestCase
         $target = new DbTarget(['logTable' => self::LOG_TABLE]);
 
         $target->messages = [
-            [new PsrMessage('Hello, {name}!', ['name' => 'Yii'], LogLevel::INFO), Logger::LEVEL_INFO, 'psr', 1.1],
+            [
+                new PsrMessage('Hello, {name}!', ['name' => 'Yii'], LogLevel::INFO),
+                Logger::LEVEL_INFO,
+                'psr',
+                1.1,
+                [],
+            ],
         ];
 
         $target->export();

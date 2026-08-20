@@ -160,7 +160,14 @@ final class PsrTargetTest extends TestCase
         );
 
         $this->target->messages = [
-            [$psrMessage, Logger::LEVEL_ERROR, 'app.category', 10.25, ['yii trace'], 1024],
+            [
+                $psrMessage,
+                Logger::LEVEL_ERROR,
+                'app.category',
+                10.25,
+                [['file' => '/app/test.php', 'line' => 42]],
+                1024,
+            ],
         ];
 
         $this->target->export();
@@ -204,7 +211,7 @@ final class PsrTargetTest extends TestCase
                 Logger::LEVEL_INFO,
                 'app.category',
                 10.25,
-                ['yii trace'],
+                [['file' => '/app/test.php', 'line' => 42]],
                 1024,
             ],
         ];
@@ -246,7 +253,14 @@ final class PsrTargetTest extends TestCase
 
         $this->target->extractExceptionTrace = true;
         $this->target->messages = [
-            [$exception, Logger::LEVEL_ERROR, 'app.error', 10.25, ['original trace'], 1024],
+            [
+                $exception,
+                Logger::LEVEL_ERROR,
+                'app.error',
+                10.25,
+                [['file' => '/app/original.php', 'line' => 42]],
+                1024,
+            ],
         ];
 
         $this->target->export();
@@ -262,7 +276,7 @@ final class PsrTargetTest extends TestCase
             'Exception must be in context.',
         );
         self::assertNotSame(
-            ['original trace'],
+            [['file' => '/app/original.php', 'line' => 42]],
             $this->logger->records[0]['context']['trace'],
             'Yii trace must be replaced by the exception trace.',
         );

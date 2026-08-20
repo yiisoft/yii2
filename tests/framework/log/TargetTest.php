@@ -30,7 +30,7 @@ use function count;
  * Unit tests for {@see yii\log\Target}.
  */
 #[Group('log')]
-class TargetTest extends TestCase
+final class TargetTest extends TestCase
 {
     #[DataProviderExternal(TargetProvider::class, 'filters')]
     public function testFilter(array $filter, array $expected): void
@@ -136,7 +136,7 @@ class TargetTest extends TestCase
 
         $target->setLevels(['info', 'error']);
 
-        self::assertEquals(
+        self::assertSame(
             Logger::LEVEL_INFO | Logger::LEVEL_ERROR,
             $target->getLevels(),
             'Named levels must be converted to their combined bitmap.',
@@ -144,7 +144,7 @@ class TargetTest extends TestCase
 
         $target->setLevels(['trace']);
 
-        self::assertEquals(
+        self::assertSame(
             Logger::LEVEL_TRACE,
             $target->getLevels(),
             'A single named level must be converted to its bitmap value.',
@@ -167,7 +167,7 @@ class TargetTest extends TestCase
 
         $target->setLevels(Logger::LEVEL_INFO | Logger::LEVEL_WARNING);
 
-        self::assertEquals(
+        self::assertSame(
             Logger::LEVEL_INFO | Logger::LEVEL_WARNING,
             $target->getLevels(),
             'Combined level bitmap must be preserved.',
@@ -175,7 +175,7 @@ class TargetTest extends TestCase
 
         $target->setLevels(Logger::LEVEL_TRACE);
 
-        self::assertEquals(
+        self::assertSame(
             Logger::LEVEL_TRACE,
             $target->getLevels(),
             'Single level bitmap must be preserved.',
@@ -278,6 +278,19 @@ class TargetTest extends TestCase
             '[-][42][-]',
             $target->getMessagePrefix([]),
             'Prefix must include the authenticated user ID.',
+        );
+    }
+
+    public function testGetMessagePrefixWithoutAuthenticatedUser(): void
+    {
+        $this->mockApplication();
+
+        $target = new TargetStub();
+
+        self::assertSame(
+            '[-][-][-]',
+            $target->getMessagePrefix([]),
+            'Prefix must use placeholders when request, user, and session values are unavailable.',
         );
     }
 
