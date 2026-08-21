@@ -80,12 +80,9 @@ class SessionHandler implements SessionHandlerInterface
             6 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,-',
         ];
 
-        $bits = (int) ini_get('session.sid_bits_per_character');
-        $charset = $charsets[$bits] ?? $charsets[5];
+        // both ini settings are validated by PHP on update, so only these values are possible
+        $charset = $charsets[(int) ini_get('session.sid_bits_per_character')];
         $length = (int) ini_get('session.sid_length');
-        if ($length < 22 || $length > 256) {
-            $length = 32;
-        }
 
         $id = '';
         $maxIndex = strlen($charset) - 1;
