@@ -249,6 +249,11 @@ class DateValidatorTest extends TestCase
         $val = new DateValidator(['format' => 'php:d M Y', 'locale' => 'fr-FR']);
         $this->assertTrue($val->validate('01 févr. 2019'));
 
+        // the fallback enforces an exact round-trip, so normalized or invalid input is still rejected
+        $val = new DateValidator(['format' => 'php:d M Y', 'locale' => 'de-DE']);
+        $this->assertFalse($val->validate('01 Februar 2019'));
+        $this->assertFalse($val->validate('32 Feb. 2019'));
+
         // the PHP parser remains the primary path and still rejects invalid values
         $val = new DateValidator(['format' => 'php:d M Y']);
         $this->assertTrue($val->validate('02 Feb 2019'));
