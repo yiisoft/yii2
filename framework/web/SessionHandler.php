@@ -66,6 +66,15 @@ class SessionHandler implements SessionHandlerInterface
      * @inheritDoc
      */
     #[\ReturnTypeWillChange]
+    public function create_sid()
+    {
+        return session_create_id();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    #[\ReturnTypeWillChange]
     public function read($id)
     {
         return $this->_session->readSession($id);
