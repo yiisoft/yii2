@@ -358,6 +358,14 @@ class DateValidator extends Validator
         }
         if (strncmp($format, 'php:', 4) === 0) {
             $format = substr($format, 4);
+            $timestamp = $this->parseDateValuePHP($value, $format);
+            if ($timestamp === false && extension_loaded('intl')) {
+                // the value may have been produced by Formatter which uses intl for `php:` formats
+                // and may output localized month names that the PHP parser can't read, see #17085
+                return $this->parseDateValueIntl($value, FormatConverter::convertDatePhpToIcu($format));
+            }
+
+            return $timestamp;
         } else {
             if (extension_loaded('intl')) {
                 return $this->parseDateValueIntl($value, $format);
