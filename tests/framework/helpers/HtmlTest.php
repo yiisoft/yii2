@@ -375,6 +375,30 @@ class HtmlTest extends TestCase
         $this->assertEquals('<img src="data:image/png;base64,AAAA" alt="">', Html::img('data:image/png;base64,AAAA'));
     }
 
+    public function testImgStringSrcsetUnsafeUrlScheme(): void
+    {
+        $this->assertEquals(
+            '<img src="/base-url" srcset="safe.png 1x" alt="">',
+            Html::img('/base-url', ['srcset' => 'safe.png 1x,javascript:alert(1) 2x'])
+        );
+        $this->assertEquals(
+            '<img src="/base-url" srcset="safe.png 2x" alt="">',
+            Html::img('/base-url', ['srcset' => "javascript:alert(1) 1x,\nsafe.png 2x"])
+        );
+        // whitespace inside a candidate splits it for browsers as well (HTML srcset parsing),
+        // so "jav\tascript:..." is an invalid candidate downstream and needs no filtering
+        $this->assertEquals(
+            "<img src=\"/base-url\" srcset=\"jav\tascript:alert(1)\" alt=\"\">",
+            Html::img('/base-url', ['srcset' => "jav\tascript:alert(1)"])
+        );
+        // commas inside candidates are candidate separators for browsers as well (HTML srcset parsing),
+        // so splitting on them matches how the value is interpreted downstream
+        $this->assertEquals(
+            '<img src="/base-url" srcset="data:image/png;base64,AAAA 1x" alt="">',
+            Html::img('/base-url', ['srcset' => 'data:image/png;base64,AAAA 1x'])
+        );
+    }
+
     public function testLabel(): void
     {
         $this->assertEquals('<label>something<></label>', Html::label('something<>'));

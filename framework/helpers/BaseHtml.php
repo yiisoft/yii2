@@ -321,6 +321,36 @@ class BaseHtml
     }
 
     /**
+     * Removes candidates with an unsafe URL scheme from a string-form `srcset` value.
+     *
+     * Like browsers when they parse the attribute, the value is treated as a comma-separated
+     * list of candidates where each candidate consists of an image URL followed by optional
+     * descriptors. Candidates whose URL is unsafe are dropped entirely so that no dangling
+     * descriptors remain.
+     *
+     * @param string $srcset the raw `srcset` attribute value.
+     * @return string the filtered `srcset` attribute value.
+     * @since 2.0.56
+     */
+    protected static function filterUnsafeSrcSetCandidates($srcset)
+    {
+        $candidates = [];
+        foreach (explode(',', $srcset) as $candidate) {
+            $candidate = trim($candidate);
+            if ($candidate === '') {
+                continue;
+            }
+            // the image URL of a candidate is everything up to the first whitespace
+            $url = preg_split('/\s+/', $candidate, 2)[0];
+            if (!static::hasUnsafeUrlScheme($url, ['javascript', 'vbscript'])) {
+                $candidates[] = $candidate;
+            }
+        }
+
+        return implode(',', $candidates);
+    }
+
+    /**
      * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
      * @param string $content raw HTML content.
      * @param string $condition condition string.
@@ -502,16 +532,20 @@ class BaseHtml
             $options['src'] = '';
         }
 
-        if (isset($options['srcset']) && is_array($options['srcset'])) {
-            $srcset = [];
-            foreach ($options['srcset'] as $descriptor => $url) {
-                $candidate = Url::to($url);
-                if (static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
-                    $candidate = '';
+        if (isset($options['srcset'])) {
+            if (is_array($options['srcset'])) {
+                $srcset = [];
+                foreach ($options['srcset'] as $descriptor => $url) {
+                    $candidate = Url::to($url);
+                    if (static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
+                        $candidate = '';
+                    }
+                    $srcset[] = $candidate . ' ' . $descriptor;
                 }
-                $srcset[] = $candidate . ' ' . $descriptor;
+                $options['srcset'] = implode(',', $srcset);
+            } elseif (is_string($options['srcset'])) {
+                $options['srcset'] = static::filterUnsafeSrcSetCandidates($options['srcset']);
             }
-            $options['srcset'] = implode(',', $srcset);
         }
 
         if (!isset($options['alt'])) {
