@@ -27,9 +27,7 @@ class GettextPoFile extends GettextFile
      */
     public function load($filePath, $context)
     {
-        $pattern = '/(msgctxt\s+"(.*?(?<!\\\\))")?\s+' // context
-            . 'msgid\s+((?:".*(?<!\\\\)"\s*)+)\s+' // message ID, i.e. original string
-            . 'msgstr\s+((?:".*(?<!\\\\)"\s*)+)/'; // translated string
+        $pattern = '/(msgctxt\s+"((?:[^"\\\\]|\\\\.)*)")?\s*msgid\s*((?:"(?:[^"\\\\]|\\\\.)*"\s*)+)\s*msgstr\s*((?:"(?:[^"\\\\]|\\\\.)*"\s*)+)/'; // message ID and translated string
         $content = file_get_contents($filePath);
         $matches = [];
         $matchCount = preg_match_all($pattern, $content, $matches);
@@ -90,8 +88,8 @@ class GettextPoFile extends GettextFile
     protected function encode($string)
     {
         return str_replace(
-            ['"', "\n", "\t", "\r"],
-            ['\\"', '\\n', '\\t', '\\r'],
+            ['\\', '"', "\n", "\t", "\r"],
+            ['\\\\', '\\"', '\\n', '\\t', '\\r'],
             $string
         );
     }
@@ -103,11 +101,23 @@ class GettextPoFile extends GettextFile
      */
     protected function decode($string)
     {
-        $string = preg_replace(
-            ['/"\s+"/', '/\\\\n/', '/\\\\r/', '/\\\\t/', '/\\\\"/'],
-            ['', "\n", "\r", "\t", '"'],
-            $string
-        );
+        $string = preg_replace('/"\s+"/', '', $string);
+        $string = preg_replace_callback('/\\\\(.)/s', static function ($matches) {
+            switch ($matches[1]) {
+                case 'n':
+                    return "\n";
+                case 'r':
+                    return "\r";
+                case 't':
+                    return "\t";
+                case '"':
+                    return '"';
+                case '\\':
+                    return '\\';
+            }
+
+            return $matches[0];
+        }, $string);
 
         return substr(rtrim($string), 1, -1);
     }
