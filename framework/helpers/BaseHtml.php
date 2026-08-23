@@ -296,6 +296,31 @@ class BaseHtml
     }
 
     /**
+     * Returns whether the given URL uses a scheme that allows script execution when the URL
+     * is opened by a browser (by default `javascript`, `vbscript` and `data`). Such URLs must
+     * not be emitted in hyperlink or form targets that may contain end-user input.
+     *
+     * Note that ASCII control characters are ignored by browsers when they determine the scheme
+     * of a URL, therefore they are stripped before the check.
+     *
+     * @param string $url the URL to check. Relative URLs and URLs without a scheme are considered safe.
+     * @param string[] $unsafeSchemes the list of schemes considered unsafe.
+     * @return bool whether the URL uses an unsafe scheme.
+     * @since 2.0.56
+     */
+    public static function hasUnsafeUrlScheme($url, $unsafeSchemes = ['javascript', 'vbscript', 'data'])
+    {
+        if (!is_string($url)) {
+            return false;
+        }
+
+        $cleaned = preg_replace('/[\x00-\x1f\x7f]/', '', $url);
+        $scheme = strtolower((string)parse_url($cleaned, PHP_URL_SCHEME));
+
+        return in_array($scheme, $unsafeSchemes, true);
+    }
+
+    /**
      * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
      * @param string $content raw HTML content.
      * @param string $condition condition string.
@@ -348,6 +373,9 @@ class BaseHtml
     public static function beginForm($action = '', $method = 'post', $options = [])
     {
         $action = Url::to($action);
+        if (static::hasUnsafeUrlScheme($action)) {
+            $action = '#';
+        }
 
         $hiddenInputs = [];
 
@@ -428,6 +456,9 @@ class BaseHtml
     {
         if ($url !== null) {
             $options['href'] = Url::to($url);
+            if (static::hasUnsafeUrlScheme($options['href'])) {
+                $options['href'] = '#';
+            }
         }
 
         return static::tag('a', $text, $options);
@@ -467,11 +498,18 @@ class BaseHtml
     public static function img($src, $options = [])
     {
         $options['src'] = Url::to($src);
+        if (static::hasUnsafeUrlScheme($options['src'], ['javascript', 'vbscript'])) {
+            $options['src'] = '';
+        }
 
         if (isset($options['srcset']) && is_array($options['srcset'])) {
             $srcset = [];
             foreach ($options['srcset'] as $descriptor => $url) {
-                $srcset[] = Url::to($url) . ' ' . $descriptor;
+                $candidate = Url::to($url);
+                if (static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
+                    $candidate = '';
+                }
+                $srcset[] = $candidate . ' ' . $descriptor;
             }
             $options['srcset'] = implode(',', $srcset);
         }

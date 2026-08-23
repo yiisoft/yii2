@@ -248,6 +248,22 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page', Url::to(['/site/test'], 'https')));
     }
 
+    public function testAUnsafeUrlScheme(): void
+    {
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript:alert(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'JAVASCRIPT:alert(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', "jav\tascript:alert(1)"));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript://%0aalert(document.domain)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'vbscript:MsgBox(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'data:text/html,<script>alert(1)</script>'));
+    }
+
+    public function testBeginFormUnsafeUrlScheme(): void
+    {
+        $form = Html::beginForm('javascript:alert(1)');
+        $this->assertStringNotContainsString('javascript:', $form);
+    }
+
     public function testMailto(): void
     {
         $this->assertEquals('<a href="mailto:test&lt;&gt;">test<></a>', Html::mailto('test<>'));
@@ -349,6 +365,14 @@ class HtmlTest extends TestCase
     public function testImg($expected, $src, $options): void
     {
         $this->assertEquals($expected, Html::img($src, $options));
+    }
+
+    public function testImgUnsafeUrlScheme(): void
+    {
+        $this->assertEquals('<img src="" alt="x">', Html::img('javascript:alert(1)', ['alt' => 'x']));
+        $this->assertEquals('<img src="" srcset=" 2x,pic.png 3x" alt="">', Html::img('vbscript:MsgBox(1)', ['srcset' => ['2x' => 'javascript:alert(1)', '3x' => 'pic.png']]));
+        // data URIs are a legitimate way to embed images and are safe in an image context
+        $this->assertEquals('<img src="data:image/png;base64,AAAA" alt="">', Html::img('data:image/png;base64,AAAA'));
     }
 
     public function testLabel(): void
