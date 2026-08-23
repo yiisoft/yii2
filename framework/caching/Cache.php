@@ -74,6 +74,19 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $serializer;
     /**
+     * @var string|null a secret key used to sign the serialized payload of every cache entry
+     * with an HMAC. When this property is set, [[get()]] and [[multiGet()]] treat entries whose
+     * payload does not match its signature as missing, so an attacker who gained write access to
+     * the cache storage cannot stage deserialization gadget chains through crafted payloads.
+     *
+     * The key should be a random string of at least 32 characters. Note that enabling this option
+     * invalidates all entries written beforehand and adds one HMAC computation per cache access.
+     *
+     * This option has no effect when [[serializer]] is set to `false`.
+     * @since 2.0.56
+     */
+    public $integrityKey;
+    /**
      * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
@@ -135,6 +148,11 @@ abstract class Cache extends Component implements CacheInterface
         $value = $this->getValue($key);
         if ($value === false || $this->serializer === false) {
             return $value;
+        }
+
+        $value = $this->verifyPayload($value);
+        if ($value === false) {
+            return false;
         } elseif ($this->serializer === null) {
             $value = unserialize((string)$value);
         } else {
@@ -209,11 +227,14 @@ abstract class Cache extends Component implements CacheInterface
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
-                    $value = $this->serializer === null ? unserialize($values[$newKey])
-                        : call_user_func($this->serializer[1], $values[$newKey]);
+                    $payload = $this->verifyPayload($values[$newKey]);
+                    if ($payload !== false) {
+                        $value = $this->serializer === null ? unserialize((string)$payload)
+                            : call_user_func($this->serializer[1], $payload);
 
-                    if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
-                        $results[$key] = $value[0];
+                        if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
+                            $results[$key] = $value[0];
+                        }
                     }
                 }
             }
@@ -251,6 +272,7 @@ abstract class Cache extends Component implements CacheInterface
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
+        $value = $this->signPayload($value);
         $key = $this->buildKey($key);
 
         return $this->setValue($key, $value, $duration);
@@ -357,12 +379,53 @@ abstract class Cache extends Component implements CacheInterface
             } elseif ($this->serializer !== false) {
                 $value = call_user_func($this->serializer[0], [$value, $dependency]);
             }
+            $value = $this->signPayload($value);
 
             $key = $this->buildKey($key);
             $data[$key] = $value;
         }
 
         return $data;
+    }
+
+    /**
+     * Prepends an HMAC signature to a serialized cache payload when [[integrityKey]] is set.
+     * @param mixed $value the serialized payload.
+     * @return mixed the signed payload.
+     * @since 2.0.56
+     */
+    protected function signPayload($value)
+    {
+        if ($this->integrityKey === null || !is_string($value)) {
+            return $value;
+        }
+
+        return hash_hmac('sha256', $value, $this->integrityKey) . $value;
+    }
+
+    /**
+     * Verifies and strips the HMAC signature of a serialized cache payload when [[integrityKey]]
+     * is set. Returns `false` when the signature is missing or does not match, so that tampered
+     * payloads are handled like missing cache entries.
+     * @param mixed $value the signed payload.
+     * @return mixed the unsigned payload or `false` on verification failure.
+     * @since 2.0.56
+     */
+    protected function verifyPayload($value)
+    {
+        if ($this->integrityKey === null) {
+            return $value;
+        }
+        if (!is_string($value) || StringHelper::byteLength($value) <= 64) {
+            return false;
+        }
+
+        $signature = hash_hmac('sha256', StringHelper::byteSubstr($value, 64), $this->integrityKey);
+        if (!hash_equals($signature, StringHelper::byteSubstr($value, 0, 64))) {
+            return false;
+        }
+
+        return StringHelper::byteSubstr($value, 64);
     }
 
     /**
@@ -387,6 +450,7 @@ abstract class Cache extends Component implements CacheInterface
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
+        $value = $this->signPayload($value);
         $key = $this->buildKey($key);
 
         return $this->addValue($key, $value, $duration);
