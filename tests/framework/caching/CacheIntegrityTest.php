@@ -107,6 +107,28 @@ class CacheIntegrityTest extends TestCase
         $this->assertFalse($cache->get('k'));
     }
 
+    public function testSignedEntryCopiedToAnotherKeyIsRejected()
+    {
+        $cache = $this->createCache();
+        $cache->set('legit', 'value');
+
+        $cache->store[$cache->buildKey('other')] = $cache->store[$cache->buildKey('legit')];
+        $this->assertFalse($cache->get('other'));
+        $this->assertSame('value', $cache->get('legit'));
+    }
+
+    public function testSerializerFalseIsNotSigned()
+    {
+        $cache = $this->createCache();
+        $cache->serializer = false;
+        $cache->set('k', 'plain-string');
+        $this->assertSame('plain-string', $cache->get('k'));
+        $this->assertSame('plain-string', $cache->multiGet(['k'])['k']);
+        // foreign values are returned as-is, matching the documented no-integrity behavior
+        $cache->store[$cache->buildKey('f')] = 'foreign';
+        $this->assertSame('foreign', $cache->get('f'));
+    }
+
     public function testUnsignedPayloadIsRejected()
     {
         $cache = $this->createCache();

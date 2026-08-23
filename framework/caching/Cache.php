@@ -150,7 +150,7 @@ abstract class Cache extends Component implements CacheInterface
             return $value;
         }
 
-        $value = $this->verifyPayload($value);
+        $value = $this->verifyPayload($value, $key);
         if ($value === false) {
             return false;
         } elseif ($this->serializer === null) {
@@ -227,7 +227,7 @@ abstract class Cache extends Component implements CacheInterface
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
-                    $payload = $this->verifyPayload($values[$newKey]);
+                    $payload = $this->verifyPayload($values[$newKey], $newKey);
                     if ($payload !== false) {
                         $value = $this->serializer === null ? unserialize((string)$payload)
                             : call_user_func($this->serializer[1], $payload);
@@ -272,8 +272,8 @@ abstract class Cache extends Component implements CacheInterface
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
-        $value = $this->signPayload($value);
         $key = $this->buildKey($key);
+        $value = $this->signPayload($value, $key);
 
         return $this->setValue($key, $value, $duration);
     }
@@ -379,7 +379,7 @@ abstract class Cache extends Component implements CacheInterface
             } elseif ($this->serializer !== false) {
                 $value = call_user_func($this->serializer[0], [$value, $dependency]);
             }
-            $value = $this->signPayload($value);
+            $value = $this->signPayload($value, $this->buildKey($key));
 
             $key = $this->buildKey($key);
             $data[$key] = $value;
@@ -390,17 +390,23 @@ abstract class Cache extends Component implements CacheInterface
 
     /**
      * Prepends an HMAC signature to a serialized cache payload when [[integrityKey]] is set.
+     * The signature covers both the payload and the normalized cache key, so a signed entry
+     * cannot be copied to a different key.
+     * The option has no effect when [[serializer]] is `false`, so this method leaves
+     * the value untouched in that case.
+     *
      * @param mixed $value the serialized payload.
+     * @param string $key the normalized cache key the payload is stored under.
      * @return mixed the signed payload.
      * @since 2.0.56
      */
-    protected function signPayload($value)
+    protected function signPayload($value, $key)
     {
-        if ($this->integrityKey === null || !is_string($value)) {
+        if ($this->integrityKey === null || $this->serializer === false || !is_string($value)) {
             return $value;
         }
 
-        return hash_hmac('sha256', $value, $this->integrityKey) . $value;
+        return hash_hmac('sha256', $this->signatureContext($key, $value), $this->integrityKey) . $value;
     }
 
     /**
@@ -408,10 +414,11 @@ abstract class Cache extends Component implements CacheInterface
      * is set. Returns `false` when the signature is missing or does not match, so that tampered
      * payloads are handled like missing cache entries.
      * @param mixed $value the signed payload.
+     * @param string $key the normalized cache key the payload is expected under.
      * @return mixed the unsigned payload or `false` on verification failure.
      * @since 2.0.56
      */
-    protected function verifyPayload($value)
+    protected function verifyPayload($value, $key)
     {
         if ($this->integrityKey === null) {
             return $value;
@@ -420,12 +427,26 @@ abstract class Cache extends Component implements CacheInterface
             return false;
         }
 
-        $signature = hash_hmac('sha256', StringHelper::byteSubstr($value, 64), $this->integrityKey);
+        $payload = StringHelper::byteSubstr($value, 64);
+        $signature = hash_hmac('sha256', $this->signatureContext($key, $payload), $this->integrityKey);
         if (!hash_equals($signature, StringHelper::byteSubstr($value, 0, 64))) {
             return false;
         }
 
-        return StringHelper::byteSubstr($value, 64);
+        return $payload;
+    }
+
+    /**
+     * Builds an unambiguous message for the payload signature by prefixing it with the
+     * length-delimited normalized cache key.
+     * @param string $key the normalized cache key.
+     * @param string $value the serialized payload.
+     * @return string the message to sign.
+     * @since 2.0.56
+     */
+    private function signatureContext($key, $value)
+    {
+        return StringHelper::byteLength($key) . ':' . $key . ':' . $value;
     }
 
     /**
@@ -450,8 +471,8 @@ abstract class Cache extends Component implements CacheInterface
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
-        $value = $this->signPayload($value);
         $key = $this->buildKey($key);
+        $value = $this->signPayload($value, $key);
 
         return $this->addValue($key, $value, $duration);
     }
