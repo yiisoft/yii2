@@ -12,6 +12,7 @@ use yii\caching\Cache;
 use yii\caching\Dependency;
 use yii\caching\ExpressionDependency;
 use yiiunit\TestCase;
+
 /**
  * In-memory cache backend using the default serializer, for testing [[Cache::$integrityKey]].
  */
