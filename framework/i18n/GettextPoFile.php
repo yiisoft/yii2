@@ -19,6 +19,13 @@ use Yii;
 class GettextPoFile extends GettextFile
 {
     /**
+     * Quoted PO string that stays on one physical line, including the surrounding quotes.
+     * Excluding CR/LF prevents a legacy entry that ends with a single backslash from consuming
+     * the next entry's closing quote.
+     */
+    private const QUOTED_STRING_PATTERN = '"(?:[^"\\\\\r\n]|\\\\[^\r\n])*"';
+
+    /**
      * Loads messages from a PO file.
      * @param string $filePath file path
      * @param string $context message context
@@ -27,14 +34,15 @@ class GettextPoFile extends GettextFile
      */
     public function load($filePath, $context)
     {
-        $pattern = '/(msgctxt\s+"((?:[^"\\\\]|\\\\.)*)")?\s*msgid\s*((?:"(?:[^"\\\\]|\\\\.)*"\s*)+)\s*msgstr\s*((?:"(?:[^"\\\\]|\\\\.)*"\s*)+)/'; // message ID and translated string
+        $quoted = self::QUOTED_STRING_PATTERN;
+        $pattern = '/(msgctxt\s+((?:' . $quoted . '\s*)+))?\s*msgid\s*((?:' . $quoted . '\s*)+)\s*msgstr\s*((?:' . $quoted . '\s*)+)/';
         $content = file_get_contents($filePath);
         $matches = [];
         $matchCount = preg_match_all($pattern, $content, $matches);
 
         $messages = [];
         for ($i = 0; $i < $matchCount; ++$i) {
-            if ($matches[2][$i] === $context) {
+            if ($this->decode($matches[2][$i]) === $context) {
                 $id = $this->decode($matches[3][$i]);
                 $message = $this->decode($matches[4][$i]);
                 $messages[$id] = $message;
@@ -71,7 +79,7 @@ class GettextPoFile extends GettextFile
         foreach ($messages as $id => $message) {
             $separatorPosition = strpos($id, chr(4));
             if ($separatorPosition !== false) {
-                $content .= 'msgctxt "' . substr($id, 0, $separatorPosition) . "\"\n";
+                $content .= 'msgctxt "' . $this->encode(substr($id, 0, $separatorPosition)) . "\"\n";
                 $id = substr($id, $separatorPosition + 1);
             }
             $content .= 'msgid "' . $this->encode($id) . "\"\n";
@@ -101,24 +109,30 @@ class GettextPoFile extends GettextFile
      */
     protected function decode($string)
     {
-        $string = preg_replace('/"\s+"/', '', $string);
-        $string = preg_replace_callback('/\\\\(.)/s', static function ($matches) {
-            switch ($matches[1]) {
-                case 'n':
-                    return "\n";
-                case 'r':
-                    return "\r";
-                case 't':
-                    return "\t";
-                case '"':
-                    return '"';
-                case '\\':
-                    return '\\';
-            }
+        if (!preg_match_all('/' . self::QUOTED_STRING_PATTERN . '/', $string, $matches)) {
+            return '';
+        }
 
-            return $matches[0];
-        }, $string);
+        $decoded = '';
+        foreach ($matches[0] as $fragment) {
+            $decoded .= preg_replace_callback('/\\\\(.)/', static function ($escapeMatches) {
+                switch ($escapeMatches[1]) {
+                    case 'n':
+                        return "\n";
+                    case 'r':
+                        return "\r";
+                    case 't':
+                        return "\t";
+                    case '"':
+                        return '"';
+                    case '\\':
+                        return '\\';
+                }
 
-        return substr(rtrim($string), 1, -1);
+                return $escapeMatches[0];
+            }, substr($fragment, 1, -1));
+        }
+
+        return $decoded;
     }
 }

@@ -114,13 +114,14 @@ class GettextPoFileTest extends TestCase
         $poFile = new GettextPoFile();
         $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-roundtrip-' . getmypid() . '.po';
 
-        $context = 'roundtrip';
+        $context = 'round\\trip"ctx';
         $rawMessages = [
             'msg1' => 'back\\slash',
             'msg2' => 'trailing\\',
             'msg3' => 'quote"inside',
             'msg4' => "new\nline",
             'msg5' => 'C:\\temp\\file "q"\nend',
+            'msg6' => 'quote" ',
         ];
         $messages = [];
         foreach ($rawMessages as $id => $message) {
@@ -131,6 +132,27 @@ class GettextPoFileTest extends TestCase
         $loaded = $poFile->load($filePath, $context);
 
         $this->assertSame($rawMessages, $loaded);
+
+        unlink($filePath);
+    }
+
+    public function testLoadDoesNotLoseFollowingEntryAfterMalformedQuotedString(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-malformed-' . getmypid() . '.po';
+
+        $content = <<<'PO'
+msgid "first"
+msgstr "broken\"
+
+msgid "valid"
+msgstr "ok"
+PO;
+        file_put_contents($filePath, $content . "\n");
+
+        $loaded = $poFile->load($filePath, '');
+
+        $this->assertSame(['valid' => 'ok'], $loaded);
 
         unlink($filePath);
     }
