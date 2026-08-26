@@ -35,11 +35,7 @@ class PgsqlMutexKeyTest extends TestCase
      */
     private function getKeys($name)
     {
-        $mutex = $this->createMutex();
-        $method = new \ReflectionMethod(PgsqlMutex::class, 'getKeysFromName');
-        $method->setAccessible(true);
-
-        return $method->invoke($mutex, $name);
+        return $this->invokeMethod($this->createMutex(), 'getKeysFromName', [$name]);
     }
 
     public function testKeysAreDeterministic()

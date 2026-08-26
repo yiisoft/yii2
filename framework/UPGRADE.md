@@ -65,6 +65,11 @@ Upgrade from Yii 2.0.55
   The detection result is composed once per owner class, so such a condition can not be resolved there, and an
   attribute covered by conditional rules only is now left out of the map instead of being type-casted according
   to the first matching rule. Set `attributeTypes` explicitly if you rely on those attributes being type-casted.
+* `yii\mutex\PgsqlMutex` now maps each lock name to two 32-bit advisory-lock keys (a 64-bit keyspace)
+  instead of two 16-bit keys. Existing lock names therefore produce different PostgreSQL keys than in 2.0.55.
+  If you acquire a `PgsqlMutex` lock across a rolling deployment, drain workers that still run 2.0.55 or
+  earlier before starting workers on 2.0.56. An old worker and a new worker can otherwise hold different
+  advisory locks for the same lock name at the same time.
 
 Upgrade from Yii 2.0.53
 -----------------------
