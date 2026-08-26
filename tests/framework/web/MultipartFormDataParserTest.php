@@ -25,6 +25,10 @@ class MultipartFormDataParserTest extends TestCase
             [
                 'multipart/form-data; boundary=' . $boundary . '; charset=utf-8',
                 'multipart/form-data; boundary="' . $boundary . '"; charset=utf-8',
+                'multipart/form-data; x-boundary=wrong; boundary=' . $boundary,
+                'multipart/form-data; foo="a; boundary=wrong"; boundary=' . $boundary,
+                'multipart/form-data; charset="boundary=abc"; boundary=' . $boundary,
+                'multipart/form-data; charset="boundary=abc"; boundary="' . $boundary . '"',
             ] as $contentType
         ) {
             $bodyParams = $parser->parse($rawBody, $contentType);
@@ -38,6 +42,8 @@ class MultipartFormDataParserTest extends TestCase
 
         $this->assertSame([], $parser->parse("--irrelevant\r\n\r\ndata", 'multipart/form-data'));
         $this->assertSame([], $parser->parse('--irrelevant', 'multipart/form-data; boundary='));
+        $this->assertSame([], $parser->parse('--irrelevant', 'multipart/form-data; boundary=""'));
+        $this->assertSame([], $parser->parse('--irrelevant', 'multipart/form-data; boundary=""; charset=utf-8'));
     }
 
     public function testParse(): void
