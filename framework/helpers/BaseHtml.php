@@ -300,8 +300,10 @@ class BaseHtml
      * is opened by a browser (by default `javascript`, `vbscript` and `data`). Such URLs must
      * not be emitted in hyperlink or form targets that may contain end-user input.
      *
-     * Note that ASCII control characters are ignored by browsers when they determine the scheme
-     * of a URL, therefore they are stripped before the check.
+     * The check follows the WHATWG URL parser's preprocessing so it agrees with how browsers
+     * decide the scheme: leading and trailing C0 controls and spaces are stripped, then ASCII
+     * tab, LF and CR are removed from the remaining input. The scheme is the ASCII identifier
+     * anchored at the start of that result, not PHP's `parse_url()`.
      *
      * @param string $url the URL to check. Relative URLs and URLs without a scheme are considered safe.
      * @param string[] $unsafeSchemes the list of schemes considered unsafe.
@@ -314,17 +316,21 @@ class BaseHtml
             return false;
         }
 
-        $cleaned = preg_replace('/[\x00-\x1f\x7f]/', '', $url);
-        $scheme = strtolower((string)parse_url($cleaned, PHP_URL_SCHEME));
+        $url = preg_replace('/^[\x00-\x20]+|[\x00-\x20]+$/', '', $url);
+        $url = str_replace(["\t", "\n", "\r"], '', $url);
+        if (!preg_match('/^([A-Za-z][A-Za-z0-9+.-]*):/', $url, $matches)) {
+            return false;
+        }
 
-        return in_array($scheme, $unsafeSchemes, true);
+        return in_array(strtolower($matches[1]), $unsafeSchemes, true);
     }
 
     /**
      * Removes candidates with an unsafe URL scheme from a string-form `srcset` value.
      *
-     * Like browsers when they parse the attribute, the value is treated as a comma-separated
-     * list of candidates where each candidate consists of an image URL followed by optional
+     * Tokenization follows the HTML `srcset` attribute parser: ASCII whitespace (including
+     * form-feed) and commas separate candidates, but a comma that is not preceded by
+     * whitespace is part of the URL token. Each candidate is an image URL plus optional
      * descriptors. Candidates whose URL is unsafe are dropped entirely so that no dangling
      * descriptors remain.
      *
@@ -335,19 +341,61 @@ class BaseHtml
     protected static function filterUnsafeSrcSetCandidates($srcset)
     {
         $candidates = [];
-        foreach (explode(',', $srcset) as $candidate) {
-            $candidate = trim($candidate);
-            if ($candidate === '') {
-                continue;
+        $length = strlen($srcset);
+        $i = 0;
+        while ($i < $length) {
+            while ($i < $length && self::isSrcsetCandidateSeparator($srcset[$i])) {
+                $i++;
             }
-            // the image URL of a candidate is everything up to the first whitespace
-            $url = preg_split('/\s+/', $candidate, 2)[0];
-            if (!static::hasUnsafeUrlScheme($url, ['javascript', 'vbscript'])) {
-                $candidates[] = $candidate;
+            if ($i >= $length) {
+                break;
+            }
+            $urlStart = $i;
+            while ($i < $length && !self::isHtmlAsciiWhitespace($srcset[$i])) {
+                $i++;
+            }
+            $url = substr($srcset, $urlStart, $i - $urlStart);
+            $parenDepth = 0;
+            $restStart = $i;
+            while ($i < $length) {
+                $char = $srcset[$i];
+                if ($char === '(') {
+                    $parenDepth++;
+                } elseif ($char === ')' && $parenDepth > 0) {
+                    $parenDepth--;
+                } elseif ($char === ',' && $parenDepth === 0) {
+                    break;
+                }
+                $i++;
+            }
+            $rest = substr($srcset, $restStart, $i - $restStart);
+            if ($i < $length && $srcset[$i] === ',') {
+                $i++;
+            }
+            if ($url !== '' && !static::hasUnsafeUrlScheme($url, ['javascript', 'vbscript'])) {
+                $candidates[] = $url . $rest;
             }
         }
 
         return implode(',', $candidates);
+    }
+
+    /**
+     * @param string $char a single character
+     * @return bool whether the character is HTML ASCII whitespace
+     */
+    private static function isHtmlAsciiWhitespace($char)
+    {
+        return $char === "\t" || $char === "\n" || $char === "\x0c" || $char === "\r" || $char === ' ';
+    }
+
+    /**
+     * @param string $char a single character
+     * @return bool whether the character separates `srcset` candidates
+     */
+    private static function isSrcsetCandidateSeparator($char)
+    {
+        return $char === ',' || self::isHtmlAsciiWhitespace($char);
     }
 
     /**
@@ -538,7 +586,7 @@ class BaseHtml
                 foreach ($options['srcset'] as $descriptor => $url) {
                     $candidate = Url::to($url);
                     if (static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
-                        $candidate = '';
+                        continue;
                     }
                     $srcset[] = $candidate . ' ' . $descriptor;
                 }
