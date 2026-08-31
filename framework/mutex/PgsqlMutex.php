@@ -52,13 +52,19 @@ class PgsqlMutex extends DbMutex
     }
 
     /**
-     * Converts a string into two 16 bit integer keys using the SHA1 hash function.
+     * Converts a string into two 32 bit integer keys using the first 8 bytes of the SHA1 hash function.
      * @param string $name
-     * @return array contains two 16 bit integer keys
+     * @return array contains two 32 bit integer keys
      */
     private function getKeysFromName($name)
     {
-        return array_values(unpack('n2', sha1($name, true)));
+        $keys = unpack('N2', substr(sha1($name, true), 0, 8));
+
+        // PostgreSQL advisory locks accept two signed 4-byte integers, while unpack('N')
+        // produces unsigned values. Convert values above the signed range accordingly.
+        return array_values(array_map(static function ($key) {
+            return $key > 0x7FFFFFFF ? $key - 0x100000000 : $key;
+        }, $keys));
     }
 
     /**
