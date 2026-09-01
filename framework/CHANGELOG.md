@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
+- Bug #21074: Fix Gettext PO file escaping of backslashes and parsing of escaped quotes (iliaal)
 
 
 2.0.55 May 09, 2026

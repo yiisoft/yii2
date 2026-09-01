@@ -10,6 +10,7 @@ namespace yiiunit\framework\i18n;
 
 use yii\i18n\GettextPoFile;
 use yiiunit\TestCase;
+use Yii;
 
 /**
  * @group i18n
@@ -40,7 +41,7 @@ class GettextPoFileTest extends TestCase
         $this->assertArrayHasKey("Nunc vel sapien nunc, a pretium nulla.\nPellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.", $context1);
 
         $this->assertArrayHasKey("The other\n\ncontext.\n", $context2);
-        $this->assertArrayHasKey("test1\\\ntest2\n\\\\\ntest3", $context2);
+        $this->assertArrayHasKey("test1\\ntest2\n\\\ntest3", $context2);
 
         // translated messages
         $this->assertTrue(in_array('', $context1));
@@ -49,7 +50,7 @@ class GettextPoFileTest extends TestCase
         $this->assertTrue(in_array('Короткий перевод.', $context1));
 
         $this->assertTrue(in_array("Другой\n\nконтекст.\n", $context2));
-        $this->assertTrue(in_array("тест1\\\nтест2\n\\\\\nтест3", $context2));
+        $this->assertTrue(in_array("тест1\\nтест2\n\\\nтест3", $context2));
     }
 
     public function testSave(): void
@@ -106,5 +107,53 @@ class GettextPoFileTest extends TestCase
 
         $this->assertArrayHasKey("\rCarriage returns\r", $context2);
         $this->assertTrue(in_array("\rВозвраты кареток\r", $context2));
+    }
+
+    public function testSaveLoadRoundTripWithSpecialCharacters(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-roundtrip-' . getmypid() . '.po';
+
+        $context = 'round\\trip"ctx';
+        $rawMessages = [
+            'msg1' => 'back\\slash',
+            'msg2' => 'trailing\\',
+            'msg3' => 'quote"inside',
+            'msg4' => "new\nline",
+            'msg5' => 'C:\\temp\\file "q"\nend',
+            'msg6' => 'quote" ',
+        ];
+        $messages = [];
+        foreach ($rawMessages as $id => $message) {
+            $messages[$context . chr(4) . $id] = $message;
+        }
+
+        $poFile->save($filePath, $messages);
+        $loaded = $poFile->load($filePath, $context);
+
+        $this->assertSame($rawMessages, $loaded);
+
+        unlink($filePath);
+    }
+
+    public function testLoadDoesNotLoseFollowingEntryAfterMalformedQuotedString(): void
+    {
+        $poFile = new GettextPoFile();
+        $filePath = Yii::getAlias('@yiiunit/runtime') . '/po-malformed-' . getmypid() . '.po';
+
+        $content = <<<'PO'
+msgid "first"
+msgstr "broken\"
+
+msgid "valid"
+msgstr "ok"
+PO;
+        file_put_contents($filePath, $content . "\n");
+
+        $loaded = $poFile->load($filePath, '');
+
+        $this->assertSame(['valid' => 'ok'], $loaded);
+
+        unlink($filePath);
     }
 }
