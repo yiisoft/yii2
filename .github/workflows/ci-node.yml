@@ -34,7 +34,6 @@ on:
 
 env:
   DEFAULT_COMPOSER_FLAGS: "--prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi"
-  COMPOSER_ROOT_VERSION: 2.0.x-dev
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

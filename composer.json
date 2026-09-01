@@ -65,7 +65,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "replace": {
-        "yiisoft/yii2": "self.version"
+        "yiisoft/yii2": "2.0.x-dev"
     },
     "require": {
         "php": ">=7.4.0",
