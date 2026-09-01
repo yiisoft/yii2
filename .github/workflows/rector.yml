@@ -62,5 +62,14 @@ jobs:
           coverage-driver: none
           php-version: ${{ matrix.php-version }}
 
+      - name: Install Yii2 Rector rules.
+        # Kept out of the root composer.json: it requires yiisoft/yii2, which this
+        # repo self-replaces, and satisfying that require depends on Composer's
+        # git-branch version guess, which fails on GitHub Actions' shallow/detached checkout.
+        # Pinning COMPOSER_ROOT_VERSION here makes the guess deterministic instead.
+        env:
+          COMPOSER_ROOT_VERSION: 2.0.x-dev
+        run: composer require --dev mspirkov/yii2-rector:^0.1 --no-interaction --no-progress --ansi
+
       - name: Run Rector.
         run: vendor/bin/rector process --dry-run

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "64056aef1c51a3d59a7b05b43013c676",
+    "content-hash": "9d8471a70924ff74a64f0f50352a37f8",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -530,68 +530,6 @@
                 }
             ],
             "time": "2022-12-30T00:15:36+00:00"
-        },
-        {
-            "name": "mspirkov/yii2-rector",
-            "version": "0.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/mspirkov/yii2-rector.git",
-                "reference": "8b9263793e0c4067caf047e6c14b2fe48155c13a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/mspirkov/yii2-rector/zipball/8b9263793e0c4067caf047e6c14b2fe48155c13a",
-                "reference": "8b9263793e0c4067caf047e6c14b2fe48155c13a",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.4",
-                "rector/rector": "^2.6",
-                "yiisoft/yii2": "^2.0.53"
-            },
-            "require-dev": {
-                "ergebnis/phpstan-rules": "^2.13",
-                "friendsofphp/php-cs-fixer": "^3.89",
-                "kubawerlos/php-cs-fixer-custom-fixers": "^3.37",
-                "phpstan/phpstan": "^2.2",
-                "phpstan/phpstan-phpunit": "^2.0",
-                "phpstan/phpstan-strict-rules": "^2.0",
-                "phpunit/phpunit": "^9.6",
-                "rector/rector": "^2.2",
-                "shipmonk/phpstan-rules": "^4.2",
-                "spaze/phpstan-disallowed-calls": "^4.7"
-            },
-            "suggest": {
-                "mspirkov/yii2-phpstan-rules": "for better error detection in Yii2 projects"
-            },
-            "type": "rector-extension",
-            "autoload": {
-                "psr-4": {
-                    "MSpirkov\\Yii2\\Rector\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Maksim Sprikov",
-                    "email": "spirkov.2001@mail.ru"
-                }
-            ],
-            "description": "A set of Rector rules for projects using the Yii2 framework",
-            "keywords": [
-                "rector",
-                "yii",
-                "yii2"
-            ],
-            "support": {
-                "issues": "https://github.com/mspirkov/yii2-rector/issues",
-                "source": "https://github.com/mspirkov/yii2-rector/tree/0.1.1"
-            },
-            "time": "2026-09-01T12:59:00+00:00"
         },
         {
             "name": "myclabs/deep-copy",
