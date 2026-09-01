@@ -18,6 +18,5 @@ return RectorConfig::configure()
         ],
     ])
     ->withRules([
-        AddPropertyTagsRector::class,
         RemoveRedundantPropertyTagsRector::class,
     ]);
