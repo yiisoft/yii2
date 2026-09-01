@@ -56,7 +56,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup PHP Environment.
-        uses: yiisoft/yii2-actions/actions/php-setup@master
+        uses: yiisoft/yii2-actions/actions/php-setup@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
         with:
           composer-command: install
           coverage-driver: none
