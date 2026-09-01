@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #21047: Fix PHPDoc annotations in `Theme`, `AccessRule` and `View` (mspirkov)
 - Bug #20217: Apply `ActiveForm::$validationDelay` only while the user is typing, so validation on blur, change and manual trigger is no longer delayed (veksa)
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
+- Enh #21079: Add the missing `@property` tags (mspirkov)
 
 
 2.0.55 May 09, 2026
