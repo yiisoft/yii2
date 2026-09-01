@@ -56,16 +56,11 @@ jobs:
           persist-credentials: false
 
       - name: Setup PHP Environment.
-        uses: yiisoft/yii2-actions/actions/php-setup@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
+        uses: ./.github/actions/php-setup
         with:
           composer-command: install
           coverage-driver: none
           php-version: ${{ matrix.php-version }}
-
-      - name: Install Yii2 Rector rules.
-        env:
-          COMPOSER_ROOT_VERSION: 2.0.x-dev
-        run: composer require --dev mspirkov/yii2-rector:^0.1 --no-interaction --no-progress --ansi
 
       - name: Run Rector.
         run: vendor/bin/rector process --dry-run

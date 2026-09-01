@@ -85,6 +85,7 @@ runs:
         COMPOSER_COMMAND: ${{ inputs.composer-command }}
         COMPOSER_FLAGS: ${{ inputs.composer-flags }}
         IGNORE_PLATFORM_REQS: ${{ inputs.ignore-platform-reqs }}
+        COMPOSER_ROOT_VERSION: 2.0.x-dev
       run: |
         read -r -a composer_flags <<< "$COMPOSER_FLAGS"
         command=(composer "$COMPOSER_COMMAND" "${composer_flags[@]}")

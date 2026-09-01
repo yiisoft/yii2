@@ -88,7 +88,8 @@
         "yiisoft/yii2-coding-standards": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
-        "rector/rector": "^2.6"
+        "rector/rector": "^2.6",
+        "mspirkov/yii2-rector": "^0.1"
     },
     "repositories": [
         {
