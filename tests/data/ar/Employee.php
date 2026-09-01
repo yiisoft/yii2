@@ -18,9 +18,9 @@ use yii\db\ActiveQuery;
  * @property string $first_name
  * @property string $last_name
  *
- * @property string $fullName
- * @property Department $department
- * @property Dossier $dossier
+ * @property-read string $fullName
+ * @property-read Department $department
+ * @property-read Dossier $dossier
  *
  * @author Kolyunya <OleynikovNY@mail.ru>
  * @since 2.0.12

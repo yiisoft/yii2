@@ -69,6 +69,8 @@ class PhpDocController extends ConsoleController
 
 
     /**
+     * @deprecated - TODO: Remove after migrating all packages to `mspirkov/yii2-rector`.
+     *
      * Generates `@property` annotations in class files from getters and setters.
      *
      * Property description will be taken from getter or setter or from an `@property` annotation

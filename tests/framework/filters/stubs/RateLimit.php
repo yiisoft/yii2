@@ -11,6 +11,10 @@ namespace yiiunit\framework\filters\stubs;
 use yii\base\BaseObject;
 use yii\filters\RateLimitInterface;
 
+/**
+ * @property-write mixed $rateLimit
+ * @property-write mixed $allowance
+ */
 class RateLimit extends BaseObject implements RateLimitInterface
 {
     private $_rateLimit;

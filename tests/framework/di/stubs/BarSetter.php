@@ -14,7 +14,8 @@ use yii\base\BaseObject;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since  2.0
  *
- * @property QuxInterface $qux
+ * @property-read QuxInterface $qux
+ * @property-write mixed $qux
  */
 class BarSetter extends BaseObject
 {

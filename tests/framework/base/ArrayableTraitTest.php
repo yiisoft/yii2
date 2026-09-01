@@ -476,6 +476,9 @@ class ArrayableIntegerKeyExtraStub extends Model implements Arrayable
     }
 }
 
+/**
+ * @property-read mixed[] $links The links.
+ */
 class ArrayableLinkableStub extends Model implements Arrayable, Linkable
 {
     use ArrayableTrait;

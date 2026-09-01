@@ -251,7 +251,8 @@ class SluggableBehaviorTest extends TestCase
  * @property int|null $category_id
  * @property int|null $belongs_to_id
  *
- * @property SluggableBehavior $sluggable
+ * @property-read SluggableBehavior $sluggable
+ * @property-read ActiveRecordRelated|null $related
  *
  * @mixin SluggableBehavior
  */

@@ -402,6 +402,9 @@ class TargetTest extends TestCase
     }
 }
 
+/**
+ * @property-read string $contextMessage The context information. If an empty string, it means no context information.
+ */
 class TestTarget extends Target
 {
     public $exportInterval = 1;
