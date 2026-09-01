@@ -33,6 +33,9 @@ on:
 
   push: *ignore-paths
 
+env:
+  COMPOSER_ROOT_VERSION: 2.0.x-dev
+
 jobs:
   phpstan:
     uses: yiisoft/yii2-actions/.github/workflows/phpstan.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master

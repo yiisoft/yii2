@@ -33,6 +33,9 @@ on:
 
   push: *ignore-paths
 
+env:
+  COMPOSER_ROOT_VERSION: 2.0.x-dev
+
 jobs:
   phpcs:
     uses: yiisoft/yii2-actions/.github/workflows/linter.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master

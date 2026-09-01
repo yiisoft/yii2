@@ -58,7 +58,6 @@ jobs:
       - name: Setup PHP Environment.
         uses: ./.github/actions/php-setup
         with:
-          composer-command: install
           coverage-driver: none
           php-version: ${{ matrix.php-version }}
 
