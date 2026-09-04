@@ -33,33 +33,9 @@ on:
 
   push: *ignore-paths
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  rector:
-    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-          os: [ubuntu-latest]
-          php-version: ['8.5']
-
-    steps:
-      - name: Checkout.
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-
-      - name: Setup PHP Environment.
-        uses: ./.github/actions/php-setup
-        with:
-          coverage-driver: none
-          php-version: ${{ matrix.php-version }}
-
-      - name: Run Rector.
-        run: vendor/bin/rector process --dry-run
+  phpcs:
+    uses: yiisoft/yii2-actions/.github/workflows/rector.yml@6f8dc7a0de4cbcc0fffb6a20881f32bba0e13f44 # master
+    with:
+      composer-root-version: 2.0.x-dev
+      php-version: '["8.5"]'
