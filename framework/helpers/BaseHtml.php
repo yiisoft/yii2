@@ -296,6 +296,109 @@ class BaseHtml
     }
 
     /**
+     * Returns whether the given URL uses a scheme that allows script execution when the URL
+     * is opened by a browser (by default `javascript`, `vbscript` and `data`). Such URLs must
+     * not be emitted in hyperlink or form targets that may contain end-user input.
+     *
+     * The check follows the WHATWG URL parser's preprocessing so it agrees with how browsers
+     * decide the scheme: leading and trailing C0 controls and spaces are stripped, then ASCII
+     * tab, LF and CR are removed from the remaining input. The scheme is the ASCII identifier
+     * anchored at the start of that result, not PHP's `parse_url()`.
+     *
+     * @param string $url the URL to check. Relative URLs and URLs without a scheme are considered safe.
+     * @param string[] $unsafeSchemes the list of schemes considered unsafe.
+     * @return bool whether the URL uses an unsafe scheme.
+     * @since 2.0.56
+     */
+    public static function hasUnsafeUrlScheme($url, $unsafeSchemes = ['javascript', 'vbscript', 'data'])
+    {
+        if (!is_string($url)) {
+            return false;
+        }
+
+        $url = preg_replace('/^[\x00-\x20]+|[\x00-\x20]+$/', '', $url);
+        $url = str_replace(["\t", "\n", "\r"], '', $url);
+        if (!preg_match('/^([A-Za-z][A-Za-z0-9+.-]*):/', $url, $matches)) {
+            return false;
+        }
+
+        return in_array(strtolower($matches[1]), $unsafeSchemes, true);
+    }
+
+    /**
+     * Removes candidates with an unsafe URL scheme from a string-form `srcset` value.
+     *
+     * Tokenization follows the HTML `srcset` attribute parser: ASCII whitespace (including
+     * form-feed) and commas separate candidates, but a comma that is not preceded by
+     * whitespace is part of the URL token. Each candidate is an image URL plus optional
+     * descriptors. Candidates whose URL is unsafe are dropped entirely so that no dangling
+     * descriptors remain.
+     *
+     * @param string $srcset the raw `srcset` attribute value.
+     * @return string the filtered `srcset` attribute value.
+     * @since 2.0.56
+     */
+    protected static function filterUnsafeSrcSetCandidates($srcset)
+    {
+        $candidates = [];
+        $length = strlen($srcset);
+        $i = 0;
+        while ($i < $length) {
+            while ($i < $length && self::isSrcsetCandidateSeparator($srcset[$i])) {
+                $i++;
+            }
+            if ($i >= $length) {
+                break;
+            }
+            $urlStart = $i;
+            while ($i < $length && !self::isHtmlAsciiWhitespace($srcset[$i])) {
+                $i++;
+            }
+            $url = substr($srcset, $urlStart, $i - $urlStart);
+            $parenDepth = 0;
+            $restStart = $i;
+            while ($i < $length) {
+                $char = $srcset[$i];
+                if ($char === '(') {
+                    $parenDepth++;
+                } elseif ($char === ')' && $parenDepth > 0) {
+                    $parenDepth--;
+                } elseif ($char === ',' && $parenDepth === 0) {
+                    break;
+                }
+                $i++;
+            }
+            $rest = substr($srcset, $restStart, $i - $restStart);
+            if ($i < $length && $srcset[$i] === ',') {
+                $i++;
+            }
+            if ($url !== '' && !static::hasUnsafeUrlScheme($url, ['javascript', 'vbscript'])) {
+                $candidates[] = $url . $rest;
+            }
+        }
+
+        return implode(',', $candidates);
+    }
+
+    /**
+     * @param string $char a single character
+     * @return bool whether the character is HTML ASCII whitespace
+     */
+    private static function isHtmlAsciiWhitespace($char)
+    {
+        return $char === "\t" || $char === "\n" || $char === "\x0c" || $char === "\r" || $char === ' ';
+    }
+
+    /**
+     * @param string $char a single character
+     * @return bool whether the character separates `srcset` candidates
+     */
+    private static function isSrcsetCandidateSeparator($char)
+    {
+        return $char === ',' || self::isHtmlAsciiWhitespace($char);
+    }
+
+    /**
      * Wraps given content into conditional comments for IE, e.g., `lt IE 9`.
      * @param string $content raw HTML content.
      * @param string $condition condition string.
@@ -348,6 +451,9 @@ class BaseHtml
     public static function beginForm($action = '', $method = 'post', $options = [])
     {
         $action = Url::to($action);
+        if (static::hasUnsafeUrlScheme($action)) {
+            $action = '#';
+        }
 
         $hiddenInputs = [];
 
@@ -428,6 +534,9 @@ class BaseHtml
     {
         if ($url !== null) {
             $options['href'] = Url::to($url);
+            if (static::hasUnsafeUrlScheme($options['href'])) {
+                $options['href'] = '#';
+            }
         }
 
         return static::tag('a', $text, $options);
@@ -467,13 +576,24 @@ class BaseHtml
     public static function img($src, $options = [])
     {
         $options['src'] = Url::to($src);
+        if (static::hasUnsafeUrlScheme($options['src'], ['javascript', 'vbscript'])) {
+            $options['src'] = '';
+        }
 
-        if (isset($options['srcset']) && is_array($options['srcset'])) {
-            $srcset = [];
-            foreach ($options['srcset'] as $descriptor => $url) {
-                $srcset[] = Url::to($url) . ' ' . $descriptor;
+        if (isset($options['srcset'])) {
+            if (is_array($options['srcset'])) {
+                $srcset = [];
+                foreach ($options['srcset'] as $descriptor => $url) {
+                    $candidate = Url::to($url);
+                    if (static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
+                        continue;
+                    }
+                    $srcset[] = $candidate . ' ' . $descriptor;
+                }
+                $options['srcset'] = implode(',', $srcset);
+            } elseif (is_string($options['srcset'])) {
+                $options['srcset'] = static::filterUnsafeSrcSetCandidates($options['srcset']);
             }
-            $options['srcset'] = implode(',', $srcset);
         }
 
         if (!isset($options['alt'])) {

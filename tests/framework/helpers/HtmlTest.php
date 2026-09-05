@@ -248,6 +248,26 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page', Url::to(['/site/test'], 'https')));
     }
 
+    public function testAUnsafeUrlScheme(): void
+    {
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript:alert(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'JAVASCRIPT:alert(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', "jav\tascript:alert(1)"));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript://%0aalert(document.domain)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'vbscript:MsgBox(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'data:text/html,<script>alert(1)</script>'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', ' javascript:alert(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript:///%0aalert(1)'));
+        // browsers only strip HT/LF/CR inside the URL, so an internal BEL does not make this javascript:
+        $this->assertStringNotContainsString('href="#"', Html::a('something', "java\x07script:alert(1)"));
+    }
+
+    public function testBeginFormUnsafeUrlScheme(): void
+    {
+        $form = Html::beginForm('javascript:alert(1)');
+        $this->assertStringNotContainsString('javascript:', $form);
+    }
+
     public function testMailto(): void
     {
         $this->assertEquals('<a href="mailto:test&lt;&gt;">test<></a>', Html::mailto('test<>'));
@@ -349,6 +369,46 @@ class HtmlTest extends TestCase
     public function testImg($expected, $src, $options): void
     {
         $this->assertEquals($expected, Html::img($src, $options));
+    }
+
+    public function testImgUnsafeUrlScheme(): void
+    {
+        $this->assertEquals('<img src="" alt="x">', Html::img('javascript:alert(1)', ['alt' => 'x']));
+        $this->assertEquals('<img src="" srcset="pic.png 3x" alt="">', Html::img('vbscript:MsgBox(1)', ['srcset' => ['2x' => 'javascript:alert(1)', '3x' => 'pic.png']]));
+        // data URIs are a legitimate way to embed images and are safe in an image context
+        $this->assertEquals('<img src="data:image/png;base64,AAAA" alt="">', Html::img('data:image/png;base64,AAAA'));
+    }
+
+    public function testImgStringSrcsetUnsafeUrlScheme(): void
+    {
+        $this->assertEquals(
+            '<img src="/base-url" srcset="safe.png 1x" alt="">',
+            Html::img('/base-url', ['srcset' => 'safe.png 1x,javascript:alert(1) 2x'])
+        );
+        $this->assertEquals(
+            '<img src="/base-url" srcset="safe.png 2x" alt="">',
+            Html::img('/base-url', ['srcset' => "javascript:alert(1) 1x,\nsafe.png 2x"])
+        );
+        // whitespace inside a candidate splits it for browsers as well (HTML srcset parsing),
+        // so "jav\tascript:..." is an invalid candidate downstream and needs no filtering
+        $this->assertEquals(
+            "<img src=\"/base-url\" srcset=\"jav\tascript:alert(1)\" alt=\"\">",
+            Html::img('/base-url', ['srcset' => "jav\tascript:alert(1)"])
+        );
+        $this->assertEquals(
+            '<img src="/base-url" srcset="data:image/png;base64,AAAA 1x" alt="">',
+            Html::img('/base-url', ['srcset' => 'data:image/png;base64,AAAA 1x'])
+        );
+        // form-feed is HTML whitespace, so it starts a new candidate the way browsers do
+        $this->assertEquals(
+            '<img src="/base-url" srcset="safe.png 2x" alt="">',
+            Html::img('/base-url', ['srcset' => "\x0cjavascript:alert(1) 1x,safe.png 2x"])
+        );
+        // commas belong to the URL token until ASCII whitespace, matching HTML srcset parsing
+        $this->assertEquals(
+            '<img src="/base-url" srcset="https://example.test/image,javascript:variant 1x" alt="">',
+            Html::img('/base-url', ['srcset' => 'https://example.test/image,javascript:variant 1x'])
+        );
     }
 
     public function testLabel(): void
