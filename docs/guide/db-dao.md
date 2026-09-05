@@ -684,3 +684,22 @@ $table = Yii::$app->db->getTableSchema('post');
 The method returns a [[yii\db\TableSchema]] object which contains the information about the table's columns,
 primary keys, foreign keys, etc. All this information is mainly utilized by [query builder](db-query-builder.md) 
 and [active record](db-active-record.md) to help you write database-agnostic code. 
+
+A table name may be prefixed with the name of the schema it belongs to. You can also list the tables of a single
+schema, and, on MSSQL, Oracle, PostgreSQL and SQLite, the schemas of the database itself:
+
+```php
+$schema = Yii::$app->db->getSchema();
+
+$schemaNames = $schema->getSchemaNames();
+$tableNames = $schema->getTableNames('archive');
+$table = $schema->getTableSchema('archive.post');
+```
+
+[[yii\db\Schema::getSchemaNames()|getSchemaNames()]] throws a [[yii\base\NotSupportedException]] on the drivers that
+are left out of that list.
+
+> Note: In SQLite the schemas of a connection are the databases
+> [attached](https://sqlite.org/lang_attach.html) to it, `main` being the one the connection was opened with.
+> The `temp` schema holding temporary tables is left out of [[yii\db\Schema::getSchemaNames()|getSchemaNames()]],
+> but its tables can still be read by naming it.

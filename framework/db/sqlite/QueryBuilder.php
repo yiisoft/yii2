@@ -212,7 +212,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $value = (int) $value - 1;
             }
 
-            return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
+            // every attached database keeps its own `sqlite_sequence` table
+            $sequenceTableName = 'sqlite_sequence';
+            if ($table->schemaName !== null && $table->schemaName !== $db->getSchema()->defaultSchema) {
+                $sequenceTableName = $db->quoteTableName($table->schemaName) . '.' . $sequenceTableName;
+            }
+
+            $sequenceName = $db->quoteValue($table->name);
+
+            return "UPDATE $sequenceTableName SET seq='$value' WHERE name=$sequenceName";
         } elseif ($table === null) {
             throw new InvalidArgumentException("Table not found: $tableName");
         }
