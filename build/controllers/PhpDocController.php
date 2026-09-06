@@ -33,11 +33,6 @@ class PhpDocController extends ConsoleController
      */
     public $defaultAction = 'fix';
     /**
-     * @var bool whether to update class docs directly. Setting this to false will just output docs
-     * for copy and paste.
-     */
-    public $updateFiles = true;
-    /**
      * @var bool whether to add copyright header to php files. This should be skipped in application code.
      */
     public $skipFrameworkRequirements = false;
@@ -84,7 +79,7 @@ class PhpDocController extends ConsoleController
      */
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), ['updateFiles', 'skipFrameworkRequirements']);
+        return array_merge(parent::options($actionID), ['skipFrameworkRequirements']);
     }
 
     /**
