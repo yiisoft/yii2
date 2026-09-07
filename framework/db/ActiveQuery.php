@@ -323,7 +323,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function one($db = null)
     {
-        $row = parent::one($db);
+        // See the note in `all()` about why `emulateExecution` is checked after building the command.
+        // https://github.com/yiisoft/yii2/issues/21077
+        $command = $this->createCommand($db);
+
+        if ($this->emulateExecution) {
+            return null;
+        }
+
+        $row = $command->queryOne();
         if ($row !== false) {
             $models = $this->populate([$row]);
             return reset($models) ?: null;
