@@ -1719,6 +1719,43 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
+     * When `emulateExecution()` is explicitly set on a `via()` relation query, no query should be
+     * sent to the database for either the outer relation or the intermediate junction relation.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/21077
+     * @see https://github.com/yiisoft/yii2/pull/21085#discussion_r3946653606
+     */
+    public function testViaRelationWithEmulateExecutionDoesNotQueryDatabase(): void
+    {
+        // warm up the schema cache so it is not queried during the assertions below
+        Order::getTableSchema();
+        OrderItem::getTableSchema();
+        Item::getTableSchema();
+
+        $db = Order::getDb();
+        $enableLogging = $db->enableLogging;
+        $enableProfiling = $db->enableProfiling;
+        $db->enableLogging = true;
+        $db->enableProfiling = true;
+
+        try {
+            $order = Order::findOne(1);
+            $this->assertFalse($order->getIsNewRecord());
+
+            Yii::getLogger()->messages = [];
+            $this->assertSame([], $order->getItems()->emulateExecution()->all());
+            $this->assertCount(0, Yii::getLogger()->messages);
+
+            Yii::getLogger()->messages = [];
+            $this->assertNull($order->getItems()->emulateExecution()->one());
+            $this->assertCount(0, Yii::getLogger()->messages);
+        } finally {
+            $db->enableLogging = $enableLogging;
+            $db->enableProfiling = $enableProfiling;
+        }
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/12213
      */
     public function testUnlinkAllOnCondition(): void
