@@ -330,8 +330,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function one($db = null)
     {
-        // See the note in `all()` about why `emulateExecution` is checked after building the command.
+        // See the notes in `all()` about why `emulateExecution` is checked both before and after
+        // building the command.
         // https://github.com/yiisoft/yii2/issues/21077
+        if ($this->emulateExecution) {
+            return null;
+        }
+
         $command = $this->createCommand($db);
 
         if ($this->emulateExecution) {
