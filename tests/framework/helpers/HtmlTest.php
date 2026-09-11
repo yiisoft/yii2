@@ -2135,6 +2135,15 @@ EOD;
         $expected = '/([a-z0-9-]+)/ugim';
         $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/dugimex');
         $this->assertSame($expected, $actual);
+
+        // Paired delimiters with nested brackets
+        $expected = '/a(b)c/';
+        $actual = Html::escapeJsRegularExpression('(a(b)c)');
+        $this->assertSame($expected, $actual);
+
+        $expected = '/a\/b/i';
+        $actual = Html::escapeJsRegularExpression('{a/b}i');
+        $this->assertSame($expected, $actual);
     }
 
     public function testActiveDropDownList(): void
