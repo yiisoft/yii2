@@ -156,7 +156,6 @@ class View extends \yii\base\View
 
     private $_assetManager;
 
-
     /**
      * Whether [[endPage()]] has been called and all files have been registered
      * @var bool

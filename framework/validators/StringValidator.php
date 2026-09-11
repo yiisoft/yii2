@@ -67,7 +67,7 @@ class StringValidator extends Validator
      */
     public $encoding;
     /**
-     * @var boolean whether to require the value to be a string data type.
+     * @var bool whether to require the value to be a string data type.
      * If false any scalar value will be treated as it's string equivalent.
      * @since 2.0.33
      */

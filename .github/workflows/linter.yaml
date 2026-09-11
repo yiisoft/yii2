@@ -39,3 +39,29 @@ jobs:
     with:
       composer-root-version: 2.0.x-dev
       php-version: '["7.4", "8.5"]'
+
+  php-cs-fixer:
+    name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+          os: [ubuntu-latest]
+          php-version: ['7.4']
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP Environment.
+        uses: ./.github/actions/php-setup
+        with:
+          coverage-driver: none
+          php-version: ${{ matrix.php-version }}
+
+      - name: Run PHP CS Fixer
+        run: ./vendor/bin/php-cs-fixer check
