@@ -24,7 +24,6 @@ class InConditionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-
     /**
      * Method builds the raw SQL from the $expression that will not be additionally
      * escaped or quoted.

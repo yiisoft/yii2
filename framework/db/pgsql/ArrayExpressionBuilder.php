@@ -25,7 +25,6 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-
     /**
      * {@inheritdoc}
      * @param ArrayExpression|ExpressionInterface $expression the expression to be built
