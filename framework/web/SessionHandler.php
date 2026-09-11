@@ -64,6 +64,45 @@ class SessionHandler implements SessionHandlerInterface
 
     /**
      * @inheritDoc
+     *
+     * Generates the ID the same way as PHP's default session module does, honoring
+     * `session.sid_length` and `session.sid_bits_per_character` ini settings.
+     * `session_create_id()` can't be used here because it fails on PHP < 8 when
+     * a user save handler (such as this class) is registered.
+     */
+    #[\ReturnTypeWillChange]
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps -- method name is defined by SessionHandlerInterface
+    public function create_sid()
+    {
+        static $charsets = [
+            4 => '0123456789abcdef',
+            5 => '0123456789abcdefghijklmnopqrstuv',
+            6 => '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,-',
+        ];
+
+        // both ini settings are validated by PHP on update, so only these values are possible
+        $charset = $charsets[(int) ini_get('session.sid_bits_per_character')];
+        $length = (int) ini_get('session.sid_length');
+
+        $id = '';
+        $maxIndex = strlen($charset) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $id .= $charset[random_int(0, $maxIndex)];
+        }
+
+        return $id;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function validateId($sessionId): bool
+    {
+        return $this->_session->readSession($sessionId) !== '';
+    }
+
+    /**
+     * @inheritDoc
      */
     #[\ReturnTypeWillChange]
     public function read($id)

@@ -12,6 +12,7 @@ use yiiunit\TestCase;
 use Yii;
 use yii\caching\FileCache;
 use yii\web\CacheSession;
+use yii\web\SessionHandler;
 
 /**
  * @group web
@@ -59,6 +60,32 @@ class CacheSessionTest extends TestCase
     public function testInitUseStrictMode(): void
     {
         $this->initStrictModeTest(CacheSession::class);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/21068
+     */
+    public function testSessionHandlerCreateSid(): void
+    {
+        $handler = new SessionHandler(new CacheSession());
+
+        $sid = $handler->create_sid();
+        $this->assertNotEmpty($sid);
+        $this->assertNotSame($sid, $handler->create_sid());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/21068
+     */
+    public function testSessionHandlerValidateId(): void
+    {
+        $session = new CacheSession();
+        $handler = new SessionHandler($session);
+
+        $session->writeSession('test', 'sessionData');
+        $this->assertTrue($handler->validateId('test'));
+        $this->assertFalse($handler->validateId('not-exists'));
+        $session->destroySession('test');
     }
 
     public function testUseStrictMode(): void
