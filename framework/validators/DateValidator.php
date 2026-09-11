@@ -358,6 +358,15 @@ class DateValidator extends Validator
         }
         if (strncmp($format, 'php:', 4) === 0) {
             $format = substr($format, 4);
+            $timestamp = $this->parseDateValuePHP($value, $format);
+            if ($timestamp === false && extension_loaded('intl')) {
+                // the value may have been produced by Formatter which uses intl for `php:` formats
+                // and may output localized month names that the PHP parser can't read, see #17085.
+                // Strict round-trip check is enforced to not broaden the accepted input beyond that.
+                return $this->parseDateValueIntl($value, FormatConverter::convertDatePhpToIcu($format), true);
+            }
+
+            return $timestamp;
         } else {
             if (extension_loaded('intl')) {
                 return $this->parseDateValueIntl($value, $format);
@@ -374,10 +383,12 @@ class DateValidator extends Validator
      * Parses a date value using the IntlDateFormatter::parse().
      * @param string $value string representing date
      * @param string $format the expected date format
+     * @param bool|null $strictDateFormat whether the re-formatted parsed date must exactly match the input.
+     * Defaults to [[strictDateFormat]].
      * @return int|bool a UNIX timestamp or `false` on failure.
      * @throws InvalidConfigException
      */
-    private function parseDateValueIntl($value, $format)
+    private function parseDateValueIntl($value, $format, $strictDateFormat = null)
     {
         $formatter = $this->getIntlDateFormatter($format);
         // enable strict parsing to avoid getting invalid date values
@@ -387,8 +398,9 @@ class DateValidator extends Validator
         // See https://github.com/yiisoft/yii2/issues/5962 and https://bugs.php.net/bug.php?id=68528
         $parsePos = 0;
         $parsedDate = @$formatter->parse($value, $parsePos);
+        $strictDateFormat = $strictDateFormat ?? $this->strictDateFormat;
         $valueLength = mb_strlen($value, Yii::$app ? Yii::$app->charset : 'UTF-8');
-        if ($parsedDate === false || $parsePos !== $valueLength || ($this->strictDateFormat && $formatter->format($parsedDate) !== $value)) {
+        if ($parsedDate === false || $parsePos !== $valueLength || ($strictDateFormat && $formatter->format($parsedDate) !== $value)) {
             return false;
         }
 

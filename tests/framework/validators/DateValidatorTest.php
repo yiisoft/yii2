@@ -236,6 +236,30 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
+    /**
+     * Values produced by Formatter for `php:` formats use intl and may contain localized
+     * month names that the PHP parser can't read, so intl is used as a fallback.
+     * @see https://github.com/yiisoft/yii2/issues/17085
+     */
+    public function testIntlPhpFormatWithLocalizedMonth(): void
+    {
+        $val = new DateValidator(['format' => 'php:d M Y', 'locale' => 'de-DE']);
+        $this->assertTrue($val->validate('01 Feb. 2019'));
+
+        $val = new DateValidator(['format' => 'php:d M Y', 'locale' => 'fr-FR']);
+        $this->assertTrue($val->validate('01 févr. 2019'));
+
+        // the fallback enforces an exact round-trip, so normalized or invalid input is still rejected
+        $val = new DateValidator(['format' => 'php:d M Y', 'locale' => 'de-DE']);
+        $this->assertFalse($val->validate('01 Februar 2019'));
+        $this->assertFalse($val->validate('32 Feb. 2019'));
+
+        // the PHP parser remains the primary path and still rejects invalid values
+        $val = new DateValidator(['format' => 'php:d M Y']);
+        $this->assertTrue($val->validate('02 Feb 2019'));
+        $this->assertFalse($val->validate('32 Feb 2019'));
+    }
+
     public static function provideTimezones(): array
     {
         return [
