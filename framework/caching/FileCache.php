@@ -98,7 +98,14 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($this->buildKey($key));
 
-        return @filemtime($cacheFile) > time();
+        set_error_handler(function ($errno, $errstr) {
+            return strpos($errstr, 'filemtime') !== false;
+        }, E_WARNING);
+
+        $filemtime = filemtime($cacheFile);
+        restore_error_handler();
+
+        return $filemtime !== false && $filemtime > time();
     }
 
     /**
@@ -111,7 +118,14 @@ class FileCache extends Cache
     {
         $cacheFile = $this->getCacheFile($key);
 
-        if (@filemtime($cacheFile) > time()) {
+        set_error_handler(function ($errno, $errstr) {
+            return strpos($errstr, 'filemtime') !== false;
+        }, E_WARNING);
+
+        $filemtime = filemtime($cacheFile);
+        restore_error_handler();
+
+        if ($filemtime !== false && $filemtime > time()) {
             $fp = @fopen($cacheFile, 'r');
             if ($fp !== false) {
                 @flock($fp, LOCK_SH);
