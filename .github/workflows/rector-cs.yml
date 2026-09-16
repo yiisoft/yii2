@@ -1,4 +1,4 @@
-name: linter
+name: rector
 
 permissions:
   contents: read
@@ -33,18 +33,14 @@ on:
 
   push: *ignore-paths
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  phpcs:
-    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@5bf8a8707d3195ec35a777dcf8359c6ff904acdc # master
-    with:
-      composer-root-version: 2.0.x-dev
-      php-version: '["7.4", "8.5"]'
-
-  php-cs-fixer:
+  rector-cs:
     name: PHP ${{ matrix.php-version }}-${{ matrix.os }}
-
     runs-on: ${{ matrix.os }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -63,5 +59,32 @@ jobs:
           coverage-driver: none
           php-version: ${{ matrix.php-version }}
 
+      - name: Run Rector
+        run: ./vendor/bin/rector --output-format=github
+
       - name: Run PHP CS Fixer
-        run: ./vendor/bin/php-cs-fixer check
+        run: ./vendor/bin/php-cs-fixer fix
+
+      - name: Run PHP Codesniffer
+        run: ./vendor/bin/phpcbf
+
+      - name: Commit changes
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global credential.helper '!f() { echo username=x-access-token; echo password=$GITHUB_TOKEN; }; f'
+          git add '*.php'
+          if git diff --staged --quiet; then
+            echo "Nothing to commit."
+            exit 0
+          fi
+          git stash
+          git fetch origin "$HEAD_REF"
+          git switch -C "$HEAD_REF" "origin/$HEAD_REF"
+          git stash pop
+          git add '*.php'
+          git commit -m "Apply Rector, PHP CS Fixer and PHP Codesniffer changes (CI)"
+          git push origin "HEAD:$HEAD_REF"
