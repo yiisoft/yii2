@@ -91,6 +91,7 @@ class AssetManagerTest extends TestCase
 
         $this->assertSame('/assets', $am->baseUrl);
     }
+
     public function testCheckBasePathPermissionThrowsOnNonExistentDir(): void
     {
         $am = $this->createManager();
