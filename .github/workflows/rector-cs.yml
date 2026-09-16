@@ -1,4 +1,4 @@
-name: rector
+name: rector-cs
 
 permissions:
   contents: read
@@ -60,7 +60,7 @@ jobs:
           php-version: ${{ matrix.php-version }}
 
       - name: Run Rector
-        run: ./vendor/bin/rector --output-format=github
+        run: ./vendor/bin/rector
 
       - name: Run PHP CS Fixer
         run: ./vendor/bin/php-cs-fixer fix
