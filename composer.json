@@ -89,7 +89,9 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "rector/rector": "^2.6",
-        "mspirkov/yii2-rector": "^0.1"
+        "mspirkov/yii2-rector": "^0.1",
+        "slevomat/coding-standard": "^8.31",
+        "friendsofphp/php-cs-fixer": "^3.95"
     },
     "repositories": [
         {
@@ -127,8 +129,8 @@
         }
     },
     "scripts": {
-        "cs": "./vendor/bin/phpcs",
-        "cs-fix": "./vendor/bin/phpcbf",
+        "cs": "./vendor/bin/phpcs && ./vendor/bin/php-cs-fixer check",
+        "cs-fix": "./vendor/bin/phpcbf && ./vendor/bin/php-cs-fixer fix",
         "static": "./vendor/bin/phpstan --memory-limit=-1",
         "rector": "./vendor/bin/rector"
     }
