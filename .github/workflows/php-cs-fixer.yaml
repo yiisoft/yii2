@@ -35,7 +35,7 @@ on:
 
 jobs:
   php-cs-fixer:
-    uses: yiisoft/yii2-actions/.github/workflows/php-cs-fixer.yml@8c64b615275d292bb5ba16547e1154828818e924 # master
+    uses: yiisoft/yii2-actions/.github/workflows/php-cs-fixer.yml@9bfbe47bd91bc31a6ff9f0ea77ba3724d7816c3d # master
     with:
       composer-root-version: 2.0.x-dev
       configuration: .php-cs-fixer.dist.php
