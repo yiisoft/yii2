@@ -351,4 +351,51 @@ class ValidatorTest extends TestCase
         $validator = SafeValidator::createValidator('safe', $model, [1]);
         $this->assertSame([1], $validator->getValidationAttributes(1));
     }
+
+    public function testInlineValidatorWithClosureMethod(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
+        $validator = new InlineValidator([
+            'method' => function ($attribute, $params, $validator, $current) use (&$boundModel) {
+                $boundModel = $this;
+            },
+        ]);
+
+        $validator->validateAttribute($model, 'attr');
+
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Closure must run bound to the validated model.',
+        );
+    }
+
+    public function testInlineValidatorWithClosureClientValidate(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+        $validator = new InlineValidator([
+            'clientValidate' => function ($attribute, $params, $validator, $current, $view) {
+                return 'js';
+            },
+        ]);
+
+        $this->assertSame(
+            'js',
+            $validator->clientValidateAttribute($model, 'attr', new View()),
+            'Closure result must be returned verbatim.',
+        );
+    }
+
+    public function testInlineValidatorClientValidateAttributeReturnsNullWithoutClientValidate(): void
+    {
+        $validator = new InlineValidator();
+
+        $this->assertNull(
+            $validator->clientValidateAttribute(new DynamicModel(['attr' => 1]), 'attr', new View()),
+            'Missing client callback must yield `null`.',
+        );
+    }
 }
