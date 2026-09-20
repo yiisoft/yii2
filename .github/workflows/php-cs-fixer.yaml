@@ -1,4 +1,4 @@
-name: linter
+name: php-cs-fixer
 
 permissions:
   contents: read
@@ -35,7 +35,8 @@ on:
   push: *ignore-paths
 
 jobs:
-  phpcs:
-    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@f14284136c895c1af50b8ed5c80d83afa31461e7 # master
+  php-cs-fixer:
+    uses: yiisoft/yii2-actions/.github/workflows/php-cs-fixer.yml@9bfbe47bd91bc31a6ff9f0ea77ba3724d7816c3d # master
     with:
-      php-version: '["8.3", "8.5"]'
+      configuration: .php-cs-fixer.dist.php
+      php-version: '["8.3"]'

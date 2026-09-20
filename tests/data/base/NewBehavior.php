@@ -16,6 +16,8 @@ use yii\base\Behavior;
  * Stub {@see Behavior} exposing public/private properties and a `test()` method for Component tests.
  *
  * @extends Behavior<NewComponent>
+ *
+ * @property mixed $p2
  */
 final class NewBehavior extends Behavior
 {

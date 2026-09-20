@@ -28,6 +28,10 @@ nbproject
 node_modules
 package-lock.json
 
+# php-cs-fixer (if present)
+.php-cs-fixer.cache
+.php-cs-fixer.php
+
 # phpstorm project (if present)
 .idea
 

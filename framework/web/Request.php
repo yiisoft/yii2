@@ -84,6 +84,7 @@ use yii\validators\IpValidator;
  * @property-read string|null $userAgent User agent, null if not available.
  * @property-read string|null $userHost User host name, null if not available.
  * @property-read string|null $userIP User IP address, null if not available.
+ * @property-read string $preferredLanguage The language that the application should use.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

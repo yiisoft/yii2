@@ -18,11 +18,11 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $quantity
  * @property string $subtotal
  *
- * @property Order $order
- * @property Item $item
- * @property self $orderItemCompositeWithJoin
- * @property self $orderItemCompositeNoJoin
- * @property Order $custom
+ * @property-read Order $order
+ * @property-read Item $item
+ * @property-read self $orderItemCompositeWithJoin
+ * @property-read self $orderItemCompositeNoJoin
+ * @property-read Order $custom
  */
 class OrderItem extends ActiveRecord
 {
@@ -65,6 +65,7 @@ class OrderItem extends ActiveRecord
         return $this->hasOne(self::class, ['item_id' => 'item_id', 'order_id' => 'order_id'])
             ->joinWith('item');
     }
+
     public function getOrderItemCompositeNoJoin()
     {
         return $this->hasOne(self::class, ['item_id' => 'item_id', 'order_id' => 'order_id']);

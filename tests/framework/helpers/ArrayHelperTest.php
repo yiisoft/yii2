@@ -1725,6 +1725,9 @@ class Post1
     public $title = 'tt';
 }
 
+/**
+ * @property-read mixed $secret
+ */
 class Post2 extends BaseObject
 {
     public $id = 123;
@@ -1826,6 +1829,10 @@ class TraversableArrayAccessibleObject extends ArrayAccessibleObject implements 
     }
 }
 
+/**
+ * @property-read mixed $magic
+ * @property-read mixed $moreMagic
+ */
 class MagicModel extends Model
 {
     protected $magic;
