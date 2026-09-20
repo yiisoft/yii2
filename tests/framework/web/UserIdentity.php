@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * @link https://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license https://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\web;
 
 use yii\base\Component;
 use yii\base\NotSupportedException;
 use yii\web\IdentityInterface;
 
+/**
+ * @property-read string|int $id An ID that uniquely identifies a user identity.
+ * @property-read string|null $authKey A key that is used to check the validity of a given identity ID.
+ */
 class UserIdentity extends Component implements IdentityInterface
 {
     private static array $ids = [

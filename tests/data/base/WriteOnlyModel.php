@@ -14,6 +14,8 @@ use yii\base\Model;
 
 /**
  * Stub {@see Model} exposing a write-only magic property via `setPassword()`.
+ *
+ * @property-write mixed $password
  */
 final class WriteOnlyModel extends Model
 {

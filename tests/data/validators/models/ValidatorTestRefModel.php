@@ -14,6 +14,7 @@ use yiiunit\data\ar\ActiveRecord;
  * @property int $id
  * @property string $a_field
  * @property int $ref
+ * @property-read ValidatorTestMainModel|null $main
  */
 class ValidatorTestRefModel extends ActiveRecord
 {

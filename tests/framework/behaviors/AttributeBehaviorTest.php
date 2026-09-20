@@ -127,7 +127,7 @@ class AttributeBehaviorTest extends TestCase
  * @property string $name
  * @property string $alias
  *
- * @property AttributeBehavior $attributeBehavior
+ * @property-read AttributeBehavior $attributeBehavior
  *
  * @mixin AttributeBehavior
  */

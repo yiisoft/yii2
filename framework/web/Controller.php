@@ -430,7 +430,7 @@ class Controller extends BaseController
     }
 
     /**
-     * Run the according filter_var logic for teh given type.
+     * Run the according filter_var logic for the given type.
      *
      * @param mixed $param The value to filter.
      * @param string $typeName The type name.

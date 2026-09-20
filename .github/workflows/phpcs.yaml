@@ -1,4 +1,4 @@
-name: ci-oracle
+name: phpcs
 
 permissions:
   contents: read
@@ -35,23 +35,7 @@ on:
   push: *ignore-paths
 
 jobs:
-  tests:
-    name: Oracle tests with coverage
-    uses: yiisoft/yii2-actions/.github/workflows/database.yml@5bf8a8707d3195ec35a777dcf8359c6ff904acdc # master
+  phpcs:
+    uses: yiisoft/yii2-actions/.github/workflows/linter.yml@5bf8a8707d3195ec35a777dcf8359c6ff904acdc # master
     with:
-      concurrency-group: oracle-${{ github.ref }}
-      coverage-driver: pcov
-      database-env: '{"ORACLE_PASSWORD":"oracle"}'
-      database-health-cmd: "healthcheck.sh"
-      database-health-retries: 10
-      database-image: gvenzl/oracle-free
-      database-port: "1521"
-      database-type: oracle
-      database-versions: '["slim-faststart"]'
-      extensions: curl, intl, oci8, pdo, pdo_oci
-      hook: docker exec -i database sqlplus -s system/oracle@//localhost/FREE < tests/data/oci/optimize_for_tests.sql
-      os: '["ubuntu-latest"]'
-      php-version: '["8.5"]'
-      phpunit-group: oci
-    secrets:
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      php-version: '["8.3", "8.5"]'

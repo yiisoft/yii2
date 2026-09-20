@@ -445,12 +445,6 @@ parameters:
 			path: tests/framework/base/ComponentTest.php
 
 		-
-			message: '#^Access to private property yiiunit\\data\\base\\NewComponent\:\:\$p2\.$#'
-			identifier: property.private
-			count: 3
-			path: tests/framework/base/ComponentTest.php
-
-		-
 			message: '#^Parameter &\$args by\-ref type of method yiiunit\\framework\\base\\stub\\controller\\InjectingController\:\:bindInjectedFor\(\) expects array\<int, mixed\>, array given\.$#'
 			identifier: parameterByRef.type
 			count: 1

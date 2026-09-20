@@ -2238,6 +2238,9 @@ abstract class BaseActiveRecord extends DatabaseTestCase
     }
 }
 
+/**
+ * @property-read LabelTestModel2|null $model2
+ */
 class LabelTestModel1 extends \yii\db\ActiveRecord
 {
     public function attributes()
@@ -2251,6 +2254,9 @@ class LabelTestModel1 extends \yii\db\ActiveRecord
     }
 }
 
+/**
+ * @property-read LabelTestModel3|null $model3
+ */
 class LabelTestModel2 extends \yii\db\ActiveRecord
 {
     public function attributes()

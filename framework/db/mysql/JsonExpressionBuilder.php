@@ -25,7 +25,6 @@ class JsonExpressionBuilder implements ExpressionBuilderInterface
 {
     use ExpressionBuilderTrait;
 
-
     public const PARAM_PREFIX = ':qp';
     /**
      * {@inheritdoc}

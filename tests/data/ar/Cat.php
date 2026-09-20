@@ -16,6 +16,9 @@ use yii\db\Connection;
 /**
  * Class Cat.
  *
+ * @property-read float|int $exception
+ * @property-read float|int $throwable
+ *
  * @author Jose Lorente <jose.lorente.martin@gmail.com>
  * @since 2.0
  */
