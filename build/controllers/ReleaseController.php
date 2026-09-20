@@ -562,12 +562,6 @@ class ReleaseController extends Controller
 
         // adjustments
 
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->setAppAliases($name, $path);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path, 'skipFrameworkRequirements' => true]);
-        $this->resetAppAliases();
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
-
         $this->stdout("updating composer stability...\n", Console::BOLD);
         $this->dryRun || $this->composerSetStability(["app-$name"], $version);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
@@ -673,10 +667,6 @@ class ReleaseController extends Controller
         $this->runGit('git pull', $path);
 
         // adjustments
-
-        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
-        $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path]);
-        $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout('sorting changelogs...', Console::BOLD);
         $this->dryRun || $this->resortChangelogs([$name], $version);

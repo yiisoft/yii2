@@ -367,28 +367,6 @@ Documentation
 - All class files must contain a "file-level" docblock at the top of each file
   and a "class-level" docblock immediately above each class.
 - There is no need to use `@return` if method does return nothing.
-- All virtual properties in classes that extend from `yii\base\BaseObject`
-  are documented with an `@property` tag in the class doc block.
-  These annotations are automatically generated from the `@return` or `@param`
-  tag in the corresponding getter or setter by running `./build php-doc` in the build directory.
-  You may add an `@property` tag
-  to the getter or setter to explicitly give a documentation message for the property
-  introduced by these methods when description differs from what is stated
-  in `@return`. Here is an example:
-
-  ```php
-    <?php
-    /**
-     * Returns the errors for all attribute or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
-     * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
-     * ...
-     */
-    public function getErrors($attribute = null)
-  ```
 
 #### File
 
