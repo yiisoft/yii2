@@ -376,8 +376,13 @@ class ValidatorTest extends TestCase
     public function testInlineValidatorWithClosureClientValidate(): void
     {
         $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
         $validator = new InlineValidator([
-            'clientValidate' => function ($attribute, $params, $validator, $current, $view) {
+            'clientValidate' => function ($attribute, $params, $validator, $current, $view) use (&$boundModel) {
+                $boundModel = $this;
+
                 return 'js';
             },
         ]);
@@ -386,6 +391,11 @@ class ValidatorTest extends TestCase
             'js',
             $validator->clientValidateAttribute($model, 'attr', new View()),
             'Closure result must be returned verbatim.',
+        );
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Client closure must run bound to the validated model.',
         );
     }
 
