@@ -33,6 +33,7 @@ $testsFinder = (new Finder())
         '#(^|/)stubs?/#',
         '#(^|/)mocks?/#',
         '#(^|/)enums/#',
+        '#^runtime(/|$)#',
     ]);
 
 $finder = $buildFinder
@@ -46,6 +47,6 @@ return (new Config())
         'header_comment' => [
             'comment_type' => 'PHPDoc',
             'header' => $header,
-            'location' => 'after_open',
+            'location' => 'after_declare_strict',
         ],
     ]);
