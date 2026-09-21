@@ -131,8 +131,21 @@ class ArrayExpressionTest extends TestCase
         $expression = new ArrayExpression(['a' => 1]);
 
         $expression[] = 2;
+
         $this->assertSame(2, $expression->count());
-        $this->assertSame(2, $expression['']);
+        $this->assertSame(2, $expression[0]);
+        $this->assertSame(['a' => 1, 0 => 2], $expression->getValue());
+    }
+
+    public function testOffsetSetWithNullKeyAppendsConsecutively()
+    {
+        $expression = new ArrayExpression([1, 2]);
+
+        $expression[] = 3;
+        $expression[] = 4;
+
+        $this->assertSame(4, $expression->count());
+        $this->assertSame([1, 2, 3, 4], $expression->getValue());
     }
 
     public function testOffsetUnset()

@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #19865: Ignore validators with a `when` condition while `AttributeTypecastBehavior` detects `attributeTypes` automatically (veksa)
 - Enh #21079: Add the missing `@property` tags (mspirkov)
 - Bug #20766: Fix `@param` annotation for `$offset` in `yii\db\ArrayExpression::offsetSet()` (WarLikeLaux)
+- Bug #20766: Fix `yii\db\ArrayExpression::offsetSet()` to append when `$offset` is `null` (WarLikeLaux, terabytesoftw)
 
 
 2.0.55 May 09, 2026

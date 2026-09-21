@@ -147,7 +147,11 @@ class ArrayExpression implements ExpressionInterface, \ArrayAccess, \Countable, 
     #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
-        $this->value[$offset] = $value;
+        if ($offset === null) {
+            $this->value[] = $value;
+        } else {
+            $this->value[$offset] = $value;
+        }
     }
 
     /**
