@@ -309,7 +309,7 @@ class Controller extends BaseController
     }
 
     /**
-     * Run the according filter_var logic for teh given type.
+     * Run the according filter_var logic for the given type.
      * @param string $param The value to filter.
      * @param string $typeName The type name.
      * @return mixed|null The resulting value, or null if validation failed or the type can't be validated.

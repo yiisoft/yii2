@@ -17,7 +17,7 @@ use yiiunit\TestCase;
 class LocaleTest extends TestCase
 {
     /**
-     * @var Locale
+     * @var Locale|null
      */
     protected $locale;
 

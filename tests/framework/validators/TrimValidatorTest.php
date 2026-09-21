@@ -32,6 +32,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'name');
 
+        $this->assertTrue(isset($model->name));
         $this->assertSame('hello', $model->name);
     }
 
@@ -42,6 +43,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'name');
 
+        $this->assertTrue(isset($model->name));
         $this->assertSame('hello', $model->name);
     }
 
@@ -53,6 +55,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'path');
 
+        $this->assertTrue(isset($model->path));
         $this->assertSame('hello', $model->path);
     }
 
@@ -63,6 +66,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'name');
 
+        $this->assertTrue(isset($model->name));
         $this->assertSame('', $model->name);
     }
 
@@ -73,6 +77,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'name');
 
+        $this->assertTrue(isset($model->name));
         $this->assertSame('', $model->name);
     }
 
@@ -83,6 +88,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'count');
 
+        $this->assertTrue(isset($model->count));
         $this->assertSame('42', $model->count);
     }
 
@@ -93,6 +99,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'tags');
 
+        $this->assertTrue(isset($model->tags));
         $this->assertSame(['foo', 'bar'], $model->tags);
     }
 
@@ -105,6 +112,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'tags');
 
+        $this->assertTrue(isset($model->tags));
         $this->assertSame($original, $model->tags);
     }
 
@@ -116,6 +124,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'name');
 
+        $this->assertTrue(isset($model->name));
         $this->assertSame('hello', $model->name);
     }
 
@@ -198,6 +207,7 @@ class TrimValidatorTest extends TestCase
 
         $validator->validateAttribute($model, 'flag');
 
+        $this->assertTrue(isset($model->flag));
         $this->assertSame('1', $model->flag);
     }
 
@@ -208,6 +218,7 @@ class TrimValidatorTest extends TestCase
 
         $model->validate();
 
+        $this->assertTrue(isset($model->name));
         $this->assertSame('hello', $model->name);
         $this->assertFalse($model->hasErrors());
     }

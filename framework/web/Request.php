@@ -24,9 +24,6 @@ use yii\validators\IpValidator;
  *
  * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
  *
- * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
- * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
- * [[getHostInfo()]] for security related notes on this property.
  * @property-read string $absoluteUrl The currently requested absolute URL.
  * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
  * highest scores will be returned first. The array keys are the content types, while the array values are the
@@ -41,7 +38,7 @@ use yii\validators\IpValidator;
  * @property-read string|null $authUser The username sent via HTTP authentication, `null` if the username is
  * not given.
  * @property string $baseUrl The relative URL for the application.
- * @property array|object $bodyParams The request parameters given in the request body.
+ * @property mixed $bodyParams The request parameters given in the request body.
  * @property-read string $contentType Request content-type. Empty string is returned if this information is
  * not available.
  * @property-read CookieCollection $cookies The cookie collection.
@@ -51,6 +48,8 @@ use yii\validators\IpValidator;
  * returned if no such header is sent.
  * @property-read array $eTags The entity tags.
  * @property-read HeaderCollection $headers The header collection.
+ * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
+ * (e.g. `https://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
  * @property-read string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`).
  * @property-read bool $isAjax Whether this is an AJAX (XMLHttpRequest) request.
  * @property-read bool $isDelete Whether this is a DELETE request.
@@ -85,6 +84,7 @@ use yii\validators\IpValidator;
  * @property-read string|null $userAgent User agent, null if not available.
  * @property-read string|null $userHost User host name, null if not available.
  * @property-read string|null $userIP User IP address, null if not available.
+ * @property-read string $preferredLanguage The language that the application should use.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -583,7 +583,7 @@ class Request extends \yii\base\Request
         $this->_rawBody = $rawBody;
     }
 
-    /** @var array|object */
+    /** @var mixed */
     private $_bodyParams;
 
     /**
@@ -592,7 +592,7 @@ class Request extends \yii\base\Request
      * Request parameters are determined using the parsers configured in [[parsers]] property.
      * If no parsers are configured for the current [[contentType]] it uses the PHP function `mb_parse_str()`
      * to parse the [[rawBody|request body]].
-     * @return array|object the request parameters given in the request body.
+     * @return mixed the request parameters given in the request body.
      * @throws \yii\base\InvalidConfigException if a registered parser does not implement the [[RequestParserInterface]].
      * @see getMethod()
      * @see getBodyParam()
@@ -642,7 +642,7 @@ class Request extends \yii\base\Request
     /**
      * Sets the request body parameters.
      *
-     * @param array|object $values the request body parameters (name-value pairs)
+     * @param mixed $values the request body parameters (name-value pairs)
      * @see getBodyParams()
      */
     public function setBodyParams($values)
@@ -682,7 +682,7 @@ class Request extends \yii\base\Request
      *
      * @param string|null $name the parameter name
      * @param mixed $defaultValue the default parameter value if the parameter does not exist.
-     * @return ($name is null ? array|object : mixed)
+     * @return mixed
      */
     public function post($name = null, $defaultValue = null)
     {
@@ -1765,11 +1765,7 @@ class Request extends \yii\base\Request
                 if ($data === false) {
                     continue;
                 }
-                if (defined('PHP_VERSION_ID') && PHP_VERSION_ID >= 70000) {
-                    $data = @unserialize($data, ['allowed_classes' => false]);
-                } else {
-                    $data = @unserialize($data);
-                }
+                $data = @unserialize($data, ['allowed_classes' => false]);
                 if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
                     $cookies[$name] = Yii::createObject([
                         'class' => 'yii\web\Cookie',

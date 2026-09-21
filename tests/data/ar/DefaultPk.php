@@ -13,6 +13,7 @@ namespace yiiunit\data\ar;
  *
  * @author Jan Waś <janek.jan@gmail.com>
  * @property int $id
+ * @property string $type
  */
 class DefaultPk extends ActiveRecord
 {

@@ -47,6 +47,7 @@ class MimeTypeController extends Controller
         'application/bmp' => 'image/bmp',
         'application/x-bmp' => 'image/bmp',
         'application/x-win-bitmap' => 'image/bmp',
+        'application/x-rar' => 'application/x-rar-compressed',
     ];
 
     /**
@@ -117,6 +118,7 @@ class MimeTypeController extends Controller
 
         $content = <<<EOD
 <?php
+
 /**
  * MIME types.
  *
@@ -129,6 +131,7 @@ class MimeTypeController extends Controller
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 \$mimeTypes = $array;
 
 # fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
@@ -152,6 +155,7 @@ EOD;
         $array = VarDumper::export($this->_aliases);
         $content = <<<EOD
 <?php
+
 /**
  * MIME aliases.
  *
@@ -160,6 +164,7 @@ EOD;
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 return $array;
 
 EOD;
@@ -211,6 +216,7 @@ EOD;
 
         $content = <<<EOD
 <?php
+
 /**
  * MIME type extensions.
  *
@@ -224,6 +230,7 @@ EOD;
  * All extra changes made to this file must be committed to /build/controllers/MimeTypeController.php
  * otherwise they will be lost on next build.
  */
+
 return $array;
 
 EOD;

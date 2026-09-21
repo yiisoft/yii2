@@ -24,7 +24,7 @@ use yii\caching\TagDependency;
  *
  * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from
  * the sequence object.
- * @property-read QueryBuilder $queryBuilder The query builder for this connection.
+ * @property-read TQueryBuilder $queryBuilder The query builder for this connection.
  * @property-read string[] $schemaNames All schema names in the database, except system schemas.
  * @property-read string $serverVersion Server version as a string.
  * @property-read string[] $tableNames All table names in the database.
@@ -40,6 +40,7 @@ use yii\caching\TagDependency;
  * @since 2.0
  *
  * @template T of ColumnSchema = ColumnSchema
+ * @template TQueryBuilder of QueryBuilder = QueryBuilder
  */
 abstract class Schema extends BaseObject
 {
@@ -118,7 +119,7 @@ abstract class Schema extends BaseObject
      */
     private $_tableMetadata = [];
     /**
-     * @var QueryBuilder the query builder for this database
+     * @var TQueryBuilder|null the query builder for this database
      */
     private $_builder;
     /**
@@ -241,7 +242,7 @@ abstract class Schema extends BaseObject
     }
 
     /**
-     * @return QueryBuilder the query builder for this connection.
+     * @return TQueryBuilder the query builder for this connection.
      */
     public function getQueryBuilder()
     {
@@ -311,7 +312,7 @@ abstract class Schema extends BaseObject
     /**
      * Creates a query builder for the database.
      * This method may be overridden by child classes to create a DBMS-specific query builder.
-     * @return QueryBuilder query builder instance
+     * @return TQueryBuilder query builder instance
      */
     public function createQueryBuilder()
     {

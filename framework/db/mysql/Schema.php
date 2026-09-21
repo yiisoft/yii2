@@ -30,7 +30,7 @@ use yii\db\Schema as BaseSchema;
  * @since 2.0
  *
  * @template T of ColumnSchema = ColumnSchema
- * @extends BaseSchema<T>
+ * @extends BaseSchema<T, QueryBuilder>
  */
 class Schema extends BaseSchema implements ConstraintFinderInterface
 {
@@ -44,7 +44,6 @@ class Schema extends BaseSchema implements ConstraintFinderInterface
      * @var bool whether MySQL used is older than 5.1.
      */
     private $_oldMysql;
-
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)

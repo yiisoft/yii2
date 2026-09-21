@@ -281,6 +281,11 @@ Below is a summary of the available cache dependencies:
   the dependency associated with the cached data, if there is any, has changed. So a call to
   [[yii\caching\Cache::get()|get()]] may return `false` while [[yii\caching\Cache::exists()|exists()]] returns `true`.
 
+> Warning: Cached values are stored with PHP's native `serialize()` and read back with `unserialize()`, including any
+  attached [[yii\caching\Dependency]] object. Treat the cache backend as trusted storage: never let untrusted parties
+  write to it, since deserializing crafted bytes can instantiate arbitrary objects. See
+  [Avoiding unsafe deserialization](security-best-practices.md#avoiding-unsafe-deserialization).
+
 
 ## Query Caching <span id="query-caching"></span>
 

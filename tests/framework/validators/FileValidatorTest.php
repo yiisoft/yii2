@@ -335,7 +335,7 @@ class FileValidatorTest extends TestCase
 
     /**
      * @param  array          $params
-     * @return UploadedFile[]
+     * @return UploadedFile|UploadedFile[]
      */
     protected function createTestFiles($params = [])
     {

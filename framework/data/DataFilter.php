@@ -113,13 +113,14 @@ use yii\validators\Validator;
  *
  * @see ActiveDataFilter
  *
- * @property array $errorMessages Error messages in format `[errorKey => message]`. Note that the type of this
- * property differs in getter and setter. See [[getErrorMessages()]] and [[setErrorMessages()]] for details.
+ * @property-read array $errorMessages Error messages in format `[errorKey => message]`.
+ * @property-write array|\Closure $errorMessages Error messages in `[errorKey => message]` format, or a PHP
+ * callback returning them.
  * @property mixed $filter Raw filter value.
- * @property array $searchAttributeTypes Search attribute type map. Note that the type of this property
- * differs in getter and setter. See [[getSearchAttributeTypes()]] and [[setSearchAttributeTypes()]] for details.
- * @property Model $searchModel Model instance. Note that the type of this property differs in getter and
- * setter. See [[getSearchModel()]] and [[setSearchModel()]] for details.
+ * @property-read array $searchAttributeTypes Search attribute type map.
+ * @property-write array|null $searchAttributeTypes Search attribute type map.
+ * @property-read Model $searchModel Model instance.
+ * @property-write Model|array|string|callable $searchModel Model instance or its DI compatible configuration.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13

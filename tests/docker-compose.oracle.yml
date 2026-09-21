@@ -1,0 +1,17 @@
+services:
+  oracle:
+    image: ${DOCKER_ORACLE_IMAGE:-gvenzl/oracle-free:slim-faststart}
+    environment:
+      ORACLE_PASSWORD: "oracle"
+    ports:
+      - "1521:1521"
+    shm_size: "1g"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+      start_interval: 5s
+    volumes:
+      - ./data/oci:/container-entrypoint-startdb.d:ro

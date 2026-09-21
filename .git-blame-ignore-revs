@@ -24,3 +24,5 @@ da20adc82aef3eb5ae0bad3889fe6695e6424f06
 7a7d2a9c06c099de8064729ca3fc95fb24241b75
 # Fixed error PHPCS latest version in `PHP 8.5`
 f66d5c8864712aef233b8131c2f99721101f61d0
+# Fixed build broke code style
+32d0a922b47ba23fc8d17b3947f8c8ff0b014a31

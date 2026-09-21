@@ -28,6 +28,7 @@ use yii\db\Schema;
 use yii\db\SchemaBuilderTrait;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
 use yii\helpers\ArrayHelper;
+use yiiunit\data\ar\Customer;
 use yiiunit\data\base\TraversableObject;
 
 abstract class QueryBuilderTest extends DatabaseTestCase
@@ -1241,6 +1242,101 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             // Expression with params as operand of 'not'
             [['not', new Expression('any_expression(:a)', [':a' => 1])], 'NOT (any_expression(:a))', [':a' => 1]],
             [new Expression('NOT (any_expression(:a))', [':a' => 1]), 'NOT (any_expression(:a))', [':a' => 1]],
+
+            // Two expressions with params with the same name
+            [
+                ['and', new Expression('any_expression(:a)', [':a' => 1]), new Expression('any_expression(:a)', [':a' => 2])],
+                '(any_expression(:a)) AND (any_expression(:a1))',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('any_expression(:a)', [':a' => 1]), ['or', new Expression('any_expression(:a)', [':a' => 2]), '1=2']],
+                '(any_expression(:a)) AND ((any_expression(:a1)) OR (1=2))',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('any_expression(:a)', [':a' => 1]), new Expression('any_expression(:a)', [':a' => 2]), new Expression('other_expression(:a)', [':a' => 1]), new Expression('other_expression(:a)', [':a' => 2])],
+                '(any_expression(:a)) AND (any_expression(:a1)) AND (other_expression(:a2)) AND (other_expression(:a3))',
+                [':a' => 1, ':a1' => 2, ':a2' => 1, ':a3' => 2],
+            ],
+            [
+                ['and', new Expression('any_expression(:a)', [':a' => 1]), new Expression('any_expression(:a1)', [':a1' => 2]), new Expression('other_expression(:a)', [':a' => 1]), new Expression('other_expression(:a)', [':a' => 3])],
+                '(any_expression(:a)) AND (any_expression(:a1)) AND (other_expression(:a2)) AND (other_expression(:a3))',
+                [':a' => 1, ':a1' => 2, ':a2' => 1, ':a3' => 3],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a', ['a' => 2])],
+                '(a = :a) AND (a = :a1)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a', ['a' => 2])],
+                '(a = :a) AND (a = :a1)',
+                ['a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a', [':a' => 2])],
+                '(a = :a) AND (a = :a1)',
+                ['a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a2', ['a2' => 2]), new Expression('a = :a', [':a' => 3])],
+                '(a = :a) AND (a = :a2) AND (a = :a3)',
+                ['a' => 1, 'a2' => 2, ':a3' => 3],
+            ],
+            [
+                ['and', new Expression('a = :a', ['a' => 1]), new Expression('a = :a2', ['a2' => 2]), new Expression('a = :a', ['a' => 3])],
+                '(a = :a) AND (a = :a2) AND (a = :a3)',
+                ['a' => 1, 'a2' => 2, ':a3' => 3],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression("a = :a AND b = ':a'", ['a' => 2])],
+                "(a = :a) AND (a = :a1 AND b = ':a')",
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = ":a"', ['a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = ":a")',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a /* :a */', ['a' => 2])],
+                '(a = :a) AND (a = :a1 /* :a */)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a
+-- :a
+', ['a' => 2])],
+                '(a = :a) AND (a = :a1
+-- :a
+)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = `:a`', ['a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = `:a`)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            'duplicate expression parameter matching part of a bracket-quoted identifier' => [
+                [
+                    'and',
+                    new Expression('[metadata:status] = :status', [':status' => 'active']),
+                    new Expression('[metadata:status] = :status', [':status' => 'pending']),
+                ],
+                '([metadata:status] = :status) AND ([metadata:status] = :status1)',
+                [':status' => 'active', ':status1' => 'pending'],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = $$:a$$', [':a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = $$:a$$)',
+                [':a' => 1, ':a1' => 2],
+            ],
+            [
+                ['and', new Expression('a = :a', [':a' => 1]), new Expression('a = :a AND b = $tag$:a$tag$', [':a' => 2])],
+                '(a = :a) AND (a = :a1 AND b = $tag$:a$tag$)',
+                [':a' => 1, ':a1' => 2],
+            ],
         ];
     }
 
@@ -1336,6 +1432,30 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
         $this->assertEquals($expectedParams, $params);
+    }
+
+    public function testBuildWhereWithRawSqlSubQuery(): void
+    {
+        $subQuery = Customer::findBySql('SELECT id FROM customer WHERE status = 2');
+        $query = (new Query())->from('customer')->where(['id' => $subQuery]);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame(
+            $this->replaceQuotes('SELECT * FROM [[customer]] WHERE [[id]] IN (SELECT id FROM customer WHERE status = 2)'),
+            $sql
+        );
+        $this->assertSame([], $params);
+    }
+
+    public function testBuildWhereWithRawSqlSubQueryAndParams(): void
+    {
+        $subQuery = Customer::findBySql('SELECT id FROM customer WHERE status = :status', [':status' => 2]);
+        $query = (new Query())->from('customer')->where(['type' => 1])->andWhere(['id' => $subQuery]);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertSame(
+            $this->replaceQuotes('SELECT * FROM [[customer]] WHERE ([[type]]=:qp0) AND ([[id]] IN (SELECT id FROM customer WHERE status = :status))'),
+            $sql
+        );
+        $this->assertSame([':qp0' => 1, ':status' => 2], $params);
     }
 
     public static function primaryKeysProvider(): array

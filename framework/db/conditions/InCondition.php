@@ -76,6 +76,7 @@ class InCondition implements ConditionInterface
     {
         return $this->values;
     }
+
     /**
      * {@inheritdoc}
      * @throws InvalidArgumentException if wrong number of operands have been given.

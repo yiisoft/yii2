@@ -14,6 +14,8 @@ namespace yiiunit\data\ar;
  * @property int $id
  * @property string $name
  * @property int $category_id
+ *
+ * @property-read Category $category
  */
 class Item extends ActiveRecord
 {

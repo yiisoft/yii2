@@ -26,8 +26,9 @@ use yii\helpers\ArrayHelper;
  *
  * @property-read array $dirtyAttributes The changed attribute values (name-value pairs).
  * @property bool $isNewRecord Whether the record is new and should be inserted when calling [[save()]].
- * @property array $oldAttributes The old attribute values (name-value pairs). Note that the type of this
- * property differs in getter and setter. See [[getOldAttributes()]] and [[setOldAttributes()]] for details.
+ * @property-read array $oldAttributes The old attribute values (name-value pairs).
+ * @property-write array|null $oldAttributes Old attribute values to be set. If set to `null` this record is
+ * considered to be [[isNewRecord|new]].
  * @property-read mixed $oldPrimaryKey The old primary key value. An array (column name => column value) is
  * returned if the primary key is composite or `$asArray` is `true`. A string is returned otherwise (null will be
  * returned if the key value is null).
@@ -1817,12 +1818,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * }
      * ```
      *
-     * @param array|ActiveRecordInterface[] $models array of primary models. Each model should have the same type and can be:
+     * @template TModels of array
+     *
+     * @param TModels $models array of primary models. Each model should have the same type and can be:
      * - an active record instance;
      * - active record instance represented by array (i.e. active record was loaded using [[ActiveQuery::asArray()]]).
      * @param string|array $relationNames the names of the relations of primary models to be loaded from database. See [[ActiveQueryInterface::with()]] on how to specify this argument.
      * @param bool $asArray whether to load each related model as an array or an object (if the relation itself does not specify that).
      * @since 2.0.50
+     *
+     * @param-out TModels $models
      */
     public static function loadRelationsFor(&$models, $relationNames, $asArray = false)
     {

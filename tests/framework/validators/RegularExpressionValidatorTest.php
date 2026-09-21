@@ -9,8 +9,8 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\RegularExpressionValidator;
-use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -81,7 +81,7 @@ class RegularExpressionValidatorTest extends TestCase
     {
         $val = new RegularExpressionValidator(['pattern' => '/^[a-z]+$/i']);
         $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
-        $js = $val->clientValidateAttribute($m, 'attr_reg1', new RegexViewStub());
+        $js = $val->clientValidateAttribute($m, 'attr_reg1', new ViewStub());
         $this->assertStringContainsString('yii.validation.regularExpression', $js);
     }
 
@@ -111,12 +111,5 @@ class RegularExpressionValidatorTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_reg1' => 'abc']);
         $options = $val->getClientOptions($m, 'attr_reg1');
         $this->assertSame(1, $options['skipOnEmpty']);
-    }
-}
-
-class RegexViewStub extends View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }

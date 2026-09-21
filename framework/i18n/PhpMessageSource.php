@@ -11,6 +11,9 @@ namespace yii\i18n;
 use Yii;
 use yii\base\InvalidArgumentException;
 
+use function sprintf;
+use function str_replace;
+
 /**
  * PhpMessageSource represents a message source that stores translated messages in PHP scripts.
  *
@@ -128,9 +131,14 @@ class PhpMessageSource extends MessageSource
     /**
      * Returns message file path for the specified language and category.
      *
+     * The category may use `/` or `\` as namespace separators (for example, `app/error`). Categories that contain `..`
+     * segments, an absolute path, or a stream-wrapper scheme (such as `php://`) are rejected so the resolved path
+     * cannot escape [[basePath]].
+     *
      * @param string $category the message category
      * @param string $language the target language
      * @return string path to message file
+     * @throws InvalidArgumentException if the language code is invalid, or the category resolves to an unsafe path.
      */
     protected function getMessageFilePath($category, $language)
     {
@@ -142,7 +150,15 @@ class PhpMessageSource extends MessageSource
         if (isset($this->fileMap[$category])) {
             $messageFile .= $this->fileMap[$category];
         } else {
-            $messageFile .= str_replace('\\', '/', $category) . '.php';
+            $normalizedCategory = str_replace('\\', '/', (string) $category);
+
+            if (preg_match('~(?:^|/)\.\.(?:/|$)|^/|^[A-Za-z]:/|^[A-Za-z][A-Za-z0-9+.\-]*://~', $normalizedCategory)) {
+                throw new InvalidArgumentException(
+                    sprintf('Invalid message category: "%s".', (string) $category),
+                );
+            }
+
+            $messageFile .= "{$normalizedCategory}.php";
         }
 
         return $messageFile;

@@ -601,8 +601,6 @@ class ActiveRecord extends BaseActiveRecord
     /**
      * {@inheritdoc}
      *
-     * @return ActiveQuery
-     *
      * @template T of self
      *
      * @param class-string<T> $class the class name of the related record.

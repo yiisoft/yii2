@@ -8,7 +8,9 @@
 
 namespace yiiunit\framework\db\pgsql;
 
+use yiiunit\data\ar\Customer;
 use yiiunit\framework\test\CustomerDbTestCase;
+use yiiunit\framework\test\CustomerFixture;
 
 /**
  * @group db
@@ -24,10 +26,15 @@ class ActiveFixtureTest extends \yiiunit\framework\test\ActiveFixtureTest
         $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
+        $this->assertInstanceOf(CustomerFixture::class, $fixture);
 
         $sequenceName = $fixture->getTableSchema()->sequenceName;
         $sequenceNextVal = $this->getConnection()->createCommand("SELECT currval('$sequenceName')")->queryScalar();
-        $this->assertEquals($fixture->getModel('customer2')->id + 1, $sequenceNextVal);
+
+        $customer2 = $fixture->getModel('customer2');
+        $this->assertInstanceOf(Customer::class, $customer2);
+
+        $this->assertEquals($customer2->id + 1, $sequenceNextVal);
 
         $test->tearDown();
     }

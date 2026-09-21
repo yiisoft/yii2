@@ -12,6 +12,7 @@ use Exception;
 use yii\base\InvalidConfigException;
 use yii\validators\CompareValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -375,7 +376,7 @@ class CompareValidatorTest extends TestCase
         $model = new FakedValidationModel();
         $model->attr_test = 'test';
         $val = new CompareValidator(['compareValue' => 'expected']);
-        $js = $val->clientValidateAttribute($model, 'attr_test', new CompareViewStub());
+        $js = $val->clientValidateAttribute($model, 'attr_test', new ViewStub());
 
         $this->assertStringStartsWith('yii.validation.compare(', $js);
         $this->assertStringContainsString('$form', $js);
@@ -411,7 +412,7 @@ class CompareValidatorTest extends TestCase
         $val = new CompareValidator(['compareValue' => function () {
             return 'resolved';
         }]);
-        $js = $val->clientValidateAttribute($model, 'attr_test', new CompareViewStub());
+        $js = $val->clientValidateAttribute($model, 'attr_test', new ViewStub());
 
         $this->assertStringContainsString('resolved', $js);
     }
@@ -421,7 +422,7 @@ class CompareValidatorTest extends TestCase
         $model = new FakedValidationModel();
         $model->attr_test = 'test';
         $val = new CompareValidator(['compareValue' => 'check']);
-        $js = $val->clientValidateAttribute($model, 'attr_test', new CompareViewStub());
+        $js = $val->clientValidateAttribute($model, 'attr_test', new ViewStub());
 
         $this->assertStringContainsString('"operator":"=="', $js);
         $this->assertStringContainsString('"compareValue":"check"', $js);
@@ -495,12 +496,5 @@ class CompareValidatorTest extends TestCase
         $val->operator = '<>';
         $this->assertFalse($val->validate(5));
         $this->assertFalse($val->validate(999));
-    }
-}
-
-class CompareViewStub extends \yii\web\View
-{
-    public function registerAssetBundle($name, $position = null)
-    {
     }
 }

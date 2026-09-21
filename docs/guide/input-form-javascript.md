@@ -146,6 +146,29 @@ where
 - `textStatus`: the status of the request ("success", "notmodified", "error", "timeout",
 "abort", or "parsererror").
 
+### `afterInit`
+
+`afterInit` event is triggered after initializing the ActiveForm JavaScript plugin.
+
+The signature of the event handler should be:
+
+```javascript
+function (event)
+```
+
+where event is an Event object.
+
+Note that the plugin is initialized by the widget itself, so the handler has to be attached before
+that happens. Register your code with a position that is executed earlier than
+[[yii\web\View::POS_READY|POS_READY]], for example:
+
+```php
+$this->registerJs(
+    "jQuery('#contact-form').on('afterInit', function () { /* ... */ });",
+    \yii\web\View::POS_END
+);
+```
+
 ## Submitting the form via AJAX
 
 While validation can be made on client side or via AJAX request, the form submission itself is done

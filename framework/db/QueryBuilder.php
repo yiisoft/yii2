@@ -541,7 +541,7 @@ class QueryBuilder extends \yii\base\BaseObject
      * @param string $table
      * @param array|Query $insertColumns
      * @param array|bool $updateColumns
-     * @param Constraint[] $constraints this parameter recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return array
      * @since 2.0.14
@@ -569,7 +569,7 @@ class QueryBuilder extends \yii\base\BaseObject
      *
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param string[] $columns source column list.
-     * @param Constraint[] $constraints this parameter optionally recieves a matched constraint list.
+     * @param Constraint[] $constraints this parameter optionally receives a matched constraint list.
      * The constraints will be unique by their column names.
      * @return string[] column list.
      */

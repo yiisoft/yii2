@@ -40,8 +40,9 @@ use yii\web\AssetBundle;
  * Note: by default this command relies on an external tools to perform actual files compression,
  * check [[jsCompressor]] and [[cssCompressor]] for more details.
  *
- * @property \yii\web\AssetManager $assetManager Asset manager instance. Note that the type of this property
- * differs in getter and setter. See [[getAssetManager()]] and [[setAssetManager()]] for details.
+ * @property-read \yii\web\AssetManager $assetManager Asset manager instance.
+ * @property-write \yii\web\AssetManager|array $assetManager Asset manager instance or its array
+ * configuration.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>

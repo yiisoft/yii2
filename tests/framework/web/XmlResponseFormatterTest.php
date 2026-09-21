@@ -17,12 +17,13 @@ use yiiunit\framework\web\stubs\ModelStub;
  * @since 2.0
  *
  * @group web
+ *
+ * @extends FormatterTest<XmlResponseFormatter>
  */
 class XmlResponseFormatterTest extends FormatterTest
 {
     /**
      * @param array $options
-     * @return XmlResponseFormatter
      */
     protected function getFormatterInstance($options = [])
     {

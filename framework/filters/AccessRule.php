@@ -79,7 +79,7 @@ class AccessRule extends Component
      */
     public $permissions;
     /**
-     * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
+     * @var array|object|Closure parameters to pass to the [[User::can()]] function for evaluating
      * user permissions in [[$roles]].
      *
      * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an

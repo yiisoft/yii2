@@ -48,7 +48,7 @@ $translationController = $this->context;
         </ul>
 
         <?php foreach ($results as $name => $result): ?>
-            <h2 class="<?= empty($result['errors']) ? 'ok' : 'errors' ?>"><?= $name ?></h2>
+            <h2 class="<?= empty($result['errors']) ? 'ok' : 'errors' ?>"><?= Html::encode($name) ?></h2>
             <?php foreach ($result['errors'] as $error): ?>
                 <p><?= Html::encode($error) ?></p>
             <?php endforeach ?>

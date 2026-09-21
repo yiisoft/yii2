@@ -69,9 +69,10 @@ use yii\web\Request;
  *
  * For more details and usage information on Sort, see the [guide article on sorting](guide:output-sorting).
  *
- * @property array $attributeOrders Sort directions indexed by attribute names. Sort direction can be either
- * `SORT_ASC` for ascending order or `SORT_DESC` for descending order. Note that the type of this property
- * differs in getter and setter. See [[getAttributeOrders()]] and [[setAttributeOrders()]] for details.
+ * @property-read array $attributeOrders Sort directions indexed by attribute names. Sort direction can be
+ * either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
+ * @property-write array|null $attributeOrders Sort directions indexed by attribute names. Sort direction can
+ * be either `SORT_ASC` for ascending order or `SORT_DESC` for descending order.
  * @property-read array $orders The columns (keys) and their corresponding sort directions (values). This can
  * be passed to [[\yii\db\Query::orderBy()]] to construct a DB query.
  *

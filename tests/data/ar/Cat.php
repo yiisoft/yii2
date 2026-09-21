@@ -15,6 +15,9 @@ use Exception;
 /**
  * Class Cat.
  *
+ * @property-read float|int $exception
+ * @property-read float|int $throwable
+ *
  * @author Jose Lorente <jose.lorente.martin@gmail.com>
  * @since 2.0
  */
@@ -33,7 +36,7 @@ class Cat extends Animal
 
     /**
      * This is to test if __isset catches the exception.
-     * @throw DivisionByZeroError
+     * @throws DivisionByZeroError
      * @return float|int
      */
     public function getException()
@@ -43,7 +46,7 @@ class Cat extends Animal
 
     /**
      * This is to test if __isset catches the error.
-     * @throw DivisionByZeroError
+     * @throws DivisionByZeroError
      * @return float|int
      */
     public function getThrowable()

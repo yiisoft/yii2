@@ -38,7 +38,7 @@ use yii\validators\Validator;
  *
  * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
  *
- * @property-read array $errors Errors for all attributes. This is a two-dimensional
+ * @property-read array<string, string[]> $errors Errors for all attributes. This is a two-dimensional
  * array of errors for all attributes, similar to the following:
  *
  * ```
@@ -55,8 +55,7 @@ use yii\validators\Validator;
  *
  * Empty array if no errors.
  * @property-read Validator[] $activeValidators The validators applicable to the current [[scenario]].
- * @property array<string, mixed> $attributes Attribute values (name => value). Note that the type of this
- * property differs in getter and setter. See [[getAttributes()]] and [[setAttributes()]] for details.
+ * @property array<string, mixed> $attributes Attribute values (name => value).
  * @property-read array<string, string> $firstErrors The first errors. The array keys are the attribute names,
  * and the array values are the corresponding error messages. An empty array will be returned if there is no
  * error.
@@ -166,7 +165,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
      * Note, in order to inherit rules defined in the parent class, a child class needs to
      * merge the parent rules with child rules using functions such as `array_merge()`.
      *
-     * @return array<array-key, mixed>[] validation rules
+     * @return array<int, array<array-key, mixed>|Validator> validation rules
      * @see scenarios()
      */
     public function rules()
@@ -579,8 +578,9 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
     /**
      * Returns the errors for all attributes or a single attribute.
      * @param string|null $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @return array<string, string[]> errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+     * @return ($attribute is null ? array<string, string[]> : string[]) errors for all attributes or
+     * the specified attribute. Empty array is returned if no error. Note that when returning errors for
+     * all attributes, the result is a two-dimensional array, like the following:
      *
      * ```
      * [
@@ -743,7 +743,7 @@ class Model extends Component implements StaticInstanceInterface, IteratorAggreg
 
     /**
      * Sets the attribute values in a massive way.
-     * @param array $values attribute values (name => value) to be assigned to the model.
+     * @param array<string, mixed> $values attribute values (name => value) to be assigned to the model.
      * @param bool $safeOnly whether the assignments should only be done to the safe attributes.
      * A safe attribute is one that is associated with a validation rule in the current [[scenario]].
      * @see safeAttributes()
