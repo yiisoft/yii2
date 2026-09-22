@@ -349,7 +349,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         Yii::getLogger()->messages = [];
 
-        $connection->beginTransaction(Transaction::SERIALIZABLE);
+        $outer = $connection->beginTransaction(Transaction::SERIALIZABLE);
 
         $warnings = [];
 
