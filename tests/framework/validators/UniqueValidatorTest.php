@@ -75,6 +75,27 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertEquals($customError, $model->getFirstError('order_id'));
     }
 
+    public function testComboNotUniqueErrorWithMappedTargetAttribute(): void
+    {
+        $validator = new UniqueValidator(['targetAttribute' => ['order_id' => 'item_id', 'item_id' => 'order_id']]);
+        $model = new OrderItem();
+
+        $model->order_id = 2;
+        $model->item_id = 1;
+
+        $validator->validateAttribute($model, 'order_id');
+
+        $this->assertTrue(
+            $model->hasErrors('order_id'),
+            'Stored combination must be reported as taken.',
+        );
+        $this->assertSame(
+            'The combination "2"-"1" of Order Id and Item Id has already been taken.',
+            $model->getFirstError('order_id'),
+            'Labels and values must be read from the mapping keys.',
+        );
+    }
+
     public function testValidateInvalidAttribute(): void
     {
         $validator = new UniqueValidator();
@@ -127,6 +148,35 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $m = FakedValidationModel::createWithAttributes(['attr_arr' => ['a', 'b']]);
         $val->validateAttribute($m, 'attr_arr');
         $this->assertTrue($m->hasErrors('attr_arr'));
+    }
+
+    public function testValidateAttributeWithBracketedTargetAttribute(): void
+    {
+        $validator = new UniqueValidator(['targetAttribute' => '[[name]]']);
+        $newCustomer = new Customer();
+
+        $newCustomer->name = 'user1';
+
+        $validator->validateAttribute($newCustomer, 'name');
+
+        $this->assertTrue(
+            $newCustomer->hasErrors('name'),
+            'Bracketed column must still match a taken name.',
+        );
+
+        $storedCustomer = Customer::findOne(1);
+
+        $this->assertNotNull(
+            $storedCustomer,
+            'Fixture row must exist.',
+        );
+
+        $validator->validateAttribute($storedCustomer, 'name');
+
+        $this->assertFalse(
+            $storedCustomer->hasErrors('name'),
+            'A record must not collide with itself.',
+        );
     }
 
     public function testValidateAttributeOfNonARModel(): void
