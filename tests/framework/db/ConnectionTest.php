@@ -344,9 +344,12 @@ abstract class ConnectionTest extends DatabaseTestCase
             'Nested transaction should warn about ignoring isolation level',
         );
 
+        $inner->rollBack();
+        $outer->rollBack();
+
         Yii::getLogger()->messages = [];
 
-        $connection->beginTransaction();
+        $connection->beginTransaction(Transaction::SERIALIZABLE);
 
         $warnings = [];
 
