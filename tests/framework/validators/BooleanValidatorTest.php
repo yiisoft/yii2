@@ -90,4 +90,68 @@ class BooleanValidatorTest extends TestCase
             $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
         );
     }
+
+    public function testErrorMessageWithCustomValues(): void
+    {
+        $validator = new BooleanValidator([
+            'trueValue' => 'YES',
+            'falseValue' => 'NO',
+            'strict' => true,
+        ]);
+
+        $error = null;
+
+        $result = $validator->validate('someIncorrectValue', $error);
+
+        $this->assertFalse(
+            $result,
+            'A value outside the custom pair must be rejected.',
+        );
+        $this->assertSame(
+            'the input value must be either "YES" or "NO".',
+            $error,
+            'Message must interpolate the custom values.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testGetClientOptionsWithCustomValues(): void
+    {
+        $validator = new BooleanValidator([
+            'trueValue' => 'YES',
+            'falseValue' => 'NO',
+            'strict' => true,
+            'skipOnEmpty' => true,
+        ]);
+        $model = new FakedValidationModel();
+
+        $this->assertSame(
+            [
+                'trueValue' => 'YES',
+                'falseValue' => 'NO',
+                'message' => 'attrB must be either "YES" or "NO".',
+                'skipOnEmpty' => 1,
+                'strict' => 1,
+            ],
+            $validator->getClientOptions($model, 'attrB'),
+            'Options must carry the custom values and the interpolated message.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttributeWithDefaults(): void
+    {
+        $validator = new BooleanValidator();
+        $model = new FakedValidationModel();
+
+        $this->assertSame(
+            'yii.validation.boolean(value, messages, {"trueValue":"1","falseValue":"0","message":"attrB must be either \u00221\u0022 or \u00220\u0022.","skipOnEmpty":1});',
+            $validator->clientValidateAttribute($model, 'attrB', new ViewStub()),
+            'Default configuration must emit string values and omit `strict`.',
+        );
+    }
 }

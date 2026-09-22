@@ -15,6 +15,7 @@ use yii\validators\FileValidator;
 use yii\web\UploadedFile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\FakedValidationTypedModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -820,5 +821,121 @@ class FileValidatorTest extends TestCase
         $model->multiple = $files;
         $validator->validateAttribute($model, 'multiple');
         $this->assertTrue($model->hasErrors('multiple'));
+    }
+
+    public function testValidateValueRejectsNonUploadedFile(): void
+    {
+        $validator = new FileValidator();
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate('not an uploaded file', $error),
+            'A value that is not an upload must be rejected.'
+        );
+        $this->assertSame(
+            'Please upload a file.',
+            $error,
+            'Error must be the upload-required message.'
+        );
+    }
+
+    public function testValidateValueRejectsUnknownUploadError(): void
+    {
+        $validator = new FileValidator();
+        $file = new UploadedFile([
+            'name' => 'test.txt',
+            'tempName' => '',
+            'type' => 'text/plain',
+            'size' => 1,
+            'error' => 999,
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate($file, $error),
+            'An unmapped error code must be rejected.'
+        );
+        $this->assertSame(
+            'File upload failed.',
+            $error,
+            'Error must fall back to the generic failure message.'
+        );
+    }
+
+    public function testValidateRejectsExtensionNotMatchingDetectedMimeType(): void
+    {
+        $validator = new FileValidator(['extensions' => ['jpg'], 'checkExtensionByMimeType' => true]);
+
+        $filePath = Yii::getAlias('@yiiunit/framework/validators/data/mimeType/test.txt');
+
+        $file = new UploadedFile([
+            'name' => 'test.jpg',
+            'tempName' => $filePath,
+            'type' => 'image/jpeg',
+            'size' => filesize($filePath),
+            'error' => UPLOAD_ERR_OK,
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate($file, $error),
+            'A name that merely claims the extension must not be enough.'
+        );
+        $this->assertSame(
+            'Only files with these extensions are allowed: jpg.',
+            $error,
+            'Error must be the wrong-extension message.'
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttribute(): void
+    {
+        $validator = new FileValidator([
+            'extensions' => ['jpg', 'png'],
+            'minSize' => 1024,
+            'maxSize' => 2048,
+            'maxFiles' => 2,
+            'mimeTypes' => ['image/jpeg', 'image/png'],
+        ]);
+
+        $model = FakedValidationModel::createWithAttributes(['attr_files' => null]);
+
+        $this->assertSame(
+            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,"mimeTypes":[/^image\\/jpeg$/i,/^image\\/png$/i],"wrongMimeType":"Only files with these MIME types are allowed: image\\/jpeg, image\\/png.","extensions":["jpg","png"],"wrongExtension":"Only files with these extensions are allowed: jpg, png.","minSize":1024,"tooSmall":"The file \\u0022{file}\\u0022 is too small. Its size cannot be smaller than 1 KiB.","maxSize":2048,"tooBig":"The file \\u0022{file}\\u0022 is too big. Its size cannot exceed 2 KiB.","maxFiles":2,"tooMany":"You can upload at most 2 files."});',
+            $validator->clientValidateAttribute($model, 'attr_files', new ViewStub()),
+            'Generated call must match the legacy JavaScript contract.'
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testGetClientOptionsIncludesUploadRequiredWhenNotSkipOnEmpty(): void
+    {
+        $validator = new FileValidator(['skipOnEmpty' => false]);
+
+        $model = FakedValidationModel::createWithAttributes(['attr_files' => null]);
+
+        $this->assertSame(
+            [
+                'message' => 'File upload failed.',
+                'skipOnEmpty' => false,
+                'uploadRequired' => 'Please upload a file.',
+                'mimeTypes' => [],
+                'wrongMimeType' => 'Only files with these MIME types are allowed: .',
+                'extensions' => [],
+                'wrongExtension' => 'Only files with these extensions are allowed: .',
+                'maxFiles' => 1,
+                'tooMany' => 'You can upload at most 1 file.',
+            ],
+            $validator->getClientOptions($model, 'attr_files'),
+            'Client options must match the legacy JavaScript contract.'
+        );
     }
 }
