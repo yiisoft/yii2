@@ -17,6 +17,8 @@ use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Profile;
+use yiiunit\data\validators\models\CustomerJoinWithProfile;
+use yiiunit\data\validators\models\CustomerWithProfile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
@@ -507,7 +509,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator = new UniqueValidator([
             'targetAttribute' => ['status', 'profile_id']
         ]);
-        $model = WithCustomer::find()->one();
+        $model = CustomerWithProfile::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
             $this->assertTrue(true);
@@ -525,7 +527,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator = new UniqueValidator([
             'targetAttribute' => ['status', 'profile_id'],
         ]);
-        $model = JoinWithCustomer::find()->one();
+        $model = CustomerJoinWithProfile::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
             $this->assertTrue(true);
@@ -541,7 +543,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         $model = null;
         $connection->useMaster(function () use (&$model) {
-            $model = WithCustomer::find()->one();
+            $model = CustomerWithProfile::find()->one();
         });
 
         $validator = new UniqueValidator([
@@ -585,29 +587,5 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $customer->addError('name', 'error');
         $validator->validateAttribute($customer, 'email');
         $this->assertTrue($customer->hasErrors('email')); // validator should not be skipped
-    }
-}
-
-class WithCustomer extends Customer
-{
-    public static function find()
-    {
-        $res = parent::find();
-
-        $res->with('profile');
-
-        return $res;
-    }
-}
-
-class JoinWithCustomer extends Customer
-{
-    public static function find()
-    {
-        $res = parent::find();
-
-        $res->joinWith('profile');
-
-        return $res;
     }
 }
