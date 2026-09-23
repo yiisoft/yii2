@@ -497,4 +497,42 @@ class CompareValidatorTest extends TestCase
         $this->assertFalse($val->validate(5));
         $this->assertFalse($val->validate(999));
     }
+
+    public function testValidateValueTypeSelectsStrictComparisonMode(): void
+    {
+        $string = new CompareValidator([
+            'compareValue' => 10,
+            'operator' => '===',
+        ]);
+        $number = new CompareValidator([
+            'compareValue' => 10,
+            'operator' => '===',
+            'type' => CompareValidator::TYPE_NUMBER,
+        ]);
+
+        $this->assertTrue(
+            $string->validate('10'),
+            'Identical string forms must match.',
+        );
+        $this->assertFalse(
+            $string->validate('10.0'),
+            'String type must compare the literal text.'
+        );
+        $this->assertFalse(
+            $string->validate('1e1'),
+            'String type must not normalize exponent notation.'
+        );
+        $this->assertTrue(
+            $number->validate('10.0'),
+            'Number type must compare numeric values.'
+        );
+        $this->assertTrue(
+            $number->validate('1e1'),
+            'Number type must normalize exponent notation.'
+        );
+        $this->assertFalse(
+            $number->validate('10.5'),
+            'Different numeric value must fail.'
+        );
+    }
 }
