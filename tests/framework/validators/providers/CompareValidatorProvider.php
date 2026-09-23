@@ -321,7 +321,15 @@ final class CompareValidatorProvider
                 ['attr_x' => 10, 'attr_y' => 10],
                 'attr_y',
                 false,
-                'Validation should be skipped when compareAttribute has errors and skipOnError is `true`.',
+                'Comparison should run and pass when compareAttribute has errors and skipOnError is `true`.',
+                ['attr_x' => 'invalid value']
+            ],
+            'compareAttribute with error and skipOnError true mismatch' => [
+                ['compareAttribute' => 'attr_x', 'skipOnError' => true],
+                ['attr_x' => 10, 'attr_y' => 20],
+                'attr_y',
+                true,
+                'Comparison should run and fail when compareAttribute has errors and skipOnError is `true`.',
                 ['attr_x' => 'invalid value']
             ],
             'compareValue equal match' => [

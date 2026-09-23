@@ -238,6 +238,8 @@ class StringValidatorTest extends TestCase
 
     public function testInitDefaultsEncodingToUtf8WithoutApplication(): void
     {
+        $this->destroyApplication();
+
         $validator = new StringValidator();
 
         $this->assertSame(
