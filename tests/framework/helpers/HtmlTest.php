@@ -257,6 +257,7 @@ class HtmlTest extends TestCase
     public function testUnsafeUrlSchemesArePreservedByDefault(): void
     {
         $this->assertEquals('<a href="javascript:void(0)">Toggle</a>', Html::a('Toggle', 'javascript:void(0)'));
+        $this->assertEquals('<a href="javascript:void(0)">Toggle</a>', Html::a('Toggle', null, ['href' => 'javascript:void(0)']));
         $this->assertEquals(
             '<a href="data:text/csv;base64,YQ==" download="a.csv">Download</a>',
             Html::a('Download', 'data:text/csv;base64,YQ==', ['download' => 'a.csv'])
@@ -279,6 +280,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="#">something</a>', Html::a('something', 'data:text/html,<script>alert(1)</script>'));
         $this->assertEquals('<a href="#">something</a>', Html::a('something', ' javascript:alert(1)'));
         $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript:///%0aalert(1)'));
+        $this->assertEquals('<a href="#">something</a>', Html::a('something', null, ['href' => 'javascript:alert(1)']));
         // browsers only strip HT/LF/CR inside the URL, so an internal BEL does not make this javascript:
         $this->assertStringNotContainsString('href="#"', Html::a('something', "java\x07script:alert(1)"));
     }

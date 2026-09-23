@@ -549,9 +549,13 @@ class BaseHtml
     {
         if ($url !== null) {
             $options['href'] = Url::to($url);
-            if (static::$neutralizeUnsafeUrlSchemes && static::hasUnsafeUrlScheme($options['href'])) {
-                $options['href'] = '#';
-            }
+        }
+        if (
+            static::$neutralizeUnsafeUrlSchemes
+            && isset($options['href'])
+            && static::hasUnsafeUrlScheme($options['href'])
+        ) {
+            $options['href'] = '#';
         }
 
         return static::tag('a', $text, $options);
