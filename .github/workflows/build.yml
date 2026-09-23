@@ -101,7 +101,7 @@ jobs:
           additional-args: ${{ matrix.prod && '--bootstrap tests/bootstrap-prod.php --log-junit junit.xml' || '--log-junit junit.xml' }}
           coverage-driver: ${{ env.COVERAGE_DRIVER }}
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
-          exclude-group: ${{ matrix.prod && '' || env.PHPUNIT_EXCLUDE_GROUP }}
+          exclude-group: ${{ !matrix.prod && env.PHPUNIT_EXCLUDE_GROUP || '' }}
           group: ${{ matrix.prod && 'prod' || '' }}
 
   phpunit-windows:
