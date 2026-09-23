@@ -3,6 +3,7 @@ version: dev-{build}
 clone_folder: C:\projects\yii2
 
 environment:
+    COMPOSER_ROOT_VERSION: 2.0.x-dev
     matrix:
       - php_ver: 7.4.0
 
