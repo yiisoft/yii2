@@ -9,6 +9,7 @@
 namespace yiiunit\framework\widgets;
 
 use yiiunit\TestCase;
+use yii\helpers\Html;
 use yii\widgets\Menu;
 
 /**
@@ -477,6 +478,30 @@ HTML;
         $expected = <<<'HTML'
 <ul><li><a href="/test/item1">item1</a></li>
 <li class="active"><a href="/test/item2?page=5">item2</a></li></ul>
+HTML;
+        $this->assertEqualsWithoutLE($expected, $output);
+    }
+
+    public function testUnsafeUrlScheme(): void
+    {
+        $items = [
+            ['label' => 'Run', 'url' => 'javascript:alert(1)'],
+            ['label' => 'Safe', 'url' => '/safe'],
+        ];
+
+        $output = Menu::widget(['route' => 'test/test', 'params' => [], 'items' => $items]);
+        $this->assertStringContainsString('<a href="javascript:alert(1)">Run</a>', $output);
+
+        Html::$neutralizeUnsafeUrlSchemes = true;
+        try {
+            $output = Menu::widget(['route' => 'test/test', 'params' => [], 'items' => $items]);
+        } finally {
+            Html::$neutralizeUnsafeUrlSchemes = false;
+        }
+
+        $expected = <<<'HTML'
+<ul><li><a href="#">Run</a></li>
+<li><a href="/safe">Safe</a></li></ul>
 HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }

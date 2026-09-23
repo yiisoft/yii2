@@ -102,6 +102,14 @@ class BaseHtml
      * @since 2.0.44
      */
     public static $normalizeClassAttribute = false;
+    /**
+     * @var bool whether [[a()]], [[img()]], [[beginForm()]] and [[\yii\widgets\Menu]] replace URLs that use a
+     * script-executing scheme (see [[hasUnsafeUrlScheme()]]). Enable this when these helpers render URLs that
+     * may come from end users. It is disabled by default because `javascript:` and `data:` URLs are legitimate
+     * when they are set by the developer, e.g. `javascript:void(0)`, bookmarklets or `data:` downloads.
+     * @since 2.0.56
+     */
+    public static $neutralizeUnsafeUrlSchemes = false;
 
 
     /**
@@ -306,7 +314,7 @@ class BaseHtml
      * anchored at the start of that result, not PHP's `parse_url()`.
      *
      * @param string $url the URL to check. Relative URLs and URLs without a scheme are considered safe.
-     * @param string[] $unsafeSchemes the list of schemes considered unsafe.
+     * @param string[] $unsafeSchemes the list of schemes considered unsafe. Must be lowercase.
      * @return bool whether the URL uses an unsafe scheme.
      * @since 2.0.56
      */
@@ -355,6 +363,13 @@ class BaseHtml
                 $i++;
             }
             $url = substr($srcset, $urlStart, $i - $urlStart);
+            if (substr($url, -1) === ',') {
+                $url = rtrim($url, ',');
+                if ($url !== '' && !static::hasUnsafeUrlScheme($url, ['javascript', 'vbscript'])) {
+                    $candidates[] = $url;
+                }
+                continue;
+            }
             $parenDepth = 0;
             $restStart = $i;
             while ($i < $length) {
@@ -451,7 +466,7 @@ class BaseHtml
     public static function beginForm($action = '', $method = 'post', $options = [])
     {
         $action = Url::to($action);
-        if (static::hasUnsafeUrlScheme($action)) {
+        if (static::$neutralizeUnsafeUrlSchemes && static::hasUnsafeUrlScheme($action)) {
             $action = '#';
         }
 
@@ -534,7 +549,7 @@ class BaseHtml
     {
         if ($url !== null) {
             $options['href'] = Url::to($url);
-            if (static::hasUnsafeUrlScheme($options['href'])) {
+            if (static::$neutralizeUnsafeUrlSchemes && static::hasUnsafeUrlScheme($options['href'])) {
                 $options['href'] = '#';
             }
         }
@@ -576,7 +591,8 @@ class BaseHtml
     public static function img($src, $options = [])
     {
         $options['src'] = Url::to($src);
-        if (static::hasUnsafeUrlScheme($options['src'], ['javascript', 'vbscript'])) {
+        $neutralize = static::$neutralizeUnsafeUrlSchemes;
+        if ($neutralize && static::hasUnsafeUrlScheme($options['src'], ['javascript', 'vbscript'])) {
             $options['src'] = '';
         }
 
@@ -585,13 +601,13 @@ class BaseHtml
                 $srcset = [];
                 foreach ($options['srcset'] as $descriptor => $url) {
                     $candidate = Url::to($url);
-                    if (static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
+                    if ($neutralize && static::hasUnsafeUrlScheme($candidate, ['javascript', 'vbscript'])) {
                         continue;
                     }
                     $srcset[] = $candidate . ' ' . $descriptor;
                 }
                 $options['srcset'] = implode(',', $srcset);
-            } elseif (is_string($options['srcset'])) {
+            } elseif ($neutralize && is_string($options['srcset'])) {
                 $options['srcset'] = static::filterUnsafeSrcSetCandidates($options['srcset']);
             }
         }

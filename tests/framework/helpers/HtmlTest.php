@@ -45,6 +45,12 @@ class HtmlTest extends TestCase
         ]);
     }
 
+    protected function tearDown(): void
+    {
+        Html::$neutralizeUnsafeUrlSchemes = false;
+        parent::tearDown();
+    }
+
     public function testEncode(): void
     {
         $this->assertEquals('a&lt;&gt;&amp;&quot;&#039;�', Html::encode("a<>&\"'\x80"));
@@ -248,8 +254,23 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="https://www.example.com/index.php?r=site%2Ftest">Test page</a>', Html::a('Test page', Url::to(['/site/test'], 'https')));
     }
 
+    public function testUnsafeUrlSchemesArePreservedByDefault(): void
+    {
+        $this->assertEquals('<a href="javascript:void(0)">Toggle</a>', Html::a('Toggle', 'javascript:void(0)'));
+        $this->assertEquals(
+            '<a href="data:text/csv;base64,YQ==" download="a.csv">Download</a>',
+            Html::a('Download', 'data:text/csv;base64,YQ==', ['download' => 'a.csv'])
+        );
+        $this->assertStringContainsString('action="javascript:void(0)"', Html::beginForm('javascript:void(0)'));
+        $this->assertEquals(
+            '<img src="f.png" srcset="safe.png, javascript:alert(1) 2x" alt="">',
+            Html::img('f.png', ['srcset' => 'safe.png, javascript:alert(1) 2x'])
+        );
+    }
+
     public function testAUnsafeUrlScheme(): void
     {
+        Html::$neutralizeUnsafeUrlSchemes = true;
         $this->assertEquals('<a href="#">something</a>', Html::a('something', 'javascript:alert(1)'));
         $this->assertEquals('<a href="#">something</a>', Html::a('something', 'JAVASCRIPT:alert(1)'));
         $this->assertEquals('<a href="#">something</a>', Html::a('something', "jav\tascript:alert(1)"));
@@ -264,6 +285,7 @@ class HtmlTest extends TestCase
 
     public function testBeginFormUnsafeUrlScheme(): void
     {
+        Html::$neutralizeUnsafeUrlSchemes = true;
         $form = Html::beginForm('javascript:alert(1)');
         $this->assertStringNotContainsString('javascript:', $form);
     }
@@ -373,6 +395,7 @@ class HtmlTest extends TestCase
 
     public function testImgUnsafeUrlScheme(): void
     {
+        Html::$neutralizeUnsafeUrlSchemes = true;
         $this->assertEquals('<img src="" alt="x">', Html::img('javascript:alert(1)', ['alt' => 'x']));
         $this->assertEquals('<img src="" srcset="pic.png 3x" alt="">', Html::img('vbscript:MsgBox(1)', ['srcset' => ['2x' => 'javascript:alert(1)', '3x' => 'pic.png']]));
         // data URIs are a legitimate way to embed images and are safe in an image context
@@ -381,6 +404,16 @@ class HtmlTest extends TestCase
 
     public function testImgStringSrcsetUnsafeUrlScheme(): void
     {
+        Html::$neutralizeUnsafeUrlSchemes = true;
+        // a URL token ending in a comma ends the candidate, so the next candidate is parsed on its own
+        $this->assertEquals(
+            '<img src="f.png" srcset="safe.png 2x" alt="">',
+            Html::img('f.png', ['srcset' => 'javascript:alert(1), safe.png 2x'])
+        );
+        $this->assertEquals(
+            '<img src="f.png" srcset="safe.png" alt="">',
+            Html::img('f.png', ['srcset' => 'safe.png, javascript:alert(1) 2x'])
+        );
         $this->assertEquals(
             '<img src="/base-url" srcset="safe.png 1x" alt="">',
             Html::img('/base-url', ['srcset' => 'safe.png 1x,javascript:alert(1) 2x'])
