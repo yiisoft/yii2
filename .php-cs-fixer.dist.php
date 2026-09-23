@@ -22,7 +22,7 @@ $frameworkFinder = (new Finder())
         '#^helpers/mimeAliases\.php$#',
         '#^helpers/mimeExtensions\.php$#',
         '#^helpers/mimeTypes\.php$#',
-        '#^requirements/requirements\.php$#',
+        '#^requirements(/|$)#',
     ]);
 
 $testsFinder = (new Finder())
@@ -43,6 +43,9 @@ $finder = $buildFinder
 return (new Config())
     ->setFinder($finder)
     ->setRules([
+        'array_syntax' => ['syntax' => 'short'],
+        'single_quote' => true,
+        'concat_space' => ['spacing' => 'one'],
         'phpdoc_scalar' => true,
         'header_comment' => [
             'comment_type' => 'PHPDoc',

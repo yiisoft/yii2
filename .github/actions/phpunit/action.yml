@@ -145,7 +145,12 @@ runs:
         Add-Param '--configuration' $env:CONFIG_INPUT
         Add-Param '--testsuite' $env:SUITE_INPUT
         Add-Param '--group' $env:GROUP_INPUT
-        Add-Param '--exclude-group' $env:EXCLUDE_GROUP_INPUT
+
+        if ($env:EXCLUDE_GROUP_INPUT) {
+          foreach ($group in ($env:EXCLUDE_GROUP_INPUT -split '\s+')) {
+            $script:command += @('--exclude-group', $group)
+          }
+        }
 
         if ($env:DEBUG_INPUT) {
           $command += $env:DEBUG_INPUT -split ' '
