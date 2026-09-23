@@ -103,4 +103,27 @@ class BooleanValidatorTest extends TestCase
             "Should return 'null' when no application context exists.",
         );
     }
+
+    public function testErrorMessageWithCustomValues(): void
+    {
+        $validator = new BooleanValidator([
+            'trueValue' => 'YES',
+            'falseValue' => 'NO',
+            'strict' => true,
+        ]);
+
+        $error = null;
+
+        $result = $validator->validate('someIncorrectValue', $error);
+
+        $this->assertFalse(
+            $result,
+            'A value outside the custom pair must be rejected.',
+        );
+        $this->assertSame(
+            'the input value must be either "YES" or "NO".',
+            $error,
+            'Message must interpolate the custom values.',
+        );
+    }
 }

@@ -16,6 +16,8 @@ use yii\validators\Validator;
 use yii\web\View;
 use yiiunit\framework\validators\stub\FakeClientValidatorScript;
 
+use function property_exists;
+
 /**
  * Provides reusable assertions for the `clientScript` strategy pattern in validator tests.
  *
@@ -54,7 +56,7 @@ trait ClientScriptDispatchTestTrait
         $validator = $this->createValidatorInstance();
 
         $this->assertNull(
-            $validator->clientScript,
+            $this->getClientScript($validator),
             "'\$clientScript' should default to `null` when the attribute is not configured.",
         );
     }
@@ -67,12 +69,12 @@ trait ClientScriptDispatchTestTrait
 
         $this->assertInstanceOf(
             FakeClientValidatorScript::class,
-            $validator->clientScript,
+            $this->getClientScript($validator),
             "Array '\$clientScript' config should be materialized via 'Yii::createObject()' during 'init()'.",
         );
         $this->assertInstanceOf(
             ClientValidatorScriptInterface::class,
-            $validator->clientScript,
+            $this->getClientScript($validator),
             "Materialized '\$clientScript' should implement 'ClientValidatorScriptInterface'.",
         );
     }
@@ -84,7 +86,7 @@ trait ClientScriptDispatchTestTrait
 
         $this->assertSame(
             $script,
-            $validator->clientScript,
+            $this->getClientScript($validator),
             "An already-instantiated '\$clientScript' should be preserved without re-creating it.",
         );
     }
@@ -163,5 +165,19 @@ trait ClientScriptDispatchTestTrait
             $script->lastGetClientOptionsCall,
             "'\$clientScript->getClientOptions()' should receive '\$this', '\$model', '\$attribute' in that order.",
         );
+    }
+
+    /**
+     * Returns the `clientScript` property of the validator, failing when the validator does not declare it.
+     *
+     * {@see Validator} does not declare the property; each concrete validator does.
+     */
+    private function getClientScript(Validator $validator): array|ClientValidatorScriptInterface|null
+    {
+        if (!property_exists($validator, 'clientScript')) {
+            self::fail("'" . $validator::class . "' should declare the '\$clientScript' property.");
+        }
+
+        return $validator->clientScript;
     }
 }

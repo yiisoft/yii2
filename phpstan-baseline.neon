@@ -463,12 +463,6 @@ parameters:
 			path: tests/framework/captcha/CaptchaTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/captcha/CaptchaValidatorTest.php
-
-		-
 			message: '#^Return type \(void\) of method yiiunit\\framework\\console\\controllers\\FixtureConsoledController\:\:stdout\(\) should be compatible with return type \(bool\|int\) of method yii\\console\\Controller\<yii\\console\\Application\>\:\:stdout\(\)$#'
 			identifier: method.childReturnType
 			count: 1
@@ -589,34 +583,10 @@ parameters:
 			path: tests/framework/rest/SerializerTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/BooleanValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/CompareValidatorTest.php
-
-		-
 			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attr_compare\.$#'
 			identifier: property.notFound
 			count: 1
 			path: tests/framework/validators/CompareValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/EmailValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/FileValidatorTest.php
 
 		-
 			message: '#^PHPDoc tag @param for parameter \$_ with type mixed is not subtype of native type string\.$#'
@@ -631,64 +601,10 @@ parameters:
 			path: tests/framework/validators/FileValidatorTest.php
 
 		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/FilterValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/IpValidatorTest.php
-
-		-
 			message: '#^PHPDoc tag @param for parameter \$badIp with type mixed is not subtype of native type array\|bool\|int\|string\.$#'
 			identifier: parameter.phpDocType
 			count: 2
 			path: tests/framework/validators/IpValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/NumberValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/RangeValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/RegularExpressionValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/RequiredValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/StringValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/TrimValidatorTest.php
-
-		-
-			message: '#^Access to an undefined property yii\\validators\\Validator\:\:\$clientScript\.$#'
-			identifier: property.notFound
-			count: 3
-			path: tests/framework/validators/UrlValidatorTest.php
 
 		-
 			message: '#^PHPDoc tag @param for parameter \$appendTimestamp with type bool\|string is not subtype of native type bool\.$#'

@@ -18,6 +18,8 @@ use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stub\EmailValidatorMockeryFunctionsTrait;
 use yiiunit\TestCase;
 
+use function checkdnsrr;
+
 /**
  * @group validators
  */
@@ -132,30 +134,59 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));
     }
 
-    public function testValidateValueMx(): void
+    public function testValidateValueAcceptsDomainWithMxRecord(): void
     {
-        $validator = new EmailValidator();
+        $validator = new EmailValidator(['checkDNS' => true]);
 
-        $validator->checkDNS = true;
-        $this->assertTrue($validator->validate('5011@gmail.com'));
+        $this->assertTrue(
+            $validator->validate('5011@gmail.com'),
+            'Domain with an MX record must be accepted.'
+        );
+    }
+
+    public function testValidateValueFallsBackToARecord(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true]);
+
+        $this->assertFalse(
+            checkdnsrr('www.example.com.', 'MX'),
+            'Precondition: the host must publish no MX record.'
+        );
+        $this->assertTrue(
+            $validator->validate('test@www.example.com'),
+            'Missing MX record must fall back to A.'
+        );
+    }
+
+    public function testValidateValueRejectsDomainWithoutDnsRecords(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true]);
+
+        $this->assertFalse(
+            $validator->validate('test@nonexistingsubdomain.example.com'),
+            'A domain without MX and A records must be rejected.'
+        );
 
         $validator->checkDNS = false;
-        $this->assertTrue($validator->validate('test@nonexistingsubdomain.example.com'));
-        $validator->checkDNS = true;
-        $this->assertFalse($validator->validate('test@nonexistingsubdomain.example.com'));
 
-        $validator->checkDNS = true;
-        $validator->allowName = true;
-        $emails = [
-            'ipetrov@gmail.com',
-            'Ivan Petrov <ipetrov@gmail.com>',
-        ];
-        foreach ($emails as $email) {
-            $this->assertTrue(
-                $validator->validate($email),
-                "Email: '$email' failed to validate(checkDNS=true, allowName=true)",
-            );
-        }
+        $this->assertTrue(
+            $validator->validate('test@nonexistingsubdomain.example.com'),
+            'Syntax alone must be enough when the check is disabled.'
+        );
+    }
+
+    public function testValidateValueAcceptsNamedAddressWithDnsCheck(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true, 'allowName' => true]);
+
+        $this->assertTrue(
+            $validator->validate('ipetrov@gmail.com'),
+            'A plain address must pass the DNS check.'
+        );
+        $this->assertTrue(
+            $validator->validate('Ivan Petrov <ipetrov@gmail.com>'),
+            'A named address must pass the DNS check.'
+        );
     }
 
     public function testValidateAttribute(): void

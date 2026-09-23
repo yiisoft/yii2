@@ -9,6 +9,7 @@
 namespace yiiunit\framework\validators;
 
 use IntlDateFormatter;
+use yii\base\InvalidConfigException;
 use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\i18n\IntlTestHelper;
@@ -1219,5 +1220,86 @@ class DateValidatorTest extends TestCase
         $validator->validateAttribute($model, 'attr_date');
 
         $this->assertEquals($value, $model->attr_date);
+    }
+
+    public function testInitTakesTimeFormatFromFormatter(): void
+    {
+        $this->mockApplication([
+            'timeZone' => 'UTC',
+            'language' => 'ru-RU',
+            'components' => [
+                'formatter' => [
+                    'timeFormat' => 'php:H:i:s',
+                ],
+            ],
+        ]);
+
+        $val = new DateValidator(['type' => DateValidator::TYPE_TIME]);
+
+        $this->assertSame(
+            'php:H:i:s',
+            $val->format,
+            'Format must be taken from the formatter time format.',
+        );
+        $this->assertTrue(
+            $val->validate('15:16:17'),
+            'A time matching the configured format must pass.',
+        );
+        $this->assertFalse(
+            $val->validate('not a time'),
+            'A string without time parts must be rejected.',
+        );
+    }
+
+    public function testIntlValidateValueWithTimeType(): void
+    {
+        $val = new DateValidator(['type' => DateValidator::TYPE_TIME, 'format' => 'short', 'locale' => 'de-DE']);
+
+        $this->assertTrue(
+            $val->validate('12:00'),
+            'A localized short time must pass.',
+        );
+        $this->assertFalse(
+            $val->validate('not a time'),
+            'A string without time parts must be rejected.',
+        );
+    }
+
+    public function testThrowInvalidConfigExceptionForUnknownType(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Unknown validation type set for DateValidator::$type: invalid');
+
+        new DateValidator(['type' => 'invalid']);
+    }
+
+    public function testThrowInvalidConfigExceptionWhenTypeIsMutatedAfterInitWithIntl(): void
+    {
+        IntlTestHelper::$enableIntl = true;
+
+        $val = new DateValidator(['format' => 'short']);
+
+        $val->type = 'invalid';
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Unknown validation type set for DateValidator::$type: invalid');
+
+        $val->validate('12:00');
+    }
+
+    public function testThrowInvalidConfigExceptionForInvalidMin(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Invalid min date value: invalid');
+
+        new DateValidator(['format' => 'php:Y-m-d', 'min' => 'invalid']);
+    }
+
+    public function testThrowInvalidConfigExceptionForInvalidMax(): void
+    {
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Invalid max date value: invalid');
+
+        new DateValidator(['format' => 'php:Y-m-d', 'max' => 'invalid']);
     }
 }

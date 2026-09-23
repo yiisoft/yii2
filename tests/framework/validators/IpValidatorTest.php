@@ -412,4 +412,61 @@ class IpValidatorTest extends TestCase
         $this->assertEquals('fa01::2/614', $model->attr_ip);
         $this->assertEquals('attr_ip contains wrong subnet mask.', $model->getFirstError('attr_ip'));
     }
+
+    public function testValidateAttributeAddsIpv4NotAllowedError(): void
+    {
+        $validator = new IpValidator(['ipv4' => false]);
+
+        $model = new FakedValidationModel();
+
+        $model->attr_ip = '127.0.0.1';
+
+        $validator->validateAttribute($model, 'attr_ip');
+
+        $this->assertTrue(
+            $model->hasErrors('attr_ip'),
+            'A disabled IP version must be rejected.',
+        );
+        $this->assertSame(
+            'attr_ip must not be an IPv4 address.',
+            $model->getFirstError('attr_ip'),
+            'Error must come from the IPv4 template.',
+        );
+    }
+
+    public function testValidateAttributeAddsIpv6NotAllowedError(): void
+    {
+        $validator = new IpValidator(['ipv6' => false]);
+
+        $model = new FakedValidationModel();
+
+        $model->attr_ip = '::1';
+
+        $validator->validateAttribute($model, 'attr_ip');
+
+        $this->assertTrue(
+            $model->hasErrors('attr_ip'),
+            'A disabled IP version must be rejected.',
+        );
+        $this->assertSame(
+            'attr_ip must not be an IPv6 address.',
+            $model->getFirstError('attr_ip'),
+            'Error must come from the IPv6 template.',
+        );
+    }
+
+    public function testSetRangesResolvesDoubleNegation(): void
+    {
+        $validator = new IpValidator();
+
+        $validator->networks['test'] = ['!10.0.0.1', '192.168.0.1'];
+
+        $validator->setRanges(['!test']);
+
+        $this->assertSame(
+            ['10.0.0.1', '!192.168.0.1'],
+            $validator->getRanges(),
+            'Two negations must cancel each other out.',
+        );
+    }
 }

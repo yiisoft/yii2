@@ -17,6 +17,8 @@ use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Profile;
+use yiiunit\data\validators\models\CustomerJoinWithProfile;
+use yiiunit\data\validators\models\CustomerWithProfile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
@@ -63,6 +65,27 @@ abstract class BaseUniqueValidator extends DatabaseTestCase
         $validator->validateAttribute($model, 'order_id');
         $this->assertTrue($model->hasErrors('order_id'));
         $this->assertEquals($customError, $model->getFirstError('order_id'));
+    }
+
+    public function testComboNotUniqueErrorWithMappedTargetAttribute(): void
+    {
+        $validator = new UniqueValidator(['targetAttribute' => ['order_id' => 'item_id', 'item_id' => 'order_id']]);
+        $model = new OrderItem();
+
+        $model->order_id = 2;
+        $model->item_id = 1;
+
+        $validator->validateAttribute($model, 'order_id');
+
+        $this->assertTrue(
+            $model->hasErrors('order_id'),
+            'Stored combination must be reported as taken.',
+        );
+        $this->assertSame(
+            'The combination "2"-"1" of Order Id and Item Id has already been taken.',
+            $model->getFirstError('order_id'),
+            'Labels and values must be read from the mapping keys.',
+        );
     }
 
     public function testValidateInvalidAttribute(): void
@@ -117,6 +140,35 @@ abstract class BaseUniqueValidator extends DatabaseTestCase
         $m = FakedValidationModel::createWithAttributes(['attr_arr' => ['a', 'b']]);
         $val->validateAttribute($m, 'attr_arr');
         $this->assertTrue($m->hasErrors('attr_arr'));
+    }
+
+    public function testValidateAttributeWithBracketedTargetAttribute(): void
+    {
+        $validator = new UniqueValidator(['targetAttribute' => '[[name]]']);
+        $newCustomer = new Customer();
+
+        $newCustomer->name = 'user1';
+
+        $validator->validateAttribute($newCustomer, 'name');
+
+        $this->assertTrue(
+            $newCustomer->hasErrors('name'),
+            'Bracketed column must still match a taken name.',
+        );
+
+        $storedCustomer = Customer::findOne(1);
+
+        $this->assertNotNull(
+            $storedCustomer,
+            'Fixture row must exist.',
+        );
+
+        $validator->validateAttribute($storedCustomer, 'name');
+
+        $this->assertFalse(
+            $storedCustomer->hasErrors('name'),
+            'A record must not collide with itself.',
+        );
     }
 
     public function testValidateAttributeOfNonARModel(): void
@@ -447,7 +499,7 @@ abstract class BaseUniqueValidator extends DatabaseTestCase
         $validator = new UniqueValidator([
             'targetAttribute' => ['status', 'profile_id']
         ]);
-        $model = WithCustomer::find()->one();
+        $model = CustomerWithProfile::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
             $this->assertTrue(true);
@@ -465,7 +517,7 @@ abstract class BaseUniqueValidator extends DatabaseTestCase
         $validator = new UniqueValidator([
             'targetAttribute' => ['status', 'profile_id'],
         ]);
-        $model = JoinWithCustomer::find()->one();
+        $model = CustomerJoinWithProfile::find()->one();
         try {
             $validator->validateAttribute($model, 'email');
             $this->assertTrue(true);
@@ -481,7 +533,7 @@ abstract class BaseUniqueValidator extends DatabaseTestCase
 
         $model = null;
         $connection->useMaster(function () use (&$model) {
-            $model = WithCustomer::find()->one();
+            $model = CustomerWithProfile::find()->one();
         });
 
         $validator = new UniqueValidator([
@@ -525,29 +577,5 @@ abstract class BaseUniqueValidator extends DatabaseTestCase
         $customer->addError('name', 'error');
         $validator->validateAttribute($customer, 'email');
         $this->assertTrue($customer->hasErrors('email')); // validator should not be skipped
-    }
-}
-
-class WithCustomer extends Customer
-{
-    public static function find()
-    {
-        $res = parent::find();
-
-        $res->with('profile');
-
-        return $res;
-    }
-}
-
-class JoinWithCustomer extends Customer
-{
-    public static function find()
-    {
-        $res = parent::find();
-
-        $res->joinWith('profile');
-
-        return $res;
     }
 }
