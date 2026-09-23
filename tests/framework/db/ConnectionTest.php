@@ -366,17 +366,54 @@ abstract class ConnectionTest extends DatabaseTestCase
         );
 
         $outer->rollBack();
-        $outer->rollBack();
+
+        $this->assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollback',
+        );
+        $this->assertSame(
+            0,
+            $outer->level,
+            'Outer transaction level should be 0 after rollback',
+        );
+    }
+
+    public function testNestedTransactionWithoutIsolationLevelDoesNotWarn(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction();
+
+        $this->assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'",
+        );
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        $this->assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for nested transaction without isolation level',
+        );
+
+        $inner->rollBack();
         $outer->rollBack();
 
         $this->assertFalse(
             $outer->isActive,
             'Outer transaction should not be active after rollbacks',
-        );
-        $this->assertSame(
-            0,
-            $outer->level,
-            'Outer transaction level should be 0 after rollbacks',
         );
     }
 

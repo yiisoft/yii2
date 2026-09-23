@@ -144,7 +144,7 @@ class Transaction extends \yii\base\BaseObject
         if ($schema->supportsSavepoint()) {
             if ($isolationLevel !== null) {
                 Yii::warning(
-                    "Isolation level \"$isolationLevel\" ignored for nested transaction: a savepoint runs at "
+                    "Isolation level \"$isolationLevel\" ignored for nested transaction: a savepoint runs at"
                     . ' the isolation level of the outer transaction',
                     __METHOD__
                 );
