@@ -162,5 +162,33 @@ class RangeValidatorTest extends TestCase
             'allowArray' => false,
         ]);
         $this->assertTrue($val->validate('a'));
+        $this->assertFalse($val->validate('c'), 'A value missing from the traversable range must fail.');
+    }
+
+    public function testValidateAttributeWithClosureRange(): void
+    {
+        $val = new RangeValidator([
+            'range' => function ($model, $attribute) {
+                return [1, 2];
+            },
+        ]);
+
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => 1]);
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertFalse(
+            $m->hasErrors('attr_range'),
+            'The computed range must accept one of its members.',
+        );
+
+        $m->attr_range = 3;
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertTrue(
+            $m->hasErrors('attr_range'),
+            'The computed range must reject an outsider.',
+        );
     }
 }

@@ -23,6 +23,7 @@ use yii\db\conditions\InConditionBuilder;
 use yii\db\conditions\OrCondition;
 use yii\db\Connection;
 use yii\db\Transaction;
+use yii\log\Logger;
 
 use function serialize;
 use function unserialize;
@@ -918,6 +919,118 @@ abstract class BaseConnection extends DatabaseTestCase
 
                 $db->beginTransaction();
             },
+        );
+    }
+
+    public function testNestedTransactionIgnoresIsolationLevel(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction(Transaction::SERIALIZABLE);
+
+        self::assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'.",
+        );
+        self::assertTrue(
+            $inner->isActive,
+            'Nested transaction should be active.',
+        );
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        self::assertCount(
+            1,
+            $warnings,
+            'There should be exactly one warning for nested transaction ignoring isolation level.',
+        );
+        self::assertStringContainsString(
+            Transaction::SERIALIZABLE,
+            $warnings[0][0],
+            'Nested transaction should warn about ignoring isolation level.',
+        );
+
+        $inner->rollBack();
+        $outer->rollBack();
+
+        Yii::getLogger()->messages = [];
+
+        $outer = $connection->beginTransaction(Transaction::SERIALIZABLE);
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        self::assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for non-nested transaction.',
+        );
+
+        $outer->rollBack();
+
+        self::assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollback.',
+        );
+        self::assertSame(
+            0,
+            $outer->level,
+            'Outer transaction level should be 0 after rollback.',
+        );
+    }
+
+    public function testNestedTransactionWithoutIsolationLevelDoesNotWarn(): void
+    {
+        $connection = $this->getConnection(true);
+
+        $outer = $connection->beginTransaction();
+
+        Yii::getLogger()->messages = [];
+
+        $inner = $connection->beginTransaction();
+
+        self::assertSame(
+            2,
+            $inner->level,
+            "Nested transaction should have level '2'.",
+        );
+
+        $warnings = [];
+
+        foreach (Yii::getLogger()->messages as $message) {
+            if ($message[1] === Logger::LEVEL_WARNING && $message[2] === 'yii\db\Transaction::begin') {
+                $warnings[] = $message;
+            }
+        }
+
+        self::assertCount(
+            0,
+            $warnings,
+            'There should be no warnings for nested transaction without isolation level.',
+        );
+
+        $inner->rollBack();
+        $outer->rollBack();
+
+        self::assertFalse(
+            $outer->isActive,
+            'Outer transaction should not be active after rollbacks.',
         );
     }
 

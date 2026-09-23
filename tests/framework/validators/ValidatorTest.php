@@ -359,4 +359,25 @@ class ValidatorTest extends TestCase
         $validator = SafeValidator::createValidator('safe', $model, [1]);
         $this->assertSame([1], $validator->getValidationAttributes(1));
     }
+
+    public function testInlineValidatorWithClosureMethod(): void
+    {
+        $model = new DynamicModel(['attr' => 1]);
+
+        $boundModel = null;
+
+        $validator = new InlineValidator([
+            'method' => function ($attribute, $params, $validator, $current) use (&$boundModel) {
+                $boundModel = $this;
+            },
+        ]);
+
+        $validator->validateAttribute($model, 'attr');
+
+        $this->assertSame(
+            $model,
+            $boundModel,
+            'Closure must run bound to the validated model.',
+        );
+    }
 }

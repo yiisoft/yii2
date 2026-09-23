@@ -173,4 +173,78 @@ class StringValidatorTest extends TestCase
         $this->assertTrue($val->validate(42));
         $this->assertTrue($val->validate(36.6));
     }
+
+    public function testValidateAttributeAddsNotEqualError(): void
+    {
+        $this->mockApplication();
+
+        $val = new StringValidator(['length' => 5]);
+        $model = new FakedValidationModel();
+
+        $model->attr_string = 'abc';
+
+        $val->validateAttribute($model, 'attr_string');
+
+        $this->assertSame(
+            'attr_string should contain 5 characters.',
+            $model->getFirstError('attr_string'),
+            'Error must come from the exact length template.',
+        );
+
+        $model = new FakedValidationModel();
+
+        $model->attr_string = 'abcde';
+
+        $val->validateAttribute($model, 'attr_string');
+
+        $this->assertFalse(
+            $model->hasErrors('attr_string'),
+            'The exact length must be accepted.',
+        );
+    }
+
+    public function testValidateAttributeAcceptsScalarWithoutMutationWhenNotStrict(): void
+    {
+        $val = new StringValidator(['strict' => false]);
+
+        $model = new FakedValidationModel();
+
+        $model->attr_string = 12345;
+
+        $val->validateAttribute($model, 'attr_string');
+
+        $this->assertFalse(
+            $model->hasErrors('attr_string'),
+            'A scalar must pass in non-strict mode.',
+        );
+        $this->assertSame(
+            12345,
+            $model->attr_string,
+            'The attribute must keep its original type.',
+        );
+    }
+
+    public function testInitTakesEncodingFromApplicationCharset(): void
+    {
+        $this->mockApplication(['charset' => 'ISO-8859-1']);
+
+        $validator = new StringValidator();
+
+        $this->assertSame(
+            'ISO-8859-1',
+            $validator->encoding,
+            'The application charset must win.',
+        );
+    }
+
+    public function testInitDefaultsEncodingToUtf8WithoutApplication(): void
+    {
+        $validator = new StringValidator();
+
+        $this->assertSame(
+            'UTF-8',
+            $validator->encoding,
+            'The fallback charset must be used.',
+        );
+    }
 }

@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
+use yii\base\InvalidConfigException;
 use yii\validators\EachValidator;
+use yii\validators\NumberValidator;
 use yiiunit\data\base\ArrayAccessObject;
 use yiiunit\data\base\Speaker;
 use yiiunit\data\validators\models\FakedValidationModel;
@@ -268,5 +270,50 @@ class EachValidatorTest extends TestCase
 
         $model->validate();
         $this->assertFalse($model->hasErrors('arrayProperty'));
+    }
+
+    public function testThrowInvalidConfigExceptionForEmptyRule(): void
+    {
+        $validator = new EachValidator(['rule' => []]);
+
+        $this->expectException(InvalidConfigException::class);
+        $this->expectExceptionMessage('Invalid validation rule: a rule must be an array specifying validator type.');
+
+        $validator->validate([1]);
+    }
+
+    public function testRuleAsValidatorInstance(): void
+    {
+        $validator = new EachValidator(['rule' => new NumberValidator()]);
+
+        $this->assertTrue(
+            $validator->validate([1, 2]),
+            'Numeric items must pass the embedded instance.'
+        );
+        $this->assertFalse(
+            $validator->validate([1, 'a']),
+            'A non-numeric item must fail.'
+        );
+    }
+
+    public function testValidateValueUsesOwnMessageWhenRuleMessageIsDisallowed(): void
+    {
+        $validator = new EachValidator([
+            'rule' => ['integer'],
+            'allowMessageFromRule' => false,
+            'message' => 'each fail',
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate([1, 'a'], $error),
+            'A non-integer item must fail.',
+        );
+        $this->assertSame(
+            'each fail',
+            $error,
+            'Own message must replace the embedded rule message.',
+        );
     }
 }

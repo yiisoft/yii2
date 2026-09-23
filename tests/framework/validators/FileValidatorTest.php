@@ -805,4 +805,72 @@ class FileValidatorTest extends TestCase
         $validator->validateAttribute($model, 'multiple');
         $this->assertTrue($model->hasErrors('multiple'));
     }
+
+    public function testValidateValueRejectsNonUploadedFile(): void
+    {
+        $validator = new FileValidator();
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate('not an uploaded file', $error),
+            'A value that is not an upload must be rejected.'
+        );
+        $this->assertSame(
+            'Please upload a file.',
+            $error,
+            'Error must be the upload-required message.'
+        );
+    }
+
+    public function testValidateValueRejectsUnknownUploadError(): void
+    {
+        $validator = new FileValidator();
+        $file = new UploadedFile([
+            'name' => 'test.txt',
+            'tempName' => '',
+            'type' => 'text/plain',
+            'size' => 1,
+            'error' => 999,
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate($file, $error),
+            'An unmapped error code must be rejected.'
+        );
+        $this->assertSame(
+            'File upload failed.',
+            $error,
+            'Error must fall back to the generic failure message.'
+        );
+    }
+
+    public function testValidateRejectsExtensionNotMatchingDetectedMimeType(): void
+    {
+        $validator = new FileValidator(['extensions' => ['jpg'], 'checkExtensionByMimeType' => true]);
+
+        $filePath = Yii::getAlias('@yiiunit/framework/validators/data/mimeType/test.txt');
+
+        $file = new UploadedFile([
+            'name' => 'test.jpg',
+            'tempName' => $filePath,
+            'type' => 'image/jpeg',
+            'size' => filesize($filePath),
+            'error' => UPLOAD_ERR_OK,
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate($file, $error),
+            'A name that merely claims the extension must not be enough.'
+        );
+        $this->assertSame(
+            'Only files with these extensions are allowed: jpg.',
+            $error,
+            'Error must be the wrong-extension message.'
+        );
+    }
 }
