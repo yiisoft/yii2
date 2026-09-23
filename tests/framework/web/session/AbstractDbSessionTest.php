@@ -287,4 +287,24 @@ abstract class AbstractDbSessionTest extends TestCase
     {
         $this->useStrictModeTest(DbSession::class);
     }
+
+    public function testStrictModeKeepsKnownIdWithEmptyPayload(): void
+    {
+        $session = new DbSession(['useStrictMode' => true]);
+
+        $session->close();
+
+        $session->writeSession('known-id', '');
+        $session->setId('known-id');
+
+        $session->open();
+
+        $this->assertSame(
+            'known-id',
+            $session->getId(),
+            'Stored ID must be kept even without data.',
+        );
+
+        $session->close();
+    }
 }

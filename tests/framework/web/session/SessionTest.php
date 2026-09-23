@@ -9,6 +9,7 @@
 namespace yiiunit\framework\web\session;
 
 use yii\web\Session;
+use yii\web\SessionHandler;
 use yiiunit\TestCase;
 
 /**
@@ -117,5 +118,33 @@ class SessionTest extends TestCase
         }
 
         $this->useStrictModeTest(Session::class);
+    }
+
+    public function testSessionHandlerCreatesUniqueHexSessionIds(): void
+    {
+        $handler = new SessionHandler(new Session());
+
+        $id = $handler->create_sid();
+
+        $this->assertMatchesRegularExpression(
+            '/^[0-9a-f]{32}$/',
+            $id,
+            'ID must be 32 hexadecimal characters.',
+        );
+        $this->assertNotSame(
+            $id,
+            $handler->create_sid(),
+            'Each call must yield a new ID.',
+        );
+    }
+
+    public function testSessionHandlerAcceptsEveryIdWithoutCustomValidation(): void
+    {
+        $handler = new SessionHandler(new Session());
+
+        $this->assertTrue(
+            $handler->validateId('unknown-id'),
+            'Base storage must not reject any ID.',
+        );
     }
 }
