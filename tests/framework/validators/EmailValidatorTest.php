@@ -8,9 +8,13 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\base\ErrorException;
 use yii\validators\EmailValidator;
+use yiiunit\data\validators\DnsStub;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
+
+use function checkdnsrr;
 
 /**
  * @group validators
@@ -23,6 +27,16 @@ class EmailValidatorTest extends TestCase
 
         // destroy application, Validator must work without Yii::$app
         $this->destroyApplication();
+
+        // loads the DNS shim before the validator resolves the global functions for the first time
+        DnsStub::reset();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        DnsStub::reset();
     }
 
     public function testValidateValue(): void
@@ -112,27 +126,101 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($validator->validate('Короткое имя <тест@это-доменное-имя.после-преобразования-в-idn.будет-содержать-больше-254-символов.бла-бла-бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.бла-бла-бла-бла-бла-бла.com>'));
     }
 
-    public function testValidateValueMx(): void
+    public function testValidateValueAcceptsDomainWithMxRecord(): void
     {
-        $validator = new EmailValidator();
+        $validator = new EmailValidator(['checkDNS' => true]);
 
-        $validator->checkDNS = true;
-        $this->assertTrue($validator->validate('5011@gmail.com'));
+        $this->assertTrue(
+            $validator->validate('5011@gmail.com'),
+            'Domain with an MX record must be accepted.'
+        );
+    }
+
+    public function testValidateValueFallsBackToARecord(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true]);
+
+        $this->assertFalse(
+            checkdnsrr('www.example.com.', 'MX'),
+            'Precondition: the host must publish no MX record.'
+        );
+        $this->assertTrue(
+            $validator->validate('test@www.example.com'),
+            'Missing MX record must fall back to A.'
+        );
+    }
+
+    public function testValidateValueRejectsDomainWithoutDnsRecords(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true]);
+
+        $this->assertFalse(
+            $validator->validate('test@nonexistingsubdomain.example.com'),
+            'A domain without MX and A records must be rejected.'
+        );
 
         $validator->checkDNS = false;
-        $this->assertTrue($validator->validate('test@nonexistingsubdomain.example.com'));
-        $validator->checkDNS = true;
-        $this->assertFalse($validator->validate('test@nonexistingsubdomain.example.com'));
 
-        $validator->checkDNS = true;
-        $validator->allowName = true;
-        $emails = [
-            'ipetrov@gmail.com',
-            'Ivan Petrov <ipetrov@gmail.com>',
-        ];
-        foreach ($emails as $email) {
-            $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
-        }
+        $this->assertTrue(
+            $validator->validate('test@nonexistingsubdomain.example.com'),
+            'Syntax alone must be enough when the check is disabled.'
+        );
+    }
+
+    public function testValidateValueAcceptsNamedAddressWithDnsCheck(): void
+    {
+        $validator = new EmailValidator(['checkDNS' => true, 'allowName' => true]);
+
+        $this->assertTrue(
+            $validator->validate('ipetrov@gmail.com'),
+            'A plain address must pass the DNS check.'
+        );
+        $this->assertTrue(
+            $validator->validate('Ivan Petrov <ipetrov@gmail.com>'),
+            'A named address must pass the DNS check.'
+        );
+    }
+
+    /**
+     * Real DNS cannot return `false` from a record lookup, so the outcome is produced by the stub.
+     */
+    public function testValidateValueRejectsDomainWhenRecordLookupReturnsFalse(): void
+    {
+        DnsStub::$records['gmail.com.'][DNS_MX] = false;
+        DnsStub::$records['gmail.com.'][DNS_A] = false;
+
+        $validator = new EmailValidator(['checkDNS' => true]);
+
+        $this->assertFalse(
+            $validator->validate('test@gmail.com'),
+            'A `false` record set must count as no record.'
+        );
+        $this->assertSame(
+            [['gmail.com.', DNS_MX], ['gmail.com.', DNS_A]],
+            DnsStub::$calls,
+            'Both lookups must hit the stub.'
+        );
+    }
+
+    /**
+     * A raw PHP warning is not converted into an `ErrorException` by the test runner, so the handled-exception branch
+     * is exercised by throwing from the stub.
+     */
+    public function testValidateValueTreatsDnsErrorExceptionAsMissingRecord(): void
+    {
+        DnsStub::$exceptions['gmail.com.'][DNS_MX] = new ErrorException('DNS lookup failed');
+
+        $validator = new EmailValidator(['checkDNS' => true]);
+
+        $this->assertTrue(
+            $validator->validate('test@gmail.com'),
+            'A failed MX lookup must not reject the address.'
+        );
+        $this->assertContains(
+            ['gmail.com.', DNS_MX],
+            DnsStub::$calls,
+            'The MX lookup must reach the stub.'
+        );
     }
 
     public function testValidateAttribute(): void

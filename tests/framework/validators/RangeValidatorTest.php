@@ -11,6 +11,7 @@ namespace yiiunit\framework\validators;
 use ArrayObject;
 use yii\validators\RangeValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -146,5 +147,59 @@ class RangeValidatorTest extends TestCase
             'allowArray' => false,
         ]);
         $this->assertTrue($val->validate('a'));
+        $this->assertFalse($val->validate('c'), 'A value missing from the traversable range must fail.');
+    }
+
+    public function testValidateAttributeWithClosureRange(): void
+    {
+        $val = new RangeValidator([
+            'range' => function ($model, $attribute) {
+                return [1, 2];
+            },
+        ]);
+
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => 1]);
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertFalse(
+            $m->hasErrors('attr_range'),
+            'The computed range must accept one of its members.',
+        );
+
+        $m->attr_range = 3;
+
+        $val->validateAttribute($m, 'attr_range');
+
+        $this->assertTrue(
+            $m->hasErrors('attr_range'),
+            'The computed range must reject an outsider.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttribute(): void
+    {
+        $val = new RangeValidator(['range' => [1, 2], 'allowArray' => true, 'not' => true]);
+
+        $m = FakedValidationModel::createWithAttributes(['attr_range' => 1]);
+
+        $this->assertSame(
+            'yii.validation.range(value, messages, {"range":["1","2"],"not":true,"message":"attr_range is invalid.","skipOnEmpty":1,"allowArray":1});',
+            $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
+            'Client script must pin the whole option set.',
+        );
+
+        $val->range = function ($model, $attribute) {
+            return [3, 4];
+        };
+
+        $this->assertSame(
+            'yii.validation.range(value, messages, {"range":["3","4"],"not":true,"message":"attr_range is invalid.","skipOnEmpty":1,"allowArray":1});',
+            $val->clientValidateAttribute($m, 'attr_range', new ViewStub()),
+            'The computed range must reach the client options.',
+        );
     }
 }
