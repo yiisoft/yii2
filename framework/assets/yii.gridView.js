@@ -160,7 +160,7 @@
                 'class': 'gridview-filter-form',
                 style: 'display:none',
                 'data-pjax': ''
-            }).appendTo($grid);
+            }).appendTo('body');
             $.each(data, function (name, values) {
                 $.each(values, function (index, value) {
                     $form.append($('<input/>').attr({type: 'hidden', name: name, value: value}));
