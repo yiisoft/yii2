@@ -4,7 +4,7 @@ clone_folder: C:\projects\yii2
 
 environment:
     matrix:
-      - php_ver: 7.4.0
+      - php_ver: 8.1.34
 
 cache:
     - '%APPDATA%\Composer'
@@ -17,7 +17,7 @@ init:
 
 install:
     - ps: Set-Service wuauserv -StartupType Manual
-    - IF NOT EXIST C:\tools\php (choco install --yes --allow-empty-checksums php --version %php_ver% --params '/InstallDir:C:\tools\php')
+    - IF NOT EXIST C:\tools\php (choco install --yes --allow-empty-checksums --ignore-dependencies php --version %php_ver% --params '/InstallDir:C:\tools\php')
     - cd C:\tools\php
     - copy php.ini-production php.ini
     - echo date.timezone="UTC" >> php.ini
@@ -25,7 +25,7 @@ install:
     - echo extension_dir=ext >> php.ini
     - echo extension=php_curl.dll >> php.ini
     - echo extension=php_fileinfo.dll >> php.ini
-    - echo extension=php_gd2.dll >> php.ini
+    - echo extension=php_gd.dll >> php.ini
     - echo extension=php_intl.dll >> php.ini
     - echo extension=php_mbstring.dll >> php.ini
     - echo extension=php_openssl.dll >> php.ini
@@ -34,7 +34,7 @@ install:
 
 before_test:
     - cd C:\projects\yii2
-    - php C:\tools\composer.phar update --no-interaction --no-progress --prefer-stable --no-ansi
+    - set "COMPOSER_ROOT_VERSION=2.0.x-dev" && php C:\tools\composer.phar update --no-interaction --no-progress --prefer-stable --no-ansi
 
 test_script:
     - cd C:\projects\yii2

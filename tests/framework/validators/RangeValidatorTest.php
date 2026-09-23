@@ -6,10 +6,13 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use ArrayObject;
 use yii\validators\RangeValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
@@ -23,7 +26,18 @@ class RangeValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new RangeValidator(array_merge(['range' => [1, 2, 3]], $config));
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -114,7 +128,7 @@ class RangeValidatorTest extends TestCase
         $val->validateAttribute($m, 'attr_r2');
         $this->assertTrue($m->hasErrors('attr_r2'));
         $err = $m->getErrors('attr_r2');
-        $this->assertNotFalse(stripos($err[0], 'attr_r2'));
+        $this->assertNotFalse(stripos((string) $err[0], 'attr_r2'));
     }
 
     public function testValidateSubsetArrayable(): void
