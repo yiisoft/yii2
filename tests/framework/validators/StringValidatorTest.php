@@ -6,10 +6,13 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use stdClass;
 use yii\validators\StringValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
@@ -23,7 +26,18 @@ class StringValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new StringValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 

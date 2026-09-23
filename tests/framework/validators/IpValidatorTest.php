@@ -6,9 +6,12 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
@@ -21,7 +24,19 @@ class IpValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // destroy application, Validator must work without Yii::$app
+
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new IpValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -45,9 +60,8 @@ class IpValidatorTest extends TestCase
     /**
      * @dataProvider provideRangesForSubstitution
      * @param array $range
-     * @param array $expectedRange
      */
-    public function testRangesSubstitution($range, $expectedRange): void
+    public function testRangesSubstitution($range, array $expectedRange): void
     {
         $validator = new IpValidator(['ranges' => $range]);
         $this->assertEquals($expectedRange, $validator->ranges);

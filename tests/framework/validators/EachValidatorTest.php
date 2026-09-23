@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\base\InvalidConfigException;
@@ -27,7 +29,13 @@ class EachValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -212,8 +220,6 @@ class EachValidatorTest extends TestCase
      * of different type during validation.
      * (ie: public array $dummy; where $dummy is array of booleans,
      * validator will try to assign these booleans one by one to $dummy)
-     *
-     * @requires PHP >= 7.4
      */
     public function testTypedProperties(): void
     {

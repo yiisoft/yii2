@@ -6,9 +6,12 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\BooleanValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
@@ -22,7 +25,18 @@ class BooleanValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new BooleanValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
