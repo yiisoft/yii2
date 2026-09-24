@@ -52,7 +52,7 @@ class FilterValidatorTest extends TestCase
         $val = new FilterValidator(['filter' => 'trim']);
         $val->validateAttribute($m, 'attr_one');
         $this->assertSame('to be trimmed', $m->attr_one);
-        $val->filter = fn($value) => null;
+        $val->filter = fn ($value) => null;
         $val->validateAttribute($m, 'attr_two');
         $this->assertNull($m->attr_two);
         $val->filter = [$this, 'notToBeNull'];
@@ -61,7 +61,7 @@ class FilterValidatorTest extends TestCase
         $val->skipOnEmpty = true;
         $val->validateAttribute($m, 'attr_empty2');
         $this->assertNotNull($m->attr_empty2);
-        $val->filter = fn($value) => implode(',', $value);
+        $val->filter = fn ($value) => implode(',', $value);
         $val->skipOnArray = false;
         $val->validateAttribute($m, 'attr_array');
         $this->assertSame('Maria,Anna,Elizabeth', $m->attr_array);

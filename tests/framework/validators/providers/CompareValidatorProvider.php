@@ -29,18 +29,18 @@ final class CompareValidatorProvider
 
         return [
             'closure equal different value' => [
-                ['compareValue' => static fn(): int => $value],
+                ['compareValue' => static fn (): int => $value],
                 $value + 1,
                 false,
                 'Closure returning different value should not validate as equal.',
             ],
             'closure equal same int' => [
-                ['compareValue' => static fn(): int => $value],
+                ['compareValue' => static fn (): int => $value],
                 $value, true,
                 'Closure returning same value should validate as equal.',
             ],
             'closure equal same string' => [
-                ['compareValue' => static fn(): int => $value],
+                ['compareValue' => static fn (): int => $value],
                 (string) $value, true,
                 'Closure returning same value as string should validate as equal.',
             ],
@@ -677,7 +677,7 @@ final class CompareValidatorProvider
             'valid closure with numeric type conversion' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): string => '42.5',
+                    'compareValue' => static fn (): string => '42.5',
                     'operator' => '==',
                 ],
                 '42.5',
@@ -793,7 +793,7 @@ final class CompareValidatorProvider
             'invalid closure less than or equal' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): int => 100,
+                    'compareValue' => static fn (): int => 100,
                     'operator' => '<=',
                 ],
                 '150',
@@ -823,7 +823,7 @@ final class CompareValidatorProvider
             'valid closure less than or equal (equal)' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): int => 100,
+                    'compareValue' => static fn (): int => 100,
                     'operator' => '<=',
                 ],
                 '100',
@@ -833,7 +833,7 @@ final class CompareValidatorProvider
             'valid closure less than or equal (less)' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): int => 100,
+                    'compareValue' => static fn (): int => 100,
                     'operator' => '<=',
                 ],
                 '50',

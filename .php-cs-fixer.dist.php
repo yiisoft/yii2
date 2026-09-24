@@ -29,6 +29,7 @@ $testsFinder = (new Finder())
     ->in(__DIR__ . '/tests')
     ->notPath([
         '#^data(/|$)#',
+        '#^runtime(/|$)#',
         '#(^|/)views/#',
         '#(^|/)stubs?/#',
         '#(^|/)mocks?/#',
@@ -42,6 +43,7 @@ $finder = $buildFinder
 return (new Config())
     ->setFinder($finder)
     ->setRules([
+        '@PSR2' => true,
         'phpdoc_scalar' => true,
         'header_comment' => [
             'comment_type' => 'PHPDoc',

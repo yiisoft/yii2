@@ -642,7 +642,7 @@ final class CompareValidatorTest extends TestCase
         $expectedValue = 100;
         $actualValue = 50;
 
-        $validator = new CompareValidator(['compareValue' => static fn(): int => $expectedValue]);
+        $validator = new CompareValidator(['compareValue' => static fn (): int => $expectedValue]);
 
         $model = new FakedValidationModel();
 
@@ -662,7 +662,7 @@ final class CompareValidatorTest extends TestCase
 
         $validator = new CompareValidator(
             [
-                'compareValue' => static fn(): int => $compareValue,
+                'compareValue' => static fn (): int => $compareValue,
                 'operator' => '>',
             ],
         );
@@ -694,7 +694,7 @@ final class CompareValidatorTest extends TestCase
     {
         $validator = new CompareValidator(
             [
-                'compareValue' => static fn(): string => 'closure_value',
+                'compareValue' => static fn (): string => 'closure_value',
                 'operator' => '==',
                 'type' => CompareValidator::TYPE_STRING,
             ],
