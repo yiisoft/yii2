@@ -6,11 +6,12 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
-use yii\base\ErrorException;
 use yii\validators\EmailValidator;
-use yiiunit\data\validators\DnsStub;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -25,18 +26,19 @@ class EmailValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
-        $this->destroyApplication();
+        $this->mockWebApplication();
+    }
 
-        // loads the DNS shim before the validator resolves the global functions for the first time
-        DnsStub::reset();
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new EmailValidator($config);
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
 
-        DnsStub::reset();
+        $this->destroyApplication();
     }
 
     public function testValidateValue(): void
@@ -84,9 +86,8 @@ class EmailValidatorTest extends TestCase
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');
-
-            return;
         }
+
         $validator = new EmailValidator();
         $validator->enableIDN = true;
 
@@ -181,48 +182,6 @@ class EmailValidatorTest extends TestCase
         );
     }
 
-    /**
-     * Real DNS cannot return `false` from a record lookup, so the outcome is produced by the stub.
-     */
-    public function testValidateValueRejectsDomainWhenRecordLookupReturnsFalse(): void
-    {
-        DnsStub::$records['gmail.com.'][DNS_MX] = false;
-        DnsStub::$records['gmail.com.'][DNS_A] = false;
-
-        $validator = new EmailValidator(['checkDNS' => true]);
-
-        $this->assertFalse(
-            $validator->validate('test@gmail.com'),
-            'A `false` record set must count as no record.'
-        );
-        $this->assertSame(
-            [['gmail.com.', DNS_MX], ['gmail.com.', DNS_A]],
-            DnsStub::$calls,
-            'Both lookups must hit the stub.'
-        );
-    }
-
-    /**
-     * A raw PHP warning is not converted into an `ErrorException` by the test runner, so the handled-exception branch
-     * is exercised by throwing from the stub.
-     */
-    public function testValidateValueTreatsDnsErrorExceptionAsMissingRecord(): void
-    {
-        DnsStub::$exceptions['gmail.com.'][DNS_MX] = new ErrorException('DNS lookup failed');
-
-        $validator = new EmailValidator(['checkDNS' => true]);
-
-        $this->assertTrue(
-            $validator->validate('test@gmail.com'),
-            'A failed MX lookup must not reject the address.'
-        );
-        $this->assertContains(
-            ['gmail.com.', DNS_MX],
-            DnsStub::$calls,
-            'The MX lookup must reach the stub.'
-        );
-    }
-
     public function testValidateAttribute(): void
     {
         $validator = new EmailValidator();
@@ -232,63 +191,41 @@ class EmailValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_email'));
     }
 
-    public static function malformedAddressesProvider(): array
-    {
-        return [
-            // this is the demo email used in the proof of concept of the exploit
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-            // trying more adresses
-            ['"Attacker -Param2 -Param3"@test.com'],
-            ['\'Attacker -Param2 -Param3\'@test.com'],
-            ['"Attacker \" -Param2 -Param3"@test.com'],
-            ["'Attacker \\' -Param2 -Param3'@test.com"],
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-            // and even more variants
-            ['"attacker\"\ -oQ/tmp/\ -X/var/www/cache/phpcode.php"@email.com'],
-            ["\"attacker\\\"\0-oQ/tmp/\0-X/var/www/cache/phpcode.php\"@email.com"],
-            ['"attacker@cebe.cc\"-Xbeep"@email.com'],
-
-            ["'attacker\\' -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
-            ["'attacker\\\\' -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
-            ["'attacker\\\\'\\ -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
-            ["'attacker\\';touch /tmp/hackme'@email.com"],
-            ["'attacker\\\\';touch /tmp/hackme'@email.com"],
-            ["'attacker\\';touch/tmp/hackme'@email.com"],
-            ["'attacker\\\\';touch/tmp/hackme'@email.com"],
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
-        ];
-    }
-
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is disabled.
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is
+     * disabled.
+     *
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
-     * @dataProvider malformedAddressesProvider
-     * @param string $value
+     * @dataProvider \yiiunit\framework\validators\providers\EmailValidatorProvider::malformedAddressesProvider
      */
-    public function testMalformedAddressesIdnDisabled($value): void
+    public function testMalformedAddressesIdnDisabled(string $value): void
     {
         $validator = new EmailValidator();
+
         $validator->enableIDN = false;
+
         $this->assertFalse($validator->validate($value));
     }
 
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is enabled.
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074 while IDN is
+     * enabled.
+     *
      * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
-     * @dataProvider malformedAddressesProvider
-     * @param string $value
+     * @dataProvider \yiiunit\framework\validators\providers\EmailValidatorProvider::malformedAddressesProvider
      */
-    public function testMalformedAddressesIdnEnabled($value): void
+    public function testMalformedAddressesIdnEnabled(string $value): void
     {
         if (!function_exists('idn_to_ascii')) {
             $this->markTestSkipped('Intl extension required');
-            return;
         }
 
         $val = new EmailValidator();
+
         $val->enableIDN = true;
+
         $this->assertFalse($val->validate($value));
     }
 

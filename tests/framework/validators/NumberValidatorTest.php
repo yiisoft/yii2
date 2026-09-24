@@ -6,10 +6,13 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use stdClass;
 use yii\validators\NumberValidator;
+use yii\validators\Validator;
 use yii\web\View;
 use yiiunit\data\validators\StringableValue;
 use yiiunit\data\validators\models\FakedValidationModel;
@@ -20,9 +23,34 @@ use yiiunit\TestCase;
  */
 class NumberValidatorTest extends TestCase
 {
-    private $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
-    private $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
+    private array $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
+    private array $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
     private $oldLocale;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockApplication();
+
+        $this->oldLocale = setlocale(LC_NUMERIC, '0');
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new NumberValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        if ($this->oldLocale !== false) {
+            setlocale(LC_NUMERIC, $this->oldLocale);
+        }
+
+        $this->destroyApplication();
+    }
 
     private function setCommaDecimalLocale(): void
     {
@@ -49,16 +77,6 @@ class NumberValidatorTest extends TestCase
     private function restoreLocale(): void
     {
         setlocale(LC_NUMERIC, $this->oldLocale);
-    }
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->oldLocale = setlocale(LC_NUMERIC, 0);
-
-        // destroy application, Validator must work without Yii::$app
-        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit(): void
@@ -603,8 +621,6 @@ class NumberValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
 
-        // the check is here for HHVM that
-        // was losing handler for unknown reason
         if (is_resource($fp)) {
             fclose($fp);
         }
