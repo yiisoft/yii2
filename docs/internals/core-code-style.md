@@ -5,7 +5,8 @@ The following code style is used for Yii 2.x core and official extensions develo
 into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose
 what suits you better.
 
-You can get a config for CodeSniffer here: https://github.com/yiisoft/yii2-coding-standards
+Code style is checked with [PHP-CS-Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) using `.php-cs-fixer.dist.php`.
+Run `composer cs` to check the code style and `composer cs-fix` to apply fixes.
 
 ## 1. Overview
 
