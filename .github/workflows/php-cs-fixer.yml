@@ -1,4 +1,5 @@
-name: php-cs-fixer
+---
+name: code style
 
 permissions:
   contents: read
@@ -6,7 +7,6 @@ permissions:
 on:
   pull_request: &ignore-paths
     paths-ignore:
-      - ".appveyor.yml"
       - ".dockerignore"
       - ".editorconfig"
       - ".git-blame-ignore-revs"

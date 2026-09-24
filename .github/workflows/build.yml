@@ -7,7 +7,6 @@ permissions:
 on:
   pull_request: &ignore-paths
     paths-ignore:
-      - ".appveyor.yml"
       - ".dockerignore"
       - ".editorconfig"
       - ".git-blame-ignore-revs"
@@ -95,7 +94,38 @@ jobs:
           coverage-token: ${{ secrets.CODECOV_TOKEN }}
           exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
 
-  phpunit-dev:
+  phpunit-windows:
+    name: PHP ${{ matrix.php }} Windows
+
+    env:
+      PHP_EXTENSIONS: apcu, curl, dom, fileinfo, gd, intl, mbstring, openssl, pdo_sqlite
+
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [7.4, 8.0, 8.1, 8.2, 8.3, 8.4, 8.5]
+
+    steps:
+      - name: Checkout.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup PHP with Composer.
+        uses: ./.github/actions/php-setup
+        with:
+          extensions: ${{ env.PHP_EXTENSIONS }}
+          ini-values: ${{ env.PHP_INI_VALUES }}
+          php-version: ${{ matrix.php }}
+
+      - name: Run PHPUnit tests.
+        uses: ./.github/actions/phpunit
+        with:
+          exclude-group: ${{ env.PHPUNIT_EXCLUDE_GROUP }}
+
+  phpunit-nightly:
     name: PHP ${{ matrix.php }}
 
     env:
