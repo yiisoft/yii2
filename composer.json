@@ -77,22 +77,16 @@
     },
     "require-dev": {
         "cebe/indent": "~1.0.2",
-        "dealerdirect/phpcodesniffer-composer-installer": "*",
         "php-forge/foxy": "^0.2",
         "phpunit/phpunit": "^11.5",
         "xepozz/internal-mocker": "^1.4",
-        "yiisoft/yii2-coding-standards": "^3.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-phpunit": "^2.0",
         "rector/rector": "^2.6",
-        "slevomat/coding-standard": "^8.31",
         "friendsofphp/php-cs-fixer": "^3.95"
     },
     "provide": {
         "psr/log-implementation": "3.0"
-    },
-    "suggest": {
-        "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
     },
     "autoload": {
         "psr-4": {
@@ -123,7 +117,6 @@
     "config": {
         "allow-plugins": {
             "yiisoft/yii2-composer": true,
-            "dealerdirect/phpcodesniffer-composer-installer": true,
             "php-forge/foxy": true
         }
     },
@@ -131,8 +124,8 @@
         "framework/yii"
     ],
     "scripts": {
-        "cs": "./vendor/bin/phpcs && ./vendor/bin/php-cs-fixer check",
-        "cs-fix": "./vendor/bin/phpcbf && ./vendor/bin/php-cs-fixer fix",
+        "cs": "./vendor/bin/php-cs-fixer check",
+        "cs-fix": "./vendor/bin/php-cs-fixer fix",
         "static": "./vendor/bin/phpstan --memory-limit=-1",
         "test": [
             "Composer\\Config::disableProcessTimeout",

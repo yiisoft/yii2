@@ -98,7 +98,7 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 [
                     'not in',
                     ['id', 'name'],
-                    [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                    [new class(['id' => 1, 'name' => null]) extends ArrayAccessObject {
                         public function offsetExists($offset): bool
                         {
                             return array_key_exists($offset, $this->data);
@@ -125,7 +125,7 @@ final class InConditionBuilderProvider extends \yiiunit\base\db\conditions\provi
                 [
                     'in',
                     ['id', 'name'],
-                    [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                    [new class(['id' => 1, 'name' => null]) extends ArrayAccessObject {
                         public function offsetExists($offset): bool
                         {
                             return array_key_exists($offset, $this->data);

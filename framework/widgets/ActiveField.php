@@ -8,7 +8,6 @@
 
 namespace yii\widgets;
 
-use Yii;
 use yii\base\Component;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;

@@ -18,8 +18,8 @@ use yii\validators\CompareValidator;
  * Provides representative input/output pairs for validation, attribute comparison, error messages, operator behavior,
  * and numeric type conversion scenarios.
  *
- * @copyright Copyright (c) 2008 Yii Software LLC.
- * @license https://www.yiiframework.com/license/
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 2.0.56
  */
 final class CompareValidatorProvider
 {
@@ -29,18 +29,18 @@ final class CompareValidatorProvider
 
         return [
             'closure equal different value' => [
-                ['compareValue' => static fn(): int => $value],
+                ['compareValue' => static fn (): int => $value],
                 $value + 1,
                 false,
                 'Closure returning different value should not validate as equal.',
             ],
             'closure equal same int' => [
-                ['compareValue' => static fn(): int => $value],
+                ['compareValue' => static fn (): int => $value],
                 $value, true,
                 'Closure returning same value should validate as equal.',
             ],
             'closure equal same string' => [
-                ['compareValue' => static fn(): int => $value],
+                ['compareValue' => static fn (): int => $value],
                 (string) $value, true,
                 'Closure returning same value as string should validate as equal.',
             ],
@@ -321,7 +321,15 @@ final class CompareValidatorProvider
                 ['attr_x' => 10, 'attr_y' => 10],
                 'attr_y',
                 false,
-                'Validation should be skipped when compareAttribute has errors and skipOnError is `true`.',
+                'Comparison should run and pass when compareAttribute has errors and skipOnError is `true`.',
+                ['attr_x' => 'invalid value']
+            ],
+            'compareAttribute with error and skipOnError true mismatch' => [
+                ['compareAttribute' => 'attr_x', 'skipOnError' => true],
+                ['attr_x' => 10, 'attr_y' => 20],
+                'attr_y',
+                true,
+                'Comparison should run and fail when compareAttribute has errors and skipOnError is `true`.',
                 ['attr_x' => 'invalid value']
             ],
             'compareValue equal match' => [
@@ -669,7 +677,7 @@ final class CompareValidatorProvider
             'valid closure with numeric type conversion' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): string => '42.5',
+                    'compareValue' => static fn (): string => '42.5',
                     'operator' => '==',
                 ],
                 '42.5',
@@ -785,7 +793,7 @@ final class CompareValidatorProvider
             'invalid closure less than or equal' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): int => 100,
+                    'compareValue' => static fn (): int => 100,
                     'operator' => '<=',
                 ],
                 '150',
@@ -815,7 +823,7 @@ final class CompareValidatorProvider
             'valid closure less than or equal (equal)' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): int => 100,
+                    'compareValue' => static fn (): int => 100,
                     'operator' => '<=',
                 ],
                 '100',
@@ -825,7 +833,7 @@ final class CompareValidatorProvider
             'valid closure less than or equal (less)' => [
                 [
                     'type' => CompareValidator::TYPE_NUMBER,
-                    'compareValue' => static fn(): int => 100,
+                    'compareValue' => static fn (): int => 100,
                     'operator' => '<=',
                 ],
                 '50',

@@ -59,7 +59,7 @@ class CacheControllerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'firstCache' => 'yii\caching\ArrayCache',
-                'secondCache' => fn() => new ArrayCache(),
+                'secondCache' => fn () => new ArrayCache(),
                 'thirdCache' => 'yii\caching\CacheInterface',
                 'session' => 'yii\web\CacheSession', // should be ignored at `actionFlushAll()`
                 'db' => [

@@ -70,7 +70,7 @@ class CheckboxColumnTest extends TestCase
         $this->assertStringContainsString('value="42"', $column->renderDataCell([], 1, 0));
 
         $column = new CheckboxColumn([
-            'checkboxOptions' => fn($model, $key, $index, $column) => [],
+            'checkboxOptions' => fn ($model, $key, $index, $column) => [],
             'grid' => $this->getGrid(),
         ]);
         $this->assertStringContainsString('value="1"', $column->renderDataCell([], 1, 0));
@@ -78,7 +78,7 @@ class CheckboxColumnTest extends TestCase
         $this->assertStringContainsString('value="[1,42]"', $column->renderDataCell([], [1, 42], 0));
 
         $column = new CheckboxColumn([
-            'checkboxOptions' => fn($model, $key, $index, $column) => ['value' => 42],
+            'checkboxOptions' => fn ($model, $key, $index, $column) => ['value' => 42],
             'grid' => $this->getGrid(),
         ]);
         $this->assertStringNotContainsString('value="1"', $column->renderDataCell([], 1, 0));
@@ -88,13 +88,13 @@ class CheckboxColumnTest extends TestCase
     public function testContent(): void
     {
         $column = new CheckboxColumn([
-            'content' => fn($model, $key, $index, $column) => null,
+            'content' => fn ($model, $key, $index, $column) => null,
             'grid' => $this->getGrid(),
         ]);
         $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = new CheckboxColumn([
-            'content' => fn($model, $key, $index, $column) => Html::checkBox('checkBoxInput', false),
+            'content' => fn ($model, $key, $index, $column) => Html::checkBox('checkBoxInput', false),
             'grid' => $this->getGrid(),
         ]);
         $this->assertStringContainsString(Html::checkBox('checkBoxInput', false), $column->renderDataCell([], 1, 0));

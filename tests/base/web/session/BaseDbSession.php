@@ -152,7 +152,7 @@ abstract class BaseDbSession extends TestCase
     {
         $session = new DbSession();
 
-        $session->writeCallback = fn($session) => ['data' => 'changed by callback data'];
+        $session->writeCallback = fn ($session) => ['data' => 'changed by callback data'];
 
         $session->writeSession('test', 'session data');
 
@@ -174,7 +174,7 @@ abstract class BaseDbSession extends TestCase
         $migration->compact = true;
         $migration->addColumn($session->sessionTable, 'user_id', $migration->integer());
 
-        $session->writeCallback = fn($session) => ['user_id' => $session['user_id']];
+        $session->writeCallback = fn ($session) => ['user_id' => $session['user_id']];
 
         // here used to be error, fixed issue #9438
         $session->close();
@@ -226,7 +226,7 @@ abstract class BaseDbSession extends TestCase
         $migrate->run($action, $params);
         ob_get_clean();
 
-        return array_map(fn($version) => substr((string) $version, 15), (new Query())->select(['version'])->from('migration')->column());
+        return array_map(fn ($version) => substr((string) $version, 15), (new Query())->select(['version'])->from('migration')->column());
     }
 
     public function testMigration(): void

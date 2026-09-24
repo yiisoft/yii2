@@ -228,7 +228,7 @@ class SluggableBehaviorTest extends TestCase
         $model = new ActiveRecordSluggable();
         $model->getSluggable()->immutable = true;
         $model->getSluggable()->attribute = null;
-        $model->getSluggable()->value = fn() => $model->name;
+        $model->getSluggable()->value = fn () => $model->name;
 
         $model->name = 'test name';
         $model->validate();

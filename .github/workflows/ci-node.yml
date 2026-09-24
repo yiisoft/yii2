@@ -1,12 +1,12 @@
+---
+name: build-node
+
 permissions:
   contents: read
-
-name: build-node
 
 on:
   pull_request: &ignore-paths
     paths-ignore:
-      - ".appveyor.yml"
       - ".dockerignore"
       - ".editorconfig"
       - ".git-blame-ignore-revs"

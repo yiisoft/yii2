@@ -165,7 +165,7 @@ final class PsrLoggerTest extends TestCase
         $yiiLogger = new Logger(['flushInterval' => 0]);
         $logger = new PsrLogger($yiiLogger);
 
-        $message = new class () implements Stringable {
+        $message = new class() implements Stringable {
             public function __toString(): string
             {
                 return 'Stringable message';

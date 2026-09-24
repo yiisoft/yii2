@@ -50,7 +50,7 @@ class DetailViewTest extends TestCase
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => fn($model) => $model->getDisplayedId(),
+                    'value' => fn ($model) => $model->getDisplayedId(),
                 ],
             ],
         ]);
@@ -116,16 +116,16 @@ class DetailViewTest extends TestCase
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => fn($model) => $model->getDisplayedId(),
+                    'value' => fn ($model) => $model->getDisplayedId(),
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => fn($model) => $model->getDisplayedId(),
+                    'value' => fn ($model) => $model->getDisplayedId(),
                     'visible' => false,
                 ],
                 [
                     'attribute' => 'id',
-                    'value' => fn($model) => $model->getDisplayedId(),
+                    'value' => fn ($model) => $model->getDisplayedId(),
                     'visible' => true,
                 ],
             ],

@@ -97,7 +97,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
             ->from('dependency_item')
             ->andWhere(['value' => 'not exist']);
         $dependency->reusable = false;
-        $dependency->method = fn(Query $query, $db) => $query->orWhere(['value' => 'initial'])->exists($db);
+        $dependency->method = fn (Query $query, $db) => $query->orWhere(['value' => 'initial'])->exists($db);
 
         $dependency->evaluateDependency($cache);
         $this->assertFalse($dependency->isChanged($cache));
@@ -121,7 +121,7 @@ class DbQueryDependencyTest extends DatabaseTestCase
             ->from('dependency_item')
             ->andWhere(['value' => 'not exist']);
         $dependency->reusable = true;
-        $dependency->method = fn(Query $query, $db) => $query->orWhere(['value' => 'initial'])->exists($db);
+        $dependency->method = fn (Query $query, $db) => $query->orWhere(['value' => 'initial'])->exists($db);
 
         $dependency->evaluateDependency($cache);
         $this->assertFalse($dependency->isChanged($cache));

@@ -86,7 +86,7 @@ class FormatterTest extends TestCase
     public function testClosureFormat(): void
     {
         $value = time();
-        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, fn($value) => date('Y-m-d', $value)));
+        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, fn ($value) => date('Y-m-d', $value)));
         $this->assertSame(
             'from: ' . date('Y-m-d', $value),
             $this->formatter->format($value, function ($value, Formatter $formatter) {

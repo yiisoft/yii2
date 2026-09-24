@@ -776,7 +776,7 @@ class Module extends ServiceLocator
 
         $className = preg_replace_callback(
             '%-([a-z0-9_])%i',
-            fn($matches): string => ucfirst($matches[1]),
+            fn ($matches): string => ucfirst($matches[1]),
             ucfirst($idPart),
         ) . 'Action';
         $className = ltrim(
@@ -978,7 +978,7 @@ class Module extends ServiceLocator
         }
 
         $className = preg_replace_callback('%-([a-z0-9_])%i', function ($matches) {
-                return ucfirst($matches[1]);
+            return ucfirst($matches[1]);
         }, ucfirst($className)) . 'Controller';
         $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {

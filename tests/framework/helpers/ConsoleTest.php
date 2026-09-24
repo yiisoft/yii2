@@ -8,7 +8,6 @@
 
 namespace yiiunit\framework\helpers;
 
-use Yii;
 use yii\helpers\Console;
 use yiiunit\TestCase;
 use yii\base\DynamicModel;
@@ -313,7 +312,7 @@ class ConsoleTest extends TestCase
 
         // testing custom callable check ("validator" param)
         $this->sendInput('cat', '15');
-        $result = ConsoleStub::prompt('SmthNumeric', ['validator' => fn($value, &$error) => is_numeric($value)]);
+        $result = ConsoleStub::prompt('SmthNumeric', ['validator' => fn ($value, &$error) => is_numeric($value)]);
         $this->assertEquals('SmthNumeric Invalid input.' . PHP_EOL . 'SmthNumeric ', $this->readOutput());
         $this->assertEquals('15', $result);
         $this->truncateStreams();
@@ -340,7 +339,7 @@ class ConsoleTest extends TestCase
             'required' => true,
             'default' => 'kraken',
             'pattern' => '/^\d+$/',
-            'validator' => fn($value, &$error) => $value == 15,
+            'validator' => fn ($value, &$error) => $value == 15,
             'error' => 'CustomError',
         ]);
         $this->assertEquals('Combined [kraken] CustomError' . PHP_EOL . 'Combined [kraken] ', $this->readOutput());

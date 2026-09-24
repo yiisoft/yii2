@@ -129,7 +129,7 @@ class InConditionBuilderProvider
                 [],
             ],
             'composite in with array access null value' => [
-                ['in', ['id', 'name'], [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                ['in', ['id', 'name'], [new class(['id' => 1, 'name' => null]) extends ArrayAccessObject {
                     public function offsetExists($offset): bool
                     {
                         return array_key_exists($offset, $this->data);
@@ -169,7 +169,7 @@ class InConditionBuilderProvider
                 [':qp0' => 1],
             ],
             'composite not in with array access null value' => [
-                ['not in', ['id', 'name'], [new class (['id' => 1, 'name' => null]) extends ArrayAccessObject {
+                ['not in', ['id', 'name'], [new class(['id' => 1, 'name' => null]) extends ArrayAccessObject {
                     public function offsetExists($offset): bool
                     {
                         return array_key_exists($offset, $this->data);

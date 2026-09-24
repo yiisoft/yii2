@@ -433,7 +433,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $updateColumns,
             $updateNames,
             $params,
-            static fn(string $quotedName): string => "EXCLUDED.{$quotedName}",
+            static fn (string $quotedName): string => "EXCLUDED.{$quotedName}",
         );
 
         $conflictTarget = $this->resolveUpsertConflictTarget($constraints);
@@ -669,7 +669,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         usort(
             $constraints,
-            static fn(Constraint $a, Constraint $b): int => [
+            static fn (Constraint $a, Constraint $b): int => [
                 !($a instanceof IndexConstraint && $a->isPrimary),
                 $a instanceof IndexConstraint,
                 count($a->columnNames),

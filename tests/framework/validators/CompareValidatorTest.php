@@ -10,7 +10,8 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
-use PHPUnit\Framework\Attributes\{DataProviderExternal, Group};
+use PHPUnit\Framework\Attributes\DataProviderExternal;
+use PHPUnit\Framework\Attributes\Group;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\validators\CompareValidator;
@@ -559,7 +560,7 @@ final class CompareValidatorTest extends TestCase
 
         $validator = new CompareValidator(
             [
-                'compareValue' => static fn(): int => $expectedValue,
+                'compareValue' => static fn (): int => $expectedValue,
             ],
         );
 
@@ -581,7 +582,7 @@ final class CompareValidatorTest extends TestCase
 
         $validator = new CompareValidator(
             [
-                'compareValue' => static fn(): int => $compareValue,
+                'compareValue' => static fn (): int => $compareValue,
                 'operator' => '>',
             ],
         );
@@ -613,7 +614,7 @@ final class CompareValidatorTest extends TestCase
     {
         $validator = new CompareValidator(
             [
-                'compareValue' => static fn(): string => 'closure_value',
+                'compareValue' => static fn (): string => 'closure_value',
                 'operator' => '==',
                 'type' => CompareValidator::TYPE_STRING,
             ],

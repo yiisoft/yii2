@@ -66,7 +66,7 @@ final class TargetTest extends TestCase
         }
 
         self::assertSame(
-            array_map(static fn(string $value): string => "test{$value}", $expected),
+            array_map(static fn (string $value): string => "test{$value}", $expected),
             $messageColumn,
             'Filtered messages must match the expected values and order.',
         );
@@ -213,7 +213,7 @@ final class TargetTest extends TestCase
             "Target must be disabled after assigning 'false'.",
         );
 
-        $target->enabled = fn($target) => $target->messages === [];
+        $target->enabled = fn ($target) => $target->messages === [];
 
         self::assertTrue(
             $target->enabled,
@@ -248,7 +248,7 @@ final class TargetTest extends TestCase
     {
         $target = new TargetStub();
 
-        $target->prefix = static fn(array $message): string => $message[0];
+        $target->prefix = static fn (array $message): string => $message[0];
 
         self::assertSame(
             'custom-prefix',
@@ -343,7 +343,7 @@ final class TargetTest extends TestCase
             ->method('dispatch')
             ->with(
                 $this->callback(
-                    fn($messages) => count($messages) === 2
+                    fn ($messages) => count($messages) === 2
                     && $messages[0][0] === 'token.a'
                     && $messages[0][1] == Logger::LEVEL_PROFILE_BEGIN
                     && $messages[1][0] === 'info',
@@ -378,7 +378,7 @@ final class TargetTest extends TestCase
             ->willReturnCallback(
                 function (...$parameters) use ($matcher): void {
                     if ($matcher->numberOfInvocations() === 1) {
-                        $callback = fn($messages): bool => count($messages) === 1 && $messages[0][0] === 'info';
+                        $callback = fn ($messages): bool => count($messages) === 1 && $messages[0][0] === 'info';
 
                         self::assertTrue(
                             $callback($parameters[0]),
@@ -391,7 +391,7 @@ final class TargetTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 2) {
-                        $callback = fn($messages): bool => count($messages) === 2
+                        $callback = fn ($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.a'
                             && $messages[0][1] === Logger::LEVEL_PROFILE_BEGIN
                             && $messages[1][0] === 'token.a'
@@ -437,7 +437,7 @@ final class TargetTest extends TestCase
             ->willReturnCallback(
                 function (...$parameters) use ($matcher): void {
                     if ($matcher->numberOfInvocations() === 1) {
-                        $callback = fn($messages): bool => count($messages) === 2
+                        $callback = fn ($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.a'
                             && $messages[0][1] === Logger::LEVEL_PROFILE_BEGIN
                             && $messages[1][0] === 'token.b'
@@ -454,7 +454,7 @@ final class TargetTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 2) {
-                        $callback = fn($messages): bool => count($messages) === 1
+                        $callback = fn ($messages): bool => count($messages) === 1
                             && $messages[0][0] === 'Number of dangling profiling block messages reached flushInterval value and therefore these were flushed. Please consider setting higher flushInterval value or making profiling blocks shorter.';
 
                         self::assertTrue(
@@ -468,7 +468,7 @@ final class TargetTest extends TestCase
                     }
 
                     if ($matcher->numberOfInvocations() === 3) {
-                        $callback = fn($messages): bool => count($messages) === 2
+                        $callback = fn ($messages): bool => count($messages) === 2
                             && $messages[0][0] === 'token.b'
                             && $messages[0][1] === Logger::LEVEL_PROFILE_END
                             && $messages[1][0] === 'token.a'

@@ -219,7 +219,7 @@ trait ActiveRecordTestTrait
         $this->assertInstanceOf($customerClass, $customers['user3']);
 
         // indexBy callable
-        $customers = $customerClass::find()->indexBy(fn($customer) => $customer->id . '-' . $customer->name)->orderBy('id')->all();
+        $customers = $customerClass::find()->indexBy(fn ($customer) => $customer->id . '-' . $customer->name)->orderBy('id')->all();
         $this->assertCount(3, $customers);
         $this->assertInstanceOf($customerClass, $customers['1-user1']);
         $this->assertInstanceOf($customerClass, $customers['2-user2']);
@@ -250,7 +250,7 @@ trait ActiveRecordTestTrait
         $this->assertArrayHasKey('status', $customers['user3']);
 
         // indexBy callable + asArray
-        $customers = $customerClass::find()->indexBy(fn($customer) => $customer['id'] . '-' . $customer['name'])->asArray()->all();
+        $customers = $customerClass::find()->indexBy(fn ($customer) => $customer['id'] . '-' . $customer['name'])->asArray()->all();
         $this->assertCount(3, $customers);
         $this->assertArrayHasKey('id', $customers['1-user1']);
         $this->assertArrayHasKey('name', $customers['1-user1']);

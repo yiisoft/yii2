@@ -110,7 +110,7 @@ class ModuleTest extends TestCase
             'String version must round-trip.',
         );
 
-        $module->setVersion(static fn(TestModule $module): string => 'version.' . $module->getUniqueId());
+        $module->setVersion(static fn (TestModule $module): string => 'version.' . $module->getUniqueId());
 
         self::assertSame(
             'version.test',

@@ -116,7 +116,7 @@ abstract class BaseSchema extends DatabaseTestCase
         $tables = $schema->getTableNames();
 
         if ($this->driverName === 'sqlsrv') {
-            $tables = array_map(static fn($item): string => trim((string) $item, '[]'), $tables);
+            $tables = array_map(static fn ($item): string => trim((string) $item, '[]'), $tables);
         }
 
         $expectedTables = [

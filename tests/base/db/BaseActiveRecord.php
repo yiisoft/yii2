@@ -13,7 +13,6 @@ use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecordInterface;
 use yii\db\Query;
 use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;

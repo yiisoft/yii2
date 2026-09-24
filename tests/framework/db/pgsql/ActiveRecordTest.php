@@ -11,15 +11,12 @@ namespace yiiunit\framework\db\pgsql;
 use ArrayAccess;
 use Traversable;
 use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecordInterface;
 use yii\db\ArrayExpression;
 use yii\db\Expression;
 use yii\db\JsonExpression;
 use yii\db\pgsql\Schema;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\DefaultPk;
-use yiiunit\framework\ar\ActiveRecordTestTrait;
-use yiiunit\TestCase;
 use yiiunit\base\db\BaseActiveRecord;
 
 /**

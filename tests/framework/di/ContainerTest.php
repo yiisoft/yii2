@@ -189,7 +189,7 @@ class ContainerTest extends TestCase
         $this->assertEquals(['MDM', true, 'independent', 'not_default'], $result);
 
 
-        $myFunc = fn($a, NumberValidator $b, $c = 'default') => [$a, $b::class, $c];
+        $myFunc = fn ($a, NumberValidator $b, $c = 'default') => [$a, $b::class, $c];
         $result = Yii::$container->invoke($myFunc, ['a']);
         $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
 
@@ -226,7 +226,7 @@ class ContainerTest extends TestCase
                 ],
             ],
         ]);
-        $closure = fn($a, $b, $x = 5) => $a > $b;
+        $closure = fn ($a, $b, $x = 5) => $a > $b;
         $this->assertFalse(Yii::$container->invoke($closure, ['b' => 5, 'a' => 1]));
         $this->assertTrue(Yii::$container->invoke($closure, ['b' => 1, 'a' => 5]));
     }
@@ -245,7 +245,7 @@ class ContainerTest extends TestCase
                 ],
             ],
         ]);
-        $closure = fn($a, $b) => $a > $b;
+        $closure = fn ($a, $b) => $a > $b;
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['b' => 5, 'a' => 1]));
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['a' => 1, 'b' => 5]));
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, [1, 5]));
@@ -255,7 +255,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         // Test optional unresolvable dependency.
-        $closure = fn(QuxInterface|null $test = null): QuxInterface|null => $test;
+        $closure = fn (QuxInterface|null $test = null): QuxInterface|null => $test;
         $this->assertNull($container->invoke($closure));
     }
 
@@ -269,7 +269,7 @@ class ContainerTest extends TestCase
                 ['class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
-            'qux.using.closure' => fn() => new Qux(),
+            'qux.using.closure' => fn () => new Qux(),
             'rollbar',
             'baibaratsky\yii\rollbar\Rollbar'
         ]);
@@ -459,7 +459,7 @@ class ContainerTest extends TestCase
                 ['class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']],
             ],
-            'qux.using.closure' => fn() => new Qux(),
+            'qux.using.closure' => fn () => new Qux(),
         ]);
         $container->setSingletons([]);
 

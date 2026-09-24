@@ -851,7 +851,7 @@ final class ComponentTest extends TestCase
     {
         $component = new NewComponent();
 
-        $component->{'as f'} = static fn() => new NewBehavior();
+        $component->{'as f'} = static fn () => new NewBehavior();
 
         self::assertNotNull(
             $component->getBehavior('f'),

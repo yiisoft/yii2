@@ -67,12 +67,12 @@ class HostControlTest extends TestCase
                 false,
             ],
             [
-                fn() => ['example.com'],
+                fn () => ['example.com'],
                 'example.com',
                 true,
             ],
             [
-                fn() => ['example.com'],
+                fn () => ['example.com'],
                 'fake.com',
                 false,
             ],

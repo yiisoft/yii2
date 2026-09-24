@@ -35,13 +35,13 @@ final class MockerExtension implements Extension
     public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
         $facade->registerSubscribers(
-            new class () implements StartedSubscriber {
+            new class() implements StartedSubscriber {
                 public function notify(Started $event): void
                 {
                     MockerExtension::load();
                 }
             },
-            new class () implements PreparationStartedSubscriber {
+            new class() implements PreparationStartedSubscriber {
                 public function notify(PreparationStarted $event): void
                 {
                     MockerState::resetState();

@@ -105,7 +105,7 @@ class AssetBundleTest extends TestCase
     {
         $view = $this->getView([
             'linkAssets' => true,
-            'hashCallback' => fn($path) => sprintf('%x/%x', crc32((string) $path), crc32((string) Yii::getVersion())),
+            'hashCallback' => fn ($path) => sprintf('%x/%x', crc32((string) $path), crc32((string) Yii::getVersion())),
         ]);
         $bundle = $this->verifySourcesPublishedBySymlink($view);
         $this->assertTrue(is_dir(dirname($bundle->basePath)));
@@ -114,7 +114,7 @@ class AssetBundleTest extends TestCase
     public function testSourcesPublishAssetManagerBeforeCopy(): void
     {
         $view = $this->getView([
-            'beforeCopy' => fn($from, $to) => false,
+            'beforeCopy' => fn ($from, $to) => false,
         ]);
         $am = $view->assetManager;
 
@@ -135,7 +135,7 @@ class AssetBundleTest extends TestCase
 
         $bundle = new TestSourceAsset();
         $bundle->publishOptions = [
-            'beforeCopy' => fn($from, $to) => false,
+            'beforeCopy' => fn ($from, $to) => false,
         ];
         $bundle->publish($am);
 

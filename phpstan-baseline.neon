@@ -583,12 +583,6 @@ parameters:
 			path: tests/framework/rest/SerializerTest.php
 
 		-
-			message: '#^Access to an undefined property yiiunit\\data\\validators\\models\\FakedValidationModel\:\:\$attr_compare\.$#'
-			identifier: property.notFound
-			count: 1
-			path: tests/framework/validators/CompareValidatorTest.php
-
-		-
 			message: '#^PHPDoc tag @param for parameter \$_ with type mixed is not subtype of native type string\.$#'
 			identifier: parameter.phpDocType
 			count: 1

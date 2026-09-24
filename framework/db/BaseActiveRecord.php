@@ -1647,7 +1647,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 break;
             }
 
-            list ($relationName, $modelAttribute) = $parts;
+            list($relationName, $modelAttribute) = $parts;
 
             if ($model->isRelationPopulated($relationName) && $model->$relationName instanceof self) {
                 $model = $model->$relationName;

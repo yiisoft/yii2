@@ -9,7 +9,6 @@
 namespace yiiunit\framework\i18n;
 
 use yii\console\Application;
-use yii\console\Controller;
 use yii\db\Exception;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;

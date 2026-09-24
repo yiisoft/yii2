@@ -1027,8 +1027,6 @@ class Request extends \yii\base\Request
      * @param string $s
      * @return string the UTF-8 translation of `s`.
      * @see https://github.com/symfony/polyfill-php72/blob/master/Php72.php#L24
-     * @phpcs:disable Generic.Formatting.DisallowMultipleStatements.SameLine
-     * @phpcs:disable Squiz.WhiteSpace.ScopeClosingBrace.ContentBefore
      */
     private function utf8Encode($s)
     {
@@ -1036,9 +1034,17 @@ class Request extends \yii\base\Request
         $len = \strlen($s);
         for ($i = $len >> 1, $j = 0; $i < $len; ++$i, ++$j) {
             switch (true) {
-                case $s[$i] < "\x80": $s[$j] = $s[$i]; break;
-                case $s[$i] < "\xC0": $s[$j] = "\xC2"; $s[++$j] = $s[$i]; break;
-                default: $s[$j] = "\xC3"; $s[++$j] = \chr(\ord($s[$i]) - 64); break;
+                case $s[$i] < "\x80":
+                    $s[$j] = $s[$i];
+                    break;
+                case $s[$i] < "\xC0":
+                    $s[$j] = "\xC2";
+                    $s[++$j] = $s[$i];
+                    break;
+                default:
+                    $s[$j] = "\xC3";
+                    $s[++$j] = \chr(\ord($s[$i]) - 64);
+                    break;
             }
         }
         return substr($s, 0, $j);
