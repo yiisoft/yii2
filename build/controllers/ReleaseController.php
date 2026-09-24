@@ -618,27 +618,6 @@ class ReleaseController extends Controller
         $this->stdout("\n");
     }
 
-    private $_oldAlias;
-
-    protected function setAppAliases($app, $path)
-    {
-        $this->_oldAlias = Yii::getAlias('@app');
-        switch ($app) {
-            case 'basic':
-                Yii::setAlias('@app', $path);
-                break;
-            case 'advanced':
-                // setup @frontend, @backend etc...
-                require "$path/common/config/bootstrap.php";
-                break;
-        }
-    }
-
-    protected function resetAppAliases()
-    {
-        Yii::setAlias('@app', $this->_oldAlias);
-    }
-
     protected function packageApplication($name, $version, $packagePath)
     {
         FileHelper::createDirectory($packagePath);
