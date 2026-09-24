@@ -8,9 +8,13 @@
 
 namespace yiiunit\framework\grid;
 
-use yiiunit\TestCase;
+use Yii;
+use yii\data\ArrayDataProvider;
 use yii\grid\ActionColumn;
+use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\web\Controller;
+use yiiunit\TestCase;
 
 /**
  * @author Vitaly S. <fornit1917@gmail.com>
@@ -35,6 +39,89 @@ class ActionColumnTest extends TestCase
 
         $column = new ActionColumn(['template' => '{view} {view-items}']);
         $this->assertEquals(['view'], array_keys($column->buttons));
+
+        $column = new ActionColumn(['template' => 'view}']);
+        $this->assertEmpty($column->buttons);
+    }
+
+    public function testDefaultButtonWithCustomName(): void
+    {
+        $column = new ActionColumn([
+            'template' => '{approve}',
+        ]);
+
+        $this->invokeMethod($column, 'initDefaultButton', ['approve', 'check']);
+
+        $column->urlCreator = function () {
+            return '/test';
+        };
+
+        $result = $column->renderDataCell([], 1, 0);
+        $this->assertStringContainsString('title="Approve"', $result);
+        $this->assertStringContainsString('aria-label="Approve"', $result);
+    }
+
+    public function testFallbackGlyphicon(): void
+    {
+        $column = new ActionColumn([
+            'template' => '{view}',
+            'icons' => [],
+            'urlCreator' => function () {
+                return '/test';
+            },
+        ]);
+
+        $result = $column->renderDataCell([], 1, 0);
+        $this->assertStringContainsString('class="glyphicon glyphicon-eye-open"', $result);
+    }
+
+    public function testCreateUrlWithoutUrlCreator(): void
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => false,
+                ],
+            ],
+        ]);
+        Yii::$app->controller = new Controller('site', Yii::$app);
+
+        $column = new ActionColumn([
+            'grid' => new GridView([
+                'dataProvider' => new ArrayDataProvider(['allModels' => [['id' => 1]]]),
+            ]),
+        ]);
+
+        $url = $column->createUrl('view', ['id' => 1], 5, 0);
+        $this->assertSame('/site/view?id=5', $url);
+        $this->assertStringContainsString('5', $url);
+
+        $url = $column->createUrl('update', ['id' => 1], ['pk1' => 1, 'pk2' => 2], 0);
+        $this->assertSame('/site/update?pk1=1&pk2=2', $url);
+    }
+
+    public function testCreateUrlWithController(): void
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'urlManager' => [
+                    'enablePrettyUrl' => true,
+                    'showScriptName' => false,
+                ],
+            ],
+        ]);
+        Yii::$app->controller = new Controller('site', Yii::$app);
+
+        $column = new ActionColumn([
+            'controller' => 'admin/post',
+            'grid' => new GridView([
+                'dataProvider' => new ArrayDataProvider(['allModels' => [['id' => 1]]]),
+            ]),
+        ]);
+
+        $url = $column->createUrl('view', ['id' => 1], 1, 0);
+        $this->assertSame('/admin/post/view?id=1', $url);
     }
 
     public function testRenderDataCell(): void
@@ -96,6 +183,7 @@ class ActionColumnTest extends TestCase
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertStringNotContainsString('update_button', $columnContents);
+        $this->assertSame('<td></td>', $columnContents);
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
