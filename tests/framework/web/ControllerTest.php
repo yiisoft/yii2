@@ -12,7 +12,6 @@ namespace yiiunit\framework\web;
 
 use PHPUnit\Framework\Attributes\Group;
 use yii\web\Application;
-use yiiunit\framework\web\FakeUnionTypesController;
 use yiiunit\framework\web\stubs\FakeController;
 use yiiunit\framework\web\stubs\FakeInjectionController;
 use yiiunit\framework\web\stubs\FakeTypedParamsController;
@@ -23,7 +22,6 @@ use RuntimeException;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\BadRequestHttpException;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\ServerErrorHttpException;

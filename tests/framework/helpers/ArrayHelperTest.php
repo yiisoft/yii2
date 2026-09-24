@@ -15,7 +15,6 @@ use yii\helpers\UnsetArrayValue;
 use yii\helpers\ReplaceArrayValue;
 use ArrayObject;
 use Throwable;
-use ReturnTypeWillChange;
 use ArrayAccess;
 use Iterator;
 use yii\base\BaseObject;

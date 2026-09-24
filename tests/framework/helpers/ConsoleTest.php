@@ -8,7 +8,6 @@
 
 namespace yiiunit\framework\helpers;
 
-use Yii;
 use yii\helpers\Console;
 use yiiunit\TestCase;
 use yii\base\DynamicModel;

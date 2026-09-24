@@ -9,13 +9,10 @@
 namespace yii\build\controllers;
 
 use Yii;
-use yii\base\Model;
 use yii\console\Application;
 use yii\console\Controller as ConsoleController;
-use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
-use yii\web\Controller as WebController;
 
 /**
  * PhpDocController is there to help to maintain PHPDoc annotation in class files.

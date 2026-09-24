@@ -9,9 +9,7 @@
 namespace yiiunit\framework\db\mysql\connection;
 
 use yiiunit\framework\db\mysql\ConnectionTest;
-use Throwable;
 use RuntimeException;
-use ErrorException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Transaction;

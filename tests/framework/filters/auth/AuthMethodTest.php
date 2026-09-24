@@ -14,7 +14,6 @@ use Yii;
 use yii\base\Action;
 use yii\filters\auth\AuthMethod;
 use yii\web\Controller;
-use yii\web\UnauthorizedHttpException;
 use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
