@@ -44,6 +44,7 @@ return (new Config())
     ->setFinder($finder)
     ->setRules([
         '@PSR2' => true,
+        'no_unused_imports' => true,
         'phpdoc_scalar' => true,
         'header_comment' => [
             'comment_type' => 'PHPDoc',
