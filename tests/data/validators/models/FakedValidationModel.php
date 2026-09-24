@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
@@ -37,6 +39,7 @@ use yii\base\Model;
  * @property mixed $attr_image
  * @property mixed $attr_images
  * @property mixed $attr_range
+ * @property mixed $attr_compare
  */
 class FakedValidationModel extends Model
 {

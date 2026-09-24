@@ -643,7 +643,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         $messages = array_values(
             array_filter(
                 $logTarget->messages,
-                static fn($message): bool => str_contains((string) $message[0], 'auth_assignment'),
+                static fn ($message): bool => str_contains((string) $message[0], 'auth_assignment'),
             ),
         );
 

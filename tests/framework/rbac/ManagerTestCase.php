@@ -990,7 +990,7 @@ abstract class ManagerTestCase extends TestCase
             'Default roles closure must return an array',
         );
 
-        $this->auth->defaultRoles = fn() => 'test';
+        $this->auth->defaultRoles = fn () => 'test';
     }
 
     public function testDefaultRolesWithNonArrayValue(): void
@@ -1178,7 +1178,7 @@ abstract class ManagerTestCase extends TestCase
 
     public function testSetDefaultRolesAcceptsClosureReturningArray(): void
     {
-        $this->auth->defaultRoles = static fn(): array => ['viewer', 'editor'];
+        $this->auth->defaultRoles = static fn (): array => ['viewer', 'editor'];
 
         self::assertSame(
             ['viewer', 'editor'],

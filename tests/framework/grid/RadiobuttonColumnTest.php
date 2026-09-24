@@ -49,7 +49,7 @@ class RadiobuttonColumnTest extends TestCase
             'value' => 123,
         ];
         $column = new RadioButtonColumn([
-            'radioOptions' => fn($model) => [
+            'radioOptions' => fn ($model) => [
                 'value' => $model['value'],
             ],
         ]);
@@ -60,12 +60,12 @@ class RadiobuttonColumnTest extends TestCase
     public function testContent(): void
     {
         $column = new RadioButtonColumn([
-            'content' => fn($model, $key, $index, $column) => null
+            'content' => fn ($model, $key, $index, $column) => null
         ]);
         $this->assertStringContainsString('<td></td>', $column->renderDataCell([], 1, 0));
 
         $column = new RadioButtonColumn([
-            'content' => fn($model, $key, $index, $column) => Html::radio('radioButtonInput', false)
+            'content' => fn ($model, $key, $index, $column) => Html::radio('radioButtonInput', false)
         ]);
         $this->assertStringContainsString(Html::radio('radioButtonInput', false), $column->renderDataCell([], 1, 0));
     }

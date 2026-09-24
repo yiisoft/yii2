@@ -184,7 +184,7 @@ HTML;
                     'label' => 'item1',
                     'url' => '#',
                     'template' => 'label: {label}; url: {url}',
-                    'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => isset($item, $hasActiveChild, $isItemActive, $widget),
+                    'active' => fn ($item, $hasActiveChild, $isItemActive, $widget) => isset($item, $hasActiveChild, $isItemActive, $widget),
                 ],
                 [
                     'label' => 'item2',
@@ -219,7 +219,7 @@ HTML;
                     'label' => 'logic item',
                     'url' => 'test/logic',
                     'template' => 'label: {label}; url: {url}',
-                    'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
+                    'active' => fn ($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
                 ],
                 [
                     'label' => 'another item',
@@ -263,7 +263,7 @@ HTML;
                             'label' => 'logic item',
                             'url' => 'test/logic',
                             'template' => 'label: {label}; url: {url}',
-                            'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
+                            'active' => fn ($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
                         ],
                         [
                             'label' => 'another item',
@@ -322,7 +322,7 @@ HTML;
                             'label' => 'logic item',
                             'url' => 'test/logic',
                             'template' => 'label: {label}; url: {url}',
-                            'active' => fn($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
+                            'active' => fn ($item, $hasActiveChild, $isItemActive, $widget) => $widget->route === 'test/logic',
                         ],
 
                     ],

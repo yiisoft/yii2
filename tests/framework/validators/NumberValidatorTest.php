@@ -46,6 +46,10 @@ class NumberValidatorTest extends TestCase
     {
         parent::tearDown();
 
+        if ($this->oldLocale !== false) {
+            setlocale(LC_NUMERIC, $this->oldLocale);
+        }
+
         $this->destroyApplication();
     }
 

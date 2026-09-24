@@ -209,7 +209,7 @@ class NewObject extends BaseObject
 
     public function getExecute()
     {
-        return fn($param) => $param * 2;
+        return fn ($param) => $param * 2;
     }
 
     public function getItems()

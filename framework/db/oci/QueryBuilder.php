@@ -202,7 +202,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
 
             $value = $this->db->useMaster(
-                static fn(Connection $db): bool|int|string|null => $db->createCommand(
+                static fn (Connection $db): bool|int|string|null => $db->createCommand(
                     <<<SQL
                     SELECT MAX("{$tableSchema->primaryKey[0]}") FROM "{$tableSchema->name}"
                     SQL
@@ -691,7 +691,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     private function getIdentityGenerationClause(TableSchema $tableSchema): string
     {
         $identity = $this->db->useMaster(
-            static fn(Connection $db): array|false => $db->createCommand(
+            static fn (Connection $db): array|false => $db->createCommand(
                 <<<SQL
                 SELECT ITC.GENERATION_TYPE, TC.DEFAULT_ON_NULL
                 FROM USER_TAB_IDENTITY_COLS ITC

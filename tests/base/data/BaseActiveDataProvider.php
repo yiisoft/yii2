@@ -184,7 +184,7 @@ abstract class BaseActiveDataProvider extends DatabaseTestCase
         );
         self::assertSame(
             [3, 2],
-            array_map(static fn(Order $order): int => $order->id, $orders),
+            array_map(static fn (Order $order): int => $order->id, $orders),
             'Sorting must order the complete UNION result.',
         );
         self::assertSame(

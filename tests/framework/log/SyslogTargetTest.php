@@ -132,7 +132,7 @@ final class SyslogTargetTest extends TestCase
         );
         self::assertSame(
             array_map(
-                static fn(int $priority, int $index): array => [
+                static fn (int $priority, int $index): array => [
                     $priority,
                     'formatted message ' . ($index + 1),
                 ],

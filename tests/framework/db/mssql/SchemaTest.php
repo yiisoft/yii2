@@ -623,7 +623,7 @@ final class SchemaTest extends BaseSchema
         );
 
         $tableSchemaNames = array_map(
-            static fn(TableSchema $tableSchema): string => $tableSchema->name,
+            static fn (TableSchema $tableSchema): string => $tableSchema->name,
             $schema->getTableSchemas($schemaName, true),
         );
 

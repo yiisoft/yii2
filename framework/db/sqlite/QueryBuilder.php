@@ -124,7 +124,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $updateColumns,
             $updateNames,
             $params,
-            static fn(string $quotedName): string => "EXCLUDED.{$quotedName}",
+            static fn (string $quotedName): string => "EXCLUDED.{$quotedName}",
         );
 
         $updateSql = implode(', ', $updates);
@@ -467,7 +467,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $schema = null;
         if (count($tableParts) === 2) {
-            list ($schema, $table) = $tableParts;
+            list($schema, $table) = $tableParts;
         }
 
         return ($unique ? 'CREATE UNIQUE INDEX ' : 'CREATE INDEX ')

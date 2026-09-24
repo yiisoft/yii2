@@ -30,17 +30,17 @@ final class PsrMessageTest extends TestCase
 {
     public function testStoresOriginalDataAndInterpolatesSafeValues(): void
     {
-        $stringable = new class () implements Stringable {
+        $stringable = new class() implements Stringable {
             public function __toString(): string
             {
                 return 'stringable';
             }
         };
 
-        $unconvertible = new class () {
+        $unconvertible = new class() {
         };
 
-        $throwing = new class () implements Stringable {
+        $throwing = new class() implements Stringable {
             public function __toString(): string
             {
                 throw new RuntimeException('Unable to convert context value.');
@@ -88,7 +88,7 @@ final class PsrMessageTest extends TestCase
 
     public function testAcceptsStringableMessage(): void
     {
-        $text = new class () implements Stringable {
+        $text = new class() implements Stringable {
             public function __toString(): string
             {
                 return 'Stringable message';
@@ -111,7 +111,7 @@ final class PsrMessageTest extends TestCase
 
     public function testBaseTargetFormatsInterpolatedMessage(): void
     {
-        $target = new class () extends Target {
+        $target = new class() extends Target {
             public function export(): void
             {
             }

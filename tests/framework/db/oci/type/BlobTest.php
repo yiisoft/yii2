@@ -1030,7 +1030,7 @@ final class BlobTest extends DatabaseTestCase
             'Exactly one row must be inserted.',
         );
 
-        $selectBlob = static fn(string $column): mixed => (new Query())
+        $selectBlob = static fn (string $column): mixed => (new Query())
             ->select([$column])
             ->from('blob_multi')
             ->where(['id' => 1])

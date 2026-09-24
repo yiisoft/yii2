@@ -93,7 +93,7 @@ class ConnectionTest extends BaseConnection
                 $this->assertNull($db->getMaster());
             }
             $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
-            $result = $db->useMaster(fn(Connection $db) => $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
+            $result = $db->useMaster(fn (Connection $db) => $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
             $this->assertEquals('test', $result);
 
             // test ActiveRecord read/write split
@@ -111,7 +111,7 @@ class ConnectionTest extends BaseConnection
             $customer = Customer::findOne(1);
             $this->assertInstanceOf(Customer::class, $customer);
             $this->assertEquals('user1', $customer->name);
-            $result = $db->useMaster(fn() => Customer::findOne(1)->name);
+            $result = $db->useMaster(fn () => Customer::findOne(1)->name);
             $this->assertEquals('test', $result);
         }
     }

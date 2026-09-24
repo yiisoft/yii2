@@ -48,7 +48,7 @@ class DataFilterTest extends TestCase
         $this->assertTrue($model instanceof Singer);
         $this->assertEquals('search', $model->getScenario());
 
-        $builder->setSearchModel(fn() => (new DynamicModel(['name' => null, 'price' => null]))
+        $builder->setSearchModel(fn () => (new DynamicModel(['name' => null, 'price' => null]))
             ->addRule(['name'], 'string', ['max' => 128])
             ->addRule(['price'], 'number'));
         $model = $builder->getSearchModel();
@@ -468,7 +468,7 @@ class DataFilterTest extends TestCase
         $this->assertEquals('Test message', $errorMessages['unsupportedOperatorType']);
         $this->assertTrue(isset($errorMessages['unknownAttribute']));
 
-        $builder->setErrorMessages(fn() => [
+        $builder->setErrorMessages(fn () => [
             'unsupportedOperatorType' => 'Test message callback',
         ]);
         $errorMessages = $builder->getErrorMessages();

@@ -188,7 +188,7 @@ final class SchemaTest extends BaseSchema
 
         self::assertSame(
             $schema->getTableNames('schema1', true),
-            array_map(static fn(TableSchema $table): string => $table->name, $tables),
+            array_map(static fn (TableSchema $table): string => $table->name, $tables),
             'Table schemas from a non-default schema should match table names from that schema.',
         );
         self::assertNotEmpty(

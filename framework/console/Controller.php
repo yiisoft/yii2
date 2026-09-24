@@ -732,7 +732,7 @@ class Controller extends BaseController
 
         if ($type instanceof ReflectionIntersectionType) {
             $parts = array_map(
-                fn(ReflectionType $nestedType): string => $this->stringifyReflectionType($nestedType),
+                fn (ReflectionType $nestedType): string => $this->stringifyReflectionType($nestedType),
                 $type->getTypes(),
             );
 

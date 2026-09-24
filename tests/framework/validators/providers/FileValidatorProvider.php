@@ -11,9 +11,12 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators\providers;
 
 /**
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * Data provider for {@see \yiiunit\framework\validators\FileValidatorTest} test cases.
  *
- * @since 22.0
+ * Provides file names, MIME type masks and allowed extensions for MIME type and extension validation.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 2.0.56
  */
 final class FileValidatorProvider
 {

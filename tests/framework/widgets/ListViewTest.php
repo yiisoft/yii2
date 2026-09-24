@@ -187,7 +187,7 @@ HTML,
 </div>',
             ],
             [
-                fn($model, $key, $index, $widget) => [
+                fn ($model, $key, $index, $widget) => [
                     'tag' => 'span',
                     'data' => [
                         'test' => 'passed',

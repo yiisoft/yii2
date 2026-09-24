@@ -11,9 +11,12 @@ declare(strict_types=1);
 namespace yiiunit\framework\validators\providers;
 
 /**
- * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * Data provider for {@see \yiiunit\framework\validators\EmailValidatorTest} test cases.
  *
- * @since 22.0
+ * Provides malformed addresses built to exploit the SwiftMailer CVE-2016-10074 command injection.
+ *
+ * @author Wilmer Arambula <terabytesoftw@gmail.com>
+ * @since 2.0.56
  */
 final class EmailValidatorProvider
 {

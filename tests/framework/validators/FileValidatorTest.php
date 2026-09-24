@@ -698,6 +698,32 @@ class FileValidatorTest extends TestCase
         ];
     }
 
+    /**
+     * `finfo` detects a type for every readable file, so the undetectable case goes through the MIME detection seam.
+     */
+    public function testValidateMimeTypeFailsWhenMimeTypeIsUndetectable(): void
+    {
+        $validator = $this->getMockBuilder(FileValidator::class)
+            ->onlyMethods(['getMimeTypeByFile'])
+            ->getMock();
+
+        $validator
+            ->expects($this->once())
+            ->method('getMimeTypeByFile')->willReturn(null);
+
+        $validator->mimeTypes = ['text/*'];
+
+        $this->assertFalse(
+            $validator->validate($this->getRealTestFile('test.txt'), $error),
+            'Undetectable MIME type must fail validation.',
+        );
+        $this->assertSame(
+            'Only files with these MIME types are allowed: text/*.',
+            $error,
+            'Error must be the wrong-MIME-type message.',
+        );
+    }
+
     public function testValidateTypedAttributeNoErrors(): void
     {
         $validator = new FileValidator(['minFiles' => 0, 'maxFiles' => 2]);

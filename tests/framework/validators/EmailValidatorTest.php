@@ -10,12 +10,9 @@ declare(strict_types=1);
 
 namespace yiiunit\framework\validators;
 
-use Yii;
-use yii\base\InvalidConfigException;
 use yii\validators\EmailValidator;
 use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
-use yiiunit\framework\validators\stub\EmailValidatorMockeryFunctionsTrait;
 use yiiunit\TestCase;
 
 use function checkdnsrr;
@@ -26,7 +23,6 @@ use function checkdnsrr;
 class EmailValidatorTest extends TestCase
 {
     use ClientScriptDispatchTestTrait;
-    use EmailValidatorMockeryFunctionsTrait;
 
     protected function setUp(): void
     {
@@ -44,7 +40,6 @@ class EmailValidatorTest extends TestCase
     {
         parent::tearDown();
 
-        $this->resetStubs();
         $this->destroyApplication();
     }
 

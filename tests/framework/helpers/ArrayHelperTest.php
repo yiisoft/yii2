@@ -68,7 +68,7 @@ class ArrayHelperTest extends TestCase
             $object::class => [
                 'id', 'secret',
                 '_content' => 'content',
-                'length' => fn($post) => strlen((string) $post->content),
+                'length' => fn ($post) => strlen((string) $post->content),
             ],
         ]));
 
@@ -94,11 +94,11 @@ class ArrayHelperTest extends TestCase
         ], ArrayHelper::toArray($object, [
             $object::class => [
                 'id', 'subObject',
-                'id_plus_1' => fn($post) => $post->id + 1,
+                'id_plus_1' => fn ($post) => $post->id + 1,
             ],
             $subObject::class => [
                 'id',
-                'id_plus_1' => fn($post) => $post->id + 1,
+                'id_plus_1' => fn ($post) => $post->id + 1,
             ],
         ]));
 
@@ -112,7 +112,7 @@ class ArrayHelperTest extends TestCase
         ], ArrayHelper::toArray($object, [
             $subObject::class => [
                 'id',
-                'id_plus_1' => fn($post) => $post->id + 1,
+                'id_plus_1' => fn ($post) => $post->id + 1,
             ],
         ]));
 
@@ -517,7 +517,7 @@ class ArrayHelperTest extends TestCase
             '345' => ['id' => '345', 'data' => 'ghi'],
         ], $result);
 
-        $result = ArrayHelper::index($array, fn($element) => $element['data']);
+        $result = ArrayHelper::index($array, fn ($element) => $element['data']);
         $this->assertEquals([
             'abc' => ['id' => '123', 'data' => 'abc'],
             'def' => ['id' => '345', 'data' => 'def'],
@@ -527,10 +527,10 @@ class ArrayHelperTest extends TestCase
         $result = ArrayHelper::index($array, null);
         $this->assertEquals([], $result);
 
-        $result = ArrayHelper::index($array, fn($element) => null);
+        $result = ArrayHelper::index($array, fn ($element) => null);
         $this->assertEquals([], $result);
 
-        $result = ArrayHelper::index($array, fn($element) => $element['id'] == '345' ? null : $element['id']);
+        $result = ArrayHelper::index($array, fn ($element) => $element['id'] == '345' ? null : $element['id']);
         $this->assertEquals([
             '123' => ['id' => '123', 'data' => 'abc'],
         ], $result);
@@ -588,7 +588,7 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
         $result = ArrayHelper::index($array, 'data', 'id');
         $this->assertEquals($expected, $result);
-        $result = ArrayHelper::index($array, fn($element) => $element['data'], 'id');
+        $result = ArrayHelper::index($array, fn ($element) => $element['data'], 'id');
         $this->assertEquals($expected, $result);
 
         $expected = [
@@ -608,7 +608,7 @@ class ArrayHelperTest extends TestCase
         ];
         $result = ArrayHelper::index($array, 'data', ['id', 'data']);
         $this->assertEquals($expected, $result);
-        $result = ArrayHelper::index($array, fn($element) => $element['data'], ['id', 'data']);
+        $result = ArrayHelper::index($array, fn ($element) => $element['data'], ['id', 'data']);
         $this->assertEquals($expected, $result);
     }
 
@@ -647,9 +647,9 @@ class ArrayHelperTest extends TestCase
         $result = ArrayHelper::getColumn($array, 'id', false);
         $this->assertEquals(['123', '345'], $result);
 
-        $result = ArrayHelper::getColumn($array, fn($element) => $element['data']);
+        $result = ArrayHelper::getColumn($array, fn ($element) => $element['data']);
         $this->assertEquals(['a' => 'abc', 'b' => 'def'], $result);
-        $result = ArrayHelper::getColumn($array, fn($element) => $element['data'], false);
+        $result = ArrayHelper::getColumn($array, fn ($element) => $element['data'], false);
         $this->assertEquals(['abc', 'def'], $result);
     }
 
@@ -794,7 +794,7 @@ class ArrayHelperTest extends TestCase
             ['admin.firstname', 'Qiang', 'test'],
             ['admin.lastname', 'Xue'],
             [
-                fn($array, $defaultValue) => $array['date'] . $defaultValue,
+                fn ($array, $defaultValue) => $array['date'] . $defaultValue,
                 '31-12-2113test',
                 'test',
             ],

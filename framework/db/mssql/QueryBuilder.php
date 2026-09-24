@@ -812,7 +812,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $updateColumns,
             $updateNames,
             $params,
-            static fn($quotedName): string => "[EXCLUDED].{$quotedName}",
+            static fn ($quotedName): string => "[EXCLUDED].{$quotedName}",
         );
 
         $updateSql = 'UPDATE SET ' . implode(', ', $updates);
@@ -1083,7 +1083,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
 
             // Cast each element of an array value individually so an `IN` condition keeps its shape.
-            $cast = static fn($item) => $item instanceof ExpressionInterface ? $item : $column->dbTypecast($item);
+            $cast = static fn ($item) => $item instanceof ExpressionInterface ? $item : $column->dbTypecast($item);
 
             $condition[$name] = is_array($value) ? array_map($cast, $value) : $cast($value);
         }
