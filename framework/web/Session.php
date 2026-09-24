@@ -659,13 +659,29 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session ID creation handler.
      * PHP calls this method through [[SessionHandler::create_sid()]] when [[useCustomStorage]] is `true`.
+     * The ID has the format of the PHP native generator: `session.sid_length` characters from the alphabet selected by
+     * `session.sid_bits_per_character`, or 32 hexadecimal characters when those directives are not available.
      * @internal Do not call this method directly.
-     * @return string a new random session ID of 32 hexadecimal characters
+     * @return string a new random session ID
+     * @see https://www.php.net/manual/en/session.configuration.php#ini.session.sid-length
      * @since 2.0.56
      */
     public function createSessionId()
     {
-        return bin2hex(random_bytes(16));
+        $length = (int) ini_get('session.sid_length') ?: 32;
+        $bitsPerCharacter = (int) ini_get('session.sid_bits_per_character') ?: 4;
+
+        // same alphabet as PHP: 4 bits use its first 16 characters, 5 bits the first 32, 6 bits all of them
+        $alphabet = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,-';
+        $maxIndex = (1 << $bitsPerCharacter) - 1;
+
+        $id = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $id .= $alphabet[random_int(0, $maxIndex)];
+        }
+
+        return $id;
     }
 
     /**

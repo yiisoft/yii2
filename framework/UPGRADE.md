@@ -68,9 +68,8 @@ Upgrade from Yii 2.0.55
 * `yii\web\SessionHandler` now implements `create_sid()` and `validateId()`, which PHP 8.6 expects from every
   `SessionHandlerInterface` implementation. PHP calls them by name, so sessions with custom storage (`DbSession`,
   `CacheSession` and any class whose `getUseCustomStorage()` returns `true`) change on every supported PHP version:
-  * New session IDs are created by `yii\web\Session::createSessionId()`: 32 hexadecimal characters, the PHP default
-    format. The `session.sid_length` and `session.sid_bits_per_character` ini directives (deprecated since PHP 8.4)
-    no longer apply to these sessions; override `createSessionId()` if you need a different format.
+  * New session IDs are created by `yii\web\Session::createSessionId()`, which keeps the length and alphabet set by
+    the `session.sid_length` and `session.sid_bits_per_character` ini directives; override it for a different format.
   * When `useStrictMode` is enabled, PHP replaces an unknown session ID during `session_start()` according to
     `yii\web\Session::sessionIdExists()`. `DbSession` and `CacheSession` implement it, and no longer check the ID
     in `openSession()` nor skip it in `writeSession()`.

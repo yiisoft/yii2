@@ -70,8 +70,7 @@ class DbSession extends MultiFieldSession
      * When using DbSession in a production server, we recommend you create a DB index for the 'expire'
      * column in the session table to improve the performance.
      *
-     * Session IDs are created by [[createSessionId()]] and have 32 characters. If you override that method,
-     * you may need to adjust the length of the `id` column.
+     * Session IDs have `session.sid_length` characters (32 by default), so the `id` column must be at least that long.
      */
     public $sessionTable = '{{%session}}';
 
