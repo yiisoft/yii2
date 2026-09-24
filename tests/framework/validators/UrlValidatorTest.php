@@ -6,10 +6,15 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\UrlValidator;
+use yii\validators\Validator;
+use yii\web\JsExpression;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -21,7 +26,18 @@ class UrlValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new UrlValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -124,5 +140,67 @@ class UrlValidatorTest extends TestCase
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertTrue($obj->hasErrors('attr_url'));
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttribute(): void
+    {
+        $val = new UrlValidator();
+        $obj = new FakedValidationModel();
+
+        $obj->attr_url = 'http://google.de';
+
+        $this->assertSame(
+            'yii.validation.url(value, messages, {"pattern":/^(http|https):\\/\\/(([A-Z0-9][A-Z0-9_-]*)(\\.[A-Z0-9][A-Z0-9_-]*)+)(?::\\d{1,5})?(?:$|[?\\/#])/i,"message":"attr_url is not a valid URL.","enableIDN":false,"skipOnEmpty":1});',
+            $val->clientValidateAttribute($obj, 'attr_url', new ViewStub()),
+            'Client script must pin the whole option set.',
+        );
+
+        $val->enableIDN = true;
+
+        $this->assertSame(
+            'yii.validation.url(value, messages, {"pattern":/^(http|https):\\/\\/(([A-Z0-9][A-Z0-9_-]*)(\\.[A-Z0-9][A-Z0-9_-]*)+)(?::\\d{1,5})?(?:$|[?\\/#])/i,"message":"attr_url is not a valid URL.","enableIDN":true,"skipOnEmpty":1});',
+            $val->clientValidateAttribute($obj, 'attr_url', new ViewStub()),
+            'The IDN flag must reach the client options.',
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testGetClientOptions(): void
+    {
+        $val = new UrlValidator(['defaultScheme' => 'https', 'skipOnEmpty' => true]);
+        $obj = new FakedValidationModel();
+
+        $obj->attr_url = 'http://google.de';
+
+        $expected = [
+            'pattern' => new JsExpression(
+                '/^(http|https):\\/\\/(([A-Z0-9][A-Z0-9_-]*)(\\.[A-Z0-9][A-Z0-9_-]*)+)(?::\\d{1,5})?(?:$|[?\\/#])/i'
+            ),
+            'message' => 'attr_url is not a valid URL.',
+            'enableIDN' => false,
+            'skipOnEmpty' => 1,
+            'defaultScheme' => 'https',
+        ];
+
+        $this->assertEquals(
+            $expected,
+            $val->getClientOptions($obj, 'attr_url'),
+            'Client options must pin the expanded schemes and every flag.'
+        );
+
+        $val->pattern = '/regex/';
+
+        $options = $val->getClientOptions($obj, 'attr_url');
+
+        $this->assertEquals(
+            new JsExpression('/regex/'),
+            $options['pattern'],
+            'A pattern without the schemes token must be passed through.',
+        );
     }
 }

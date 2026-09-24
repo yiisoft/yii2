@@ -6,15 +6,19 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use Yii;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
 use yii\validators\FileValidator;
+use yii\validators\Validator;
 use yii\web\UploadedFile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\data\validators\models\FakedValidationTypedModel;
+use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
 
 /**
@@ -25,7 +29,20 @@ class FileValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
         $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new FileValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->destroyApplication();
     }
 
     public function testAssureMessagesSetOnInit(): void
@@ -134,7 +151,7 @@ class FileValidatorTest extends TestCase
         ]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors());
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'you can upload at most'));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_files')), 'you can upload at most'));
 
         $files = [
             'file_1' => [
@@ -354,18 +371,18 @@ class FileValidatorTest extends TestCase
                 $files[$key] = ['no instance of UploadedFile'];
                 continue;
             }
-            $name = isset($param['name']) ? $param['name'] : $rndString();
+            $name = $param['name'] ?? $rndString();
             $tempName = Yii::getAlias('@yiiunit/runtime/validators/file/tmp/') . $name;
             if (is_readable($tempName)) {
                 $size = filesize($tempName);
             } else {
-                $size = isset($param['size']) ? $param['size'] : random_int(
+                $size = $param['size'] ?? random_int(
                     1,
                     StringHelper::convertIniSizeToBytes(ini_get('upload_max_filesize'))
                 );
             }
-            $type = isset($param['type']) ? $param['type'] : 'text/plain';
-            $error = isset($param['error']) ? $param['error'] : UPLOAD_ERR_OK;
+            $type = $param['type'] ?? 'text/plain';
+            $error = $param['error'] ?? UPLOAD_ERR_OK;
             if (count($params) == 1) {
                 $error = empty($param) ? UPLOAD_ERR_NO_FILE : $error;
 
@@ -431,19 +448,19 @@ class FileValidatorTest extends TestCase
         $val = new FileValidator(['maxSize' => 128]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors('attr_files'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'too big'));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_files')), 'too big'));
         // to Small
         $m = $this->createModelForAttributeTest();
         $val = new FileValidator(['minSize' => 2048]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors('attr_files'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'too small'));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_files')), 'too small'));
         // UPLOAD_ERR_INI_SIZE/UPLOAD_ERR_FORM_SIZE
         $m = $this->createModelForAttributeTest();
         $val = new FileValidator();
         $val->validateAttribute($m, 'attr_err_ini');
         $this->assertTrue($m->hasErrors('attr_err_ini'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_err_ini')), 'too big'));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_err_ini')), 'too big'));
         // UPLOAD_ERR_PARTIAL
         $m = $this->createModelForAttributeTest();
         $val = new FileValidator();
@@ -468,7 +485,7 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($m->hasErrors('attr_jpg'));
         $val->validateAttribute($m, 'attr_exe');
         $this->assertTrue($m->hasErrors('attr_exe'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions '));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_exe')), 'Only files with these extensions '));
     }
 
     public function testValidateEmptyExtension(): void
@@ -511,11 +528,11 @@ class FileValidatorTest extends TestCase
 
         $val->validateAttribute($m, 'attr_bar');
         $this->assertTrue($m->hasErrors('attr_bar'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_bar')), 'Only files with these extensions '));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_bar')), 'Only files with these extensions '));
 
         $val->validateAttribute($m, 'attr_badtar');
         $this->assertTrue($m->hasErrors('attr_badtar'));
-        $this->assertNotFalse(stripos(current($m->getErrors('attr_badtar')), 'Only files with these extensions '));
+        $this->assertNotFalse(stripos((string) current($m->getErrors('attr_badtar')), 'Only files with these extensions '));
     }
 
     public function testIssue11012(): void
@@ -531,7 +548,7 @@ class FileValidatorTest extends TestCase
     /**
      * @param string $fileName
      * @param string $mask
-     * @dataProvider validMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::validMimeTypes
      */
     public function testValidateMimeTypeMaskValid($fileName, $mask): void
     {
@@ -541,11 +558,9 @@ class FileValidatorTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param string $mask
-     * @dataProvider invalidMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::invalidMimeTypes
      */
-    public function testValidateMimeTypeMaskInvalid($fileName, $mask): void
+    public function testValidateMimeTypeMaskInvalid(string $fileName, string $mask): void
     {
         $validator = new FileValidator(['mimeTypes' => $mask]);
         $file = $this->getRealTestFile($fileName);
@@ -565,13 +580,6 @@ class FileValidatorTest extends TestCase
             ['test.tar.xz', 'application/x-xz', 'tar.xz'],
         ]);
 
-        # fix for bundled libmagic bug, see also https://github.com/yiisoft/yii2/issues/19925
-        if ((PHP_VERSION_ID >= 80100 && PHP_VERSION_ID < 80122) || (PHP_VERSION_ID >= 80200 && PHP_VERSION_ID < 80209)) {
-            $v81_zx = ['test.tar.xz', 'application/octet-stream', 'tar.xz'];
-            array_pop($validMimeTypes);
-            $validMimeTypes[] = $v81_zx;
-        }
-
         return $validMimeTypes;
     }
 
@@ -588,9 +596,8 @@ class FileValidatorTest extends TestCase
 
     /**
      * @param string $fileName
-     * @param mixed $_
      * @param string|array $allowedExtensions
-     * @dataProvider validMimeTypes
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::validMimeTypes
      */
     public function testValidateFileByExtensionUsingMimeType($fileName, $_, $allowedExtensions): void
     {
@@ -601,12 +608,11 @@ class FileValidatorTest extends TestCase
     }
 
     /**
-     * @param string $fileName
-     * @param mixed $_
-     * @param string|array $allowedExtensions
-     * @dataProvider invalidMimeTypes
+     * @param string $_
+     * @param string $allowedExtensions
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::invalidMimeTypes
      */
-    public function testValidateFileByExtensionUsingMimeTypeInvalid($fileName, $_, $allowedExtensions): void
+    public function testValidateFileByExtensionUsingMimeTypeInvalid(string $fileName, string $_, string $allowedExtensions): void
     {
         $validator = new FileValidator(['extensions' => (array) $allowedExtensions]);
         $file = $this->getRealTestFile($fileName);
@@ -667,12 +673,9 @@ class FileValidatorTest extends TestCase
     }
 
     /**
-     * @param string $mask
-     * @param string $fileMimeType
-     * @param bool   $expected
-     * @dataProvider mimeTypeCaseInsensitive
+     * @dataProvider \yiiunit\framework\validators\providers\FileValidatorProvider::mimeTypeCaseInsensitive
      */
-    public function testValidateMimeTypeCaseInsensitive($mask, $fileMimeType, $expected): void
+    public function testValidateMimeTypeCaseInsensitive(string $mask, string $fileMimeType, bool $expected): void
     {
         $validator = $this->getMockBuilder(FileValidator::class)
             ->onlyMethods(['getMimeTypeByFile'])
@@ -694,12 +697,34 @@ class FileValidatorTest extends TestCase
         ];
     }
 
+    /**
+     * `finfo` detects a type for every readable file, so the undetectable case goes through the MIME detection seam.
+     */
+    public function testValidateMimeTypeFailsWhenMimeTypeIsUndetectable(): void
+    {
+        $validator = $this->getMockBuilder(FileValidator::class)
+            ->onlyMethods(['getMimeTypeByFile'])
+            ->getMock();
+
+        $validator
+            ->expects($this->once())
+            ->method('getMimeTypeByFile')->willReturn(null);
+
+        $validator->mimeTypes = ['text/*'];
+
+        $this->assertFalse(
+            $validator->validate($this->getRealTestFile('test.txt'), $error),
+            'Undetectable MIME type must fail validation.',
+        );
+        $this->assertSame(
+            'Only files with these MIME types are allowed: text/*.',
+            $error,
+            'Error must be the wrong-MIME-type message.',
+        );
+    }
+
     public function testValidateTypedAttributeNoErrors(): void
     {
-        if (version_compare(PHP_VERSION, '7.4', '<')) {
-            $this->markTestSkipped('Requires typed properties');
-        }
-
         $validator = new FileValidator(['minFiles' => 0, 'maxFiles' => 2]);
         $file = $this->createTestFiles(
             [
@@ -721,10 +746,6 @@ class FileValidatorTest extends TestCase
 
     public function testValidateTypedAttributeExactMinNoErrors(): void
     {
-        if (version_compare(PHP_VERSION, '7.4', '<')) {
-            $this->markTestSkipped('Requires typed properties');
-        }
-
         $validator = new FileValidator(['minFiles' => 1]);
         $file = $this->createTestFiles(
             [
@@ -746,10 +767,6 @@ class FileValidatorTest extends TestCase
 
     public function testValidateTypedAttributeExactMaxNoErrors(): void
     {
-        if (version_compare(PHP_VERSION, '7.4', '<')) {
-            $this->markTestSkipped('Requires typed properties');
-        }
-
         $validator = new FileValidator(['maxFiles' => 1]);
         $file = $this->createTestFiles(
             [
@@ -771,10 +788,6 @@ class FileValidatorTest extends TestCase
 
     public function testValidateTypedAttributeMinError(): void
     {
-        if (version_compare(PHP_VERSION, '7.4', '<')) {
-            $this->markTestSkipped('Requires typed properties');
-        }
-
         $validator = new FileValidator(['minFiles' => 2]);
         $file = $this->createTestFiles(
             [
@@ -796,10 +809,6 @@ class FileValidatorTest extends TestCase
 
     public function testValidateTypedAttributeMaxError(): void
     {
-        if (version_compare(PHP_VERSION, '7.4', '<')) {
-            $this->markTestSkipped('Requires typed properties');
-        }
-
         $validator = new FileValidator(['maxFiles' => 1]);
         $files = $this->createTestFiles(
             [
@@ -820,5 +829,121 @@ class FileValidatorTest extends TestCase
         $model->multiple = $files;
         $validator->validateAttribute($model, 'multiple');
         $this->assertTrue($model->hasErrors('multiple'));
+    }
+
+    public function testValidateValueRejectsNonUploadedFile(): void
+    {
+        $validator = new FileValidator();
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate('not an uploaded file', $error),
+            'A value that is not an upload must be rejected.'
+        );
+        $this->assertSame(
+            'Please upload a file.',
+            $error,
+            'Error must be the upload-required message.'
+        );
+    }
+
+    public function testValidateValueRejectsUnknownUploadError(): void
+    {
+        $validator = new FileValidator();
+        $file = new UploadedFile([
+            'name' => 'test.txt',
+            'tempName' => '',
+            'type' => 'text/plain',
+            'size' => 1,
+            'error' => 999,
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate($file, $error),
+            'An unmapped error code must be rejected.'
+        );
+        $this->assertSame(
+            'File upload failed.',
+            $error,
+            'Error must fall back to the generic failure message.'
+        );
+    }
+
+    public function testValidateRejectsExtensionNotMatchingDetectedMimeType(): void
+    {
+        $validator = new FileValidator(['extensions' => ['jpg'], 'checkExtensionByMimeType' => true]);
+
+        $filePath = Yii::getAlias('@yiiunit/framework/validators/data/mimeType/test.txt');
+
+        $file = new UploadedFile([
+            'name' => 'test.jpg',
+            'tempName' => $filePath,
+            'type' => 'image/jpeg',
+            'size' => filesize($filePath),
+            'error' => UPLOAD_ERR_OK,
+        ]);
+
+        $error = null;
+
+        $this->assertFalse(
+            $validator->validate($file, $error),
+            'A name that merely claims the extension must not be enough.'
+        );
+        $this->assertSame(
+            'Only files with these extensions are allowed: jpg.',
+            $error,
+            'Error must be the wrong-extension message.'
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testClientValidateAttribute(): void
+    {
+        $validator = new FileValidator([
+            'extensions' => ['jpg', 'png'],
+            'minSize' => 1024,
+            'maxSize' => 2048,
+            'maxFiles' => 2,
+            'mimeTypes' => ['image/jpeg', 'image/png'],
+        ]);
+
+        $model = FakedValidationModel::createWithAttributes(['attr_files' => null]);
+
+        $this->assertSame(
+            'yii.validation.file(attribute, messages, {"message":"File upload failed.","skipOnEmpty":true,"mimeTypes":[/^image\\/jpeg$/i,/^image\\/png$/i],"wrongMimeType":"Only files with these MIME types are allowed: image\\/jpeg, image\\/png.","extensions":["jpg","png"],"wrongExtension":"Only files with these extensions are allowed: jpg, png.","minSize":1024,"tooSmall":"The file \\u0022{file}\\u0022 is too small. Its size cannot be smaller than 1 KiB.","maxSize":2048,"tooBig":"The file \\u0022{file}\\u0022 is too big. Its size cannot exceed 2 KiB.","maxFiles":2,"tooMany":"You can upload at most 2 files."});',
+            $validator->clientValidateAttribute($model, 'attr_files', new ViewStub()),
+            'Generated call must match the legacy JavaScript contract.'
+        );
+    }
+
+    /**
+     * Legacy client-side contract; not applicable to 22.0.
+     */
+    public function testGetClientOptionsIncludesUploadRequiredWhenNotSkipOnEmpty(): void
+    {
+        $validator = new FileValidator(['skipOnEmpty' => false]);
+
+        $model = FakedValidationModel::createWithAttributes(['attr_files' => null]);
+
+        $this->assertSame(
+            [
+                'message' => 'File upload failed.',
+                'skipOnEmpty' => false,
+                'uploadRequired' => 'Please upload a file.',
+                'mimeTypes' => [],
+                'wrongMimeType' => 'Only files with these MIME types are allowed: .',
+                'extensions' => [],
+                'wrongExtension' => 'Only files with these extensions are allowed: .',
+                'maxFiles' => 1,
+                'tooMany' => 'You can upload at most 1 file.',
+            ],
+            $validator->getClientOptions($model, 'attr_files'),
+            'Client options must match the legacy JavaScript contract.'
+        );
     }
 }

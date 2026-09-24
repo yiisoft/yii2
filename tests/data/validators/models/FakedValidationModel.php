@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
@@ -36,6 +38,8 @@ use yii\base\Model;
  * @property mixed $attrD
  * @property mixed $attr_image
  * @property mixed $attr_images
+ * @property mixed $attr_range
+ * @property mixed $attr_compare
  */
 class FakedValidationModel extends Model
 {
@@ -44,8 +48,8 @@ class FakedValidationModel extends Model
     public $val_attr_c;
     public $val_attr_d;
     public $safe_attr;
-    private $attr = [];
-    private $inlineValArgs;
+    private array $attr = [];
+    private ?array $inlineValArgs = null;
 
     /**
      * @param  array $attributes
@@ -87,7 +91,7 @@ class FakedValidationModel extends Model
     public function __get($name)
     {
         if (strncasecmp($name, 'attr', 4) === 0) {
-            return isset($this->attr[$name]) ? $this->attr[$name] : null;
+            return $this->attr[$name] ?? null;
         }
 
         return parent::__get($name);

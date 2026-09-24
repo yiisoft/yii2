@@ -37,7 +37,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
         }
 
         if ($value instanceof Query) {
-            list ($sql, $params) = $this->queryBuilder->build($value, $params);
+            list($sql, $params) = $this->queryBuilder->build($value, $params);
             return $this->buildSubqueryArray($sql, $expression);
         }
 
@@ -70,7 +70,7 @@ class ArrayExpressionBuilder implements ExpressionBuilderInterface
 
         foreach ($value as $item) {
             if ($item instanceof Query) {
-                list ($sql, $params) = $this->queryBuilder->build($item, $params);
+                list($sql, $params) = $this->queryBuilder->build($item, $params);
                 $placeholders[] = $this->buildSubqueryArray($sql, $expression);
                 continue;
             }

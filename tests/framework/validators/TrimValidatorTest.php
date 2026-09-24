@@ -6,11 +6,14 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\base\DynamicModel;
 use yii\helpers\Json;
 use yii\validators\TrimValidator;
+use yii\validators\Validator;
 use yii\web\View;
 use yiiunit\TestCase;
 
@@ -23,6 +26,11 @@ class TrimValidatorTest extends TestCase
     {
         parent::setUp();
         $this->destroyApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new TrimValidator($config);
     }
 
     public function testTrimWhitespace(): void

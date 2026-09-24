@@ -427,6 +427,11 @@ Usage of other levels will result in an exception being thrown.
 specify the isolation level directly when starting the transaction.
 You have to call [[yii\db\Transaction::setIsolationLevel()]] in this case after the transaction has started.
 
+> Note: The isolation level can only be set for the outermost transaction. Nested transactions are implemented with
+savepoints and run at the isolation level of the outer transaction, so an isolation level passed to a nested
+[[yii\db\Connection::beginTransaction()|beginTransaction()]] or [[yii\db\Connection::transaction()|transaction()]]
+call is ignored and a warning is logged.
+
 [isolation levels]: https://en.wikipedia.org/wiki/Isolation_%28database_systems%29#Isolation_levels
 
 
