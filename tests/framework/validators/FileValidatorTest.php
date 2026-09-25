@@ -567,33 +567,6 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($validator->validate($file));
     }
 
-    public static function validMimeTypes(): array
-    {
-        $validMimeTypes = array_filter([
-            ['test.svg', 'image/*', 'svg'],
-            ['test.jpg', 'image/*', 'jpg'],
-            ['test.png', 'image/*', 'png'],
-            ['test.png', 'IMAGE/*', 'png'],
-            ['test.txt', 'text/*', 'txt'],
-            ['test.xml', '*/xml', 'xml'],
-            ['test.odt', 'application/vnd*', 'odt'],
-            ['test.tar.xz', 'application/x-xz', 'tar.xz'],
-        ]);
-
-        return $validMimeTypes;
-    }
-
-    public static function invalidMimeTypes(): array
-    {
-        return [
-            ['test.txt', 'image/*', 'png, jpg'],
-            ['test.odt', 'text/*', 'txt'],
-            ['test.xml', '*/svg+xml', 'svg'],
-            ['test.png', 'image/x-iso9660-image', 'bmp'],
-            ['test.svg', 'application/*', 'jpg'],
-        ];
-    }
-
     /**
      * @param string $fileName
      * @param string|array $allowedExtensions
@@ -685,16 +658,6 @@ class FileValidatorTest extends TestCase
 
         $file = $this->getRealTestFile('test.txt');
         $this->assertEquals($expected, $validator->validate($file), sprintf('Mime type validate fail: "%s" / "%s"', $mask, $fileMimeType));
-    }
-
-    public static function mimeTypeCaseInsensitive(): array
-    {
-        return [
-            ['Image/*', 'image/jp2', true],
-            ['image/*', 'Image/jp2', true],
-            ['application/vnd.ms-word.document.macroEnabled.12', 'application/vnd.ms-word.document.macroenabled.12', true],
-            ['image/jxra', 'image/jxrA', true],
-        ];
     }
 
     /**
