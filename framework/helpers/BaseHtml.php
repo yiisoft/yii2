@@ -2395,7 +2395,8 @@ class BaseHtml
     {
         $pattern = preg_replace('/\\\\x\{?([0-9a-fA-F]+)\}?/', '\u$1', $regexp);
         $deliminator = substr($pattern, 0, 1);
-        $pos = strrpos($pattern, $deliminator, 1);
+        $closingDeliminator = strtr($deliminator, ['(' => ')', '[' => ']', '{' => '}', '<' => '>']);
+        $pos = strrpos($pattern, $closingDeliminator, 1);
         $flag = substr($pattern, $pos + 1);
         if ($deliminator !== '/') {
             $pattern = '/' . str_replace('/', '\\/', substr($pattern, 1, $pos - 1)) . '/';
