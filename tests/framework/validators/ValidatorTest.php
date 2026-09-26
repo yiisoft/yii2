@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use stdClass;
@@ -31,7 +33,13 @@ class ValidatorTest extends TestCase
     {
         parent::setUp();
 
-        // destroy application, Validator must work without Yii::$app
+        $this->mockApplication();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -220,6 +228,23 @@ class ValidatorTest extends TestCase
         $val->validate('abc');
     }
 
+    public function testValidateFormatsMessageWithoutApplication(): void
+    {
+        $this->destroyApplication();
+
+        $validator = new BooleanValidator();
+
+        $this->assertFalse(
+            $validator->validate('yes', $error),
+            'Value outside the boolean pair must fail.',
+        );
+        $this->assertSame(
+            'the input value must be either "1" or "0".',
+            $error,
+            'Placeholders must be replaced without I18N.',
+        );
+    }
+
     public function testValidateAttribute(): void
     {
         // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
@@ -235,6 +260,23 @@ class ValidatorTest extends TestCase
         $this->assertEquals('a', $args[3]);
         $this->assertEquals(['foo' => 'bar'], $args[1]);
         $this->assertInstanceOf(InlineValidator::class, $args[2]);
+    }
+
+    public function testInlineValidatorResolvesStringMethodOnModel(): void
+    {
+        $model = new FakedValidationModel();
+
+        $model->val_attr_a = 'a';
+
+        $validator = new InlineValidator(['method' => 'inlineVal', 'params' => ['foo' => 'bar']]);
+
+        $validator->validateAttribute($model, 'val_attr_a');
+
+        $this->assertSame(
+            ['val_attr_a', ['foo' => 'bar'], $validator, 'a'],
+            $model->getInlineValArgs(),
+            'Model method must receive attribute, params, validator and current value.',
+        );
     }
 
     public function testClientValidateAttribute(): void

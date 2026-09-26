@@ -6,6 +6,8 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use IntlDateFormatter;
@@ -45,10 +47,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testIntlValidateValue($timezone): void
+    public function testIntlValidateValue(string $timezone): void
     {
         date_default_timezone_set($timezone);
         $this->testValidateValue($timezone);
@@ -85,10 +86,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testValidateValue($timezone): void
+    public function testValidateValue(string $timezone): void
     {
         date_default_timezone_set($timezone);
 
@@ -128,19 +128,17 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testIntlValidateAttributePHPFormat($timezone): void
+    public function testIntlValidateAttributePHPFormat(string $timezone): void
     {
         $this->testValidateAttributePHPFormat($timezone);
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testValidateAttributePHPFormat($timezone): void
+    public function testValidateAttributePHPFormat(string $timezone): void
     {
         date_default_timezone_set($timezone);
 
@@ -163,7 +161,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
         $this->assertEquals(
-            1379030400, // 2013-09-13 00:00:00
+            1_379_030_400, // 2013-09-13 00:00:00
             $model->attr_timestamp
         );
         // array value
@@ -174,19 +172,17 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testIntlValidateAttributeICUFormat($timezone): void
+    public function testIntlValidateAttributeICUFormat(string $timezone): void
     {
         $this->testValidateAttributeICUFormat($timezone);
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testValidateAttributeICUFormat($timezone): void
+    public function testValidateAttributeICUFormat(string $timezone): void
     {
         date_default_timezone_set($timezone);
 
@@ -209,7 +205,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
         $this->assertSame(
-            1379030400, // 2013-09-13 00:00:00
+            1_379_030_400, // 2013-09-13 00:00:00
             $model->attr_timestamp
         );
         // array value
@@ -237,35 +233,8 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTimezones(): array
-    {
-        return [
-            ['UTC'],
-            ['Europe/Berlin'],
-            ['America/Jamaica'],
-        ];
-    }
-
-    public function timestampFormatProvider()
-    {
-        $return = [];
-        foreach ($this->provideTimezones() as $appTz) {
-            foreach ($this->provideTimezones() as $tz) {
-                $return[] = ['yyyy-MM-dd', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
-                // regardless of timezone, a simple date input should always result in 00:00:00 time
-                $return[] = ['yyyy-MM-dd HH:mm:ss', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
-                $return[] = ['php:Y-m-d', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
-                $return[] = ['php:Y-m-d H:i:s', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
-                $return[] = ['php:U', '2013-09-13', '1379030400', $tz[0], $appTz[0]];
-                $return[] = [null, '2013-09-13', 1379030400, $tz[0], $appTz[0]];
-            }
-        }
-
-        return $return;
-    }
-
     /**
-     * @dataProvider timestampFormatProvider
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timestampFormats
      * @param string|null $format
      * @param string $date
      * @param string|int $expectedDate
@@ -278,7 +247,7 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider timestampFormatProvider
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timestampFormats
      * @param string|null $format
      * @param string $date
      * @param string|int $expectedDate
@@ -300,10 +269,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testIntlValidationWithTime($timezone): void
+    public function testIntlValidationWithTime(string $timezone): void
     {
         // prepare data for specific ICU version, see https://github.com/yiisoft/yii2/issues/15140
         switch (true) {
@@ -356,10 +324,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testValidationWithTime($timezone): void
+    public function testValidationWithTime(string $timezone): void
     {
         date_default_timezone_set($timezone);
 
@@ -374,7 +341,7 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
-        $this->assertSame(1379082195, $model->attr_timestamp);
+        $this->assertSame(1_379_082_195, $model->attr_timestamp);
 
         $val = new DateValidator([
             'format' => 'yyyy-MM-dd HH:mm:ss',
@@ -387,7 +354,7 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
-        $this->assertSame(1379082195, $model->attr_timestamp);
+        $this->assertSame(1_379_082_195, $model->attr_timestamp);
 
         $val = new DateValidator([
             'format' => 'yyyy-MM-dd HH:mm:ss',
@@ -458,23 +425,21 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
-        $this->assertSame(1379089395, $model->attr_timestamp); // = 2013-09-13 16:23:15 UTC
+        $this->assertSame(1_379_089_395, $model->attr_timestamp); // = 2013-09-13 16:23:15 UTC
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testIntlValidationWithTimeAndOutputTimeZone($timezone): void
+    public function testIntlValidationWithTimeAndOutputTimeZone(string $timezone): void
     {
         $this->testValidationWithTime($timezone);
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testValidationWithTimeAndOutputTimeZone($timezone): void
+    public function testValidationWithTimeAndOutputTimeZone(string $timezone): void
     {
         date_default_timezone_set($timezone);
 
@@ -534,10 +499,9 @@ class DateValidatorTest extends TestCase
      * The following cases (when no time is specified for 'format') usually raise questions.
      * See the discussion here: https://github.com/yiisoft/yii2/issues/14795
      *
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testValidationWithoutTime($timezone): void
+    public function testValidationWithoutTime(string $timezone): void
     {
         date_default_timezone_set($timezone);
 
@@ -675,7 +639,7 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
-        $this->assertSame(1497477600, $model->attr_timestamp); // = 2017-06-14 22:00:00 UTC = 2017-06-15 00:00:00 Europe/Warsaw
+        $this->assertSame(1_497_477_600, $model->attr_timestamp); // = 2017-06-14 22:00:00 UTC = 2017-06-15 00:00:00 Europe/Warsaw
 
         $val = new DateValidator([
             'format' => 'yyyy-MM-dd',
@@ -688,7 +652,7 @@ class DateValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertFalse($model->hasErrors('attr_timestamp'));
-        $this->assertSame(1497477600, $model->attr_timestamp);
+        $this->assertSame(1_497_477_600, $model->attr_timestamp);
 
         // ICU, timeZone => America/Jamaica, timestampAttributeTimeZone => UTC (default)
         $val = new DateValidator([
@@ -882,10 +846,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTimezones
-     * @param string $timezone
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::timezones
      */
-    public function testIntlValidationWithoutTime($timezone): void
+    public function testIntlValidationWithoutTime(string $timezone): void
     {
         $this->testValidationWithoutTime($timezone);
     }
@@ -929,7 +892,7 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($val->validate('2000-01-02'), 'max +1 day is invalid');
     }
 
-    private function validateModelAttribute($validator, $date, $expected, $message = ''): void
+    private function validateModelAttribute(\yii\validators\DateValidator $validator, string $date, bool $expected, string $message = ''): void
     {
         $model = new FakedValidationModel();
         $model->attr_date = $date;
@@ -1028,7 +991,7 @@ class DateValidatorTest extends TestCase
         // timestamp as integer
         $val = new DateValidator(['format' => 'php:Y/m/d', 'timestampAttribute' => 'attr_date']);
         $model = new FakedValidationModel();
-        $model->attr_date = 1379030400;
+        $model->attr_date = 1_379_030_400;
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
 
@@ -1055,12 +1018,12 @@ class DateValidatorTest extends TestCase
     /**
      * Test dates that don't pass strict intl validation
      *
-     * @dataProvider provideTestStrictDateFormatIntlFail
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatIntlFail
      * @param $format
      * @param $date
      * @param $strictDateFormat
      */
-    public function testStrictDateFormatIntlFail($format, $date, $strictDateFormat): void
+    public function testStrictDateFormatIntlFail(string $format, string $date, bool $strictDateFormat): void
     {
         $this->mockApplication([
             'timeZone' => 'UTC',
@@ -1073,31 +1036,17 @@ class DateValidatorTest extends TestCase
         $model->attr_date = $date;
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
-    }
-
-    public static function provideTestStrictDateFormatIntlFail(): array
-    {
-        return [
-            ['yyyy-MM-dd', '13-Mar-19', true],
-            ['yyyy-MM-dd', '13-March-19', true],
-            ['yyyy-MM-dd', '13-03-19', true],
-            ['yyyy-MM-dd', '13-3-19', true],
-            ['yyyy-MM-dd', '13-003-19', true],
-            ['yyyy-MM-dd', '0013-Mar-19', true],
-            ['yyyy-MM-dd', '13-Mar-00019', true],
-            ['yyyy-MM-dd', '0000-03-19', true],
-        ];
     }
 
     /**
      * Test dates that pass strict intl validation
      *
-     * @dataProvider provideTestStrictDateFormatIntlPass
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatIntlPass
      * @param $format
      * @param $date
      * @param $strictDateFormat
      */
-    public function testStrictDateFormatIntlPass($format, $date, $strictDateFormat): void
+    public function testStrictDateFormatIntlPass(string $format, string $date, bool $strictDateFormat): void
     {
         $this->mockApplication([
             'timeZone' => 'UTC',
@@ -1112,24 +1061,15 @@ class DateValidatorTest extends TestCase
         $this->assertFalse($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatIntlPass(): array
-    {
-        return [
-            ['yyyy-MM-dd', '0013-03-19', true],
-            ['yyyy-MM-dd', '2013-03-19', true],
-            ['yyyy-MM-dd', '0001-03-19', true],
-        ];
-    }
-
     /**
      * Test dates that don't pass strict php validation
      *
-     * @dataProvider provideTestStrictDateFormatPhpFail
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatPhpFail
      * @param $format
      * @param $date
      * @param $strictDateFormat
      */
-    public function testStrictDateFormatPhpFail($format, $date, $strictDateFormat): void
+    public function testStrictDateFormatPhpFail(string $format, string $date, bool $strictDateFormat): void
     {
         $this->mockApplication([
             'timeZone' => 'UTC',
@@ -1144,28 +1084,15 @@ class DateValidatorTest extends TestCase
         $this->assertTrue($model->hasErrors('attr_date'));
     }
 
-    public static function provideTestStrictDateFormatPhpFail(): array
-    {
-        return [
-            ['php:Y-m-d', '13-Mar-19', true],
-            ['php:Y-m-d', '13-March-19', true],
-            ['php:Y-m-d', '13-03-19', true],
-            ['php:Y-m-d', '13-3-19', true],
-            ['php:Y-m-d', '13-003-19', true],
-            ['php:Y-m-d', '0013-Mar-19', true],
-            ['php:Y-m-d', '13-Mar-00019', true],
-        ];
-    }
-
     /**
      * Test dates that pass strict php validation
      *
-     * @dataProvider provideTestStrictDateFormatPhpPass
+     * @dataProvider \yiiunit\framework\validators\providers\DateValidatorProvider::strictDateFormatPhpPass
      * @param $format
      * @param $date
      * @param $strictDateFormat
      */
-    public function testStrictDateFormatPhpPass($format, $date, $strictDateFormat): void
+    public function testStrictDateFormatPhpPass(string $format, string $date, bool $strictDateFormat): void
     {
         $this->mockApplication([
             'timeZone' => 'UTC',
@@ -1178,15 +1105,6 @@ class DateValidatorTest extends TestCase
         $model->attr_date = $date;
         $val->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
-    }
-
-    public static function provideTestStrictDateFormatPhpPass(): array
-    {
-        return [
-            ['php:Y-m-d', '0013-03-19', true],
-            ['php:Y-m-d', '2013-03-19', true],
-            ['php:Y-m-d', '0001-03-19', true],
-        ];
     }
 
     /**
@@ -1212,7 +1130,7 @@ class DateValidatorTest extends TestCase
         ]);
         $model = new FakedValidationModel();
         $model->attr_date = '';
-        $model->attr_timestamp = 1379030400;
+        $model->attr_timestamp = 1_379_030_400;
         $validator->validateAttribute($model, 'attr_date');
         $this->assertFalse($model->hasErrors('attr_date'));
         $this->assertNull($model->attr_timestamp);
@@ -1226,7 +1144,7 @@ class DateValidatorTest extends TestCase
     {
         $validator = new DateValidator(['format' => 'php:U', 'type' => DateValidator::TYPE_DATETIME, 'timestampAttribute' => 'attr_date']);
         $model = new FakedValidationModel();
-        $value = 1518023610;
+        $value = 1_518_023_610;
         $model->attr_date = $value;
 
         $validator->validateAttribute($model, 'attr_date');

@@ -6,9 +6,12 @@
  * @license https://www.yiiframework.com/license/
  */
 
+declare(strict_types=1);
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
+use yii\validators\Validator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\validators\stubs\ViewStub;
 use yiiunit\TestCase;
@@ -21,7 +24,19 @@ class IpValidatorTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        // destroy application, Validator must work without Yii::$app
+
+        $this->mockApplication();
+    }
+
+    protected function createValidatorInstance(array $config = []): Validator
+    {
+        return new IpValidator($config);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
         $this->destroyApplication();
     }
 
@@ -32,22 +47,11 @@ class IpValidatorTest extends TestCase
         new IpValidator(['ipv4' => false, 'ipv6' => false]);
     }
 
-    public static function provideRangesForSubstitution(): array
-    {
-        return [
-            ['10.0.0.1', ['10.0.0.1']],
-            [['192.168.0.32', 'fa::/32', 'any'], ['192.168.0.32', 'fa::/32', '0.0.0.0/0', '::/0']],
-            [['10.0.0.1', '!private'], ['10.0.0.1', '!10.0.0.0/8', '!172.16.0.0/12', '!192.168.0.0/16', '!fd00::/8']],
-            [['private', '!system'], ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fd00::/8', '!224.0.0.0/4', '!ff00::/8', '!169.254.0.0/16', '!fe80::/10', '!127.0.0.0/8', '!::1', '!192.0.2.0/24', '!198.51.100.0/24', '!203.0.113.0/24', '!2001:db8::/32']],
-        ];
-    }
-
     /**
-     * @dataProvider provideRangesForSubstitution
+     * @dataProvider \yiiunit\framework\validators\providers\IpValidatorProvider::rangesForSubstitution
      * @param array $range
-     * @param array $expectedRange
      */
-    public function testRangesSubstitution($range, $expectedRange): void
+    public function testRangesSubstitution($range, array $expectedRange): void
     {
         $validator = new IpValidator(['ranges' => $range]);
         $this->assertEquals($expectedRange, $validator->ranges);
@@ -66,13 +70,8 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('babe::cafe'));
     }
 
-    public static function provideBadIps(): array
-    {
-        return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false], ['bad:forSure']];
-    }
-
     /**
-     * @dataProvider provideBadIps
+     * @dataProvider \yiiunit\framework\validators\providers\IpValidatorProvider::badIps
      * @param mixed $badIp
      */
     public function testValidateValueNotAnIP($badIp): void
@@ -83,7 +82,7 @@ class IpValidatorTest extends TestCase
     }
 
     /**
-     * @dataProvider provideBadIps
+     * @dataProvider \yiiunit\framework\validators\providers\IpValidatorProvider::badIps
      * @param mixed $badIp
      */
     public function testValidateModelAttributeNotAnIP($badIp): void
